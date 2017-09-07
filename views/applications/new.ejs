@@ -1,6 +1,6 @@
 Create Application: <p>
 
-<form method="post" action="/indexApplication/create">  
+<form method="post" action="/applications">  
 	
 	<% var nameErrors = [] %>
 	<% if (errors.length) { %>
@@ -35,6 +35,6 @@ Create Application: <p>
 		Este campo es obligatorio<br/>
 	<% } %>
 
-	<a href="/indexApplication"><button type="button">Cancel</button></a>
+	<a href="/applications"><button type="button">Cancel</button></a>
 	<input type="submit" value="Send">
 </form>

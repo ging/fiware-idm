@@ -1,8 +1,0 @@
-<h1>Application</h1>
-<p>Name: <%= applicationInfo.Name %></p> 
-<p>Description: <%= applicationInfo.Description %></p> 
-<p>Application Id: <%= applicationInfo.ApplicationId %></p> 
-<p>Application Secret: <%= applicationInfo.ApplicationSecret %></p>
-<a href="/indexApplication"><button type="button">Back</button></a>
-<a href="/indexApplication/<%= applicationInfo.id %>/edit"><button type="button">Edit</button></a>
-<form method="post" action="/indexApplication/<%= applicationInfo.id %>?_method=delete"><button type="submit" onClick="return confirm('Borrar: <%= applicationInfo.Name %>');">Remove</button>          

@@ -1,6 +1,6 @@
 Edit Application: <p>
 
-<form method="post" action="/indexApplication/<%= applicationInfo.id %>?_method=put">  
+<form method="post" action="/applications/<%= applicationInfo.id %>?_method=put">  
 	
 	<% var nameErrors = [] %>
 	<% if (errors.length) { %>
@@ -35,6 +35,6 @@ Edit Application: <p>
 		Este campo es obligatorio<br/>
 	<% } %>
 
-	<a href="/indexApplication/<%= applicationInfo.id %>"><button type="button">Back</button></a>
+	<a href="/applications/<%= applicationInfo.id %>"><button type="button">Back</button></a>
 	<input type="submit" value="Send">
 </form>

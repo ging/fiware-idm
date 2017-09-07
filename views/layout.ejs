@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"><title> Fiware IdM </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head> 
+
+<body>
+<div id="page-wrap">
+
+  <nav class="main" id="n1" role="navigation">
+    <span><a>Fiware Idm</a></span>
+    <span><button type="button">Cloud</button></span>
+    <span><button type="button">Help</button></span>
+    <%if(session.user){%>
+      <span><a href="/logout?_method=delete"><button type="button">Sign Out</button></a></span>
+    <%}%>
+  </nav>
+
+  <section class="main" id="s1">
+    <!-- <% if (errors.length) { %>
+      <span id='ErrorMsgs'>
+        Corregir errores:<br/>
+        <% for (var i in errors) { %>
+           <span> <%= errors[i].message %> </span><br/>
+        <% } %>
+      </span>
+    <% } %> -->
+
+    <div><%- body %></div>
+  </section>
+
+  <footer class="main" id="f1">
+    <a>2015 © FIWARE. The use of FIWARE Lab services is subject to the acceptance of the Terms and Conditions, Privacy Policy and Cookies Policy.</a>
+  </footer>
+</div>
+</body> 
+</html>

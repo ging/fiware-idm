@@ -1,0 +1,7 @@
+Se ha instalado MYSQL manualmente con usuario idm y pass idm
+Se ha creado manualmente la base de datos de idm
+	mysql -u host -u root -p
+	CREATE DATABASE idm;
+
+Comprobar las entradas de los datos que se menten en los formularios de crear aplicaciones, usuarios y demas. 
+¿Comprobar si las aplicaciones tienen el mismo id?

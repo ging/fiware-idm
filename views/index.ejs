@@ -1,20 +1,5 @@
-<h1>Log in</h1>
+<div class="row">
+  <%- include auth/_login %>
+  <%- include auth/_presentation %>
+</div>
 
-<form method='POST' action='/login'>
-
-  <div class="field">
-    <label for="login">Login:</label><br />
-    <input type="text" id="login" name="login" size="30" />
-  </div>
-
-  <div class="field">
-    <label for="password">Password:</label><br />
-    <input type="password" id="password" name="password" size="30" />
-  </div>
-
-  <div class="actions">
-    <input name="signIn" type="submit" value="Sign In" />
-    <p><a href="applications/index"><button type="button">Sign Up</button></a></a></p>
-  </div>
-
-</form>

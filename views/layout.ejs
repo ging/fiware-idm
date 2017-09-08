@@ -1,106 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8"><title> Fiware IdM </title>
+  <script src="javascripts/jquery-3.2.1.min.js"></script>
+  <script src="javascripts/bootstrap.min.js"></script>
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head> 
 
 <body>
-<div id="page-wrap">
 
-  <header class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-navbar-collapse">
-          <span class="fa fa-angle-double-down"></span>
-        </button>
-        <div class="logo-fl-header">
-          <a href="/home/" class="brand">
-          </a>
-        </div>
-      </div>
+<%- include _header %>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="header-navbar-collapse">
-        <div id="user_info" class="col-md-pull-3 nav navbar-nav navbar-right">
-          <div id="profile_editor_switcher" class="dropdown switcher_bar" tabindex="1"></div>
-        </div>
-        <ul class="nav navbar-nav col-md-push-9">
-          <li class="">
-            <a href="https://cloud.lab.fiware.org/">
-              Cloud
-            </a>
-          </li>
-          <li class="">
-            <a href="https://store.lab.fiware.org/">
-              Store
-            </a>
-          </li>
-          <li class="">
-            <a href="https://mashup.lab.fiware.org/">
-              Mashup
-            </a>
-          </li>
-          <li class="">
-            <a href="https://data.lab.fiware.org">
-              Data
-            </a>
-          </li>
-          <li class="active">
-            <a href="https://account.lab.fiware.org">
-              Account
-            </a>
-          </li>
-          <li class="">
-            <a href="http://help.lab.fiware.org/">
-              Help&amp;info
-            </a>
-          </li>
-        </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </header>
-
-  <nav class="main" id="n1" role="navigation">
-    <span><a>Fiware Idm</a></span>
-    <span><button type="button">Cloud</button></span>
-    <span><button type="button">Help</button></span>
-    <%if(session.user){%>
-      <span><a href="/logout?_method=delete"><button type="button">Sign Out</button></a></span>
-    <%}%>
-  </nav>
-
-  <section class="main" id="s1">
-    <!-- <% if (errors.length) { %>
-      <span id='ErrorMsgs'>
-        Corregir errores:<br/>
-        <% for (var i in errors) { %>
-           <span> <%= errors[i].message %> </span><br/>
-        <% } %>
-      </span>
-    <% } %> -->
-
-    <div><%- body %></div>
-  </section>
-
-  <footer class="footer-main">
-    <div class="container-fluid">
-        <div class="footer-content">
-            <div class="cred">
-          2015 © 
-          <a href="http://www.fiware.org/">FIWARE</a>.
-
-          The use of FIWARE Lab services is subject to the acceptance of the
-              <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_LAB_Terms_and_Conditions" target="a_blank">Terms and Conditions</a>,
-
-              <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_Privacy_Policy" target="a_blank">Privacy Policy</a>
-              and 
-              <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Cookies_Policy_FIWARE" target="a_blank">Cookies Policy</a>.
-        </div>
-      </div>
-    </div>
-  </footer>
+<div id="container" class="container-fluid wrap">
+<%- body %>
 </div>
+
+<section class="main" id="s1">
+  <!-- <% if (errors.length) { %>
+    <span id='ErrorMsgs'>
+      Corregir errores:<br/>
+      <% for (var i in errors) { %>
+         <span> <%= errors[i].message %> </span><br/>
+      <% } %>
+    </span>
+  <% } %> -->
+
+  
+</section>
+
+<%- include _footer %>
+
 </body> 
 </html>

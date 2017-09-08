@@ -133,9 +133,9 @@
 
 .login,
 .registration{
-  @include make-sm-column(4, $gutter: $grid-gutter-width);
-  @include make-md-column(3, $gutter: $grid-gutter-width);
-  @include make-lg-column(3, $gutter: $grid-gutter-width);
+//  @include make-sm-column(4, $gutter: $grid-gutter-width);
+//  @include make-md-column(3, $gutter: $grid-gutter-width);
+//  @include make-lg-column(3, $gutter: $grid-gutter-width);
   @extend .well;
   @include border-top-radius (0);
   @include border-bottom-radius (0);

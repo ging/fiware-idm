@@ -1,0 +1,164 @@
+#administrators{
+  width: 100%;
+  float: left;
+  .list-group-item{
+    @include make-sm-column(5, $gutter: $grid-gutter-width);
+    @include make-md-column(4, $gutter: $grid-gutter-width);
+    @include make-lg-column(3, $gutter: $grid-gutter-width);
+    margin-right: 10px;
+    margin-left: 10px;
+    &:first-child{
+      border-top: 1px solid #DDD
+    }
+    &:last-child{
+      border-bottom: 1px solid #DDD
+    }
+  }
+}
+
+#notify,
+#user_accounts{
+  .modal-header{
+    border: none;
+    padding-bottom: 0;
+    padding: 0;
+  }
+  .modal-body{
+    @include well;
+    border-bottom: none;
+    border-radius-bottom: 0;
+    padding: 15px 15px 0;
+    margin: 0;
+    @include border-top-radius (3px);
+    .weak_pwd_input{
+      background-color: #f2dede;
+      border-color: #ebcccc;
+    }
+  }
+  .modal-footer{
+    @include well;
+    border-radius-top: 0;
+    border-top: none;
+    padding: 0px 16px 15px;
+    @include border-bottom-radius (3px);
+    .btn{
+      float: right;
+    }
+  }
+}
+
+#endpoints{
+  .endpoints_modal {
+    display: none;
+    margin-bottom: 15px;
+    .modal-header{
+      border: none;
+      padding-bottom: 0;
+      padding: 0;
+    }
+    .modal-body{
+      border-bottom: none;
+      border-radius-bottom: 0;
+      padding: 0;
+      margin: 0;
+      .weak_pwd_input{
+        background-color: #f2dede;
+        border-color: #ebcccc;
+      }
+      .service_disabled{
+        display: none;
+      }
+      label{
+        color: $brand-secundary;
+      }
+      .control-label{
+        width: 13%;
+      }
+      h5{
+        border: none;
+        color: $text-color;
+      }
+      .service_username, .service_password {
+        p {
+          color: $brand-secundary;
+        }
+      }
+
+    }
+    .modal-footer{
+      display:none;
+      border-radius-top: 0;
+      border-top: none;
+      padding: 20px;
+      .btn{
+        float: right;
+        margin-left: 5px;
+      }
+    }
+  }
+  h4 {
+    font-size: 14px;
+    color: $gray-darker;
+  }
+  .service_description, #default_service_description{
+    padding-top: 15px;
+    .service_desc_txt{
+      color: $gray;
+    }
+  }
+  .endpoints_list{
+    .endpoints_data{
+      padding: 10px;
+      .form-group{
+        margin-bottom: 10px;
+        .control-label{
+          padding: 7px 0;
+        }
+      }
+    }
+  }
+  .service_password {
+    p, a {
+      float:left;
+    }
+    p {
+      margin-right: 50px;
+    }
+  }
+}
+
+#id_body_iframe{
+  padding: 0;
+  background-color: $white;
+  border: none;
+}
+
+.note-editor{
+  border: 1px solid $border-color !important;
+}
+
+#user_accounts{
+  h5{
+    font-family: $font-family-base;
+    margin-bottom: 10px;
+    font-size: 12px;
+    display: block;
+  }
+}
+
+#account-status{
+  p{margin-bottom: 10px}
+  .upgrade{
+    min-height: 40px;
+    padding-top: 0;
+    a{
+      padding-left: 10px;
+      border-right: 1px solid #C2C2C2;
+    }
+  }
+  span{font-size:12px}
+}
+
+#id_regions{
+  min-height: 200px;
+}

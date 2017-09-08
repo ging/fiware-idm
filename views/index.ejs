@@ -1,40 +1,4 @@
-<h1>Log in</h1>
-
-<form method='POST' action='/login'>
-
-  <% var nameErrors = [] %>
-  <% if (errors.length) { %>
-    <% for (var i in errors) { %>
-      <% nameErrors.push(errors[i].message)%>
-    <% } %>
-  <% } %>
-
-
-  <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
-    Session Expired<br/>
-  <% } else if (nameErrors.indexOf("invalid") != -1){ %>
-    Invalid username or password<br/>
-  <% } %>
-
-  <div class="field">
-    <label for="login">Login:</label><br />
-    <input type="text" id="login" name="user[username]" size="30" />
-  </div>
-  <% if (nameErrors.indexOf("username") != -1) { %>
-    Este campo es obligatorio<br/>
-  <% } %>
-
-  <div class="field">
-    <label for="password">Password:</label><br />
-    <input type="password" id="password" name="user[password]" size="30" />
-  </div>
-  <% if (nameErrors.indexOf("password") != -1) { %>
-    Este campo es obligatorio<br/>
-  <% } %>
-
-  <div class="actions">
-    <input name="signIn" type="submit" value="Sign In" />
-    <p><a href="users/new"><button type="button">Sign Up</button></a></a></p>
-  </div>
-
-</form>
+<div class="row">
+  <%- include auth/_login %>
+  <%- include auth/_presentation %>
+</div>

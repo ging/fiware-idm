@@ -1,0 +1,76 @@
+#detailApplication,
+#detailUser{
+  .logo{
+    margin-top: -7px !important;
+  }
+}
+#detailOrganization,
+#detailApplication,
+#detailUser{
+  header .name{
+    color: $gray-dark;
+  }
+}
+#detailOrganization,
+#detailApplication,
+#detailUser{
+  header{
+    position: relative;
+    .name a{
+      margin-left: 6px;
+      border-left: 1px solid #CCC;
+      padding-left: 10px;
+      padding-top: 7px;
+      &:hover{
+        color: #C1C1C1;
+      }
+    .fa-cogs{
+      margin-right: 2px;
+    }
+    }
+    .logo{
+      position: absolute;
+      right: 12px;
+      top: 6px;
+    }
+  }
+  .callback_url{
+    margin-bottom: 25px;
+  }
+  .extra{
+    .panel-title > a:hover{
+       i{
+          transition: all 0.5s;
+        }
+    }
+    .collapse_out{
+      padding-top: 5px;
+    }
+    .form-group{ margin: 0;}
+    .collapse{
+        .content_pep{
+          overflow: hidden;
+          clear: both;
+        }
+        .content_pep_activenew{
+          background-color: aliceblue;
+        }
+    }
+  }
+}
+
+.description {
+  .info {
+    .details {
+      padding-bottom: 17px;
+      p{
+        margin: 0 80px 10px 0;
+      }
+    }
+    .read-more, .read-less{
+      font-family: "NeoTechRegular";
+      font-size: 1.1em;
+      margin-left: 3px
+    }
+  }
+}

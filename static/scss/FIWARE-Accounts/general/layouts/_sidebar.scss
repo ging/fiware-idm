@@ -1,0 +1,172 @@
+/* Sidebar
+-------------------------------------------------- */
+
+.sidebar{
+  @include make-sm-column(1, $gutter: $grid-gutter-width);
+  @include make-md-column(3, $gutter: $grid-gutter-width);
+  @include make-lg-column(3, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    position: relative;
+    margin-bottom: 0;
+    border-bottom: 1px solid $border-color;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  @media (max-width: $screen-xs-min){
+    position: relative;
+    margin: 0;
+    padding-right: 0px;
+    padding-left: 0px;
+    border-bottom: 1px solid $border-color;
+  }
+  h5{
+    margin-top: 3px;
+  }
+  h5 span{
+    font-size: 19px;
+    font-family: $corporate-font-family-sans-serif-Regular;
+    color: $gray-dark;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 15px;
+    letter-spacing: 1px;
+    width: 100%;
+    display: block;
+    @media (min-width: 1200px){
+      a{
+        font-size: 25px;
+      }
+    }
+  }
+  ul{
+    padding: 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    @media (max-width: $screen-sm-min){
+      height: 30px;
+      padding-top: 0;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+    @media (max-width: $screen-xs-min){
+      width: 100%;
+    }
+    a.home{
+      @media (max-width: $screen-sm-min){
+        padding: 0 1rem 0 0 !important;
+      }
+    }
+    a.home,
+    a.home_orgs,
+    a.members,
+    a.organizations,
+    a.myApplications,
+    a.notify,
+    a.administrators,
+    a.user_accounts,
+    a.endpoints_management{
+      line-height: 42px;
+      display: block;
+      margin-bottom: 9px;
+      margin-top: 3px;
+      @media (max-width: $screen-sm-min){
+        border-right: 1px solid $border-color;
+        padding: 0 1.5rem;
+      }
+      @media (max-width: $screen-xs-min){
+        line-height: 37px;
+        &:first-child{
+          margin-left: 0;
+        }
+        &:last-child{
+          margin-right: 0;
+        }
+      }
+      @media (max-width: $screen-sm-min){
+        float: left;
+      }
+      h4,
+      i{
+        color: #8E8E8E;
+      }
+      &:hover{
+        h4,
+        i{
+          color: $brand-secundary;
+        }
+      }
+      i{
+        font-size: 1.3rem;
+        @media (max-width: $screen-sm-min){
+          float: left;
+          font-size: 16px;
+          &:first-child{
+            padding-left: 0px;
+          }
+          &:last-child{
+            border-right: none;
+          }
+        }
+      }
+
+      h4{
+        margin-bottom: 16px;
+        span{
+          display: inline;
+          font-size: 15px;
+          margin-left: 10px;
+          @extend .hidden-xs;
+          @extend .hidden-sm;
+          @media (max-width: $screen-sm-min){
+            i{
+              padding-right: 8px;
+            }
+          }
+        }
+        &:focus,
+        i{
+          outline: none;
+        }
+      }
+      h4.active{
+        span,
+        i{
+          color: $brand-secundary;
+        }
+        &:hover{
+          span,
+          i{
+            color: $brand-secundary;
+          }
+        }
+      }
+    }
+    a.myApplications{
+      h4 {
+        @include text-overflow;
+        margin-bottom: 0px;
+      }
+    }
+
+    hr{
+      margin: 16px 0;
+      @media (max-width: $screen-sm-min){
+        float: left;
+        margin: 0 15px;
+        width: 1px;
+        height: 45px;
+        clear: none;
+        border-left: 2px solid $border-color;
+      }
+    }
+  }
+}
+
+a.home i{@extend .fa-home;}
+a.home_orgs i{@extend .fa-home;}
+a.members i {@extend .fa-group;}
+a.myApplications i{@extend .fa-cube;}
+a.organizations i, li.members i{@extend .fa-group;}
+a.notify i{@extend .fa-comment;}
+a.administrators i{@extend .fa-wrench;}
+a.user_accounts i{@extend .fa-shield;}
+a.endpoints_management i{@extend .fa-globe;}

@@ -1,0 +1,33 @@
+.form-control {
+  height: 34px;
+  padding: 6px;
+  box-shadow: none;
+  background-color: #EAEAEC;
+  @include border-top-radius (0);
+  @include border-bottom-radius (0);
+  border: 1px solid $border-color;
+
+}
+.form-control:focus{
+  outline: 0 !important;
+}
+.form-control:active{
+  outline: 0 !important;
+}
+
+.form-control-feedback {
+  top: 34px;
+}
+
+.form-group{
+  .control-label{
+    width: 100%;
+  }
+  .radio-group{
+    height: 30px;
+    width: 100%;
+    label{
+      margin: 2px 5px;
+    }
+  }
+}

@@ -1,0 +1,234 @@
+#role_list {
+  @include make-sm-column(5, $gutter: $grid-gutter-width);
+  @include make-md-column(5, $gutter: $grid-gutter-width);
+  @include make-lg-column(5, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .role{
+    text-align: left;
+    position: relative;
+    height: 34px;
+    padding-top: 7px;
+    padding-left: 6px;
+    box-shadow: none;
+    a{
+      position: absolute;
+    }
+    .ajax-inline-edit{
+      right: 27px;
+      top: 8px;
+    }
+    .ajax-modal{
+      right: 7px;
+    }
+    label{
+      font-weight: normal;
+    }
+  }
+  .role.active, .service.active{
+    color: $white;
+    background-color: $brand-primary;
+    border-color: $brand-primary;
+    i{
+      color: $white;
+    }
+  }
+}
+
+#permissions_list {
+  @include make-sm-column(7, $gutter: $grid-gutter-width);
+  @include make-md-column(7, $gutter: $grid-gutter-width);
+  @include make-lg-column(7, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.permissions_list,
+.role_list,
+.services_list {
+  padding: 15px;
+  header{
+    min-height: 26px;
+    h4{
+      display: inline;
+    }
+    button{
+      float: right;
+      background-color: transparent;
+      padding: 0 1px 0 0;
+      margin-top: -2px;
+      &:hover{
+        color: $brand-secundary;
+      }
+    }
+  }
+  .btn-group-vertical{
+    width: 95%;
+  }
+  .list-group-item{
+    position: relative;
+    padding-left: 0;
+    padding-right: 0;
+    .data{
+      margin-top: 5px;
+      margin-left: 2px;
+    }
+    .ajax-inline-edit{
+      @extend .btn;
+      @extend .btn-default;
+      position: absolute;
+      right: 27px;
+      top: 9px;
+    }
+    .inline-edit-form{
+      margin-top: -1px;
+      input{
+        &[type="text"]{
+          width: 100% !important;
+          height: 30px !important;
+          position: absolute !important;
+        }
+      }
+    }
+    .inline-edit-actions{
+      margin-right: 30px;
+      position: absolute;
+      right: -3px;
+    }
+    .actions_column{
+      position: absolute;
+      right: 0;
+      top: 9px;
+    }
+  }
+  .collapse{
+    .modal-header{
+      display: none;
+    }
+  }
+}
+
+.permissions_list{
+  .alert{
+    margin-top: 10px;
+  }
+  li{
+    background-color: $white;
+    color: #C5C5C5;
+    white-space: nowrap;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    &:first-child{
+      border-top: none;
+    }
+    &:hover{
+      text-decoration: none;
+      background-color: $gray-lighter;
+      cursor: pointer;
+      color: $text-color;
+    }
+    i{
+      margin-right: 5px;
+      min-width: 14px;
+      @include opacity (0);
+    }
+  }
+  li.active{
+    text-decoration: none;
+    background-color: $gray-lighter;
+    color: $text-color;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    padding-left: 10px;
+    i{
+      @include opacity (1);
+      color: $brand-primary;
+    }
+    &:hover{
+      text-decoration: none;
+      background-color: #E2E2E2;
+      color: $text-color;
+      border-top: 1px solid $border-color;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+  hr{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    border-top: 1px solid $gray !important;
+  }
+}
+
+ul.disabled-list{
+  li{
+    &:hover{
+      background: $white;
+      color: #C5C5C5;
+      cursor: no-drop;
+    }
+  }
+  li.active{
+    &:hover{
+      background: #F1F1F2;
+      cursor: no-drop;
+    }
+  }
+}
+
+.services_list {
+  @media (max-width: $screen-sm-min){
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .btn-default:hover a{
+    color: $brand-primary;
+  }
+  .service{
+    text-align: left;
+    position: relative;
+    height: 34px;
+    padding-top: 7px;
+    padding-left: 6px;
+    box-shadow: none;
+    a{
+      position: absolute;
+      font-weight: normal;
+      color: $gray;
+    }
+    .service-name{
+      float: left;
+      max-width: 70%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .checkbox{
+      float: right;
+      margin-right: -20px;
+      transform: scale(0.8, 0.8);
+      input:checked + span:before{
+        background: $brand-secundary !important;
+      }
+      input + span:before{
+        background: #d0edf1 !important;
+      }
+    }
+    span:first-child{
+      float: left;
+    }
+  }
+  .service.active{
+    color: $white;
+    background-color: $brand-primary;
+    border-color: $brand-primary;
+    a{
+      color: $white;
+    }
+  }
+}

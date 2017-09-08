@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8"><title> Fiware IdM </title>
+  <script src="javascripts/jquery-3.2.1.min.js"></script>
+  <script src="javascripts/bootstrap.min.js"></script>
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head> 
 
 <body>
-<div id="page-wrap">
 
-  <nav class="main" id="n1" role="navigation">
-    <span><a>Fiware Idm</a></span>
-    <span><button type="button">Cloud</button></span>
-    <span><button type="button">Help</button></span>
-    <%if(session.user){%>
-      <form method="post" action="/logout?_method=delete"><input type="submit" value="Sign Out"></form>
-    <%}%>
-  </nav>
+<%- include _header %>
 
-  <section class="main" id="s1">
-    <!-- <% if (errors.length) { %>
-      <span id='ErrorMsgs'>
-        Corregir errores:<br/>
-        <% for (var i in errors) { %>
-           <span> <%= errors[i].message %> </span><br/>
-        <% } %>
-      </span>
-    <% } %> -->
-    <div><%- body %></div>
-  </section>
-
-  <footer class="main" id="f1">
-    <a>2015 © FIWARE. The use of FIWARE Lab services is subject to the acceptance of the Terms and Conditions, Privacy Policy and Cookies Policy.</a>
-  </footer>
+<div id="container" class="container-fluid wrap">
+<%- body %>
 </div>
+
+<section class="main" id="s1">
+  <!-- <% if (errors.length) { %>
+    <span id='ErrorMsgs'>
+      Corregir errores:<br/>
+      <% for (var i in errors) { %>
+         <span> <%= errors[i].message %> </span><br/>
+      <% } %>
+    </span>
+  <% } %> -->
+
+  
+</section>
+
+<%- include _footer %>
+
+
 </body> 
 </html>

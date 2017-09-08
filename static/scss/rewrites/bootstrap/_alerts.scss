@@ -1,0 +1,15 @@
+.alert {
+	padding: 8px 10px;
+  margin: 10px 0;
+}
+
+.alert > ul {
+	margin-bottom: 0;
+	padding-left: 0;
+}
+
+.alert-info {
+	background-color: $white;
+	border-color: $brand-secundary;
+	color: $brand-primary;
+}

@@ -7,30 +7,29 @@ Edit Application: <p>
         <% for (var i in errors) { %>
         	<% nameErrors.push(errors[i].message)%>
         <% } %>
-      </span>
     <% } %>
 
 
   	<label for="preg" class="rem">Name:</label>
-	<input type="text" id="name" name="application[Name]" value="<%= applicationInfo.Name %>"/> <p>
+	<input type="text" id="name" name="application[name]" value="<%= applicationInfo.name %>"/> <p>
 	<% if (nameErrors.indexOf("name") != -1) { %>
 		Este campo es obligatorio<br/>
 	<% } %>
 
 	<label for="resp" class="rem">Description:</label>
-	<input type="text" id="desc" name="application[Description]" value="<%= applicationInfo.Description %>"/> <p>
+	<input type="text" id="desc" name="application[description]" value="<%= applicationInfo.description %>"/> <p>
 	<% if (nameErrors.indexOf("description") != -1) { %>
 		Este campo es obligatorio<br/>
 	<% } %>
 
 	<label for="resp" class="rem">Application Id:</label>
-	<input type="text" id="appId" name="application[ApplicationId]" value="<%= applicationInfo.ApplicationId %>"/> <p>
+	<input type="text" id="appId" name="application[applicationId]" value="<%= applicationInfo.applicationId %>"/> <p>
 	<% if (nameErrors.indexOf("applicationId") != -1) { %>
 		Este campo es obligatorio<br/>
 	<% } %>
 
 	<label for="resp" class="rem">Application Secret:</label>
-	<input type="text" id="appSe" name="application[ApplicationSecret]" value="<%= applicationInfo.ApplicationSecret %>"/> <p>
+	<input type="text" id="appSe" name="application[applicationSecret]" value="<%= applicationInfo.applicationSecret %>"/> <p>
 	<% if (nameErrors.indexOf("applicationSecret") != -1) { %>
 		Este campo es obligatorio<br/>
 	<% } %>

@@ -21,7 +21,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(partials());
+app.use(partials());3
 app.use(cookieParser('plm2k45ml2104585jnn2'));
 app.use(session({
 	secret: 'lb294n7b38n03n5ofaoi'
@@ -37,9 +37,9 @@ app.use(function(req, res, next) {
     req.session.redir = '/';
   }
   // guardar path en session.redir para despues de login
-  if (!req.path.match(/\/login|\/logout|\/user/)) {
-    req.session.redir = req.path;
-  }
+  // if (!req.path.match(/\/login|\/logout|\/user/)) {
+  //   req.session.redir = req.path;
+  // }
 
   // Hacer visible req.session en las vistas
   res.locals.session = req.session;

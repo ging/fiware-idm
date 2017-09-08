@@ -19,7 +19,7 @@ exports.new = function(req, res) {
 exports.create = function(req, res, next) {
 	var application = models.Application.build(req.body.application);
 	application.validate().then(function(err) {
-		application.save({fields: ["Name", "Description", "ApplicationId", "ApplicationSecret"]}).then(function() {
+		application.save({fields: ["name", "description", "applicationId", "applicationSecret"]}).then(function() {
 			res.redirect('/applications');
 		});	
 	}).catch(function(error){ 
@@ -31,7 +31,7 @@ exports.create = function(req, res, next) {
 exports.index = function(req, res) {
   models.Application.findAll().then(function(application) {
   	res.render('applications/index', { applications: application, errors: []});
-  })
+  });
 };
 
 // Show info about an application
@@ -46,13 +46,13 @@ exports.edit = function(req, res) {
 
 // Update application
 exports.update = function(req, res) {
-  	req.application.Name = req.body.application.Name;
-  	req.application.Description = req.body.application.Description;
-  	req.application.ApplicationId = req.body.application.ApplicationId;
-  	req.application.ApplicationSecret = req.body.application.ApplicationSecret;
+  	req.application.name = req.body.application.name;
+  	req.application.description = req.body.application.description;
+  	req.application.applicationId = req.body.application.applicationId;
+  	req.application.applicationSecret = req.body.application.applicationSecret;
 
 	req.application.validate().then(function(err) {
-		req.application.save({fields: ["Name", "Description", "ApplicationId", "ApplicationSecret"]}).then(function() {
+		req.application.save({fields: ["name", "description", "applicationId", "applicationSecret"]}).then(function() {
 			res.redirect('/applications/'+req.application.id);
 		});	
 	}).catch(function(error){ 

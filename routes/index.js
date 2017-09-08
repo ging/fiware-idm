@@ -18,12 +18,12 @@ router.delete('/logout',	sessionController.destroy);
 router.param('applicationId', applicationController.load);
 
 // Routes to get info about applications
-router.get('/applications', 								applicationController.index);
-router.get('/applications/:applicationId(\\d+)', 			applicationController.show);
-router.get('/applications/new', 							applicationController.new);
-router.post('/applications', 								applicationController.create);
-router.get('/applications/:applicationId(\\d+)/edit', 		applicationController.edit);
-router.put('/applications/:applicationId(\\d+)', 			applicationController.update);
-router.delete('/applications/:applicationId(\\d+)', 		applicationController.destroy);
+router.get('/applications',  							sessionController.loginRequired,	applicationController.index);
+router.get('/applications/:applicationId(\\d+)', 		sessionController.loginRequired,	applicationController.show);
+router.get('/applications/new', 						sessionController.loginRequired,	applicationController.new);
+router.post('/applications', 							sessionController.loginRequired,	applicationController.create);
+router.get('/applications/:applicationId(\\d+)/edit', 	sessionController.loginRequired,	applicationController.edit);
+router.put('/applications/:applicationId(\\d+)', 		sessionController.loginRequired,	applicationController.update);
+router.delete('/applications/:applicationId(\\d+)', 	sessionController.loginRequired,	applicationController.destroy);
 
 module.exports = router;

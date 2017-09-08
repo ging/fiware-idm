@@ -21,25 +21,42 @@ sequelize
   })
 
 
-// Importar definicion de la tabla idm
-var Application = sequelize.import(path.join(__dirname,'applications'));
+// Importar definicion de la tabla Applications
+var Application = sequelize.import(path.join(__dirname,'application'));
 
+// Importar definicion de la tabla user
+var User = sequelize.import(path.join(__dirname,'user'));
 
-// exportar tablas
+// Los usuarios pueden registrar aplicaciones
+// Application.belongsTo(User);
+// User.hasMany(Application);
+
+// Exportar tablas
 exports.Application = Application; 
+exports.User = User; 
 
-// sequelize.sync() inicializa las tablas
+// sequelize.sync() inicializa tabla de preguntas en DB
 sequelize.sync().then(function() {
   // then(..) ejecuta el manejador una vez creada la tabla
-    console.log('Base de datos (tabla user) inicializada');
-    Application.count().then(function (count){
-      if(count === 0) {   // la tabla se inicializa solo si está vacía
-        Application.bulkCreate( 
-          [ {Name: 'app1', Description: 'Descrip App1', ApplicationId: '112312', ApplicationSecret: '121233'},
-            {Name: 'app2', Description: 'Descrip App2', ApplicationId: '224433', ApplicationSecret: '223435'},
-            {Name: 'app3', Description: 'Descrip App3', ApplicationId: '334433', ApplicationSecret: '333435'}
-          ]
-        ).then(function(){console.log('Base de datos (tabla application) inicializada')});
-      };
-    });
+  User.count().then(function (count){
+    if(count === 0) {   // la tabla se inicializa solo si está vacía
+      User.bulkCreate( 
+        [ {username: 'admin',   password: '1234'},
+          {username: 'pepe',   password: '5678'} 
+        ]
+      ).then(function(){
+        console.log('Base de datos (tabla user) inicializada');
+        Application.count().then(function (count){
+          if(count === 0) {   // la tabla se inicializa solo si está vacía
+            Application.bulkCreate( 
+              [ {name: 'app1', description: 'Descrip App1', applicationId: '112312', applicationSecret: '121233'},
+                {name: 'app2', description: 'Descrip App2', applicationId: '224433', applicationSecret: '223435'},
+                {name: 'app3', description: 'Descrip App3', applicationId: '334433', applicationSecret: '333435'}
+              ]
+            ).then(function(){console.log('Base de datos (tabla Application) inicializada')});
+          };
+        });
+      });
+    };
+  });
 });

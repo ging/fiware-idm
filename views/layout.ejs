@@ -13,7 +13,7 @@
     <span><button type="button">Cloud</button></span>
     <span><button type="button">Help</button></span>
     <%if(session.user){%>
-      <span><a href="/logout?_method=delete"><button type="button">Sign Out</button></a></span>
+      <form method="post" action="/logout?_method=delete"><input type="submit" value="Sign Out"></form>
     <%}%>
   </nav>
 
@@ -26,7 +26,6 @@
         <% } %>
       </span>
     <% } %> -->
-
     <div><%- body %></div>
   </section>
 

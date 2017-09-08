@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var session = require('express-session');
 var partials = require('express-partials');
+var sassMiddleware = require('node-sass-middleware');
 
 var index = require('./routes/index');
 
@@ -25,6 +26,13 @@ app.use(partials());
 app.use(cookieParser('plm2k45ml2104585jnn2'));
 app.use(session({
 	secret: 'lb294n7b38n03n5ofaoi'
+}));
+app.use(sassMiddleware({
+    src: path.join(__dirname, 'static/scss'),
+    dest: path.join(__dirname, 'public/stylesheets'),
+    debug: true,
+    outputStyle: 'compressed',
+    prefix:  '/stylesheets'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));

@@ -1,0 +1,134 @@
+.settings{
+  @include make-sm-column(8, $gutter: $grid-gutter-width);
+  @include make-md-column(8, $gutter: $grid-gutter-width);
+  @include make-lg-column(8, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    margin: 0;
+    padding: 0;
+  }
+  padding-left: 0;
+  padding-right: 0;
+  a.panel-heading {
+    padding: 0;
+    min-height: 1px;
+    background-color: transparent;
+    color: $brand-secundary;
+    &:hover{
+      cursor: pointer;
+      border-color: $brand-secundary !important;
+      color: $brand-secundary !important;
+    }
+    h4.panel-title {
+      margin-top: 3px !important;
+      padding: 15px 15px;
+      i{
+        margin-right: 5px;
+      }
+    }
+  }
+  a.collapsed{
+    color: #222;
+  }
+  .cancel_account{
+    h4.panel-title {
+      &:hover{
+        color: $brand-danger !important;
+      }
+    }
+  }
+  .panel-body{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    .btn{
+      float: right;
+    }
+    ul{
+      padding: 0 0 0 15px;
+      li{
+        padding: 5px 0;
+        text-indent: -4px;
+      }
+    }
+    a{
+      color: $brand-primary;
+      font-family: $corporate-font-family-sans-serif-Medium;
+      &:hover{
+        text-decoration: underline !important;
+      }
+    }
+  }
+  legend{
+    margin-bottom: 0;
+    border-bottom: 0;
+  }
+}
+.settings{
+  .control-label {
+    @include text-overflow;
+    width: 100%;
+  }
+  .btn-group-vertical{
+    margin-top: 15px;
+    width: 100%;
+  }
+}
+
+.control-label {
+  color: #B6B6B6;
+}
+
+#two_factor_enable_modal{
+  .modal-header{
+    .close{
+      display: none;
+    }
+  }
+  .modal-body{
+    .middle{
+      border-right: 1px solid $gray-lighter;
+      @media (max-width: $screen-md-min){
+        border: none;
+      }
+    }
+    .col-md-6{
+      padding: 20px;
+      h4{
+        margin-bottom: 20px;
+        color: $brand-primary;
+      }
+      .codes{
+        padding-right: 50px;
+        .manual_code{
+          color: $brand-secundary;
+        }
+      }
+      .steps{
+        min-height: 40px;
+        .step{
+          display: inline-block;
+          background-color: $white;
+          border: 2px solid $brand-secundary;
+          color: $brand-primary;
+          padding: 1px 0 0;
+          height: 28px;
+          width: 28px;
+          text-align: center;
+          font-size: 14px;
+          @include border-top-radius (27px);
+          @include border-bottom-radius (27px);
+          position: relative;
+          z-index: 2;
+          float: left;
+          @media (max-width: $screen-md-min){
+            margin-right: 10px;
+          }
+        }
+        .verification_img{
+          width: 100%;
+          opacity: 0.7;
+          margin-top: 10px;
+        }
+      }
+    }
+  }
+}

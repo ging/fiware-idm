@@ -1,0 +1,70 @@
+*{
+  outline: none !important;
+}
+
+a{
+  color: $brand-primary;
+  text-decoration: none;
+  &:hover{
+   color: $brand-secundary;
+ }
+ &:focus,
+ &:active,
+ &:hover{
+   text-decoration: none !important;
+   outline: none !important;
+ }
+}
+
+div, img, span, a, i, p, ul, li, select, button, header, footer, article, section, h1, h2, h3, h4, h5, h6{
+  &:focus{
+     outline: none;
+   }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+  font-family: $corporate-font-family-sans-serif-Regular;
+  font-weight: normal;
+  margin: 1px $zero;
+}
+
+li{
+	list-style: none;
+}
+
+hr{
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-top: 1px solid $gray-lighter !important;
+}
+
+
+.page-header {
+	border: none;
+	margin: -1px 0 0px;
+	padding-bottom: 6px;
+  min-height: 40px;
+  h2 {
+    font-family: $corporate-font-family-sans-serif-Regular;
+    color: $brand-secundary;
+    margin: 0;
+    //text-align: right;
+    //padding-top: 2px;
+    @media (max-width: 375px){
+      padding: 3px 0 10px;
+      font-size: 19px;
+    }
+    @media (max-width: 205px){
+      display: none;
+    }
+  }
+  .btn{
+    float: left;
+    margin-top: 2px;
+  }
+}

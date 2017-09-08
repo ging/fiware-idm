@@ -4,7 +4,7 @@ var path = require('path');
 var Sequelize = require('sequelize');
 
 // Usar BBDD Mysql
-var sequelize = new Sequelize('idm', 'root', 'idm', 
+var sequelize = new Sequelize('idm', 'root', 'root', 
   { 
     host: 'localhost',
     dialect: 'mysql'

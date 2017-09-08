@@ -1,0 +1,49 @@
+.btn{
+  padding: 4px 7px 6px;
+  @include border-top-radius (0);
+  @include border-bottom-radius (0);
+  &:active{
+  	box-shadow: none;
+  }
+}
+.btn-default{
+	border-color: $brand-primary;
+  color: $brand-primary;
+  transition: all 0.75s ease 0s;
+}
+.btn-default.disabled{
+  border-color: $brand-primary;
+  color: $gray-light;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .btn-default.dropdown-toggle {
+  color: $brand-primary;
+  background-color: $gray-light;
+  color: white;
+  border-color: transparent;
+}
+
+.btn-group-vertical > .btn:last-child:not(:first-child), .btn-group-vertical .permissions_list .list-group-item > :last-child:not(:first-child).ajax-inline-edit, .permissions_list .list-group-item .btn-group-vertical > :last-child:not(:first-child).ajax-inline-edit, .btn-group-vertical .role_list .list-group-item > :last-child:not(:first-child).ajax-inline-edit, .role_list .list-group-item .btn-group-vertical > :last-child:not(:first-child).ajax-inline-edit, .btn-group-vertical .edit_organization_modal > button:last-child:not(:first-child), .edit_organization_modal .btn-group-vertical > button:last-child:not(:first-child){
+	@include border-bottom-radius (3px);
+}
+.btn-group-vertical > .btn:first-child:not(:last-child), .btn-group-vertical .permissions_list .list-group-item > :first-child:not(:last-child).ajax-inline-edit, .permissions_list .list-group-item .btn-group-vertical > :first-child:not(:last-child).ajax-inline-edit, .btn-group-vertical .role_list .list-group-item > :first-child:not(:last-child).ajax-inline-edit, .role_list .list-group-item .btn-group-vertical > :first-child:not(:last-child).ajax-inline-edit, .btn-group-vertical .edit_organization_modal > button:first-child:not(:last-child), .edit_organization_modal .btn-group-vertical > button:first-child:not(:last-child){
+	@include border-top-radius (3px);
+}
+
+// new class for link buttons (without border)
+.link{
+  border: medium none;
+  color: #193B6B;
+  font-size: 13px;
+  padding: 0;
+  &:hover{
+    color: $brand-secundary;
+  }
+}
+
+.add-members .all-users li.list-group-item,
+.add-members .members-list li.list-group-item{
+	&:last-child{
+	  @include border-top-radius (0);
+    @include border-bottom-radius (0);
+	}
+}

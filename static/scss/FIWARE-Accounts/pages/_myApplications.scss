@@ -1,0 +1,306 @@
+#create_application_modal,
+#create_application_roles,
+#upload_image_modal{
+  @extend .well;
+  textarea {
+    min-height: 40px;
+  }
+
+  .modal-header{
+    padding: 0;
+    min-height: 32px;
+    border-bottom: 1px solid transparent;
+    .step-title {
+        margin-bottom: 13px;
+    }
+    h3{
+      font-size: 17px !important;
+      color: #48B9C9;
+
+      .steps-group {
+        position: relative;
+        z-index: 100;
+        min-height: 30px;
+        margin-bottom: 13px;
+        .step{
+          display: inline-block;
+          background-color: $white;
+          margin-right: 100px;
+          border: 2px solid $gray-light;
+          color: $gray-light;
+          padding: 6px 0 0;
+          height: 28px;
+          width: 28px;
+          text-align: center;
+          font-size: 14px;
+          @include border-top-radius (27px);
+          @include border-bottom-radius (27px);
+          position: relative;
+          z-index: 2;
+          &:last-child{
+            margin-right: 0px;
+          }
+          @media (max-width: $screen-xs-min){
+            margin-right: 45px;
+          }
+        }
+        .line{
+          position: relative;
+          z-index: 1;
+          height: 2px;
+          margin-top: -15px;
+          width: 291px;
+          background-color: $gray-light;
+          position: relative;
+          z-index: 1;
+          @media (max-width: $screen-xs-min){
+            width: 175px;
+          }
+        }
+      }
+      .steps-group .completed{
+        color: darken($gray-light, 20%) !important;
+        border: 2px solid darken($gray-light, 20%) !important;
+      }
+      div.active {
+        border: 2px solid $brand-secundary !important;
+        color: $brand-primary !important;
+      }
+    }
+  }
+  .modal-body,
+  .modal-footer{
+    padding: 0;
+  }
+  .modal-footer{
+    padding-top: 15px;
+  }
+}
+#create_permission_form{
+  .panel-group{
+    margin-top: -7px;
+    margin-bottom: -13px;
+  }
+  .panel-body{
+    padding: 0;
+  }
+  .panel{
+    box-shadow: none;
+    &:first-child{
+      border-bottom: 1px solid $border-color
+    }
+  }
+  .in{
+    .panel-title{
+      padding: 0;
+      min-height: 1px;
+      background-color: transparent;
+      color: $brand-secundary;
+      &:hover{
+        cursor: pointer;
+        border-color: $brand-secundary !important;
+        color: $brand-secundary !important;
+      }
+    }
+  }
+  a.collapsed{
+    color: #222;
+  }
+}
+#create_application_roles{
+  .modal-dialog,
+  .modal-content{
+    margin-top: 0;
+  }
+}
+
+.site-client-roles{
+  .list-group-item{
+    min-height: 46px !important;
+    margin-left: 0;
+    width: 100%;
+
+    span{
+      float: right;
+      a:first-child{margin-right:4px;}
+    }
+
+    .btn{
+      padding: 8px;
+    }
+  }
+}
+
+.site_client_roles header{
+  position: absolute;
+  margin-top: -23px;
+}
+
+#new_relation{
+  h4{
+    margin-bottom: 10px;
+    clear: both;
+    min-height: 10px;
+  }
+  a{
+    float: right;
+  }
+  .input-group{
+    clear: both;
+    .input-group-addon{
+      padding: 0 !important;
+      margin: 0 !important;
+      background: rgba(0, 0, 0, 0);
+      border: none;
+    }
+  }
+}
+
+.members-list{
+  .alert{
+    margin-top: 15px;
+  }
+}
+#update_owners_roles{
+  .modal-header{
+    display: none;
+  }
+  .form-group,
+  .control-label{
+    margin-bottom: 0;
+  }
+  .control-label{
+    display: none;
+  }
+  .modal-footer{
+    float: right;
+    z-index: 99;
+    position: relative;
+    margin-top: -25px;
+    padding: 0;
+    margin-right: 8px;
+    .inline-edit-submit{
+      margin-right: 5px;
+    }
+  }
+}
+
+#add_permission{
+  .modal-content{
+    padding: 10px 15px;
+    .panel-body{
+      padding: 10px;
+    }
+  }
+}
+
+.dropdown-empty .btn-default{
+  border: 1px solid #FAEBCC;
+  background-color: #FCF8E3;
+  color: #8A6D3B;
+}
+
+#collapse_oauth2_credentials {
+  .btn-link{
+    margin-top: -6px;
+  }
+}
+.workflow-roles{
+  .modal-dialog {
+    @extend .modal-lg;
+  }
+}
+
+.workflow-roles{
+  .modal-dialog {
+    width: 100%;
+    margin: 10px 0 0;
+    .modal-content {
+      box-shadow: none;
+      border: none;
+      margin-top: 20px;
+      padding-bottom: 0;
+    }
+    .modal-footer {
+      border-top: none;
+      margin-top: 20px;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.edit{
+  .modal{
+  top: 0 !important;
+  }
+  .modal-header {
+    padding: 0px 0px 5px;
+    border-bottom: 1px solid $border-color;
+  }
+
+  .modal-body {
+    padding: 0;
+  }
+
+  .modal-footer {
+    padding: 15px 0;
+    border-top: 1px solid $border-color;
+  }
+}
+
+.roles_display{
+  margin-right: 7px;
+}
+
+.app-roles-list li{
+  cursor: pointer;
+  margin: 3px 0;
+}
+#fiware_roles_roles{
+  .static_page{
+    .modal-header{
+      display: none;
+    }
+    .modal-body{
+      padding: 0;
+      .form-group {
+        padding: 0;
+        margin-bottom: 0;
+      }
+      label.control-label{
+        display: none;
+      }
+    }
+    .modal-footer{
+      margin: -27px 9px 0 0;
+      position: relative;
+      padding: 0;
+      float: right;
+      .fa-check{
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+#detailApplication > .site-client-roles{
+  .modal-content{
+    border: 1px solid $border-color;
+    .modal-header{
+      padding: 0;
+      h3{
+        font-size: 13px;
+        font-family: "Verdana";
+        margin: 0;
+        padding: 12px 6px 11px;
+        line-height: 1.42857;
+      }
+      .modal-body{
+        padding: 10px 0 0;
+      }
+      .modal-footer{
+        margin: 0 0 15px;
+      }
+    }
+  }
+}

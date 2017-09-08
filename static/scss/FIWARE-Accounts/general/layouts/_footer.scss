@@ -1,0 +1,48 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+footer.footer-main {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 50px;
+  font-size: 12px;
+  border-top: 1px solid $brand-secundary;
+  left: 0;
+  right: 0;
+  .container-fluid{
+    border-top: 1px solid #F2E826;
+    border-bottom: 1px solid $brand-primary;
+    height: 0px;
+    .footer-content .cred{
+      padding-top: 12px;
+      padding-bottom: 15px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  }
+  a{
+    text-decoration: underline;
+  }
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .wrap {
+  padding: 75px 15px 30px;
+  max-width: 1200px;
+  @media (max-width: $screen-sm-min){
+    padding: 52px 15px 30px;
+  }
+}

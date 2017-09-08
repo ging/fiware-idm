@@ -1,0 +1,17 @@
+/****************************** Variables */
+@import "FIWARE-Accounts/general/variables";
+
+
+/****************************** Bootstrap */
+@import "./node_modules/bootstrap-sass/assets/stylesheets/_bootstrap";
+
+
+/****************************** Mixins */
+@import "FIWARE-Accounts/general/mixins/mixins_call";
+
+/****************************** Rewrites */
+@import "rewrites/rewrites_call";
+
+
+/****************************** Base */
+@import "FIWARE-Accounts/FIWARE-Accounts_call";

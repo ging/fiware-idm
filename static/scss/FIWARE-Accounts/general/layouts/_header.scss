@@ -1,0 +1,158 @@
+header.navbar{
+  background-color: $gray-lighter;
+  border-bottom: 1px solid #F2F2F2;
+  -moz-box-shadow: 0px 1px 8px rgba(50, 51, 51, 0.15);
+  -webkit-box-shadow: 0px 1px 8px rgba(50, 51, 51, 0.15);
+  box-shadow: 0px 1px 8px rgba(50, 51, 51, 0.15);
+  min-height: 44px;
+  .container-fluid{
+    max-width: 1200px;
+  }
+}
+
+.navbar-fixed-top{
+  background-color: $navbar-default-bg;
+  padding: 0;
+  @media (min-width: 768px){
+    .navbar-nav>li>a {
+      line-height: 0;
+      padding-top: 24px;
+      padding-bottom: 18px;
+      font-size: 14px;
+    }
+  }
+  @media (max-width: 768px){
+    .navbar-collapse.in {
+      padding-bottom: 20px;
+      .switcher_bar.open a {
+        background: rgba(0, 0, 0, 0);
+      }
+    }
+  }
+  .navbar-toggle{
+    font-size: 20px;
+    padding: 0;
+    line-height: 0;
+    margin: 10px 0 4px;
+
+  }
+  .navbar-collapse.in {
+    .navbar-nav>li {
+      &:hover{
+        background: #E8E8E8;
+      }
+    }
+  }
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+  background-color: transparent
+}
+
+ul.navbar-nav > li:hover {
+  background-color: #E8E8E8;
+}
+.container-fluid .navbar-header {
+  margin: 4px 0 0;
+}
+nav.container-fluid{
+  max-width: 1200px;
+  background-image: none;
+  padding: 3px 15px 2px;
+}
+
+.brand{
+  background-repeat: no-repeat;
+  height: 37px;
+  float: left;
+}
+@media (max-width: 480px){
+  .brand{
+    width: 37px !important;
+  }
+}
+
+.logo-fl-header .brand{
+  background-image: url(../img/FIWARE-lab-2x.png);
+  width: 150px;
+  background-size: 150px 37px;
+}
+
+.logo-f-header .brand {
+  background-image: url(../img/FIWARE-2x.png);
+  width: 123px;
+  background-size: 120px 37px;
+}
+
+
+
+.logo-f-header,
+.logo-fl-header{
+    float: left;
+  }
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover {
+  color: $brand-secundary;
+  background-color: #FFF;
+}
+
+#user_info{
+  display: inline;
+  margin-top: 2px;
+}
+
+#profile_editor_switcher{
+  margin-top: 9px;
+  font-size: 12px;
+  a img {
+    width: 24px;
+    margin-top: -1px;
+    @include border-top-radius (2px);
+    @include border-bottom-radius (2px);
+  }
+  @media (max-width: 767px){
+    margin-top: 0;
+    padding: 5px;
+    border: 5px solid #FAFAFA;
+    background: transparent;
+    .dropdown-submenu{
+      .fa-angle-double-left{
+        @include rotate (270deg)
+      }
+    }
+    a{
+      background: transparent;
+    }
+    .dropdown-menu{
+      li{
+        &:hover{
+          background: #E8E8E8;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 767px){
+
+  header .navbar ul.nav{
+    margin-top: 0px;
+  }
+
+  .brand{
+    padding: 0px 4px 0 0px !important;
+    float: left !important;
+  }
+  .dropdown i {
+    margin-left: 2px;
+  }
+}
+@media (min-width: 768px) and (max-width: 979px){
+  header.navbar ul{
+    margin-top: 0px    
+  }
+  .brand{
+    padding: 0px 4px 0 0px !important;
+    float: left !important;
+  }
+}

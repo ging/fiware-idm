@@ -1,0 +1,704 @@
+/*scaffolding styles*/
+.clear{
+  clear: both;
+}
+
+#frontpage,
+#registration,
+#home{
+  .row{
+    @media (max-width: $screen-sm-min){
+      margin: 0px !important;
+      .help-box{
+        padding: 0 !important;
+      }
+    }
+    @media (max-width: 989px){
+      .help-box{
+        padding: 0 !important;
+      }
+    }
+  }
+}
+
+
+#home{
+  .panel.applications,
+  .panel.members{
+    .panel-footer {
+      padding: 4px 15px 6px;
+    }
+  }
+}
+
+.edit{
+  .modal-header{
+    margin-bottom: 10px;
+    border-bottom: 1px solid transparent !important;
+    width: 100%;
+    text-decoration: none !important;
+    h3{
+      margin: 14px 0 0;
+      font-size: 17px !important;
+      color: $brand-secundary;
+    }
+  }
+}
+
+
+#content_body{
+  @include make-sm-column(11, $gutter: $grid-gutter-width);
+  @include make-md-column(9, $gutter: $grid-gutter-width);
+  @include make-lg-column(9, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    margin-top: 8px;
+    padding: 0px;
+  }
+}
+
+textarea {
+  resize: none;
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  transition: height 0.2s;
+}
+
+.list-group-item{
+  margin-left: -15px;
+  margin-right: -15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-left: rgba(0, 0, 0, 0);
+  border-right: rgba(0, 0, 0, 0);
+  min-height: 60px;
+  a{
+    position: absolute;
+    width: 100%;
+  }
+  .avatar {
+    float: left;
+    margin-right: 15px;
+    min-width: 36px;
+    min-height: 36px;
+    img{
+      margin-left: 0 !important;
+      width: 36px;
+      @include border-top-radius (2px);
+      @include border-bottom-radius (2px);
+    }
+  }
+  .name,
+  .description,
+  .url {
+    @include text-overflow;
+    margin-left: 10px;
+    padding-right: 64px;
+  }
+  .name{color: $black;}
+  .description,
+  .url{color: $gray;font-size:12px;}
+
+
+
+  .switch{
+    position: relative;
+    margin-top: 14px;
+    margin-left: 45px;
+    a{
+      position: absolute;
+      right: 0;
+      margin-top: 1px;
+      width: auto;
+    }
+  }
+
+  .btn.btn-link {
+    @include opacity(0);
+    color: $brand-secundary;
+    font-family: $corporate-font-family-sans-serif-Regular;
+  }
+
+  &:hover{
+    background-color: #F1F1F2;
+    .btn.btn-link {
+      @include opacity(1);
+    }
+  }
+}
+
+.panel{
+  .empty{
+    @extend .alert;
+    @extend .alert-info;
+  }
+}
+ul#perform_filter_available_update_owners,
+ul#perform_filter_available_update_owners_users,
+ul#perform_filter_available_update_owners_organizations{
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+#organizations-table,
+#myApplications-table{
+  .panel-heading{
+    padding: 0;
+    .nav-tabs{ margin-bottom: 0; border-bottom: 0;}
+  }
+}
+
+.panel-heading{
+  .btn-group{
+    float: right;
+  }
+}
+
+.panel.datatable{
+  .panel-footer{
+    padding: 8px;
+    nav{
+      min-height: 28px;
+      ul.pagination{
+        float: right;
+        margin: 0;
+        li a{
+          padding: 4px 7px;
+        }
+      }
+    }
+  }
+}
+
+.edit{
+  .modal-footer{
+    a.panel-title{
+      float: left;
+    }
+  }
+}
+
+.panel-cancel{
+  &:hover{
+    border-color: $brand-danger !important;
+    h3{
+      color: $brand-danger !important;
+    }
+  }
+
+  a{
+    color: $brand-danger !important;
+    width: 100%;
+
+    h3{
+      margin-top: -16px !important;
+    }
+  }
+  .modal-footer{
+    border-top: none;
+    #destroy_application{
+      border-top: 1px solid #EAEAEC;
+      padding-top: 15px;
+      .btn-primary{
+        @extend .btn-danger;
+      }
+    }
+  }
+}
+
+.fix-top{
+  top: 0 !important;
+}
+
+#modal_wrapper{
+  .modal{
+    @extend .fix-top;
+  }
+  .loading{
+    .modal-content{
+      padding: 50px;
+      text-align: center;
+      font-size: 1.8em;
+    }
+  }
+}
+.cancel_account,
+.destroy_organization{
+  &:hover{
+    border-color: $brand-danger !important;
+    h3{
+      color: $brand-danger !important;
+    }
+    .btn-primary{
+      background-color: $brand-danger !important;
+      border: 1px solid $brand-danger !important;
+    }
+  }
+  h4{
+    margin-top: 3px !important;
+    padding: 0px 15px;
+  }
+  a{
+    color: $brand-danger !important;
+  }
+  .panel-body{
+    a{
+      color: $brand-danger !important;
+    }
+  }
+  .modal-header {
+    h3{
+      display: none;
+    }
+  }
+  .panel-title h3{
+    margin: 0 !important;
+    font-size: 17px !important;
+    color: $brand-danger !important;
+    display: block !important;
+    text-decoration: none;
+  }
+  .modal-footer{
+    border-top: none !important;
+    padding: 0 !important;
+    .collapsing,
+    .in{
+      margin-bottom: 15px;
+    }
+    .panel-collapse{
+      border-top: 1px solid $border-color;
+      button.btn-danger{
+        margin-top: 15px
+      }
+    }
+  }
+}
+
+
+
+#authorize_application_modal{
+  @extend .well;
+  .modal-body{
+    padding: 10px 0;
+  }
+}
+
+.messages{
+  width: 100%;
+  bottom: 50px;
+  left: 0;
+  position: absolute;
+  padding: 0 15px;
+  height: auto;
+  z-index: 100;
+  font-size: 10px;
+  .alert{
+    position: relative;
+    margin-bottom: 10px;
+    .close {
+      right: 0;
+      top: -2px;
+      font-size: 17px;
+    }
+  }
+}
+
+.counter{
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 15px;
+  color: #ABABAB;
+}
+
+.panel-heading .btn-default{
+  span {
+    float: none;
+    padding-top: 0px;
+    @extend .hidden-xs;
+  }
+}
+
+@media (min-width: 768px){
+  .workflow.modal{
+    .modal-dialog {
+      width: 777px;
+      margin: 30px auto;
+    }
+  }
+}
+
+
+
+#frontpage,
+#registration,
+#home{
+  .row{
+    @media (max-width: $screen-sm-min){
+      margin: 0px !important;
+      .help-box{
+        padding: 0 !important;
+      }
+    }
+  }
+}
+
+.edit{
+  .modal-header{
+    margin-bottom: 10px;
+    border-bottom: 1px solid transparent !important;
+    width: 100%;
+    text-decoration: none !important;
+    h3{
+      margin: 14px 0 0;
+      font-size: 17px !important;
+      color: $brand-secundary;
+    }
+  }
+}
+
+
+#content_body{
+  @include make-sm-column(11, $gutter: $grid-gutter-width);
+  @include make-md-column(9, $gutter: $grid-gutter-width);
+  @include make-lg-column(9, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    margin-top: 8px;
+    padding: 0px;
+  }
+}
+
+textarea {
+  resize: none;
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  transition: height 0.2s;
+}
+
+.list-group-item{
+  margin-left: -15px;
+  margin-right: -15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-left: rgba(0, 0, 0, 0);
+  border-right: rgba(0, 0, 0, 0);
+  min-height: 60px;
+  a{
+    position: absolute;
+    width: 100%;
+  }
+  .avatar {
+    float: left;
+    margin-right: 15px;
+    img{
+      margin-left: 0 !important;
+      width: 36px;
+      @include border-top-radius (2px);
+      @include border-bottom-radius (2px);
+    }
+  }
+  .name,
+  .description,
+  .url {
+    @include text-overflow;
+    margin-left: 10px;
+  }
+  .name{color: $black;}
+  .description,
+  .url{color: $gray;font-size:12px;}
+
+
+  .switch{
+    position: relative;
+    margin-top: 14px;
+    margin-left: 45px;
+    a{
+      text-align: right;
+      margin-top: 1px;
+    }
+  }
+
+  .btn.btn-link {
+    @include opacity(0);
+    color: $brand-secundary;
+    font-family: $corporate-font-family-sans-serif-Regular;
+  }
+
+  &:hover{
+    background-color: #F1F1F2;
+    .btn.btn-link {
+      @include opacity(1);
+    }
+  }
+}
+
+.panel{
+  .empty{
+    @extend .alert;
+    @extend .alert-info;
+  }
+}
+
+#organizations-table,
+#myApplications-table{
+  .panel-heading{
+    padding: 0;
+    .nav-tabs{ margin-bottom: 0; border-bottom: 0;}
+  }
+}
+
+.avatar-update{
+  @include border-top-radius ($border-radius-base);
+  @include border-bottom-radius ($border-radius-base);
+}
+
+.edit{
+  .modal-footer{
+    a.panel-title{
+      float: left;
+    }
+  }
+}
+
+.panel-cancel{
+  &:hover{
+    border-color: $brand-danger !important;
+    h3{
+      color: $brand-danger !important;
+    }
+  }
+
+  a{
+    color: $brand-danger !important;
+    width: 100%;
+
+    h3{
+      margin-top: -16px !important;
+    }
+  }
+  .modal-footer{
+    border-top: none;
+    #destroy_application{
+      border-top: 1px solid #EAEAEC;
+      padding-top: 15px;
+      .btn-primary{
+        @extend .btn-danger;
+      }
+    }
+  }
+}
+
+.fix-top{
+  top: 0 !important;
+}
+
+#modal_wrapper{
+  .modal{
+    @extend .fix-top;
+  }
+}
+.cancel_account,
+.destroy_organization{
+  border-color: $brand-danger
+  &:hover{
+    h3{
+      color: $brand-danger !important;
+    }
+    .btn-primary{
+      background-color: $brand-danger !important;
+      border: 1px solid $brand-danger !important;
+    }
+  }
+  h4{
+    margin-top: 3px !important;
+    padding: 0px 15px;
+  }
+  a{
+    color: $brand-danger !important;
+  }
+  .panel-body{
+    a{
+      color: $brand-danger !important;
+    }
+  }
+  .modal-header {
+    h3{
+      display: none;
+    }
+  }
+  .panel-title{
+    h3{
+      margin: 0 !important;
+      font-size: 17px !important;
+      color: #48B9C9;
+      display: block !important;
+      text-decoration: none;
+    }
+  }
+  .modal-footer{
+    border-top: none !important;
+    .panel-collapse{
+      border-top: 1px solid $border-color;
+      span{
+        margin-top: 11px;
+        float: left;
+      }
+      button.btn-danger{
+        margin-top: 15px
+      }
+    }
+  }
+}
+#cancel-organization-modal, #cancel-application-modal{
+  .modal-footer{
+    .panel-collapse{
+      border: none;
+    }
+  }
+}
+
+.update-avatar-modal{
+  .modal-body{
+    .avatar_col{
+      padding: 10px;
+      border: 1px solid gray;
+      margin: 0 0 15px 15px;
+      width: 92%;
+      border-radius: 3px;
+      @media (min-width: 992px){
+        width: 47.3%;
+      }
+      .profile_img{
+        width: 100px;
+        float: left;
+        img{
+          vertical-align: bottom;
+        }
+      }
+      .profile_txt{
+        margin: 8% 0;
+      }
+      .profile_actions{
+        margin: 4%;
+        overflow: hidden;
+      }
+      .btn{
+        float: right;
+        width: 150px;
+        margin-bottom: 5px;
+
+      }
+      .clear_right{
+        clear: right;
+      }
+    }
+    .used-avatar{
+      border: 3px solid #48b9c9;
+      background-color: #eaf4f6;
+    }
+    //update container img
+    .avatar-update-container{
+      .update_actions{
+        h6{
+          margin: 10px 0;
+          line-height: 1.2em;
+        }
+        .btn{
+          width: 100%;
+          margin-bottom: 5px;
+        }
+      }
+
+    }
+  }
+  .modal-footer{
+    border: none !important;
+  }
+}
+
+#authorize_application_modal{
+  @extend .well;
+  .modal-body{
+    padding: 10px 0;
+  }
+}
+
+.messages{
+  width: 100%;
+  bottom: 50px;
+  position: absolute;
+  padding: 0 15px;
+  height: auto;
+  z-index: 100;
+  font-size: 10px;
+  .alert{
+    position: relative;
+    margin-bottom: 10px;
+    .close {
+      right: 0;
+      top: -2px;
+      font-size: 17px;
+    }
+  }
+}
+
+.counter{
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 15px;
+  color: #ABABAB;
+}
+
+.panel-heading .btn-default{
+  span {
+    float: none;
+    padding-top: 0px;
+    @extend .hidden-xs;
+  }
+}
+
+@media (min-width: 768px){
+  .workflow.modal{
+    .modal-dialog {
+      width: 777px;
+      margin: 30px auto;
+    }
+  }
+}
+
+.atlwdg-trigger.atlwdg-RIGHT {
+  left: 100%;
+  top: 204px;
+}
+
+.atlwdg-trigger {
+  position: fixed;
+  background: #013466;
+  padding: 1px 5px;
+  border: 1px solid #FFF;
+  border-top: none;
+  font-weight: normal;
+  color: #FFF !important;
+  display: block;
+  white-space: nowrap;
+  text-decoration: none !important;
+  font-family: verdana;
+  font-size: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 2px -2px 6px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+}
+
+.contextual-help {
+  float: right;
+  i{
+    color: $gray;
+    &:hover, &:active, &:focus{
+      color: $brand-primary;
+    }
+  }
+  i.active{
+    color: $brand-primary;
+  }
+}

@@ -1,0 +1,174 @@
+//HOME & ENDPOINTS MANAGEMENT
+#home, #endpoints{
+  .datatable {
+    padding: 0 !important;
+    .panel-heading{
+      font-family: $corporate-font-family-sans-serif-Regular;
+      padding: 9px 12px;
+      //margin-top: 3px;
+      .title{
+        font-size: 14px;
+        padding: 5px 0px;
+      }
+      .action{
+        font-size: 13px;
+        padding: 0px;
+      }
+
+    }
+    .panel-body{
+      min-height: 295px;
+      max-height: 295px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      @media (max-width: $screen-sm-min){
+        min-height: 15px;
+      }
+    }
+    .no-max-height{
+      max-height: none;
+      overflow-y: hidden;
+    }
+  }
+}
+
+//GENERAL
+
+.panel-heading{
+  span{
+    float: left;
+    padding-top: 6px;
+    font-size: 12px;
+  }
+  .table_actions{
+    .filter{
+      margin-left: 10px;
+      float: left;
+      @media (max-width: $screen-xs-min){
+        @include make-xs-column(3, $gutter: $grid-gutter-width);
+        padding: 0;
+      }
+    }
+    .form-control{
+      height: 28px;
+      padding: 3px 5px;
+    }
+    .filtering-spinner-inline{
+      width: 10px;
+      float: left;
+      padding: 4px 8px;
+      i{
+        color: #5B5B5F;
+      }
+    }
+    .loading-spinner-inline{
+      width: 10px;
+      float: left;
+      padding: 0px 8px;
+      i{
+        color: #5B5B5F;
+      }
+    }
+  }
+}
+
+
+.panel-body{
+  min-height: 52px;
+  h5{
+    border-bottom: 1px solid #D5D5D5;
+    margin-top: 10px;
+    margin-bottom: 6px;
+    color: $brand-secundary;
+  }
+  p{
+    margin-bottom: 17px;
+    word-wrap: break-word;
+  }
+  p.empty{
+    margin: 17px 0;
+  }
+  .description{
+    #description{
+      margin-bottom: 17px;
+    }
+  }
+}
+
+
+
+//TABS
+.panel-heading {
+  .tab-spinner-inline {
+    position: absolute;
+    top: 51px;
+    right: 90px;
+    i {
+      color: #5B5B5F;
+    }
+  }
+  .tab_group_actions{
+    position: absolute;
+    right: 20px;
+    z-index: 9;
+    top: 45px;
+  }
+  .nav-tabs{
+    @media (max-width: 375px){
+      li {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0;
+        background-color: #F1F1F2;;
+        &:hover{
+          border-bottom: none;
+          color: #888;
+          background-color: #E4E4E4;
+        }
+        a{
+          border-bottom: none;
+          &:hover{
+            border-bottom: none;
+          }
+        }
+      }
+      li.active {
+        border-bottom: none;
+          background-color: $white;
+        a{
+          border-bottom: none;
+          &:hover{
+            border-bottom: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: $screen-sm-min){
+  .panel-heading {
+    .tab-spinner-inline {
+      right: 80px;
+    }
+    .tab_group_actions{
+      right: 6px;
+    }
+  }
+}
+@media (max-width: $screen-xs-min){
+  .panel-heading {
+    .tab-spinner-inline {
+      right: 15px;
+    }
+    .tab_group_actions{
+      position: static;
+      .btn-group{
+        width: 100%;
+        .btn{
+          width: 100%;
+        }
+      }
+    }
+  }
+}

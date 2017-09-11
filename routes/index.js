@@ -3,6 +3,7 @@ var router = express.Router();
 
 var applicationController = require('../controllers/application_controller');
 var sessionController = require('../controllers/session_controller');
+var userController = require('../controllers/user_controller');
 
 // GET Home PAge
 router.get('/', function(req, res, next) {
@@ -28,6 +29,10 @@ router.use( function( req, res, next ) {
 router.get('/auth/login',		sessionController.new);
 router.post('/auth/login',		sessionController.create);
 router.delete('/auth/logout',	sessionController.destroy);
+
+// Create User
+router.get('/sign_up', 	userController.new);
+router.post('/sign_up', userController.create);
 
 // Autoload for applicationId
 router.param('applicationId', applicationController.load);

@@ -22,7 +22,7 @@ exports.new = function(req, res) {
 exports.create = function(req, res) {
 
     errors = []
-    if (!req.body.login) {
+    if (!req.body.username) {
         errors.push({message: 'username'});
     }
     if (!req.body.password) {
@@ -31,8 +31,8 @@ exports.create = function(req, res) {
 
     var userController = require('./user_controller');
 
-        if (req.body.login && req.body.password) {
-            userController.autenticar(req.body.login, req.body.password, function(error, user) {
+        if (req.body.username && req.body.password) {
+            userController.authenticate(req.body.username, req.body.password, function(error, user) {
                 if (error) {  // si hay error retornamos mensajes de error de sesión
                     req.session.errors = [{message: error.message}];
                     res.redirect("/auth/login");        

@@ -2,21 +2,44 @@
 
 <div class="modal-header"><h3>Log In</h3></div>
 
-  <form method='POST' action='/login'>
+  <form method='POST' action='/auth/login'>
+
+    <% var nameErrors = [] %>
+    <% if (errors.length) { %>
+        <% for (var i in errors) { %>
+          <% nameErrors.push(errors[i].message)%>
+        <% } %>
+    <% } %>
+
+    <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
+      Session Expired<br/>
+    <% } %>
+
+    <% if (nameErrors.indexOf("invalid") != -1) { %>
+      Invalid Username or Password<br/>
+    <% } %>
 
     <div class="field">
       <label for="login">Login:</label><br />
       <input type="text" id="login" name="login" size="30" />
     </div>
 
+    <% if (nameErrors.indexOf("username") != -1) { %>
+      Este campo es obligatorio<br/>
+    <% } %>
+
     <div class="field">
       <label for="password">Password:</label><br />
       <input type="password" id="password" name="password" size="30" />
     </div>
 
+    <% if (nameErrors.indexOf("password") != -1) { %>
+      Este campo es obligatorio<br/>
+    <% } %>
+
     <div class="actions">
       <input name="signIn" type="submit" value="Sign In" />
-      <p><a href="applications/index"><button type="button">Sign Up</button></a></a></p>
+      <p><a href="/applications"><button type="button">Sign Up</button></a></a></p>
     </div>
 
   </form>

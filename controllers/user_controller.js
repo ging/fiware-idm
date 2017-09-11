@@ -6,12 +6,11 @@ exports.autenticar = function(username, password, callback) {
         where: {
             username: username
         }
-        }).then(function(user) {
-            if (user) {
-                if(user.verifyPassword(password)){
-                    callback(null, user);
-                }
-                else { callback(new Error({'message': 'invalid'}); }   
-            } else { callback(new Error({'message': 'invalid'}); }
-    }).catch(function(error){callback(error)});
+    }).then(function(user) {
+        if (user) {
+            if(user.verifyPassword(password)){
+                callback(null, user);
+            } else { callback(new Error('invalid')); }   
+        } else { callback(new Error('invalid')); }
+    }).catch(function(error){ callback(error) });
 };

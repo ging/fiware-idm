@@ -9,10 +9,25 @@ router.get('/', function(req, res, next) {
   res.render('index', { errors: [] });
 });
 
+router.use( function( req, res, next ) {
+    // this middleware will call for each requested
+    // and we checked for the requested query properties
+    // if _method was existed
+    // then we know, clients need to call DELETE request instead
+    if ( req.query._method == 'DELETE' ) {
+        // change the original METHOD
+        // into DELETE method
+        req.method = 'DELETE';
+        // and set requested url to /user/12
+        req.url = req.path;
+    }       
+    next(); 
+});
+
 // Routes for users sessions
-router.get('/login',		sessionController.new);
-router.post('/login',		sessionController.create);
-router.delete('/logout',	sessionController.destroy);
+router.get('/auth/login',		sessionController.new);
+router.post('/auth/login',		sessionController.create);
+router.delete('/auth/logout',	sessionController.destroy);
 
 // Autoload for applicationId
 router.param('applicationId', applicationController.load);

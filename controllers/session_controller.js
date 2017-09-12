@@ -1,6 +1,6 @@
 var models = require('../models/models.js');
 
-// MW de autorización de accesos HTTP restringidos
+// MW to authorized restricted http accesses
 exports.loginRequired = function(req, res, next){
     if (req.session.user) {
         next();
@@ -39,10 +39,10 @@ exports.create = function(req, res) {
                     return;
                 }
 
-                // Crear req.session.user y guardar campos   id  y  username
-                // La sesión se define por la existencia de:    req.session.user
-                req.session.user = {id:user.id, username:user.email};
-                res.redirect('/applications');
+                // Crear req.session.user y guardar campos id y username
+                // La sesión se define por la existencia de: req.session.user
+                req.session.user = {id:user.id, username:user.username};
+                res.redirect('/idm');
             });
         } else {
             req.session.errors = errors;

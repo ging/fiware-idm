@@ -1,8 +1,11 @@
 <h1>Application</h1>
 <p>Name: <%= applicationInfo.name %></p> 
-<p>Description: <%= applicationInfo.description %></p> 
-<p>Application Id: <%= applicationInfo.applicationId %></p> 
-<p>Application Secret: <%= applicationInfo.applicationSecret %></p>
-<a href="/applications"><button type="button">Back</button></a>
-<a href="/applications/<%= applicationInfo.id %>/edit"><button type="button">Edit</button></a>
-<form method="post" action="/applications/<%= applicationInfo.id %>?_method=delete"><button type="submit" onClick="return confirm('Borrar: <%= applicationInfo.name %>');">Remove</button>          
+<p>Description: <%= applicationInfo.description %></p>
+<p>Url: <%= applicationInfo.url %></p> 
+<p>Callback url: <%= applicationInfo.callbackurl %></p>  
+<p>Client Id: <%= applicationInfo.clientId %></p> 
+<p>Client Secret: <%= applicationInfo.clientSecret %></p>
+<a href="/idm/applications"><button type="button">Back</button></a>
+<a href="/idm/applications/<%= applicationInfo.id %>/edit"><button type="button">Edit</button></a>
+<form method="post" action="/idm/applications/<%= applicationInfo.id %>?_method=delete"><button type="submit" onClick="return confirm('Borrar: <%= applicationInfo.name %>');">Remove</button>          
+

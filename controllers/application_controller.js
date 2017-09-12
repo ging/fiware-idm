@@ -19,10 +19,11 @@ exports.new = function(req, res) {
 exports.create = function(req, res, next) {
 	var application = models.Application.build(req.body.application);
 	application.validate().then(function(err) {
-		application.save({fields: ["name", "description", "applicationId", "applicationSecret"]}).then(function() {
-			res.redirect('/applications');
+		application.save({fields: ["name", "description", "url", "callbackurl", "clientId", "clientSecret"]}).then(function() {
+			res.redirect('/idm/applications');
 		});	
 	}).catch(function(error){ 
+    console.log(error)
 	 	res.render('applications/new', { applicationInfo: application, errors: error.errors}); 
 	});
 };
@@ -46,14 +47,14 @@ exports.edit = function(req, res) {
 
 // Update application
 exports.update = function(req, res) {
-  	req.application.name = req.body.application.name;
-  	req.application.description = req.body.application.description;
-  	req.application.applicationId = req.body.application.applicationId;
-  	req.application.applicationSecret = req.body.application.applicationSecret;
+	req.application.name = req.body.application.name;
+	req.application.description = req.body.application.description;
+	req.application.applicationId = req.body.application.applicationId;
+	req.application.applicationSecret = req.body.application.applicationSecret;
 
 	req.application.validate().then(function(err) {
 		req.application.save({fields: ["name", "description", "applicationId", "applicationSecret"]}).then(function() {
-			res.redirect('/applications/'+req.application.id);
+			res.redirect('/idm/applications/'+req.application.id);
 		});	
 	}).catch(function(error){ 
 	 	res.render('applications/edit', { applicationInfo: req.application, errors: error.errors}); 
@@ -63,6 +64,6 @@ exports.update = function(req, res) {
 // Delete application
 exports.destroy = function(req, res) {
   req.application.destroy().then( function() {
-    res.redirect('/applications');
+    res.redirect('/idm/applications');
   }).catch(function(error){next(error)});
 };

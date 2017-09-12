@@ -27,6 +27,8 @@ app.use(cookieParser('plm2k45ml2104585jnn2'));
 app.use(session({
 	secret: 'lb294n7b38n03n5ofaoi'
 }));
+
+// Middleware to convert sass files to css
 app.use(sassMiddleware({
     src: path.join(__dirname, 'static/scss'),
     dest: path.join(__dirname, 'public/stylesheets'),
@@ -41,16 +43,12 @@ app.use(methodOverride('_method'));
 // Helpers dinamicos:
 app.use(function(req, res, next) {
 
-  // si no existe lo inicializa
+  // init req.session.redir
   if (!req.session.redir) {
     req.session.redir = '/';
   }
-  // guardar path en session.redir para despues de login
-  // if (!req.path.match(/\/login|\/logout|\/user/)) {
-  //   req.session.redir = req.path;
-  // }
 
-  // Hacer visible req.session en las vistas
+  // To make visible req.session in the view
   res.locals.session = req.session;
   next();
 });

@@ -59,7 +59,7 @@
     a.home_orgs,
     a.members,
     a.organizations,
-    a.myApplications,
+    a.applications,
     a.notify,
     a.administrators,
     a.user_accounts,
@@ -140,7 +140,7 @@
         }
       }
     }
-    a.myApplications{
+    a.applications{
       h4 {
         @include text-overflow;
         margin-bottom: 0px;
@@ -164,7 +164,7 @@
 a.home i{@extend .fa-home;}
 a.home_orgs i{@extend .fa-home;}
 a.members i {@extend .fa-group;}
-a.myApplications i{@extend .fa-cube;}
+a.applications i{@extend .fa-cube;}
 a.organizations i, li.members i{@extend .fa-group;}
 a.notify i{@extend .fa-comment;}
 a.administrators i{@extend .fa-wrench;}

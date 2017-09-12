@@ -49,9 +49,9 @@ sequelize.sync().then(function() {
         Application.count().then(function (count){
           if(count === 0) {   // la tabla se inicializa solo si está vacía
             Application.bulkCreate( 
-              [ {name: 'app1', description: 'Descrip App1', applicationId: '112312', applicationSecret: '121233'},
-                {name: 'app2', description: 'Descrip App2', applicationId: '224433', applicationSecret: '223435'},
-                {name: 'app3', description: 'Descrip App3', applicationId: '334433', applicationSecret: '333435'}
+              [ {name: 'app1', description: 'Descrip App1', url: 'http://prueba.com', callbackurl: 'http://prueba.com/login'},
+                {name: 'app2', description: 'Descrip App2', url: 'http://prueba.com', callbackurl: 'http://prueba.com/login'},
+                {name: 'app3', description: 'Descrip App3', url: 'http://prueba.com', callbackurl: 'http://prueba.com/login'}
               ]
             ).then(function(){console.log('Base de datos (tabla Application) inicializada')});
           };

@@ -22,8 +22,8 @@ exports.new = function(req, res) {
 exports.create = function(req, res) {
 
     errors = []
-    if (!req.body.username) {
-        errors.push({message: 'username'});
+    if (!req.body.email) {
+        errors.push({message: 'email'});
     }
     if (!req.body.password) {
         errors.push({message: 'password'});
@@ -31,8 +31,8 @@ exports.create = function(req, res) {
 
     var userController = require('./user_controller');
 
-        if (req.body.username && req.body.password) {
-            userController.authenticate(req.body.username, req.body.password, function(error, user) {
+        if (req.body.email && req.body.password) {
+            userController.authenticate(req.body.email, req.body.password, function(error, user) {
                 if (error) {  // si hay error retornamos mensajes de error de sesión
                     req.session.errors = [{message: error.message}];
                     res.redirect("/auth/login");        
@@ -41,7 +41,7 @@ exports.create = function(req, res) {
 
                 // Crear req.session.user y guardar campos   id  y  username
                 // La sesión se define por la existencia de:    req.session.user
-                req.session.user = {id:user.id, username:user.username};
+                req.session.user = {id:user.id, username:user.email};
                 res.redirect('/applications');
             });
         } else {

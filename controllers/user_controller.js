@@ -1,10 +1,10 @@
 var models = require('../models/models.js');
 
 // See if user is registered
-exports.authenticate = function(username, password, callback) {
+exports.authenticate = function(email, password, callback) {
     models.User.find({
         where: {
-            username: username
+            email: email
         }
     }).then(function(user) {
         if (user) {
@@ -22,12 +22,25 @@ exports.new = function(req, res) {
 
 // Create new user
 exports.create = function(req, res, next) {
-    // var user = models.User.build(req.body.application);
-    // application.validate().then(function(err) {
-    //     application.save({fields: ["name", "description", "applicationId", "applicationSecret"]}).then(function() {
-    //         res.redirect('/applications');
-    //     }); 
-    // }).catch(function(error){ 
-    //     res.render('applications/new', { applicationInfo: application, errors: error.errors}); 
-    // });
+    errors = [];
+    var user = models.User.build({username: req.body.username, email: req.body.email, password: req.body.password1});
+    if (req.body.password2 == "") {
+        errors.push({message: "password2"});
+    }
+    user.validate().then(function(err) {
+        if (req.body.password1 != req.body.password2) {
+            errors.push({message: "passwordDifferent"});
+            throw new Error("passwordDifferent");
+        } else {
+            user.save({fields: ["username", "email", "password"]}).then(function() {
+                res.redirect('/');
+            }); 
+        }
+    }).catch(function(error){ 
+        if (error.message != "passwordDifferent") {
+            errors = errors.concat(error.errors);
+        }
+        console.log(errors)
+        res.render('users/new', { userInfo: user, errors: errors}); 
+    });
 };

@@ -30,8 +30,6 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.STRING
     }, scope: {
         type: DataTypes.STRING
-    }, extra: {
-        type: DataTypes.JSON
     }
   });
 }

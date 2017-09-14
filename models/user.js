@@ -9,8 +9,9 @@ module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define(
         'User', 
         { id: {
-            type: DataTypes.STRING,
-            primaryKey: true
+            type: DataTypes.UUID,
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4
         }, username: {
             type: DataTypes.STRING,
             validate: { 
@@ -48,10 +49,20 @@ module.exports = function(sequelize, DataTypes) {
                 this.setDataValue('password', encripted);
             }
         }, enabled: {
-            type: DataTypes.BOOLEAN
-        }, extra: {
-            type: DataTypes.JSON
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }, activation_key: {
+            type: DataTypes.STRING
+        }, activation_expires: {
+            type: DataTypes.DATE
+        }, reset_key : {
+            type: DataTypes.STRING,
+            defaultValue: undefined
+        }, reset_expires : {
+            type: DataTypes.DATE,
+            defaultValue: undefined
         }
+
     });
 
     User.prototype.verifyPassword = function(password) {

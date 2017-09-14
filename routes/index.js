@@ -37,8 +37,9 @@ router.post('/auth/login',		sessionController.create);
 router.delete('/auth/logout',	sessionController.destroy);
 
 // Routes for users creation
-router.get('/sign_up', 	userController.new);
-router.post('/sign_up', userController.create);
+router.get('/sign_up', 	        userController.new);
+router.post('/sign_up',         userController.create);
+router.get('/activate',         userController.activate);
 
 // Autoload for applicationId
 router.param('applicationId', applicationController.load);

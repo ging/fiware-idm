@@ -13,25 +13,12 @@
 <%- include _header %>
 
 <div id="container" class="container-fluid wrap">
-  <%if(session.user){%>
-    <nav class="sidebar">
-      <h5>
-        <span class="hidden-xs hidden-sm">Identity Manager</span>
-        <span class="visible-sm">IdM</span>
-      </h5>
-        <ul>  
-          <a href="/idm/" class="home"><h4 tabindex="1"><i class="fa"></i><span>Home</span></h4></a>
-          <a href="/idm/organizations/" class="organizations"><h4 tabindex="2"><i class="fa"></i><span>Organizations</span></h4></a>  
-          <a href="/idm/applications/" class="applications"><h4 tabindex="3"><i class="fa"></i><span>My Applications</span></h4></a>
-        </ul>
-    </nav>
-  <%}%>
+
+  <%- include _navigation %>
 
   <%- body %>
 
 </div>
-
-
 
 <!-- <section class="main" id="s1">
   <% if (errors.length) { %>
@@ -41,9 +28,7 @@
          <span> <%= errors[i].message %> </span><br/>
       <% } %>
     </span>
-  <% } %>
-
-  
+  <% } %> 
 </section> -->
 
 <%- include _footer %>

@@ -1,0 +1,142 @@
+<div id="content_body">
+  	<div class="page-header">
+    	<h2>  
+    		Home
+   		</h2>
+  	</div>
+	<div id="home">
+		<div class="panel panel-default datatable" id="applications" data-pagination-url="/filters/applications" data-pagination-pages="">
+  			<div class="panel-heading">
+      			<span class="title">Applications</span>      
+				<div class="table_actions clearfix"> 
+    				<div id="spinner_applications" class="loading-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+  					<div class="btn-group"> 
+  						<a href="/idm/applications/new/" title="Register" class="btn btn-primary btn-sm" id="applications__action_register_application">
+      						Register
+ 						</a>
+					</div>
+				</div>
+			</div>
+  			<div class="panel-body datatable-content">
+  					<div class="list-group" id="applications_content">
+  						<% var i; for (i=0; i < applications.length; i++) { %> 
+	  						<div class="list-group-item">
+	  							<a class="item" href="/idm/applications/<%= applications[i].id %>">
+		  							<div class="name filter_field"><%= applications[i].name %></div>
+		    						<div class="url filter_field"><%= applications[i].url %></div>
+					  			</a>
+					  		</div>
+					  	<% } %>
+				  	</div>
+				  	<% if (applications.length < 1) { %>
+				  		<p class="alert alert-info empty">You are not authorized in any application.</p> 
+					<% } %>  
+ 			</div>
+  			<div class="panel-footer">
+      			<a href="/idm/applications/">View All</a>
+  			</div>
+		</div>
+		<div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-user_id="alexph91" data-pagination-pages="">
+			<div class="panel-heading">
+				<span class="title">Organizations</span>      
+				<div class="table_actions clearfix">
+    				<div id="spinner_organizations" class="loading-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+					<div class="btn-group"> 
+						<a href="/idm/organizations/create/" title="Create" class="btn btn-primary btn-sm" id="organizations__action_create_organization"> 
+      						Create
+						</a> 
+  					</div>
+				</div>
+			</div>
+			<div class="panel-body datatable-content">
+
+    
+			      <!-- <div class="list-group" id="organizations_content"><div class="list-group-item"><a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"><div class="avatar filter_field"><img src="/static/dashboard/img/logos/medium/group.png"></div><div class="name filter_field">alexph91 cloud</div>
+			      <div class="description filter_field">This organization is intended to be used in the cloud environment. As long as you are a trial or community user this organization will be authorized as purchaser in the Cloud Application.</div>
+			      </a><div class="switch filter_field"><a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"></a><a class="btn btn-link" href="/auth/switch/062b32c46a924d33b19235d7f982affa/">switch</a></div>
+			  </div></div> -->
+			      <p class="alert alert-info empty" style="display: none;">You don't have any organizations.</p>	    
+
+			</div>
+  			<div class="panel-footer">
+      			<a href="/idm/organizations/">View All</a>
+
+			</div>
+		</div>
+    </div>
+<!--  <script type="text/javascript">
+
+	$( document ).ready(function() {
+		if (false) {
+			
+			// CSRF functions for AJAX POST requests
+			function getCookie(name) {
+				var cookieValue = null;
+				if (document.cookie && document.cookie != '') {
+					var cookies = document.cookie.split(';');
+					for (var i = 0; i < cookies.length; i++) {
+						var cookie = jQuery.trim(cookies[i]);
+						// Does this cookie string begin with the name we want?
+						if (cookie.substring(0, name.length + 1) == (name + '=')) {
+							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+							break;
+						}
+					}
+				}
+				return cookieValue;
+			};
+
+			function csrfSafeMethod(method) {
+				// these HTTP methods do not require CSRF protection
+				return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+			}
+
+			var csrftoken = getCookie('csrftoken');
+
+			// AJAX setup functions
+			var beforeSend = function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", csrftoken);
+				}
+			};
+			var error = function(jqXHR, status, errorThrown) {
+				if (jqXHR.status === 401){
+					var redir_url = jqXHR.getResponseHeader("X-Horizon-Location");
+					if (redir_url){
+						location.href = redir_url;
+					} else {
+						location.reload(true);
+					}
+				}
+				else {
+					if (!horizon.ajax.get_messages(jqXHR)) {
+						// Generic error handler. Really generic.
+						horizon.alert("danger", gettext("An error occurred. Please try again later."));
+					}
+				}
+			};
+
+			tours.initTour._options.onEnd = function() {
+				$.ajax({
+					type: "POST",
+					url: "/idm/users/alexph91/tour_ended/",
+					data: "Tour ended",
+					dataType: 'html',
+					beforeSend: beforeSend,
+					error: error
+				});
+			};
+
+			tours.initTour.init();
+			tours.initTour.start();
+		}
+
+		/* Add link to Help&About in last tour */
+		tours.orgsTour._options.steps[9].onShown = function(tour) {
+			$('#end-tours').attr('href', "/help_about/");
+		};
+
+	});
+  </script> -->
+
+</div>

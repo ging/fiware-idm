@@ -27,6 +27,31 @@ var Application = sequelize.import(path.join(__dirname,'application'));
 // Importar definicion de la tabla user
 var User = sequelize.import(path.join(__dirname,'user'));
 
+// Importar definicion de la tabla role
+var Role = sequelize.import(path.join(__dirname,'role'));
+
+// Importar definicion de la tabla permission
+var Permission = sequelize.import(path.join(__dirname,'permission'));
+
+// Importar definicion de la tabla permission
+var Role_User = sequelize.import(path.join(__dirname,'role_user'));
+
+
+// Relation between roles and applications
+Role.belongsTo(Application);
+
+// Relation between permissions and applications
+Permission.belongsTo(Application);
+
+// Relation between permissions and roles
+Role.belongsToMany(Permission, {through: 'Role_Permissions'});
+Permission.belongsToMany(Role, {through: 'Role_Permissions'});
+
+// Relation between roles, users and applications
+Role_User.belongsTo(Role);
+Role_User.belongsTo(User);
+Role_User.belongsTo(Application);
+
 // Los usuarios pueden registrar aplicaciones
 // Application.belongsTo(User);
 // User.hasMany(Application);
@@ -34,15 +59,17 @@ var User = sequelize.import(path.join(__dirname,'user'));
 // Exportar tablas
 exports.Application = Application; 
 exports.User = User; 
+exports.Role = Role;
+exports.Permission = Permission;
 
-// sequelize.sync() inicializa tabla de preguntas en DB
+// sequelize.sync() inicializa las tablas en la DB
 sequelize.sync().then(function() {
   // then(..) ejecuta el manejador una vez creada la tabla
   User.count().then(function (count){
     if(count === 0) {   // la tabla se inicializa solo si está vacía
       User.bulkCreate( 
-        [ {username: 'admin', email: "admin@admin.com",   password: '1234'},
-          {username: 'pepe',  email: "pepe@pepe.com",     password: '5678'} 
+        [ {id: 'admin', username: 'admin', email: "admin@admin.com",   password: '1234', enabled: 1},
+          {id: 'pepe', username: 'pepe',  email: "pepe@pepe.com",     password: '5678', enabled: 1} 
         ]
       ).then(function(){
         console.log('Base de datos (tabla user) inicializada');

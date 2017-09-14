@@ -48,7 +48,12 @@
 				<% } %>
 
         <div class="form-group required">
-          <label class="control-label  required" for="id_url">URL <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application URL" data-content="For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock." data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
+          <label class="control-label  required" for="id_url">
+            URL 
+            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application URL" data-content="For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock." data-original-title="" title="">
+              <i class="fa fa-question-circle"></i>
+            </a>
+          </label>
           <div class=" ">
             <input class="form-control" id="id_url" name="application[url]" type="text" value="<%= applicationInfo.url %>">
           </div>

@@ -1,0 +1,149 @@
+<div class="row">
+	<%- include ../auth/_presentation %>
+	<div id="" class="registration ">
+		<div class="modal-header">
+			<h3>Registration</h3>
+		</div>
+
+		<form id=""
+			ng-controller="DummyCtrl"
+			name=""
+			autocomplete=""
+			class=""
+			action="/sign_up/"
+			method="POST"
+			enctype=""
+		><input type='hidden' name='' value='' />
+
+			<div class="modal-body clearfix">
+
+				<% var nameErrors = [] %>
+			    <% if (errors.length) { %>
+			        <% for (var i in errors) { %>
+			        	<% nameErrors.push(errors[i].message)%>
+			        <% } %>
+			    <% } %>
+
+			    <% if (nameErrors.indexOf("passwordDifferent") != -1) { %>
+			        <span class="help-block alert alert-danger ">The two password fields didn't match</span>
+			    <% } %>
+
+			    <% if (nameErrors.indexOf("emailUsed") != -1) { %>
+			        <span class="help-block alert alert-danger ">Email is already used</span>
+			    <% } %>
+
+				<div class="form-group ">
+					<label class="control-label" for="id_username">Username</label>
+					<div class=" ">
+						<input class="form-control" id="id_username" maxlength="30" name="username" type="text" value="<%= userInfo.username %>"/>
+					</div>
+				</div>
+
+				<% if (nameErrors.indexOf("username") != -1) { %>
+			        <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+			    <% } %>
+
+				<div class="form-group ">
+					<label class="control-label" for="id_email">E-mail</label> 
+					<div class=" ">
+						<input class="form-control" id="id_email" name="email" type="email" value="<%= userInfo.email %>"/>
+					</div>
+				</div>
+
+				<% if (nameErrors.indexOf("email") != -1) { %>
+			        <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+			    <% } %>
+
+				<div class="form-group ">
+					<div id="gravatar-checkbox">
+						<div class="checkbox">
+							<label>
+								<input id="id_use_gravatar" name="use_gravatar" type="checkbox" />
+								<span>I have Gravatar and want to use it for my avatar.</span>
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group ">
+					<label class="control-label" for="id_password1">Password</label>
+					<div class=" ">
+						<input class="form-control" id="id_password1" name="password1" type="password" />
+					</div>
+				</div>
+
+				<% if (nameErrors.indexOf("password1") != -1) { %>
+			        <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+			    <% } %>
+
+				<div class="form-group ">
+					<label class="control-label" for="id_password2">Password (again)</label>
+					<div class=" ">
+						<input class="form-control" id="id_password2" name="password2" type="password" />
+					</div>
+				</div>
+
+				<% if (nameErrors.indexOf("password2") != -1) { %>
+			        <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+			    <% } %>
+
+				<div class="form-group ">
+					<label class="control-label" for="id_captcha">Captcha</label>
+					<div class="g-recaptcha" data-size="normal" data-sitekey="6LcgXvwSAAAAAES48096Gr2KKc6cjWlVWtIcDZvz"></div>
+					<noscript>
+						<div style="width: 302px; height: 352px;">
+							<div style="width: 302px; height: 352px; position: relative;">
+								<div style="width: 302px; height: 352px; position: absolute;">
+									<iframe src="https://www.google.com/recaptcha/api/fallback?k=6LcgXvwSAAAAAES48096Gr2KKc6cjWlVWtIcDZvz"
+										frameborder="0" scrolling="no"
+										style="width: 302px; height:352px; border-style: none;">
+									</iframe>
+								</div>
+								<div style="width: 250px; height: 80px; position: absolute; border-style: none;
+									bottom: 21px; left: 25px; margin: 0px; padding: 0px; right: 25px;">
+									<textarea id="g-recaptcha-response" name="g-recaptcha-response"
+										class="g-recaptcha-response"
+										style="width: 250px; height: 80px; border: 1px solid #c1c1c1;
+										margin: 0px; padding: 0px; resize: none;" value="">
+									</textarea>
+								</div>
+							</div>
+						</div>
+					</noscript>
+				</div> 
+				
+				<script src="https://www.google.com/recaptcha/api.js?hl=en-GB" async defer></script>
+
+
+				<div class="form-group ">
+					<div class="">
+						<div class="checkbox">
+							<label>
+								<input id="id_trial" name="trial" type="checkbox" />
+								<span>I want to be a trial user</span>
+							</label>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+
+			<div class="modal-footer">
+				<label class="conditions checkbox-inline">
+					<input type="checkbox" id="inlineCheckbox1" required="required" title="You need to accept the Terms and Conditions to create your account" value="option1"> I accept FIWARE Lab <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_LAB_Terms_and_Conditions" target="a_blank">Terms and Conditions</a>
+				</label>
+				<button type="submit" class="btn btn-primary pull-right">Sign Up</button>
+				<div class="actions">
+					<a href="/password/request/">
+						Forgot password
+					</a>
+					<a href="/confirmation/">
+						Confirmation not recieved?
+					</a>
+			</div>
+
+			</div>
+		</form>
+	</div>
+</div>

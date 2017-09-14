@@ -10,7 +10,7 @@ var homeController = require('../controllers/home_controller');
 // GET Home PAge
 router.get('/', function(req, res, next) {
 	if (req.session.user) {
-        res.render('home/index');
+        res.render('home/index', {applications: []});
     } else {
     	res.render('index', { errors: [] });
     }

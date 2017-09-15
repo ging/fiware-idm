@@ -50,6 +50,9 @@ app.use(function(req, res, next) {
 
   // To make visible req.session in the view
   res.locals.session = req.session;
+  
+  // {text: 'message text', type: 'info | success | warning | danger'}
+  res.locals.message = {};
   next();
 });
 
@@ -66,7 +69,6 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page

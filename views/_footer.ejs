@@ -1,4 +1,11 @@
-
+<% if (message.text) { %>
+<div class="messages">
+  <div class="alert alert-<%=message.type%> alert-dismissable fade in">
+    <a class="close" data-dismiss="alert" href="#">×</a>
+    <p><strong><%=message.type%>: </strong><%=message.text%></p>
+  </div>
+</div>
+<% } %>
 
 <footer class="footer-main">
   <div class="container-fluid">

@@ -43,10 +43,8 @@ exports.create = function(req, res, next) {
                 // TODO (aalonsog) send mail
                 console.log('USER CREATED. ACTIVATION LINK: http://localhost:3000/activate?activation_key=' + 
                     user.activation_key + '&user=' + user.id);
-                // res.infoMessage = {mess: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
-
-                
-                res.redirect('/');
+                res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
+                res.render('index', { errors: [] });
             }); 
         }
     }).catch(function(error){ 
@@ -66,26 +64,24 @@ exports.activate = function(req, res, next) {
         }
     }).then(function(user) {
         if (user) {
-            console.log('Activation key', user.activation_key);
-            console.log('Activation key in url', req.query.activation_key);
             if (user.enabled) {
-                // user already enabled
-                res.redirect('/'); 
+                res.locals.message = {text: 'User already activated', type: 'warning'};
+                res.render('index', { errors: [] });
             } else if (user.activation_key === req.query.activation_key) {
                 if ((new Date()).getTime() > user.activation_expires.getTime()) {
-                    // error activating user (expired)
-                    res.redirect('/'); 
+                    res.locals.message = {text: 'Error activating user', type: 'danger'};
+                    res.render('index', { errors: [] });
                 } else {
                     user.enabled = true;
                     user.save().then(function() {
-                        // success
-                        res.redirect('/');
+                        res.locals.message = {text: 'User activated. login using your credentials.', type: 'success'};
+                        res.render('index', { errors: [] });
                     }); 
                 }
             };
         } else {
-            // error activating user
-            res.redirect('/'); 
+            res.locals.message = {text: 'Error activating user', type: 'danger'};
+            res.render('index', { errors: [] });
         }
         
 

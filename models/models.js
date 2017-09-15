@@ -1,12 +1,13 @@
 var path = require('path');
+var config = require('../config').database;
 
 // Cargar Modelo ORM
 var Sequelize = require('sequelize');
 
 // Usar BBDD Mysql
-var sequelize = new Sequelize('idm', 'root', 'idm', 
+var sequelize = new Sequelize(config.name, config.user, config.password, 
   { 
-    host: 'localhost',
+    host: config.host,
     dialect: 'mysql'
   }      
 );

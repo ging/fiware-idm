@@ -1,4 +1,7 @@
 var models = require('../models/models.js');
+var mailer = require('../lib/mailer').mailer();
+var config = require('../config');
+var ejs = require('ejs');
 
 // See if user is registered
 exports.authenticate = function(email, password, callback) {
@@ -40,9 +43,22 @@ exports.create = function(req, res, next) {
             throw new Error("passwordDifferent");
         } else {
             user.save().then(function() {
-                // TODO (aalonsog) send mail
-                console.log('USER CREATED. ACTIVATION LINK: http://localhost:3000/activate?activation_key=' + 
-                    user.activation_key + '&user=' + user.id);
+                
+                var link = config.host + '/activate?activation_key=' + user.activation_key + '&user=' + user.id;
+
+                var mail_data = {
+                    name: user.username,
+                    link: link
+                };
+
+                var subject = 'Welcome to FIWARE';
+
+                ejs.renderFile(__dirname + '/../views/templates/_base_email.ejs', {view: 'activate', data: mail_data}, function(result, mail) {
+                    mailer.sendMail({to: user.email, html: mail, subject: subject}, function(ev){
+                        console.log("Result mail", ev);
+                    });
+                });
+
                 res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
                 res.render('index', { errors: [] });
             }); 

@@ -22,7 +22,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(partials());3
+app.use(partials());
 app.use(cookieParser('plm2k45ml2104585jnn2'));
 app.use(session({
 	secret: 'lb294n7b38n03n5ofaoi'

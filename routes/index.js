@@ -6,6 +6,7 @@ var applicationController = require('../controllers/application_controller');
 var sessionController = require('../controllers/session_controller');
 var userController = require('../controllers/user_controller');
 var homeController = require('../controllers/home_controller');
+var oauthController = require('../controllers/oauth_controller');
 
 // GET Home PAge
 router.get('/', function(req, res, next) {
@@ -29,6 +30,21 @@ router.use( function( req, res, next ) {
         req.url = req.path;
     }       
     next(); 
+});
+
+// Routes for Oauth2
+router.post('/oauth2/token',      oauthController.token);
+router.get('/oauth2/authorize',   oauthController.log_in);
+router.post('/oauth2/authorize',  oauthController.authorize);
+
+// PRUEBA DE OAUTH
+router.get('/me', oauthController.authenticate(), function(req,res){
+  res.json({
+    me: req.user,
+    messsage: 'Authorization success, Without Scopes, Try accessing /profile with `profile` scope',
+    description: 'Try postman https://www.getpostman.com/collections/37afd82600127fbeef28',
+    more: 'pass `profile` scope while Authorize'
+  })
 });
 
 // Routes for users sessions

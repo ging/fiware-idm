@@ -7,7 +7,7 @@ var key = 'paldflmarfijnakjdakldsfmal';
 
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define(
-        'User', 
+        'user', 
         { id: {
             type: DataTypes.UUID,
             primaryKey: true,
@@ -61,9 +61,17 @@ module.exports = function(sequelize, DataTypes) {
         }, reset_expires : {
             type: DataTypes.DATE,
             defaultValue: undefined
+        }, extra: {
+            type: DataTypes.STRING
+        }, scope: {
+            type: DataTypes.STRING(80)
         }
-
-    });
+        }, {
+            tableName: 'user',
+            timestamps: false,
+            underscored: true,
+        }
+    );
 
     User.prototype.verifyPassword = function(password) {
         var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');

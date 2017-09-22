@@ -2,7 +2,7 @@ var models = require('../models/models.js');
 
 // Autoload info if path include applicationid
 exports.load = function(req, res, next, applicationId) {
-  models.Application.findById(applicationId).then(function(application) {
+  models.oauth_client.findById(applicationId).then(function(application) {
   	if (application) {
   		req.application = application;
   		next();
@@ -17,7 +17,7 @@ exports.new = function(req, res) {
 
 // Create new application
 exports.create = function(req, res, next) {
-	var application = models.Application.build(req.body.application);
+	var application = models.oauth_client.build(req.body.application);
 	application.validate().then(function(err) {
 		application.save({fields: ["name", "description", "url", "callbackurl", "clientId", "clientSecret"]}).then(function() {
 			res.redirect('/idm/applications');
@@ -30,7 +30,7 @@ exports.create = function(req, res, next) {
 
 // List all applications
 exports.index = function(req, res) {
-  models.Application.findAll().then(function(application) {
+  models.oauth_client.findAll().then(function(application) {
   	res.render('applications/index', { applications: application, errors: []});
   });
 };

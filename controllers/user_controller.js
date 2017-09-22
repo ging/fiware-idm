@@ -5,7 +5,7 @@ var ejs = require('ejs');
 
 // See if user is registered
 exports.authenticate = function(email, password, callback) {
-    models.User.find({
+    models.user.find({
         where: {
             email: email
         }
@@ -26,7 +26,7 @@ exports.new = function(req, res) {
 // Create new user
 exports.create = function(req, res, next) {
     errors = [];
-    var user = models.User.build({
+    var user = models.user.build({
         username: req.body.username, 
         email: req.body.email, 
         password: req.body.password1,
@@ -74,7 +74,7 @@ exports.create = function(req, res, next) {
 
 // Activate user
 exports.activate = function(req, res, next) {
-    models.User.find({
+    models.user.find({
         where: {
             id: req.query.user
         }

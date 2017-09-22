@@ -27,5 +27,10 @@ module.exports = function(sequelize, DataTypes) {
     }, xml: {
         type:  DataTypes.TEXT
     }
-  });
+    }, {
+        tableName: 'permission',
+        timestamps: false,
+        underscored: true,
+    }
+  );
 }

@@ -33,9 +33,9 @@ router.use( function( req, res, next ) {
 });
 
 // Routes for Oauth2
-router.post('/oauth2/token',      oauthController.token);
-router.get('/oauth2/authorize',   oauthController.log_in);
-router.post('/oauth2/authorize',  oauthController.authorize);
+router.post('/oauth2/token',        oauthController.token);
+router.get('/oauth2/authorize',     oauthController.log_in);
+router.post('/oauth2/authorize',    oauthController.authorize);
 
 // PRUEBA DE OAUTH
 router.get('/me', oauthController.authenticate(), function(req,res){

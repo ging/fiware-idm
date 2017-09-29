@@ -1,0 +1,37 @@
+<div id="content_body">
+  <div id="authorize_application_modal" class="static_page">
+    <div class="">
+      <div class="">
+        <div class="modal-header">
+          <h3>
+          </h3><h3>Authorize <%= client.name %>?</h3>
+        </div>
+    	<form id="" 
+    		  ng-controller="DummyCtrl" 
+    		  name="" 
+    		  autocomplete="" 
+    		  class="ng-scope ng-pristine ng-valid" 
+    		  action="/oauth2/authorize?response_type=<%= client.response_type %>&client_id=<%= client.id %>&state=xyz&redirect_uri=<%= client.redirect_uri %>" 
+    		  method="POST" 
+    		  enctype=""><input type="hidden" name="" value="">
+          <div class="modal-body clearfix">
+            <div>
+              <p>
+                The application <a href="/idm/applications/<%= client.id %>/"><%= client.name %></a> will be able to:
+              </p>
+              <div class="alert alert-info">
+                Read your public information.
+              </div>
+            </div>
+            <fieldset>
+            </fieldset>
+          </div>
+          <div class="modal-footer">
+            <a href="/oauth2/authorize/cancel/" class="secondary cancel btn btn-default">Deny</a>
+            <button type="submit" class="btn btn-primary">Authorize</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

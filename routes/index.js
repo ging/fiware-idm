@@ -64,12 +64,12 @@ router.param('applicationId', applicationController.load);
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
 // Routes to get info about applications
-router.get('/idm/applications',  							sessionController.loginRequired,	applicationController.index);
-router.get('/idm/applications/:applicationId(\\d+)', 		sessionController.loginRequired,	applicationController.show);
-router.get('/idm/applications/new', 						sessionController.loginRequired,	applicationController.new);
-router.post('/idm/applications', 							sessionController.loginRequired,	applicationController.create);
-router.get('/idm/applications/:applicationId(\\d+)/edit', 	sessionController.loginRequired,	applicationController.edit);
-router.put('/idm/applications/:applicationId(\\d+)', 		sessionController.loginRequired,	applicationController.update);
-router.delete('/idm/applications/:applicationId(\\d+)', 	sessionController.loginRequired,	applicationController.destroy);
+router.get('/idm/applications',  					sessionController.loginRequired,	applicationController.index);
+router.get('/idm/applications/new',                 sessionController.loginRequired,    applicationController.new);
+router.get('/idm/applications/:applicationId', 		sessionController.loginRequired,	applicationController.show);
+router.post('/idm/applications', 					sessionController.loginRequired,	applicationController.create);
+router.get('/idm/applications/:applicationId/edit', sessionController.loginRequired,	applicationController.edit);
+router.put('/idm/applications/:applicationId', 		sessionController.loginRequired,	applicationController.update);
+router.delete('/idm/applications/:applicationId', 	sessionController.loginRequired,	applicationController.destroy);
 
 module.exports = router;

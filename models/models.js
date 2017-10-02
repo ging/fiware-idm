@@ -102,10 +102,10 @@ sequelize.sync().then(function() {
         oauth_client.count().then(function (count){
           if(count === 0) {   // la tabla se inicializa solo si está vacía
             oauth_client.bulkCreate( 
-              [ {name: 'app1', description: 'Descrip App1', url: 'http://prueba.com', redirect_uri: 'http://prueba.com/login', grant_type: 'password'},
-                {name: 'app2', description: 'Descrip App2', url: 'http://prueba.com', redirect_uri: 'http://prueba.com/login', grant_type: 'client_credentials'},
-                {name: 'app3', description: 'Descrip App3', url: 'http://prueba.com', redirect_uri: 'http://prueba.com/login', grant_type: 'authorization_code', response_type: 'code'},
-                {name: 'app4', description: 'Descrip App4', url: 'http://prueba.com', redirect_uri: 'http://prueba.com/login', grant_type: 'implicit', response_type: 'token'}
+              [ {name: 'app1', description: 'Descrip App1', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'password'},
+                {name: 'app2', description: 'Descrip App2', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'client_credentials'},
+                {name: 'app3', description: 'Descrip App3', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'authorization_code', response_type: 'code'},
+                {name: 'app4', description: 'Descrip App4', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'implicit', response_type: 'token'}
               ]
             ).then(function(){
               console.log('Base de datos (tabla OAuthClient) inicializada');

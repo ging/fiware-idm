@@ -1,11 +1,189 @@
-<h1>Application</h1>
-<p>Name: <%= applicationInfo.name %></p> 
-<p>Description: <%= applicationInfo.description %></p>
-<p>Url: <%= applicationInfo.url %></p> 
-<p>Callback url: <%= applicationInfo.callbackurl %></p>  
-<p>Client Id: <%= applicationInfo.clientId %></p> 
-<p>Client Secret: <%= applicationInfo.clientSecret %></p>
-<a href="/idm/applications"><button type="button">Back</button></a>
-<a href="/idm/applications/<%= applicationInfo.id %>/edit"><button type="button">Edit</button></a>
-<form method="post" action="/idm/applications/<%= applicationInfo.id %>?_method=delete"><button type="submit" onClick="return confirm('Borrar: <%= applicationInfo.name %>');">Remove</button>          
-
+<div id="content_body">
+  <div id="detailApplication">
+    <header>
+      <h4 class="name">
+        <%= applicationInfo.name %>
+        <a href="/idm/applications/<%= applicationInfo.id %>/edit/" class="small">
+          <i class="fa fa-edit"></i>
+          <span>edit</span>
+        </a>
+        <a href="/idm/myApplications/<%= applicationInfo.id %>/edit/roles/" class="small">
+          <i class="fa fa-cogs"></i>
+          <span>manage roles</span>
+        </a>
+      </h4>
+<!--       <div class="logo">
+        <img alt="application logo" src="/static/dashboard/img/logos/original/app.png">
+      </div> -->
+    </header>
+    <div class="panel panel-default info">
+      <div class="panel-body">
+        <div class="description">
+          <h5>
+            Description
+          </h5>
+          <div class="info expander">
+            <p><%= applicationInfo.description %></p>
+          </div>
+        </div>
+        <div class="url">
+          <h5>URL</h5>
+          <p><%= applicationInfo.url %></p>
+        </div>
+        <div class="callback_url">
+          <h5>Callback URL</h5>
+          <p><%= applicationInfo.redirect_uri %></p>
+        </div>
+        <div class="extra">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse_oauth2_credentials" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
+              OAuth2 Credentials <i class="fa fa-angle-up"></i>
+            </a>
+            <a href="#" class="contextual-help" data-toggle="popover" data-title="OAuth2 Credentials" data-placement="left" data-content="You will be asked for these credentials in the OAuth2 library you use for your application" data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+          </h4>
+          <div class="collapse_out">
+            <div id="collapse_oauth2_credentials" class="form-group collapse" role="tabpanel">
+              <div>
+                <h6 class="panel-heading">Client ID</h6>
+                <p><%= applicationInfo.id %></p>
+              </div>
+              <div>
+                <h6 class="panel-heading">Client Secret</h6>
+                <p><%= applicationInfo.secret %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default info">
+      <div class="panel-body">
+        <div class="extra">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse_pep_proxy" aria-expanded="true" aria-controls="collapse_pep_proxy" class="collapsed">
+              PEP Proxy <i class="fa fa-angle-up"></i>
+            </a>
+            <a href="#" class="contextual-help" data-toggle="popover" data-title="PEP Proxy" data-placement="left" data-content="A PEP Proxy, along with an Authorization PDP, will let you add authentication and authorization security to your application. This way, you will be able also to manage specific permissions and policies to your resources, allowing different access levels to your users." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+          </h4>
+          <div id="collapse_pep_proxy" class="form-group collapse " role="tabpanel">
+            <h6 class="panel-heading"></h6>
+            <a href="/idm/myApplications/<%= applicationInfo.id %>/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default info">
+      <div class="panel-body">
+        <div class="extra">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse_iot_sensors" aria-expanded="true" aria-controls="collapse_iot_sensors" class="collapsed">
+              IoT Sensors <i class="fa fa-angle-up"></i>
+            </a>
+            <a href="#" class="contextual-help" data-toggle="popover" data-title="IoT Sensors" data-placement="left" data-content="If your application is related to IoT, sensors need to be registered here for them to be authenticated." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+          </h4>
+          <div id="collapse_iot_sensors" class="form-group collapse  no-transition" role="tabpanel">
+            <h6 class="panel-heading"></h6>
+            <a href="/idm/myApplications/<%= applicationInfo.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-application_id="<%= applicationInfo.id %>" data-pagination-pages="">
+      <div class="panel-heading">
+        <span class="title">Authorized Users</span>
+        <div class="table_actions clearfix">
+          <div class="filter table_search client">
+            <input class="form-control" value="" type="text" name="auth_users__filter__q" placeholder="Filter">
+          </div>
+          <div id="spinner_auth_users" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+          <div class="btn-group"> 
+            <button href="/idm/myApplications/<%= applicationInfo.id %>/edit/users/" title="Authorize" class="btn btn-default btn-sm ajax-modal" id="auth_users__action_manage_application_users">
+              <i class="fa fa-key"></i> 
+              <span class="action">
+                Authorize
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body datatable-content">
+        <div class="list-group" id="auth_users_content">
+          <div class="list-group-item">
+            <a class="item" href="/idm/users/alexph91/">
+              <!-- <div class="avatar filter_field">
+                <img src="/static/dashboard/img/logos/medium/user.png">
+              </div> -->
+              <div class="name filter_field">alexph91</div>
+            </a>
+          </div>
+        </div>
+        <p class="alert alert-info empty" style="display: none;">This application does not have any authorized users.</p>
+      </div>
+      <div class="panel-footer">
+        <nav id="auth_users_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+      </div>
+    </div>
+    <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-application_id="<%= applicationInfo.id %>" data-pagination-pages="">
+      <div class="panel-heading">
+        <span class="title">Authorized Organizations</span>
+        <div class="table_actions clearfix">
+          <div class="filter table_search client">
+            <input class="form-control" value="" type="text" name="organizations__filter__q" placeholder="Filter">
+          </div>
+          <div id="spinner_organizations" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+          <div class="btn-group"> 
+            <button href="/idm/applications/<%= applicationInfo.id %>/edit/organizations/" title="Authorize" class="btn btn-default btn-sm ajax-modal" id="organizations__action_manage_application_organizations">
+              <i class="fa fa-key"></i> 
+              <span class="action">
+                Authorize
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body datatable-content">
+        <div class="list-group" id="organizations_content"></div>
+        <p class="alert alert-info empty" style="display: block;">This application does not have any authorized organizations.</p>
+      </div>
+      <div class="panel-footer">
+        <nav id="organizations_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    $('.panel-title a:first-child').mouseover(function(){
+      $(this).children().toggleClass('fa-rotate-180');
+    });
+    $('.panel-title a:first-child').mouseleave(function(){
+      if ($(this).hasClass('collapsed')){
+        $(this).children().removeClass('fa-rotate-180');
+      } else {
+        $(this).children().addClass('fa-rotate-180');
+      }
+    });
+    $('.panel-title a:first-child').click(function(){
+      if ($(this).hasClass('collapsed')){
+        $(this).children().addClass('fa-rotate-180');
+      } else {
+        $(this).children().removeClass('fa-rotate-180');
+      }
+    });
+    $(function(){
+      var passedPassword = false;
+      $('#collapse_iot_sensors').children('div').children('.user_pep').children('h6').each(function(index){
+        if ($(this).html() === 'Username' && !passedPassword){
+          $(this).append(' / Sensor ' + (index+1));
+        } else {
+        $(this).append(' / Sensor ' + (index)); // in case it's password row
+        passedPassword = true;
+      }
+    });
+    });
+  </script>
+  <script type="text/javascript">
+    $(function () {
+      $('[data-toggle="popover"]').popover({html:true});
+      //$('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+</div>

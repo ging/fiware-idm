@@ -2,12 +2,12 @@ var models = require('../models/models.js');
 
 // Autoload info if path include applicationid
 exports.load = function(req, res, next, applicationId) {
-  models.oauth_client.findById(applicationId).then(function(application) {
-  	if (application) {
-  		req.application = application;
-  		next();
-  	} else { next(new Error("No existe la aplicacion con id = " + applicationId));}
-  }).catch(function(error) { next(error); });
+	models.oauth_client.findById(applicationId).then(function(application) {
+		if (application) {
+			req.application = application;
+			next();
+		} else { next(new Error("No existe la aplicacion con id = " + applicationId));}
+	}).catch(function(error) { next(error); });
 };
 
 // Form for new application
@@ -19,7 +19,7 @@ exports.new = function(req, res) {
 exports.create = function(req, res, next) {
 	var application = models.oauth_client.build(req.body.application);
 	application.validate().then(function(err) {
-		application.save({fields: ["name", "description", "url", "callbackurl", "clientId", "clientSecret"]}).then(function() {
+		application.save({fields: ["id", "name", "description", "url", "redirect_uri", "secret"]}).then(function() {
 			res.redirect('/idm/applications');
 		});	
 	}).catch(function(error){ 

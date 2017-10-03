@@ -1,0 +1,185 @@
+<div id="content_body">
+    <div id="create_application_roles">
+        <div class="site-client-roles">
+            <div class="workflow workflow-roles static_page">
+                <form class="ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/roles" method="POST">
+                    <input type="hidden" name="" value="">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Manage Roles</h3>
+                            </div>
+                            <div class="modal-body clearfix">
+                                <div class="tab-content">
+                                    <fieldset id="manage_application_roles__update_owners" class="js-tab-pane active tab-pane">
+                                        <section id="role_list" class="role_list">
+                                            <header>
+                                                <h4>Roles</h4>
+                                                <button class="btn ajax-modal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </header>
+                                            <div class="btn-group-vertical roles update_owners_roles" data-toggle="buttons" id="update_owners_roles">
+                                                <% for (var i = 0; i < application.roles.legth; i++) { -%>
+                                                    <div class="btn btn-default role no-editable">
+                                                        <input type="radio" name="roles" id="106_radio" autocomplete="off" data-update_owners-id="106">
+                                                        <label for="106_radio">application.roles[i].name</label>
+                                                    </div>
+                                                <% } -%>
+                                            </div>
+                                        </section>
+                                        <section id="permissions_list" class="permissions_list">
+                                            <header>
+                                                <h4>Permissions</h4>
+                                                <button href="/idm/myApplications/7d8e913b71bd437c9e92e8dff3eb2e8e/edit/permissions/create/" class="btn ajax-modal"><i class="fa fa-plus"></i></button>
+                                            </header>
+                                            <div class="alert alert-info" id="update_owners_info_message">
+                                                Select a role to see and manage its permissions
+                                            </div>
+                                            <div class="" id="update_owners_permissions" style="display: none;">
+                                                <ul class="permissions update_owners_permissions list-group">
+                                                    <li class="list-group-item is-internal" data-permission-id="1e63f704f677428097c3068a355550a6">
+                                                        <i class="fa fa-check" disabled=""></i>
+                                                        Get and assign all internal application roles
+                                                    </li>
+                                                    <li class="list-group-item is-internal" data-permission-id="4">
+                                                        <i class="fa fa-check" disabled=""></i>
+                                                        Manage the application
+                                                    </li>
+                                                    <li class="list-group-item is-internal" data-permission-id="5">
+                                                        <i class="fa fa-check" disabled=""></i>
+                                                        Manage roles
+                                                    </li>
+                                                    <li class="list-group-item is-internal" data-permission-id="6">
+                                                        <i class="fa fa-check" disabled=""></i>
+                                                        Manage Authorizations
+                                                    </li>
+                                                    <li class="list-group-item is-internal" data-permission-id="8">
+                                                        <i class="fa fa-check" disabled=""></i>
+                                                        Get and assign all public application roles
+                                                    </li>
+                                                    <li class="list-group-item is-internal" data-permission-id="a8a26d08a36a4f0ab4a3513caef93cc8">
+                                                        <i class="fa fa-check" disabled=""></i>
+                                                        Get and assign only public owned roles
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </section>
+                                        <div class="hide">
+                                            <div class="form-group ">
+                                                <label class="control-label  " for="id_update_owners_permission_1e63f704f677428097c3068a355550a6">Get and assign all internal application roles</label>
+                                                <div class=" ">
+                                                    <select multiple="multiple" class="form-control" data-superset-id="7d8e913b71bd437c9e92e8dff3eb2e8e" data-superset-name="aaa" id="id_update_owners_permission_1e63f704f677428097c3068a355550a6" name="update_owners_permission_1e63f704f677428097c3068a355550a6">
+                                                        <option value="106" selected="selected">provider</option>
+                                                        <option value="191">purchaser</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <label class="control-label  " for="id_update_owners_permission_4">Manage the application</label>
+                                                <div class=" ">
+                                                    <select multiple="multiple" class="form-control" data-superset-id="7d8e913b71bd437c9e92e8dff3eb2e8e" data-superset-name="aaa" id="id_update_owners_permission_4" name="update_owners_permission_4">
+                                                        <option value="106" selected="selected">provider</option>
+                                                        <option value="191">purchaser</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <label class="control-label  " for="id_update_owners_permission_5">Manage roles</label>
+                                                <div class=" ">
+                                                    <select multiple="multiple" class="form-control" data-superset-id="7d8e913b71bd437c9e92e8dff3eb2e8e" data-superset-name="aaa" id="id_update_owners_permission_5" name="update_owners_permission_5">
+                                                        <option value="106" selected="selected">provider</option>
+                                                        <option value="191">purchaser</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <label class="control-label  " for="id_update_owners_permission_6">Manage Authorizations</label>
+                                                <div class=" ">
+                                                    <select multiple="multiple" class="form-control" data-superset-id="7d8e913b71bd437c9e92e8dff3eb2e8e" data-superset-name="aaa" id="id_update_owners_permission_6" name="update_owners_permission_6">
+                                                        <option value="106" selected="selected">provider</option>
+                                                        <option value="191">purchaser</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <label class="control-label  " for="id_update_owners_permission_8">Get and assign all public application roles</label>
+                                                <div class=" ">
+                                                    <select multiple="multiple" class="form-control" data-superset-id="7d8e913b71bd437c9e92e8dff3eb2e8e" data-superset-name="aaa" id="id_update_owners_permission_8" name="update_owners_permission_8">
+                                                        <option value="106" selected="selected">provider</option>
+                                                        <option value="191" selected="selected">purchaser</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group ">
+                                                <label class="control-label  " for="id_update_owners_permission_a8a26d08a36a4f0ab4a3513caef93cc8">Get and assign only public owned roles</label>
+                                                <div class=" ">
+                                                    <select multiple="multiple" class="form-control" data-superset-id="7d8e913b71bd437c9e92e8dff3eb2e8e" data-superset-name="aaa" id="id_update_owners_permission_a8a26d08a36a4f0ab4a3513caef93cc8" name="update_owners_permission_a8a26d08a36a4f0ab4a3513caef93cc8">
+                                                        <option value="106" selected="selected">provider</option>
+                                                        <option value="191">purchaser</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-primary pull-right" type="submit" value="Save">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal_wrapper"></div>
+
+<script type="text/javascript">
+   $(document).ready(function(){
+        $("button").click(function(){
+            var template = $('#eso').html()
+            $("#modal_wrapper").append(template)
+            document.body.style.background = "#111111"
+            /*$.get("/prueba", function(data, status){
+                $("#modal_wrapper").load("eso")
+            });*/
+        });
+    }); 
+</script>
+
+<script id="eso" type="text/html">
+    <div class="modal in" style="top: 0px; display: block;" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">×</a>
+                    <h3>
+                    </h3><h3>Create role</h3> 
+                </div>
+                <form id="create_role_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/myApplications/7d8e913b71bd437c9e92e8dff3eb2e8e/edit/roles/create/" method="POST" enctype=""><input type="hidden" name="csrfmiddlewaretoken" value="WdSUT73dagtpWSBKWFFFg4rmlIyFf6GH">
+                    <div class="modal-body clearfix">
+                        <div class="fake_credentials" style="display: none">
+                            <input type="text" name="fake_email" value="">
+                            <input type="password" name="fake_password" value=""><span class="form-control-feedback fa fa-eye"></span>
+                        </div>
+                        <fieldset>
+                            <input id="id_application_id" name="application_id" type="hidden" value="7d8e913b71bd437c9e92e8dff3eb2e8e">
+                            <div class="form-group required">
+                                <label class="control-label  required" for="id_name">Role Name</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_name" maxlength="255" name="name" type="text">
+                                </div>
+                            </div>
+                        </fieldset>  
+                    </div>
+                    <div class="modal-footer">
+                        <input class="btn btn-primary pull-right " type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>

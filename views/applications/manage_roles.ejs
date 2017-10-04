@@ -1,0 +1,81 @@
+<div id="content_body">
+    <div id="create_application_roles">
+        <div class="site-client-roles">
+            <div class="workflow workflow-roles static_page">
+                <input type="hidden" name="" value="">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Manage Roles</h3>
+                        </div>
+                        <fieldset id="manage_application_roles__update_owners" class="js-tab-pane active tab-pane">
+		                    <section id="role_list" class="role_list">
+		                        <header>
+		                            <h4>Roles</h4>
+		                            <button id="roleButton" type="button" class="btn ajax-modal">
+		                                <i class="fa fa-plus"></i>
+		                            </button>
+		                        </header>
+		                        <div class="btn-group-vertical roles update_owners_roles" data-toggle="buttons" id="update_owners_roles">
+						            <% for (var i = 0; i < application.roles.length; i++) { -%>
+                                        <div class="btn btn-default role no-editable">
+                                            <input type="radio" name="roles" id="" autocomplete="off" data-update_owners-id="">
+                                            <label><%= application.roles[i].name%></label>
+                                        </div>
+                                    <% } -%>
+        						</div>
+							</section>
+							<section id="permissions_list" class="permissions_list">
+		                        <header>
+		                            <h4>Permissions</h4>
+		                            <button id="permButton" type="button" class="btn ajax-modal">
+		                            	<i class="fa fa-plus"></i>
+		                            </button>
+		                        </header>
+		                        <div class="alert alert-info" id="update_owners_info_message">
+                                    Select a role to see and manage its permissions
+                                </div> 
+                                <div class="" id="update_owners_permissions" style="display: none;">
+                                	<ul id="list_permissions" class="permissions update_owners_permissions list-group">
+                                		<li class="list-group-item is-internal active" data-permission-id="1">
+                                			<i class="fa fa-check" disabled=""></i>
+                                			Get and assign all internal application roles
+                                		</li>
+                                		<li class="list-group-item is-internal active" data-permission-id="4">
+                                			<i class="fa fa-check" disabled=""></i>
+                                			Manage the application
+                                		</li>
+                                		<li class="list-group-item is-internal active" data-permission-id="5">
+                                			<i class="fa fa-check" disabled=""></i>
+                                			Manage roles
+                                		</li>
+                                		<li class="list-group-item is-internal active" data-permission-id="6">
+                                			<i class="fa fa-check" disabled=""></i>
+                                			Manage Authorizations
+                                		</li>
+                                		<li class="list-group-item is-internal active" data-permission-id="8">
+                                			<i class="fa fa-check" disabled=""></i>
+                                			Get and assign all public application roles
+                                		</li>
+                                		<li class="list-group-item is-internal active" data-permission-id="9">
+                                			<i class="fa fa-check" disabled=""></i>
+                                			Get and assign only public owned roles
+                                		</li>
+                                	</ul>
+                                </div>
+		                    </section>
+		                </fieldset>
+                    </div>
+                </div>	
+            </div>
+        </div>
+    </div>
+</div>	
+
+<%- include _create_role %>
+
+<%- include _create_permission %>
+
+<%- include templates/_new_role_row.ejs %>
+
+<script src="/javascripts/applications/handle_creation_roles.js" type="text/javascript"></script>

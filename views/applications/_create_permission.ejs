@@ -1,0 +1,79 @@
+<div id=create_permission class="modal in" style="top: 0px; display: none;" aria-hidden="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a id="esc_perm_creation" class="close" data-dismiss="modal">×</a>
+				<h3>
+				</h3><h3>Create permission</h3>  
+			</div>
+			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/myApplications/7d8e913b71bd437c9e92e8dff3eb2e8e/edit/permissions/create/" method="POST" enctype=""><input type="hidden" name="csrfmiddlewaretoken" value="DLlKoXayRpY16jrIetfJF0Z5vnn58au3">
+				<div class="modal-body clearfix">
+					<fieldset>
+						<input id="id_application_id" name="application_id" type="hidden" value="7d8e913b71bd437c9e92e8dff3eb2e8e">
+						<div class="form-group required">
+							<label class="control-label  required" for="id_name">Permission Name</label>
+							<div class=" ">
+								<input class="form-control" id="id_name" maxlength="255" name="name" type="text">
+							</div>
+						</div>
+						<div class="form-group required">
+							<label class="control-label  required" for="id_description">Description</label>
+							<div class=" ">
+								<input class="form-control" id="id_description" maxlength="255" name="description" type="text">
+							</div>
+						</div>
+						<div class="panel-group" id="accordion">
+							<div class="panel">
+								<div class="panel-headding">  
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-verb-resource" class="panel-heading collapsed">
+										<h4 class="panel-title panel-close">
+											HTTP Verb and Resource Rule
+										</h4>
+									</a>
+								</div>
+								<div id="collapse-verb-resource" class="panel-collapse collapsed in">
+									<div class="panel-body">
+										<div class="form-group ">
+											<label class="control-label  " for="id_action">HTTP action</label>
+											<div class=" ">
+												<input class="form-control" id="id_action" maxlength="255" name="action" type="text">
+											</div>
+										</div>
+										<div class="form-group ">
+											<label class="control-label  " for="id_resource">Resource</label>
+											<div class=" ">
+												<input class="form-control" id="id_resource" maxlength="255" name="resource" type="text">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel">
+								<div class="panel-headding">
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-xacml" class="panel-heading collapsed">
+										<h4 class="panel-title panel-close">
+											Advanced XACML Rule
+										</h4>
+									</a>
+								</div>
+								<div id="collapse-xacml" class="panel-collapse collapse">
+									<div class="panel-body">
+										<div class="form-group ">
+											<label class="control-label  " for="id_xml">Use XACML to define a more complex authorization policy.</label>
+											<div class=" ">
+												<textarea class="form-control" cols="40" id="id_xml" name="xml" rows="10"></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer">
+					<input class="btn btn-primary pull-right " type="submit" value="Save">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

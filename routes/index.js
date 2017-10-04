@@ -64,15 +64,14 @@ router.param('applicationId', applicationController.load);
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
 // Routes to get info about applications
-router.get('/idm/applications',  					        sessionController.loginRequired,	applicationController.index);
-router.get('/idm/applications/new',                         sessionController.loginRequired,    applicationController.new);
-router.get('/idm/applications/:applicationId', 		        sessionController.loginRequired,	applicationController.show);
-router.post('/idm/applications', 					        sessionController.loginRequired,	applicationController.create);
-router.get('/idm/applications/:applicationId/edit',         sessionController.loginRequired,	applicationController.edit);
-router.put('/idm/applications/:applicationId', 		        sessionController.loginRequired,	applicationController.update);
-router.get('/idm/applications/:applicationId/edit/roles',   sessionController.loginRequired,    applicationController.edit_roles);
-router.get('/prueba',   sessionController.loginRequired,    applicationController.prueba);
-router.post('/idm/applications/:applicationId/edit/roles',   sessionController.loginRequired,    applicationController.create_role);
-router.delete('/idm/applications/:applicationId', 	        sessionController.loginRequired,	applicationController.destroy);
+router.get('/idm/applications',  					                sessionController.loginRequired,	applicationController.index);
+router.get('/idm/applications/new',                                 sessionController.loginRequired,    applicationController.new);
+router.get('/idm/applications/:applicationId', 		                sessionController.loginRequired,	applicationController.show);
+router.post('/idm/applications', 					                sessionController.loginRequired,	applicationController.create);
+router.get('/idm/applications/:applicationId/edit',                 sessionController.loginRequired,	applicationController.edit);
+router.put('/idm/applications/:applicationId', 		                sessionController.loginRequired,	applicationController.update);
+router.get('/idm/applications/:applicationId/edit/roles',           sessionController.loginRequired,    applicationController.edit_roles);
+router.post('/idm/applications/:applicationId/edit/roles/create',   sessionController.loginRequired,    applicationController.create_roles);
+router.delete('/idm/applications/:applicationId', 	                sessionController.loginRequired,	applicationController.destroy);
 
 module.exports = router;

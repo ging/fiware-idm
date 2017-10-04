@@ -75,18 +75,28 @@ exports.update = function(req, res) {
 	});
 };
 
-// Showr roles and permissions
-exports.edit_roles = function(req, res) {
-	res.render('applications/edit_roles', { application: { id: req.application.id, roles: [1,2]}});
+// Show roles and permissions
+exports.edit_roles = function(req, res, next) {
+	models.role.findAll({
+		where: { oauth_client_id: req.application.id }
+	}).then(function(application_roles) {
+		if (application_roles) {
+			res.render('applications/manage_roles', { application: { id: req.application.id, roles: application_roles}});
+		} else { next(new Error("No existe la aplicacion con id = " + applicationId));}
+	}).catch(function(error) { next(error); });
 }
 
-exports.prueba = function(req, res) {
-	res.send("/applications/new_role.ejs")
-	console.log("----------Prueba--------------")
-}
-
-exports.create_role = function(req, res) {
-	console.log("--------------------")
+// Create new roles
+exports.create_roles = function(req, res) {
+	var role = models.role.build({ name: req.body.name, oauth_client_id: req.application.id });
+	role.validate().then(function(err) {
+		role.save({fields: ["id", "name", "oauth_client_id"]}).then(function() {
+			res.send(role);
+		})
+	}).catch(function(error) {
+		console.log(error.errors[0].message)
+		res.send(error.errors);
+	});
 }
 
 // Delete application

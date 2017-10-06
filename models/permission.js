@@ -12,6 +12,11 @@ module.exports = function(sequelize, DataTypes) {
         validate: { 
             notEmpty: {msg: "namePerm"}
         }
+    }, description: {
+        type: DataTypes.TEXT,
+        validate: { 
+            notEmpty: {msg: "namePerm"}
+        }
     }, is_internal: {
         type: DataTypes.BOOLEAN
     }, action: {
@@ -25,7 +30,7 @@ module.exports = function(sequelize, DataTypes) {
             notEmpty: {msg: "nameRes"}
         }
     }, xml: {
-        type:  DataTypes.TEXT
+        type: DataTypes.TEXT
     }
     }, {
         tableName: 'permission',

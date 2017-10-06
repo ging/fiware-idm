@@ -6,10 +6,10 @@
 				<h3>
 				</h3><h3>Create permission</h3>  
 			</div>
-			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/myApplications/7d8e913b71bd437c9e92e8dff3eb2e8e/edit/permissions/create/" method="POST" enctype=""><input type="hidden" name="csrfmiddlewaretoken" value="DLlKoXayRpY16jrIetfJF0Z5vnn58au3">
+			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype=""><input type="hidden" name="" value="">
 				<div class="modal-body clearfix">
 					<fieldset>
-						<input id="id_application_id" name="application_id" type="hidden" value="7d8e913b71bd437c9e92e8dff3eb2e8e">
+						<input id="id_application_id" name="application_id" type="hidden" value="">
 						<div class="form-group required">
 							<label class="control-label  required" for="id_name">Permission Name</label>
 							<div class=" ">

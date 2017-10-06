@@ -77,26 +77,102 @@ exports.update = function(req, res) {
 
 // Show roles and permissions
 exports.edit_roles = function(req, res, next) {
-	models.role.findAll({
-		where: { oauth_client_id: req.application.id }
+
+	models.role_permission.findAll({
+		where: { oauth_client_id: req.application.id },
+		include: [models.role, models.permission]
 	}).then(function(application_roles) {
+
+		var role = application_roles[0].Role;
+		var permission = application_roles[0].Permission;
+
+		role_permission_assign = {}
+
+		roles = [];
+		roles.push(role)
+
+		permissions = [];
+		permissions.push(permission)
+
+		for (var i = 0; i < application_roles.length - 1; i++) {
+
+			if (!role_permission_assign[role.id]) {
+		        role_permission_assign[role.id] = [];
+		    }
+		    role_permission_assign[role.id].push(permission.id);
+
+			if (role.id !== application_roles[i].Role.id) {
+				roles.push(application_roles[i].Role)
+			}
+
+			if (permission.id !== application_roles[i].Permission.id) {
+				permissions.push(application_roles[i].Permission)
+			}
+
+			role = application_roles[i].Role;
+			permission = application_roles[i].Permission;
+
+		}
+		console.log("-------------------------------------")
+		console.log(roles)
+		console.log("-------------------------------------")
+		console.log(permissions)
+		console.log("-------------------------------------")
+		console.log(role_permission_assign)
+		console.log("-------------------------------------")
+
 		if (application_roles) {
-			res.render('applications/manage_roles', { application: { id: req.application.id, roles: application_roles}});
+			models.permission.findAll({
+				where: { oauth_client_id: req.application.id }
+			}).then(function(application_permissions) {	
+				if (application_permissions) {
+					res.render('applications/manage_roles', { application: { id: req.application.id, 
+																			 roles: roles, 
+																			 permissions: permissions,
+																			 role_permission_assign: role_permission_assign }});
+				}
+			}).catch(function(error) { next(error); });
 		} else { next(new Error("No existe la aplicacion con id = " + applicationId));}
 	}).catch(function(error) { next(error); });
 }
 
 // Create new roles
 exports.create_roles = function(req, res) {
-	var role = models.role.build({ name: req.body.name, oauth_client_id: req.application.id });
+
+	var role = models.role.build({ name: req.body.name, 
+								   oauth_client_id: req.application.id });
+
 	role.validate().then(function(err) {
 		role.save({fields: ["id", "name", "oauth_client_id"]}).then(function() {
 			res.send(role);
 		})
 	}).catch(function(error) {
-		console.log(error.errors[0].message)
 		res.send(error.errors);
 	});
+}
+
+// Create new permissions
+exports.create_permissions = function(req, res) {
+
+	var permission = models.permission.build({ name: req.body.name,
+										 description: req.body.description,
+										 action: req.body.action,
+										 resource: req.body.resource,
+										 xml: req.body.xml, 
+										 oauth_client_id: req.application.id });
+
+	permission.validate().then(function(err) {
+		permission.save({fields: ["id", "name", "description", "action", "resource", "xml", "oauth_client_id"]}).then(function() {
+			res.send(permission);
+		})
+	}).catch(function(error) {
+		res.send(error.errors);
+	});
+}
+
+// Create new permissions
+exports.role_permissions_assign = function(req, res) {
+	console.log(req.body)
 }
 
 // Delete application

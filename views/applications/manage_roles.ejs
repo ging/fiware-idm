@@ -39,36 +39,11 @@
 	                                <div class="" id="update_owners_permissions" style="display: none;">
 	                                	<ul id="list_permissions" class="permissions update_owners_permissions list-group">
 	                                		<% for (var i = 0; i < application.permissions.length; i++) { -%>
-		                                        <li class="list-group-item is-internal" data-permission-id="<%= application.permissions[i].name%>">
+		                                        <li class="list-group-item is-internal" data-permission-id="<%= application.permissions[i].id%>">
 	                                				<i class="fa fa-check" disabled=""></i>
 	                                				<%= application.permissions[i].name%>
 	                                			</li>
 		                                    <% } -%>	
-	                                		<!-- PONER EL ID DEL PERMISO A LOS ELEMENTOS DE LA LISTA -->
-	                                		<!-- <li class="list-group-item is-internal" data-permission-id="1">
-	                                			<i class="fa fa-check" disabled=""></i>
-	                                			Get and assign all internal application roles
-	                                		</li>
-	                                		<li class="list-group-item is-internal" data-permission-id="4">
-	                                			<i class="fa fa-check" disabled=""></i>
-	                                			Manage the application
-	                                		</li>
-	                                		<li class="list-group-item is-internal" data-permission-id="5">
-	                                			<i class="fa fa-check" disabled=""></i>
-	                                			Manage roles
-	                                		</li>
-	                                		<li class="list-group-item is-internal" data-permission-id="6">
-	                                			<i class="fa fa-check" disabled=""></i>
-	                                			Manage Authorizations
-	                                		</li>
-	                                		<li class="list-group-item is-internal" data-permission-id="8">
-	                                			<i class="fa fa-check" disabled=""></i>
-	                                			Get and assign all public application roles
-	                                		</li>
-	                                		<li class="list-group-item is-internal" data-permission-id="9">
-	                                			<i class="fa fa-check" disabled=""></i>
-	                                			Get and assign only public owned roles
-	                                		</li> -->
 	                                	</ul>
 	                                </div>
 			                    </section>

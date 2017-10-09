@@ -126,7 +126,10 @@ sequelize.sync().then(function() {
                         {name: 'Provider', oauth_client_id: app[2].id},
                         {name: 'Purchaser', oauth_client_id: app[0].id},
                         {name: 'Purchaser', oauth_client_id: app[1].id},
-                        {name: 'Purchaser', oauth_client_id: app[2].id}
+                        {name: 'Purchaser', oauth_client_id: app[2].id},
+                        {name: 'PruebaRole', oauth_client_id: app[0].id},
+                        {name: 'PruebaRole', oauth_client_id: app[1].id},
+                        {name: 'PruebaRole', oauth_client_id: app[2].id}
                       ]
                     ).then(function(){
                       console.log('Base de datos (tabla Role) inicializada');

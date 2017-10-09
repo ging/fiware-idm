@@ -51,7 +51,7 @@ exports.index = function(req, res) {
 
 // Show info about an application
 exports.show = function(req, res) {
-  res.render('applications/show', { applicationInfo: req.application, errors: []});
+	res.render('applications/show', { applicationInfo: req.application, errors: []});
 };
 
 // Edit application
@@ -79,57 +79,30 @@ exports.update = function(req, res) {
 exports.edit_roles = function(req, res, next) {
 
 	models.role_permission.findAll({
-		where: { oauth_client_id: req.application.id },
-		include: [models.role, models.permission]
+		where: { oauth_client_id: req.application.id }
 	}).then(function(application_roles) {
-
-		var role = application_roles[0].Role;
-		var permission = application_roles[0].Permission;
-
-		role_permission_assign = {}
-
-		roles = [];
-		roles.push(role)
-
-		permissions = [];
-		permissions.push(permission)
-
-		for (var i = 0; i < application_roles.length - 1; i++) {
-
-			if (!role_permission_assign[role.id]) {
-		        role_permission_assign[role.id] = [];
-		    }
-		    role_permission_assign[role.id].push(permission.id);
-
-			if (role.id !== application_roles[i].Role.id) {
-				roles.push(application_roles[i].Role)
-			}
-
-			if (permission.id !== application_roles[i].Permission.id) {
-				permissions.push(application_roles[i].Permission)
-			}
-
-			role = application_roles[i].Role;
-			permission = application_roles[i].Permission;
-
-		}
-		console.log("-------------------------------------")
-		console.log(roles)
-		console.log("-------------------------------------")
-		console.log(permissions)
-		console.log("-------------------------------------")
-		console.log(role_permission_assign)
-		console.log("-------------------------------------")
-
 		if (application_roles) {
-			models.permission.findAll({
+			role_permission_assign = {}
+			for (var i = 0; i < application_roles.length; i++) {
+				if (!role_permission_assign[application_roles[i].role_id]) {
+			        role_permission_assign[application_roles[i].role_id] = [];
+			    }
+			    role_permission_assign[application_roles[i].role_id].push(application_roles[i].permission_id);
+			}
+			models.role.findAll({
 				where: { oauth_client_id: req.application.id }
-			}).then(function(application_permissions) {	
-				if (application_permissions) {
-					res.render('applications/manage_roles', { application: { id: req.application.id, 
-																			 roles: roles, 
-																			 permissions: permissions,
-																			 role_permission_assign: role_permission_assign }});
+			}).then(function(roles) {
+				if (roles) {
+					models.permission.findAll({
+						where: { oauth_client_id: req.application.id }
+					}).then(function(permissions) {
+						if (permissions) {
+							res.render('applications/manage_roles', { application: { id: req.application.id, 
+																					 roles: roles, 
+																					 permissions: permissions,
+																					 role_permission_assign: role_permission_assign }});
+						}
+					}).catch(function(error) { next(error); });
 				}
 			}).catch(function(error) { next(error); });
 		} else { next(new Error("No existe la aplicacion con id = " + applicationId));}
@@ -172,7 +145,27 @@ exports.create_permissions = function(req, res) {
 
 // Create new permissions
 exports.role_permissions_assign = function(req, res) {
-	console.log(req.body)
+
+	models.role_permission.destroy({
+		where: { oauth_client_id: req.application.id }
+	});
+
+	create_assign_roles_permissions = []
+	for(var role in req.body) {
+		for (var permission = 0; permission < req.body[role].length; permission++) {
+			create_assign_roles_permissions.push({role_id: role, permission_id: req.body[role][permission], oauth_client_id: req.application.id})
+		}
+	}
+
+	models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
+		res.locals.message = {text: ' Modified roles and permissions.', type: 'Success: '};
+		res.send("success");
+	}).catch(function(error) {
+		res.locals.message = {text: ' Roles and permissions assignment error.', type: 'Warning: '};
+		res.send("error");
+	});
+
+
 }
 
 // Delete application

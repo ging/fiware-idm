@@ -13,11 +13,15 @@ $(document).ready(function(){
 	        url = $form.attr('action');
 
 	    // Send the data using post with element id name and name2
-	    var posting = $.post(url, { name: $("#create_role_form").find('#id_name').val() });
+	    var posting = $.post(url, application.role_permission_assign);
 
 	    // Alerts the results 
 	    posting.done(function(data) {
-
+	    	if (data == "success") {
+    			window.location.href = "/idm/applications/"+application.id
+	    	} else {
+    			window.location.href = "/idm/applications/"+application.id+"/edit/roles"
+	    	}
 	    });
   });
 });

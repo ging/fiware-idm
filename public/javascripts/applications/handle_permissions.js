@@ -5,8 +5,14 @@ $(document).ready(function(){
 
     // Select permission item from list
     $("#update_owners_permissions").on("click",".list-group-item", function(){
+
         var permission = $(this).attr('data-permission-id');
         var role = $("#update_owners_roles").find('div.active').attr('id');
+
+        if (typeof application.role_permission_assign[role] === 'undefined') {
+            application.role_permission_assign[role] = []
+        }
+
         if ($("[data-permission-id="+permission+"]").hasClass("active")) {
             index = application.role_permission_assign[role].indexOf(permission);
             if (index > -1) {
@@ -53,7 +59,7 @@ $(document).ready(function(){
     // Alerts the results 
     posting.done(function(data) {
 
-    	// See if the result of post data has been an error
+    	// See if the result of post data is an error
     	if (data.constructor === Array) {
     		if(data[0].message == "nameRole") {
     			$(".help-block.alert.alert-danger").show('open');
@@ -61,11 +67,15 @@ $(document).ready(function(){
     		}
             // If is not an error, add the permission to the list	
     	} else {
+            
     		// Create new row in permission column
     		var permission = $('#table_row_permission_template').html();
             permission = permission.replace("namePerm", data.name)
             permission = permission.replace("idPerm", String(data.id))
             $("#list_permissions").append(permission)
+
+            // Add to permissions array
+            application.permissions.push(data)
 
             // Empty input from role creation form
             $("#create_permission_form").find("#id_name").val('');

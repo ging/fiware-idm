@@ -76,7 +76,7 @@ exports.update = function(req, res) {
 };
 
 // Show roles and permissions
-exports.edit_roles = function(req, res, next) {
+exports.manage_roles = function(req, res, next) {
 
 	models.role_permission.findAll({
 		where: { oauth_client_id: req.application.id }
@@ -124,6 +124,31 @@ exports.create_roles = function(req, res) {
 	});
 }
 
+// Edit role
+exports.edit_roles = function(req, res) {
+	var role_name = req.body.role_name;
+	var role_id = req.body.role_id;
+
+	console.log(req.body)
+
+	var role = models.role.build({ name: role_name, 
+								   oauth_client_id: req.application.id });
+
+	role.validate().then(function(err) {
+		models.role.update(
+			{ name: role_name },
+			{
+				fields: ["name"],
+				where: {id: role_id}
+			}
+		).then(function(){	
+			res.send("success")
+		});
+	}).catch(function(error) {
+		res.send(error.errors[0].message)
+	});
+}
+
 // Create new permissions
 exports.create_permissions = function(req, res) {
 
@@ -143,26 +168,28 @@ exports.create_permissions = function(req, res) {
 	});
 }
 
-// Create new permissions
+// Assing permissions to roles 
 exports.role_permissions_assign = function(req, res) {
 
 	models.role_permission.destroy({
 		where: { oauth_client_id: req.application.id }
 	});
+	
+	submit_assignment = JSON.parse(req.body.submit_assignment); 
 
 	create_assign_roles_permissions = []
-	for(var role in req.body) {
-		for (var permission = 0; permission < req.body[role].length; permission++) {
-			create_assign_roles_permissions.push({role_id: role, permission_id: req.body[role][permission], oauth_client_id: req.application.id})
+	for(var role in submit_assignment) {
+		for (var permission = 0; permission < submit_assignment[role].length; permission++) {
+			create_assign_roles_permissions.push({role_id: role, permission_id: submit_assignment[role][permission], oauth_client_id: req.application.id})
 		}
 	}
 
 	models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
-		res.locals.message = {text: ' Modified roles and permissions.', type: 'Success: '};
-		res.send("success");
+		res.locals.message = {text: ' Modified roles and permissions.', type: 'success'};
+		res.render('applications/show', { applicationInfo: req.application, errors: []});
 	}).catch(function(error) {
-		res.locals.message = {text: ' Roles and permissions assignment error.', type: 'Warning: '};
-		res.send("error");
+		res.locals.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
+		res.render('applications/show', { applicationInfo: req.application, errors: []});
 	});
 
 

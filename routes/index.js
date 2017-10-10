@@ -70,10 +70,11 @@ router.get('/idm/applications/:applicationId', 		                       sessionC
 router.post('/idm/applications', 					                       sessionController.loginRequired,	applicationController.create);
 router.get('/idm/applications/:applicationId/edit',                        sessionController.loginRequired,	applicationController.edit);
 router.put('/idm/applications/:applicationId', 		                       sessionController.loginRequired,	applicationController.update);
-router.get('/idm/applications/:applicationId/edit/roles',                  sessionController.loginRequired, applicationController.edit_roles);
+router.get('/idm/applications/:applicationId/edit/roles',                  sessionController.loginRequired, applicationController.manage_roles);
 router.post('/idm/applications/:applicationId/edit/roles',                 sessionController.loginRequired, applicationController.role_permissions_assign);
 router.post('/idm/applications/:applicationId/edit/roles/create',          sessionController.loginRequired, applicationController.create_roles);
-router.post('/idm/applications/:applicationId/edit/permissions/create/',   sessionController.loginRequired, applicationController.create_permissions);
+router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',          sessionController.loginRequired, applicationController.edit_roles);
+router.post('/idm/applications/:applicationId/edit/permissions/create',   sessionController.loginRequired, applicationController.create_permissions);
 router.delete('/idm/applications/:applicationId',                          sessionController.loginRequired,	applicationController.destroy);
 
 module.exports = router;

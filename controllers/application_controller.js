@@ -129,8 +129,6 @@ exports.edit_roles = function(req, res) {
 	var role_name = req.body.role_name;
 	var role_id = req.body.role_id;
 
-	console.log(req.body)
-
 	var role = models.role.build({ name: role_name, 
 								   oauth_client_id: req.application.id });
 
@@ -146,6 +144,29 @@ exports.edit_roles = function(req, res) {
 		});
 	}).catch(function(error) {
 		res.send(error.errors[0].message)
+	});
+}
+
+// Delete role
+exports.delete_roles = function(req, res) {
+
+	models.role_permission.destroy({
+		where: { role_id: req.body.role_id,
+				 oauth_client_id: req.body.app_id 
+				}
+	}).then(function(){
+		models.role.destroy({
+		where: { id: req.body.role_id,
+				 oauth_client_id: req.body.app_id 
+				}
+		}).then(function() {
+			res.locals.message = {text: ' Modified roles and permissions.', type: 'success'};
+			res.send({text: ' Role was successfully deleted.', type: 'success'});
+		}).catch(function(error) {
+			res.send({text: ' Error while deleting role.', type: 'warning'});
+		});	
+	}).catch(function(error) {
+		res.send({text: ' Error while deleting role.', type: 'warning'});
 	});
 }
 

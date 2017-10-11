@@ -23,33 +23,6 @@ $(document).ready(function(){
         $("#update_owners_info_message").hide();
     });
 
-    // To show a little form to edit a role
-    $("#update_owners_roles").on("click",".ajax-inline-edit", function(event) { 
-        
-        // Stop linking        
-        event.preventDefault();
-
-        // Load template
-        var edit_role = $('#edit_role').html();
-
-        // Edit template with role and applications ids and role name
-        var role_name = $(this).parent().find("label").html();
-        var role_id = String($(this).attr("href").split("/")[6])
-        var app_id = String(application.id)
-
-        edit_role = edit_role.replace(/app_id/g, app_id);
-        edit_role = edit_role.replace(/role_id/g, role_id);
-        edit_role = edit_role.replace(/role_name/g, role_name);
-
-        // Replace the row with the template edit_role edited
-        $("#update_owners_roles").find("#"+role_id).replaceWith(edit_role);
-    });
-
-    // To delete a role
-    $("#update_owners_roles").find(".ajax-modal").click(function () {
-        alert("delete "+$(this).attr("href").split("/")[6])
-    });
-
     // Pop up with a form to create a new role
     $('#roleButton').click(function () {
       	$('#backdrop').show('open');
@@ -64,37 +37,6 @@ $(document).ready(function(){
         $(".help-block.alert.alert-danger").hide('close');
         return false;
 	});
-
-    // Handle the submit button from the edit role form
-    $("#update_owners_roles").on("click",".inline-edit-submit", function(event) { 
-        
-        // Stop linking        
-        event.preventDefault();
-
-        // Body parameters of request
-        var role_id = String($(this).attr("href").split("/")[6])
-        var role_name = $("#update_owners_roles").find("#"+role_id+".form-control").val()
-
-        // Send put request
-        $.ajax({
-            url: $(this).attr('href'),
-            type: 'PUT',
-            data: { role_name: role_name, role_id: role_id },
-            success: function(result) {
-                if (result === "success") {
-                    var role_row = $('#table_row_role_template').html();
-                    role_row = role_row.replace(/role_name/g, role_name);
-                    role_row = role_row.replace(/role_id/g, role_id);
-                    role_row = role_row.replace(/app_id/g, String(application.id));
-                    $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
-                    $("#assign_role_permission_form").find("#alert_error").hide('close');
-                } else {
-                    $("#assign_role_permission_form").find("#alert_error").show('open');
-                }
-            }
-        });
-
-    });
 
 	// Handle the submit button from the create role form
 	$("#create_role_form").submit(function(event) {
@@ -143,5 +85,147 @@ $(document).ready(function(){
         	}	   
         });
 
-  });
+    });
+
+    // To show a little form to edit a role
+    $("#update_owners_roles").on("click",".ajax-inline-edit", function(event) { 
+        
+        // Stop linking        
+        event.preventDefault();
+
+        // Load template
+        var edit_role = $('#edit_role').html();
+
+        // Edit template with role and applications ids and role name
+        var role_name = $(this).parent().find("label").html();
+        var role_id = String($(this).attr("href").split("/")[6])
+        var app_id = String(application.id)
+
+        edit_role = edit_role.replace(/app_id/g, app_id);
+        edit_role = edit_role.replace(/role_id/g, role_id);
+        edit_role = edit_role.replace(/role_name/g, role_name);
+
+        // Replace the row with the template edit_role edited
+        $("#update_owners_roles").find("#"+role_id).replaceWith(edit_role);
+    });
+
+    // Handle the submit button from the edit role 
+    $("#update_owners_roles").on("click",".inline-edit-submit", function(event) { 
+        
+        // Stop linking        
+        event.preventDefault();
+
+        // Body parameters of request
+        var role_id = String($(this).attr("href").split("/")[6])
+        var role_name = $("#update_owners_roles").find("#"+role_id+".form-control").val()
+
+        // Send put request
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'PUT',
+            data: { role_name: role_name, role_id: role_id },
+            success: function(result) {
+                if (result === "success") {
+                    var role_row = $('#table_row_role_template').html();
+                    role_row = role_row.replace(/role_name/g, role_name);
+                    role_row = role_row.replace(/role_id/g, role_id);
+                    role_row = role_row.replace(/app_id/g, String(application.id));
+                    $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
+                    $("#assign_role_permission_form").find("#alert_error").hide('close');
+                } else {
+                    $("#assign_role_permission_form").find("#alert_error").show('open');
+                }
+            }
+        });
+
+    });
+
+    // Handle the cancel button from edit role
+    $("#update_owners_roles").on("click",".inline-edit-cancel", function(event) { 
+        
+        // Stop linking        
+        event.preventDefault();
+
+
+        var role_id = $(this).attr("href").split("/")[6]
+
+        // Function to find the name of the role
+        function find_role_name(role, index, array) {
+            if (role.id === role_id) {
+                return role
+            }
+        }
+
+        var role = application.roles.find(find_role_name)
+
+        // To return to the previous step
+        var role_row = $('#table_row_role_template').html();
+        role_row = role_row.replace(/role_name/g, role.name);
+        role_row = role_row.replace(/role_id/g, String(role.id));
+        role_row = role_row.replace(/app_id/g, String(application.id));
+
+        $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
+        
+    });
+
+    // Form to delete a role
+    $("#update_owners_roles").on("click",".delete", function(event) { 
+
+        // Stop linking        
+        event.preventDefault();
+
+        // Change form action
+        var role_id = String($(this).parent().attr("id"));
+        var app_id = String(application.id);
+        var action = "/idm/applications/"+app_id+"/edit/roles/"+role_id+"/delete";
+        $("#delete_role_form").attr("action", action);
+
+        // Show form
+        $('#backdrop').show('open');
+        $('#delete_role').show('open');
+    });
+
+    // To confirm delete the role
+    $("#delete_role_form").submit(function(event) {
+
+        // stop form from submitting normally
+        event.preventDefault();
+
+        // get the action attribute from the <form action=""> element 
+        var form = $("#delete_role_form"),
+            url = form.attr('action');
+
+        var role_id = url.split("/")[6]
+        var app_id = url.split("/")[3]
+
+        // Send put request
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            data: { role_id: role_id, app_id: app_id },
+            success: function(result) {
+                if (result.type === "success") {
+                    $("#update_owners_roles").find("#"+role_id).remove();
+                } 
+                var message = $('#message_template').html();
+                message = message.replace(/type/g, result.type);
+                message = message.replace(/data/g, result.text);
+                $(".messages").replaceWith(message);
+
+                $('#backdrop').hide('close');
+                $('#delete_role').hide('close');
+            }
+        });
+    });
+
+    // Exit from form to delete role
+    $("#delete_role").find('.cancel, .close').click(function () {
+        $('#backdrop').hide('close');
+        $('#delete_role').hide('close');
+    });
+
+    // To remove message
+    $("#container.container-fluid").on("click","#close_message",function () {
+        $(".messages").empty();
+    });
 });

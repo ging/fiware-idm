@@ -51,6 +51,7 @@ exports.index = function(req, res) {
 
 // Show info about an application
 exports.show = function(req, res) {
+	console.log(req.application)
 	res.render('applications/show', { applicationInfo: req.application, errors: []});
 };
 
@@ -63,11 +64,11 @@ exports.edit = function(req, res) {
 exports.update = function(req, res) {
 	req.application.name = req.body.application.name;
 	req.application.description = req.body.application.description;
-	req.application.applicationId = req.body.application.applicationId;
-	req.application.applicationSecret = req.body.application.applicationSecret;
+	req.application.url = req.body.application.url;
+	req.application.redirect_uri = req.body.application.redirect_uri;
 
 	req.application.validate().then(function(err) {
-		req.application.save({fields: ["name", "description", "applicationId", "applicationSecret"]}).then(function() {
+		req.application.save({fields: ["name", "description", "url", "redirect_uri"]}).then(function() {
 			res.redirect('/idm/applications/'+req.application.id);
 		});	
 	}).catch(function(error){ 
@@ -218,7 +219,8 @@ exports.role_permissions_assign = function(req, res) {
 
 // Delete application
 exports.destroy = function(req, res) {
-  req.application.destroy().then( function() {
-    res.redirect('/idm/applications');
-  }).catch(function(error){next(error)});
+	// HABRA QUE ELIMINAR TAMBIEN DE LAS BASES DE DATOS RELACIONALES (LA DE LOS ROLES POR EJEMPLO)
+	// req.application.destroy().then( function() {
+	// 	res.redirect('/idm/applications');
+	// }).catch(function(error){next(error)});
 };

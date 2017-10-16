@@ -8,7 +8,6 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       unique: true
     },
-    authorization_user_id : DataTypes.STRING,
     expires: DataTypes.DATE,
     redirect_uri: DataTypes.STRING(2000),
     scope: DataTypes.STRING,

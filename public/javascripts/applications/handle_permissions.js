@@ -34,6 +34,12 @@ $(document).ready(function(){
 
 	// Exit from form to create new permission
 	$('#esc_perm_creation').click(function () {
+        $("#create_permission_form").find("#id_name").val('');
+        $("#create_permission_form").find('#id_description').val(''); 
+        $("#create_permission_form").find('#id_action').val(''); 
+        $("#create_permission_form").find('#id_resource').val(''); 
+        $("#create_permission_form").find('#id_xml').val('');
+        $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
 		$('#backdrop').hide('close');
         $('#create_permission').hide('close');
         return false;
@@ -61,11 +67,12 @@ $(document).ready(function(){
 
     	// See if the result of post data is an error
     	if (data.constructor === Array) {
-    		if(data[0].message == "nameRole") {
-    			$(".help-block.alert.alert-danger").show('open');
+            $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
+            for (var i = data.length - 1; i >= 0; i--) {
+                $("#create_permission_form").find("#"+data[i].message+".help-block.alert.alert-danger").show('open');
+            }
         	return false;
-    		}
-            // If is not an error, add the permission to the list	
+        // If is not an error, add the permission to the list	
     	} else {
             
     		// Create new row in permission column
@@ -79,13 +86,13 @@ $(document).ready(function(){
 
             // Empty input from role creation form
             $("#create_permission_form").find("#id_name").val('');
-            $('#id_description').val(''); 
-            $('#id_action').val(''); 
-            $('#id_resource').val(''); 
-            $('#id_xml').val('');
+            $("#create_permission_form").find('#id_description').val(''); 
+            $("#create_permission_form").find('#id_action').val(''); 
+            $("#create_permission_form").find('#id_resource').val(''); 
+            $("#create_permission_form").find('#id_xml').val('');
 
             // Hide error if exist
-            $(".help-block.alert.alert-danger").hide('close');
+            $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
 
             // Return to normal view
             $('#backdrop').hide('close');

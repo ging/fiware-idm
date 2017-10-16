@@ -5,7 +5,8 @@ module.exports = function(sequelize, DataTypes) {
     'Role_User',
     { authorized: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
+        primaryKey: false
     }
     }, {
 	    tableName: 'role_user',

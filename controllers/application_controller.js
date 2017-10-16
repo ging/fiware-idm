@@ -12,7 +12,7 @@ exports.load = function(req, res, next, applicationId) {
 
 // Form for new application
 exports.new = function(req, res) {
-	res.render('applications/new', {applicationInfo: {}, errors: []})
+	res.render('applications/new', {application: {}, errors: []})
 };
 	
 // Create new application
@@ -24,12 +24,12 @@ exports.create = function(req, res, next) {
 				res.redirect('/idm/applications');
 			}).catch(function(error){ 
 		    	console.log(error)
-			 	res.render('applications/new', { applicationInfo: application, errors: error.errors}); 
+			 	res.render('applications/new', { application: application, errors: error.errors}); 
 			});	
 		});	
 	}).catch(function(error){ 
     	console.log(error)
-	 	res.render('applications/new', { applicationInfo: application, errors: error.errors}); 
+	 	res.render('applications/new', { application: application, errors: error.errors}); 
 	});	
 };
 
@@ -51,13 +51,12 @@ exports.index = function(req, res) {
 
 // Show info about an application
 exports.show = function(req, res) {
-	console.log(req.application)
-	res.render('applications/show', { applicationInfo: req.application, errors: []});
+	res.render('applications/show', { application: req.application, errors: []});
 };
 
 // Edit application
 exports.edit = function(req, res) {
-  res.render('applications/edit', { applicationInfo: req.application, errors: []});
+  res.render('applications/edit', { application: req.application, errors: []});
 };
 
 // Update application
@@ -69,10 +68,12 @@ exports.update = function(req, res) {
 
 	req.application.validate().then(function(err) {
 		req.application.save({fields: ["name", "description", "url", "redirect_uri"]}).then(function() {
-			res.redirect('/idm/applications/'+req.application.id);
+			res.locals.message = {text: ' Application updated successfully.', type: 'success'};
+			res.render('applications/show', { application: req.application, errors: []});
 		});	
 	}).catch(function(error){ 
-	 	res.render('applications/edit', { applicationInfo: req.application, errors: error.errors}); 
+		res.locals.message = {text: ' Application update failed.', type: 'warning'};
+	 	res.render('applications/edit', { application: req.application, errors: error.errors}); 
 	});
 };
 
@@ -151,24 +152,15 @@ exports.edit_roles = function(req, res) {
 // Delete role
 exports.delete_roles = function(req, res) {
 
-	models.role_permission.destroy({
-		where: { role_id: req.body.role_id,
-				 oauth_client_id: req.body.app_id 
-				}
-	}).then(function(){
-		models.role.destroy({
-		where: { id: req.body.role_id,
-				 oauth_client_id: req.body.app_id 
-				}
-		}).then(function() {
-			res.locals.message = {text: ' Modified roles and permissions.', type: 'success'};
-			res.send({text: ' Role was successfully deleted.', type: 'success'});
-		}).catch(function(error) {
-			res.send({text: ' Error while deleting role.', type: 'warning'});
-		});	
+	models.role.destroy({
+	where: { id: req.body.role_id,
+			 oauth_client_id: req.body.app_id 
+			}
+	}).then(function() {
+		res.send({text: ' Role was successfully deleted.', type: 'success'});
 	}).catch(function(error) {
 		res.send({text: ' Error while deleting role.', type: 'warning'});
-	});
+	});	
 }
 
 // Create new permissions
@@ -208,10 +200,10 @@ exports.role_permissions_assign = function(req, res) {
 
 	models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
 		res.locals.message = {text: ' Modified roles and permissions.', type: 'success'};
-		res.render('applications/show', { applicationInfo: req.application, errors: []});
+		res.render('applications/show', { application: req.application, errors: []});
 	}).catch(function(error) {
 		res.locals.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
-		res.render('applications/show', { applicationInfo: req.application, errors: []});
+		res.render('applications/show', { application: req.application, errors: []});
 	});
 
 
@@ -219,8 +211,25 @@ exports.role_permissions_assign = function(req, res) {
 
 // Delete application
 exports.destroy = function(req, res) {
-	// HABRA QUE ELIMINAR TAMBIEN DE LAS BASES DE DATOS RELACIONALES (LA DE LOS ROLES POR EJEMPLO)
-	// req.application.destroy().then( function() {
-	// 	res.redirect('/idm/applications');
-	// }).catch(function(error){next(error)});
+
+	models.oauth_client.destroy({
+		where: { id: req.application.id }
+	}).then(function() {
+		models.role_user.findAll({
+			where: { user_id: req.session.user.id },
+			include: [models.oauth_client]
+		}).then(function(user_applications) {
+			if (user_applications) {
+				var applications = [];
+				for (i = 0; i < user_applications.length; i++) {
+					applications.push(user_applications[i].OauthClient);	
+				}
+				res.locals.message = {text: ' Application deleted.', type: 'success'};
+				res.render('applications/index', { applications: applications, errors: []});
+			}
+		});
+	}).catch(function(error) {
+		res.locals.message = {text: ' Application delete error.', type: 'warning'};
+		res.render('applications/show', { application: req.application, errors: []});
+	});
 };

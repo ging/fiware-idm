@@ -10,24 +10,24 @@ module.exports = function(sequelize, DataTypes) {
     }, name: {
         type: DataTypes.STRING,
         validate: { 
-            notEmpty: {msg: "namePerm"}
+            notEmpty: {msg: "error_empty_name"}
         }
     }, description: {
         type: DataTypes.TEXT,
         validate: { 
-            notEmpty: {msg: "namePerm"}
+            notEmpty: {msg: "error_empty_description"}
         }
     }, is_internal: {
         type: DataTypes.BOOLEAN
     }, action: {
         type: DataTypes.STRING,
         validate: { 
-            notEmpty: {msg: "nameAct"}
+            notEmpty: {msg: "error_empty_action"}
         }
     }, resource: {
         type: DataTypes.STRING,
         validate: { 
-            notEmpty: {msg: "nameRes"}
+            notEmpty: {msg: "error_empty_resource"}
         }
     }, xml: {
         type: DataTypes.TEXT

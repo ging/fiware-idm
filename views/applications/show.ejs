@@ -2,12 +2,12 @@
   <div id="detailApplication">
     <header>
       <h4 class="name">
-        <%= applicationInfo.name %>
-        <a href="/idm/applications/<%= applicationInfo.id %>/edit/" class="small">
+        <%= application.name %>
+        <a href="/idm/applications/<%= application.id %>/edit/" class="small">
           <i class="fa fa-edit"></i>
           <span>edit</span>
         </a>
-        <a href="/idm/applications/<%= applicationInfo.id %>/edit/roles/" class="small">
+        <a href="/idm/applications/<%= application.id %>/edit/roles/" class="small">
           <i class="fa fa-cogs"></i>
           <span>manage roles</span>
         </a>
@@ -23,16 +23,16 @@
             Description
           </h5>
           <div class="info expander">
-            <p><%= applicationInfo.description %></p>
+            <p><%= application.description %></p>
           </div>
         </div>
         <div class="url">
           <h5>URL</h5>
-          <p><%= applicationInfo.url %></p>
+          <p><%= application.url %></p>
         </div>
         <div class="callback_url">
           <h5>Callback URL</h5>
-          <p><%= applicationInfo.redirect_uri %></p>
+          <p><%= application.redirect_uri %></p>
         </div>
         <div class="extra">
           <h4 class="panel-title">
@@ -45,11 +45,11 @@
             <div id="collapse_oauth2_credentials" class="form-group collapse" role="tabpanel">
               <div>
                 <h6 class="panel-heading">Client ID</h6>
-                <p><%= applicationInfo.id %></p>
+                <p><%= application.id %></p>
               </div>
               <div>
                 <h6 class="panel-heading">Client Secret</h6>
-                <p><%= applicationInfo.secret %></p>
+                <p><%= application.secret %></p>
               </div>
             </div>
           </div>
@@ -67,7 +67,7 @@
           </h4>
           <div id="collapse_pep_proxy" class="form-group collapse " role="tabpanel">
             <h6 class="panel-heading"></h6>
-            <a href="/idm/myApplications/<%= applicationInfo.id %>/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>            
+            <a href="/idm/myApplications/<%= application.id %>/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>            
           </div>
         </div>
       </div>
@@ -83,12 +83,12 @@
           </h4>
           <div id="collapse_iot_sensors" class="form-group collapse  no-transition" role="tabpanel">
             <h6 class="panel-heading"></h6>
-            <a href="/idm/myApplications/<%= applicationInfo.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
+            <a href="/idm/myApplications/<%= application.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-application_id="<%= applicationInfo.id %>" data-pagination-pages="">
+    <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-application_id="<%= application.id %>" data-pagination-pages="">
       <div class="panel-heading">
         <span class="title">Authorized Users</span>
         <div class="table_actions clearfix">
@@ -97,7 +97,7 @@
           </div>
           <div id="spinner_auth_users" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
           <div class="btn-group"> 
-            <button href="/idm/myApplications/<%= applicationInfo.id %>/edit/users/" title="Authorize" class="btn btn-default btn-sm ajax-modal" id="auth_users__action_manage_application_users">
+            <button href="/idm/myApplications/<%= application.id %>/edit/users/" title="Authorize" class="btn btn-default btn-sm ajax-modal" id="auth_users__action_manage_application_users">
               <i class="fa fa-key"></i> 
               <span class="action">
                 Authorize
@@ -123,7 +123,7 @@
         <nav id="auth_users_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
       </div>
     </div>
-    <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-application_id="<%= applicationInfo.id %>" data-pagination-pages="">
+    <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-application_id="<%= application.id %>" data-pagination-pages="">
       <div class="panel-heading">
         <span class="title">Authorized Organizations</span>
         <div class="table_actions clearfix">
@@ -132,7 +132,7 @@
           </div>
           <div id="spinner_organizations" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
           <div class="btn-group"> 
-            <button href="/idm/applications/<%= applicationInfo.id %>/edit/organizations/" title="Authorize" class="btn btn-default btn-sm ajax-modal" id="organizations__action_manage_application_organizations">
+            <button href="/idm/applications/<%= application.id %>/edit/organizations/" title="Authorize" class="btn btn-default btn-sm ajax-modal" id="organizations__action_manage_application_organizations">
               <i class="fa fa-key"></i> 
               <span class="action">
                 Authorize

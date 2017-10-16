@@ -32,9 +32,10 @@ $(document).ready(function(){
 
     // Exit from form to create new role
 	$('#esc_role_creation').click(function () {
+        $("#create_role_form").find("#id_name").val('');
     	$('#backdrop').hide('close');
         $('#create_role').hide('close');
-        $(".help-block.alert.alert-danger").hide('close');
+        $("#create_role_form").find(".help-block.alert.alert-danger").hide('close');
         return false;
 	});
 
@@ -57,7 +58,7 @@ $(document).ready(function(){
         	// See if the result of post is an error
         	if (data.constructor === Array) {
         		if(data[0].message == "nameRole") {
-                    $(".help-block.alert.alert-danger").show('open');
+                    $("#create_role_form").find(".help-block.alert.alert-danger").show('open');
                     return false;
         		}
             // If is not an error, add the role to the list	
@@ -77,7 +78,7 @@ $(document).ready(function(){
                 $("#create_role_form").find("#id_name").val('');
 
                 // Hide error if exist
-                $(".help-block.alert.alert-danger").hide('close');
+                $("#create_role_form").find(".help-block.alert.alert-danger").hide('close');
 
                 // Return to normal view
                 $('#backdrop').hide('close');

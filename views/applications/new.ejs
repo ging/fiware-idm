@@ -30,7 +30,7 @@
         <div class="form-group required">
           <label class="control-label  required" for="id_name">Name</label>
           <div class=" ">
-            <input class="form-control" id="id_name" name="application[name]" type="text" value="<%= applicationInfo.name %>">
+            <input class="form-control" id="id_name" name="application[name]" type="text" value="<%= application.name %>">
           </div>
         </div>
         <% if (nameErrors.indexOf("name") != -1) { %>
@@ -40,7 +40,7 @@
         <div class="form-group required">
           <label class="control-label  required" for="id_description">Description</label>
           <div class=" ">
-            <textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= applicationInfo.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= applicationInfo.description %></textarea>
+            <textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= application.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= application.description %></textarea>
           </div>
         </div>
         <% if (nameErrors.indexOf("description") != -1) { %>
@@ -55,7 +55,7 @@
             </a>
           </label>
           <div class=" ">
-            <input class="form-control" id="id_url" name="application[url]" type="text" value="<%= applicationInfo.url %>">
+            <input class="form-control" id="id_url" name="application[url]" type="text" value="<%= application.url %>">
           </div>
         </div>
         <% if (nameErrors.indexOf("url") != -1) { %>
@@ -65,7 +65,7 @@
         <div class="form-group required">
           <label class="control-label  required" for="id_callbackurl">Callback URL <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application Callback URL" data-content="The user agent will be redirected to this URL when OAuth flow is finished." data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
           <div class=" ">
-            <input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= applicationInfo.callbackurl %>" >
+            <input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= application.redirect_uri %>" >
           </div>
         </div>
         <% if (nameErrors.indexOf("redirectUri") != -1) { %>

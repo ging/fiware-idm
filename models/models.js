@@ -46,39 +46,32 @@ var role_permission = sequelize.import(path.join(__dirname,'role_permission'));
 
 
 // Relation between OAuthClient and access token
-oauth_access_token.belongsTo(oauth_client);
-oauth_access_token.belongsTo(user);
+oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
+oauth_access_token.belongsTo(user, {onDelete: 'cascade'});
 
 // Relation between OAuthClient and authorization codes
-oauth_authorization_code.belongsTo(oauth_client);
-oauth_authorization_code.belongsTo(user);
+oauth_authorization_code.belongsTo(oauth_client, {onDelete: 'cascade'});
+oauth_authorization_code.belongsTo(user, {onDelete: 'cascade'});
 
 // Relation between OAuthClient and refresh_token
-oauth_refresh_token.belongsTo(oauth_client);
-oauth_refresh_token.belongsTo(user);
-
-// Relation between OAuthClient and Authorization Code
-oauth_authorization_code.belongsTo(oauth_client);
+oauth_refresh_token.belongsTo(oauth_client, {onDelete: 'cascade'});
+oauth_refresh_token.belongsTo(user, {onDelete: 'cascade'});
 
 // Relation between roles and OAuthClients
-role.belongsTo(oauth_client);
+role.belongsTo(oauth_client, {onDelete: 'cascade'});
 
 // Relation between permissions and OAuthClients
-permission.belongsTo(oauth_client);
-
-// Relation between permissions and roles
-role.belongsToMany(permission, {through: 'Role_Permissions'});
-permission.belongsToMany(role, {through: 'Role_Permissions'});
+permission.belongsTo(oauth_client, {onDelete: 'cascade'});
 
 // Relation between roles, users and OAuthClients
-role_user.belongsTo(role);
-role_user.belongsTo(user);
-role_user.belongsTo(oauth_client);
+role_user.belongsTo(role, {onDelete: 'cascade'});
+role_user.belongsTo(user, {onDelete: 'cascade'});
+role_user.belongsTo(oauth_client, {onDelete: 'cascade'});
 
 // Relation between roles and permissions
-role_permission.belongsTo(role);
-role_permission.belongsTo(permission);
-role_permission.belongsTo(oauth_client);
+role_permission.belongsTo(role, {onDelete: 'cascade'});
+role_permission.belongsTo(permission, {onDelete: 'cascade'});
+role_permission.belongsTo(oauth_client, {onDelete: 'cascade'});
 
 // Exportar tablas
 exports.oauth_client = oauth_client; 

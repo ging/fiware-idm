@@ -1,5 +1,5 @@
 <!-- Form to create permission -->
-<div id=create_permission class="modal in" style="top: 0px; display: none;" aria-hidden="false">
+<div id="create_permission" class="modal in" style="top: 0px; display: none;" aria-hidden="false">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -17,12 +17,14 @@
 								<input class="form-control" id="id_name" maxlength="255" name="name" type="text">
 							</div>
 						</div>
+						<span id="error_empty_name" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 						<div class="form-group required">
 							<label class="control-label  required" for="id_description">Description</label>
 							<div class=" ">
 								<input class="form-control" id="id_description" maxlength="255" name="description" type="text">
 							</div>
 						</div>
+						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 						<div class="panel-group" id="accordion">
 							<div class="panel">
 								<div class="panel-headding">  
@@ -40,12 +42,14 @@
 												<input class="form-control" id="id_action" maxlength="255" name="action" type="text">
 											</div>
 										</div>
+										<span id="error_empty_action" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 										<div class="form-group ">
 											<label class="control-label  " for="id_resource">Resource</label>
 											<div class=" ">
 												<input class="form-control" id="id_resource" maxlength="255" name="resource" type="text">
 											</div>
 										</div>
+										<span id="error_empty_resource" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 									</div>
 								</div>
 							</div>

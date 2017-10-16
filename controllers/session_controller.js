@@ -12,7 +12,6 @@ exports.loginRequired = function(req, res, next){
 
 // Form for login
 exports.new = function(req, res) {
-    console.log(req.session.errors)
     var errors = req.session.errors || {};
     req.session.errors = {};
     res.render('index', {errors: errors});

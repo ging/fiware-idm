@@ -1,0 +1,109 @@
+<!-- Form to authorize user and add role to the application -->
+<div id="authorize_user" class="workflow modal in" style="top: 176px; display: none;" aria-hidden="false">
+    <form class="" action="/idm/applications/<%= application.id %>/edit/users" method="POST">
+        <input type="hidden" name="" value="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a id="esc_auth_user" class="close" data-dismiss="modal">×</a>
+                    <h3>Authorize users in your application</h3>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="tab-content">
+                      <fieldset id="manage_organization_users_application_roles__update_owners_users" class="js-tab-pane active">
+                        <div class="membership update_owners_users_membership dropdown_fix add-members" data-show-roles="True">
+                            <div class="all-users">
+                                <header>
+                                    <h4>All users</h4>
+                                    <div class="form-group has-feedback">
+                                        <input type="text" name="available_update_owners_users_filter" id="available_update_owners_users" class="filter update_owners_users_server_filter form-control input-sm" placeholder="filter" data-url="/filters/users">
+                                    </div>
+                                    <div id="spinner_update_owners_users" class="filtering-spinner-inline" style="display: none;">
+                                        <i class="fa fa-circle-o-notch fa-spin"></i>
+                                    </div>
+                                </header>
+                                <div class="pre-scrollable filterable update_owners_users_server_filterable" id="available_update_owners_users">
+                                    <ul id="available_members" class="available_members available_update_owners_users list-group">
+                                    </ul>
+                                    <ul class="no_results list-group alert alert-info" id="no_available_update_owners_users" style="display: none;">
+                                        <li>No users found.</li>
+                                    </ul>
+                                    <ul class="no_results list-group alert alert-info" id="perform_filter_available_update_owners_users" style="display: block;">
+                                        <li>Use the filter (type at least two characters).</li>
+                                    </ul>
+                                </div>
+                                <span id="alert_error_search" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
+                            </div>
+                            <div class="members-list">
+                                <header>
+                                    <h4>Authorized Users</h4>
+                                    <div class="form-group has-feedback">
+                                        <input type="text" name="update_owners_users_members_filter" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="filter">
+                                    </div>
+                                </header>
+                                <div class="filterable update_owners_users_client_filterable" id="update_owners_users_members">
+
+                                    <ul class="members update_owners_users_members list-group">
+                                        <!-- <li class="list-group-item">
+                                            <img alt="avatar" class="avatar" src="/static/dashboard/img/logos/medium/user.png">
+                                            <div class="member" data-update_owners_users-id="id_update_owners_users_alexph91">
+                                                <div class="data">
+                                                    <span class="name">alexph91</span>
+                                                </div>
+                                                <div class="active">
+                                                    <a class="fa fa-close" href="#add_remove"></a>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown role_options">
+                                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+                                                    <span class="roles_display">1 roles</span>
+                                                    <span class="fa fa-chevron-down"></span>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-right role_dropdown clearfix">
+                                                    <li class="app-roles-list">
+                                                        <span>bbb</span>
+                                                        <ol>
+                                                            <li data-role-id="106" class="role_dropdown_role active">
+                                                                <i class="fa fa-check"></i>
+                                                                provider
+                                                            </li>
+                                                            <li data-role-id="191" class="role_dropdown_role">
+                                                                <i class="fa fa-check"></i>
+                                                                purchaser
+                                                            </li>
+                                                        </ol>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li> -->
+                                    </ul>
+
+                                    <ul class="no_results list-group alert alert-info" id="no_update_owners_users_members" style="display: none;">
+                                        <li>No users.</li>
+                                    </ul>
+                                </div>
+                                <div class="alert alert-warning no_roles_warning" style="display: none;">Some users don't have any role assigned. If you save now         they won't be authorized in the application</div>
+                            </div>
+                        </div>
+                        <!-- <div class="hide">
+                            <div class="form-group ">
+                                <label class="control-label  " for="id_update_owners_users_role_106">provider</label>
+                                <div class=" ">
+                                    <select multiple="multiple" class="form-control" data-superset-id="76a9e935f51d4ecd91fdb602165c9f70" data-superset-name="bbb" id="id_update_owners_users_role_106" name="update_owners_users_role_106">
+                                        <option value="01a7cf9cca83476b8a784bd8591087ad">/static/dashboard/img/logos/medium/user.png$pablocgarcia</option>
+                                        <option value="0201c4233904496c802bbb8ce7a00686">/static/dashboard/img/logos/medium/user.png$daconde</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div> -->
+                    </fieldset>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-primary pull-right always-enabled" type="submit" value="Save">
+                <a class="btn btn-default secondary cancel">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+</div>

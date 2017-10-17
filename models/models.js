@@ -86,17 +86,48 @@ exports.oauth_access_token = oauth_access_token;
 exports.oauth_refresh_token = oauth_refresh_token;
 exports.scope = scope;
 
+var fs = require("fs");
+var text = fs.readFileSync("./models/users_prueba.txt", "utf8");
+var textByLine = text.split("\n")
+array_users = []
+array_users.push({id: 'admin', username: 'admin', email: "admin@admin.com",   password: '1234', enabled: 1})
+array_users.push({id: 'pepe', username: 'pepe',  email: "pepe@pepe.com",     password: '1234', enabled: 1})
+for (var i = 0; i < textByLine.length - 1; i++) {
+  email = textByLine[i]+"@test.com"
+  usuario = {id: String(textByLine[i]), username: String(textByLine[i]), email: email,   password: '1234', enabled: 1}
+  array_users.push(usuario)
+}
+
 // sequelize.sync() initialize tabled in BD
-sequelize.sync().then(function() {
+sequelize.sync().then(function() {  
 
   // INITIALIZE USER TABLE
   user.count().then(function (count){
     if(count === 0) {   // tabla is initialized only if is empty
-      user.bulkCreate( 
-        [ {id: 'admin', username: 'admin', email: "admin@admin.com",   password: '1234', enabled: 1},
-          {id: 'pepe', username: 'pepe',  email: "pepe@pepe.com",     password: '5678', enabled: 1} 
-        ]
-      ).then(function() {
+      //user.bulkCreate( 
+        // [ {id: 'admin', username: 'admin', email: "admin@admin.com",   password: '1234', enabled: 1},
+        //   {id: 'pepe', username: 'pepe',  email: "pepe@pepe.com",     password: '1234', enabled: 1},
+        //   {id: 'jose', username: 'jose',  email: "jose@jose.com",     password: '1234', enabled: 1},
+        //   {id: 'luis', username: 'luis',  email: "luis@luis.com",     password: '1234', enabled: 1},
+        //   {id: 'alex', username: 'alex',  email: "alex@alex.com",     password: '1234', enabled: 1},
+        //   {id: 'alvaro', username: 'alvaro',  email: "alvaro@alvaro.com",     password: '1234', enabled: 1},
+        //   {id: 'lourdes', username: 'lourdes',  email: "lourdes@lourdes.com",     password: '1234', enabled: 1},
+        //   {id: 'ana', username: 'ana',  email: "ana@ana.com",     password: '1234', enabled: 1},
+        //   {id: 'sonsoles', username: 'sonsoles',  email: "sonsoles@sonsoles.com",     password: '1234', enabled: 1},
+        //   {id: 'abel', username: 'abel',  email: "abel@abel.com",     password: '1234', enabled: 1},
+        //   {id: 'aldo', username: 'aldo',  email: "aldo@aldo.com",     password: '1234', enabled: 1},
+        //   {id: 'berto', username: 'berto',  email: "berto@berto.com",     password: '1234', enabled: 1},
+        //   {id: 'kike', username: 'kike',  email: "kike@kike.com",     password: '1234', enabled: 1},
+        //   {id: 'damian', username: 'damian',  email: "damian@damian.com",     password: '1234', enabled: 1},
+        //   {id: 'andres', username: 'andres',  email: "andres@andres.com",     password: '1234', enabled: 1},
+        //   {id: 'pedro', username: 'pedro',  email: "pedro@pedro.com",     password: '1234', enabled: 1},
+        //   {id: 'nacho', username: 'nacho',  email: "nacho@nacho.com",     password: '1234', enabled: 1},
+        //   {id: 'roberto', username: 'roberto',  email: "roberto@roberto.com",     password: '1234', enabled: 1},
+        //   {id: 'çarlos', username: 'çarlos sainz',  email: "carlos@sainz.com",     password: '1234', enabled: 1},
+        //   {id: 'señor', username: 'señor dell',  email: "señor@dell.com",     password: '1234', enabled: 1},
+        //   {id: 'maría', username: 'maría lópez',  email: "maria@lopez.com",     password: '1234', enabled: 1}    
+        // ]
+      user.bulkCreate(array_users).then(function() {
         console.log('Base de datos (tabla user) inicializada');
         // INITIALIZE OAUTH CLIENT TABLE
         oauth_client.count().then(function (count){

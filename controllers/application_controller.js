@@ -1,4 +1,6 @@
 var models = require('../models/models.js');
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op
 
 // Autoload info if path include applicationid
 exports.load = function(req, res, next, applicationId) {
@@ -233,3 +235,26 @@ exports.destroy = function(req, res) {
 		res.render('applications/show', { application: req.application, errors: []});
 	});
 };
+
+
+// Authorize users in an application
+exports.authorize_users = function(req, res) {
+
+	var key = req.body.username
+	models.user.findAll({
+	 	attributes: ['username', 'id'],
+		where: {
+            username: {
+                like: '%' + key + '%'
+            }
+        }
+	}).then(function(users) {
+		if (users.length > 0) {
+			res.send(users)
+		} else {
+			res.send('no_users_found')
+		}
+	});
+
+}
+

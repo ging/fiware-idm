@@ -165,6 +165,7 @@ $(document).ready(function(){
         role_row = role_row.replace(/role_id/g, String(role.id));
         role_row = role_row.replace(/app_id/g, String(application.id));
 
+        $("#assign_role_permission_form").find("#alert_error").hide('close');
         $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
         
     });

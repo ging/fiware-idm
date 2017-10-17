@@ -77,5 +77,7 @@ router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',      sess
 router.delete('/idm/applications/:applicationId/edit/roles/:roleId/delete', sessionController.loginRequired,    applicationController.delete_roles);
 router.post('/idm/applications/:applicationId/edit/permissions/create',     sessionController.loginRequired,    applicationController.create_permissions);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.destroy);
+router.post('/idm/applications/:applicationId/authorize/users',             sessionController.loginRequired,    applicationController.authorize_users);
+
 
 module.exports = router;

@@ -154,12 +154,13 @@
 
 <script>
   var application = <%- JSON.stringify(application) %>;
+  var users_authorized = <%- JSON.stringify(users_authorized) %>;
 </script>
 
 
 <%- include _authorize_user %>
 <%- include templates/_authorize_user_row %>
-<%- include templates/_assign_role_user %>
+<%- include templates/_assign_role_user_row %>
 
 <script src="/javascripts/applications/handle_authorize_users.js" type="text/javascript"></script>
 

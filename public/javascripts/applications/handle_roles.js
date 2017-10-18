@@ -19,13 +19,13 @@ $(document).ready(function(){
                 }
             }
         }
-        $("#update_owners_permissions").show();
-        $("#update_owners_info_message").hide();
+        $("#update_owners_permissions").show('open');
+        $("#update_owners_info_message").hide('close');
     });
 
     // Pop up with a form to create a new role
     $('#roleButton').click(function () {
-      	$('#backdrop').show('open');
+      	$('#backdrop').show();
         $('#create_role').show('open');
         return false;
 	});
@@ -33,7 +33,7 @@ $(document).ready(function(){
     // Exit from form to create new role
 	$('#esc_role_creation').click(function () {
         $("#create_role_form").find("#id_name").val('');
-    	$('#backdrop').hide('close');
+    	$('#backdrop').hide();
         $('#create_role').hide('close');
         $("#create_role_form").find(".help-block.alert.alert-danger").hide('close');
         return false;
@@ -81,7 +81,7 @@ $(document).ready(function(){
                 $("#create_role_form").find(".help-block.alert.alert-danger").hide('close');
 
                 // Return to normal view
-                $('#backdrop').hide('close');
+                $('#backdrop').hide();
               	$('#create_role').hide('close');
         	}	   
         });
@@ -147,7 +147,6 @@ $(document).ready(function(){
         // Stop linking        
         event.preventDefault();
 
-
         var role_id = $(this).attr("href").split("/")[6]
 
         // Function to find the name of the role
@@ -183,7 +182,7 @@ $(document).ready(function(){
         $("#delete_role_form").attr("action", action);
 
         // Show form
-        $('#backdrop').show('open');
+        $('#backdrop').show();
         $('#delete_role').show('open');
     });
 
@@ -200,7 +199,7 @@ $(document).ready(function(){
         var role_id = url.split("/")[6]
         var app_id = url.split("/")[3]
 
-        // Send put request
+        // Send delete request
         $.ajax({
             url: url,
             type: 'DELETE',
@@ -208,13 +207,16 @@ $(document).ready(function(){
             success: function(result) {
                 if (result.type === "success") {
                     $("#update_owners_roles").find("#"+role_id).remove();
+                    delete application.role_permission_assign[role_id]
+                    $("#update_owners_permissions").hide('close');
+                    $("#update_owners_info_message").show('open');
                 } 
                 var message = $('#message_template').html();
                 message = message.replace(/type/g, result.type);
                 message = message.replace(/data/g, result.text);
                 $(".messages").replaceWith(message);
 
-                $('#backdrop').hide('close');
+                $('#backdrop').hide();
                 $('#delete_role').hide('close');
             }
         });
@@ -222,7 +224,7 @@ $(document).ready(function(){
 
     // Exit from form to delete role
     $("#delete_role").find('.cancel, .close').click(function () {
-        $('#backdrop').hide('close');
+        $('#backdrop').hide();
         $('#delete_role').hide('close');
     });
 

@@ -20,7 +20,7 @@
 			                        <div class="btn-group-vertical roles update_owners_roles" data-toggle="buttons" id="update_owners_roles">
 							            <% for (var i = 0; i < application.roles.length; i++) { -%>
 	                                        <div id="<%= application.roles[i].id%>" class="btn btn-default role no-editable">
-	                                            <input type="radio" name="roles" id="" autocomplete="off" data-update_owners-id="">
+	                                            <input type="radio" name="" id="" autocomplete="off" data-update_owners-id="">
 	                                            <label><%= application.roles[i].name%></label>
 	                                            <a href="/idm/applications/<%= application.id %>/edit/roles/<%= application.roles[i].id%>/edit" class="ajax-inline-edit">
 	                                            	<i class="fa fa-edit"></i>

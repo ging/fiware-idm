@@ -193,6 +193,8 @@ sequelize.sync().then(function() {
                                           oauth_client.findAll({ where: {name: ['app1', 'app2', 'app3']}}).then(function(app) { 
                                             role_user.bulkCreate(
                                               [ {user_id: 'admin', oauth_client_id: app[2].id},
+                                                {user_id: 'pepe', oauth_client_id: app[2].id},
+                                                {user_id: 'pepe', oauth_client_id: app[0].id},
                                                 {user_id: 'pepe', oauth_client_id: app[1].id},
                                                 {user_id: 'admin', oauth_client_id: app[0].id}
                                               ]

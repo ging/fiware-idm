@@ -7,7 +7,7 @@ var key = 'paldflmarfijnakjdakldsfmal';
 
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define(
-        'user', 
+        'User', 
         { id: {
             type: DataTypes.UUID,
             primaryKey: true,

@@ -1,6 +1,4 @@
 var models = require('../models/models.js');
-var Sequelize = require('sequelize');
-const Op = Sequelize.Op
 
 // Autoload info if path include applicationid
 exports.load = function(req, res, next, applicationId) {
@@ -53,7 +51,21 @@ exports.index = function(req, res) {
 
 // Show info about an application
 exports.show = function(req, res) {
-	res.render('applications/show', { application: req.application, errors: []});
+	models.role_user.findAll({
+		where: { oauth_client_id: req.application.id },
+		include: [{
+			model: models.user,
+			attributes: ['id', 'username']
+		}]
+	}).then(function(users_application) {
+		if (users_application) {
+			var users_authorized = [];
+			for (i = 0; i < users_application.length; i++) {
+				users_authorized.push({ id: users_application[i].User.id, username: users_application[i].User.username});	
+			}
+			res.render('applications/show', { application: req.application, users_authorized: users_authorized, errors: []});
+		}
+	});
 };
 
 // Edit application
@@ -186,7 +198,6 @@ exports.create_permissions = function(req, res) {
 
 // Assing permissions to roles 
 exports.role_permissions_assign = function(req, res) {
-
 	models.role_permission.destroy({
 		where: { oauth_client_id: req.application.id }
 	});
@@ -202,10 +213,10 @@ exports.role_permissions_assign = function(req, res) {
 
 	models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
 		res.locals.message = {text: ' Modified roles and permissions.', type: 'success'};
-		res.render('applications/show', { application: req.application, errors: []});
+		res.render('applications/show', { application: req.application, users_authorized: [], errors: []});
 	}).catch(function(error) {
 		res.locals.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
-		res.render('applications/show', { application: req.application, errors: []});
+		res.render('applications/show', { application: req.application, users_authorized: [], errors: []});
 	});
 
 

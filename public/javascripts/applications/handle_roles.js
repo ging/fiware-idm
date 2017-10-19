@@ -126,16 +126,21 @@ $(document).ready(function(){
             type: 'PUT',
             data: { role_name: role_name, role_id: role_id },
             success: function(result) {
-                if (result === "success") {
+                if (result.type === "success") {
                     var role_row = $('#table_row_role_template').html();
                     role_row = role_row.replace(/role_name/g, role_name);
                     role_row = role_row.replace(/role_id/g, role_id);
                     role_row = role_row.replace(/app_id/g, String(application.id));
                     $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
                     $("#assign_role_permission_form").find("#alert_error").hide('close');
+                    var message = $('#message_template').html();
+                    message = message.replace(/type/g, result.type);
+                    message = message.replace(/data/g, result.text);
+                    $(".messages").replaceWith(message);
                 } else {
                     $("#assign_role_permission_form").find("#alert_error").show('open');
                 }
+
             }
         });
 

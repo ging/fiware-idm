@@ -58,20 +58,20 @@ oauth_refresh_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(user, {onDelete: 'cascade'});
 
 // Relation between roles and OAuthClients
-role.belongsTo(oauth_client, {onDelete: 'cascade'});
+role.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between permissions and OAuthClients
-permission.belongsTo(oauth_client, {onDelete: 'cascade'});
+permission.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between roles, users and OAuthClients
-role_user.belongsTo(role, {onDelete: 'cascade'});
-role_user.belongsTo(user, {onDelete: 'cascade'});
-role_user.belongsTo(oauth_client, {onDelete: 'cascade'});
+role_user.belongsTo(role, { /*foreignKey: { allowNull: false },*/ onDelete: 'cascade'});
+role_user.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role_user.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between roles and permissions
-role_permission.belongsTo(role, {onDelete: 'cascade'});
-role_permission.belongsTo(permission, {onDelete: 'cascade'});
-role_permission.belongsTo(oauth_client, {onDelete: 'cascade'});
+role_permission.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role_permission.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Exportar tablas
 exports.oauth_client = oauth_client; 

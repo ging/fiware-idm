@@ -52,6 +52,7 @@ exports.create = function(req, res) {
 
 // Delete Session
 exports.destroy = function(req, res) {
+    delete req.session.application;
     delete req.session.user;
     res.redirect('/'); 
 };

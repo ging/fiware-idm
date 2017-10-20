@@ -19,10 +19,12 @@ exports.load = function(req, res, next, applicationId) {
 							}]
 						}).then(function(users_application) {
 							if (users_application) {
-								var users_authorized = [];
-								for (i = 0; i < users_application.length; i++) {
-									users_authorized.push({ user_id: users_application[i].User.id, username: users_application[i].User.username});	
-								}
+								var users_authorized = []
+								users_application.forEach(function(app) {
+										users_authorized.push({ user_id: app.User.id, 
+																role_id: app.role_id, 
+																username: app.User.username});
+								});
 								req.session.application_users_authorized = users_authorized;
 								next();
 							} else { next(new Error("No existe la aplicacion con id = " + applicationId));}
@@ -61,13 +63,19 @@ exports.create = function(req, res, next) {
 exports.index = function(req, res) {
 	models.role_user.findAll({
 		where: { user_id: req.session.user.id },
-		include: [models.oauth_client]
+		include: [{
+			model: models.oauth_client,
+			attributes: ["id", "name", "url"]
+		}]
 	}).then(function(user_applications) {
 		if (user_applications) {
-			var applications = [];
-			for (i = 0; i < user_applications.length; i++) {
-				applications.push(user_applications[i].OauthClient);	
-			}
+			var applications = []
+			user_applications.forEach(function(app) {
+				if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
+					applications.push(app.OauthClient)
+				} 
+			});
+
 			if (req.session.message) {
 				res.locals.message = req.session.message;
 				delete req.session.message
@@ -83,9 +91,9 @@ exports.show = function(req, res) {
 		res.locals.message = req.session.message;
 		delete req.session.message
 	}
-	console.log(req.session.application_users_authorized)
 	res.render('applications/show', { application: req.session.application, 
 									  users_authorized: req.session.application_users_authorized, 
+									  roles: req.session.application_roles,
 									  errors: [] });
 };
 
@@ -261,7 +269,7 @@ exports.destroy = function(req, res) {
 		});
 	}).catch(function(error) {
 		req.session.message = {text: ' Application delete error.', type: 'warning'};
-		res.redirect('/idm/applications/index');
+		res.redirect('/idm/applications');
 	});
 };
 
@@ -298,11 +306,9 @@ exports.authorize_users = function(req, res) {
 
 		for (var i = 0; i < submit_authorize_users.length; i++) {
 			submit_authorize_users[i].oauth_client_id = req.session.application.id;
+			submit_authorize_users[i].role_id = "ESUNAPRUEBA"
 			delete submit_authorize_users[i].username
 		}
-
-		console.log(req.session.application_users_authorized)
-
 
 		models.role_user.bulkCreate(submit_authorize_users).then(function() {
 			res.send({text: ' Modified users authorization.', type: 'success'})

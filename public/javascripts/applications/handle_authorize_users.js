@@ -7,11 +7,37 @@ $(document).ready(function(){
 	$('#auth_users_action_manage_application_users').click(function () {
 		$('#backdrop').show();
         $('#authorize_user').show('open');
+
+        // Relation between users and roles
+        user_role_assign = {}
+		for (var i = 0; i < users_authorized.length; i++) {
+			if (!user_role_assign[users_authorized[i].user_id]) {
+		        user_role_assign[users_authorized[i].user_id] = [];
+		    }
+		    user_role_assign[users_authorized[i].user_id].push(users_authorized[i].role_id);
+		}
+
+		// For each user create a new row
         for (var i = 0; i < users_authorized.length; i++) {
-        	var assign_role_user_row = $('#table_row_assign_role_user_template').html();
-	        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
-	        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
-	        $("#authorize_user").find(".members").append(assign_role_user_row);
+			if (!$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).length) {
+				var assign_role_user_row = $('#table_row_assign_role_user_template').html();
+		        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
+		        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
+		        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
+		        if (user_role_assign[users_authorized[i].user_id]) {
+		        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String(user_role_assign[users_authorized[i].user_id].length  + " roles"));
+
+		        }     
+		        $("#authorize_user").find(".members").append(assign_role_user_row);
+		        for (j in roles) {
+		        	if (user_role_assign[users_authorized[i].user_id].some(elem => elem == roles[j].id)) {
+		        		var role = "<li id="+roles[j].id+" class='role_dropdown_role active'><i class='fa fa-check'></i>"+roles[j].name+"</li>"	
+		        	} else {
+		        		var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
+		        	}
+		        	$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("ol").append(role)
+		        }
+			} 
         }
 	});
 
@@ -74,7 +100,15 @@ $(document).ready(function(){
 	    	var assign_role_user_row = $('#table_row_assign_role_user_template').html();
 	        assign_role_user_row = assign_role_user_row.replace(/username/g, String(username));
 	        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(id));
+	        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name))
+	        assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String("No roles"));
 	        $("#authorize_user").find(".members").append(assign_role_user_row);
+	        for (j in roles) {
+	        	var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
+	        	$("#authorize_user").find(".members").find("#"+id).find("ol").append(role)
+	        }
+
+
 	        info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+id+" added</span>"
         	$("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
         	$("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);

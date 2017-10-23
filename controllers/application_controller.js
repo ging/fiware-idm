@@ -47,10 +47,11 @@ exports.new = function(req, res) {
 exports.create = function(req, res, next) {
 	var application = models.oauth_client.build(req.body.application);
 	application.validate().then(function(err) {
+		////// CAMBIAR EL ROLE ID CREADO EN ROLE_USER PARA CUANDO SE CREA UNA APLICACION SE CREEN ROLES AUTOMATICAMENTE
 		application.save({fields: ["id", "name", "description", "url", "redirect_uri", "secret"]}).then(function() {
-			models.role_user.create({ oauth_client_id: application.id, user_id: req.session.user.id}).then(function(newAssociation) {
-				res.redirect('/idm/applications/'+application.id);
-			}).catch(function(error){ 
+			models.role_user.create({ oauth_client_id: application.id, role_id: "5b040984-8356-444e-99cc-c475e4ea9da6", user_id: req.session.user.id}).then(function(newAssociation) {
+				res.redirect('/idm/applications/'+application.id+'/step/avatar');
+			}).catch(function(error){
 			 	res.render('applications/new', { application: application, errors: error.errors}); 
 			});	
 		});	
@@ -58,6 +59,25 @@ exports.create = function(req, res, next) {
 	 	res.render('applications/new', { application: application, errors: error.errors}); 
 	});	
 };
+
+// Form to create avatar when creating an application
+exports.step_new_avatar = function(req, res, next) {
+	res.render('applications/create_avatar', { application: req.session.application, errors: error.errors});
+};
+
+// CreateAvatar when creating an application
+exports.step_create_avatar = function(req, res, next) {
+	res.redirect('/idm/applications/'+application.id+'/step/roles');
+};
+
+// Form to assign roles when creating an application
+exports.step_new_roles = function(req, res, next) {
+};
+
+// Assign roles when creating an application
+exports.step_create_roles = function(req, res, next) {
+};
+
 
 // List all applications
 exports.index = function(req, res) {
@@ -104,19 +124,30 @@ exports.edit = function(req, res) {
 
 // Update application
 exports.update = function(req, res) {
-	req.session.application.name = req.body.application.name;
-	req.session.application.description = req.body.application.description;
-	req.session.application.url = req.body.application.url;
-	req.session.application.redirect_uri = req.body.application.redirect_uri;
-
-	req.session.application.validate().then(function(err) {
-		req.session.application.save({fields: ["name", "description", "url", "redirect_uri"]}).then(function() {
+	console.log(req.body.application)
+	req.body.application["id"] = req.session.application.id
+	var application = models.oauth_client.build(req.body.application);
+	application.validate().then(function(err) {
+		models.oauth_client.update(
+			{ name: req.body.application.name,
+			  description: req.body.application.description,
+			  url: req.body.application.url,
+			  redirect_uri: req.body.application.redirect_uri, },
+			{
+				fields: ["name","description","url","redirect_uri"],
+				where: {id: req.session.application.id}
+			}
+		).then(function() {
+			req.session.application.name = req.body.application.name;
+			req.session.application.description = req.body.application.description;
+			req.session.application.url = req.body.application.url;
+			req.session.application.redirect_uri = req.body.application.redirect_uri;
 			req.session.message = {text: ' Application updated successfully.', type: 'success'};
 			res.redirect("/idm/applications/"+req.session.application.id);
 		});	
 	}).catch(function(error){ 
-		req.session.message = {text: ' Application update failed.', type: 'warning'};
-	 	res.redirect("/idm/applications/"+req.session.application.id);
+		res.locals.message = {text: ' Application update failed.', type: 'warning'};
+	 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
 	});
 };
 
@@ -156,6 +187,7 @@ exports.create_roles = function(req, res) {
 
 	role.validate().then(function(err) {
 		role.save({fields: ["id", "name", "oauth_client_id"]}).then(function() {
+			req.session.application_roles.push({id: role.id, name: role.name})
 			res.send(role);
 		})
 	}).catch(function(error) {
@@ -178,7 +210,11 @@ exports.edit_roles = function(req, res) {
 				fields: ["name"],
 				where: {id: role_id}
 			}
-		).then(function(){	
+		).then(function(){
+			var index = req.session.application_roles.findIndex(elem => elem.id === role_id); 
+	        if (index > -1) {
+	        	req.session.application_roles[index].name = role_name;        	
+	        }	
 			res.send({text: ' Role was successfully edited.', type: 'success'});
 		}).catch(function(error) {
 			res.send({text: ' Error while editing role.', type: 'warning'})
@@ -196,6 +232,10 @@ exports.delete_roles = function(req, res) {
 			 oauth_client_id: req.body.app_id 
 			}
 	}).then(function() {
+		var index = req.session.application_roles.findIndex(elem => elem.id === req.body.role_id); 
+        if (index > -1) {
+        	req.session.application_roles.splice(index, 1);        	
+        }
 		res.send({text: ' Role was successfully deleted.', type: 'success'});
 	}).catch(function(error) {
 		res.send({text: ' Error while deleting role.', type: 'warning'});
@@ -306,7 +346,6 @@ exports.authorize_users = function(req, res) {
 
 		for (var i = 0; i < submit_authorize_users.length; i++) {
 			submit_authorize_users[i].oauth_client_id = req.session.application.id;
-			submit_authorize_users[i].role_id = "ESUNAPRUEBA"
 			delete submit_authorize_users[i].username
 		}
 

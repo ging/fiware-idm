@@ -32,7 +32,7 @@
                                         <li>Use the filter (type at least two characters).</li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
+                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
                             </div>
                             <div class="members-list">
                                 <header>
@@ -50,8 +50,9 @@
                                         <li>No users.</li>
                                     </ul>
                                 </div>
+                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
                                 
-                                <div class="alert alert-warning no_roles_warning" style="display: none;">Some users don't have any role assigned. If you save now         they won't be authorized in the application</div>
+                                <div class="alert alert-warning no_roles_warning" style="display: none;">Some users don't have any role assigned. If you save now they won't be authorized in the application</div>
                             </div>
                         </div>
                         <!-- <div class="hide">
@@ -71,7 +72,7 @@
             </div>
 
             <div class="modal-footer">
-                <input class="btn btn-primary pull-right always-enabled" type="submit" value="Save">
+                <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="Save">
                 <a class="btn btn-default secondary cancel">Cancel</a>
             </div>
         </div>

@@ -38,14 +38,14 @@ router.get('/oauth2/authorize',     oauthController.log_in);
 router.post('/oauth2/authorize',    oauthController.authorize);
 
 // PRUEBA DE OAUTH
-router.get('/me', oauthController.authenticate(), function(req,res){
+/*router.get('/me', oauthController.authenticate(), function(req,res){
   res.json({
     me: req.user,
     messsage: 'Authorization success, Without Scopes, Try accessing /profile with `profile` scope',
     description: 'Try postman https://www.getpostman.com/collections/37afd82600127fbeef28',
     more: 'pass `profile` scope while Authorize'
   })
-});
+});*/
 
 // Routes for users sessions
 router.get('/auth/login',		sessionController.new);
@@ -68,6 +68,10 @@ router.get('/idm/applications',  					                        sessionController.
 router.get('/idm/applications/new',                                         sessionController.loginRequired,    applicationController.new);
 router.get('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.show);
 router.post('/idm/applications', 					                        sessionController.loginRequired,	applicationController.create);
+router.get('/idm/applications/:applicationId/step/avatar',                  sessionController.loginRequired,    applicationController.step_new_avatar);
+router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    applicationController.step_create_avatar);
+router.get('/idm/applications/:applicationId/step/roles',                   sessionController.loginRequired,    applicationController.step_new_roles);
+router.post('/idm/applications/:applicationId/step/roles',                  sessionController.loginRequired,    applicationController.step_create_roles);
 router.get('/idm/applications/:applicationId/edit',                         sessionController.loginRequired,	applicationController.edit);
 router.put('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.update);
 router.get('/idm/applications/:applicationId/edit/roles',                   sessionController.loginRequired,    applicationController.manage_roles);

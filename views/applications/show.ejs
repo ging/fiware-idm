@@ -156,6 +156,18 @@
   var application = <%- JSON.stringify(application) %>;
   var users_authorized = <%- JSON.stringify(users_authorized) %>;
   var roles = <%- JSON.stringify(roles) %>;
+
+  var user_role_count = {}
+  // Relation between users and roles
+  for (var i = 0; i < users_authorized.length; i++) {
+    if (!user_role_count[users_authorized[i].user_id]) {
+      user_role_count[users_authorized[i].user_id] = 0;
+    }
+    user_role_count[users_authorized[i].user_id]++;
+  }
+
+  var users_authorized_original = JSON.parse(JSON.stringify(users_authorized))
+  var user_role_count_original = JSON.parse(JSON.stringify(user_role_count))
 </script>
 
 

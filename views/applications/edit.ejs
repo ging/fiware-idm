@@ -75,7 +75,7 @@
 			</div>
 		</div>
 	</div>
-	<!-- <div class="panel panel-default ">
+	<div class="panel panel-default ">
 		<div class="panel-body">
 			<div id="" class="edit update-avatar-modal">
 				<div class="modal-header">
@@ -83,39 +83,43 @@
 						Application Avatar
 					</h3>
 				</div>
-				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/myApplications/7d8e913b71bd437c9e92e8dff3eb2e8e/edit/avatar/" method="POST" enctype="multipart/form-data"><input type="hidden" name="csrfmiddlewaretoken" value="imLQzAyFx0oooGCbMd09sihCoUHeqhem">
+				<form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>?_method=put" method="POST" enctype="multipart/form-data">
+					<input id="submit_avatar" type="hidden" name="" value="">
 					<div class="modal-body clearfix">
 						<div class="row">
 							<div class="avatar_col col-xs-12 col-md-6 used-avatar">
 								<div class="profile_img">
-									<img src="/static/dashboard/img/logos/original/app.png" alt="uploaded image">
+									<img id="avatar-update" src="<%= application.image %>" alt="uploaded image" style="width: 100px; height: 100px;">
 								</div>
 								<div class="profile_actions">
-									<button class="btn btn-primary always-enabled ajax-modal" href="/idm/myApplications/7d8e913b71bd437c9e92e8dff3eb2e8e/edit/delete_image/" disabled="true">Delete this image</button>
+									<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/" disabled="true">Delete this image</button>
 								</div>
 							</div>
 						</div>
 						<div>
 							<fieldset>
 								<h6>Upload an image</h6> 
-								<input id="id_x1" name="x1" type="hidden">
+								<!-- <input id="id_x1" name="x1" type="hidden">
 								<input id="id_y1" name="y1" type="hidden">
 								<input id="id_x2" name="x2" type="hidden">
 								<input id="id_y2" name="y2" type="hidden">
 								<input id="id_appID" name="appID" type="hidden" value="7d8e913b71bd437c9e92e8dff3eb2e8e">
-								<input id="id_redirect_to" name="redirect_to" type="hidden" value="update">
+								<input id="id_redirect_to" name="redirect_to" type="hidden" value="update"> -->
 								<div class="form-group ">
-									<label class="control-label  " for="id_image"></label>
-									<div class=" ">
-										<input id="id_image" name="image" type="file">
+									<label class="control-label" for="id_image"></label>
+									<div id="image_selected" class="">
+										<input id="id_image" accept="image/*" name="image" type="file">
 									</div>
 								</div>
 							</fieldset>
 						</div>
 						<div class="row avatar-update-container">
+							<div class="col-md-10" style="display:none;">
+								<img id="avatar-update" src="/img/logos/original/app.png">
+							</div>
 							<div class="col-md-2 update_actions" style="display:none;">
 								<h6>Select the part of the image you want to use as avatar.</h6>
-								<button id="crop-and-use-button" disabled="true" class="btn btn-primary always-enabled" name="crop_and_use" type="submit">Crop and use</button>
+								<button id="crop-and-use-button" class="btn btn-primary always-enabled" name="crop_and_use" type="submit">Crop and use</button>
 								<a href="#" class="btn btn-default always-enabled" id="cancel-crop-button">Cancel</a>
 							</div>
 						</div>
@@ -125,7 +129,7 @@
 				</form>
 			</div>
 		</div>
-	</div> -->
+	</div>
 	<div class="panel panel-default cancel_account">
 		<div class="panel-body">
 			<div id="cancel-application-modal" class="edit">
@@ -162,9 +166,21 @@
 	</div>
 </div>
 
+<script>
+	var application = <%- JSON.stringify(application) %>;
+</script>
+
+<%- include _delete_avatar %>
+
+<%- include templates/_info_message %>
+
+<script src="/javascripts/applications/handle_edit_application.js" type="text/javascript"></script>
+
 <script type="text/javascript">
     $(function () {
       $('[data-toggle="popover"]').popover({html:true});
       //$('[data-toggle="tooltip"]').tooltip();
     });
 </script>
+
+<div class="messages"></div>

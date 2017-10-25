@@ -22,6 +22,9 @@
   						<% var i; for (i=0; i < applications.length; i++) { %> 
 	  						<div class="list-group-item">
 	  							<a class="item" href="/idm/applications/<%= applications[i].id %>">
+	  								<div class="avatar filter_field">
+											<img src="<%= applications[i].image %>">
+										</div>
 		  							<div class="name filter_field"><%= applications[i].name %></div>
 		    						<div class="url filter_field"><%= applications[i].url %></div>
 					  			</a>

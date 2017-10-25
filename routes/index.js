@@ -1,4 +1,5 @@
 var express = require('express');
+var multer  = require('multer');
 var router = express.Router();
 
 // Create controllers
@@ -63,23 +64,25 @@ router.param('applicationId', applicationController.load);
 // Route form home of user
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
+imageUpload = multer({ dest: './public/img/applications/'})
+
 // Routes to get info about applications
 router.get('/idm/applications',  					                        sessionController.loginRequired,	applicationController.index);
 router.get('/idm/applications/new',                                         sessionController.loginRequired,    applicationController.new);
 router.get('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.show);
 router.post('/idm/applications', 					                        sessionController.loginRequired,	applicationController.create);
 router.get('/idm/applications/:applicationId/step/avatar',                  sessionController.loginRequired,    applicationController.step_new_avatar);
-router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    applicationController.step_create_avatar);
+router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    imageUpload.single('image'),    applicationController.step_create_avatar);
 router.get('/idm/applications/:applicationId/step/roles',                   sessionController.loginRequired,    applicationController.step_new_roles);
-router.post('/idm/applications/:applicationId/step/roles',                  sessionController.loginRequired,    applicationController.step_create_roles);
 router.get('/idm/applications/:applicationId/edit',                         sessionController.loginRequired,	applicationController.edit);
-router.put('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.update);
+router.put('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	imageUpload.single('image'),    applicationController.update);
 router.get('/idm/applications/:applicationId/edit/roles',                   sessionController.loginRequired,    applicationController.manage_roles);
 router.post('/idm/applications/:applicationId/edit/roles',                  sessionController.loginRequired,    applicationController.role_permissions_assign);
-router.post('/idm/applications/:applicationId/edit/roles/create',           sessionController.loginRequired,    applicationController.create_roles);
-router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',      sessionController.loginRequired,    applicationController.edit_roles);
-router.delete('/idm/applications/:applicationId/edit/roles/:roleId/delete', sessionController.loginRequired,    applicationController.delete_roles);
-router.post('/idm/applications/:applicationId/edit/permissions/create',     sessionController.loginRequired,    applicationController.create_permissions);
+router.post('/idm/applications/:applicationId/edit/roles/create',           sessionController.loginRequired,    applicationController.create_role);
+router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',      sessionController.loginRequired,    applicationController.edit_role);
+router.delete('/idm/applications/:applicationId/edit/roles/:roleId/delete', sessionController.loginRequired,    applicationController.delete_role);
+router.post('/idm/applications/:applicationId/edit/permissions/create',     sessionController.loginRequired,    applicationController.create_permission);
+router.delete('/idm/applications/:applicationId/edit/delete_avatar/',       sessionController.loginRequired,    applicationController.delete_avatar);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.destroy);
 router.post('/idm/applications/:applicationId/available/users',             sessionController.loginRequired,    applicationController.available_users);
 router.post('/idm/applications/:applicationId/authorize/users',             sessionController.loginRequired,    applicationController.authorize_users);

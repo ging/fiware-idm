@@ -10,12 +10,12 @@
                 </div>
             </h3><h3 class="step-title">Application Avatar</h3>
         </div>
-        <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/step/avatar/" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="" value="">
-            <!-- <div class="modal-body clearfix">
+        <form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/step/avatar/" method="POST" enctype="multipart/form-data">
+            <input id="submit_avatar" type="hidden" name="" value="">
+            <div class="modal-body clearfix">
                 <div class="row avatar-update-container">
                     <div class="col-md-10">
-                        <img id="avatar-update" src="/static/dashboard/img/logos/original/app.png" alt="your image">
+                        <img id="avatar-update" src="/img/logos/original/app.png" alt="your image">
                     </div>
                     <div class="col-md-2 update_actions" style="display:none;">
                         <h6>Select the part of the image you want to use as avatar.</h6>
@@ -24,24 +24,26 @@
                 </div>
                 <div>
                     <fieldset>
-                        <input id="id_x1" name="x1" type="hidden">
+                        <!-- <input id="id_x1" name="x1" type="hidden">
                         <input id="id_y1" name="y1" type="hidden">
                         <input id="id_x2" name="x2" type="hidden">
                         <input id="id_y2" name="y2" type="hidden">
                         <input id="id_appID" name="appID" type="hidden" value="25c5a7cb13564081bdb95f70d6e18e7a">
-                        <input id="id_redirect_to" name="redirect_to" type="hidden" value="create">
+                        <input id="id_redirect_to" name="redirect_to" type="hidden" value="create"> -->
                         <div class="form-group ">
-                            <label class="control-label  " for="id_image"></label>
-                            <div class=" ">
-                                <input id="id_image" name="image" type="file">
+                            <label class="control-label" for="id_image"></label>
+                            <div id="image_selected" class="">
+                                <input id="id_image" accept="image/*" name="image" type="file">
                             </div>
                         </div>
                     </fieldset>
                 </div>
-            </div> -->
+            </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Next</button>
             </div>
         </form>
     </div>
 </div>
+
+<script src="/javascripts/applications/handle_assign_avatar.js" type="text/javascript"></script>

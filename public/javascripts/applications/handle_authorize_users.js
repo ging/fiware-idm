@@ -3,8 +3,36 @@
 
 $(document).ready(function(){
 
+
+	// Filter authorized members in show view
+    $("#auth_users").find('.form-control').bind("keyup input",function(e) {
+    	input = $(this);
+	    filter = $(this).val().toUpperCase();
+	    ul = $("#auth_users").find(".datatable-content");
+	    li = ul.children("div");
+
+	    for (i = 0; i < li.length; i++) {
+	        span = li[i].querySelectorAll("div.filter_field")[0];
+	        if (span.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+	        }
+	    }
+
+  		if(ul.children('div:visible').length == 0) {
+  			if (ul.find("#alert_no_users").length < 1){
+  				ul.append('<p class="alert alert-info empty" id="alert_no_users" style="display: block;">No users found.</p>');
+  			} 
+  		} else {
+  			ul.find("#alert_no_users").remove();
+  		}    
+    	
+    });
+
 	// Pop up with a form to authorize new users to the application
 	$('#auth_users_action_manage_application_users').click(function () {
+		console.log(application)
 		$('#backdrop').show();
         $('#authorize_user').show('open');
         
@@ -32,16 +60,21 @@ $(document).ready(function(){
     	input_change_authorize = null
     	users_authorized = users_authorized_original
     	user_role_count = user_role_count_original
+
+    	new_authorized_user()
+
         $('#backdrop').hide();
-        $("#alert_error_search_available").hide("close")
-        $(".alert-warning").hide("close")
-        $("#authorize_user").find(".modal-footer").find("#submit_button").val("Save")
+        $("#alert_error_search_available").hide("close");
+        $(".alert-warning").hide("close");
+        $("#authorize_user").find(".modal-footer").find("#submit_button").val("Save");
         $("#authorize_user").find('#no_available_update_owners_users').hide('close');
         $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
         $('#authorize_user').hide('close');
         $("#authorize_user").find('#available_update_owners_users').val('');
-        $("#authorize_user").find(".available_members").empty()
-        $("#authorize_user").find(".members").empty()
+        $("#authorize_user").find(".available_members").empty();
+        $("#authorize_user").find(".members").empty();
+        $("#authorize_user").find(".alert-warning").hide("close");
+		$("#authorize_user").find('#update_owners_users_members').val('');
     });
 
     var timer;
@@ -200,16 +233,25 @@ $(document).ready(function(){
 			event.preventDefault();
 
 			for (var key in user_role_count) {
-					if (user_role_count[key] == 0) {
-						$(".alert-warning").show("open")
-						$("#authorize_user").find(".members").find("#"+key).find(".role_options").addClass("dropdown-empty")
-					}
+				if (user_role_count[key] == 0) {	
+					$(".alert-warning").show("open")
+					$("#authorize_user").find(".members").find("#"+key).find(".role_options").addClass("dropdown-empty")
 				}
+			}
 
 			if ($("#authorize_user").find(".members").find(".dropdown-empty").length === 0 || $("#authorize_user").find(".modal-footer").find("#submit_button").val() == "Confirm") {
 				// get the action attribute from the <form action=""> element 
 		        var $form = $(this),
 		            url = $form.attr('action');
+
+		        for (var key in user_role_count) {
+					if (user_role_count[key] == 0) {
+						delete user_role_count[key]
+						users_authorized = users_authorized.filter(function(obj) {
+					    	return (obj.user_id !== key);
+						});
+					}
+				}
 
 		        users_authorized = users_authorized.filter(function(elem) {
 		        	return (elem.role_id !== "")
@@ -220,19 +262,23 @@ $(document).ready(function(){
 
 		        // Alerts the results 
 		        posting.done(function(result) {
-		        	if (result.type == "success") {
-		        		input_change_authorize = null
-				        $('#backdrop').hide();
-				        $("#alert_error_search_available").hide("close")
-				        $("#authorize_user").find('#no_available_update_owners_users').hide('close');
-				        $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
-				        $('#authorize_user').hide('close');
-				        $("#authorize_user").find('#available_update_owners_users').val('');
-				        $("#authorize_user").find(".available_members").empty()
-				        $("#authorize_user").find(".members").empty()	
-		        	} else {
+		        	users_authorized_original = users_authorized
+    				user_role_count_original = user_role_count 
 
-		        	}
+    				new_authorized_user()
+
+	        		input_change_authorize = null
+			        $("#backdrop").hide();
+			        $("#alert_error_search_available").hide("close")
+			        $("#authorize_user").find('#no_available_update_owners_users').hide('close');
+			        $("#authorize_user").find(".alert-warning").hide("close");
+			        $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
+			        $("#authorize_user").hide('close');
+			        $("#authorize_user").find('#available_update_owners_users').val('');
+			        $("#authorize_user").find('#update_owners_users_members').val('');
+			        $("#authorize_user").find(".available_members").empty();
+			        $("#authorize_user").find(".members").empty();
+			        $("#authorize_user").find(".modal-footer").find("#submit_button").val("Save")
 
 	        		var message = $('#message_template').html();
 	                message = message.replace(/type/g, result.type);
@@ -248,7 +294,6 @@ $(document).ready(function(){
 
   	// To remove message
     $("#container.container-fluid").on("click","#close_message",function () {
-    	alert("ja")
         $(".messages").empty();
     });
 
@@ -293,4 +338,22 @@ function available_users(input, input_change_authorize) {
 
 	input_change_authorize = input;
 	return input_change_authorize
+}
+
+// Function to create rows in authorized user view
+function new_authorized_user() {
+	$("#auth_users").find(".datatable-content").empty();
+	if (users_authorized.length == 0) {
+		$("#auth_users").find(".datatable-content").append('<p class="alert alert-info empty" id="alert_no_authorized_users" style="display: block;">This application does not have any authorized users.</p>');
+	} else {
+		$("#auth_users").find("#alert_no_authorized_users").remove();
+		for (var i = 0; i < users_authorized.length; i++) {
+			if (!$("#auth_users").find(".datatable-content").find("#"+users_authorized[i].user_id).length) {
+				var authorized_role_user_row = $('#table_row_user_authorized_template').html();
+		        authorized_role_user_row = authorized_role_user_row.replace(/username/g, String(users_authorized[i].username));
+		        authorized_role_user_row = authorized_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
+		        $("#auth_users").find(".datatable-content").append(authorized_role_user_row);
+		    }
+		}
+	}
 }

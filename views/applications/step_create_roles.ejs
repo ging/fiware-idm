@@ -1,0 +1,98 @@
+<div id="content_body">
+    <div id="create_application_roles">
+        <div class="modal-header">
+            <h3>
+                <div class="steps-group">
+                    <div class="step completed">1</div>
+                    <div class="step completed">2</div>
+                    <div class="step active">3</div>
+                    <div class="line"></div>
+                </div>
+            </h3><h3 class="step-title">Manage Roles</h3>
+        </div>
+        <div class="site-client-roles">
+            <div class="workflow workflow-roles static_page">
+                <form id="assign_role_permission_form" action="/idm/applications/<%= application.id %>/edit/roles" method="POST">
+                    <input type="hidden" id="submit_assignment" name="submit_assignment" value="" />
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <fieldset id="manage_application_roles__update_owners" class="js-tab-pane active tab-pane">
+                                <section id="role_list" class="role_list">
+                                    <header>
+                                        <h4>Roles</h4>
+                                        <button id="roleButton" type="button" class="btn ajax-modal">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </header>
+                                    <div class="btn-group-vertical roles update_owners_roles" data-toggle="buttons" id="update_owners_roles">
+                                        <% for (var i = 0; i < application.roles.length; i++) { -%>
+                                            <div id="<%= application.roles[i].id%>" class="btn btn-default role no-editable">
+                                                <input type="radio" name="" id="" autocomplete="off" data-update_owners-id="">
+                                                <label><%= application.roles[i].name%></label>
+                                                <a href="/idm/applications/<%= application.id %>/edit/roles/<%= application.roles[i].id%>/edit" class="ajax-inline-edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <a href="/idm/applications/<%= application.id %>/edit/roles/<%= application.roles[i].id%>/delete" class="ajax-modal delete">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </a>
+                                            </div>
+                                        <% } -%>
+                                    </div>
+                                </section>
+                                <section id="permissions_list" class="permissions_list">
+                                    <header>
+                                        <h4>Permissions</h4>
+                                        <button id="permButton" type="button" class="btn ajax-modal">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </header>
+                                    <div class="alert alert-info" id="update_owners_info_message">
+                                        Select a role to see and manage its permissions
+                                    </div> 
+                                    <div class="" id="update_owners_permissions" style="display: none;">
+                                        <ul id="list_permissions" class="permissions update_owners_permissions list-group">
+                                            <% for (var i = 0; i < application.permissions.length; i++) { -%>
+                                                <li class="list-group-item is-internal" data-permission-id="<%= application.permissions[i].id%>">
+                                                    <i class="fa fa-check" disabled=""></i>
+                                                    <%= application.permissions[i].name%>
+                                                </li>
+                                            <% } -%>    
+                                        </ul>
+                                    </div>
+                                </section>
+                            </fieldset>
+                            <span id="alert_error" style="display: none;" class='help-block alert alert-danger'>Cannot be empty</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input class="btn btn-primary pull right" type="submit" value="Finish" />
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </div>
+</div>  
+
+<script>
+    var application = <%- JSON.stringify(application) %>;
+</script>
+
+<%- include _create_role %>
+
+<%- include _delete_role %>
+
+<%- include _create_permission %>
+
+<%- include templates/_new_role_row.ejs %>
+
+<%- include templates/_new_permission_row.ejs %>
+
+<%- include templates/_edit_role.ejs %>
+
+<%- include templates/_info_message.ejs %>
+
+<script src="/javascripts/applications/handle_assign_permissions_roles.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_roles.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_permissions.js" type="text/javascript"></script>
+
+<div class="messages"></div>

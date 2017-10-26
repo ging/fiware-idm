@@ -185,53 +185,74 @@ exports.edit = function(req, res) {
   res.render('applications/edit', { application: req.session.application, errors: []});
 };
 
-// Update application
-exports.update = function(req, res) {
+// Update application avatar
+exports.update_avatar = function(req, res) {
 
-	if (req.file) {
-		req.body.application = req.session.application
-		req.body.application['image'] = req.file.filename
-	} else {
-		req.body.application['image'] = req.session.application.image.split('/')[3]
-	}
 	var types = ['jpg', 'jpeg', 'png']
-	magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
-		if (err) throw err;
+	if (req.file) {
+		req.body.application = JSON.parse(JSON.stringify(req.session.application))
+		req.body.application['image'] = req.file.filename
 
-		if (types.includes(String(result.split('/')[1]))) {
-			req.body.application["id"] = req.session.application.id
-			var application = models.oauth_client.build(req.body.application);
-			application.validate().then(function(err) {
-				models.oauth_client.update(
-					{ name: req.body.application.name,
-					  description: req.body.application.description,
-					  url: req.body.application.url,
-					  redirect_uri: req.body.application.redirect_uri, 
-					  image: req.body.application.image },
-					{
-						fields: ['name','description','url','redirect_uri', 'image'],
-						where: {id: req.session.application.id}
-					}
-				).then(function() {
-					req.session.application.name = req.body.application.name;
-					req.session.application.description = req.body.application.description;
-					req.session.application.url = req.body.application.url;
-					req.session.application.redirect_uri = req.body.application.redirect_uri;
-					req.session.application.image = '/img/applications/'+req.body.application.image
-					req.session.message = {text: ' Application updated successfully.', type: 'success'};
-					res.redirect('/idm/applications/'+req.session.application.id);
-				});	
-			}).catch(function(error){ 
-				res.locals.message = {text: ' Application update failed.', type: 'warning'};
-			 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
-			});
-		} else {
-			fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
-				req.session.message = {text: ' Inavalid file.', type: 'danger'};
-				res.redirect('/idm/applications/'+req.session.application.id);            
-			});
-		}
-  	});
+		magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
+
+			if (err) throw err;
+
+			if (types.includes(String(result.split('/')[1]))) {
+				req.body.application["id"] = req.session.application.id
+				var application = models.oauth_client.build(req.body.application);
+
+					models.oauth_client.update(
+						{ image: req.body.application.image },
+						{
+							fields: ['image'],
+							where: {id: req.session.application.id}
+						}
+					).then(function() {
+						req.session.application.image = '/img/applications/'+req.body.application.image
+						req.session.message = {text: ' Application updated successfully.', type: 'success'};
+						res.redirect('/idm/applications/'+req.session.application.id);
+					}).catch(function(error){ 
+						res.locals.message = {text: ' Application update failed.', type: 'warning'};
+					 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
+					});	
+			} else {
+				fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
+					req.session.message = {text: ' Inavalid file.', type: 'danger'};
+					res.redirect('/idm/applications/'+req.session.application.id);            
+				});
+			}
+	  	});
+  	} 
+};
+
+// Update application information
+exports.update_info = function(req, res) {
+
+	req.body.application["id"] = req.session.application.id;
+	var application = models.oauth_client.build(req.body.application);
+
+	application.validate().then(function(err) {
+		models.oauth_client.update(
+			{ name: req.body.application.name,
+			  description: req.body.application.description,
+			  url: req.body.application.url,
+			  redirect_uri: req.body.application.redirect_uri },
+			{
+				fields: ['name','description','url','redirect_uri'],
+				where: {id: req.session.application.id}
+			}
+		).then(function() {
+			req.session.application.name = req.body.application.name;
+			req.session.application.description = req.body.application.description;
+			req.session.application.url = req.body.application.url;
+			req.session.application.redirect_uri = req.body.application.redirect_uri;
+			req.session.message = {text: ' Application updated successfully.', type: 'success'};
+			res.redirect('/idm/applications/'+req.session.application.id);
+		});	
+	}).catch(function(error){ 
+		res.locals.message = {text: ' Application update failed.', type: 'warning'};
+	 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
+	});
 };
 
 // Show roles and permissions

@@ -75,7 +75,8 @@ router.get('/idm/applications/:applicationId/step/avatar',                  sess
 router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    imageUpload.single('image'),    applicationController.step_create_avatar);
 router.get('/idm/applications/:applicationId/step/roles',                   sessionController.loginRequired,    applicationController.step_new_roles);
 router.get('/idm/applications/:applicationId/edit',                         sessionController.loginRequired,	applicationController.edit);
-router.put('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	imageUpload.single('image'),    applicationController.update);
+router.put('/idm/applications/:applicationId/edit/avatar', 		            sessionController.loginRequired,	imageUpload.single('image'),    applicationController.update_avatar);
+router.put('/idm/applications/:applicationId/edit/info',                    sessionController.loginRequired,    applicationController.update_info);
 router.get('/idm/applications/:applicationId/edit/roles',                   sessionController.loginRequired,    applicationController.manage_roles);
 router.post('/idm/applications/:applicationId/edit/roles',                  sessionController.loginRequired,    applicationController.role_permissions_assign);
 router.post('/idm/applications/:applicationId/edit/roles/create',           sessionController.loginRequired,    applicationController.create_role);

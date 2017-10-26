@@ -68,18 +68,17 @@ $(document).ready(function(){
 
 		// stop form from submitting normally
 	    event.preventDefault();
-
-	    /*var types = ['jpg', 'jpeg', 'png']
+	    var types = ['jpg', 'jpeg', 'png']
 	    var file_type = $(this).find('#id_image')[0].files[0].name.split('.').pop().toLowerCase()
 
-	    if (types.includes(file_type)) {*/
+	    if (types.includes(file_type)) {
 	    	// Continue with the submit request
 	    	$("#create_avatar_form")[0].submit();
-	   /* } else {
+	    } else {
 	    	alert("Please upload a valid file: jpg, jpeg or png")
 	    	$('#id_image').replaceWith('<input id="id_image" name="image" type="file">')
 			$('.avatar-update-container').children().hide("close")
-	    }*/
+	    }
   	});
 
     // Exit from form to delete avatar

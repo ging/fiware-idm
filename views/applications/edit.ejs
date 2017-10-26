@@ -14,7 +14,7 @@
 						Application Information
 					</h3>
 				</div>
-				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>?_method=put" method="POST" enctype=""><input type="hidden" name="" value="">
+				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/info?_method=put" method="POST" enctype=""><input type="hidden" name="" value="">
 					<div class="modal-body clearfix">
 
 						<fieldset>
@@ -83,7 +83,7 @@
 						Application Avatar
 					</h3>
 				</div>
-				<form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>?_method=put" method="POST" enctype="multipart/form-data">
+				<form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/avatar?_method=put" method="POST" enctype="multipart/form-data">
 					<input id="submit_avatar" type="hidden" name="" value="">
 					<div class="modal-body clearfix">
 						<div class="row">

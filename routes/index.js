@@ -61,7 +61,7 @@ router.get('/activate',         userController.activate);
 // Autoload for applicationId
 router.param('applicationId', applicationController.load);
 
-// Route form home of user
+// Route to get home of user
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
 imageUpload = multer({ dest: './public/img/applications/'})

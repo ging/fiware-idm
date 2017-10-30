@@ -69,9 +69,11 @@ role_user.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade
 role_user.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between roles and permissions
-role_permission.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
-role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
-role_permission.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role.belongsToMany(permission, { through: role_permission, onDelete: 'cascade' })
+permission.belongsToMany(role, { through: role_permission, onDelete: 'cascade' })
+//role_permission.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+//role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+//role_permission.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Exportar tablas
 exports.oauth_client = oauth_client; 
@@ -86,6 +88,7 @@ exports.oauth_access_token = oauth_access_token;
 exports.oauth_refresh_token = oauth_refresh_token;
 exports.scope = scope;
 
+// To read all users inside users_prueba.txt
 var fs = require("fs");
 var text = fs.readFileSync("./models/users_prueba.txt", "utf8");
 var textByLine = text.split("\n")
@@ -136,7 +139,8 @@ sequelize.sync().then(function() {
               [ {name: 'app1', description: 'Descrip App1', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'password', image: 'default'},
                 {name: 'app2', description: 'Descrip App2', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'client_credentials', image: 'default'},
                 {name: 'app3', description: 'Descrip App3', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'authorization_code', response_type: 'code', image: 'default'},
-                {name: 'app4', description: 'Descrip App4', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'implicit', response_type: 'token', image: 'default'}
+                {name: 'app4', description: 'Descrip App4', url: 'http://prueba.com', redirect_uri: 'http://localhost/login', grant_type: 'implicit', response_type: 'token', image: 'default'},
+                {id: 'idm_admin_app', name: 'idm', description: 'idm', url: '', redirect_uri: '', grant_type: '', response_type: '', image: 'default'}
               ]
             ).then(function(){
               console.log('Base de datos (tabla OAuthClient) inicializada');
@@ -145,12 +149,8 @@ sequelize.sync().then(function() {
                 if(count === 0) {   // tabla is initialized only if is empty
                   oauth_client.findAll({ where: {name: ['app1', 'app2', 'app3']}}).then(function(app) {
                     role.bulkCreate( 
-                      [ {id: '44ebbcab-853c-44bd-899a-238b816f643e', name: 'Provider', oauth_client_id: app[0].id},
-                        {id: 'a0be9ffe-4e01-492b-990b-97a96bb35103', name: 'Provider', oauth_client_id: app[1].id},
-                        {id: 'f097941e-7901-4ea5-a601-fed7ab496875', name: 'Provider', oauth_client_id: app[2].id},
-                        {id: '1367913a-1784-4229-8466-2aaab6bf8f33', name: 'Purchaser', oauth_client_id: app[0].id},
-                        {id: 'd5e8fa8e-53fc-4242-8bba-7a290d1a9522', name: 'Purchaser', oauth_client_id: app[1].id},
-                        {id: 'dcb3a243-c2be-4105-acb4-656bb16565ff', name: 'Purchaser', oauth_client_id: app[2].id},
+                      [ {id: 'provider', is_internal: 1, name: 'Provider', oauth_client_id: 'idm_admin_app'},
+                        {id: 'purchaser', is_internal: 1, name: 'Purchaser', oauth_client_id: 'idm_admin_app'},
                         {id: '85498539-e03c-49e6-a396-c9c7c5dc2bd0', name: 'PruebaRole', oauth_client_id: app[0].id},
                         {id: 'ae125136-15bd-42cc-af7f-ccb2ad5d687f', name: 'PruebaRole', oauth_client_id: app[1].id},
                         {id: 'd1591d7c-3c8f-42fe-b343-5c3f817d1d1e', name: 'PruebaRole', oauth_client_id: app[2].id}
@@ -162,31 +162,32 @@ sequelize.sync().then(function() {
                         if(count === 0) {   // tabla is initialized only if is empty
                           oauth_client.findAll({ where: {name: ['app1', 'app2', 'app3']}}).then(function(app) {
                             permission.bulkCreate( 
-                              [ {name: 'Get and assign all internal application roles', oauth_client_id: app[0].id},
-                                {name: 'Get and assign all internal application roles', oauth_client_id: app[1].id},
-                                {name: 'Get and assign all internal application roles', oauth_client_id: app[2].id},
-                                {name: 'Manage the application', oauth_client_id: app[0].id},
-                                {name: 'Manage the application', oauth_client_id: app[1].id},
-                                {name: 'Manage the application', oauth_client_id: app[2].id},
-                                {name: 'Manage roles', oauth_client_id: app[0].id},
-                                {name: 'Manage roles', oauth_client_id: app[1].id},
-                                {name: 'Manage roles', oauth_client_id: app[2].id},
-                                {name: 'Manage authorizations', oauth_client_id: app[0].id},
-                                {name: 'Manage authorizations', oauth_client_id: app[1].id},
-                                {name: 'Manage authorizations', oauth_client_id: app[2].id},
-                                {name: 'Get and assign all public application roles', oauth_client_id: app[0].id},
-                                {name: 'Get and assign all public application roles', oauth_client_id: app[1].id},
-                                {name: 'Get and assign all public application roles', oauth_client_id: app[2].id},
-                                {name: 'Get and assign only public owned roles', oauth_client_id: app[0].id},
-                                {name: 'Get and assign only public owned roles', oauth_client_id: app[1].id},
-                                {name: 'Get and assign only public owned roles', oauth_client_id: app[2].id}
+                              [ {id: '1', is_internal: 1, name: 'Get and assign all internal application roles',  oauth_client_id: 'idm_admin_app'},
+                                {id: '2', is_internal: 1, name: 'Manage the application',                         oauth_client_id: 'idm_admin_app'},
+                                {id: '3', is_internal: 1, name: 'Manage roles',                                   oauth_client_id: 'idm_admin_app'},
+                                {id: '4', is_internal: 1, name: 'Manage authorizations',                          oauth_client_id: 'idm_admin_app'},
+                                {id: '5', is_internal: 1, name: 'Get and assign all public application roles',    oauth_client_id: 'idm_admin_app'},
+                                {id: '6', is_internal: 1, name: 'Get and assign only public owned roles',         oauth_client_id: 'idm_admin_app'},
+                                {is_internal: 0, name: 'Prueba',         oauth_client_id: app[0].id},
+                                {is_internal: 0, name: 'Prueba',         oauth_client_id: app[1].id},
+                                {is_internal: 0, name: 'Prueba',         oauth_client_id: app[2].id}  
                               ]
                             ).then(function(){
                               console.log('Base de datos (tabla Permission) inicializada');
                               // INITIALIZE ROLE_PERMISSION TABLE
                               role_permission.count().then(function (count){
                                 if(count === 0) {   // tabla is initialized only if is empty
-                                  role.findAll().then(function(roles) {
+                                  role_permission.bulkCreate(
+                                    [ {role_id: 'provider',  permission_id: '1'},
+                                      {role_id: 'provider',  permission_id: '2'},
+                                      {role_id: 'provider',  permission_id: '3'},
+                                      {role_id: 'provider',  permission_id: '4'},
+                                      {role_id: 'provider',  permission_id: '5'},
+                                      {role_id: 'provider',  permission_id: '6'},
+                                      {role_id: 'purchaser', permission_id: '5'}
+                                    ]
+                                  ).then(function() {
+                                  /*role.findAll().then(function(roles) {
                                     permission.findAll().then(function(permissions) {
                                       for(role in roles) {
                                         for (permission in permissions) {
@@ -198,29 +199,28 @@ sequelize.sync().then(function() {
                                             }
                                           }
                                         }
+                                      }*/
+                                    console.log('Base de datos (tabla Role_Permisison) inicializada');
+                                    // INITIALIZE ROLE_USER TABLE
+                                    role_user.count().then(function (count) {
+                                      if(count === 0) { // tabla is initialized only if is empty
+                                        oauth_client.findAll({ where: {name: ['app1', 'app2', 'app3']}}).then(function(app) { 
+                                          role_user.bulkCreate(
+                                            [ {role_id: 'provider', user_id: 'admin', oauth_client_id: app[2].id},
+                                              {role_id: 'd1591d7c-3c8f-42fe-b343-5c3f817d1d1e', user_id: 'admin', oauth_client_id: app[2].id},
+                                              {role_id: 'purchaser', user_id: 'pepe', oauth_client_id: app[2].id},                                                
+                                              {role_id: 'provider', user_id: 'pepe', oauth_client_id: app[1].id},
+                                              {role_id: 'purchaser', user_id: 'admin', oauth_client_id: app[1].id},
+                                              {role_id: 'ae125136-15bd-42cc-af7f-ccb2ad5d687f', user_id: 'admin', oauth_client_id: app[1].id},
+                                              {role_id: '85498539-e03c-49e6-a396-c9c7c5dc2bd0', user_id: 'pepe', oauth_client_id: app[0].id},
+                                              {role_id: '85498539-e03c-49e6-a396-c9c7c5dc2bd0', user_id: 'admin', oauth_client_id: app[0].id},
+                                              {role_id: 'provider', user_id: 'admin', oauth_client_id: app[0].id}
+                                            ]
+                                          ).then(function() {
+                                            console.log('Base de datos (tabla Role_user) inicializada');
+                                          });
+                                        }); 
                                       }
-                                      console.log('Base de datos (tabla Role_Permisison) inicializada');
-                                      // INITIALIZE ROLE_USER TABLE
-                                      role_user.count().then(function (count) {
-                                        if(count === 0) { // tabla is initialized only if is empty
-                                          oauth_client.findAll({ where: {name: ['app1', 'app2', 'app3']}}).then(function(app) { 
-                                            role_user.bulkCreate(
-                                              [ {role_id: 'dcb3a243-c2be-4105-acb4-656bb16565ff', user_id: 'admin', oauth_client_id: app[2].id},
-                                                {role_id: 'f097941e-7901-4ea5-a601-fed7ab496875', user_id: 'admin', oauth_client_id: app[2].id},
-                                                {role_id: 'dcb3a243-c2be-4105-acb4-656bb16565ff', user_id: 'pepe', oauth_client_id: app[2].id},
-                                                {role_id: '44ebbcab-853c-44bd-899a-238b816f643e', user_id: 'pepe', oauth_client_id: app[0].id},
-                                                {role_id: 'ae125136-15bd-42cc-af7f-ccb2ad5d687f', user_id: 'pepe', oauth_client_id: app[1].id},
-                                                {role_id: 'ae125136-15bd-42cc-af7f-ccb2ad5d687f', user_id: 'admin', oauth_client_id: app[1].id},
-                                                {role_id: 'd5e8fa8e-53fc-4242-8bba-7a290d1a9522', user_id: 'admin', oauth_client_id: app[1].id},
-                                                {role_id: '44ebbcab-853c-44bd-899a-238b816f643e', user_id: 'admin', oauth_client_id: app[0].id},
-                                                {role_id: '1367913a-1784-4229-8466-2aaab6bf8f33', user_id: 'admin', oauth_client_id: app[0].id}
-                                              ]
-                                            ).then(function() {
-                                              console.log('Base de datos (tabla Role_user) inicializada');
-                                            });
-                                          }); 
-                                        }
-                                      });
                                     });
                                   });
                                 }

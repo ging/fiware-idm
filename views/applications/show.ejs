@@ -155,7 +155,7 @@
 <script>
   var application = <%- JSON.stringify(application) %>;
   var users_authorized = <%- JSON.stringify(users_authorized) %>;
-  var roles = <%- JSON.stringify(roles) %>;
+  //var roles = <%- JSON.stringify(roles) %>;
 
   var user_role_count = {}
   // Relation between users and roles
@@ -169,6 +169,7 @@
   var users_authorized_original = JSON.parse(JSON.stringify(users_authorized))
   var user_role_count_original = JSON.parse(JSON.stringify(user_role_count))
 
+  // Execute method from handle_authorize_users.js
   new_authorized_user()
 </script>
 
@@ -189,17 +190,6 @@
     } else {
       $(this).children().removeClass('fa-rotate-180');
     }
-  });
-  $(function(){
-    var passedPassword = false;
-    $('#collapse_iot_sensors').children('div').children('.user_pep').children('h6').each(function(index){
-      if ($(this).html() === 'Username' && !passedPassword){
-        $(this).append(' / Sensor ' + (index+1));
-      } else {
-      $(this).append(' / Sensor ' + (index)); // in case it's password row
-      passedPassword = true;
-    }
-  });
   });
 </script>
 <script type="text/javascript">

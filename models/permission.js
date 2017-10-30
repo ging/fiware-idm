@@ -18,7 +18,8 @@ module.exports = function(sequelize, DataTypes) {
             notEmpty: {msg: "error_empty_description"}
         }
     }, is_internal: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        defaultValue: 0
     }, action: {
         type: DataTypes.STRING,
         validate: { 

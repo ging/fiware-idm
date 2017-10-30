@@ -23,17 +23,23 @@ $(document).ready(function(){
 		// stop form from submitting normally
 	    event.preventDefault();
 
-	    var types = ['jpg', 'jpeg', 'png']
-	    var file_type = $(this).find('#id_image')[0].files[0].name.split('.').pop().toLowerCase()
 
-	    if (types.includes(file_type)) {
-	    	// Continue with the submit request
-	    	$("#create_avatar_form")[0].submit();
+	    if ($(this).find('#id_image')[0].files[0]) {
+	    	var types = ['jpg', 'jpeg', 'png']
+	    	var file_type = $(this).find('#id_image')[0].files[0].name.split('.').pop().toLowerCase()
+	    	if (types.includes(file_type)) {
+		    	// Continue with the submit request
+		    	$("#create_avatar_form")[0].submit();
+		    } else {
+		    	alert("Please upload a valid file: jpg, jpeg or png")
+		    	$('#avatar-update').attr('src', '/img/logos/original/app.png')
+		    	$('#id_image').replaceWith('<input id="id_image" name="image" type="file">')
+				$('.avatar-update-container').find('.update_actions').hide("close")
+		    }	
 	    } else {
-	    	alert("Please upload a valid file: jpg, jpeg or png")
-	    	$('#id_image').replaceWith('<input id="id_image" name="image" type="file">')
-			$('.avatar-update-container').children().hide("close")
+	    	$("#create_avatar_form")[0].submit();
 	    }
+
   	});
 
 });

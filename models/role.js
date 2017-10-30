@@ -10,10 +10,11 @@ module.exports = function(sequelize, DataTypes) {
     }, name: {
         type: DataTypes.STRING,
         validate: { 
-            notEmpty: {msg: "nameRole"}
+            notEmpty: {msg: "error_empty_name"}
         }
     }, is_internal: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        defaultValue: 0
     }
     }, {
         tableName: 'role',

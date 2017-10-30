@@ -9,15 +9,34 @@ $(document).ready(function(){
         var permission = null;
         for (var i = 0; i < application.permissions.length; i++) {
             permission = application.permissions[i].id
-            if (typeof application.role_permission_assign[role] === 'undefined') {
-                $("[data-permission-id="+permission+"]").removeClass("active")
-            } else {
-                if(application.role_permission_assign[role].includes(permission)) {
-                    $("[data-permission-id="+permission+"]").addClass("active")    
+            if (['provider', 'purchaser'].includes(role)) {
+                if(!['1', '2', '3' ,'4' ,'5' ,'6'].includes(permission)) {                    
+                    $("[data-permission-id="+permission+"]").hide('close')
                 } else {
+                    $("[data-permission-id="+permission+"]").show('open')
+                    if(application.role_permission_assign[role].includes(permission)) {
+                        $("[data-permission-id="+permission+"]").addClass("active")    
+                    } else {
+                        $("[data-permission-id="+permission+"]").removeClass("active")
+                    }
+                }
+            } else {
+                $("[data-permission-id="+permission+"]").show('open')
+                if (typeof application.role_permission_assign[role] === 'undefined') {
                     $("[data-permission-id="+permission+"]").removeClass("active")
+                } else {
+                    if(application.role_permission_assign[role].includes(permission)) {
+                        $("[data-permission-id="+permission+"]").addClass("active")    
+                    } else {
+                        $("[data-permission-id="+permission+"]").removeClass("active")
+                    }
                 }
             }
+        }
+        if (['provider', 'purchaser'].includes(role)) {
+            $('#list_permissions').addClass('disabled-list')
+        } else {
+            $('#list_permissions').removeClass('disabled-list')
         }
         $("#update_owners_permissions").show('open');
         $("#update_owners_info_message").hide('close');
@@ -49,40 +68,62 @@ $(document).ready(function(){
         var $form = $(this),
             url = $form.attr('action');
 
-        // Send the data using post with element id name and name2
-        var posting = $.post(url, { name: $("#create_role_form").find('#id_name').val() });
+        // Send the data using post with element id name 
+        var posting = $.post(url, { name: $("#create_role_form").find('#id_name').val()});
 
         // Alerts the results 
-        posting.done(function(data) {
-
+        posting.done(function(result) {
+            
         	// See if the result of post is an error
-        	if (data.constructor === Array) {
-        		if(data[0].message == "nameRole") {
-                    $("#create_role_form").find(".help-block.alert.alert-danger").show('open');
-                    return false;
-        		}
-            // If is not an error, add the role to the list	
-        	} else {
+    		if (result.type ==='warning') {
+                // Show error input empty
+                $('#create_role_form').find('.help-block.alert.alert-danger').show('open');
+            
+        	} else if (result.type ==='danger') {
+                // Empty input from role creation form
+                $('#create_role_form').find('#id_name').val('');
+
+                // Hide error if exist
+                $('#create_role_form').find('.help-block.alert.alert-danger').hide('close');
+
+                // Return to normal view
+                $('#backdrop').hide();
+                $('#create_role').hide('close');
+
+                // Add message
+                var message = $('#message_template').html();
+                message = message.replace(/type/g, result.type);
+                message = message.replace(/data/g, result.text);
+                $('.messages').replaceWith(message);
+
+            // If is not an error, add the role to the list 
+            } else {
                 
         		// Create new row in role column
         		var role_row = $('#table_row_role_template').html();
-                role_row = role_row.replace(/role_name/g, data.name);
-                role_row = role_row.replace(/role_id/g, String(data.id));
+                role_row = role_row.replace(/role_name/g, result.role.name);
+                role_row = role_row.replace(/role_id/g, String(result.role.id));
                 role_row = role_row.replace(/app_id/g, String(application.id));
-                $("#update_owners_roles").append(role_row);
+                $('#update_owners_roles').append(role_row);
 
                 // Add to roles array
-                application.roles.push(data);
+                application.roles.push(result.role);
 
                 // Empty input from role creation form
-                $("#create_role_form").find("#id_name").val('');
+                $('#create_role_form').find('#id_name').val('');
 
                 // Hide error if exist
-                $("#create_role_form").find(".help-block.alert.alert-danger").hide('close');
+                $('#create_role_form').find('.help-block.alert.alert-danger').hide('close');
 
                 // Return to normal view
                 $('#backdrop').hide();
               	$('#create_role').hide('close');
+
+                // Add message
+                var message = $('#message_template').html();
+                message = message.replace(/type/g, result.message.type);
+                message = message.replace(/data/g, result.message.text);
+                $('.messages').replaceWith(message);
         	}	   
         });
 
@@ -126,21 +167,37 @@ $(document).ready(function(){
             type: 'PUT',
             data: { role_name: role_name, role_id: role_id },
             success: function(result) {
-                if (result.type === "success") {
+
+                if (result.type === 'warning') {
+                    // Show error input empty
+                    $("#assign_role_permission_form").find("#alert_error").show('open');
+                } else if (result.type === 'danger') {
+                    // Hide error if exists
+                    $("#assign_role_permission_form").find("#alert_error").hide('close');
+
+                    // Add message
+                    var message = $('#message_template').html();
+                    message = message.replace(/type/g, result.type);
+                    message = message.replace(/data/g, result.text);
+                    $(".messages").replaceWith(message);
+
+                } else {
+                    // Update role name
                     var role_row = $('#table_row_role_template').html();
                     role_row = role_row.replace(/role_name/g, role_name);
                     role_row = role_row.replace(/role_id/g, role_id);
                     role_row = role_row.replace(/app_id/g, String(application.id));
                     $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
+
+                    //Hide error if exists
                     $("#assign_role_permission_form").find("#alert_error").hide('close');
+
+                    // Add message
                     var message = $('#message_template').html();
                     message = message.replace(/type/g, result.type);
                     message = message.replace(/data/g, result.text);
                     $(".messages").replaceWith(message);
-                } else {
-                    $("#assign_role_permission_form").find("#alert_error").show('open');
-                }
-
+                } 
             }
         });
 

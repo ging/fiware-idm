@@ -11,38 +11,17 @@ var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 // Autoload info if path include applicationid
 exports.load = function(req, res, next, applicationId) {
-	if (!("application" in req.session) || req.session.application.id != applicationId) {
-		models.oauth_client.findById(applicationId).then(function(application) {
-			if (application) {
-				req.session.application = application
-				if (application.image == 'default') {
-					req.session.application.image = '/img/logos/original/app.png'
-				} else {
-					req.session.application.image = '/img/applications/'+application.image
-				}					
-				models.role_user.findAll({
-					where: { oauth_client_id: req.session.application.id },
-					include: [{
-						model: models.user,
-						attributes: ['id', 'username']
-					}]
-				}).then(function(users_application) {
-					if (users_application) {
-						var users_authorized = []
-						users_application.forEach(function(app) {
-								users_authorized.push({ user_id: app.User.id, 
-														role_id: app.role_id, 
-														username: app.User.username});
-						});
-						req.session.application_users_authorized = users_authorized;
-						next();
-					} else { next(new Error("The applications hasn't got users authorized"));}
-				}).catch(function(error) { next(error); });	
-			} else { next(new Error("The application with id " + applicationId + "doesn't exist"));}
-		}).catch(function(error) { next(error); });
-	} else {
-		next();
-	}
+	models.oauth_client.findById(applicationId).then(function(application) {
+		if (application) {
+			req.application = application
+			if (application.image == 'default') {
+				req.application.image = '/img/logos/original/app.png'
+			} else {
+				req.application.image = '/img/applications/'+application.image
+			}
+			next();
+		} else { next(new Error("The application with id " + applicationId + "doesn't exist"));}
+	}).catch(function(error) { next(error); });
 };
 
 // List all applications
@@ -77,15 +56,45 @@ exports.index = function(req, res) {
 };
 
 // Show info about an application
-exports.show = function(req, res) {
-	if (req.session.message) {
-		res.locals.message = req.session.message;
-		delete req.session.message
-	}
-	res.render('applications/show', { application: req.session.application, 
-									  users_authorized: req.session.application_users_authorized, 
-									  roles: req.session.application_roles,
-									  errors: [] });
+exports.show = function(req, res, next) {
+	models.role_user.findAll({
+		where: { oauth_client_id: req.application.id },
+		include: [{
+			model: models.user,
+			attributes: ['id', 'username']
+		}]
+	}).then(function(users_application) {
+		if (users_application) {
+			var users_authorized = []
+			var user_logged_roles = []
+			users_application.forEach(function(app) {
+				if(app.User.id === req.session.user.id) {
+					user_logged_roles.push(app.role_id)
+				}
+				if(users_authorized.some(elem => elem.user_id === app.User.id) === false) {
+					users_authorized.push({ user_id: app.User.id, 
+											role_id: app.role_id, 
+											username: app.User.username});
+				} 
+			});
+			models.role_permission.findAll({
+				where: { role_id: user_logged_roles },
+				attributes: ['permission_id'],
+			}).then(function(user_logged_permissions) {
+				if(user_logged_permissions) {
+					if (req.session.message) {
+						res.locals.message = req.session.message;
+						delete req.session.message
+					}
+					res.render('applications/show', { application: req.application, 
+													  users_authorized: users_authorized, 
+													  user_logged_permissions: user_logged_permissions,
+													  errors: [] });
+				} else { next(new Error("The applications hasn't got users authorized"));}
+			}).catch(function(error) { next(error); });
+		} else { next(new Error("The applications hasn't got users authorized"));}
+	}).catch(function(error) { next(error); });
+	
 };
 
 // Form for new application
@@ -120,7 +129,7 @@ exports.create = function(req, res, next) {
 
 // Form to create avatar when creating an application
 exports.step_new_avatar = function(req, res, next) {
-	res.render('applications/step_create_avatar', { application: req.session.application, errors: []});
+	res.render('applications/step_create_avatar', { application: req.application, errors: []});
 };
 
 // Create Avatar when creating an application
@@ -134,24 +143,24 @@ exports.step_create_avatar = function(req, res, next) {
 					{ image: req.file.filename },
 					{
 						fields: ["image"],
-						where: {id: req.session.application.id }
+						where: {id: req.application.id }
 					}
 				).then(function(){
-					req.session.application.image = '/img/applications/'+req.file.filename
-					res.redirect('/idm/applications/'+req.session.application.id+'/step/roles');
+					req.application.image = '/img/applications/'+req.file.filename
+					res.redirect('/idm/applications/'+req.application.id+'/step/roles');
 				}).catch(function(error) {
 					res.send('error')
 				});
 			} else {
 				fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
 					req.session.message = {text: ' Inavalid file.', type: 'danger'};
-					res.redirect('/idm/applications/'+req.session.application.id);            
+					res.redirect('/idm/applications/'+req.application.id);            
 				});
 			}	
 		});
 	} else {
-		req.session.application.image = '/img/logos/original/app.png'
-		res.redirect('/idm/applications/'+req.session.application.id+'/step/roles');
+		req.application.image = '/img/logos/original/app.png'
+		res.redirect('/idm/applications/'+req.application.id+'/step/roles');
 	}
 };
 
@@ -159,13 +168,13 @@ exports.step_create_avatar = function(req, res, next) {
 exports.step_new_roles = function(req, res, next) {
 
 	models.role.findAll({
-		where: { [Op.or]: [{oauth_client_id: req.session.application.id}, {is_internal: true}] },
+		where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
 		attributes: ['id', 'name'],
 		order: [['id', 'DESC']]
 	}).then(function(roles) {
 		if (roles) {
 			models.permission.findAll({
-				where: { [Op.or]: [{oauth_client_id: req.session.application.id}, {is_internal: true}] },
+				where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
 				attributes: ['id', 'name'], 
 				order: [['id', 'ASC']]
 			}).then(function(permissions) {
@@ -181,8 +190,7 @@ exports.step_new_roles = function(req, res, next) {
 							    }
 							    role_permission_assign[application_roles_permissions[i].role_id].push(application_roles_permissions[i].permission_id);
 							}
-							req.session.application_roles = roles
-							res.render('applications/step_create_roles', { application: { id: req.session.application.id, 
+							res.render('applications/step_create_roles', { application: { id: req.application.id, 
 																					 roles: roles, 
 																					 permissions: permissions,
 																					 role_permission_assign: role_permission_assign }});
@@ -196,7 +204,7 @@ exports.step_new_roles = function(req, res, next) {
 
 // Edit application
 exports.edit = function(req, res) {
-  res.render('applications/edit', { application: req.session.application, errors: []});
+  res.render('applications/edit', { application: req.application, errors: []});
 };
 
 // Update application avatar
@@ -204,7 +212,7 @@ exports.update_avatar = function(req, res) {
 
 	var types = ['jpg', 'jpeg', 'png']
 	if (req.file) {
-		req.body.application = JSON.parse(JSON.stringify(req.session.application))
+		req.body.application = JSON.parse(JSON.stringify(req.application))
 		req.body.application['image'] = req.file.filename
 
 		magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
@@ -212,19 +220,19 @@ exports.update_avatar = function(req, res) {
 			if (err) throw err;
 
 			if (types.includes(String(result.split('/')[1]))) {
-				req.body.application["id"] = req.session.application.id
+				req.body.application["id"] = req.application.id
 				var application = models.oauth_client.build(req.body.application);
 
 					models.oauth_client.update(
 						{ image: req.body.application.image },
 						{
 							fields: ['image'],
-							where: {id: req.session.application.id}
+							where: {id: req.application.id}
 						}
 					).then(function() {
-						req.session.application.image = '/img/applications/'+req.body.application.image
+						req.application.image = '/img/applications/'+req.body.application.image
 						req.session.message = {text: ' Application updated successfully.', type: 'success'};
-						res.redirect('/idm/applications/'+req.session.application.id);
+						res.redirect('/idm/applications/'+req.application.id);
 					}).catch(function(error){ 
 						res.locals.message = {text: ' Application update failed.', type: 'warning'};
 					 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
@@ -232,7 +240,7 @@ exports.update_avatar = function(req, res) {
 			} else {
 				fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
 					req.session.message = {text: ' Inavalid file.', type: 'danger'};
-					res.redirect('/idm/applications/'+req.session.application.id);            
+					res.redirect('/idm/applications/'+req.application.id);            
 				});
 			}
 	  	});
@@ -244,10 +252,10 @@ exports.update_info = function(req, res) {
 
 	if (req.body.id || req.body.secret) {
 		res.locals.message = {text: ' Application edit failed.', type: 'danger'};
-		res.redirect('/idm/applications/'+req.session.application.id)
+		res.redirect('/idm/applications/'+req.application.id)
 	} else {
 
-		req.body.application["id"] = req.session.application.id;
+		req.body.application["id"] = req.application.id;
 		var application = models.oauth_client.build(req.body.application);
 
 		application.validate().then(function(err) {
@@ -258,15 +266,15 @@ exports.update_info = function(req, res) {
 				  redirect_uri: req.body.application.redirect_uri },
 				{
 					fields: ['name','description','url','redirect_uri'],
-					where: {id: req.session.application.id}
+					where: {id: req.application.id}
 				}
 			).then(function() {
-				req.session.application.name = req.body.application.name;
-				req.session.application.description = req.body.application.description;
-				req.session.application.url = req.body.application.url;
-				req.session.application.redirect_uri = req.body.application.redirect_uri;
+				req.application.name = req.body.application.name;
+				req.application.description = req.body.application.description;
+				req.application.url = req.body.application.url;
+				req.application.redirect_uri = req.body.application.redirect_uri;
 				req.session.message = {text: ' Application updated successfully.', type: 'success'};
-				res.redirect('/idm/applications/'+req.session.application.id);
+				res.redirect('/idm/applications/'+req.application.id);
 			});	
 		}).catch(function(error){ 
 			res.locals.message = {text: ' Application update failed.', type: 'warning'};
@@ -279,13 +287,13 @@ exports.update_info = function(req, res) {
 exports.manage_roles = function(req, res, next) {
 
 	models.role.findAll({
-		where: { [Op.or]: [{oauth_client_id: req.session.application.id}, {is_internal: true}] },
+		where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
 		attributes: ['id', 'name'],
 		order: [['id', 'DESC']]
 	}).then(function(roles) {
 		if (roles) {
 			models.permission.findAll({
-				where: { [Op.or]: [{oauth_client_id: req.session.application.id}, {is_internal: true}] },
+				where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
 				attributes: ['id', 'name'], 
 				order: [['id', 'ASC']]
 			}).then(function(permissions) {
@@ -301,8 +309,7 @@ exports.manage_roles = function(req, res, next) {
 							    }
 							    role_permission_assign[application_roles_permissions[i].role_id].push(application_roles_permissions[i].permission_id);
 							}
-							req.session.application_roles = roles
-							res.render('applications/manage_roles', { application: { id: req.session.application.id, 
+							res.render('applications/manage_roles', { application: { id: req.application.id, 
 																					 roles: roles, 
 																					 permissions: permissions,
 																					 role_permission_assign: role_permission_assign }});
@@ -323,11 +330,10 @@ exports.create_role = function(req, res) {
 	} else {
 
 		var role = models.role.build({ name: req.body.name, 
-								   oauth_client_id: req.session.application.id });
+								   oauth_client_id: req.application.id });
 
 		role.validate().then(function(err) {
 			role.save({fields: ["id", "name", "oauth_client_id"]}).then(function() {
-				req.session.application_roles.push({id: role.id, name: role.name})
 				var message = {text: ' Create role', type: 'success'}
 				res.send({role: role, message: message});
 			})
@@ -348,7 +354,7 @@ exports.edit_role = function(req, res) {
 	} else {
 
 		var role = models.role.build({ name: role_name, 
-									   oauth_client_id: req.session.application.id });
+									   oauth_client_id: req.application.id });
 
 		role.validate().then(function(err) {
 			models.role.update(
@@ -358,10 +364,6 @@ exports.edit_role = function(req, res) {
 					where: {id: role_id}
 				}
 			).then(function(){
-				var index = req.session.application_roles.findIndex(elem => elem.id === role_id); 
-		        if (index > -1) {
-		        	req.session.application_roles[index].name = role_name;        	
-		        }	
 				res.send({text: ' Role was successfully edited.', type: 'success'});
 			}).catch(function(error) {
 				res.send({text: ' Failed editing role.', type: 'danger'})
@@ -385,10 +387,6 @@ exports.delete_role = function(req, res) {
 				 oauth_client_id: req.body.app_id 
 				}
 		}).then(function() {
-			var index = req.session.application_roles.findIndex(elem => elem.id === req.body.role_id); 
-	        if (index > -1) {
-	        	req.session.application_roles.splice(index, 1);        	
-	        }
 			res.send({text: ' Role was successfully deleted.', type: 'success'});
 		}).catch(function(error) {
 			res.send({text: ' Failed deleting role', type: 'danger'});
@@ -407,7 +405,7 @@ exports.create_permission = function(req, res) {
 											 action: req.body.action,
 											 resource: req.body.resource,
 											 xml: req.body.xml, 
-											 oauth_client_id: req.session.application.id });
+											 oauth_client_id: req.application.id });
 
 		permission.validate().then(function(err) {
 			permission.save({fields: ["id", "name", "description", "action", "resource", "xml", "oauth_client_id"]}).then(function() {
@@ -436,21 +434,21 @@ exports.role_permissions_assign = function(req, res) {
 		for(var role in submit_assignment) {
 			if (!['provider', 'purchaser'].includes(role)) {
 				for (var permission = 0; permission < submit_assignment[role].length; permission++) {
-					create_assign_roles_permissions.push({role_id: role, permission_id: submit_assignment[role][permission], oauth_client_id: req.session.application.id})
+					create_assign_roles_permissions.push({role_id: role, permission_id: submit_assignment[role][permission], oauth_client_id: req.application.id})
 				}
 			}
 		}
 
 		models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
 			req.session.message = {text: ' Modified roles and permissions.', type: 'success'};
-			res.redirect("/idm/applications/"+req.session.application.id)
+			res.redirect("/idm/applications/"+req.application.id)
 		}).catch(function(error) {
 			req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
-			res.redirect("/idm/applications/"+req.session.application.id)
+			res.redirect("/idm/applications/"+req.application.id)
 		});
 	}).catch(function(error) {
 		req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
-		res.redirect("/idm/applications/"+req.session.application.id)
+		res.redirect("/idm/applications/"+req.application.id)
 	});
 }
 
@@ -463,7 +461,7 @@ exports.delete_avatar = function(req, res) {
 			{ image: 'default' },
 			{
 				fields: ["image"],
-				where: {id: req.session.application.id }
+				where: {id: req.application.id }
 			}
 		).then(function(){
 			var image_name = req.body.image_name.split('/')[3]
@@ -471,7 +469,7 @@ exports.delete_avatar = function(req, res) {
 		        if (err) {
 		            res.send({text: ' Failed to delete image.', type: 'warning'});
 		        } else {
-		        	req.session.application.image = '/img/logos/original/app.png'
+		        	req.application.image = '/img/logos/original/app.png'
 		            res.send({text: ' Deleted image.', type: 'success'});                               
 		        }
 			});
@@ -483,12 +481,12 @@ exports.delete_avatar = function(req, res) {
 
 // Delete application
 exports.destroy = function(req, res) {
-	if (req.session.application.image.includes('/img/applications')) {
-		var image_name = req.session.application.image.split('/')[3]
+	if (req.application.image.includes('/img/applications')) {
+		var image_name = req.application.image.split('/')[3]
 		fs.unlink('./public/img/applications/'+image_name);
 	}
 	models.oauth_client.destroy({
-		where: { id: req.session.application.id }
+		where: { id: req.application.id }
 	}).then(function() {
 		req.session.message = {text: ' Application deleted.', type: 'success'};
 		res.redirect('/idm/applications')
@@ -497,6 +495,42 @@ exports.destroy = function(req, res) {
 		res.redirect('/idm/applications');
 	});
 };
+
+// Authorize users in an application
+exports.get_users = function(req, res) {
+	models.role_user.findAll({
+		where: { oauth_client_id: req.application.id },
+		include: [{
+			model: models.user,
+			attributes: ['id', 'username']
+		}]
+	}).then(function(users_application) {
+		if (users_application) {
+			var users_authorized = []
+			var user_logged_roles = []
+			users_application.forEach(function(app) {
+				if(app.User.id === req.session.user.id) {
+					user_logged_roles.push(app.role_id)
+				}
+				users_authorized.push({ user_id: app.User.id, 
+										role_id: app.role_id, 
+										username: app.User.username});
+			});
+			models.role.findAll({
+				where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
+				attributes: ['id', 'name'],
+				order: [['id', 'DESC']]
+			}).then(function(roles) {
+				if(roles) {
+					res.send({ application: req.application, 
+							   users_authorized: users_authorized, 
+							   roles: roles,
+							   errors: [] });
+				} else { next(new Error("The applications hasn't got users authorized"));}
+			}).catch(function(error) { next(error); });
+		} else { next(new Error("The applications hasn't got users authorized"));}
+	}).catch(function(error) { next(error); });
+}
 
 
 // Authorize users in an application
@@ -524,17 +558,15 @@ exports.available_users = function(req, res) {
 exports.authorize_users = function(req, res) {
 
 	models.role_user.destroy({
-		where: { oauth_client_id: req.session.application.id }
+		where: { oauth_client_id: req.application.id }
 	}).then(function() {
-		var submit_authorize_users = req.body.submit_authorize; 
-		req.session.application_users_authorized = JSON.parse(JSON.stringify(submit_authorize_users))
 
-		for (var i = 0; i < submit_authorize_users.length; i++) {
-			submit_authorize_users[i].oauth_client_id = req.session.application.id;
-			delete submit_authorize_users[i].username
+		for (var i = 0; i < req.body.submit_authorize.length; i++) {
+			req.body.submit_authorize[i].oauth_client_id = req.application.id;
+			delete req.body.submit_authorize[i].username
 		}
 
-		models.role_user.bulkCreate(submit_authorize_users).then(function() {
+		models.role_user.bulkCreate(req.body.submit_authorize).then(function() {
 			res.send({text: ' Modified users authorization.', type: 'success'})
 		}).catch(function(error) {
 			res.send({text: ' Modified users authorization error.', type: 'warning'})

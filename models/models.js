@@ -69,10 +69,10 @@ role_user.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade
 role_user.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between roles and permissions
-role.belongsToMany(permission, { through: role_permission, onDelete: 'cascade' })
-permission.belongsToMany(role, { through: role_permission, onDelete: 'cascade' })
-//role_permission.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
-//role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+// role.belongsToMany(permission, { through: role_permission, onDelete: 'cascade' })
+// permission.belongsToMany(role, { through: role_permission, onDelete: 'cascade' })
+role_permission.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 //role_permission.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Exportar tablas

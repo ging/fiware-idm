@@ -1,9 +1,9 @@
 // User model 
-
+var config = require('../config.js').password_encryption
 
 // Vars for encrypting
 var crypto = require('crypto');
-var key = 'paldflmarfijnakjdakldsfmal';
+var key = config.key;
 
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define(

@@ -78,6 +78,8 @@ router.get('/idm/applications/:applicationId/edit',                         sess
 router.put('/idm/applications/:applicationId/edit/avatar', 		            sessionController.loginRequired,	imageUpload.single('image'),    applicationController.update_avatar);
 router.put('/idm/applications/:applicationId/edit/info',                    sessionController.loginRequired,    applicationController.update_info);
 router.get('/idm/applications/:applicationId/edit/roles',                   sessionController.loginRequired,    applicationController.manage_roles);
+router.get('/idm/applications/:applicationId/edit/users',                   sessionController.loginRequired,    applicationController.get_users);
+router.post('/idm/applications/:applicationId/edit/users',                  sessionController.loginRequired,    applicationController.authorize_users);
 router.post('/idm/applications/:applicationId/edit/roles',                  sessionController.loginRequired,    applicationController.role_permissions_assign);
 router.post('/idm/applications/:applicationId/edit/roles/create',           sessionController.loginRequired,    applicationController.create_role);
 router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',      sessionController.loginRequired,    applicationController.edit_role);
@@ -86,7 +88,7 @@ router.post('/idm/applications/:applicationId/edit/permissions/create',     sess
 router.delete('/idm/applications/:applicationId/edit/delete_avatar/',       sessionController.loginRequired,    applicationController.delete_avatar);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.destroy);
 router.post('/idm/applications/:applicationId/available/users',             sessionController.loginRequired,    applicationController.available_users);
-router.post('/idm/applications/:applicationId/authorize/users',             sessionController.loginRequired,    applicationController.authorize_users);
+
 
 
 module.exports = router;

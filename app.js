@@ -10,6 +10,7 @@ var partials = require('express-partials');
 var sassMiddleware = require('node-sass-middleware');
 
 var index = require('./routes/index');
+var config = require ('./config.js').session;
 
 var app = express();
 
@@ -23,9 +24,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(partials());
-app.use(cookieParser('plm2k45ml2104585jnn2'));
+app.use(cookieParser(config.secret));
 app.use(session({
-	secret: 'lb294n7b38n03n5ofaoi'
+	secret: config.secret
 }));
 
 // Middleware to convert sass files to css

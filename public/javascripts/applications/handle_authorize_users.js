@@ -1,8 +1,11 @@
+var roles = []
+var users_authorized = []
+var user_role_count = {}
+var application = {}
+
 
 // Handle authorize users to the application
-
 $(document).ready(function(){
-
 
 	// Filter authorized members in show view
     $("#auth_users").find('.form-control').bind("keyup input",function(e) {
@@ -32,7 +35,43 @@ $(document).ready(function(){
 
 	// Pop up with a form to authorize new users to the application
 	$('#auth_users_action_manage_application_users').click(function () {
-		console.log(application)
+
+		var applicationId = $(this).closest('#auth_users').attr('data-application_id')
+		var url = "/idm/applications/"+ applicationId +"/edit/users"
+
+    	$.get(url, function(data) {
+			users_authorized = data.users_authorized
+			roles = data.roles
+			application = data.application
+
+			// Relation between users and roles
+			for (var i = 0; i < users_authorized.length; i++) {
+				if (!user_role_count[users_authorized[i].user_id]) {
+					user_role_count[users_authorized[i].user_id] = 0;
+				}
+				user_role_count[users_authorized[i].user_id]++;
+			}
+
+			for (var i = 0; i < users_authorized.length; i++) {
+				if (!$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).length) {
+					var assign_role_user_row = $('#table_row_assign_role_user_template').html();
+			        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
+			        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
+			        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
+			        if (user_role_count[users_authorized[i].user_id]) {
+			        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String(user_role_count[users_authorized[i].user_id] + " roles"));
+			        }     
+			        $("#authorize_user").find(".members").append(assign_role_user_row);
+			        for (j in roles) {
+			        	var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
+			        	$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("ol").append(role)
+			        }
+				}
+				$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("#"+users_authorized[i].role_id).addClass("active")
+			}
+		});
+
+		/*var roles = [{id: 'cosa', name: 'cosa'},{id: 'cosa2', name: 'cosa2'}]
 		$('#backdrop').show();
         $('#authorize_user').show('open');
         
@@ -52,24 +91,24 @@ $(document).ready(function(){
 		        }
 			}
 			$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("#"+users_authorized[i].role_id).addClass("active")
-        }
+        }*/
 	});
 
 	// Exit from form to authorize users to the application
     $("#authorize_user").find('.cancel, .close').click(function () {
-    	input_change_authorize = null
+    	/*input_change_authorize = null
     	users_authorized = users_authorized_original
-    	user_role_count = user_role_count_original
+    	user_role_count = user_role_count_original*/
 
-    	new_authorized_user()
+    	roles = []
+    	users_authorized = []
+    	user_role_count = {}
 
-        $('#backdrop').hide();
-        $("#alert_error_search_available").hide("close");
-        $(".alert-warning").hide("close");
+        $("#authorize_user").find("#alert_error_search_available").hide("close");
+        $("#authorize_user").find(".alert-warning").hide("close");
         $("#authorize_user").find(".modal-footer").find("#submit_button").val("Save");
         $("#authorize_user").find('#no_available_update_owners_users').hide('close');
         $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
-        $('#authorize_user').hide('close');
         $("#authorize_user").find('#available_update_owners_users').val('');
         $("#authorize_user").find(".available_members").empty();
         $("#authorize_user").find(".members").empty();
@@ -221,7 +260,7 @@ $(document).ready(function(){
         }
     });
 
-    // Handle the submit button from to submit assignment
+    // Handle the submit button form to submit assignment
 	$("#submit_authorized_users_form").bind("keypress submit", function(event) {
 
 		// stop form from submitting normally
@@ -265,15 +304,13 @@ $(document).ready(function(){
 		        	users_authorized_original = users_authorized
     				user_role_count_original = user_role_count 
 
-    				new_authorized_user()
+    				new_authorized_user(users_authorized)
 
 	        		input_change_authorize = null
-			        $("#backdrop").hide();
-			        $("#alert_error_search_available").hide("close")
+			        $("#authorize_user").find("#alert_error_search_available").hide("close")
 			        $("#authorize_user").find('#no_available_update_owners_users').hide('close');
 			        $("#authorize_user").find(".alert-warning").hide("close");
 			        $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
-			        $("#authorize_user").hide('close');
 			        $("#authorize_user").find('#available_update_owners_users').val('');
 			        $("#authorize_user").find('#update_owners_users_members').val('');
 			        $("#authorize_user").find(".available_members").empty();
@@ -341,7 +378,7 @@ function available_users(input, input_change_authorize) {
 }
 
 // Function to create rows in authorized user view
-function new_authorized_user() {
+function new_authorized_user(users_authorized) {
 	$("#auth_users").find(".datatable-content").empty();
 	if (users_authorized.length == 0) {
 		$("#auth_users").find(".datatable-content").append('<p class="alert alert-info empty" id="alert_no_authorized_users" style="display: block;">This application does not have any authorized users.</p>');

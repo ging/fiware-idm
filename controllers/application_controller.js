@@ -8,38 +8,32 @@ const Op = Sequelize.Op;
 
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
-/*exports.owned_permissions = function(req, res, next) {
+exports.owned_permissions = function(req, res, next) {
 	models.role_user.findAll({
-		where: { oauth_client_id: req.application.id },
-		include: [{
-			model: models.user,
-			attributes: ['id', 'username']
-		}]
-	}).then(function(users_application) {
-		if (users_application) {
-			var users_authorized = []
-			var user_logged_roles = []
-			users_application.forEach(function(app) {
-				if(app.User.id === req.session.user.id) {
-					user_logged_roles.push(app.role_id)
-				}
-				if(users_authorized.some(elem => elem.user_id === app.User.id) === false) {
-					users_authorized.push({ user_id: app.User.id, 
-											role_id: app.role_id, 
-											username: app.User.username});
-				} 
+		where: { user_id: req.session.user.id, 
+				 oauth_client_id: req.application.id }
+	}).then(function(user_application) {
+		if (user_application) {
+			var user_roles = []
+			user_application.forEach(function(app) {
+				user_roles.push(app.role_id)
 			});
 			models.role_permission.findAll({
-				where: { role_id: user_logged_roles },
+				where: { role_id: user_roles },
 				attributes: ['permission_id'],
-			}).then(function(user_logged_permissions) {
-				if(user_logged_permissions) {
-					
+			}).then(function(user_permissions) {
+				if(user_permissions) {
+					var user_permissions_id = []
+					user_permissions.forEach(function(app) {
+						user_permissions_id.push(app.permission_id)
+					});
+					check_user_action(req.application, req.path, req.method, user_permissions_id)
+					next();
 				} else { next(new Error("The applications hasn't got users authorized"));}
 			}).catch(function(error) { next(error); });
 		} else { next(new Error("The applications hasn't got users authorized"));}
 	}).catch(function(error) { next(error); });
-}*/
+}
 
 // Autoload info if path include applicationid
 exports.load = function(req, res, next, applicationId) {
@@ -82,6 +76,9 @@ exports.index = function(req, res) {
 				res.locals.message = req.session.message;
 				delete req.session.message
 			}
+			// Order applications
+			applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
+
 			res.render('applications/index', { applications: applications, errors: []});
 		}
 	});
@@ -610,33 +607,136 @@ exports.available_users = function(req, res) {
 // Authorize users in an application
 exports.authorize_users = function(req, res, next) {
 
-	// CAMBIAR POR HACER UN UPDATE
-	models.role_user.destroy({
-		where: { oauth_client_id: req.application.id }
-	}).then(function() {
+	models.role_user.findAll({
+		where: { oauth_client_id: req.application.id },
+		attributes: ['role_id', 'user_id', 'oauth_client_id']
+	}).then(function(users_application_actual) {
+		if (users_application_actual) {
+			var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
+			users_to_be_authorized = users_to_be_authorized.filter(function(elem) {
+	        	return (elem.role_id !== "")
+	        });
+			var new_authorization_users = authorize_all(users_application_actual, users_to_be_authorized)
 
-		var users_authorized = JSON.parse(req.body.submit_authorize)
-		users_authorized = users_authorized.filter(function(elem) {
-        	return (elem.role_id !== "")
-        });
+			models.role_user.destroy({
+				where: { user_id: new_authorization_users.delete_user }
+			}).then(function() {
+				models.role_user.destroy({
+					where: { [Op.and]: [{user_id: new_authorization_users.delete_role_user.map(elem => elem.user_id)}, 
+										{role_id: new_authorization_users.delete_role_user.map(elem => elem.role_id)}] }
+				}).then(function() {
 
-		for (var i = 0; i < users_authorized.length; i++) {
-			users_authorized[i].oauth_client_id = req.application.id;
-			delete users_authorized[i].username
-		}
+					var add_users_roles = new_authorization_users.add_role_user.concat(new_authorization_users.add_user)
+					for (var i = 0; i < add_users_roles.length; i++) {
+						add_users_roles[i].oauth_client_id = req.application.id;
+					}
 
-
-		models.role_user.bulkCreate(users_authorized).then(function() {
-			req.session.message = {text: ' Modified users authorization.', type: 'success'};
-			res.redirect('/idm/applications/'+req.application.id)
-		}).catch(function(error) {
-			req.session.message = {text: ' Modified users authorization error.', type: 'warning'};
-			res.redirect('/idm/applications/'+req.application.id)
-		});
-
-	}).catch(function(error) {
-		req.session.message = {text: ' Modified users authorization error.', type: 'warning'};
-		res.redirect('/idm/applications/'+req.application.id)
-	});
+					models.role_user.bulkCreate(add_users_roles).then(function() {
+						req.session.message = {text: ' Modified users authorization.', type: 'success'};
+						res.redirect('/idm/applications/'+req.application.id)
+					}).catch(function(error) {
+						req.session.message = {text: ' Modified users authorization error.', type: 'warning'};
+						res.redirect('/idm/applications/'+req.application.id)
+					});
+				}).catch(function(error) { next(error); });
+			}).catch(function(error) { next(error); });
+		} else { next(new Error("The applications hasn't got users authorized"));}
+	}).catch(function(error) { next(error); });
 }
 
+// Method to see users permissions to do some actions
+function check_user_action(application, path, method, permissions) {
+	console.log("----------------------------------------------------------------------")
+	console.log(path.split(application.id)[1])
+	console.log("----------------------------------------------------------------------")
+	console.log(method)
+	console.log("----------------------------------------------------------------------")
+	console.log(permissions)
+	console.log("----------------------------------------------------------------------")
+	var route = path.split(application.id)[1]
+	console.log(route)
+	console.log(route.includes('edit'))
+	switch(true) {
+	    case (route.includes('edit')):
+	        console.log("--------edit--------")
+	        break;
+	    default:
+	        console.log("--------default--------")
+	}
+}
+
+
+// Method to see how add new rows to role_user database
+function authorize_all(arr1, arr2) {
+
+	// Change Array of objects, to object with key as user_id and value as an array of role_id
+	var json_arr1 = {}
+	for (var i = 0; i < arr1.length; i++) {
+		if (!json_arr1[arr1[i].user_id]) {
+	        json_arr1[arr1[i].user_id] = [];
+	    }
+	    json_arr1[arr1[i].user_id].push(arr1[i].role_id);
+	}
+
+	var json_arr2 = {}
+	for (var i = 0; i < arr2.length; i++) {
+		if (!json_arr2[arr2[i].user_id]) {
+	        json_arr2[arr2[i].user_id] = [];
+	    }
+	    json_arr2[arr2[i].user_id].push(arr2[i].role_id);
+	}
+
+	// Search for roles to add or delete in users
+	var add_role_user = {}
+	var delete_role_user = {}
+	for (var user_actual in json_arr1) {
+		for (var users_to_authorized in json_arr2) {
+			if (user_actual === users_to_authorized) {
+				var del_rol = json_arr1[user_actual].filter(x => json_arr2[users_to_authorized].indexOf(x) == -1);
+				delete_role_user[user_actual] = del_rol
+				var add_rol = json_arr2[users_to_authorized].filter(x => json_arr1[user_actual].indexOf(x) == -1);
+				add_role_user[user_actual] = add_rol
+			}
+		}	
+	}
+
+	// Users to be add or delete from database
+	var delete_user =  Object.keys(json_arr1).filter(x => Object.keys(json_arr2).indexOf(x) == -1);
+	var add_user = Object.keys(json_arr2).filter(x => Object.keys(json_arr1).indexOf(x) == -1);
+
+	// Change results obtained to array of objects
+	var add_role_user_defintive = []
+	for (var user in add_role_user) {
+		if (add_role_user[user].length <= 0) {
+			delete add_role_user[user]
+		} else {
+			for (var i = 0; i < add_role_user[user].length; i++) {
+				add_role_user_defintive.push({user_id: user, role_id: add_role_user[user][i]})
+			}
+		}
+	}
+
+	var delete_role_user_defintive = []
+	for (var user in delete_role_user) {
+		if (delete_role_user[user].length <= 0) {
+			delete delete_role_user[user]
+		} else {
+			for (var i = 0; i < delete_role_user[user].length; i++) {
+				delete_role_user_defintive.push({user_id: user, role_id: delete_role_user[user][i]})
+			}
+		}
+	}
+
+	var add_user_defintive = []
+	for (var i = 0; i < add_user.length; i++) {
+		for (var j = 0; j < json_arr2[add_user[i]].length; j++) {
+			add_user_defintive.push({user_id: add_user[i], role_id: json_arr2[add_user[i]][j]})
+		}
+	}
+
+	return { add_role_user: add_role_user_defintive, 
+			 delete_role_user: delete_role_user_defintive, 
+			 add_user: add_user_defintive, 
+			 delete_user: delete_user }
+
+}

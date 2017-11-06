@@ -72,7 +72,7 @@ imageUpload = multer({ dest: './public/img/applications/'})
 router.get('/idm/applications',  					                        sessionController.loginRequired,	applicationController.index);
 router.get('/idm/applications/new',                                         sessionController.loginRequired,    applicationController.new);
 router.post('/idm/applications',                                            sessionController.loginRequired,    applicationController.create);
-router.get('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.show);
+router.get('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.show);
 router.get('/idm/applications/:applicationId/step/avatar',                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_avatar);
 router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    applicationController.owned_permissions,    imageUpload.single('image'),    applicationController.step_create_avatar);
 router.get('/idm/applications/:applicationId/step/roles',                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_roles);
@@ -89,7 +89,7 @@ router.delete('/idm/applications/:applicationId/edit/roles/:roleId/delete', sess
 router.post('/idm/applications/:applicationId/edit/permissions/create',     sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.create_permission);
 router.delete('/idm/applications/:applicationId/edit/delete_avatar',        sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_avatar);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.destroy);
-router.post('/idm/applications/:applicationId/available/users',             sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.available_users);
+router.post('/idm/applications/:applicationId/available/users',             sessionController.loginRequired,    applicationController.available_users);
 
 
 

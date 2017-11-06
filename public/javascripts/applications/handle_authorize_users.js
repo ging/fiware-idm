@@ -38,56 +38,48 @@ $(document).ready(function(){
 
 		var applicationId = $(this).closest('#auth_users').attr('data-application_id')
 		var url = "/idm/applications/"+ applicationId +"/edit/users"
-
     	$.get(url, function(data) {
-			users_authorized = data.users_authorized
-			roles = data.roles
-			application = data.application
 
-			// Relation between users and roles
-			for (var i = 0; i < users_authorized.length; i++) {
-				if (!user_role_count[users_authorized[i].user_id]) {
-					user_role_count[users_authorized[i].user_id] = 0;
-				}
-				user_role_count[users_authorized[i].user_id]++;
-			}
+    		if (data === 'error') {
+    			exit_authorize_users()
+    			$("#authorize_user").modal('toggle')
+    		} else {
+				users_authorized = data.users_authorized
+				roles = data.roles
+				application = data.application
 
-			for (var i = 0; i < users_authorized.length; i++) {
-				if (!$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).length) {
-					var assign_role_user_row = $('#table_row_assign_role_user_template').html();
-			        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
-			        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
-			        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
-			        if (user_role_count[users_authorized[i].user_id]) {
-			        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String(user_role_count[users_authorized[i].user_id] + " roles"));
-			        }     
-			        $("#authorize_user").find(".members").append(assign_role_user_row);
-			        for (j in roles) {
-			        	var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
-			        	$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("ol").append(role)
-			        }
+				// Relation between users and roles
+				for (var i = 0; i < users_authorized.length; i++) {
+					if (!user_role_count[users_authorized[i].user_id]) {
+						user_role_count[users_authorized[i].user_id] = 0;
+					}
+					user_role_count[users_authorized[i].user_id]++;
 				}
-				$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("#"+users_authorized[i].role_id).addClass("active")
-			}
+
+				for (var i = 0; i < users_authorized.length; i++) {
+					if (!$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).length) {
+						var assign_role_user_row = $('#table_row_assign_role_user_template').html();
+				        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
+				        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
+				        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
+				        if (user_role_count[users_authorized[i].user_id]) {
+				        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String(user_role_count[users_authorized[i].user_id] + " roles"));
+				        }     
+				        $("#authorize_user").find(".members").append(assign_role_user_row);
+				        for (j in roles) {
+				        	var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
+				        	$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("ol").append(role)
+				        }
+					}
+					$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("#"+users_authorized[i].role_id).addClass("active")
+				}    			
+    		}
 		});
 	});
 
 	// Exit from form to authorize users to the application
     $("#authorize_user").find('.cancel, .close').click(function () {
-    	roles = []
-    	users_authorized = []
-    	user_role_count = {}
-
-        $("#authorize_user").find("#alert_error_search_available").hide("close");
-        $("#authorize_user").find(".alert-warning").hide("close");
-        $("#authorize_user").find(".modal-footer").find("#submit_button").val("Save");
-        $("#authorize_user").find('#no_available_update_owners_users').hide('close');
-        $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
-        $("#authorize_user").find('#available_update_owners_users').val('');
-        $("#authorize_user").find(".available_members").empty();
-        $("#authorize_user").find(".members").empty();
-        $("#authorize_user").find(".alert-warning").hide("close");
-		$("#authorize_user").find('#update_owners_users_members').val('');
+    	exit_authorize_users()
     });
 
     var timer;
@@ -257,15 +249,6 @@ $(document).ready(function(){
 		        var $form = $(this),
 		            url = $form.attr('action');
 
-		        /*for (var key in user_role_count) {
-					if (user_role_count[key] == 0) {
-						delete user_role_count[key]
-						users_authorized = users_authorized.filter(function(obj) {
-					    	return (obj.user_id !== key);
-						});
-					}
-				}*/
-
 				// Change value of hidden input
 		        $('#authorize_user').find('#submit_authorize').val(JSON.stringify(users_authorized))
 
@@ -286,6 +269,21 @@ $(document).ready(function(){
 
 });
 
+// Function to exit from dialog
+function exit_authorize_users() {
+	user_role_count = {}
+
+	$("#authorize_user").find("#alert_error_search_available").hide("close");
+    $("#authorize_user").find(".alert-warning").hide("close");
+    $("#authorize_user").find(".modal-footer").find("#submit_button").val("Save");
+    $("#authorize_user").find('#no_available_update_owners_users').hide('close');
+    $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
+    $("#authorize_user").find('#available_update_owners_users').val('');
+    $("#authorize_user").find(".available_members").empty();
+    $("#authorize_user").find(".members").empty();
+    $("#authorize_user").find(".alert-warning").hide("close");
+	$("#authorize_user").find('#update_owners_users_members').val('');
+}
 
 // Function to search available members
 function available_users(input, input_change_authorize) {
@@ -293,7 +291,7 @@ function available_users(input, input_change_authorize) {
 	if (input.length > 1 && input_change_authorize !== input) {
 
 		$("#authorize_user").find('#perform_filter_available_update_owners_users').hide('close');
-
+		
 		var url = "/idm/applications/"+ application.id +"/available/users"
     	var key = { username: input }
 
@@ -308,6 +306,9 @@ function available_users(input, input_change_authorize) {
 		            $("#authorize_user").find("#spinner_update_owners_users").hide('close')
 		            $("#authorize_user").find('#no_available_update_owners_users').hide('close');
 				}
+			} else if (data === 'error') {
+    			exit_authorize_users()
+    			$("#authorize_user").modal('toggle')
 			} else {
 				$("#authorize_user").find("#spinner_update_owners_users").hide('close')
 				$("#authorize_user").find(".available_members").empty()

@@ -27,11 +27,18 @@ exports.owned_permissions = function(req, res, next) {
 					user_permissions.forEach(function(app) {
 						user_permissions_id.push(app.permission_id)
 					});
-					check_user_action(req.application, req.path, req.method, user_permissions_id)
-					next();
-				} else { next(new Error("The applications hasn't got users authorized"));}
+					if(check_user_action(req.application, req.path, req.method, user_permissions_id)) {
+						next();	
+					} else {
+						if (req.xhr) {
+							res.send('error')
+						} else {
+							res.redirect('/idm/applications')							
+						}
+					}
+				} else { next(new Error("The application hasn't got users authorized"));}
 			}).catch(function(error) { next(error); });
-		} else { next(new Error("The applications hasn't got users authorized"));}
+		} else { next(new Error("You are not authorized"));}
 	}).catch(function(error) { next(error); });
 }
 
@@ -46,7 +53,7 @@ exports.load = function(req, res, next, applicationId) {
 				req.application.image = '/img/applications/'+application.image
 			}
 			next();
-		} else { next(new Error("The application with id " + applicationId + "doesn't exist"));}
+		} else { next(new Error("The application with id " + applicationId + " doesn't exist"));}
 	}).catch(function(error) { next(error); });
 };
 
@@ -410,16 +417,19 @@ exports.delete_role = function(req, res) {
 		res.send({text: ' Failed deleting role', type: 'danger'});
 	
 	} else {
-
-		models.role.destroy({
-		where: { id: req.body.role_id,
-				 oauth_client_id: req.body.app_id 
-				}
-		}).then(function() {
-			res.send({text: ' Role was successfully deleted.', type: 'success'});
-		}).catch(function(error) {
+		if (req.body.role_id) {
+			models.role.destroy({
+			where: { id: req.body.role_id,
+					 oauth_client_id: req.body.app_id 
+					}
+			}).then(function() {
+				res.send({text: ' Role was successfully deleted.', type: 'success'});
+			}).catch(function(error) {
+				res.send({text: ' Failed deleting role', type: 'danger'});
+			});	
+		} else {
 			res.send({text: ' Failed deleting role', type: 'danger'});
-		});	
+		}
 	}
 }
 
@@ -453,32 +463,36 @@ exports.role_permissions_assign = function(req, res) {
 	var roles_id = Object.keys(JSON.parse(req.body.submit_assignment))
 	var public_roles_id = roles_id.filter(elem => !['provider','purchaser'].includes(elem))
 
-	models.role_permission.destroy({
-		where: { 
-			role_id: public_roles_id
-		}
-	}).then(function() {
-		var submit_assignment = JSON.parse(req.body.submit_assignment);
-		create_assign_roles_permissions = []
-		for(var role in submit_assignment) {
-			if (!['provider', 'purchaser'].includes(role)) {
-				for (var permission = 0; permission < submit_assignment[role].length; permission++) {
-					create_assign_roles_permissions.push({role_id: role, permission_id: submit_assignment[role][permission], oauth_client_id: req.application.id})
+	if (public_roles_id.length > 0) {
+		models.role_permission.destroy({
+			where: { 
+				role_id: public_roles_id
+			}
+		}).then(function() {
+			var submit_assignment = JSON.parse(req.body.submit_assignment);
+			create_assign_roles_permissions = []
+			for(var role in submit_assignment) {
+				if (!['provider', 'purchaser'].includes(role)) {
+					for (var permission = 0; permission < submit_assignment[role].length; permission++) {
+						create_assign_roles_permissions.push({role_id: role, permission_id: submit_assignment[role][permission], oauth_client_id: req.application.id})
+					}
 				}
 			}
-		}
 
-		models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
-			req.session.message = {text: ' Modified roles and permissions.', type: 'success'};
-			res.redirect("/idm/applications/"+req.application.id)
+			models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
+				req.session.message = {text: ' Modified roles and permissions.', type: 'success'};
+				res.redirect("/idm/applications/"+req.application.id)
+			}).catch(function(error) {
+				req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
+				res.redirect("/idm/applications/"+req.application.id)
+			});
 		}).catch(function(error) {
 			req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
 			res.redirect("/idm/applications/"+req.application.id)
 		});
-	}).catch(function(error) {
-		req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
+	} else {
 		res.redirect("/idm/applications/"+req.application.id)
-	});
+	}
 }
 
 // Delete avatar
@@ -514,72 +528,83 @@ exports.destroy = function(req, res) {
 		var image_name = req.application.image.split('/')[3]
 		fs.unlink('./public/img/applications/'+image_name);
 	}
-	models.oauth_client.destroy({
-		where: { id: req.application.id }
-	}).then(function() {
-		req.session.message = {text: ' Application deleted.', type: 'success'};
-		res.redirect('/idm/applications')
-	}).catch(function(error) {
-		req.session.message = {text: ' Application delete error.', type: 'warning'};
+	if (req.application.id) {
+
+		models.oauth_client.destroy({
+			where: { id: req.application.id }
+		}).then(function() {
+			req.session.message = {text: ' Application deleted.', type: 'success'};
+			res.redirect('/idm/applications')
+		}).catch(function(error) {
+			req.session.message = {text: ' Application delete error.', type: 'warning'};
+			res.redirect('/idm/applications');
+		});
+	} else {
 		res.redirect('/idm/applications');
-	});
+	}
 };
 
 // Authorize users in an application
 exports.get_users = function(req, res, next) {
-	models.role_user.findAll({
-		where: { oauth_client_id: req.application.id },
-		include: [{
-			model: models.user,
-			attributes: ['id', 'username']
-		}]
-	}).then(function(users_application) {
-		if (users_application) {
-			var users_authorized = []
-			var user_logged_roles = []
-			users_application.forEach(function(app) {
-				if(app.User.id === req.session.user.id) {
-					user_logged_roles.push(app.role_id)
-				}
-				users_authorized.push({ user_id: app.User.id, 
-										role_id: app.role_id, 
-										username: app.User.username});
-			});
-			models.role_permission.findAll({
-				where: { role_id: user_logged_roles },
-				attributes: ['permission_id'],
-			}).then(function(user_logged_permissions) {
-				if(user_logged_permissions) {
-					user_logged_permissions_id = user_logged_permissions.map(elem => elem.permission_id) 
-					var where_search_role = []
-					if (user_logged_permissions_id.includes('6')) {
-						where_search_role.push({id: user_logged_roles});
-					}
-					if (user_logged_permissions_id.includes('5')) {
-						where_search_role.push({oauth_client_id: req.application.id})
-					}
 
-					if (user_logged_permissions_id.includes('1')) {
-						where_search_role.push({is_internal: true});
+	if (req.xhr) {
+
+		models.role_user.findAll({
+			where: { oauth_client_id: req.application.id },
+			include: [{
+				model: models.user,
+				attributes: ['id', 'username']
+			}]
+		}).then(function(users_application) {
+			if (users_application) {
+				var users_authorized = []
+				var user_logged_roles = []
+				users_application.forEach(function(app) {
+					if(app.User.id === req.session.user.id) {
+						user_logged_roles.push(app.role_id)
 					}
-					models.role.findAll({
-						where: { [Op.or]: where_search_role },
-						attributes: ['id', 'name'],
-						order: [['id', 'DESC']]
-					}).then(function(roles) {
-						if (roles) {
-							res.send({ application: req.application, 
-									   users_authorized: users_authorized, 
-									   roles: roles,
-									   errors: [] });
-						} else { next(new Error("Error searching roles"));}
-					}).catch(function(error) { 
-						console.log(error)
-						next(error); });
-				} else { next(new Error("Error searching permissions and roles assignment"));}
-			}).catch(function(error) { next(error); });
-		} else { next(new Error("The applications hasn't got users authorized"));}
-	}).catch(function(error) { next(error); });
+					users_authorized.push({ user_id: app.User.id, 
+											role_id: app.role_id, 
+											username: app.User.username});
+				});
+				models.role_permission.findAll({
+					where: { role_id: user_logged_roles },
+					attributes: ['permission_id'],
+				}).then(function(user_logged_permissions) {
+					if(user_logged_permissions) {
+						user_logged_permissions_id = user_logged_permissions.map(elem => elem.permission_id) 
+						var where_search_role = []
+						if (user_logged_permissions_id.includes('6')) {
+							where_search_role.push({id: user_logged_roles});
+						}
+						if (user_logged_permissions_id.includes('5')) {
+							where_search_role.push({oauth_client_id: req.application.id})
+						}
+
+						if (user_logged_permissions_id.includes('1')) {
+							where_search_role.push({is_internal: true});
+						}
+						models.role.findAll({
+							where: { [Op.or]: where_search_role },
+							attributes: ['id', 'name'],
+							order: [['id', 'DESC']]
+						}).then(function(roles) {
+							if (roles) {
+								res.send({ application: req.application, 
+										   users_authorized: users_authorized, 
+										   roles: roles,
+										   errors: [] });
+							} else { next(new Error("Error searching roles"));}
+						}).catch(function(error) { 
+							console.log(error)
+							next(error); });
+					} else { next(new Error("Error searching permissions and roles assignment"));}
+				}).catch(function(error) { next(error); });
+			} else { next(new Error("The applications hasn't got users authorized"));}
+		}).catch(function(error) { next(error); });
+	} else {
+		res.redirect('/idm/applications/'+req.application.id)
+	}
 }
 
 
@@ -607,64 +632,88 @@ exports.available_users = function(req, res) {
 // Authorize users in an application
 exports.authorize_users = function(req, res, next) {
 
-	models.role_user.findAll({
-		where: { oauth_client_id: req.application.id },
-		attributes: ['role_id', 'user_id', 'oauth_client_id']
-	}).then(function(users_application_actual) {
-		if (users_application_actual) {
-			var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
-			users_to_be_authorized = users_to_be_authorized.filter(function(elem) {
-	        	return (elem.role_id !== "")
-	        });
-			var new_authorization_users = authorize_all(users_application_actual, users_to_be_authorized)
+	var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
 
-			models.role_user.destroy({
-				where: { user_id: new_authorization_users.delete_user }
-			}).then(function() {
+	users_to_be_authorized = users_to_be_authorized.filter(function(elem) {
+    	return (elem.role_id !== "")
+    });
+
+	if (users_to_be_authorized.length > 0) {
+		models.role_user.findAll({
+			where: { oauth_client_id: req.application.id },
+			attributes: ['role_id', 'user_id', 'oauth_client_id']
+		}).then(function(users_application_actual) {
+			if (users_application_actual) {
+				var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
+				users_to_be_authorized = users_to_be_authorized.filter(function(elem) {
+		        	return (elem.role_id !== "")
+		        });
+
+				var new_authorization_users = authorize_all(users_application_actual, users_to_be_authorized)
+
 				models.role_user.destroy({
-					where: { [Op.and]: [{user_id: new_authorization_users.delete_role_user.map(elem => elem.user_id)}, 
-										{role_id: new_authorization_users.delete_role_user.map(elem => elem.role_id)}] }
+					where: { user_id: new_authorization_users.delete_user, oauth_client_id: req.application.id }
 				}).then(function() {
+					models.role_user.destroy({
+						where: { [Op.and]: [{user_id: new_authorization_users.delete_role_user.map(elem => elem.user_id)}, 
+											{role_id: new_authorization_users.delete_role_user.map(elem => elem.role_id)},
+											{oauth_client_id: req.application.id }] }
+					}).then(function() {
 
-					var add_users_roles = new_authorization_users.add_role_user.concat(new_authorization_users.add_user)
-					for (var i = 0; i < add_users_roles.length; i++) {
-						add_users_roles[i].oauth_client_id = req.application.id;
-					}
+						var add_users_roles = new_authorization_users.add_role_user.concat(new_authorization_users.add_user)
+						for (var i = 0; i < add_users_roles.length; i++) {
+							add_users_roles[i].oauth_client_id = req.application.id;
+						}
 
-					models.role_user.bulkCreate(add_users_roles).then(function() {
-						req.session.message = {text: ' Modified users authorization.', type: 'success'};
-						res.redirect('/idm/applications/'+req.application.id)
-					}).catch(function(error) {
-						req.session.message = {text: ' Modified users authorization error.', type: 'warning'};
-						res.redirect('/idm/applications/'+req.application.id)
-					});
+						models.role_user.bulkCreate(add_users_roles).then(function() {
+							req.session.message = {text: ' Modified users authorization.', type: 'success'};
+							res.redirect('/idm/applications/'+req.application.id)
+						}).catch(function(error) {
+							req.session.message = {text: ' Modified users authorization error.', type: 'warning'};
+							res.redirect('/idm/applications/'+req.application.id)
+						});
+					}).catch(function(error) { next(error); });
 				}).catch(function(error) { next(error); });
-			}).catch(function(error) { next(error); });
-		} else { next(new Error("The applications hasn't got users authorized"));}
-	}).catch(function(error) { next(error); });
+			} else { next(new Error("The applications hasn't got users authorized"));}
+		}).catch(function(error) { next(error); });
+	} else {
+		req.session.message = {text: ' Application must have a user authorized.', type: 'danger'};
+		res.redirect('/idm/applications/'+req.application.id)
+	}
 }
 
 // Method to see users permissions to do some actions
 function check_user_action(application, path, method, permissions) {
-	console.log("----------------------------------------------------------------------")
-	console.log(path.split(application.id)[1])
-	console.log("----------------------------------------------------------------------")
-	console.log(method)
-	console.log("----------------------------------------------------------------------")
-	console.log(permissions)
-	console.log("----------------------------------------------------------------------")
-	var route = path.split(application.id)[1]
-	console.log(route)
-	console.log(route.includes('edit'))
 	switch(true) {
-	    case (route.includes('edit')):
-	        console.log("--------edit--------")
+		case (path.includes('step/avatar')):
+			if (permissions.includes('2')) {
+				return true;
+			}
+	        break;
+	    case (path.includes('step/roles') || path.includes('edit/roles') || path.includes('edit/permissions')):
+	        if (permissions.includes('3')) {
+				return true;
+			}
+	        break;
+	    case (path.includes('edit/users')):
+	    	if (permissions.some(r=> ['1','5','6'].includes(r))) {
+	    		return true;
+	    	}
+	        break;    
+	    case (path.includes('edit')):
+	        if (permissions.includes('2')) {
+				return true;
+			}
+	        break;
+	    case (path.includes(application.id) && method === 'DELETE'):
+	        if (permissions.includes('2')) {
+				return true;
+			}
 	        break;
 	    default:
-	        console.log("--------default--------")
+	        return false;
 	}
 }
-
 
 // Method to see how add new rows to role_user database
 function authorize_all(arr1, arr2) {

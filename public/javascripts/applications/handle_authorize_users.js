@@ -32,7 +32,7 @@ $(document).ready(function(){
   		}    
     	
     });
-
+    
 	// Pop up with a form to authorize new users to the application
 	$('#auth_users_action_manage_application_users').click(function () {
 
@@ -53,7 +53,9 @@ $(document).ready(function(){
 					if (!user_role_count[users_authorized[i].user_id]) {
 						user_role_count[users_authorized[i].user_id] = 0;
 					}
-					user_role_count[users_authorized[i].user_id]++;
+					if (users_authorized[i].role_id) {
+						user_role_count[users_authorized[i].user_id]++;						
+					}
 				}
 
 				for (var i = 0; i < users_authorized.length; i++) {
@@ -62,16 +64,20 @@ $(document).ready(function(){
 				        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
 				        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
 				        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
-				        if (user_role_count[users_authorized[i].user_id]) {
+				        if (user_role_count[users_authorized[i].user_id] > 0) {
 				        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String(user_role_count[users_authorized[i].user_id] + " roles"));
-				        }     
+				        } else {
+				        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, "No roles");
+				        }
 				        $("#authorize_user").find(".members").append(assign_role_user_row);
 				        for (j in roles) {
 				        	var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
 				        	$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("ol").append(role)
 				        }
 					}
-					$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("#"+users_authorized[i].role_id).addClass("active")
+					if (users_authorized[i].role_id) {
+						$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).find("#"+users_authorized[i].role_id).addClass("active")
+					}
 				}    			
     		}
 		});
@@ -162,7 +168,6 @@ $(document).ready(function(){
         	$("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
         	if (!user_role_count[user_id]) {
       			user_role_count[user_id] = 0;
-      			users_authorized.push({user_id: user_id, role_id: "", username: username});
     		}
 
 	    }
@@ -180,11 +185,13 @@ $(document).ready(function(){
         // Id and name of user
         var user_id = row.parent().attr("id")
         var username = row.find(".name").html()  
-        var index = users_authorized.findIndex(member => member.user_id === user_id); 
-        if (index > -1) {
-        	users_authorized.splice(index, 1);
-        	delete user_role_count[user_id]
-        }
+
+        users_authorized.forEach(function(elem) {
+        	if (elem.user_id == user_id) {
+        		elem.added = 0        		
+        	}
+        })
+        delete user_role_count[user_id]
         var info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+user_id+" removed from application</span>"
     	$("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
     	$("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
@@ -203,6 +210,7 @@ $(document).ready(function(){
 
         var roles_display = $(this).closest(".list-group-item").find(".roles_display")
 
+        // Remove role from user
         if ($(this).hasClass("active")) {
 
         	$(this).removeClass("active")
@@ -213,16 +221,25 @@ $(document).ready(function(){
         		roles_display.html(String(user_role_count[user_id])+" roles")	
         	}
 
-        	users_authorized = users_authorized.filter(function(obj) {
-			    return (obj.user_id !== user_id || obj.role_id !== role_id);
-			});
+        	for (var i= 0; i < users_authorized.length; i++) {
+        		if (users_authorized[i].user_id === user_id && users_authorized[i].role_id === role_id) {
+        			users_authorized[i].added = 0;
+        		}
+        	} 
 
+        // Add role to user
         } else {
 
         	$(this).addClass("active")
         	user_role_count[user_id]++
         	roles_display.html(String(user_role_count[user_id]+" roles"))
-        	users_authorized.push({user_id: user_id, role_id: role_id, username: username});
+
+        	var index = users_authorized.findIndex(elem => (elem.user_id === user_id && elem.role_id === role_id));
+        	if (index > -1) {
+        		users_authorized[index].added = 1;
+        	} else {
+        		users_authorized.push({user_id: user_id, role_id: role_id, username: username, added: 1});
+        	} 
         }
     });
 
@@ -292,9 +309,9 @@ function available_users(input, input_change_authorize) {
 
 		$("#authorize_user").find('#perform_filter_available_update_owners_users').hide('close');
 		
-		var url = "/idm/applications/"+ application.id +"/available/users"
+		var url = "/idm/applications/"+ application.id +"/users/available"
     	var key = { username: input }
-
+    	
     	$.post(url, key, function(data) {
 			if(data.constructor === Array){
 				$("#authorize_user").find(".available_members").empty()

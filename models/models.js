@@ -44,6 +44,12 @@ var role_user = sequelize.import(path.join(__dirname,'role_user'));
 // Import a table which will contains the ids of roles and permissions
 var role_permission = sequelize.import(path.join(__dirname,'role_permission'));
 
+// Import sensor table
+var iot = sequelize.import(path.join(__dirname,'iot'));
+
+// Import pep proxy table
+var pep_proxy = sequelize.import(path.join(__dirname,'pep_proxy'));
+
 
 // Relation between OAuthClient and access token
 oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
@@ -63,6 +69,12 @@ role.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'casc
 // Relation between permissions and OAuthClients
 permission.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
+// Relation between sensors and OAuthClients
+iot.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+
+// Relation between pep proxies and OAuthClients
+pep_proxy.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+
 // Relation between roles, users and OAuthClients
 role_user.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 role_user.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
@@ -80,6 +92,8 @@ exports.oauth_client = oauth_client;
 exports.user = user; 
 exports.role = role;
 exports.permission = permission;
+exports.iot = iot;
+exports.pep_proxy = pep_proxy;
 exports.role_user = role_user;
 exports.role_permission = role_permission;
 exports.oauth_client = oauth_client;
@@ -187,19 +201,6 @@ sequelize.sync().then(function() {
                                       {role_id: 'purchaser', permission_id: '5'}
                                     ]
                                   ).then(function() {
-                                  /*role.findAll().then(function(roles) {
-                                    permission.findAll().then(function(permissions) {
-                                      for(role in roles) {
-                                        for (permission in permissions) {
-                                          if (roles[role].oauth_client_id === permissions[permission].oauth_client_id) {
-                                            if (roles[role].name === 'Purchaser' && permissions[permission].name === 'Get and assign all public application roles') {
-                                              role_permission.create({role_id: roles[role].id, permission_id: permissions[permission].id, oauth_client_id: roles[role].oauth_client_id}).then({})
-                                            } else if (roles[role].name === 'Provider') {
-                                              role_permission.create({role_id: roles[role].id, permission_id: permissions[permission].id, oauth_client_id: roles[role].oauth_client_id}).then({})
-                                            }
-                                          }
-                                        }
-                                      }*/
                                     console.log('Base de datos (tabla Role_Permisison) inicializada');
                                     // INITIALIZE ROLE_USER TABLE
                                     role_user.count().then(function (count) {

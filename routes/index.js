@@ -88,8 +88,11 @@ router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',      sess
 router.delete('/idm/applications/:applicationId/edit/roles/:roleId/delete', sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_role);
 router.post('/idm/applications/:applicationId/edit/permissions/create',     sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.create_permission);
 router.delete('/idm/applications/:applicationId/edit/delete_avatar',        sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_avatar);
+router.post('/idm/applications/:applicationId/users/available',             sessionController.loginRequired,    applicationController.available_users);
+router.get('/idm/applications/:applicationId/iot/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_iot);
+router.get('/idm/applications/:applicationId/pep/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_pep);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.destroy);
-router.post('/idm/applications/:applicationId/available/users',             sessionController.loginRequired,    applicationController.available_users);
+
 
 
 

@@ -10,16 +10,17 @@ exports.loginRequired = function(req, res, next){
     }
 };
 
-// Form for login
+// GET /auth/login -- Form for login
 exports.new = function(req, res) {
     var errors = req.session.errors || {};
     req.session.errors = {};
     res.render('index', {errors: errors});
 };
 
-// Create Session
+// POST /auth/login -- Create Session
 exports.create = function(req, res) {
 
+    // If inputs email or password are empty create an array of errors
     errors = []
     if (!req.body.email) {
         errors.push({message: 'email'});
@@ -31,26 +32,27 @@ exports.create = function(req, res) {
     var userController = require('./user_controller');
 
         if (req.body.email && req.body.password) {
+            // Authenticate user using user controller function
             userController.authenticate(req.body.email, req.body.password, function(error, user) {
-                if (error) {  // si hay error retornamos mensajes de error de sesión
+                if (error) {  // If error exists send a message to /auth/login
                     req.session.errors = [{message: error.message}];
                     res.redirect("/auth/login");        
                     return;
                 }
 
-                // Crear req.session.user y guardar campos id y username
-                // La sesión se define por la existencia de: req.session.user
+                // Create req.session.user and save id and username
+                // The session is defined by the existence of: req.session.user
                 req.session.user = {id:user.id, username:user.username};
                 res.redirect('/idm');
             });
-        } else {
+        } else { // If error exists send a message to /auth/login
             req.session.errors = errors;
             res.redirect("/auth/login");  
         }
     
 };
 
-// Delete Session
+// DELETE /auth/logout -- Delete Session
 exports.destroy = function(req, res) {
     delete req.session.application;
     delete req.session.user;

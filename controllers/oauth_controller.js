@@ -25,7 +25,7 @@ exports.token = function(req,res, next){
 	  })
 }
 
-// Function to get form to sign in
+// GET /oauth2/authorize -- Function to get form to sign in
 exports.log_in = function(req, res) {
   if (!req.session.user) {
   	models.oauth_client.findById(req.query.client_id).then(function(client) {
@@ -49,7 +49,7 @@ exports.log_in = function(req, res) {
   }
 }
 
-// Function to handle authorization code requests
+// POST /oauth2/authorize -- Function to handle authorization code requests
 exports.authorize = function(req, res){
 
     if (req.session.user) {
@@ -109,7 +109,7 @@ exports.authorize = function(req, res){
     }
 }
 
-// Function to handle token authentication
+// POST /oauth2/token -- Function to handle token authentication
 exports.authenticate = function(options){
   var options = options || {};
   return function(req, res, next) {

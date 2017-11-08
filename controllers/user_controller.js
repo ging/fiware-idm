@@ -3,14 +3,17 @@ var mailer = require('../lib/mailer').mailer();
 var config = require('../config');
 var ejs = require('ejs');
 
-// See if user is registered
+// MW to see if user is registered
 exports.authenticate = function(email, password, callback) {
+
+    // Search the user through the email
     models.user.find({
         where: {
             email: email
         }
     }).then(function(user) {
         if (user) {
+            // Verify password and if user is enabled to use the web
             if(user.verifyPassword(password) && user.enabled){
                 callback(null, user);
             } else { callback(new Error('invalid')); }   
@@ -18,14 +21,18 @@ exports.authenticate = function(email, password, callback) {
     }).catch(function(error){ callback(error) });
 };
 
-// Form for new user
+// GET /sign_up -- View to create a new user
 exports.new = function(req, res) {
     res.render('users/new', {userInfo: {}, errors: []});
 };
 
-// Create new user
+// POST /sign_up -- Create new user
 exports.create = function(req, res, next) {
+
+    // Array of errors to send to the view
     errors = [];
+
+    // Build a row and validate it
     var user = models.user.build({
         username: req.body.username, 
         email: req.body.email, 
@@ -34,16 +41,23 @@ exports.create = function(req, res, next) {
         activation_key: Math.random().toString(36).substr(2),
         activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
     });
+
+    // If password(again) is empty push an error into the array
     if (req.body.password2 == "") {
         errors.push({message: "password2"});
     }
     user.validate().then(function(err) {
+
+        // If the two password are differents, send an error
         if (req.body.password1 != req.body.password2) {
             errors.push({message: "passwordDifferent"});
             throw new Error("passwordDifferent");
         } else {
+
+            // Save the row in the database
             user.save().then(function() {
                 
+                // Send an email to the user
                 var link = config.host + '/activate?activation_key=' + user.activation_key + '&user=' + user.id;
 
                 var mail_data = {
@@ -63,6 +77,8 @@ exports.create = function(req, res, next) {
                 res.render('index', { errors: [] });
             }); 
         }
+
+    // If validation fails, send an array with all errors found
     }).catch(function(error){ 
         if (error.message != "passwordDifferent") {
             errors = errors.concat(error.errors);
@@ -72,14 +88,18 @@ exports.create = function(req, res, next) {
     });
 };
 
-// Activate user
+// GET /activate -- Activate user
 exports.activate = function(req, res, next) {
+
+    // Search the user through the id
     models.user.find({
         where: {
             id: req.query.user
         }
     }).then(function(user) {
         if (user) {
+
+            // Activate the user if is not or if the actual date not exceeds the expiration date
             if (user.enabled) {
                 res.locals.message = {text: 'User already activated', type: 'warning'};
                 res.render('index', { errors: [] });

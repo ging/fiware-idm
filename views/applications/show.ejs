@@ -78,20 +78,18 @@
                                     <div class="col-md-8 user_pep">
                                         <h6 class="panel-heading">Id of Pep Proxy</h6>
                                         <p><%= pep_proxy.id%></p>
-                                        <h6 class="panel-heading">Password of Pep Proxy</h6>
-                                        <p><%= pep_proxy.password%></p>
                                     </div>
                                     <div class="col-md-4 actions_pep">
                                         <br>
-                                        <a href="/idm/applications/<%= application.id %>/iot/<%= pep_proxy.id%>/reset_password" class="btn btn-default">Reset password</a>
-                                        <a href="/idm/applications/<%= application.id %>/iot/<%= pep_proxy.id%>/delete" class="btn btn-danger">
+                                        <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/reset_password" class="btn btn-default">Reset password</a>
+                                        <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/delete" class="btn btn-danger delete_pep">
                                             <i class="fa fa-trash"></i> Delete
                                         </a>
                                     </div>
                                 </div>
                             <% } else { -%>
                                 <h6 class="panel-heading"></h6>
-                                <a href="/idm/applications/<%= application.id %>/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>            
+                                <a id="register_pep" href="/idm/applications/<%= application.id %>/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>            
                             <% } -%>
                         </div>
                     </div>
@@ -109,25 +107,26 @@
                             <a href="#" class="contextual-help" data-toggle="popover" data-title="IoT Sensors" data-placement="left" data-content="If your application is related to IoT, sensors need to be registered here for them to be authenticated." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
                         </h4>
                         <div id="collapse_iot_sensors" class="form-group collapse  no-transition" role="tabpanel">
-                            <% for (var i = 0; i < iot_sensors.length; i++) { -%>
-                                <div class="row content_iot">
-                                    <div class="col-md-8 user_iot">
-                                        <h6 class="panel-heading">Id of Sensor <%= i+1%></h6>
-                                        <p><%= iot_sensors[i].id%></p>
-                                        <h6 class="panel-heading">Password of Sensor <%= i+1%></h6>
-                                        <p><%= iot_sensors[i].password%></p>
+                            <% if (iot_sensors.length > 0) { -%>
+                                <% for (var i = 0; i < iot_sensors.length; i++) { -%>
+                                    <div class="row content_iot">
+                                        <div class="col-md-8 user_iot">
+                                            <h6 class="panel-heading">Id of Sensor <%= i+1%></h6>
+                                            <p><%= iot_sensors[i].id%></p>
+                                        </div>
+                                        <div class="col-md-4 actions_iot">
+                                            <br>
+                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/reset_password" class="btn btn-default">Reset password</a>
+                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/delete" class="btn btn-danger">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4 actions_iot">
-                                        <br>
-                                        <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/reset_password" class="btn btn-default">Reset password</a>
-                                        <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/delete" class="btn btn-danger">
-                                            <i class="fa fa-trash"></i> Delete
-                                        </a>
-                                    </div>
-                                </div>
+                                <% } -%>
+                             <% } else { -%>
+                                <h6 class="panel-heading"></h6>
+                                <a id="register_iot" href="/idm/applications/<%= application.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
                             <% } -%>
-                            <h6 class="panel-heading"></h6>
-                            <a href="/idm/applications/<%= application.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
                         </div>
                     </div>
                 </div>
@@ -203,13 +202,15 @@
 </div>
 
 <%- include _authorize_user %>
+<%- include templates/_pep_proxy_row %>
+<%- include templates/_iot_row %>
 <%- include templates/_available_user_row %>
 <%- include templates/_assign_role_user_row %>
-<%- include templates/_new_authorized_user_row %>
 <%- include templates/_info_message.ejs %>
 
 <div class="messages"></div>
-
+<script src="/javascripts/applications/handle_iot.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_pep_proxy.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_authorize_users.js" type="text/javascript"></script>
 
 <script type="text/javascript">

@@ -10,7 +10,7 @@ const Op = Sequelize.Op;
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 // Autoload info if path include applicationid
-exports.load = function(req, res, next, applicationId) {
+exports.loadApplication = function(req, res, next, applicationId) {
 
 	// Search application whose id is applicationId
 	models.oauth_client.findById(applicationId).then(function(application) {
@@ -26,6 +26,14 @@ exports.load = function(req, res, next, applicationId) {
 			next();
 		} else { next(new Error("The application with id " + applicationId + " doesn't exist"));}
 	}).catch(function(error) { next(error); });
+};
+
+// Autoload info if path include applicationid
+exports.loadPep = function(req, res, next, pepId) {
+
+	// Add id of pep proxy in request
+	req.pep = {id: pepId}
+	next();
 };
 
 
@@ -152,14 +160,18 @@ exports.show = function(req, res, next) {
 				// Search iot sensors of application
 				models.iot.findAll({
 					where: { oauth_client_id: req.application.id },
-					attributes: ['id','password'],
+					attributes: ['id'],
 				}).then(function(iot_sensors) {
 
 					// Search pep proxy of application
 					models.pep_proxy.findOne({
 						where: { oauth_client_id: req.application.id },
-						attributes: ['id','password'],
+						attributes: ['id'],
 					}).then(function(pep_proxy) {
+						if (req.session.pep) {
+							pep_proxy = req.session.pep;
+							delete req.session.pep
+						}
 						res.render('applications/show', { application: req.application, 
 														  users_authorized: users_authorized, 
 														  user_logged_permissions: user_logged_permissions,
@@ -828,12 +840,14 @@ exports.register_iot = function(req, res, next) {
 	var iot = models.iot.build({id: id, password: password, oauth_client_id: req.application.id});
 	iot.save({fields: ['id','password','oauth_client_id']}).then(function() {
 		// Send message of success in create an iot sensor
-		req.session.message = {text: ' Create IoT sensor.', type: 'success'};
-		res.redirect('/idm/applications/'+req.application.id)
+		var response = { message: {text: ' Create IoT sensor.', type: 'success'}, 
+								 iot: {id: id, password: password}, 
+								 application: {id: req.application.id}}
+		res.send(response)
 	}).catch(function(error) {
 		// Send message of fail when create an iot sensor
-		req.session.message = {text: ' Failed create IoT sensor.', type: 'warning'};
-		res.redirect('/idm/applications/'+req.application.id)
+		var response = { message: {text: ' Failed create IoT sensor.', type: 'warning'}}
+		res.send(response)
 	});
 }
 
@@ -855,18 +869,43 @@ exports.register_pep = function(req, res, next) {
 			var pep_proxy = models.pep_proxy.build({id: id, password: password, oauth_client_id: req.application.id});
 			pep_proxy.save({fields: ['id','password','oauth_client_id']}).then(function() {
 				// Send message of success in create a pep proxy
-				req.session.message = {text: ' Create Pep Proxy.', type: 'success'};
-				res.redirect('/idm/applications/'+req.application.id)
+				var response = { message: {text: ' Create Pep Proxy.', type: 'success'}, 
+								 pep: {id: id, password: password}, 
+								 application: {id: req.application.id}}
+				res.send(response)
 			}).catch(function(error) {
 				// Send message of fail when create a pep proxy
-				req.session.message = {text: ' Failed create Pep Proxy.', type: 'warning'};
-				res.redirect('/idm/applications/'+req.application.id)
+				var response = {message: {text: ' Failed create Pep Proxy.', type: 'warning'}}
+				res.send(response)
 			});
 		} else {
-			req.session.message = {text: ' Pep Proxy already created.', type: 'warning'};
-			res.redirect('/idm/applications/'+req.application.id)
+			var response = {message: {text: ' Pep Proxy already created.', type: 'warning'}}
+			res.send(response)
 		}
 	}).catch(function(error) { next(error); });
+}
+
+// DELETE /idm/applications/:applicationId/pep/:pepId/delete -- Delete Pep Proxy
+exports.delete_pep = function(req, res, next) {
+
+	// Destroy pep proxy form table
+	if (req.pep.id) {
+		models.pep_proxy.destroy({
+			where: { id: req.pep.id,
+					 oauth_client_id: req.application.id }
+		}).then(function() {
+			// Send message of success of deleting pep proxy
+			var response = {message: {text: ' Pep Proxy was successfully deleted.', type: 'success'}, application: {id: req.application.id}}
+			res.send(response);
+		}).catch(function(error) {
+			// Send message of fail when deleting pep proxy
+			var response = {message: {text: ' Failed deleting pep proxy', type: 'danger'}}
+			res.send(response);
+		});
+	} else {
+		var response = {message: {text: ' Failed deleting pep proxy', type: 'danger'}}
+		res.send(response);
+	}
 }
 
 

@@ -59,7 +59,8 @@ router.post('/sign_up',         userController.create);
 router.get('/activate',         userController.activate);
 
 // Autoload for applicationId
-router.param('applicationId', applicationController.load);
+router.param('applicationId', applicationController.loadApplication);
+router.param('pepId',         applicationController.loadPep);
 
 // Route to get home of user
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
@@ -91,6 +92,7 @@ router.delete('/idm/applications/:applicationId/edit/delete_avatar',        sess
 router.post('/idm/applications/:applicationId/users/available',             sessionController.loginRequired,    applicationController.available_users);
 router.get('/idm/applications/:applicationId/iot/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_iot);
 router.get('/idm/applications/:applicationId/pep/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_pep);
+router.delete('/idm/applications/:applicationId/pep/:pepId/delete',         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_pep);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.destroy);
 
 

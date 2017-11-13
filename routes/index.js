@@ -39,14 +39,14 @@ router.get('/oauth2/authorize',     oauthController.log_in);
 router.post('/oauth2/authorize',    oauthController.authorize);
 
 // PRUEBA DE OAUTH
-/*router.get('/me', oauthController.authenticate(), function(req,res){
+router.get('/me', oauthController.authenticate(), function(req,res){
   res.json({
     me: req.user,
     messsage: 'Authorization success, Without Scopes, Try accessing /profile with `profile` scope',
     description: 'Try postman https://www.getpostman.com/collections/37afd82600127fbeef28',
     more: 'pass `profile` scope while Authorize'
   })
-});*/
+});
 
 // Routes for users sessions
 router.get('/auth/login',		sessionController.new);

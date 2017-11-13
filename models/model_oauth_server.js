@@ -3,9 +3,12 @@ var models = require('./models.js');
 var _ = require('lodash');
 
 var user = models.user;
+var iot = models.iot;
+var pep_proxy = models.pep_proxy;
 var role_user = models.role_user;
 var oauth_client = models.oauth_client;
 var oauth_access_token = models.oauth_access_token;
+var oauth_access_token_pep_proxy = models.oauth_access_token_pep_proxy;
 var oauth_authorization_code = models.oauth_authorization_code;
 var oauth_refresh_token = models.oauth_refresh_token;
 
@@ -19,13 +22,27 @@ function getAccessToken(bearerToken) {
         {
           model: user,
           attributes: ['id', 'username'],
-        }, oauth_client
+        }, 
+        {
+          model: pep_proxy,
+          attributes: ['id'],
+        },
+        {
+          model: iot,
+          attributes: ['id'],
+        },oauth_client
       ],
     })
     .then(function (accessToken) {
       if (!accessToken) return false;
       var token = accessToken.toJSON();
-      token.user = accessToken.user;
+      if (accessToken.User) {
+        token.user = accessToken.User;
+      } else if (accessToken.Iot) {
+        token.iot = accessToken.Iot;
+      } else if (accessToken.PepProxy) {
+        token.pep_proxy = accessToken.PepProxy; 
+      }
       token.client = accessToken.OauthClient;
       //token.scope = token.scope
       return token;
@@ -91,6 +108,36 @@ function getUser(username, password) {
     });
 }
 
+function getIotSensor(id, password) {
+  // console.log("-------getIotSensor-------")
+  return iot
+    .findOne({
+      where: {id: id},
+      attributes: ['id', 'password'/*, 'scope'*/],
+    })
+    .then(function(iot) {
+      return iot.verifyPassword(password) ? iot.toJSON() : false;
+    })
+    .catch(function (err) {
+      console.log("getIot - Err: ", err)
+    });
+}
+
+function getPepProxy(id, password) {
+  // console.log("-------getPepProxy-------")
+  return pep_proxy
+    .findOne({
+      where: {id: id},
+      attributes: ['id', 'password'/*, 'scope'*/],
+    })
+    .then(function(pep_proxy) {
+      return pep_proxy.verifyPassword(password) ? pep_proxy.toJSON() : false;
+    })
+    .catch(function (err) {
+      console.log("getPepProxy - Err: ", err)
+    });
+}
+
 function revokeAuthorizationCode(code) {
   // console.log("-------revokeAuthorizationCode-------")
   return oauth_authorization_code.findOne({
@@ -135,16 +182,16 @@ function revokeToken(token) {
   });
 }
 
-// PROBAR A GUARDARLO CON UN USUARIO NULL Y COSAS ASI
-function saveToken(token, client, user) {
+function saveToken(token, client, user, pep_proxy, iot) {
   // console.log("-------saveToken-------")
   return Promise.all([
       oauth_access_token.create({
         access_token: token.accessToken,
         expires: token.accessTokenExpiresAt,
-        // HAY QUE CAMBIARLO PARA QUE SEA oauth_client_id
         oauth_client_id: client.id,
         user_id: (user) ? user.id : null,
+        pep_proxy_id: (pep_proxy) ? pep_proxy.id : null,
+        iot_id: (iot) ? iot.id : null,
         scope: token.scope
       }),
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
@@ -152,6 +199,8 @@ function saveToken(token, client, user) {
         expires: token.refreshTokenExpiresAt,
         oauth_client_id: client.id,
         user_id: (user) ? user.id : null,
+        pep_proxy_id: (pep_proxy) ? pep_proxy.id : null,
+        iot_id: (iot) ? iot.id : null,
         scope: token.scope
       }) : [],
 
@@ -161,6 +210,8 @@ function saveToken(token, client, user) {
         {
           client: client,
           user: (user) ? user : null,
+          iot: (iot) ? iot : null,
+          pep_proxy: (pep_proxy) ? pep_proxy : null,
           access_token: token.accessToken, // proxy
           refresh_token: token.refreshToken, // proxy
         },
@@ -282,6 +333,8 @@ module.exports = {
   getRefreshToken: getRefreshToken,
   getUserFromEmail: getUserFromEmail,
   getUser: getUser,
+  getIotSensor: getIotSensor,
+  getPepProxy: getPepProxy,
   getUserFromClient: getUserFromClient,
   //grantTypeAllowed, Removed in oauth2-server 3.0
   revokeAuthorizationCode: revokeAuthorizationCode,

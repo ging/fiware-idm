@@ -54,6 +54,9 @@ var pep_proxy = sequelize.import(path.join(__dirname,'pep_proxy'));
 // Relation between OAuthClient and access token
 oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(user, {onDelete: 'cascade'});
+oauth_access_token.belongsTo(iot, {onDelete: 'cascade'});
+oauth_access_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
+
 
 // Relation between OAuthClient and authorization codes
 oauth_authorization_code.belongsTo(oauth_client, {onDelete: 'cascade'});
@@ -62,6 +65,8 @@ oauth_authorization_code.belongsTo(user, {onDelete: 'cascade'});
 // Relation between OAuthClient and refresh_token
 oauth_refresh_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(user, {onDelete: 'cascade'});
+oauth_refresh_token.belongsTo(iot, {onDelete: 'cascade'});
+oauth_refresh_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
 
 // Relation between roles and OAuthClients
 role.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});

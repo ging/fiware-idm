@@ -61,6 +61,7 @@ router.get('/activate',         userController.activate);
 // Autoload for applicationId
 router.param('applicationId', applicationController.loadApplication);
 router.param('pepId',         applicationController.loadPep);
+router.param('iotId',         applicationController.loadIot);
 
 // Route to get home of user
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
@@ -91,7 +92,10 @@ router.post('/idm/applications/:applicationId/edit/permissions/create',     sess
 router.delete('/idm/applications/:applicationId/edit/delete_avatar',        sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_avatar);
 router.post('/idm/applications/:applicationId/users/available',             sessionController.loginRequired,    applicationController.available_users);
 router.get('/idm/applications/:applicationId/iot/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_iot);
+router.get('/idm/applications/:applicationId/iot/:iotId/reset_password',    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.reset_password_iot);
+router.delete('/idm/applications/:applicationId/iot/:iotId/delete',         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_iot);
 router.get('/idm/applications/:applicationId/pep/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_pep);
+router.get('/idm/applications/:applicationId/pep/:pepId/reset_password',    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.reset_password_pep);
 router.delete('/idm/applications/:applicationId/pep/:pepId/delete',         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_pep);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.destroy);
 

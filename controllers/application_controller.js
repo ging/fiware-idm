@@ -36,6 +36,14 @@ exports.loadPep = function(req, res, next, pepId) {
 	next();
 };
 
+// Autoload info if path include applicationid
+exports.loadIot = function(req, res, next, iotId) {
+
+	// Add id of pep proxy in request
+	req.iot = {id: iotId}
+	next();
+};
+
 
 // Middleware to see user permissions in the application
 exports.owned_permissions = function(req, res, next) {
@@ -841,14 +849,70 @@ exports.register_iot = function(req, res, next) {
 	iot.save({fields: ['id','password','oauth_client_id']}).then(function() {
 		// Send message of success in create an iot sensor
 		var response = { message: {text: ' Create IoT sensor.', type: 'success'}, 
-								 iot: {id: id, password: password}, 
-								 application: {id: req.application.id}}
+						 iot: {id: id, password: password}, 
+						 application: {id: req.application.id}}
 		res.send(response)
 	}).catch(function(error) {
 		// Send message of fail when create an iot sensor
 		var response = { message: {text: ' Failed create IoT sensor.', type: 'warning'}}
 		res.send(response)
 	});
+}
+
+// DELETE /idm/applications/:applicationId/iot/:iotId/delete -- Delete Pep Proxy
+exports.delete_iot = function(req, res, next) {
+
+	// Destroy pep proxy form table
+	if (req.iot.id) {
+		models.iot.destroy({
+			where: { id: req.iot.id,
+					 oauth_client_id: req.application.id }
+		}).then(function() {
+			// Send message of success of deleting pep proxy
+			var response = {message: {text: ' Iot sensor was successfully deleted.', type: 'success'}, application: {id: req.application.id}}
+			res.send(response);
+		}).catch(function(error) {
+			// Send message of fail when deleting pep proxy
+			var response = {message: {text: ' Failed deleting iot sensor', type: 'danger'}}
+			res.send(response);
+		});
+	} else {
+		var response = {message: {text: ' Failed deleting iot sensor', type: 'danger'}}
+		res.send(response);
+	}
+}
+
+// GET /idm/applications/:applicationId/iot/:iotId/reset_password -- Change password to Iot Sensor
+exports.reset_password_iot = function(req, res, next) {
+
+	// Change password
+	if (req.iot.id) {
+
+		// New password
+		var password_new = 'iot_sensor_'+uuid.v4()
+
+		models.iot.update(
+			{ password: password_new },
+			{
+				fields: ["password"],
+				where: { id: req.iot.id,
+					 	 oauth_client_id: req.application.id }
+			}
+		).then(function(){
+			// Send message of success changing password pep proxy
+			var response = {message: {text: ' Iot sensor was successfully updated.', type: 'success'}, 
+							iot: {id: req.iot.id, password: password_new},
+							application: {id: req.application.id}}
+			res.send(response);
+		}).catch(function(error) {
+			// Send message of fail when changing password to pep proxy
+			var response = {message: {text: ' Failed changing password Iot sensor', type: 'danger'}}
+			res.send(response);
+		});
+	} else {
+		var response = {message: {text: ' Failed changing password Iot sensor', type: 'danger'}}
+		res.send(response);
+	}
 }
 
 // GET /idm/applications/:applicationId/pep/register -- Register Pep Proxy
@@ -895,7 +959,8 @@ exports.delete_pep = function(req, res, next) {
 					 oauth_client_id: req.application.id }
 		}).then(function() {
 			// Send message of success of deleting pep proxy
-			var response = {message: {text: ' Pep Proxy was successfully deleted.', type: 'success'}, application: {id: req.application.id}}
+			var response = {message: {text: ' Pep Proxy was successfully deleted.', type: 'success'}, 
+							application: {id: req.application.id}}
 			res.send(response);
 		}).catch(function(error) {
 			// Send message of fail when deleting pep proxy
@@ -904,6 +969,39 @@ exports.delete_pep = function(req, res, next) {
 		});
 	} else {
 		var response = {message: {text: ' Failed deleting pep proxy', type: 'danger'}}
+		res.send(response);
+	}
+}
+
+// GET /idm/applications/:applicationId/pep/:pepId/reset_password -- Change password to Pep Proxy
+exports.reset_password_pep = function(req, res, next) {
+
+	// Change password
+	if (req.pep.id) {
+
+		// New password
+		var password_new = 'pep_proxy_'+uuid.v4()
+
+		models.pep_proxy.update(
+			{ password: password_new },
+			{
+				fields: ["password"],
+				where: { id: req.pep.id,
+					 	 oauth_client_id: req.application.id }
+			}
+		).then(function(){
+			// Send message of success changing password pep proxy
+			var response = {message: {text: ' Pep Proxy was successfully updated.', type: 'success'}, 
+							pep: {id: req.pep.id, password: password_new},
+							application: {id: req.application.id}}
+			res.send(response);
+		}).catch(function(error) {
+			// Send message of fail when changing password to pep proxy
+			var response = {message: {text: ' Failed changing password pep proxy', type: 'danger'}}
+			res.send(response);
+		});
+	} else {
+		var response = {message: {text: ' Failed changing password pep proxy', type: 'danger'}}
 		res.send(response);
 	}
 }

@@ -81,7 +81,7 @@
                                     </div>
                                     <div class="col-md-4 actions_pep">
                                         <br>
-                                        <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/reset_password" class="btn btn-default">Reset password</a>
+                                        <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/reset_password" class="btn btn-default reset_password">Reset password</a>
                                         <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/delete" class="btn btn-danger delete_pep">
                                             <i class="fa fa-trash"></i> Delete
                                         </a>
@@ -116,17 +116,16 @@
                                         </div>
                                         <div class="col-md-4 actions_iot">
                                             <br>
-                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/reset_password" class="btn btn-default">Reset password</a>
-                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/delete" class="btn btn-danger">
+                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/reset_password" class="btn btn-default  reset_password">Reset password</a>
+                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/delete" class="btn btn-danger delete_iot">
                                                 <i class="fa fa-trash"></i> Delete
                                             </a>
                                         </div>
                                     </div>
                                 <% } -%>
-                             <% } else { -%>
-                                <h6 class="panel-heading"></h6>
-                                <a id="register_iot" href="/idm/applications/<%= application.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
                             <% } -%>
+                            <h6 class="panel-heading"></h6>
+                            <a id="register_iot" href="/idm/applications/<%= application.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
                         </div>
                     </div>
                 </div>

@@ -13,7 +13,12 @@ exports.loginRequired = function(req, res, next){
 // GET /auth/login -- Form for login
 exports.new = function(req, res) {
     var errors = req.session.errors || {};
-    req.session.errors = {};
+    delete req.session.errors;
+    console.log(errors)
+    if (req.session.message) {
+        res.locals.message = req.session.message;
+        delete req.session.message
+    }
     res.render('index', {errors: errors});
 };
 
@@ -42,7 +47,7 @@ exports.create = function(req, res) {
 
                 // Create req.session.user and save id and username
                 // The session is defined by the existence of: req.session.user
-                req.session.user = {id:user.id, username:user.username};
+                req.session.user = {id:user.id, username:user.username, email: user.email};
                 res.redirect('/idm');
             });
         } else { // If error exists send a message to /auth/login

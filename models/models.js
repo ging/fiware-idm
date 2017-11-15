@@ -139,7 +139,7 @@ sequelize.sync().then(function() {
         //   {id: 'abel', username: 'abel',  email: "abel@abel.com",     password: '1234', enabled: 1},
         //   {id: 'aldo', username: 'aldo',  email: "aldo@aldo.com",     password: '1234', enabled: 1},
         //   {id: 'berto', username: 'berto',  email: "berto@berto.com",     password: '1234', enabled: 1},
-        //   {id: 'kike', username: 'kike',  email: "kike@kike.com",     password: '1234', enabled: 1},
+        //   {id: 'kike',  username: 'kike',  email: "kike@kike.com",     password: '1234', enabled: 1},
         //   {id: 'damian', username: 'damian',  email: "damian@damian.com",     password: '1234', enabled: 1},
         //   {id: 'andres', username: 'andres',  email: "andres@andres.com",     password: '1234', enabled: 1},
         //   {id: 'pedro', username: 'pedro',  email: "pedro@pedro.com",     password: '1234', enabled: 1},

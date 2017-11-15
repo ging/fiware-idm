@@ -11,7 +11,6 @@ module.exports = function (sequelize, DataTypes) {
     expires: DataTypes.DATE,
     redirect_uri: DataTypes.STRING(2000),
     scope: DataTypes.STRING,
-    state: DataTypes.STRING,
     valid: DataTypes.BOOLEAN,
     extra: DataTypes.JSON
   }, {

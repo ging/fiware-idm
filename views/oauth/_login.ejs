@@ -8,7 +8,7 @@
         name=""
         autocomplete="on"
         class=""
-        action="/oauth2/authorize?response_type=<%= client.response_type %>&client_id=<%= client.id %>&state=xyz&redirect_uri=<%= client.redirect_uri %>"
+        action="/oauth2/authorize?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>"
         method="POST"
         enctype=""
         ><input type='hidden' name='' value='' />

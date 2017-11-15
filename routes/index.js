@@ -33,10 +33,37 @@ router.use( function( req, res, next ) {
     next(); 
 });
 
+var oauthServer = require('oauth2-server');
+// Create Oauth Server model
+router.oauth = new oauthServer({
+  model: require('../models/model_oauth_server.js'),
+  debug: true
+});
+
 // Routes for Oauth2
-router.post('/oauth2/token',        oauthController.token);
+router.post('/oauth2/token',    oauthController.token);
+router.get('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
+    if (req.session.user) {
+        oauthController.logged(req, res, next)
+    } else {
+        oauthController.log_in(req, res, next)
+    }
+});
+router.post('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
+    if (req.session.user) {
+        oauthController.authorize(req, res, next)
+    } else {
+        oauthController.authenticate_user(req, res, next)
+    }
+});
+
+
+
+
+// Routes for Oauth2
+/*router.post('/oauth2/token',        oauthController.token);
 router.get('/oauth2/authorize',     oauthController.log_in);
-router.post('/oauth2/authorize',    oauthController.authorize);
+router.post('/oauth2/authorize',    oauthController.authorize);*/
 
 // PRUEBA DE OAUTH
 router.get('/me', oauthController.authenticate(), function(req,res){

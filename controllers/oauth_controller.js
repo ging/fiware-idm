@@ -87,7 +87,12 @@ exports.authenticate_user = function(req, res, next){
 
         // Create req.session.user and save id and username
         // The session is defined by the existence of: req.session.user
-        req.session.user = {id:user.id, username:user.username, email: user.email};
+        user.image = '/img/logos/small/user.png'
+        if (user.image !== 'default') {
+            user.image = '/img/users/' + user.image
+        }        
+        req.session.user = {id:user.id, username:user.username, email: user.email, image: user.image};
+
         render_oauth_authorize(req, res, next);
         
       });
@@ -148,10 +153,26 @@ exports.authenticate = function(options){
     var response = new Response(res);
 
     oauth.authenticate(request, response,options)
-      .then(function (token) {
+      .then(function (user_info) {
         // Request is authorized.
-        req.user = token
-        next()
+        models.role_user.findAll({
+          where: { user_id: user_info.user.id, oauth_client_id: user_info.OauthClient.id},
+          include: [{
+            model: models.role,
+            attributes: ['id', 'name']
+          }]
+        }).then(function(role_user) {
+          var response = {displayName: user_info.user.username, email: user_info.user.email, app_id: user_info.OauthClient.id}
+          var roles = []
+          if (role_user) {
+            for (var i = 0; i < role_user.length; i++) {
+              roles.push({id: role_user[i].Role.id, name: role_user[i].Role.name})
+            }
+            response['roles'] = roles
+            res.send(response)  
+          }
+        }).catch(function(error) { next(error); });
+        
       })
       .catch(function (err) {
         // Request is not authorized.

@@ -1,4 +1,4 @@
-// Handle edit application
+// Handle edit user
 
 $(document).ready(function(){
 
@@ -52,7 +52,7 @@ $(document).ready(function(){
                 message = message.replace(/type/g, result.type);
                 message = message.replace(/data/g, result.text);
                 $(".messages").replaceWith(message);
-                $('#delete_image_button').prop('disabled', true)
+
                 $('#backdrop').hide();
                 $('#delete_avatar').hide('close');
             }

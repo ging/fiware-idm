@@ -1,0 +1,106 @@
+<div id="content_body">
+    <div id="detailUser">
+        <header>
+            <h3 class="name">
+                <%= user.username %> 
+                <% if (user.auth) { -%>
+                    <a href="/idm/users/<%= user.id %>/edit/" class="small"><i class="fa fa-edit"></i><span>edit</span></a>
+                <% } -%>                
+            </h3>
+            <div class="logo">
+                <img alt="organization logo" src="<%= user.image %>">        
+            </div>
+        </header>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="description">
+                    <h5>
+                        Description
+                    </h5>
+                    <div class="info expander">
+                        <% if (user.description) { -%>
+                            <%= user.description %>
+                        <% } else { -%>
+                            <p class="n-avail">No description available</p>
+                        <% } -%>
+                    </div>   
+                </div>
+                <% if (user.website) { -%>
+                    <div class="contact_us">
+                        <h5>
+                            Website
+                        </h5>
+                        <div class="info">
+                            <p><%= user.website %></p>
+                        </div>
+                    </div>
+                <% } -%>
+            </div>
+        </div>
+        <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-user_id="<%= user.id %>" data-pagination-pages="">
+            <div class="panel-heading">
+                <span class="title">Organizations</span>
+                <div class="table_actions clearfix">
+                    <div class="filter table_search client">
+                        <input class="form-control" value="" type="text" name="organizations__filter__q" placeholder="Filter">
+                    </div>
+                    <div id="spinner_organizations" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+                    <div class="btn-group"> 
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body datatable-content">
+                <!-- <div class="list-group" id="organizations_content">
+                    <div class="list-group-item">
+                        <a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/">
+                            <div class="avatar filter_field">
+                                <img src="/static/dashboard/img/logos/medium/group.png">
+                            </div>
+                            <div class="name filter_field">alexph91 cloud</div>
+                            <div class="description filter_field">This organization is intended to be used in the cloud environment. As long as you are a trial or community user this organization will be authorized as purchaser in the Cloud Application.</div>
+                        </a>
+                        <div class="switch filter_field">
+                            <a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"></a>
+                            <a class="btn btn-link" href="/auth/switch/062b32c46a924d33b19235d7f982affa/">switch</a>
+                        </div>
+                    </div>
+                </div> -->
+                <p class="alert alert-info empty" style="display: block;">You don't have any organizations.</p>
+            </div>
+            <div class="panel-footer">
+                <nav id="organizations_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+            </div>
+        </div>
+        <div class="panel panel-default datatable" id="applications" data-pagination-url="/filters/applications" data-user_id="<%= user.id %>" data-pagination-pages="">
+            <div class="panel-heading">
+                <span class="title">Applications</span>
+                <div class="table_actions clearfix">
+                    <div class="filter table_search client">
+                        <input class="form-control" value="" type="text" name="applications__filter__q" placeholder="Filter">
+                    </div>
+                    <div id="spinner_applications" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+                    <div class="btn-group"> 
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body datatable-content">
+                <!-- <div class="list-group" id="applications_content">
+                    <div class="list-group-item">
+                        <a class="item" href="/idm/myApplications/16a5a6434e614953a8f9043ee1424f23/">
+                            <div class="avatar filter_field">
+                                <img src="/media/ApplicationAvatar/medium/16a5a6434e614953a8f9043ee1424f23">
+                            </div>
+                            <div class="name filter_field">666</div>
+                            <div class="url filter_field">6666</div>
+                        </a>
+                    </div>
+                </div> -->
+                <p class="alert alert-info empty" style="display: block;">You are not authorized in any application.</p>
+            </div>
+
+            <div class="panel-footer">
+                <nav id="applications_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="2"><a href="javascript:void(0);">2</a></li><li data-lp="3"><a href="javascript:void(0);">3</a></li><li data-lp="2" class="next"><a href="javascript:void(0);">»</a></li><li data-lp="3" class="last"><a href="javascript:void(0);">Last</a></li></ul></nav>
+            </div>
+        </div>
+    </div>
+</div>

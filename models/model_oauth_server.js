@@ -21,7 +21,7 @@ function getAccessToken(bearerToken) {
       include: [
         {
           model: user,
-          attributes: ['id', 'username'],
+          attributes: ['id', 'username', 'email'],
         }, 
         {
           model: pep_proxy,
@@ -30,7 +30,11 @@ function getAccessToken(bearerToken) {
         {
           model: iot,
           attributes: ['id'],
-        },oauth_client
+        },
+        {
+          model: oauth_client,
+          attributes: ['id']
+        }
       ],
     })
     .then(function (accessToken) {
@@ -43,7 +47,10 @@ function getAccessToken(bearerToken) {
       } else if (accessToken.PepProxy) {
         token.pep_proxy = accessToken.PepProxy; 
       }
-      token.client = accessToken.OauthClient;
+      delete token.User 
+      delete token.PepProxy 
+      delete token.Iot
+      token.application = accessToken.OauthClient;
       //token.scope = token.scope
       return token;
     })

@@ -14,9 +14,14 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.UUIDV4
         }, username: {
             type: DataTypes.STRING,
-            validate: { 
-                notEmpty: {msg: "username"},
-            }
+            validate: { notEmpty: {msg: "username"}}
+        }, description: {
+            type: DataTypes.TEXT
+        }, website: {
+            type: DataTypes.STRING
+        }, image: {
+            type: DataTypes.STRING,
+            defaultValue: 'default'
         }, email: {
             type: DataTypes.STRING,
             unique: true,

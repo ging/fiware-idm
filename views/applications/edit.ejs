@@ -34,7 +34,8 @@
 							<div class="form-group required">
 								<label class="control-label  required" for="id_description">Description</label>
 								<div class=" ">
-									<textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= application.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= application.description %></textarea>
+									<textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= application.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= application.description %>
+									</textarea>
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("description") != -1) { %>
@@ -92,7 +93,11 @@
 									<img id="avatar-update" src="<%= application.image %>" alt="uploaded image" style="width: 100px; height: 100px;">
 								</div>
 								<div class="profile_actions">
-									<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/" disabled="true">Delete this image</button>
+									<% if (application.image != "/img/logos/original/app.png") { -%>
+										<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/">Delete this image</button>
+									<% } else { -%>
+										<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/" disabled="disabled">Delete this image</button>
+									<% } -%>
 								</div>
 							</div>
 						</div>
@@ -165,10 +170,6 @@
 		</div>
 	</div>
 </div>
-
-<script>
-	var application = <%- JSON.stringify(application) %>;
-</script>
 
 <%- include _delete_avatar %>
 

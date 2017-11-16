@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(2000),
       validate: { notEmpty: {msg: "redirectUri"}}
     }, image: {
-      type: DataTypes.STRING(80),
+      type: DataTypes.STRING,
       defaultValue: 'default'
     },
     client_type: DataTypes.STRING, 

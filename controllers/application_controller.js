@@ -135,7 +135,7 @@ exports.show = function(req, res, next) {
 		where: { oauth_client_id: req.application.id },
 		include: [{
 			model: models.user,
-			attributes: ['id', 'username']
+			attributes: ['id', 'username', 'image']
 		}]
 	}).then(function(users_application) {
 		// Array of users authorized in the application
@@ -148,8 +148,13 @@ exports.show = function(req, res, next) {
 				user_logged_roles.push(app.role_id)
 			}
 			if(users_authorized.some(elem => elem.user_id === app.User.id) === false) {
+				var image = '/img/logos/medium/user.png'
+                if (app.User.image !== 'default') {
+                    image = '/img/users/' + app.User.image
+                }
 				users_authorized.push({ user_id: app.User.id, 
-										username: app.User.username });
+										username: app.User.username,
+										image: image });
 			} 
 		});
 
@@ -380,7 +385,7 @@ exports.update_avatar = function(req, res) {
 exports.update_info = function(req, res) {
 
 	// If body has parameters id or secret don't update the application
-	if (req.body.id || req.body.secret) {
+	if (req.body.applicationid || req.body.application.secret) {
 		res.locals.message = {text: ' Application edit failed.', type: 'danger'};
 		res.redirect('/idm/applications/'+req.application.id)
 	} else {

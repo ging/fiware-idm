@@ -47,7 +47,12 @@ exports.create = function(req, res) {
 
                 // Create req.session.user and save id and username
                 // The session is defined by the existence of: req.session.user
-                req.session.user = {id:user.id, username:user.username, email: user.email};
+                var image = '/img/logos/small/user.png'
+                if (user.image !== 'default') {
+                    image = '/img/users/' + user.image
+                }
+                
+                req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
                 res.redirect('/idm');
             });
         } else { // If error exists send a message to /auth/login

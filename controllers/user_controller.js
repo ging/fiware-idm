@@ -3,6 +3,108 @@ var mailer = require('../lib/mailer').mailer();
 var config = require('../config');
 var ejs = require('ejs');
 
+// MW to load info about a user
+exports.loadUser = function(req, res, next, userId) {
+
+    // Search user whose id is userId
+    models.user.findOne({
+        where: {id: userId},
+        attributes: ['id', 'username', 'email', 'description', 'website', 'image']
+    }).then(function(user) {
+        // If user exists, set image from file system
+        if (user) {
+            req.user = user
+            if (user.image == 'default') {
+                req.user.image = '/img/logos/original/user.png'
+            } else {
+                req.user.image = '/img/users/'+user.image
+            }
+            // Send request to next function
+            next();
+        } else { next(new Error("The user with id " + userId + " doesn't exist"));}
+    }).catch(function(error) { next(error); });
+}
+
+// MW to see if user can do some actions
+exports.owned_permissions = function(req, res, next) {
+    if (req.session.user.id === req.user.id) {
+        next();
+    } else {
+        res.redirect('/')
+    }
+}
+
+// GET /idm/users/:userId -- Show info about a user
+exports.show = function(req, res) {
+    // See if user to show is equal to user logged
+    if (req.session.user.id === req.user.id) {
+        req.user['auth'] = true;
+    }
+    if (req.session.message) {
+        res.locals.message = req.session.message
+        delete req.session.message  
+    }
+    res.render('users/show', {user: req.user})
+}
+
+// GET /idm/users/:userId/edit -- Render a form to edit user profile
+exports.edit = function(req, res) {
+    res.render('users/edit', {user: req.user, errors: []})
+}
+
+// PUT /idm/users/:userId/edit/info -- Update user info
+exports.update_info = function(req, res) {
+    // Build a row and validate if input values are correct (not empty) before saving values in user table
+    req.body.user['id'] = req.session.user.id;
+    var user = models.oauth_client.build(req.body.user);
+
+    user.validate().then(function(err) {
+        models.user.update(
+            { username: req.body.user.username,
+              description: req.body.user.description,
+              website: req.body.user.website },
+            {
+                fields: ['username','description','website'],
+                where: {id: req.session.user.id}
+            }
+        ).then(function() {
+            // Send message of success of updating user
+            req.session.message = {text: ' User updated successfully.', type: 'success'};
+            res.redirect('/idm/users/'+req.session.user.id);
+        }).catch(function(error){ 
+            // Send message of warning of updating user
+            res.locals.message = {text: ' User update failed.', type: 'warning'};
+            if (req.user.image == 'default') {
+                req.user.image = '/img/logos/original/user.png'
+            } else {
+                req.user.image = '/img/users/'+req.user.image
+            }
+            res.render('users/edit', { user: req.body.user, errors: error.errors});
+        });
+    }).catch(function(error){ 
+
+        // Send message of warning of updating user
+        res.locals.message = {text: ' User update failed.', type: 'warning'};
+        if (req.user.image == 'default') {
+            req.user.image = '/img/logos/original/user.png'
+        } else {
+            req.user.image = '/img/users/'+req.user.image
+        }
+        res.render('users/edit', { user: req.body.user, errors: error.errors});
+    });
+}
+
+// GET /idm/users/:userId/edit -- Render a form to edit user profile
+exports.edit = function(req, res) {
+    res.render('users/edit', {user: req.user, errors: []})
+}
+
+// PUT /idm/users/:userId/edit/avatar -- Update user avatar
+exports.update_avatar = function(req, res) {
+    console.log("------------------------")
+}
+
+
 // MW to see if user is registered
 exports.authenticate = function(email, password, callback) {
 
@@ -83,7 +185,6 @@ exports.create = function(req, res, next) {
         if (error.message != "passwordDifferent") {
             errors = errors.concat(error.errors);
         }
-        console.log(errors)
         res.render('users/new', { userInfo: user, errors: errors}); 
     });
 };

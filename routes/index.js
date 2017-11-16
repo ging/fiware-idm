@@ -12,7 +12,7 @@ var oauthController = require('../controllers/oauth_controller');
 // GET Home PAge
 router.get('/', function(req, res, next) {
 	if (req.session.user) {
-        res.render('home/index', {applications: []});
+        res.redirect('/idm')
     } else {
     	res.render('index', { errors: [] });
     }
@@ -41,6 +41,7 @@ router.oauth = new oauthServer({
 });
 
 // Routes for Oauth2
+router.get('/auth/token',       oauthController.authenticate());
 router.post('/oauth2/token',    oauthController.token);
 router.get('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
     if (req.session.user) {
@@ -57,24 +58,6 @@ router.post('/oauth2/authorize', oauthController.response_type_required, functio
     }
 });
 
-
-
-
-// Routes for Oauth2
-/*router.post('/oauth2/token',        oauthController.token);
-router.get('/oauth2/authorize',     oauthController.log_in);
-router.post('/oauth2/authorize',    oauthController.authorize);*/
-
-// PRUEBA DE OAUTH
-router.get('/me', oauthController.authenticate(), function(req,res){
-  res.json({
-    me: req.user,
-    messsage: 'Authorization success, Without Scopes, Try accessing /profile with `profile` scope',
-    description: 'Try postman https://www.getpostman.com/collections/37afd82600127fbeef28',
-    more: 'pass `profile` scope while Authorize'
-  })
-});
-
 // Routes for users sessions
 router.get('/auth/login',		sessionController.new);
 router.post('/auth/login',		sessionController.create);
@@ -89,13 +72,19 @@ router.get('/activate',         userController.activate);
 router.param('applicationId', applicationController.loadApplication);
 router.param('pepId',         applicationController.loadPep);
 router.param('iotId',         applicationController.loadIot);
+router.param('userId',        userController.loadUser);
 
 // Route to get home of user
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
+// Route to save images of applications
 imageUpload = multer({ dest: './public/img/applications/'})
 
-//applicationController.owned_permissions
+// Routes for users
+router.get('/idm/users/:userId',                sessionController.loginRequired, userController.show);
+router.get('/idm/users/:userId/edit',           sessionController.loginRequired, userController.owned_permissions, userController.edit);
+router.put('/idm/users/:userId/edit/info',      sessionController.loginRequired, userController.owned_permissions, userController.update_info);
+router.put('/idm/users/:userId/edit/avatar',    sessionController.loginRequired, userController.owned_permissions, userController.update_avatar);
 
 // Routes to get info about applications
 router.get('/idm/applications',  					                        sessionController.loginRequired,	applicationController.index);

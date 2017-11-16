@@ -156,9 +156,9 @@
                     <div id="<%= users_authorized[i].user_id %>" class="list-group" id="auth_users_content">
                         <div class="list-group-item">
                             <a class="item" href="/idm/users/<%= users_authorized[i].user_id %>/">
-                                <!-- <div class="avatar filter_field">
-                                <img src="/static/dashboard/img/logos/medium/user.png">
-                                </div> -->
+                                <div class="avatar filter_field">
+                                    <img src="<%= users_authorized[i].image %>">
+                                </div>
                                 <div class="name filter_field"><%= users_authorized[i].username %></div>
                             </a>
                         </div>

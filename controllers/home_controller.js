@@ -26,6 +26,12 @@ exports.index = function(req, res) {
 				} 
 			});
 
+			// See if there is a message store in session
+			if (req.session.message) {
+				res.locals.message = req.session.message
+        		delete req.session.message  
+			}
+
 			// Order applications and render view
 			applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
 			res.render('home/index', { applications: applications, errors: []});

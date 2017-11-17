@@ -24,7 +24,10 @@ exports.loadApplication = function(req, res, next, applicationId) {
 			}
 			// Send request to next function
 			next();
-		} else { next(new Error("The application with id " + applicationId + " doesn't exist"));}
+		} else { 
+			req.session.message = {text: ' Application doesn`t exist.', type: 'danger'};
+            res.redirect('/idm/applications')
+		}
 	}).catch(function(error) { next(error); });
 };
 
@@ -260,7 +263,12 @@ exports.step_create_avatar = function(req, res, next) {
 		// Check the MIME of the file upload
 		var types = ['jpg', 'jpeg', 'png']
 		magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
-			if (types.includes(String(result.split('/')[1]))) {
+			if (err) {
+                req.session.message = {text: ' Image not save.', type: 'warning'};
+                return res.redirect('/idm/applications/'+req.application.id);
+            }
+
+			if (result && types.includes(String(result.split('/')[1]))) {
 				// If the file is jpg, png or jpeg, update the application with the name of the image
 				models.oauth_client.update(
 					{ image: req.file.filename },
@@ -337,21 +345,19 @@ exports.update_avatar = function(req, res) {
 	// See if the user has selected a image to upload
 	if (req.file) {
 
-		req.body.application = JSON.parse(JSON.stringify(req.application))
-		req.body.application['image'] = req.file.filename
-
 		// Check the MIME of the file upload
 		var types = ['jpg', 'jpeg', 'png']
 		magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
+			if (err) {
+                req.session.message = {text: ' Image not save.', type: 'warning'};
+                return res.redirect('/idm/applications/'+req.application.id);
+            }
 
-			if (types.includes(String(result.split('/')[1]))) {
+			if (result && types.includes(String(result.split('/')[1]))) {
 				// If the file is jpg, png or jpeg, update the application with the name of the image
 
-				req.body.application["id"] = req.application.id
-				var application = models.oauth_client.build(req.body.application);
-
 					models.oauth_client.update(
-						{ image: req.body.application.image },
+						{ image: req.file.filename },
 						{
 							fields: ['image'],
 							where: {id: req.application.id}

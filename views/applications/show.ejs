@@ -27,7 +27,15 @@
                         Description
                     </h5>
                     <div class="info expander">
-                        <p><%= application.description %></p>
+                        <p>
+                        <%  var lines = application.description.split(/\r\n|\r|\n/)%>
+                        <% for (var i = 0; i < lines.length; i++) { -%>
+                            <% if (lines[i].replace(/^\s+/, '').replace(/\s+$/, '') !== '') { -%>
+                                <%= lines[i] %>
+                                <br>
+                            <% } -%>
+                        <% } -%>
+                        </p>
                     </div>
                 </div>
                 <div class="url">

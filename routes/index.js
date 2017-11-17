@@ -9,15 +9,7 @@ var userController = require('../controllers/user_controller');
 var homeController = require('../controllers/home_controller');
 var oauthController = require('../controllers/oauth_controller');
 
-// GET Home PAge
-router.get('/', function(req, res, next) {
-	if (req.session.user) {
-        res.redirect('/idm')
-    } else {
-    	res.render('index', { errors: [] });
-    }
-});
-
+// MW to see if query has delete method
 router.use( function( req, res, next ) {
     // this middleware will call for each requested
     // and we checked for the requested query properties
@@ -32,6 +24,17 @@ router.use( function( req, res, next ) {
     }       
     next(); 
 });
+
+
+// GET Home PAge
+router.get('/', function(req, res, next) {
+	if (req.session.user) {
+        res.redirect('/idm')
+    } else {
+    	res.render('index', { errors: [] });
+    }
+});
+
 
 var oauthServer = require('oauth2-server');
 // Create Oauth Server model
@@ -78,13 +81,17 @@ router.param('userId',        userController.loadUser);
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
 // Route to save images of applications
-imageUpload = multer({ dest: './public/img/applications/'})
+imageAppUpload = multer({ dest: './public/img/applications/'})
+
+// Route to save images of users
+imageUserUpload = multer({ dest: './public/img/users/'})
 
 // Routes for users
-router.get('/idm/users/:userId',                sessionController.loginRequired, userController.show);
-router.get('/idm/users/:userId/edit',           sessionController.loginRequired, userController.owned_permissions, userController.edit);
-router.put('/idm/users/:userId/edit/info',      sessionController.loginRequired, userController.owned_permissions, userController.update_info);
-router.put('/idm/users/:userId/edit/avatar',    sessionController.loginRequired, userController.owned_permissions, userController.update_avatar);
+router.get('/idm/users/:userId',                        sessionController.loginRequired, userController.show);
+router.get('/idm/users/:userId/edit',                   sessionController.loginRequired, userController.owned_permissions, userController.edit);
+router.put('/idm/users/:userId/edit/info',              sessionController.loginRequired, userController.owned_permissions, userController.update_info);
+router.put('/idm/users/:userId/edit/avatar',            sessionController.loginRequired, userController.owned_permissions, imageUserUpload.single('image'), userController.update_avatar);
+router.delete('/idm/users/:userId/edit/delete_avatar',  sessionController.loginRequired, userController.owned_permissions, userController.delete_avatar);
 
 // Routes to get info about applications
 router.get('/idm/applications',  					                        sessionController.loginRequired,	applicationController.index);
@@ -92,10 +99,10 @@ router.get('/idm/applications/new',                                         sess
 router.post('/idm/applications',                                            sessionController.loginRequired,    applicationController.create);
 router.get('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.show);
 router.get('/idm/applications/:applicationId/step/avatar',                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_avatar);
-router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    applicationController.owned_permissions,    imageUpload.single('image'),    applicationController.step_create_avatar);
+router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    applicationController.owned_permissions,    imageAppUpload.single('image'),    applicationController.step_create_avatar);
 router.get('/idm/applications/:applicationId/step/roles',                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_roles);
 router.get('/idm/applications/:applicationId/edit',                         sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.edit);
-router.put('/idm/applications/:applicationId/edit/avatar', 		            sessionController.loginRequired,	applicationController.owned_permissions,    imageUpload.single('image'),    applicationController.update_avatar);
+router.put('/idm/applications/:applicationId/edit/avatar', 		            sessionController.loginRequired,	applicationController.owned_permissions,    imageAppUpload.single('image'),    applicationController.update_avatar);
 router.put('/idm/applications/:applicationId/edit/info',                    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.update_info);
 router.get('/idm/applications/:applicationId/edit/roles',                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.manage_roles);
 router.get('/idm/applications/:applicationId/edit/users',                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.get_users);

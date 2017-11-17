@@ -19,14 +19,19 @@
                                         <input class="form-control" id="id_username" maxlength="64" name="user[username]" type="text" value="<%= user.username %>">
                                     </div>
                                 </div>
-                                <% if (errors.length > 0 && errors[0].message === "username") { %>
-                                    <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+                                <% if (error) { %>
+                                    <% if (error.errors) { %>
+                                        <% if (error.errors[0].message === "username") { -%>
+                                            <span class="help-block alert alert-danger ">This input is required.</span>
+                                        <% } -%>                                        
+                                    <% } %>
                                 <% } %>
                                 <div class="form-group">
                                     <label class="control-label" for="id_description">About Me</label>
                                     <div class="">
-                                        <textarea class="form-control" cols="40" id="id_description" name="user[description]" value="<%= user.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= user.description %>
-                                    </textarea>
+                                        <textarea class="form-control" cols="40" id="id_description" name="user[description]" value="" rows="4" style="overflow: hidden; word-wrap: break-word; height: 150px;"><%= user.description %>
+                                        </textarea>
+
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -59,11 +64,15 @@
                         <div class="row">
                             <div class="avatar_col col-xs-12 col-md-6 used-avatar">
                                 <div class="profile_img">
-                                    <img src="<%= user.image %>" alt="your uploaded image">
+                                    <img id="avatar-update" src="<%= user.image %>" alt="your uploaded image" style="width: 100px; height: 100px;">
                                 </div>
                                 <div class="profile_actions">
                                     <div class="clear_right"></div>
-                                    <button class="btn btn-primary always-enabled ajax-modal" href="/idm/users/<%= user.id %>/edit/delete_image" disabled="true">Delete this image</button>
+                                    <% if (user.image != "/img/logos/original/user.png") { -%>
+                                        <button type="button" class="btn btn-primary always-enabled ajax-modal" data-toggle="modal" data-target="#delete_avatar">Delete this image</button>
+                                    <% } else { -%>
+                                        <button type="button" class="btn btn-primary always-enabled ajax-modal" disabled="disabled">Delete this image</button>
+                                    <% } -%>
                                 </div>
                             </div>
                             <div class="avatar_col col-xs-12 col-md-6">

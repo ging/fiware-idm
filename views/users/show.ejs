@@ -19,7 +19,15 @@
                     </h5>
                     <div class="info expander">
                         <% if (user.description) { -%>
-                            <%= user.description %>
+                            <p>
+                            <%  var lines = user.description.split(/\r\n|\r|\n/)%>
+                            <% for (var i = 0; i < lines.length; i++) { -%>
+                                <% if (lines[i].replace(/^\s+/, '').replace(/\s+$/, '') !== '') { -%>
+                                    <%= lines[i] %>
+                                    <br>
+                                <% } -%>
+                            <% } -%>
+                            </p>
                         <% } else { -%>
                             <p class="n-avail">No description available</p>
                         <% } -%>

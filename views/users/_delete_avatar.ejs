@@ -1,12 +1,12 @@
 <!-- Form to delete the avatar of an application -->
-<div id="delete_avatar" class="modal in" style="top: 0px; display: none;" aria-hidden="false">
+<div id="delete_avatar" class="modal fade" style="top: 0px; display: none;" aria-hidden="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <a class="close" data-dismiss="modal">×</a>
                 <h3>Delete uploaded image</h3>
             </div>
-            <form id="delete_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/edit/delete_avatar/" method="POST" enctype="">
+            <form id="delete_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/edit/delete_avatar?_method=delete" method="POST" enctype="">
                 <input type="hidden" name="" value="">
                 <div class="modal-body clearfix">
                     <div class="left">
@@ -20,7 +20,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Confirm</button>
-                    <a class="btn btn-default secondary cancel">Cancel</a>
+                    <a class="btn btn-default secondary cancel" data-dismiss="modal">Cancel</a>
                 </div>
             </form>
         </div>

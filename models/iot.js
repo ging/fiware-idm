@@ -7,12 +7,12 @@ var crypto = require('crypto');
 var key = config.key;
 
 module.exports = function(sequelize, DataTypes) {
-  var Iot = sequelize.define('Iot', {
-    id: {
+  var Iot = sequelize.define('Iot', 
+    { id: {
       type: DataTypes.STRING,
       primaryKey: true
     }, password: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(40),
       set: function (password) {
           var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');
           // Evita passwords vacíos

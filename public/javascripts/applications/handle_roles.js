@@ -11,9 +11,9 @@ $(document).ready(function(){
             permission = application.permissions[i].id
             if (['provider', 'purchaser'].includes(role)) {
                 if(!['1', '2', '3' ,'4' ,'5' ,'6'].includes(permission)) {                    
-                    $("[data-permission-id="+permission+"]").hide('close')
+                    $("[data-permission-id="+permission+"]").hide()
                 } else {
-                    $("[data-permission-id="+permission+"]").show('open')
+                    $("[data-permission-id="+permission+"]").show()
                     if(application.role_permission_assign[role].includes(permission)) {
                         $("[data-permission-id="+permission+"]").addClass("active")    
                     } else {
@@ -21,7 +21,7 @@ $(document).ready(function(){
                     }
                 }
             } else {
-                $("[data-permission-id="+permission+"]").show('open')
+                $("[data-permission-id="+permission+"]").show()
                 if (typeof application.role_permission_assign[role] === 'undefined') {
                     $("[data-permission-id="+permission+"]").removeClass("active")
                 } else {
@@ -38,8 +38,8 @@ $(document).ready(function(){
         } else {
             $('#list_permissions').removeClass('disabled-list')
         }
-        $("#update_owners_permissions").show('open');
-        $("#update_owners_info_message").hide('close');
+        $("#update_owners_permissions").show();
+        $("#update_owners_info_message").hide();
     });
 
     // Pop up with a form to create a new role

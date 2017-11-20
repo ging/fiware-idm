@@ -7,12 +7,12 @@ var crypto = require('crypto');
 var key = config.key;
 
 module.exports = function(sequelize, DataTypes) {
-  var PepProxy = sequelize.define('PepProxy', {
-    id: {
+  var PepProxy = sequelize.define('PepProxy', 
+    { id: {
       type: DataTypes.STRING,
       primaryKey: true
     }, password: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(40),
       set: function (password) {
           var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');
           // Evita passwords vacíos

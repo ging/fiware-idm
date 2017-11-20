@@ -8,12 +8,12 @@ module.exports = function(sequelize, DataTypes) {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     }, name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
         validate: { 
             notEmpty: {msg: "error_empty_name"}
         }
     }, description: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
         validate: { 
             notEmpty: {msg: "error_empty_description"}
         }
@@ -21,17 +21,11 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.BOOLEAN,
         defaultValue: 0
     }, action: {
-        type: DataTypes.STRING,
-        validate: { 
-            notEmpty: {msg: "error_empty_action"}
-        }
+        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
     }, resource: {
-        type: DataTypes.STRING,
-        validate: { 
-            notEmpty: {msg: "error_empty_resource"}
-        }
+        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
     }, xml: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
     }
     }, {
         tableName: 'permission',

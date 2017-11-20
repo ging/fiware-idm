@@ -63,7 +63,7 @@ exports.owned_permissions = function(req, res, next) {
 			user_application.forEach(function(app) {
 				user_roles.push(app.role_id)
 			});
-
+			req.user_roles = user_roles; 
 			// Search permissions using the roles obtained
 			models.role_permission.findAll({
 				where: { role_id: user_roles },
@@ -73,6 +73,7 @@ exports.owned_permissions = function(req, res, next) {
 				user_permissions.forEach(function(app) {
 					user_permissions_id.push(app.permission_id)
 				});
+				req.user_permissions = user_permissions_id;
 				// Check if the user can access to a specific route according to his permissions
 				if(check_user_action(req.application, req.path, req.method, user_permissions_id)) {
 					next();	
@@ -217,7 +218,7 @@ exports.new = function(req, res) {
 // POST /idm/applications -- Create application
 exports.create = function(req, res, next) {
 
-	// If body has parameters id or is_internal don't create application
+	// If body has parameters id or secret don't create application
 	if (req.body.id || req.body.secret) {
 		req.session.message = {text: ' Application creation failed.', type: 'danger'};
 		res.redirect('/idm/applications')
@@ -240,7 +241,10 @@ exports.create = function(req, res, next) {
         		).then(function(newAssociation) {
 					res.redirect('/idm/applications/'+application.id+'/step/avatar');
 				})
-			});
+			}).catch(function(error){
+				res.locals.message = {text: ' Unable to create application',type: 'danger'}
+			 	res.render('applications/new', { application: application, errors: []});
+			});	
 
 		// Render the view once again, sending the error found when validating
 		}).catch(function(error){ 
@@ -391,7 +395,7 @@ exports.update_avatar = function(req, res) {
 exports.update_info = function(req, res) {
 
 	// If body has parameters id or secret don't update the application
-	if (req.body.applicationid || req.body.application.secret) {
+	if (req.body.application.id || req.body.application.secret) {
 		res.locals.message = {text: ' Application edit failed.', type: 'danger'};
 		res.redirect('/idm/applications/'+req.application.id)
 	} else {
@@ -414,7 +418,10 @@ exports.update_info = function(req, res) {
 				// Send message of success of updating the application
 				req.session.message = {text: ' Application updated successfully.', type: 'success'};
 				res.redirect('/idm/applications/'+req.application.id);
-			});	
+			}).catch(function(error){
+				res.locals.message = {text: ' Unable to update application',type: 'danger'}
+			 	res.render('applications/edit', { application: application, errors: []});
+			});		
 		}).catch(function(error){
 			// Send message of warning of updating the application
 			res.locals.message = {text: ' Application update failed.', type: 'warning'};
@@ -477,7 +484,9 @@ exports.create_role = function(req, res) {
 				// Send message of success of creating role
 				var message = {text: ' Create role', type: 'success'}
 				res.send({role: role, message: message});
-			})
+			}).catch(function(error){
+				res.send({text: ' Unable to create role',type: 'danger'})
+			});
 		}).catch(function(error) {
 			// Send message of fail when creating role
 			res.send({text: error.errors[0].message, type: 'warning'});			
@@ -564,22 +573,44 @@ exports.create_permission = function(req, res) {
 											 	   xml: req.body.xml, 
 											 	   oauth_client_id: req.application.id });
 
+		// Array of errors to be send 
+		var errors_inputs = [];
+
+		// See if fields action, resource and xml are in the same request
+		if ((req.body.action || req.body.resource) && req.body.xml) {
+			errors_inputs.push({message: 'xml_with_action_and_resource_not_allow'});
+		}
+
+		// See if action and resource are defined when xml is not
+		if(!(req.body.action && req.body.resource) && !req.body.xml){
+			errors_inputs.push({message: 'define_rule'});
+		}
+
+		// Validate if name and description aren't empty
 		permission.validate().then(function(err) {
-			permission.save({fields: [ "id", 
-									   "name", 
-									   "description", 
-									   "action", 
-									   "resource", 
-									   "xml", 
-									   "oauth_client_id" ]
-			}).then(function() {
-				// Send message of success of creating role
-				var message = {text: ' Create permission', type: 'success'}
-				res.send({permission: permission, message: message});
-			})
+			// Send a message with errors
+			if (errors_inputs.length > 0) {
+				res.send({text: errors_inputs, type: 'warning'});
+			} else {
+				// Save values in permission table
+				permission.save({fields: [ "id",
+										   "name",
+										   "description",
+										   "action",
+										   "resource",
+										   "xml",
+										   "oauth_client_id" ]
+				}).then(function() {
+					// Send message of success of creating role
+					var message = {text: ' Create permission', type: 'success'}
+					res.send({permission: permission, message: message});
+				}).catch(function(error){
+					res.send({text: ' Unable to create permission',type: 'danger'})
+				});
+			}
 		}).catch(function(error) {
 			// Send message of fail when creating role
-			res.send({text: error.errors, type: 'warning'});
+			res.send({text: errors_inputs.concat(error.errors), type: 'warning'});
 		});
 	}
 }
@@ -699,7 +730,7 @@ exports.get_users = function(req, res, next) {
 			where: { oauth_client_id: req.application.id },
 			include: [{
 				model: models.user,
-				attributes: ['id', 'username']
+				attributes: ['id', 'username', 'image']
 			}]
 		}).then(function(users_application) {
 
@@ -712,9 +743,14 @@ exports.get_users = function(req, res, next) {
 				if(app.User.id === req.session.user.id) {
 					user_logged_roles.push(app.role_id)
 				}
+				var image = '/img/logos/medium/user.png'
+                if (app.User.image !== 'default') {
+                    image = '/img/users/' + app.User.image
+                }
 				users_authorized.push({ user_id: app.User.id, 
 										role_id: app.role_id, 
-										username: app.User.username, 
+										username: app.User.username,
+										image: image,
 										added: 1 }); // Added parameter is to control which elements will be deleted or added 
 													 // to the table when authorizing other users
 			});
@@ -783,7 +819,7 @@ exports.available_users = function(req, res) {
 
 	// Search if username is like the input key
 	models.user.findAll({
-	 	attributes: ['username', 'id'],
+	 	attributes: ['username', 'id', 'image'],
 		where: {
             username: {
                 like: '%' + key + '%'
@@ -792,6 +828,13 @@ exports.available_users = function(req, res) {
 	}).then(function(users) {
 		// If found, send ana array of users with the username and the id of each one
 		if (users.length > 0) {
+			users.forEach(function(elem, index, array) {
+                if (elem.image !== 'default') {
+                    elem.image = '/img/users/' + elem.image
+                } else {
+                	elem.image = '/img/logos/medium/user.png'
+                }
+			});
 			res.send(users)
 		} else {
 			// If the result is null send an error message
@@ -803,7 +846,7 @@ exports.available_users = function(req, res) {
 
 // POST /idm/applications/:applicationId/edit/users -- Authorize users in an application
 exports.authorize_users = function(req, res, next) {
-	console.log(req.body.submit_authorize)
+
 	// Parse de body and filter to delete the rows with no role assigned to the user
 	var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
 
@@ -822,7 +865,7 @@ exports.authorize_users = function(req, res, next) {
 			if (users_application_actual.length > 0) {
 
 				// See differences between actual assignment and the data received from client
-				var new_authorization_users = authorize_all(users_application_actual, users_to_be_authorized, req.application)
+				var new_authorization_users = authorize_all(users_application_actual, users_to_be_authorized, req.application, req.user_roles, req.user_permissions)
 
 				// Destroy users that now are not authorized now
 				for(var i = 0; i < new_authorization_users.delete_row.length; i++) {
@@ -1058,7 +1101,7 @@ function check_user_action(application, path, method, permissions) {
 }
 
 // Method to see how add new rows to role_user database
-function authorize_all(actual, change, application) {
+function authorize_all(actual, change, application, roles, permissions) {
 
 	// Array with rows to delete
 	var delete_row = []
@@ -1066,6 +1109,12 @@ function authorize_all(actual, change, application) {
 	// Array with rows to add
 	var add_row = []
 	for (var i = 0; i < change.length; i++) {
+		if (permissions.includes('1') && !['provider', 'purchaser'].includes(change.role_id)||
+			permissions.includes('5') ||
+			permissions.includes('6')
+			) {
+
+		}
 		// If has change the actual roles, add row to delete_row array
 		if(change[i].added === 0) {
 			delete_row.push({user_id: change[i].user_id, role_id: change[i].role_id, oauth_client_id: application.id})

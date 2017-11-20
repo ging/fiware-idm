@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     }, name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(64) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
         validate: { 
             notEmpty: {msg: "error_empty_name"}
         }

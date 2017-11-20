@@ -63,6 +63,7 @@ $(document).ready(function(){
 						var assign_role_user_row = $('#table_row_assign_role_user_template').html();
 				        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
 				        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
+				        assign_role_user_row = assign_role_user_row.replace(/user_avatar/g, String(users_authorized[i].image));
 				        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
 				        if (user_role_count[users_authorized[i].user_id] > 0) {
 				        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String(user_role_count[users_authorized[i].user_id] + " roles"));
@@ -146,8 +147,9 @@ $(document).ready(function(){
         // Id and name of user
         var user_id = row.parent().attr("id")
         var username = row.find(".name").html()
+        var image = row.parent().find(".avatar").children('img').first().attr('src')
 
-        if (users_authorized.some(member => member.user_id === user_id)) {
+        if (users_authorized.some(member => member.user_id === user_id && member.added === 1)) {
         	info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-warning'>User "+user_id+" has been already added</span>"
         	$("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
         	$("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
@@ -155,7 +157,8 @@ $(document).ready(function(){
 	    	var assign_role_user_row = $('#table_row_assign_role_user_template').html();
 	        assign_role_user_row = assign_role_user_row.replace(/username/g, String(username));
 	        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(user_id));
-	        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name))
+	        assign_role_user_row = assign_role_user_row.replace(/user_avatar/g, String(image));
+	        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
 	        assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String("No roles"));
 	        $("#authorize_user").find(".members").append(assign_role_user_row);
 	        for (j in roles) {
@@ -316,9 +319,10 @@ function available_users(input, input_change_authorize) {
 			if(data.constructor === Array){
 				$("#authorize_user").find(".available_members").empty()
 				for(available_user in data) {
-					var authorize_user_row = $('#table_row_authorize_user_template').html();
+					var authorize_user_row = $('#table_row_available_user_template').html();
 		            authorize_user_row = authorize_user_row.replace(/username/g, String(data[available_user].username));
 		            authorize_user_row = authorize_user_row.replace(/user_id/g, String(data[available_user].id));
+		            authorize_user_row = authorize_user_row.replace(/user_avatar/g, String(data[available_user].image));
 		            $("#authorize_user").find(".available_members").append(authorize_user_row);
 		            $("#authorize_user").find("#spinner_update_owners_users").hide('close')
 		            $("#authorize_user").find('#no_available_update_owners_users').hide('close');

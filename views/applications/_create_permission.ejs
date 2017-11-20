@@ -1,5 +1,5 @@
 <!-- Form to create permission -->
-<div id="create_permission" class="modal in" style="top: 0px; display: none;" aria-hidden="false">
+<div id="create_permission" class="modal fade" style="top: 0px; display: none;" aria-hidden="false">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -9,6 +9,8 @@
 			</div>
 			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype=""><input type="hidden" name="" value="">
 				<div class="modal-body clearfix">
+					<span id="xml_with_action_and_resource_not_allow" style="display: none;" class='help-block alert alert-danger'>If you use the advanced rule you cannot set also action and resource.</span>
+					<span id="define_rule" style="display: none;" class='help-block alert alert-danger'>You need to define both action and resource or an advanced XACML Rule.</span>
 					<fieldset>
 						<input id="id_application_id" name="application_id" type="hidden" value="">
 						<div class="form-group required">
@@ -21,7 +23,7 @@
 						<div class="form-group required">
 							<label class="control-label  required" for="id_description">Description</label>
 							<div class=" ">
-								<input class="form-control" id="id_description" maxlength="255" name="description" type="text">
+								<input class="form-control" id="id_description" name="description" type="text">
 							</div>
 						</div>
 						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
@@ -42,14 +44,12 @@
 												<input class="form-control" id="id_action" maxlength="255" name="action" type="text">
 											</div>
 										</div>
-										<span id="error_empty_action" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 										<div class="form-group ">
 											<label class="control-label  " for="id_resource">Resource</label>
 											<div class=" ">
 												<input class="form-control" id="id_resource" maxlength="255" name="resource" type="text">
 											</div>
 										</div>
-										<span id="error_empty_resource" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 									</div>
 								</div>
 							</div>

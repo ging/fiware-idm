@@ -70,11 +70,14 @@ $(document).ready(function(){
 
         	// See if the result of post data is an error
             if (result.type === 'warning') {
+                console.log(result.text)
                 $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
                 for (var i = result.text.length - 1; i >= 0; i--) {
                     $("#create_permission_form").find("#"+result.text[i].message+".help-block.alert.alert-danger").show('open');
                 }
                 return false;
+                $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
+                $("#create_permission_form").find("#error_invalid_inputs.help-block.alert.alert-danger").show('open');
             } else if (result.type === 'danger') {
                 // Empty input from role creation form
                 $("#create_permission_form").find("#id_name").val('');

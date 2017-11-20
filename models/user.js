@@ -13,12 +13,12 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         }, username: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(64) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
             validate: { notEmpty: {msg: "username"}}
         }, description: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
         }, website: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(2000) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
         }, image: {
             type: DataTypes.STRING,
             defaultValue: 'default'
@@ -43,7 +43,7 @@ module.exports = function(sequelize, DataTypes) {
                 }
             }
         }, password: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(40),
             validate: { notEmpty: {msg: "password1"}},
             set: function (password) {
                 var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');

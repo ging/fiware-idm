@@ -89,6 +89,8 @@ exports.update_info = function(req, res) {
             // Send message of success of updating user
             req.session.message = {text: ' User updated successfully.', type: 'success'};
             res.redirect('/idm/users/'+req.session.user.id);
+        }).catch(function(error){
+            console.log(error)
         })
     }).catch(function(error){ 
         console.log(error)
@@ -221,62 +223,68 @@ exports.new = function(req, res) {
 // POST /sign_up -- Create new user
 exports.create = function(req, res, next) {
 
-    // Array of errors to send to the view
-    errors = [];
+    // If body has parameters id or secret don't create user
+    if (req.body.id) {
+        res.locals.message = {text: ' User creation failed.', type: 'danger'};
+        res.render('users/new', {userInfo: {}, errors: []});
+    } else {
+        // Array of errors to send to the view
+        errors = [];
 
-    // Build a row and validate it
-    var user = models.user.build({
-        username: req.body.username, 
-        email: req.body.email, 
-        password: req.body.password1,
-        enabled: false,
-        activation_key: Math.random().toString(36).substr(2),
-        activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
-    });
+        // Build a row and validate it
+        var user = models.user.build({
+            username: req.body.username, 
+            email: req.body.email, 
+            password: req.body.password1,
+            enabled: false,
+            activation_key: Math.random().toString(36).substr(2),
+            activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
+        });
 
-    // If password(again) is empty push an error into the array
-    if (req.body.password2 == "") {
-        errors.push({message: "password2"});
-    }
-    user.validate().then(function(err) {
+        // If password(again) is empty push an error into the array
+        if (req.body.password2 == "") {
+            errors.push({message: "password2"});
+        }
+        user.validate().then(function(err) {
 
-        // If the two password are differents, send an error
-        if (req.body.password1 != req.body.password2) {
-            errors.push({message: "passwordDifferent"});
-            throw new Error("passwordDifferent");
-        } else {
+            // If the two password are differents, send an error
+            if (req.body.password1 != req.body.password2) {
+                errors.push({message: "passwordDifferent"});
+                throw new Error("passwordDifferent");
+            } else {
 
-            // Save the row in the database
-            user.save().then(function() {
-                
-                // Send an email to the user
-                var link = config.host + '/activate?activation_key=' + user.activation_key + '&user=' + user.id;
+                // Save the row in the database
+                user.save().then(function() {
+                    
+                    // Send an email to the user
+                    var link = config.host + '/activate?activation_key=' + user.activation_key + '&user=' + user.id;
 
-                var mail_data = {
-                    name: user.username,
-                    link: link
-                };
+                    var mail_data = {
+                        name: user.username,
+                        link: link
+                    };
 
-                var subject = 'Welcome to FIWARE';
+                    var subject = 'Welcome to FIWARE';
 
-                ejs.renderFile(__dirname + '/../views/templates/_base_email.ejs', {view: 'activate', data: mail_data}, function(result, mail) {
-                    mailer.sendMail({to: user.email, html: mail, subject: subject}, function(ev){
-                        console.log("Result mail", ev);
+                    ejs.renderFile(__dirname + '/../views/templates/_base_email.ejs', {view: 'activate', data: mail_data}, function(result, mail) {
+                        mailer.sendMail({to: user.email, html: mail, subject: subject}, function(ev){
+                            console.log("Result mail", ev);
+                        });
                     });
-                });
 
-                res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
-                res.render('index', { errors: [] });
-            }); 
-        }
+                    res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
+                    res.render('index', { errors: [] });
+                }); 
+            }
 
-    // If validation fails, send an array with all errors found
-    }).catch(function(error){ 
-        if (error.message != "passwordDifferent") {
-            errors = errors.concat(error.errors);
-        }
-        res.render('users/new', { userInfo: user, errors: errors}); 
-    });
+        // If validation fails, send an array with all errors found
+        }).catch(function(error){ 
+            if (error.message != "passwordDifferent") {
+                errors = errors.concat(error.errors);
+            }
+            res.render('users/new', { userInfo: user, errors: errors}); 
+        });
+    }
 };
 
 // GET /activate -- Activate user

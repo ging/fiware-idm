@@ -75,6 +75,8 @@ router.get('/activate',         userController.activate);
 router.param('applicationId', applicationController.loadApplication);
 router.param('pepId',         applicationController.loadPep);
 router.param('iotId',         applicationController.loadIot);
+router.param('roleId',        applicationController.loadRole);
+//router.param('permissionId',  applicationController.loadPermission);
 router.param('userId',        userController.loadUser);
 
 // Route to get home of user

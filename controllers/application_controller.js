@@ -47,6 +47,14 @@ exports.loadIot = function(req, res, next, iotId) {
 	next();
 };
 
+// Autoload info if path include applicationid
+exports.loadRole = function(req, res, next, roleId) {
+
+	// Add id of pep proxy in request
+	req.role = {id: roleId}
+	next();
+};
+
 
 // Middleware to see user permissions in the application
 exports.owned_permissions = function(req, res, next) {
@@ -63,16 +71,16 @@ exports.owned_permissions = function(req, res, next) {
 			user_application.forEach(function(app) {
 				user_roles.push(app.role_id)
 			});
-			req.user_roles = user_roles; 
+
+			req.user_roles = user_roles;
 			// Search permissions using the roles obtained
 			models.role_permission.findAll({
 				where: { role_id: user_roles },
 				attributes: ['permission_id'],
 			}).then(function(user_permissions) {
-				var user_permissions_id = []
-				user_permissions.forEach(function(app) {
-					user_permissions_id.push(app.permission_id)
-				});
+
+				// Pre load permissions of user in request
+				var user_permissions_id = user_permissions.map(elem => elem.permission_id)
 				req.user_permissions = user_permissions_id;
 				// Check if the user can access to a specific route according to his permissions
 				if(check_user_action(req.application, req.path, req.method, user_permissions_id)) {
@@ -80,7 +88,7 @@ exports.owned_permissions = function(req, res, next) {
 				} else {
 					// Send an error if the the request is via AJAX or redirect if is via browser
 					if (req.xhr) {
-						res.send('error');
+						res.send({text: ' failed.', type: 'danger'});
 					} else {
 						res.redirect('/idm/applications');
 					}
@@ -533,28 +541,28 @@ exports.edit_role = function(req, res) {
 // DELETE /idm/applications/:applicationId/edit/roles/:roleId/delete -- Delete a role
 exports.delete_role = function(req, res) {
 
-	// If body has parameter is_internal or role_id is provider or purchaser don't delete the role
-	if (['provider', 'purchaser'].includes(req.body.role_id) || req.body.is_internal) {
+	// If role is provider or purchaser don't delete the role
+	if (['provider', 'purchaser'].includes(req.role.id)) {
 		res.send({text: ' Failed deleting role', type: 'danger'});
 	
 	} else {
 
-		// Destroy role if body has role_id
-		if (req.body.role_id) {
-			models.role.destroy({
-				where: { id: req.body.role_id,
-						 oauth_client_id: req.application.id }
-			}).then(function() {
+		// Destroy role
+		models.role.destroy({
+			where: { id: req.role.id,
+					 oauth_client_id: req.application.id }
+		}).then(function(deleted) {
+			if (deleted) {
 				// Send message of success of deleting role
 				res.send({text: ' Role was successfully deleted.', type: 'success'});
-			}).catch(function(error) {
+			} else {
 				// Send message of fail when deleting role
-				res.send({text: ' Failed deleting role', type: 'danger'});
-			});	
-		} else {
+				res.send({text: ' Failed deleting role.', type: 'danger'});
+			}
+		}).catch(function(error) {
 			// Send message of fail when deleting role
-			res.send({text: ' Failed deleting role', type: 'danger'});
-		}
+			res.send({text: ' Failed deleting role.', type: 'danger'});
+		});
 	}
 }
 
@@ -666,36 +674,35 @@ exports.role_permissions_assign = function(req, res) {
 // DELETE /idm/applications/:applicationId/edit/delete_avatar -- Delete avatar
 exports.delete_avatar = function(req, res) {
 
-	// Don't don anything if images is the default one
-	if (!req.body.image_name.includes('/img/applications')) {
-		res.send({text: ' Cannot delete default image.', type: 'danger'});
-	} else {
-
-		// Change image to default one in oauth_client table
-		models.oauth_client.update(
-			{ image: 'default' },
-			{
-				fields: ["image"],
-				where: {id: req.application.id }
-			}
-		).then(function(){
-			// Delete image from filesystem
-			var image_name = req.body.image_name.split('/')[3]
-			fs.unlink('./public/img/applications/'+image_name, (err) => {
-		        if (err) {
-		        	// Send message of fail when deleting image
-		            res.send({text: ' Failed to delete image.', type: 'warning'});
-		        } else {
-		        	// Send message of success in deleting image
+	// Delete image from filesystem
+	var image_name = req.application.image.split('/')[3]
+	fs.unlink('./public/img/applications/'+image_name, (err) => {
+        if (err) {
+        	// Send message of fail when deleting image
+            res.send({text: ' Failed to delete image.', type: 'warning'});
+        } else {
+        	// Change image to default one in oauth_client table
+			models.oauth_client.update(
+				{ image: 'default' },
+				{
+					fields: ["image"],
+					where: {id: req.application.id }
+				}
+			).then(function(deleted){
+				if (deleted[0] === 1) {
+					// Send message of success in deleting image
 		        	req.application.image = '/img/logos/original/app.png'
-		            res.send({text: ' Deleted image.', type: 'success'});                               
-		        }
-			});
-		}).catch(function(error) {
-			// Send message of fail when deleting image
-			res.send({text: ' Failed to delete image.', type: 'warning'});
-		});
-	}
+		            res.send({text: ' Deleted image.', type: 'success'});
+				} else {
+					// Send message of fail when deleting an image
+		            res.send({text: ' Failed to delete image.', type: 'danger'});
+				}
+	        }).catch(function(error) {
+				// Send message of fail when deleting image
+				res.send({text: ' Failed to delete image.', type: 'danger'});
+			});                                   
+        }
+	});
 };
 
 // DELETE /idm/applications/:applicationId -- Delete application
@@ -755,53 +762,46 @@ exports.get_users = function(req, res, next) {
 													 // to the table when authorizing other users
 			});
 
-			// Search permissions using the roles of the user logged
-			models.role_permission.findAll({
-				where: { role_id: user_logged_roles },
-				attributes: ['permission_id'],
-			}).then(function(user_logged_permissions) {
-				if(user_logged_permissions.length > 0) {
-					user_logged_permissions_id = user_logged_permissions.map(elem => elem.permission_id)
-					// Array to indicate which roles are going to be search
-					var where_search_role = []
+			// Array to indicate which roles are going to be search
+			var where_search_role = []
 
-					// If permission is assign only public owned roles
-					if (user_logged_permissions_id.includes('6')) {
-						where_search_role.push({id: user_logged_roles});
-					}
+			// If permission is assign only public owned roles
+			if (req.user_permissions.includes('6')) {
+				where_search_role.push({id: user_logged_roles});
+			}
 
-					// If permission is assign all public owned roles
-					if (user_logged_permissions_id.includes('5')) {
-						where_search_role.push({oauth_client_id: req.application.id})
-					}
+			// If permission is assign all public owned roles
+			if (req.user_permissions.includes('5')) {
+				where_search_role.push({oauth_client_id: req.application.id})
+			}
 
-					// If permission is assign only internal roles
-					if (user_logged_permissions_id.includes('1')) {
-						where_search_role.push({is_internal: true});
-					}
+			// If permission is assign only internal roles
+			if (req.user_permissions.includes('1')) {
+				where_search_role.push({is_internal: true});
+			}
 
-					// Search roles to display when authorize users
-					models.role.findAll({
-						where: { [Op.or]: where_search_role },
-						attributes: ['id', 'name'],
-						order: [['id', 'DESC']]
-					}).then(function(roles) {
-						// Filter users_authorized depends on the permissions of the user logged
-						for (var i = 0; i < users_authorized.length; i++) {
-							if (roles.some(role => role.id === users_authorized[i].role_id) === false) {
-								users_authorized[i].role_id = ""
-							}
+			// Search roles to display when authorize users
+			models.role.findAll({
+				where: { [Op.or]: where_search_role },
+				attributes: ['id', 'name'],
+				order: [['id', 'DESC']]
+			}).then(function(roles) {
+				if (roles.length > 0) {
+					// Filter users_authorized depends on the permissions of the user logged
+					for (var i = 0; i < users_authorized.length; i++) {
+						if (roles.some(role => role.id === users_authorized[i].role_id) === false) {
+							users_authorized[i].role_id = ""
 						}
+					}
 
-						if (roles) {
-							// Sen info about roles, users authorized and application
-							res.send({ application: req.application, 
-									   users_authorized: users_authorized, 
-									   roles: roles,
-									   errors: [] });
-						} else { res.send('error') }
-					}).catch(function(error) { next(error); });
-				} else { res.send('error') }
+					// Sen info about roles, users authorized and application
+					res.send({ application: req.application, 
+							   users_authorized: users_authorized, 
+							   roles: roles,
+							   errors: [] });
+				} else { 
+					res.send({text: ' failed.', type: 'danger'}); 
+				}
 			}).catch(function(error) { next(error); });
 		}).catch(function(error) { next(error); });
 	} else {
@@ -850,10 +850,6 @@ exports.authorize_users = function(req, res, next) {
 	// Parse de body and filter to delete the rows with no role assigned to the user
 	var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
 
-	users_to_be_authorized = users_to_be_authorized.filter(function(elem) {
-    	return (elem.role_id !== "")
-    });
-
 	// If the array is not empty change values in role_user table 
 	if (users_to_be_authorized.length > 0) {
 
@@ -864,26 +860,62 @@ exports.authorize_users = function(req, res, next) {
 		}).then(function(users_application_actual) {
 			if (users_application_actual.length > 0) {
 
-				// See differences between actual assignment and the data received from client
-				var new_authorization_users = authorize_all(users_application_actual, users_to_be_authorized, req.application, req.user_roles, req.user_permissions)
+				// Array to indicate which roles are going to be search
+				var where_search_role = []
 
-				// Destroy users that now are not authorized now
-				for(var i = 0; i < new_authorization_users.delete_row.length; i++) {
-					models.role_user.destroy({
-						where: new_authorization_users.delete_row[i]
-					})
+				// If permission is assign only public owned roles
+				if (req.user_permissions.includes('6')) {
+					where_search_role.push({id: req.user_roles});
 				}
 
-				models.role_user.bulkCreate(new_authorization_users.add_row).then(function() {
-					// Send message of success in updating authorizations
-					req.session.message = {text: ' Modified users authorization.', type: 'success'};
-					res.redirect('/idm/applications/'+req.application.id)
-				}).catch(function(error) {
-					// Send message of fail when updating authorizations
-					req.session.message = {text: ' Modified users authorization error.', type: 'warning'};
-					res.redirect('/idm/applications/'+req.application.id)
-				});
+				// If permission is assign all public owned roles
+				if (req.user_permissions.includes('5')) {
+					where_search_role.push({oauth_client_id: req.application.id})
+				}
 
+				// If permission is assign only internal roles
+				if (req.user_permissions.includes('1')) {
+					where_search_role.push({is_internal: true});
+				}
+
+				// Search roles to display when authorize users
+				models.role.findAll({
+					where: { [Op.or]: where_search_role },
+					attributes: ['id']
+				}).then(function(roles) {
+					if (roles.length > 0) {
+
+						// See differences between actual assignment and the data received from client
+						var new_authorization_users = authorize_all(users_application_actual, users_to_be_authorized, req.application, roles)
+
+						if (new_authorization_users.delete_row.length <= 0 && new_authorization_users.add_row.length <= 0) {
+							req.session.message = {text: ' No changes.', type: 'success'};
+							return res.redirect('/idm/applications/'+req.application.id);
+						}
+						// Destroy users that now are not authorized now
+						for(var i = 0; i < new_authorization_users.delete_row.length; i++) {
+							models.role_user.destroy({
+								where: new_authorization_users.delete_row[i]
+							})
+						}
+
+						models.role_user.bulkCreate(new_authorization_users.add_row).then(function() {
+							// Send message of success in updating authorizations
+							req.session.message = {text: ' Modified users authorization.', type: 'success'};
+							res.redirect('/idm/applications/'+req.application.id)
+						}).catch(function(error) {
+							// Send message of fail when updating authorizations
+							req.session.message = {text: ' Modified users authorization error.', type: 'warning'};
+							res.redirect('/idm/applications/'+req.application.id)
+						});
+					} else {
+						req.session.message = {text: ' Not authorized.', type: 'danger'};
+						return res.redirect('/idm/applications/'+req.application.id);
+					}
+				}).catch(function(error) {
+					req.session.message = {text: ' Error when authorizing.', type: 'danger'};
+					return res.redirect('/idm/applications/'+req.application.id);
+				});
 			} else { next(new Error("The applications hasn't got users authorized"));}
 		}).catch(function(error) { next(error); });
 	} else {
@@ -917,56 +949,55 @@ exports.register_iot = function(req, res, next) {
 exports.delete_iot = function(req, res, next) {
 
 	// Destroy pep proxy form table
-	if (req.iot.id) {
-		models.iot.destroy({
-			where: { id: req.iot.id,
-					 oauth_client_id: req.application.id }
-		}).then(function() {
-			// Send message of success of deleting pep proxy
+	models.iot.destroy({
+		where: { id: req.iot.id,
+				 oauth_client_id: req.application.id }
+	}).then(function(deleted) {
+		if (deleted) {
+			// Send message of success of deleting iot
 			var response = {message: {text: ' Iot sensor was successfully deleted.', type: 'success'}, application: {id: req.application.id}}
-			res.send(response);
-		}).catch(function(error) {
-			// Send message of fail when deleting pep proxy
+		} else {
+			// Send message of fail when deleting iot
 			var response = {message: {text: ' Failed deleting iot sensor', type: 'danger'}}
-			res.send(response);
-		});
-	} else {
+		}
+		res.send(response);
+	}).catch(function(error) {
+		// Send message of fail when deleting iot
 		var response = {message: {text: ' Failed deleting iot sensor', type: 'danger'}}
 		res.send(response);
-	}
+	});
 }
 
 // GET /idm/applications/:applicationId/iot/:iotId/reset_password -- Change password to Iot Sensor
 exports.reset_password_iot = function(req, res, next) {
 
-	// Change password
-	if (req.iot.id) {
+	// New password
+	var password_new = 'iot_sensor_'+uuid.v4()
 
-		// New password
-		var password_new = 'iot_sensor_'+uuid.v4()
-
-		models.iot.update(
-			{ password: password_new },
-			{
-				fields: ["password"],
-				where: { id: req.iot.id,
-					 	 oauth_client_id: req.application.id }
-			}
-		).then(function(){
+	models.iot.update(
+		{ password: password_new },
+		{
+			fields: ["password"],
+			where: { id: req.iot.id,
+				 	 oauth_client_id: req.application.id }
+		}
+	).then(function(reseted){
+		if (reseted[0] === 1) {
 			// Send message of success changing password pep proxy
 			var response = {message: {text: ' Iot sensor was successfully updated.', type: 'success'}, 
 							iot: {id: req.iot.id, password: password_new},
 							application: {id: req.application.id}}
-			res.send(response);
-		}).catch(function(error) {
-			// Send message of fail when changing password to pep proxy
+		} else {
+			// Send message of failed when reseting iot sensor
 			var response = {message: {text: ' Failed changing password Iot sensor', type: 'danger'}}
-			res.send(response);
-		});
-	} else {
+		}
+
+		res.send(response);
+	}).catch(function(error) {
+		// Send message of fail when changing password to pep proxy
 		var response = {message: {text: ' Failed changing password Iot sensor', type: 'danger'}}
 		res.send(response);
-	}
+	});
 }
 
 // GET /idm/applications/:applicationId/pep/register -- Register Pep Proxy
@@ -1007,59 +1038,56 @@ exports.register_pep = function(req, res, next) {
 exports.delete_pep = function(req, res, next) {
 
 	// Destroy pep proxy form table
-	if (req.pep.id) {
-		models.pep_proxy.destroy({
-			where: { id: req.pep.id,
-					 oauth_client_id: req.application.id }
-		}).then(function() {
+	models.pep_proxy.destroy({
+		where: { id: req.pep.id,
+				 oauth_client_id: req.application.id }
+	}).then(function(deleted) {
+		if (deleted) {
 			// Send message of success of deleting pep proxy
 			var response = {message: {text: ' Pep Proxy was successfully deleted.', type: 'success'}, 
 							application: {id: req.application.id}}
-			res.send(response);
-		}).catch(function(error) {
+		} else {
 			// Send message of fail when deleting pep proxy
 			var response = {message: {text: ' Failed deleting pep proxy', type: 'danger'}}
-			res.send(response);
-		});
-	} else {
+		}
+		res.send(response);
+	}).catch(function(error) {
+		// Send message of fail when deleting pep proxy
 		var response = {message: {text: ' Failed deleting pep proxy', type: 'danger'}}
 		res.send(response);
-	}
+	});
 }
 
 // GET /idm/applications/:applicationId/pep/:pepId/reset_password -- Change password to Pep Proxy
 exports.reset_password_pep = function(req, res, next) {
 
-	// Change password
-	if (req.pep.id) {
+	// New password
+	var password_new = 'pep_proxy_'+uuid.v4()
 
-		// New password
-		var password_new = 'pep_proxy_'+uuid.v4()
-
-		models.pep_proxy.update(
-			{ password: password_new },
-			{
-				fields: ["password"],
-				where: { id: req.pep.id,
-					 	 oauth_client_id: req.application.id }
-			}
-		).then(function(){
+	models.pep_proxy.update(
+		{ password: password_new },
+		{
+			fields: ["password"],
+			where: { id: req.pep.id,
+				 	 oauth_client_id: req.application.id }
+		}
+	).then(function(reseted){
+		if (reseted[0] === 1) {
 			// Send message of success changing password pep proxy
 			var response = {message: {text: ' Pep Proxy was successfully updated.', type: 'success'}, 
 							pep: {id: req.pep.id, password: password_new},
 							application: {id: req.application.id}}
-			res.send(response);
-		}).catch(function(error) {
-			// Send message of fail when changing password to pep proxy
-			var response = {message: {text: ' Failed changing password pep proxy', type: 'danger'}}
-			res.send(response);
-		});
-	} else {
+		} else {
+			// Send message of failed when reseting iot sensor
+			var response = {message: {text: ' Failed changing password pep proxy', type: 'danger'}}		
+		}
+		res.send(response);
+	}).catch(function(error) {
+		// Send message of fail when changing password to pep proxy
 		var response = {message: {text: ' Failed changing password pep proxy', type: 'danger'}}
 		res.send(response);
-	}
+	});
 }
-
 
 // Method to see users permissions to do some actions
 // - 1 Get and assign all internal application roles
@@ -1101,7 +1129,7 @@ function check_user_action(application, path, method, permissions) {
 }
 
 // Method to see how add new rows to role_user database
-function authorize_all(actual, change, application, roles, permissions) {
+function authorize_all(actual, change, application, roles) {
 
 	// Array with rows to delete
 	var delete_row = []
@@ -1109,35 +1137,21 @@ function authorize_all(actual, change, application, roles, permissions) {
 	// Array with rows to add
 	var add_row = []
 	for (var i = 0; i < change.length; i++) {
-		if (permissions.includes('1') && !['provider', 'purchaser'].includes(change.role_id)||
-			permissions.includes('5') ||
-			permissions.includes('6')
-			) {
+		// See if user can add or delete the new assignment by checking if the role is 
+		// in the list of roles that the user can assign
+		if (roles.some(role => role.id === change[i].role_id)) {
 
-		}
-		// If has change the actual roles, add row to delete_row array
-		if(change[i].added === 0) {
-			delete_row.push({user_id: change[i].user_id, role_id: change[i].role_id, oauth_client_id: application.id})
-		// If not, see if the table contains the row. If not add to add_row array
-		} else if (change[i].added === 1) {
-			if(actual.some(elem => (elem.user_id === change[i].user_id && elem.role_id === change[i].role_id)) === false) {
-				add_row.push({user_id: change[i].user_id, role_id: change[i].role_id, oauth_client_id: application.id})
+			// If has change the actual roles, add row to delete_row array
+			if(change[i].added === 0) {
+				delete_row.push({user_id: change[i].user_id, role_id: change[i].role_id, oauth_client_id: application.id})
+			// If not, see if the table contains the row. If not add to add_row array
+			} else if (change[i].added === 1) {
+				if(actual.some(elem => (elem.user_id === change[i].user_id && elem.role_id === change[i].role_id)) === false) {
+					add_row.push({user_id: change[i].user_id, role_id: change[i].role_id, oauth_client_id: application.id})
+				}
 			}
 		}
 	}
 
-	return { delete_row: delete_row,
-			 add_row: add_row }
-}
-
-// Function to delete duplicates entries
-function delete_duplicates(arr) {
-  return arr.reduce(function (p, c) {
-    var key = [c.user_id, c.role_id].join('|');
-    if (p.temp.indexOf(key) === -1) {
-      p.out.push(c);
-      p.temp.push(key);
-    }
-    return p;
-  }, { temp: [], out: [] }).out;
+	return { delete_row: delete_row, add_row: add_row}
 }

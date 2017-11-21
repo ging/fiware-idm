@@ -259,13 +259,11 @@ $(document).ready(function(){
             url = form.attr('action');
 
         var role_id = url.split("/")[6]
-        var app_id = url.split("/")[3]
 
         // Send delete request
         $.ajax({
             url: url,
-            type: 'DELETE',
-            data: { role_id: role_id, app_id: app_id },
+            type: 'DELETE', 
             success: function(result) {
                 if (result.type === "success") {
                     $("#update_owners_roles").find("#"+role_id).remove();

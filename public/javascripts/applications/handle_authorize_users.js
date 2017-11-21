@@ -15,7 +15,7 @@ $(document).ready(function(){
 	    li = ul.children("div");
 
 	    for (i = 0; i < li.length; i++) {
-	        span = li[i].querySelectorAll("div.filter_field")[0];
+	        span = li[i].querySelectorAll("div.name")[0];
 	        if (span.innerHTML.toUpperCase().indexOf(filter) > -1) {
 	            li[i].style.display = "";
 	        } else {
@@ -149,10 +149,10 @@ $(document).ready(function(){
         var username = row.find(".name").html()
         var image = row.parent().find(".avatar").children('img').first().attr('src')
 
-        if (users_authorized.some(member => member.user_id === user_id && member.added === 1)) {
-        	info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-warning'>User "+user_id+" has been already added</span>"
-        	$("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
-        	$("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
+        if ($("#authorize_user").find('ul.update_owners_users_members').find('#'+user_id).length) {
+	        	info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-warning'>User "+user_id+" has been already added</span>"
+	        	$("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
+	        	$("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
 	    } else {
 	    	var assign_role_user_row = $('#table_row_assign_role_user_template').html();
 	        assign_role_user_row = assign_role_user_row.replace(/username/g, String(username));

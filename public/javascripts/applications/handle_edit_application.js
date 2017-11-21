@@ -37,13 +37,10 @@ $(document).ready(function(){
         var form = $("#delete_avatar_form"),
             url = form.attr('action');
 
-        var image_name = $("#avatar-update").attr('src')
-
         // Send delete request
         $.ajax({
             url: url,
             type: 'DELETE',
-            data: { image_name: image_name },
             success: function(result) {
                 if (result.type === "success") {
                     $('#avatar-update').attr('src', '/img/logos/original/app.png');

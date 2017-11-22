@@ -27,25 +27,9 @@ $(document).ready(function(){
         }
     });
 
-
-	// Pop up with a form to create a new permission
-	$('#permButton').click(function () {
-		$('#backdrop').show();
-        $('#create_permission').show('open');
-        return false;
-	});
-
 	// Exit from form to create new permission
 	$('#esc_perm_creation').click(function () {
-        $("#create_permission_form").find("#id_name").val('');
-        $("#create_permission_form").find('#id_description').val(''); 
-        $("#create_permission_form").find('#id_action').val(''); 
-        $("#create_permission_form").find('#id_resource').val(''); 
-        $("#create_permission_form").find('#id_xml').val('');
-        $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
-		$('#backdrop').hide();
-        $('#create_permission').hide('close');
-        return false;
+        exit_permission_form()
 	});
 
 	// Handle the submit button from the create  permission
@@ -70,7 +54,7 @@ $(document).ready(function(){
 
         	// See if the result of post data is an error
             if (result.type === 'warning') {
-                console.log(result.text)
+
                 $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
                 for (var i = result.text.length - 1; i >= 0; i--) {
                     $("#create_permission_form").find("#"+result.text[i].message+".help-block.alert.alert-danger").show('open');
@@ -79,25 +63,13 @@ $(document).ready(function(){
                 $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
                 $("#create_permission_form").find("#error_invalid_inputs.help-block.alert.alert-danger").show('open');
             } else if (result.type === 'danger') {
-                // Empty input from role creation form
-                $("#create_permission_form").find("#id_name").val('');
-                $("#create_permission_form").find('#id_description').val(''); 
-                $("#create_permission_form").find('#id_action').val(''); 
-                $("#create_permission_form").find('#id_resource').val(''); 
-                $("#create_permission_form").find('#id_xml').val('');
 
-                // Hide error if exist
-                $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
-
-                // Return to normal view
-                $('#backdrop').hide();
-                $('#create_permission').hide('close');
+                // Exit from dialog
+                exit_permission_form()
+                $('#create_permission').modal('toggle');
 
                 // Add message
-                var message = $('#message_template').html();
-                message = message.replace(/type/g, result.type);
-                message = message.replace(/data/g, result.text);
-                $(".messages").replaceWith(message);
+                create_message(result.type, result.text)
 
             // If is not an error, add the permission to the list	
         	} else {
@@ -111,27 +83,36 @@ $(document).ready(function(){
                 // Add to permissions array
                 application.permissions.push(result.permission)
 
-                // Empty input from role creation form
-                $("#create_permission_form").find("#id_name").val('');
-                $("#create_permission_form").find('#id_description').val(''); 
-                $("#create_permission_form").find('#id_action').val(''); 
-                $("#create_permission_form").find('#id_resource').val(''); 
-                $("#create_permission_form").find('#id_xml').val('');
-
-                // Hide error if exist
-                $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
-
-                // Return to normal view
-                $('#backdrop').hide();
-              	$('#create_permission').hide('close');
+                // Exit from dialog
+                exit_permission_form()
+                $('#create_permission').modal('toggle');
 
                 // Add message
-                var message = $('#message_template').html();
-                message = message.replace(/type/g, result.message.type);
-                message = message.replace(/data/g, result.message.text);
-                $(".messages").replaceWith(message);
+                create_message(result.message.type, result.message.text)
         	}	   
         });
 
   });
 });
+
+// Function to put back the default permission form
+function exit_permission_form() {
+
+    // Empty input from role creation form
+    $("#create_permission_form").find("#id_name").val('');
+    $("#create_permission_form").find('#id_description').val(''); 
+    $("#create_permission_form").find('#id_action').val(''); 
+    $("#create_permission_form").find('#id_resource').val(''); 
+    $("#create_permission_form").find('#id_xml').val('');
+
+    // Hide error if exist
+    $("#create_permission_form").find(".help-block.alert.alert-danger").hide('close');
+}
+
+// Function to create messages
+function create_message(type, text) {
+    var message = $('#message_template').html();
+    message = message.replace(/type/g, type);
+    message = message.replace(/data/g, text);
+    $(".messages").replaceWith(message); 
+}

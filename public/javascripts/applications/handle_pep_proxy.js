@@ -10,21 +10,23 @@ $(document).ready(function(){
 
         // Send ajax request to create pep proxy
         var url = $(this).attr('href');
+        var application_id = String(url.split('/')[3])
+
         $.get(url, function(result) {
-        	if (result.message.type === 'success') {
+        	if (result.pep && result.message.type === 'success') {
         		var pep = $('#pep_proxy_template').html();
 	            pep = pep.replace(/pep_id/g, result.pep.id);
 	            pep = pep.replace(/pep_password/g, result.pep.password);
-	            pep = pep.replace(/application_id/g, result.application.id);
+	            pep = pep.replace(/application_id/g, application_id);
 				$('#collapse_pep_proxy').empty();
-	            $('#collapse_pep_proxy').append(pep);                                         		                           
-        	}
+	            $('#collapse_pep_proxy').append(pep);
 
-        	// Add message
-            var message = $('#message_template').html();
-            message = message.replace(/type/g, result.message.type);
-            message = message.replace(/data/g, result.message.text);
-            $('.messages').replaceWith(message);
+                // Add message
+                create_message(result.message.type, result.message.text)                                 		                           
+        	} else {
+                // Add message
+                create_message(result.type, result.text)
+            }
         });
     });
 
@@ -36,21 +38,23 @@ $(document).ready(function(){
 
         // Send ajax request to delete pep proxy
         var url = $(this).attr('href');
+        var application_id = String(url.split('/')[3])
+
         $.get(url, function(result) {
-            if (result.message.type === 'success') {
+            if (result.pep && result.message.type === 'success') {
                 var pep = $('#pep_proxy_template').html();
                 pep = pep.replace(/pep_id/g, result.pep.id);
                 pep = pep.replace(/pep_password/g, result.pep.password);
-                pep = pep.replace(/application_id/g, result.application.id);
+                pep = pep.replace(/application_id/g, application_id);
                 $('#collapse_pep_proxy').empty();
-                $('#collapse_pep_proxy').append(pep);                    
-            }
+                $('#collapse_pep_proxy').append(pep);
 
-            // Add message
-            var message = $('#message_template').html();
-            message = message.replace(/type/g, result.message.type);
-            message = message.replace(/data/g, result.message.text);
-            $('.messages').replaceWith(message);
+                // Add message
+                create_message(result.message.type, result.message.text)                
+            } else {
+                // Add message
+                create_message(result.type, result.text)
+            }
         });
     });
 
@@ -62,22 +66,29 @@ $(document).ready(function(){
 
         // Send ajax request to delete pep proxy
         var url = $(this).attr('href');
+        var application_id = String(url.split('/')[3])
+
         $.ajax({
             url: url,
             type: 'DELETE',
             success: function(result) {
-                if (result.message.type === "success") {
+                if (result.type === "success") {
                     $('#collapse_pep_proxy').empty();
                     $('#collapse_pep_proxy').append('<h6 class="panel-heading"></h6>');
-                    $('#collapse_pep_proxy').append('<a id="register_pep" href="/idm/applications/'+result.application.id+'/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>');                                
+                    $('#collapse_pep_proxy').append('<a id="register_pep" href="/idm/applications/'+application_id+'/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>');                                
                 } 
 
                 // Add message
-                var message = $('#message_template').html();
-                message = message.replace(/type/g, result.message.type);
-                message = message.replace(/data/g, result.message.text);
-                $('.messages').replaceWith(message);
+                create_message(result.type, result.text)
             }
         });
     });
 });
+
+// Function to create messages
+function create_message(type, text) {
+    var message = $('#message_template').html();
+    message = message.replace(/type/g, type);
+    message = message.replace(/data/g, text);
+    $(".messages").replaceWith(message); 
+}

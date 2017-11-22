@@ -24,9 +24,13 @@ exports.loadApplication = function(req, res, next, applicationId) {
 			}
 			// Send request to next function
 			next();
-		} else { 
-			req.session.message = {text: ' Application doesn`t exist.', type: 'danger'};
-            res.redirect('/idm/applications')
+		} else {
+			if (req.xhr) {
+				res.send({text: ' Application doesn`t exist.', type: 'danger'});
+			} else {
+				req.session.message = {text: ' Application doesn`t exist.', type: 'danger'};
+            	res.redirect('/idm/applications')
+			}
 		}
 	}).catch(function(error) { next(error); });
 };
@@ -491,7 +495,7 @@ exports.create_role = function(req, res) {
 			role.save({fields: ["id", "name", "oauth_client_id"]}).then(function() {
 				// Send message of success of creating role
 				var message = {text: ' Create role', type: 'success'}
-				res.send({role: role, message: message});
+				res.send({role: {id: role.id, name: role.name}, message: message});
 			}).catch(function(error){
 				res.send({text: ' Unable to create role',type: 'danger'})
 			});
@@ -611,7 +615,7 @@ exports.create_permission = function(req, res) {
 				}).then(function() {
 					// Send message of success of creating role
 					var message = {text: ' Create permission', type: 'success'}
-					res.send({permission: permission, message: message});
+					res.send({permission: {id: permission.id, name: permission.name}, message: message});
 				}).catch(function(error){
 					res.send({text: ' Unable to create permission',type: 'danger'})
 				});
@@ -1019,19 +1023,19 @@ exports.register_pep = function(req, res, next) {
 			pep_proxy.save({fields: ['id','password','oauth_client_id']}).then(function() {
 				// Send message of success in create a pep proxy
 				var response = { message: {text: ' Create Pep Proxy.', type: 'success'}, 
-								 pep: {id: id, password: password}, 
-								 application: {id: req.application.id}}
+								 pep: {id: id, password: password}}
 				res.send(response)
 			}).catch(function(error) {
 				// Send message of fail when create a pep proxy
-				var response = {message: {text: ' Failed create Pep Proxy.', type: 'warning'}}
-				res.send(response)
+				res.send({text: ' Failed create Pep Proxy.', type: 'warning'})
 			});
 		} else {
-			var response = {message: {text: ' Pep Proxy already created.', type: 'warning'}}
-			res.send(response)
+			res.send({text: ' Failed create Pep Proxy.', type: 'warning'})
 		}
-	}).catch(function(error) { next(error); });
+	}).catch(function(error) { 
+		res.send({text: ' Failed create Pep Proxy.', type: 'warning'})
+	});
+	
 }
 
 // DELETE /idm/applications/:applicationId/pep/:pepId/delete -- Delete Pep Proxy
@@ -1044,17 +1048,15 @@ exports.delete_pep = function(req, res, next) {
 	}).then(function(deleted) {
 		if (deleted) {
 			// Send message of success of deleting pep proxy
-			var response = {message: {text: ' Pep Proxy was successfully deleted.', type: 'success'}, 
-							application: {id: req.application.id}}
+			var response = {text: ' Pep Proxy was successfully deleted.', type: 'success'}
 		} else {
 			// Send message of fail when deleting pep proxy
-			var response = {message: {text: ' Failed deleting pep proxy', type: 'danger'}}
+			var response = {text: ' Failed deleting pep proxy', type: 'danger'}
 		}
 		res.send(response);
 	}).catch(function(error) {
 		// Send message of fail when deleting pep proxy
-		var response = {message: {text: ' Failed deleting pep proxy', type: 'danger'}}
-		res.send(response);
+		res.send({text: ' Failed deleting pep proxy', type: 'danger'});
 	});
 }
 
@@ -1075,17 +1077,15 @@ exports.reset_password_pep = function(req, res, next) {
 		if (reseted[0] === 1) {
 			// Send message of success changing password pep proxy
 			var response = {message: {text: ' Pep Proxy was successfully updated.', type: 'success'}, 
-							pep: {id: req.pep.id, password: password_new},
-							application: {id: req.application.id}}
+							pep: {id: req.pep.id, password: password_new}}
 		} else {
 			// Send message of failed when reseting iot sensor
-			var response = {message: {text: ' Failed changing password pep proxy', type: 'danger'}}		
+			var response = {text: ' Failed changing password pep proxy', type: 'danger'}
 		}
 		res.send(response);
 	}).catch(function(error) {
 		// Send message of fail when changing password to pep proxy
-		var response = {message: {text: ' Failed changing password pep proxy', type: 'danger'}}
-		res.send(response);
+		res.send({text: ' Failed changing password pep proxy', type: 'danger'});
 	});
 }
 

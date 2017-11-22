@@ -42,20 +42,9 @@ $(document).ready(function(){
         $("#update_owners_info_message").hide();
     });
 
-    // Pop up with a form to create a new role
-    $('#roleButton').click(function () {
-      	$('#backdrop').show();
-        $('#create_role').show('open');
-        return false;
-	});
-
-    // Exit from form to create new role
+    // Exit from form to create new roles
 	$('#esc_role_creation').click(function () {
-        $("#create_role_form").find("#id_name").val('');
-    	$('#backdrop').hide();
-        $('#create_role').hide('close');
-        $("#create_role_form").find(".help-block.alert.alert-danger").hide('close');
-        return false;
+        exit_role_form()
 	});
 
 	// Handle the submit button from the create role form
@@ -80,21 +69,13 @@ $(document).ready(function(){
                 $('#create_role_form').find('.help-block.alert.alert-danger').show('open');
             
         	} else if (result.type ==='danger') {
-                // Empty input from role creation form
-                $('#create_role_form').find('#id_name').val('');
 
-                // Hide error if exist
-                $('#create_role_form').find('.help-block.alert.alert-danger').hide('close');
-
-                // Return to normal view
-                $('#backdrop').hide();
-                $('#create_role').hide('close');
+                // Exit from dialog
+                exit_role_form()
+                $('#create_role').modal('toggle');
 
                 // Add message
-                var message = $('#message_template').html();
-                message = message.replace(/type/g, result.type);
-                message = message.replace(/data/g, result.text);
-                $('.messages').replaceWith(message);
+                create_message(result.type, result.text)
 
             // If is not an error, add the role to the list 
             } else {
@@ -109,21 +90,12 @@ $(document).ready(function(){
                 // Add to roles array
                 application.roles.push(result.role);
 
-                // Empty input from role creation form
-                $('#create_role_form').find('#id_name').val('');
-
-                // Hide error if exist
-                $('#create_role_form').find('.help-block.alert.alert-danger').hide('close');
-
-                // Return to normal view
-                $('#backdrop').hide();
-              	$('#create_role').hide('close');
+                // Exit from dialog
+                exit_role_form()
+                $('#create_role').modal('toggle');
 
                 // Add message
-                var message = $('#message_template').html();
-                message = message.replace(/type/g, result.message.type);
-                message = message.replace(/data/g, result.message.text);
-                $('.messages').replaceWith(message);
+                create_message(result.message.type, result.message.text)
         	}	   
         });
 
@@ -176,10 +148,7 @@ $(document).ready(function(){
                     $("#assign_role_permission_form").find("#alert_error").hide('close');
 
                     // Add message
-                    var message = $('#message_template').html();
-                    message = message.replace(/type/g, result.type);
-                    message = message.replace(/data/g, result.text);
-                    $(".messages").replaceWith(message);
+                    create_message(result.type, result.text)
 
                 } else {
                     // Update role name
@@ -193,10 +162,7 @@ $(document).ready(function(){
                     $("#assign_role_permission_form").find("#alert_error").hide('close');
 
                     // Add message
-                    var message = $('#message_template').html();
-                    message = message.replace(/type/g, result.type);
-                    message = message.replace(/data/g, result.text);
-                    $(".messages").replaceWith(message);
+                    create_message(result.message.type, result.message.text)
                 } 
             }
         });
@@ -209,16 +175,14 @@ $(document).ready(function(){
         // Stop linking        
         event.preventDefault();
 
-        var role_id = $(this).attr("href").split("/")[6]
+        var role_id = $(this).parent().parent().attr("id")
 
         // Function to find the name of the role
-        function find_role_name(role, index, array) {
+        var role = application.roles.find(function find_role_name(role, index, array) {
             if (role.id === role_id) {
                 return role
             }
-        }
-
-        var role = application.roles.find(find_role_name)
+        })
 
         // To return to the previous step
         var role_row = $('#table_row_role_template').html();
@@ -234,7 +198,7 @@ $(document).ready(function(){
     // Form to delete a role
     $("#update_owners_roles").on("click",".delete", function(event) { 
 
-        // Stop linking        
+        // Stop linking    
         event.preventDefault();
 
         // Change form action
@@ -242,10 +206,6 @@ $(document).ready(function(){
         var app_id = String(application.id);
         var action = "/idm/applications/"+app_id+"/edit/roles/"+role_id+"/delete";
         $("#delete_role_form").attr("action", action);
-
-        // Show form
-        $('#backdrop').show();
-        $('#delete_role').show('open');
     });
 
     // To confirm delete the role
@@ -270,22 +230,16 @@ $(document).ready(function(){
                     delete application.role_permission_assign[role_id]
                     $("#update_owners_permissions").hide('close');
                     $("#update_owners_info_message").show('open');
-                } 
-                var message = $('#message_template').html();
-                message = message.replace(/type/g, result.type);
-                message = message.replace(/data/g, result.text);
-                $(".messages").replaceWith(message);
+                }
 
-                $('#backdrop').hide();
-                $('#delete_role').hide('close');
+                // Add message
+                create_message(result.type, result.text)
+
+                // Exit from dialog
+                $('#delete_role').modal('toggle');
+
             }
         });
-    });
-
-    // Exit from form to delete role
-    $("#delete_role").find('.cancel, .close').click(function () {
-        $('#backdrop').hide();
-        $('#delete_role').hide('close');
     });
 
     // To remove message
@@ -293,3 +247,20 @@ $(document).ready(function(){
         $(".messages").empty();
     });
 });
+
+// Function to put back the default role form
+function exit_role_form() {
+    // Empty input from role creation form
+    $('#create_role_form').find('#id_name').val('');
+
+    // Hide error if exist
+    $('#create_role_form').find('.help-block.alert.alert-danger').hide('close');
+}
+
+// Function to create messages
+function create_message(type, text) {
+    var message = $('#message_template').html();
+    message = message.replace(/type/g, type);
+    message = message.replace(/data/g, text);
+    $(".messages").replaceWith(message); 
+}

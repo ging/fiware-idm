@@ -61,6 +61,10 @@ router.post('/oauth2/authorize', oauthController.response_type_required, functio
     }
 });
 
+// Pruebas con el Pep Proxy
+router.post('/v3/auth/tokens', oauthController.authenticate_pep_proxy)
+
+
 // Routes for users sessions
 router.get('/auth/login',		sessionController.new);
 router.post('/auth/login',		sessionController.create);
@@ -123,8 +127,6 @@ router.get('/idm/applications/:applicationId/pep/register',                 sess
 router.get('/idm/applications/:applicationId/pep/:pepId/reset_password',    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.reset_password_pep);
 router.delete('/idm/applications/:applicationId/pep/:pepId/delete',         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_pep);
 router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.destroy);
-
-
 
 
 module.exports = router;

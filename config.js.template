@@ -10,6 +10,11 @@ config.password_encryption = {
 	key: 'nodejs_idm'		// Must be change
 }
 
+config.authzforce = {
+	host: localhost,
+	port: 8080
+}
+
 config.database = {};
 config.database.host = 'localhost';       // default: 'localhost'
 config.database.name = 'idm';             // default: 'idm'

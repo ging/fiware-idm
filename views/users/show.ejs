@@ -92,18 +92,23 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-                <!-- <div class="list-group" id="applications_content">
-                    <div class="list-group-item">
-                        <a class="item" href="/idm/myApplications/16a5a6434e614953a8f9043ee1424f23/">
-                            <div class="avatar filter_field">
-                                <img src="/media/ApplicationAvatar/medium/16a5a6434e614953a8f9043ee1424f23">
+                <% if (applications.length > 0) { -%>
+                    <% for (var i = 0; i < applications.length; i++) { -%>
+                        <div class="list-group" id="applications_content">
+                            <div class="list-group-item">
+                                <a class="item" href="/idm/applications/<%= applications[i].id %>/">
+                                    <div class="avatar filter_field">
+                                        <img src="<%= applications[i].image %>">
+                                    </div>
+                                    <div class="name filter_field"><%= applications[i].name %></div>
+                                    <div class="url filter_field"><%= applications[i].url %></div>
+                                </a>
                             </div>
-                            <div class="name filter_field">666</div>
-                            <div class="url filter_field">6666</div>
-                        </a>
-                    </div>
-                </div> -->
-                <p class="alert alert-info empty" style="display: block;">You are not authorized in any application.</p>
+                        </div>
+                    <% } -%>
+                <% } else { -%>
+                    <p class="alert alert-info empty" style="display: block;">You are not authorized in any application.</p>
+                <% } -%>
             </div>
 
             <div class="panel-footer">

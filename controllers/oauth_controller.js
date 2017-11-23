@@ -10,7 +10,7 @@ oauth = new oauthServer({
   debug: true
 });
 
-// Function to handle token requests
+// POST /oauth2/token -- Function to handle token requests
 exports.token = function(req,res, next){
 	var request = new Request(req);
 	var response = new Response(res);
@@ -207,4 +207,10 @@ function render_oauth_authorize(req, res) {
       res.redirect('/');
     }
   }).catch(function(error) { next(error); }); 
+}
+
+// POST /v3/auth/tokens --Function to authenticate and generate a token for a pep proxy
+exports.authenticate_pep_proxy = function(req, res, next) {
+  console.log("---------------------------------------")
+  console.log(req.body.auth.identity)
 }

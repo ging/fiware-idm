@@ -12,9 +12,17 @@ exports.index = function(req, res) {
 		}]
 	}).then(function(user_applications) {
 
+		// See if there is a message store in session
+		if (req.session.message) {
+			res.locals.message = req.session.message
+    		delete req.session.message  
+		}
+
+		var applications = []
+
 		// If user has applications, set image from file system and obtain info from each application
 		if (user_applications.length > 0) {
-			var applications = []
+
 			user_applications.forEach(function(app) {
 				if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
 					if (app.OauthClient.image == 'default') {
@@ -26,18 +34,9 @@ exports.index = function(req, res) {
 				} 
 			});
 
-			// See if there is a message store in session
-			if (req.session.message) {
-				res.locals.message = req.session.message
-        		delete req.session.message  
-			}
-
 			// Order applications and render view
 			applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
-			res.render('home/index', { applications: applications, errors: []});
-
-		} else {
-			res.render('home/index', { applications: [], errors: []});
 		}
+		res.render('home/index', { applications: applications, errors: []});
 	});
 };

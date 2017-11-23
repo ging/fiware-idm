@@ -25,12 +25,11 @@ exports.loadApplication = function(req, res, next, applicationId) {
 			// Send request to next function
 			next();
 		} else {
-			if (req.xhr) {
-				res.send({text: ' Application doesn`t exist.', type: 'danger'});
-			} else {
-				req.session.message = {text: ' Application doesn`t exist.', type: 'danger'};
-            	res.redirect('/idm/applications')
-			}
+			// Reponse with message
+			var response = {text: ' Application doesn`t exist.', type: 'danger'};
+
+			// Send response depends on the type of request
+			send_response(req, res, response, '/idm/applications');
 		}
 	}).catch(function(error) { next(error); });
 };
@@ -91,11 +90,10 @@ exports.owned_permissions = function(req, res, next) {
 					next();	
 				} else {
 					// Send an error if the the request is via AJAX or redirect if is via browser
-					if (req.xhr) {
-						res.send({text: ' failed.', type: 'danger'});
-					} else {
-						res.redirect('/idm/applications');
-					}
+					var response = {text: ' failed.', type: 'danger'};
+
+					// Send response depends on the type of request
+					send_response(req, res, response, '/idm/applications');
 				}
 			}).catch(function(error) { next(error); });
 		} else { res.redirect('/idm/applications'); }
@@ -119,9 +117,10 @@ exports.index = function(req, res) {
 			delete req.session.message
 		}
 
+		var applications = []
 		// If user has applications, set image from file system and obtain info from each application
 		if (user_applications.length > 0) {
-			var applications = []
+			
 			user_applications.forEach(function(app) {
 				if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
 					if (app.OauthClient.image == 'default') {
@@ -135,11 +134,9 @@ exports.index = function(req, res) {
 
 			// Order applications and render view
 			applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
-			res.render('applications/index', { applications: applications, errors: []});
-
-		} else {
-			res.render('applications/index', { applications: [], errors: []});
 		}
+
+		res.render('applications/index', { applications: applications, errors: []});
 	}).catch(function(error) { next(error); });
 };
 
@@ -939,13 +936,17 @@ exports.register_iot = function(req, res, next) {
 	iot.save({fields: ['id','password','oauth_client_id']}).then(function() {
 		// Send message of success in create an iot sensor
 		var response = { message: {text: ' Create IoT sensor.', type: 'success'}, 
-						 iot: {id: id, password: password}, 
-						 application: {id: req.application.id}}
-		res.send(response)
+						 iot: {id: id, password: password}}
+		
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
+
 	}).catch(function(error) {
 		// Send message of fail when create an iot sensor
-		var response = { message: {text: ' Failed create IoT sensor.', type: 'warning'}}
-		res.send(response)
+		var response = {text: ' Failed create IoT sensor.', type: 'warning'}
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	});
 }
 
@@ -959,16 +960,20 @@ exports.delete_iot = function(req, res, next) {
 	}).then(function(deleted) {
 		if (deleted) {
 			// Send message of success of deleting iot
-			var response = {message: {text: ' Iot sensor was successfully deleted.', type: 'success'}, application: {id: req.application.id}}
+			var response = {text: ' Iot sensor was successfully deleted.', type: 'success'}
 		} else {
 			// Send message of fail when deleting iot
-			var response = {message: {text: ' Failed deleting iot sensor', type: 'danger'}}
+			var response = {text: ' Failed deleting iot sensor', type: 'danger'}
 		}
-		res.send(response);
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	}).catch(function(error) {
-		// Send message of fail when deleting iot
-		var response = {message: {text: ' Failed deleting iot sensor', type: 'danger'}}
-		res.send(response);
+		// Send message of fail when delete an iot sensor
+		var response = {text: ' Failed create IoT sensor.', type: 'warning'}
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	});
 }
 
@@ -985,7 +990,7 @@ exports.reset_password_iot = function(req, res, next) {
 			where: { id: req.iot.id,
 				 	 oauth_client_id: req.application.id }
 		}
-	).then(function(reseted){
+	).then(function(reseted) {
 		if (reseted[0] === 1) {
 			// Send message of success changing password pep proxy
 			var response = {message: {text: ' Iot sensor was successfully updated.', type: 'success'}, 
@@ -993,14 +998,18 @@ exports.reset_password_iot = function(req, res, next) {
 							application: {id: req.application.id}}
 		} else {
 			// Send message of failed when reseting iot sensor
-			var response = {message: {text: ' Failed changing password Iot sensor', type: 'danger'}}
+			var response = {text: ' Failed changing password Iot sensor', type: 'danger'}
 		}
 
-		res.send(response);
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
+
 	}).catch(function(error) {
 		// Send message of fail when changing password to pep proxy
-		var response = {message: {text: ' Failed changing password Iot sensor', type: 'danger'}}
-		res.send(response);
+		var response = {text: ' Failed create IoT sensor.', type: 'warning'}
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	});
 }
 
@@ -1024,16 +1033,29 @@ exports.register_pep = function(req, res, next) {
 				// Send message of success in create a pep proxy
 				var response = { message: {text: ' Create Pep Proxy.', type: 'success'}, 
 								 pep: {id: id, password: password}}
-				res.send(response)
+
+				// Send response depends on the type of request
+				send_response(req, res, response, '/idm/applications/'+req.application.id);
 			}).catch(function(error) {
 				// Send message of fail when create a pep proxy
-				res.send({text: ' Failed create Pep Proxy.', type: 'warning'})
+				var response = {text: ' Failed create Pep Proxy.', type: 'warning'}
+
+				// Send response depends on the type of request
+				send_response(req, res, response, '/idm/applications/'+req.application.id);
+
 			});
 		} else {
-			res.send({text: ' Failed create Pep Proxy.', type: 'warning'})
+			var response = {text: ' Pep Proxy already created.', type: 'warning'}
+			
+			// Send response depends on the type of request
+			send_response(req, res, response, '/idm/applications/'+req.application.id);
+
 		}
 	}).catch(function(error) { 
-		res.send({text: ' Failed create Pep Proxy.', type: 'warning'})
+		var response = {text: ' Failed create Pep Proxy.', type: 'warning'}
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	});
 	
 }
@@ -1053,10 +1075,15 @@ exports.delete_pep = function(req, res, next) {
 			// Send message of fail when deleting pep proxy
 			var response = {text: ' Failed deleting pep proxy', type: 'danger'}
 		}
-		res.send(response);
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	}).catch(function(error) {
 		// Send message of fail when deleting pep proxy
-		res.send({text: ' Failed deleting pep proxy', type: 'danger'});
+		var response = {text: ' Failed deleting pep proxy', type: 'danger'};
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	});
 }
 
@@ -1082,10 +1109,15 @@ exports.reset_password_pep = function(req, res, next) {
 			// Send message of failed when reseting iot sensor
 			var response = {text: ' Failed changing password pep proxy', type: 'danger'}
 		}
-		res.send(response);
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	}).catch(function(error) {
 		// Send message of fail when changing password to pep proxy
-		res.send({text: ' Failed changing password pep proxy', type: 'danger'});
+		var response = {text: ' Failed changing password pep proxy', type: 'danger'};
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	});
 }
 
@@ -1154,4 +1186,18 @@ function authorize_all(actual, change, application, roles) {
 	}
 
 	return { delete_row: delete_row, add_row: add_row}
+}
+
+// Funtion to see if request is via AJAX or Browser and depending on this, send a request
+function send_response(req, res, response, url) {
+	if (req.xhr) {
+		res.send(response);
+	} else {
+		if (response.message) {
+			req.session.message = response.message	
+		} else {
+			req.session.message = response;
+		}
+		res.redirect(url);
+	}
 }

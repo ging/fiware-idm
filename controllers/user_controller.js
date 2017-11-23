@@ -44,16 +44,49 @@ exports.owned_permissions = function(req, res, next) {
 }
 
 // GET /idm/users/:userId -- Show info about a user
-exports.show = function(req, res) {
-    // See if user to show is equal to user logged
-    if (req.session.user.id === req.user.id) {
-        req.user['auth'] = true;
-    }
-    if (req.session.message) {
-        res.locals.message = req.session.message
-        delete req.session.message  
-    }
-    res.render('users/show', {user: req.user})
+exports.show = function(req, res, next) {
+
+    // Find user applications
+    models.role_user.findAll({
+        where: {user_id: req.user.id},
+        include: [{
+            model: models.oauth_client,
+            attributes: ['id', 'name', 'url', 'image']
+        }]
+    }).then(function(user_applications) {
+        // See if user to show is equal to user logged
+        if (req.session.user.id === req.user.id) {
+            req.user['auth'] = true;
+        }
+        if (req.session.message) {
+            res.locals.message = req.session.message
+            delete req.session.message  
+        }
+
+        var applications = []
+
+        // If user has applications, set image from file system and obtain info from each application
+        if (user_applications.length > 0) {
+        
+            user_applications.forEach(function(app) {
+                if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
+                    if (app.OauthClient.image == 'default') {
+                        app.OauthClient.image = '/img/logos/medium/app.png'
+                    } else {
+                        app.OauthClient.image = '/img/applications/'+app.OauthClient.image
+                    }
+                    applications.push(app.OauthClient)
+                } 
+            });
+
+            // Order applications and render view
+            applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
+        }
+
+        res.render('users/show', {user: req.user, applications: applications})
+    }).catch(function(error) {
+         next(error);
+    });
 }
 
 // GET /idm/users/:userId/edit -- Render a form to edit user profile

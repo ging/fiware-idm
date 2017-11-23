@@ -27,7 +27,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     client_type: DataTypes.STRING(15), 
     grant_type: DataTypes.STRING(25), 
-    response_type: DataTypes.STRING(5), 
+    response_type: DataTypes.STRING(5),
+    azf_domain: DataTypes.STRING(30),
     scope: DataTypes.STRING(80),
     extra: DataTypes.JSON 
   }, {

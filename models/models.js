@@ -50,6 +50,9 @@ var iot = sequelize.import(path.join(__dirname,'iot'));
 // Import pep proxy table
 var pep_proxy = sequelize.import(path.join(__dirname,'pep_proxy'));
 
+// Import authzforce table
+var authzforce = sequelize.import(path.join(__dirname,'authzforce'));
+
 
 // Relation between OAuthClient and access token
 oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
@@ -80,6 +83,9 @@ iot.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'casca
 // Relation between pep proxies and OAuthClients
 pep_proxy.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
+// Relation between pep proxies and OAuthClients
+authzforce.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+
 // Relation between roles, users and OAuthClients
 role_user.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 role_user.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
@@ -99,6 +105,7 @@ exports.role = role;
 exports.permission = permission;
 exports.iot = iot;
 exports.pep_proxy = pep_proxy;
+exports.authzforce = authzforce;
 exports.role_user = role_user;
 exports.role_permission = role_permission;
 exports.oauth_client = oauth_client;

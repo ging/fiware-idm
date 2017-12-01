@@ -22,10 +22,13 @@ $(document).ready(function(){
 
 		var permission_row = $('#table_row_permission_template').html();
 	    permission_row = permission_row.replace(/perm_id/g, application.permissions[i].id);
+	    permission_row = permission_row.replace(/app_id/g, application.id);
 	    permission_row = permission_row.replace(/perm_name/g, application.permissions[i].name);
-
-        if (['1', '2', '3' ,'4' ,'5' ,'6'].includes(application.permissions[i].id)) {                                         
+        if (['1', '2', '3' ,'4' ,'5' ,'6'].includes(application.permissions[i].id)) {                            
         	$('#list_permissions').prepend(permission_row);
+        	$('#list_permissions').find('[data-permission-id='+application.permissions[i].id+']').children('span').remove();
+        	$('#list_permissions').find('[data-permission-id='+application.permissions[i].id+']').children('.edit_permission').remove();
+        	$('#list_permissions').find('[data-permission-id='+application.permissions[i].id+']').children('.fa-trash-o').remove();
         } else {
         	$('#list_permissions').append(permission_row);
         }

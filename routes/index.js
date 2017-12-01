@@ -80,7 +80,7 @@ router.param('applicationId', applicationController.loadApplication);
 router.param('pepId',         applicationController.loadPep);
 router.param('iotId',         applicationController.loadIot);
 router.param('roleId',        applicationController.loadRole);
-//router.param('permissionId',  applicationController.loadPermission);
+router.param('permissionId',  applicationController.loadPermission);
 router.param('userId',        userController.loadUser);
 
 // Route to get home of user
@@ -100,33 +100,36 @@ router.put('/idm/users/:userId/edit/avatar',            sessionController.loginR
 router.delete('/idm/users/:userId/edit/delete_avatar',  sessionController.loginRequired, userController.owned_permissions, userController.delete_avatar);
 
 // Routes to get info about applications
-router.get('/idm/applications',  					                        sessionController.loginRequired,	applicationController.index);
-router.get('/idm/applications/new',                                         sessionController.loginRequired,    applicationController.new);
-router.post('/idm/applications',                                            sessionController.loginRequired,    applicationController.create);
-router.get('/idm/applications/:applicationId', 		                        sessionController.loginRequired,	applicationController.show);
-router.get('/idm/applications/:applicationId/step/avatar',                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_avatar);
-router.post('/idm/applications/:applicationId/step/avatar',                 sessionController.loginRequired,    applicationController.owned_permissions,    imageAppUpload.single('image'),    applicationController.step_create_avatar);
-router.get('/idm/applications/:applicationId/step/roles',                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_roles);
-router.get('/idm/applications/:applicationId/edit',                         sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.edit);
-router.put('/idm/applications/:applicationId/edit/avatar', 		            sessionController.loginRequired,	applicationController.owned_permissions,    imageAppUpload.single('image'),    applicationController.update_avatar);
-router.put('/idm/applications/:applicationId/edit/info',                    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.update_info);
-router.get('/idm/applications/:applicationId/edit/roles',                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.manage_roles);
-router.get('/idm/applications/:applicationId/edit/users',                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.get_users);
-router.post('/idm/applications/:applicationId/edit/users',                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.authorize_users);
-router.post('/idm/applications/:applicationId/edit/roles',                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.role_permissions_assign);
-router.post('/idm/applications/:applicationId/edit/roles/create',           sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.create_role);
-router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',      sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.edit_role);
-router.delete('/idm/applications/:applicationId/edit/roles/:roleId/delete', sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_role);
-router.post('/idm/applications/:applicationId/edit/permissions/create',     sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.create_permission);
-router.delete('/idm/applications/:applicationId/edit/delete_avatar',        sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_avatar);
-router.post('/idm/applications/:applicationId/users/available',             sessionController.loginRequired,    applicationController.available_users);
-router.get('/idm/applications/:applicationId/iot/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_iot);
-router.get('/idm/applications/:applicationId/iot/:iotId/reset_password',    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.reset_password_iot);
-router.delete('/idm/applications/:applicationId/iot/:iotId/delete',         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_iot);
-router.get('/idm/applications/:applicationId/pep/register',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_pep);
-router.get('/idm/applications/:applicationId/pep/:pepId/reset_password',    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.reset_password_pep);
-router.delete('/idm/applications/:applicationId/pep/:pepId/delete',         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_pep);
-router.delete('/idm/applications/:applicationId',                           sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.destroy);
+router.get('/idm/applications',  					                                        sessionController.loginRequired,	applicationController.index);
+router.get('/idm/applications/new',                                                         sessionController.loginRequired,    applicationController.new);
+router.post('/idm/applications',                                                            sessionController.loginRequired,    applicationController.create);
+router.get('/idm/applications/:applicationId', 		                                        sessionController.loginRequired,	applicationController.show);
+router.get('/idm/applications/:applicationId/step/avatar',                                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_avatar);
+router.post('/idm/applications/:applicationId/step/avatar',                                 sessionController.loginRequired,    applicationController.owned_permissions,    imageAppUpload.single('image'),    applicationController.step_create_avatar);
+router.get('/idm/applications/:applicationId/step/roles',                                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.step_new_roles);
+router.get('/idm/applications/:applicationId/edit',                                         sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.edit);
+router.put('/idm/applications/:applicationId/edit/avatar', 		                            sessionController.loginRequired,	applicationController.owned_permissions,    imageAppUpload.single('image'),    applicationController.update_avatar);
+router.put('/idm/applications/:applicationId/edit/info',                                    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.update_info);
+router.get('/idm/applications/:applicationId/edit/roles',                                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.manage_roles);
+router.get('/idm/applications/:applicationId/edit/users',                                   sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.get_users);
+router.post('/idm/applications/:applicationId/edit/users',                                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.authorize_users);
+router.post('/idm/applications/:applicationId/edit/roles',                                  sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.role_permissions_assign);
+router.post('/idm/applications/:applicationId/edit/roles/create',                           sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.create_role);
+router.put('/idm/applications/:applicationId/edit/roles/:roleId/edit',                      sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.edit_role);
+router.delete('/idm/applications/:applicationId/edit/roles/:roleId/delete',                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_role);
+router.post('/idm/applications/:applicationId/edit/permissions/create',                     sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.create_permission);
+router.get('/idm/applications/:applicationId/edit/permissions/:permissionId',               sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.get_permission);
+router.put('/idm/applications/:applicationId/edit/permissions/:permissionId/edit',          sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.edit_permission);
+router.delete('/idm/applications/:applicationId/edit/permissions/:permissionId/delete',     sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_permission);
+router.delete('/idm/applications/:applicationId/edit/delete_avatar',                        sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_avatar);
+router.post('/idm/applications/:applicationId/users/available',                             sessionController.loginRequired,    applicationController.available_users);
+router.get('/idm/applications/:applicationId/iot/register',                                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_iot);
+router.get('/idm/applications/:applicationId/iot/:iotId/reset_password',                    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.reset_password_iot);
+router.delete('/idm/applications/:applicationId/iot/:iotId/delete',                         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_iot);
+router.get('/idm/applications/:applicationId/pep/register',                                 sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.register_pep);
+router.get('/idm/applications/:applicationId/pep/:pepId/reset_password',                    sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.reset_password_pep);
+router.delete('/idm/applications/:applicationId/pep/:pepId/delete',                         sessionController.loginRequired,    applicationController.owned_permissions,    applicationController.delete_pep);
+router.delete('/idm/applications/:applicationId',                                           sessionController.loginRequired,	applicationController.owned_permissions,    applicationController.destroy);
 
 
 module.exports = router;

@@ -9,7 +9,7 @@ const Op = Sequelize.Op;
 
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
-// Autoload info if path include applicationid
+// Autoload info if path include applicationId
 exports.loadApplication = function(req, res, next, applicationId) {
 
 	// Search application whose id is applicationId
@@ -34,7 +34,7 @@ exports.loadApplication = function(req, res, next, applicationId) {
 	}).catch(function(error) { next(error); });
 };
 
-// Autoload info if path include applicationid
+// Autoload info if path include pepId
 exports.loadPep = function(req, res, next, pepId) {
 
 	// Add id of pep proxy in request
@@ -42,7 +42,7 @@ exports.loadPep = function(req, res, next, pepId) {
 	next();
 };
 
-// Autoload info if path include applicationid
+// Autoload info if path include iotId
 exports.loadIot = function(req, res, next, iotId) {
 
 	// Add id of pep proxy in request
@@ -50,11 +50,19 @@ exports.loadIot = function(req, res, next, iotId) {
 	next();
 };
 
-// Autoload info if path include applicationid
+// Autoload info if path include roleId
 exports.loadRole = function(req, res, next, roleId) {
 
 	// Add id of pep proxy in request
 	req.role = {id: roleId}
+	next();
+};
+
+// Autoload info if path include permissionId
+exports.loadPermission = function(req, res, next, permissionId) {
+
+	// Add id of pep proxy in request
+	req.permission = {id: permissionId}
 	next();
 };
 
@@ -95,9 +103,27 @@ exports.owned_permissions = function(req, res, next) {
 					// Send response depends on the type of request
 					send_response(req, res, response, '/idm/applications');
 				}
-			}).catch(function(error) { next(error); });
-		} else { res.redirect('/idm/applications'); }
-	}).catch(function(error) { next(error); });
+			}).catch(function(error) { 
+				// Reponse with message
+				var response = {text: ' Error searching user permissions', type: 'danger'};
+
+				// Send response depends on the type of request
+				send_response(req, res, response, '/idm/applications');
+			});
+		} else {
+			// Reponse with message
+			var response = {text: ' User is not authorized', type: 'danger'};
+
+			// Send response depends on the type of request
+			send_response(req, res, response, '/idm/applications');
+		}
+	}).catch(function(error) { 
+		// Reponse with message
+		var response = {text: ' Error searching user permissions', type: 'danger'};
+
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications'); 
+	});
 }
 
 // GET /idm/applications -- List all applications
@@ -506,10 +532,9 @@ exports.create_role = function(req, res) {
 // PUT /idm/applications/:applicationId/edit/roles/:roleId/edit -- Edit a role
 exports.edit_role = function(req, res) {
 	var role_name = req.body.role_name;
-	var role_id = req.body.role_id;
 
 	// If body has parameter is_internal or role_id is provider or purchaser don't edit the role
-	if (['provider', 'purchaser'].includes(role_id) || req.body.is_internal) {
+	if (['provider', 'purchaser'].includes(req.role.id) || req.body.is_internal) {
 		res.send({text: ' Failed editing role', type: 'danger'});
 	
 	} else {
@@ -523,7 +548,8 @@ exports.edit_role = function(req, res) {
 				{ name: role_name },
 				{
 					fields: ["name"],
-					where: {id: role_id}
+					where: {id: req.role.id,
+							oauth_client_id: req.application.id }
 				}
 			).then(function(){
 				// Send message of success of updating role
@@ -569,7 +595,7 @@ exports.delete_role = function(req, res) {
 
 // POST /idm/applications/:applicationId/edit/permissions/create -- Create new permission
 exports.create_permission = function(req, res) {
-
+	console.log(req.body)
 	// If body has parameters id or is_internal don't create the permission
 	if (req.body.id || req.body.is_internal) {
 		res.send({text: ' Failed creating permission', type: 'danger'});
@@ -596,7 +622,7 @@ exports.create_permission = function(req, res) {
 		}
 
 		// Validate if name and description aren't empty
-		permission.validate().then(function(err) {
+		permission.validate().then(function() {
 			// Send a message with errors
 			if (errors_inputs.length > 0) {
 				res.send({text: errors_inputs, type: 'warning'});
@@ -610,7 +636,7 @@ exports.create_permission = function(req, res) {
 										   "xml",
 										   "oauth_client_id" ]
 				}).then(function() {
-					// Send message of success of creating role
+					// Send message of success of creating permission
 					var message = {text: ' Create permission', type: 'success'}
 					res.send({permission: {id: permission.id, name: permission.name}, message: message});
 				}).catch(function(error){
@@ -618,8 +644,118 @@ exports.create_permission = function(req, res) {
 				});
 			}
 		}).catch(function(error) {
-			// Send message of fail when creating role
+			// Send message of fail when creating permission
 			res.send({text: errors_inputs.concat(error.errors), type: 'warning'});
+		});
+	}
+}
+
+// GET /idm/applications/:applicationId/edit/permissions/:permissionId -- Get a permission
+exports.get_permission = function(req, res) {
+	// See if the request is via AJAX or browser
+	if (['1', '2', '3' ,'4' ,'5' ,'6'].includes(req.permission.id)) {
+		res.send({text: ' Fail.', type: 'danger'}); 
+	} else {
+		if (req.xhr) {
+			// Search info about the users authorized in the application
+			models.permission.findById(req.permission.id).then(function(permission) {
+				if (permission) {
+					res.send(permission)
+				} else {
+					res.send({text: ' Permission does not exist.', type: 'danger'}); 
+				}
+			}).catch(function(error) { res.send(error); });
+		} else {
+
+			// Redirect to show application if the request is via browser
+			res.redirect('/idm/applications/'+req.application.id)
+		}
+	}
+}
+
+// PUT /idm/applications/:applicationId/edit/permissions/:permissionId/edit -- Edit a permission
+exports.edit_permission = function(req, res) {
+	// If body has parameters id or is_internal don't create the permission
+	if (['1', '2', '3' ,'4' ,'5' ,'6'].includes(req.permission.id) || req.body.is_internal) {
+		res.send({text: ' Failed updating permission', type: 'danger'});
+	} else {
+		var permission = models.permission.build({ name: req.body.name,
+												   description: req.body.description,
+												   resource: req.body.resource,
+												   action: req.body.action,
+												   xml: req.body.xml,
+												   oauth_client_id: req.application.id });
+
+		// Array of errors to be send 
+		var errors_inputs = [];
+
+		// See if fields action, resource and xml are in the same request
+		if ((req.body.action || req.body.resource) && req.body.xml) {
+			errors_inputs.push({message: 'xml_with_action_and_resource_not_allow'});
+		}
+
+		// See if action and resource are defined when xml is not
+		if(!(req.body.action && req.body.resource) && !req.body.xml){
+			errors_inputs.push({message: 'define_rule'});
+		}
+
+		permission.validate().then(function() {
+			// Send a message with errors
+			if (errors_inputs.length > 0) {
+				res.send({text: errors_inputs, type: 'warning'});
+			} else {
+				
+				models.permission.update(
+				{	
+					name: req.body.name,
+					description: req.body.description,
+					resource: req.body.resource,
+					action: req.body.action,
+					xml: req.body.xml },
+				{	
+					fields: ['name', 'description', 'action', 'resource', 'xml'],
+					where: { id: req.permission.id,
+							 oauth_client_id: req.application.id }				
+				}).then(function() {
+					// Send message of success of updating permission
+					res.send({text: ' Permission was successfully edited.', type: 'success'});
+				}).catch(function(error) {
+					// Send message of fail when creating role
+					res.send({text: ' Failed editing permission.', type: 'danger'})
+				})
+			}
+		}).catch(function(error) {
+			// Send message of fail when creating role (empty inputs)
+			res.send({text: errors_inputs.concat(error.errors), type: 'warning'})
+		});
+	}
+}
+
+// DELETE /idm/applications/:applicationId/edit/permissions/:permissionId/delete -- Delete a permission
+exports.delete_permission = function(req, res) {
+	console.log("-------------deleteeee-------------------")
+	console.log(req.permission.id)
+	// If permission is internal don't delete the role
+	if (['1', '2', '3' ,'4' ,'5' ,'6'].includes(req.permission.id)) {
+		res.send({text: ' Failed deleting permission', type: 'danger'});
+	
+	} else {
+
+		// Destroy role
+		models.permission.destroy({
+			where: { id: req.permission.id,
+					 oauth_client_id: req.application.id }
+		}).then(function(deleted) {
+			if (deleted) {
+				// Send message of success of deleting role
+				res.send({text: ' Permission was successfully deleted.', type: 'success'});
+			} else {
+				// Send message of fail when deleting role
+				res.send({text: ' Failed deleting permission.', type: 'danger'});
+			}
+		}).catch(function(error) {
+			// Send message of fail when deleting role
+			res.send({text: ' Failed deleting permission.', type: 'danger'});
 		});
 	}
 }

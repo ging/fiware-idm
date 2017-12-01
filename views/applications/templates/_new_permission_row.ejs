@@ -1,7 +1,14 @@
 <!-- Template to add new permissions created to the list without reloading page -->
 <script type="text/x-custom-template" id="table_row_permission_template">
 	<li class="list-group-item is-internal" data-permission-id="perm_id">
-		<i class="fa fa-check" disabled=""></i>
-		<p style="width: 95%; overflow: hidden; text-overflow: ellipsis; float: right;">perm_name</p>
+		<i style="width: 5%; float: left;" class="fa fa-check" disabled=""></i>
+		<p id="display_name" style="width: 75%; overflow: hidden; text-overflow: ellipsis; float: left;">perm_name</p>
+		<span class="divider" style="float: left; margin-right: 10px;">|</span>
+		<button style="position: relative; width: 6%; float: left;" class="edit_permission fa fa-edit">
+	    	<!-- <i class="fa fa-edit"></i> -->
+	    </button>
+        <button style="position: relative; width: 6%; float: left;" data-toggle="modal" data-target="#delete_permission" class="ajax-modal delete fa fa-trash-o">
+        	<!-- <i class="fa fa-trash-o"></i> -->
+        </button>
 	</li>
 </script>

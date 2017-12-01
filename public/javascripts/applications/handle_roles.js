@@ -103,7 +103,7 @@ $(document).ready(function(){
 
     // To show a little form to edit a role
     $("#update_owners_roles").on("click",".ajax-inline-edit", function(event) { 
-        
+
         // Stop linking        
         event.preventDefault();
 
@@ -137,7 +137,7 @@ $(document).ready(function(){
         $.ajax({
             url: $(this).attr('href'),
             type: 'PUT',
-            data: { role_name: role_name, role_id: role_id },
+            data: { role_name: role_name },
             success: function(result) {
 
                 if (result.type === 'warning') {
@@ -157,12 +157,17 @@ $(document).ready(function(){
                     role_row = role_row.replace(/role_id/g, role_id);
                     role_row = role_row.replace(/app_id/g, String(application.id));
                     $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
+                    application.roles.forEach(function(element, index){
+                        if (element.id == role_id) {
+                            application.roles[index]['name'] = role_name
+                        }
+                    });
 
                     //Hide error if exists
                     $("#assign_role_permission_form").find("#alert_error").hide('close');
 
                     // Add message
-                    create_message(result.message.type, result.message.text)
+                    create_message(result.type, result.text)
                 } 
             }
         });
@@ -228,6 +233,10 @@ $(document).ready(function(){
                 if (result.type === "success") {
                     $("#update_owners_roles").find("#"+role_id).remove();
                     delete application.role_permission_assign[role_id]
+                    application.roles = application.roles.filter(function(elem) {
+                      return elem.id !== role_id;
+                    });
+
                     $("#update_owners_permissions").hide('close');
                     $("#update_owners_info_message").show('open');
                 }

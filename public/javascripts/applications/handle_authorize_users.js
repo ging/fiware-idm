@@ -40,7 +40,7 @@ $(document).ready(function(){
 		var url = "/idm/applications/"+ applicationId +"/edit/users"
     	$.get(url, function(data) {
 
-    		if (data === 'error') {
+    		if (data.type === 'error') {
     			exit_authorize_users()
     			$("#authorize_user").modal('toggle')
     		} else {

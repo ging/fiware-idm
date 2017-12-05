@@ -1,3 +1,6 @@
+var config = require ('../config.js').authzforce;
+//var authzforce = require ('../lib/authzforce.js');
+var authzforce_controller = require('./authzforce_controller');
 var models = require('../models/models.js');
 var fs = require('fs');
 var uuid = require('uuid');
@@ -595,7 +598,7 @@ exports.delete_role = function(req, res) {
 
 // POST /idm/applications/:applicationId/edit/permissions/create -- Create new permission
 exports.create_permission = function(req, res) {
-	console.log(req.body)
+
 	// If body has parameters id or is_internal don't create the permission
 	if (req.body.id || req.body.is_internal) {
 		res.send({text: ' Failed creating permission', type: 'danger'});
@@ -733,8 +736,6 @@ exports.edit_permission = function(req, res) {
 
 // DELETE /idm/applications/:applicationId/edit/permissions/:permissionId/delete -- Delete a permission
 exports.delete_permission = function(req, res) {
-	console.log("-------------deleteeee-------------------")
-	console.log(req.permission.id)
 	// If permission is internal don't delete the role
 	if (['1', '2', '3' ,'4' ,'5' ,'6'].includes(req.permission.id)) {
 		res.send({text: ' Failed deleting permission', type: 'danger'});
@@ -764,6 +765,7 @@ exports.delete_permission = function(req, res) {
 exports.role_permissions_assign = function(req, res) {
 	
 	var roles_id = Object.keys(JSON.parse(req.body.submit_assignment))
+
 	// Filter req.body and obtain an array without roles provider and purchaser
 	var public_roles_id = roles_id.filter(elem => !['provider','purchaser'].includes(elem))
 
@@ -776,7 +778,8 @@ exports.role_permissions_assign = function(req, res) {
 		}).then(function() {
 			var submit_assignment = JSON.parse(req.body.submit_assignment);
 			// Array of objects with role_id, permission_id and oauth_client_id
-			create_assign_roles_permissions = []
+			var create_assign_roles_permissions = []
+
 			for(var role in submit_assignment) {
 				if (!['provider', 'purchaser'].includes(role)) {
 					for (var permission = 0; permission < submit_assignment[role].length; permission++) {
@@ -789,15 +792,21 @@ exports.role_permissions_assign = function(req, res) {
 
 			// Inset values into role_permission table
 			models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
-				// Send message of success of assign permissions to roles
-				req.session.message = {text: ' Modified roles and permissions.', type: 'success'};
-				res.redirect("/idm/applications/"+req.application.id)
+				if (config.enabled) {
+					authzforce_controller.submit_authzforce_policies(req, res, submit_assignment)
+				} else {
+					// Send message of success of assign permissions to roles
+					req.session.message = {text: ' Modified roles and permissions.', type: 'success'};
+					res.redirect("/idm/applications/"+req.application.id)					
+				}
 			}).catch(function(error) {
+				console.log(error)
 				// Send message of fail in assign permissions to roles
 				req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
 				res.redirect("/idm/applications/"+req.application.id)
 			});
 		}).catch(function(error) {
+			console.log(error)
 			// Send message of fail in assign permissions to roles
 			req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
 			res.redirect("/idm/applications/"+req.application.id)

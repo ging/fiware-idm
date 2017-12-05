@@ -3,11 +3,11 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
     'Authzforce',
-    { id: {
-        type: DataTypes.UUID,
+    { az_domain: {
+        type: DataTypes.STRING,
         primaryKey: true
     }, policy: {
-        type: DataTypes.STRING(64),
+        type: DataTypes.UUID,
     }, version: {
         type: DataTypes.INTEGER
     }

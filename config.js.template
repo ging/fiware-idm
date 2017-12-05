@@ -11,6 +11,7 @@ config.password_encryption = {
 }
 
 config.authzforce = {
+	enabled: false,
 	host: localhost,
 	port: 8080
 }

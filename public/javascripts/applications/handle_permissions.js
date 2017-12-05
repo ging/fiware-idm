@@ -158,7 +158,6 @@ $(document).ready(function(){
                         $('#create_permission_form').find('#id_xml').val(result.xml)
                     }
                 }
-
             });
         }
     });
@@ -199,7 +198,7 @@ $(document).ready(function(){
                     for (var role in application.role_permission_assign) {
                         application.role_permission_assign[role] = application.role_permission_assign[role].filter(function(permission){
                             return permission !== permission_id
-                        })
+                        });
                     }
 
                     application.permissions = application.permissions.filter(function(elem) {
@@ -214,7 +213,6 @@ $(document).ready(function(){
 
                 // Exit from dialog
                 $('#delete_permission').modal('toggle');
-
             }
         });
     });

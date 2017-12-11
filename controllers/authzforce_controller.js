@@ -1,9 +1,12 @@
 var authzforce = require ('../lib/authzforce.js');
 var models = require('../models/models.js');
 
+var debug = require('debug')('idm:authzforce_controller');
 
 // Create all rules and policies in atuhzforce and save in database
 exports.submit_authzforce_policies = function(req, res, submit_assignment) {
+
+	debug("--> submit_authzforce_policies")
 
 	// Delete roles provider and purchaser if they exist in request
 	delete submit_assignment.provider
@@ -122,6 +125,9 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 
 // Create row in authzforce table
 function create_domain(req,res, authzforce) {
+
+	debug("--> create_domain")
+
 	return models.authzforce.create({
 		az_domain: authzforce.az_domain,
 		policy: authzforce.policy,
@@ -136,6 +142,9 @@ function create_domain(req,res, authzforce) {
 
 // Update row in authzforce table
 function update_domain(req, res, domain, version) {
+
+	debug("--> update_domain")
+
 	return models.authzforce.update({
 		version: version
 	}, {	

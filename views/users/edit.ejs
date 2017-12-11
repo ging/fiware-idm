@@ -76,11 +76,24 @@
                                 </div>
                             </div>
                             <div class="avatar_col col-xs-12 col-md-6">
-                                <div class="profile_img">
-                                    <img id="gravatar-preview" src="/img/gravatar.png" width="100" height="100" alt="gravatar default">
-                                </div>
-                                <p class="profile_txt">We're compatible with Gravatar. Create your profile <a href="https://en.gravatar.com/" target="_blank">here</a>!</p>
+                                <% if (user.gravatar) { -%>
+                                    <div class="profile_img">
+                                        <img id="gravatar-preview" src="<%= user.gravatar%>" alt="your gravatar">
+                                    </div>
+                                    <div class="profile_actions">
+                                        <button class="btn btn-primary always-enabled avatar-button" id="use_gravatar" name="use_gravatar" type="submit">Use Gravatar</button>
+                                        <div class="clear_right"></div>
+                                        <a class="btn btn-primary always-enabled" href="https://en.gravatar.com/emails/" target="_blank">Edit at Gravatar</a>
+                                    </div>                                    
+                                <% } else { -%>
+                                    <div class="profile_img">
+                                        <img id="gravatar-preview" src="/img/gravatar.png" width="100" height="100" alt="gravatar default">
+                                    </div>
+                                    <p class="profile_txt">We're compatible with Gravatar. Create your profile <a href="https://en.gravatar.com/" target="_blank">here</a>!</p>
+                                <% } -%>
+
                             </div>
+
                         </div>
                         <div>
                             <fieldset>

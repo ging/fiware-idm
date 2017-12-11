@@ -1,7 +1,11 @@
 var models = require('../models/models.js');
 
+var debug = require('debug')('idm:home_controller')
+
 // GET /idm -- List all applications
 exports.index = function(req, res) {
+
+	debug("--> index")
 
 	// Search applications in which the user is authorized
 	models.role_user.findAll({

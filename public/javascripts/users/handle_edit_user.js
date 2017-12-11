@@ -16,21 +16,34 @@ $(document).ready(function(){
 		$('.avatar-update-container').children().hide("close")
 	});
 
+	var use_gravatar = false;
+
+	// Cancel select image
+	$('#use_gravatar').click(function() {
+		var user_id = window.location.pathname.split('/')[3]
+		var form_action = '/idm/users/'+ user_id +'/edit/gravatar?_method=put'
+		$("#create_avatar_form").attr('action', form_action)
+		use_gravatar = true;
+	});
+
     // Handle the submit button from the edit application form
 	$("#create_avatar_form").on("submit", function(event) {
 
-		// stop form from submitting normally
-	    event.preventDefault();
-	    var types = ['jpg', 'jpeg', 'png']
-	    var file_type = $(this).find('#id_image')[0].files[0].name.split('.').pop().toLowerCase()
+	    if (!use_gravatar) {
+	    	// stop form from submitting normally
+	    	event.preventDefault();
 
-	    if (types.includes(file_type)) {
-	    	// Continue with the submit request
-	    	$("#create_avatar_form")[0].submit();
-	    } else {
-	    	alert("Please upload a valid file: jpg, jpeg or png")
-	    	$('#id_image').replaceWith('<input id="id_image" name="image" type="file">')
-			$('.avatar-update-container').children().hide("close")
+		    var types = ['jpg', 'jpeg', 'png']
+		    var file_type = $(this).find('#id_image')[0].files[0].name.split('.').pop().toLowerCase()
+
+		    if (types.includes(file_type)) {
+		    	// Continue with the submit request
+		    	$("#create_avatar_form")[0].submit();
+		    } else {
+		    	alert("Please upload a valid file: jpg, jpeg or png")
+		    	$('#id_image').replaceWith('<input id="id_image" name="image" type="file">')
+				$('.avatar-update-container').children().hide("close")
+		    }	    	
 	    }
   	});
 

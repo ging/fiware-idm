@@ -22,6 +22,9 @@ module.exports = function(sequelize, DataTypes) {
         }, image: {
             type: DataTypes.STRING,
             defaultValue: 'default'
+        }, gravatar: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }, email: {
             type: DataTypes.STRING,
             unique: true,

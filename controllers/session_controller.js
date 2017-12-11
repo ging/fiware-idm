@@ -1,7 +1,13 @@
 var models = require('../models/models.js');
 
+var debug = require('debug')('idm:session_controller')
+var gravatar = require('gravatar');
+
 // MW to authorized restricted http accesses
 exports.loginRequired = function(req, res, next){
+
+    debug("--> login_required");
+
     if (req.session.user) {
         next();
     } else {
@@ -12,9 +18,11 @@ exports.loginRequired = function(req, res, next){
 
 // GET /auth/login -- Form for login
 exports.new = function(req, res) {
+
+    debug("--> new");
+
     var errors = req.session.errors || {};
     delete req.session.errors;
-    console.log(errors)
     if (req.session.message) {
         res.locals.message = req.session.message;
         delete req.session.message
@@ -24,6 +32,8 @@ exports.new = function(req, res) {
 
 // POST /auth/login -- Create Session
 exports.create = function(req, res) {
+
+    debug("--> create");
 
     // If inputs email or password are empty create an array of errors
     errors = []
@@ -39,6 +49,7 @@ exports.create = function(req, res) {
         if (req.body.email && req.body.password) {
             // Authenticate user using user controller function
             userController.authenticate(req.body.email, req.body.password, function(error, user) {
+
                 if (error) {  // If error exists send a message to /auth/login
                     req.session.errors = [{message: error.message}];
                     res.redirect("/auth/login");        
@@ -48,7 +59,9 @@ exports.create = function(req, res) {
                 // Create req.session.user and save id and username
                 // The session is defined by the existence of: req.session.user
                 var image = '/img/logos/small/user.png'
-                if (user.image !== 'default') {
+                if (user.gravatar) {
+                    image = gravatar.url(user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
+                } else if (user.image !== 'default') {
                     image = '/img/users/' + user.image
                 }
                 
@@ -64,6 +77,9 @@ exports.create = function(req, res) {
 
 // DELETE /auth/logout -- Delete Session
 exports.destroy = function(req, res) {
+
+    debug("--> destroy");
+
     delete req.session.application;
     delete req.session.user;
     res.redirect('/'); 

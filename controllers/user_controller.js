@@ -3,24 +3,45 @@ var mailer = require('../lib/mailer').mailer();
 var config = require('../config');
 var ejs = require('ejs');
 var fs = require('fs');
+var gravatar = require('gravatar');
+var https = require('https');
 
 var mmm = require('mmmagic'),
     Magic = mmm.Magic;
 
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
+var debug = require('debug')('idm:user_controller')
+
+
+// MW to see if user can do some actions
+exports.owned_permissions = function(req, res, next) {
+
+    debug("--> owned_permissions");
+
+    if (req.session.user.id === req.user.id) {
+        next();
+    } else {
+        res.redirect('/')
+    }
+}
+
 // MW to load info about a user
-exports.loadUser = function(req, res, next, userId) {
+exports.load_user = function(req, res, next, userId) {
+
+    debug("--> load_user");
 
     // Search user whose id is userId
     models.user.findOne({
         where: {id: userId},
-        attributes: ['id', 'username', 'email', 'description', 'website', 'image']
+        attributes: ['id', 'username', 'email', 'description', 'website', 'image', 'gravatar']
     }).then(function(user) {
         // If user exists, set image from file system
         if (user) {
             req.user = user
-            if (user.image == 'default') {
+            if(user.gravatar) {
+                req.user.image = gravatar.url(req.user.email, {s:100, r:'g', d: 'mm'}, {protocol: 'https'});
+            }else if (user.image == 'default') {
                 req.user.image = '/img/logos/original/user.png'
             } else {
                 req.user.image = '/img/users/'+user.image
@@ -34,17 +55,10 @@ exports.loadUser = function(req, res, next, userId) {
     }).catch(function(error) { next(error); });
 }
 
-// MW to see if user can do some actions
-exports.owned_permissions = function(req, res, next) {
-    if (req.session.user.id === req.user.id) {
-        next();
-    } else {
-        res.redirect('/')
-    }
-}
-
 // GET /idm/users/:userId -- Show info about a user
 exports.show = function(req, res, next) {
+
+    debug("--> show")
 
     // Find user applications
     models.role_user.findAll({
@@ -91,16 +105,45 @@ exports.show = function(req, res, next) {
 
 // GET /idm/users/:userId/edit -- Render a form to edit user profile
 exports.edit = function(req, res) {
+
+    debug("--> edit")
+
     // If message exists in session, copy to locals and delete from session
     if (req.session.message) {
         res.locals.message = req.session.message
         delete req.session.message  
     }
-    res.render('users/edit', {user: req.user, error: []})
+
+    if (!req.user.gravatar) {
+        var url = gravatar.url(req.session.user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
+
+        // Send an http request to gravatar
+        https.get(url, function(response) {
+            response.setEncoding('utf-8');
+            debug('  --> Request to gravatar status: ' + response.statusCode)
+            
+            // If exists set parameter in req.user
+            if (response.statusCode === 200) {
+                req.user['gravatar'] = url
+            }
+
+            res.render('users/edit', {user: req.user, error: []});
+
+        }).on('error', function(e) {
+            console.log('Failed connecting to gravatar: ' + e);
+            res.render('users/edit', {user: req.user, error: []});
+        });
+    } else {
+        req.user.gravatar = gravatar.url(req.session.user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
+        res.render('users/edit', {user: req.user, error: []});
+    }
 }
 
 // PUT /idm/users/:userId/edit/info -- Update user info
 exports.update_info = function(req, res) {
+
+    debug("--> update_info")
+
     // Build a row and validate if input values are correct (not empty) before saving values in user table
     req.body.user['id'] = req.session.user.id;
     var user = models.user.build(req.body.user);
@@ -141,6 +184,8 @@ exports.update_info = function(req, res) {
 // PUT /idm/users/:userId/edit/avatar -- Update user avatar
 exports.update_avatar = function(req, res) {
 
+    debug("--> update_avatar")
+
     // See if the user has selected a image to upload
     if (req.file) {
 
@@ -156,9 +201,10 @@ exports.update_avatar = function(req, res) {
                 // If the file is jpg, png or jpeg, update the application with the name of the image
 
                     models.user.update(
-                        { image: req.file.filename },
+                        { image: req.file.filename,
+                          gravatar: false },
                         {
-                            fields: ['image'],
+                            fields: ['image', 'gravatar'],
                             where: {id: req.user.id}
                         }
                     ).then(function() {
@@ -169,26 +215,28 @@ exports.update_avatar = function(req, res) {
                     }).catch(function(error){ 
                         // Send message of fail when updating image
                         res.locals.message = {text: ' User update failed.', type: 'warning'};
-                        res.render('users/edit', { user: req.body.user, errors: error.errors});
+                        res.render('users/edit', { user: req.user, errors: error.errors});
                     }); 
             // If not, the default image is assigned to the application
             } else {
                 fs.unlink('./public/img/users/'+req.file.filename, (err) => {
-                    req.session.message = {text: ' Inavalid file.', type: 'danger'};
+                    req.session.message = {text: ' Invalid file.', type: 'danger'};
                     res.redirect('/idm/users/'+req.user.id);            
                 });
             }
         });
 
-    // If not redirect to show application info
+    // If not send error message
     } else {
-        req.session.message = {text: ' fail updating image.', type: 'warning'};
+        req.session.message = {text: ' fail uploading image.', type: 'warning'};
         res.redirect('/idm/users/'+req.user.id);
     } 
 }
 
 // DELETE /idm/users/:userId/edit/delete_avatar -- Delete user avatar
 exports.delete_avatar = function(req, res) {
+
+    debug("--> delete_avatar")
 
     // Change image to default one in user table
     models.user.findById(req.session.user.id).then(function(user) {
@@ -229,9 +277,34 @@ exports.delete_avatar = function(req, res) {
     });
 }
 
+exports.set_gravatar = function(req, res) {
+
+    debug("--> set_gravatar")
+
+    models.user.update(
+        { gravatar: true },
+        {
+            fields: ['gravatar'],
+            where: {id: req.user.id}
+        }
+    ).then(function() {
+        // Send message of success when updating image 
+        var url = gravatar.url(req.session.user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
+        req.session.user.image = url;
+        req.session.message = {text: ' set gravatar.', type: 'success'};
+        res.redirect('/idm/users/'+req.user.id);
+    }).catch(function(error){ 
+        debug(error)
+        // Send message of fail when updating image
+        res.locals.message = {text: ' set gravatar failed.', type: 'warning'};
+        res.render('users/edit', { user: req.user, error: error});
+    });
+}
 
 // MW to see if user is registered
 exports.authenticate = function(email, password, callback) {
+
+    debug("--> authenticate")
 
     // Search the user through the email
     models.user.find({
@@ -250,11 +323,16 @@ exports.authenticate = function(email, password, callback) {
 
 // GET /sign_up -- View to create a new user
 exports.new = function(req, res) {
+
+    debug("--> new")
+
     res.render('users/new', {userInfo: {}, errors: []});
 };
 
 // POST /sign_up -- Create new user
 exports.create = function(req, res, next) {
+
+    debug("--> create")
 
     // If body has parameters id or secret don't create user
     if (req.body.id) {
@@ -322,6 +400,8 @@ exports.create = function(req, res, next) {
 
 // GET /activate -- Activate user
 exports.activate = function(req, res, next) {
+
+    debug("--> activate")
 
     // Search the user through the id
     models.user.find({

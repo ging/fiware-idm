@@ -1,5 +1,7 @@
 var express = require('express');
 var multer  = require('multer');
+var path = require('path');
+var uuid = require('uuid');
 var router = express.Router();
 
 // Create controllers
@@ -94,7 +96,16 @@ router.param('userId',        userController.load_user);
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
 // Route to save images of applications
-imageAppUpload = multer({ dest: './public/img/applications/'})
+//imageAppUpload = multer({ dest: './public/img/applications/'})
+
+var imageAppUpload = multer.diskStorage({
+    destination: function(req, file, callback) {
+        callback(null, './public/img/applications/')
+    },
+    filename: function(req, file, callback) {
+        callback(null, uuid.v4() + path.extname(file.originalname))
+    }
+})
 
 // Route to save images of users
 imageUserUpload = multer({ dest: './public/img/users/'})
@@ -114,10 +125,10 @@ router.get('/idm/applications/new',                                             
 router.post('/idm/applications',                                                            sessionController.loginRequired,    applicationController.create);
 router.get('/idm/applications/:applicationId', 		                                        sessionController.loginRequired,	applicationController.show);
 router.get('/idm/applications/:applicationId/step/avatar',                                  sessionController.loginRequired,    checkPermissionsController.owned_permissions,    applicationController.step_new_avatar);
-router.post('/idm/applications/:applicationId/step/avatar',                                 sessionController.loginRequired,    checkPermissionsController.owned_permissions,    imageAppUpload.single('image'),    applicationController.step_create_avatar);
+router.post('/idm/applications/:applicationId/step/avatar',                                 sessionController.loginRequired,    checkPermissionsController.owned_permissions,    /*imageAppUpload.single('image'), */   applicationController.step_create_avatar);
 router.get('/idm/applications/:applicationId/step/roles',                                   sessionController.loginRequired,    checkPermissionsController.owned_permissions,    applicationController.step_new_roles);
 router.get('/idm/applications/:applicationId/edit',                                         sessionController.loginRequired,	checkPermissionsController.owned_permissions,    applicationController.edit);
-router.put('/idm/applications/:applicationId/edit/avatar', 		                            sessionController.loginRequired,	checkPermissionsController.owned_permissions,    imageAppUpload.single('image'),    applicationController.update_avatar);
+router.put('/idm/applications/:applicationId/edit/avatar', 		                            sessionController.loginRequired,	checkPermissionsController.owned_permissions,    multer({storage: imageAppUpload}).single('image'),    applicationController.update_avatar);
 router.put('/idm/applications/:applicationId/edit/info',                                    sessionController.loginRequired,    checkPermissionsController.owned_permissions,    applicationController.update_info);
 router.delete('/idm/applications/:applicationId/edit/delete_avatar',                        sessionController.loginRequired,    checkPermissionsController.owned_permissions,    applicationController.delete_avatar);
 router.delete('/idm/applications/:applicationId',                                           sessionController.loginRequired,    checkPermissionsController.owned_permissions,    applicationController.destroy);

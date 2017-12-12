@@ -8,8 +8,9 @@ var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 var debug = require('debug')('idm:application_controller');
-
 var gravatar = require('gravatar');
+var Jimp = require("jimp");
+
 
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
@@ -330,23 +331,46 @@ exports.update_avatar = function(req, res) {
             }
 
 			if (result && types.includes(String(result.split('/')[1]))) {
-				// If the file is jpg, png or jpeg, update the application with the name of the image
+					// If the file is jpg, png or jpeg, update the application with the name of the image
+					Jimp.read('public/img/applications/'+req.file.filename, function(err, image) {
+						// If error reading image redirect to show view
+						if (err) {
+			                req.session.message = {text: ' Image not cropped.', type: 'warning'};
+			                return res.redirect('/idm/applications/'+req.application.id);
+			            }
 
-					models.oauth_client.update(
-						{ image: req.file.filename },
-						{
-							fields: ['image'],
-							where: {id: req.application.id}
-						}
-					).then(function() {
-						// Send message of success when updating image 
-						req.session.message = {text: ' Application updated successfully.', type: 'success'};
-						res.redirect('/idm/applications/'+req.application.id);
-					}).catch(function(error){ 
-						// Send message of fail when updating image
-						res.locals.message = {text: ' Application update failed.', type: 'warning'};
-					 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
-					});	
+			            var old_image = req.application.image.split('/')[3]
+			            // If error deleting old image redirect to show view
+			            fs.unlink('./public/img/applications/'+old_image, (err) => {
+			            	console.log(req.application.image)
+			            	if (err && err.code !== 'ENOENT') {
+								req.session.message = {text: ' Error saving image.', type: 'danger'};
+								return res.redirect('/idm/applications/'+req.application.id);
+			            	} else if (err.code === 'ENOENT') {
+			            		req.session.message = {text: ' Old image not found.', type: 'danger'};
+								return res.redirect('/idm/applications/'+req.application.id);
+			            	} else {
+			            		image.crop(Number(req.body.x), Number(req.body.y), Number(req.body.w), Number(req.body.h))
+					            	 .write('public/img/applications/'+req.file.filename)
+
+					            models.oauth_client.update(
+									{ image: req.file.filename },
+									{
+										fields: ['image'],
+										where: {id: req.application.id}
+									}
+								).then(function() {
+									// Send message of success when updating image 
+									req.session.message = {text: ' Application updated successfully.', type: 'success'};
+									res.redirect('/idm/applications/'+req.application.id);
+								}).catch(function(error){ 
+									// Send message of fail when updating image
+									res.locals.message = {text: ' Application update failed.', type: 'warning'};
+								 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
+								});
+			            	}
+						});			 
+					})
 			// If not, the default image is assigned to the application
 			} else {
 				fs.unlink('./public/img/applications/'+req.file.filename, (err) => {

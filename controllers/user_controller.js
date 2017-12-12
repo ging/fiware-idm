@@ -39,13 +39,6 @@ exports.load_user = function(req, res, next, userId) {
         // If user exists, set image from file system
         if (user) {
             req.user = user
-            if(user.gravatar) {
-                req.user.image = gravatar.url(req.user.email, {s:100, r:'g', d: 'mm'}, {protocol: 'https'});
-            }else if (user.image == 'default') {
-                req.user.image = '/img/logos/original/user.png'
-            } else {
-                req.user.image = '/img/users/'+user.image
-            }
             // Send request to next function
             next();
         } else { 
@@ -75,6 +68,14 @@ exports.show = function(req, res, next) {
         if (req.session.message) {
             res.locals.message = req.session.message
             delete req.session.message  
+        }
+
+        if (req.user.gravatar) {
+            req.user.image = gravatar.url(req.user.email, {s:100, r:'g', d: 'mm'}, {protocol: 'https'});
+        } else if (req.user.image == 'default') {
+            req.user.image = '/img/logos/original/user.png'
+        } else {
+            req.user.image = '/img/users/' + req.user.image
         }
 
         var applications = []
@@ -114,6 +115,13 @@ exports.edit = function(req, res) {
         delete req.session.message  
     }
 
+    // Set image path
+    if (req.user.image == 'default') {
+        req.user.image = '/img/logos/original/user.png'
+    } else {
+        req.user.image = '/img/users/' + req.user.image
+    }
+
     if (!req.user.gravatar) {
         var url = gravatar.url(req.session.user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
 
@@ -124,7 +132,7 @@ exports.edit = function(req, res) {
             
             // If exists set parameter in req.user
             if (response.statusCode === 200) {
-                req.user['gravatar'] = url
+                req.user['image_gravatar'] = url
             }
 
             res.render('users/edit', {user: req.user, error: []});
@@ -134,7 +142,7 @@ exports.edit = function(req, res) {
             res.render('users/edit', {user: req.user, error: []});
         });
     } else {
-        req.user.gravatar = gravatar.url(req.session.user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
+        req.user.image_gravatar = gravatar.url(req.session.user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
         res.render('users/edit', {user: req.user, error: []});
     }
 }
@@ -205,7 +213,7 @@ exports.update_avatar = function(req, res) {
                           gravatar: false },
                         {
                             fields: ['image', 'gravatar'],
-                            where: {id: req.user.id}
+                            where: {id: req.session.user.id}
                         }
                     ).then(function() {
                         // Send message of success when updating image 
@@ -255,7 +263,11 @@ exports.delete_avatar = function(req, res) {
                         res.redirect('/idm/users/'+req.user.id+'/edit');
                     } else {
                         // Send message of success in deleting image
-                        req.session.user.image = '/img/logos/small/user.png'
+                        if (req.user.gravatar) {
+                            req.session.user.image = gravatar.url(req.session.user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
+                        } else {
+                            req.session.user.image = '/img/logos/small/user.png'                            
+                        }
                         req.session.message = {text: ' Deleted image.', type: 'success'}
                         res.redirect('/idm/users/'+req.user.id+'/edit'); 
                     }
@@ -277,6 +289,35 @@ exports.delete_avatar = function(req, res) {
     });
 }
 
+// PUT /idm/users/:userId/edit/avatar/set -- Use avatar as profile image
+exports.set_avatar = function(req, res) {
+
+    debug("--> set_avatar")
+
+    models.user.update(
+        { gravatar: false },
+        {
+            fields: ['gravatar'],
+            where: {id: req.session.user.id}
+        }
+    ).then(function() {
+        // Send message of success when updating image 
+        if (req.user.image == 'default') {
+            req.session.user.image = '/img/logos/small/user.png'
+        } else {
+            req.session.user.image = '/img/users/' + req.user.image
+        }
+        req.session.message = {text: ' set avatar.', type: 'success'};
+        res.redirect('/idm/users/'+req.user.id);
+    }).catch(function(error) { 
+        // Send message of fail when updating image
+        res.locals.message = {text: ' set avatar failed.', type: 'warning'};
+        res.render('users/edit', { user: req.user, error: error});
+    });
+}
+
+
+// PUT /idm/users/:userId/edit/gravatar -- Use gravatar as profile image
 exports.set_gravatar = function(req, res) {
 
     debug("--> set_gravatar")
@@ -285,7 +326,7 @@ exports.set_gravatar = function(req, res) {
         { gravatar: true },
         {
             fields: ['gravatar'],
-            where: {id: req.user.id}
+            where: {id: req.session.user.id}
         }
     ).then(function() {
         // Send message of success when updating image 
@@ -294,7 +335,6 @@ exports.set_gravatar = function(req, res) {
         req.session.message = {text: ' set gravatar.', type: 'success'};
         res.redirect('/idm/users/'+req.user.id);
     }).catch(function(error){ 
-        debug(error)
         // Send message of fail when updating image
         res.locals.message = {text: ' set gravatar failed.', type: 'warning'};
         res.render('users/edit', { user: req.user, error: error});

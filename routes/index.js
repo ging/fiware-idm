@@ -104,8 +104,9 @@ router.get('/idm/users/:userId',                        sessionController.loginR
 router.get('/idm/users/:userId/edit',                   sessionController.loginRequired, userController.owned_permissions, userController.edit);
 router.put('/idm/users/:userId/edit/info',              sessionController.loginRequired, userController.owned_permissions, userController.update_info);
 router.put('/idm/users/:userId/edit/avatar',            sessionController.loginRequired, userController.owned_permissions, imageUserUpload.single('image'), userController.update_avatar);
+router.put('/idm/users/:userId/edit/avatar/set',        sessionController.loginRequired, userController.owned_permissions, userController.set_avatar);
+router.delete('/idm/users/:userId/edit/avatar/delete',  sessionController.loginRequired, userController.owned_permissions, userController.delete_avatar);
 router.put('/idm/users/:userId/edit/gravatar',          sessionController.loginRequired, userController.owned_permissions, userController.set_gravatar);
-router.delete('/idm/users/:userId/edit/delete_avatar',  sessionController.loginRequired, userController.owned_permissions, userController.delete_avatar);
 
 // Routes to create, edit and delete applications
 router.get('/idm/applications',  					                                        sessionController.loginRequired,	applicationController.index);

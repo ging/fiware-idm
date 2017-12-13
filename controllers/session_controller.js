@@ -4,7 +4,7 @@ var debug = require('debug')('idm:session_controller')
 var gravatar = require('gravatar');
 
 // MW to authorized restricted http accesses
-exports.loginRequired = function(req, res, next){
+exports.login_required = function(req, res, next){
 
     debug("--> login_required");
 
@@ -65,7 +65,14 @@ exports.create = function(req, res) {
                     image = '/img/users/' + user.image
                 }
                 
+                // Create session
                 req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
+
+                // If user is admin add parameter to session
+                if (user.admin) {
+                    req.session.user.admin = user.admin
+                }
+
                 res.redirect('/idm');
             });
         } else { // If error exists send a message to /auth/login

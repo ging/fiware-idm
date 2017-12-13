@@ -69,6 +69,9 @@ module.exports = function(sequelize, DataTypes) {
         }, reset_expires : {
             type: DataTypes.DATE,
             defaultValue: undefined
+        }, admin: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }, extra: {
             type: DataTypes.STRING
         }, scope: {

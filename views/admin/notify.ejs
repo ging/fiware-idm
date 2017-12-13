@@ -1,0 +1,110 @@
+<div id="content_body">
+    <div id="notify" class="static_page">
+        <div class="modal-header">
+            <h3>
+                <div class="page-header">
+                    <h2>
+                        Notify
+                    </h2>
+                </div>
+            </h3>
+        </div>
+        <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm_admin/" method="POST" enctype=""><input type="hidden" name="csrfmiddlewaretoken" value="ZX9NUiPiariibyM8ZQk4VxSOGuQWDYzt">
+            <div class="modal-body clearfix">
+                <fieldset>
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_notify">Notify</label>
+                        <div class=" ">
+                            <select class="form-control" id="id_notify" name="notify">
+                                <option value="all_users">Notify all users</option>
+                                <option value="organization">Notify an organization</option>
+                                <option value="users_by_id">Notify users by user ID</option>
+                                <option value="role">Notify users by role</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group " style="display: none;">
+                        <label class="control-label  " for="id_organization">Organization ID</label>
+                        <div class=" ">
+                            <input class="form-control" id="id_organization" name="organization" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group " style="display: none;">
+                        <label class="control-label  " for="id_user_ids">User IDs in CSV format</label>
+                        <div class=" ">
+                            <input class="form-control" id="id_user_ids" maxlength="50000" name="user_ids" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group " style="display: none;">
+                        <label class="control-label  ">Role</label>
+                        <div class="radio-group radio ">
+                            <label>
+                                <input id="id_role_0" name="role" type="radio" value="trial">
+                                Trial
+                            </label>
+                            <label>
+                                <input id="id_role_1" name="role" type="radio" value="basic">
+                                Basic
+                            </label>
+                            <label>
+                                <input id="id_role_2" name="role" type="radio" value="community">
+                                Community
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_subject">Subject</label>
+                        <div class=" ">
+                            <input class="form-control" id="id_subject" maxlength="50" name="subject" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_body">Body</label>
+                        <div class="">
+                            <!-- <textarea class="form-control" cols="40" hidden="true" id="id_body" name="body" rows="10" style="overflow: hidden; word-wrap: break-word; height: 194px; display: none;">&lt;span style="display: block;"&gt;Dear FIWARE Lab user,&lt;/span&gt;&lt;br/&gt;</textarea>
+                            <script>
+                                var settings_id_body = {"lang": "es-ES", "width": 720, "styleWithSpan": true, "url": {"upload_attachment": "/summernote/upload_attachment/"}, "airMode": false, "direction": "ltr", "toolbar": [["style", ["style"]], ["style", ["bold", "italic", "underline", "clear"]], ["para", ["ul", "ol", "height"]], ["insert", ["link"]]], "height": 480};
+                            </script>
+                            <iframe id="id_body_iframe" src="/summernote/editor/id_body/summernote.html" frameborder="0" class="form-control" cols="40" rows="10" width="720" height="480" style="height: 480px;"></iframe> -->
+                        </div>
+                    </div>
+                </fieldset>
+                <script type="text/javascript">
+                    $(document).ready(function(){
+
+                        function show_complementary_fields(select_value) {
+                            if (select_value == 'organization') {
+                                $('#id_organization').closest('div.form-group').show();
+                                $('#id_user_ids').closest('div.form-group').hide();
+                                $('.radio').closest('div.form-group').hide();
+                            } else if (select_value == 'all_users') {
+                                $('#id_organization').closest('div.form-group').hide();
+                                $('#id_user_ids').closest('div.form-group').hide();
+                                $('.radio').closest('div.form-group').hide();
+                            } else if (select_value == 'users_by_id') {
+                                $('#id_organization').closest('div.form-group').hide();
+                                $('#id_user_ids').closest('div.form-group').show();
+                                $('.radio').closest('div.form-group').hide();
+                            } else if (select_value == 'role'){
+                                $('#id_organization').closest('div.form-group').hide();
+                                $('#id_user_ids').closest('div.form-group').hide();
+                                $('.radio').closest('div.form-group').show();
+                            }
+                        }
+                        
+                        // initial load
+                        show_complementary_fields($('#id_notify option:selected').val());
+                        
+                        // on change
+                        $('#id_notify').on('change', function() {
+                            show_complementary_fields(this.value);
+                        });
+                    });
+                </script>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+        </form>
+    </div>
+</div>

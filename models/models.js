@@ -119,7 +119,7 @@ var fs = require("fs");
 var text = fs.readFileSync("./models/users_prueba.txt", "utf8");
 var textByLine = text.split("\n")
 array_users = []
-array_users.push({id: 'admin', username: 'admin', email: "admin@admin.com",   password: '1234', enabled: 1})
+array_users.push({id: 'admin', username: 'admin', email: "admin@admin.com",   password: '1234', enabled: 1, admin: 1})
 array_users.push({id: 'alex_91', username: 'alex_91', email: "alejandro_alex_91@hotmail.com",   password: '1234', enabled: 1})
 array_users.push({id: 'pepe', username: 'pepe',  email: "pepe@pepe.com",     password: '1234', enabled: 1})
 for (var i = 0; i < textByLine.length - 1; i++) {

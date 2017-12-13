@@ -95,6 +95,9 @@ router.param('userId',        userController.load_user);
 // Route to get home of user
 router.get('/idm',	sessionController.loginRequired, 	homeController.index)
 
+// Route to get help & about
+router.get('/help_about',  sessionController.loginRequired,    homeController.help_about)
+
 // Route to save images of applications
 var imageAppUpload = multer.diskStorage({
     destination: function(req, file, callback) {
@@ -115,9 +118,12 @@ var imageUserUpload = multer.diskStorage({
     }
 })
 
+
+
 // Routes for users
 router.get('/idm/users/:userId',                        sessionController.loginRequired, userController.show);
 router.get('/idm/users/:userId/edit',                   sessionController.loginRequired, userController.owned_permissions, userController.edit);
+router.get('/idm/users/:userId/settings',               sessionController.loginRequired, userController.owned_permissions, userController.settings);
 router.put('/idm/users/:userId/edit/info',              sessionController.loginRequired, userController.owned_permissions, userController.update_info);
 router.put('/idm/users/:userId/edit/avatar',            sessionController.loginRequired, userController.owned_permissions, multer({storage: imageUserUpload}).single('image'), userController.update_avatar);
 router.put('/idm/users/:userId/edit/avatar/set',        sessionController.loginRequired, userController.owned_permissions, userController.set_avatar);

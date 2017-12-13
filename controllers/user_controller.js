@@ -440,6 +440,15 @@ exports.activate = function(req, res, next) {
     }).catch(function(error){ callback(error) });
 }
 
+// Render settings
+exports.settings = function(req, res) {
+    debug("--> settings")
+
+    res.render("users/settings")
+}
+
+
+
 // Function to check and crop an image and to update the name in the user table
 function handle_uploaded_images(req, res, redirect_uri) {
 
@@ -506,3 +515,4 @@ function handle_uploaded_images(req, res, redirect_uri) {
         }
     });
 }
+

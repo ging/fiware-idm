@@ -1,0 +1,227 @@
+<div id="content_body">
+    <div class="page-header">
+        <h2>
+            Settings
+        </h2>
+    </div>
+    <div class="panel-group settings" id="accordion">
+        <div class="panel panel-default ">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse-0" class="panel-heading collapsed">
+                <h4 class="panel-title panel-close">
+                    Change your password
+                </h4>
+            </a>
+            <div id="collapse-0" class="panel-collapse collapse" style="height: 0px;">
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" action="/settings/password/" method="post" class="ng-pristine ng-valid"><input type="hidden" name="csrfmiddlewaretoken" value="ObQg151vCrbIzMXLOxSA2Wtqj1rfPhQy">
+                        <fieldset>
+                            <legend></legend>
+                            <div class="form-group required has-feedback">
+                                <label class="control-label  required" for="id_current_password">Current password</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_current_password" name="current_password" type="password"><span class="form-control-feedback fa fa-eye"></span>
+                                </div>
+                            </div>
+                            <div class="form-group required has-feedback">
+                                <label class="control-label  required" for="id_new_password">New password</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_new_password" name="new_password" type="password"><span class="form-control-feedback fa fa-eye"></span>
+                                </div>
+                            </div>
+                            <div class="form-group required has-feedback">
+                                <label class="control-label  required" for="id_confirm_password">Confirm new password</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_confirm_password" name="confirm_password" type="password"><span class="form-control-feedback fa fa-eye"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <input class="btn btn-primary" type="submit" value="Update">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default ">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse-1" class="panel-heading collapsed">
+                <h4 class="panel-title panel-close">
+                    Change your email
+                </h4>
+            </a>
+            <div id="collapse-1" class="panel-collapse collapse" style="height: 0px;">
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" action="/settings/email/" method="post" class="ng-pristine ng-valid"><input type="hidden" name="csrfmiddlewaretoken" value="ObQg151vCrbIzMXLOxSA2Wtqj1rfPhQy">
+                        <fieldset>
+                            <legend></legend>
+                            <div class="form-group required">
+                                <label class="control-label  required" for="id_email">Email</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_email" name="email" type="email" value="apozohue10@gmail.com">
+                                </div>
+                            </div>
+                            <div class="form-group required has-feedback">
+                                <label class="control-label  required" for="id_password">Current password</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_password" name="password" type="password"><span class="form-control-feedback fa fa-eye"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <input class="btn btn-primary" type="submit" value="Update">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default ">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse-2" class="panel-heading collapsed">
+                <h4 class="panel-title panel-close">
+                    Manage two-factor authentication
+                </h4>
+            </a>
+            <div id="collapse-2" class="panel-collapse collapse" style="height: 0px;">
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" action="/settings/twofactor/" id="two_factor_form" method="post" class="ng-pristine ng-valid"><input type="hidden" name="csrfmiddlewaretoken" value="ObQg151vCrbIzMXLOxSA2Wtqj1rfPhQy">
+                        <p>You have this option <b>disabled</b>.</p>
+                        <p>We highly recommend you enable it, since it provides a higher level of security to access your account.</p>
+                        <p>If you want to give two factor authentication a try, you need to provide a security question, just in case you happen to lose access to your authentication app.</p>
+                        <fieldset>
+                            <div class="form-group ">
+                                <label class="control-label  " for="id_security_question">Security question</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_security_question" name="security_question" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="control-label  " for="id_security_answer">Security answer</label>
+                                <div class=" ">
+                                    <input class="form-control" id="id_security_answer" name="security_answer" type="text">
+                                </div>
+                            </div>
+                        </fieldset>
+                        <input class="btn btn-primary always-enabled" name="enable" type="submit" value="Enable">
+                    </form>
+                    <div id="result">
+                    </div>
+                    <script type="text/javascript">
+                        function getCookie(name) {
+                            var cookieValue = null;
+                            if (document.cookie && document.cookie != '') {
+                                var cookies = document.cookie.split(';');
+                                for (var i = 0; i < cookies.length; i++) {
+                                    var cookie = jQuery.trim(cookies[i]);
+                                    // Does this cookie string begin with the name we want?
+                                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                        break;
+                                    }
+                                }
+                            }
+                            return cookieValue;
+                        };
+                        function csrfSafeMethod(method) {
+                            // these HTTP methods do not require CSRF protection
+                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                        }
+                        var csrftoken = getCookie('csrftoken');
+
+                        // AJAX setup functions
+                        var beforeSend = function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                            horizon.modals.modal_spinner(gettext("Loading"));
+                        };
+
+                        var complete = function(){
+                            // Clear the global storage;
+                            horizon.modals._request = null;
+                            horizon.modals.spinner.modal('hide');
+                        };
+
+                        var error = function(jqXHR, status, errorThrown) {
+                            if (jqXHR.status === 401){
+                                var redir_url = jqXHR.getResponseHeader("X-Horizon-Location");
+                                if (redir_url){
+                                    location.href = redir_url;
+                                } else {
+                                    location.reload(true);
+                                }
+                            } else {
+                                if (!horizon.ajax.get_messages(jqXHR)) {
+                                    // Generic error handler. Really generic.
+                                    horizon.alert("danger", gettext("An error occurred. Please try again later."));
+                                }
+                            }
+                        };
+
+                        // Perform AJAX requests
+                        $("[name='enable'], [name='new_key']").click(function(e){
+                            e.preventDefault();
+                            // If there's an existing modal request open, cancel it out.
+                            if (horizon.modals._request && typeof(horizon.modals._request.abort) !== undefined) {
+                                horizon.modals._request.abort();
+                            }
+                            var $form = $("#two_factor_form"),
+                            data = $form.serialize() +
+                            "&" + $(this).attr("name").toLowerCase() +
+                            "=" + $(this).attr("name").toLowerCase();
+                            horizon.modals._request = $.ajax({
+                                type: "POST",
+                                url: $form.attr('action'),
+                                data: data,
+                                dataType: 'html',
+                                beforeSend: beforeSend,
+                                complete: complete,
+                                success: function(data, textStatus, jqXHR){
+                                    if (data.search("<div class=\"alert alert-message alert-danger\">") === -1){
+                                        $form.closest(".modal").modal("hide");
+                                        modal = horizon.modals.success(data, textStatus, jqXHR);
+                                    } else {
+                                        $form.closest(".modal").modal("hide");
+                                        $form.replaceWith(data)
+                                    }
+                                },
+                            error: error });
+                        });
+
+                        $("body").on("click", ".cancel_newkey", function(e){
+                            e.preventDefault();
+                            $.ajax({
+                                type: "POST",
+                                url: "/settings/twofactor/disable/",
+                                dataType: 'html',
+                                beforeSend: beforeSend,
+                                complete: complete,
+                                success: function(data, textStatus, jqXHR){
+                                    location.reload(true);
+                                },
+                                error: error });
+                        });
+                            
+                        $(document).on("click", "#two_factor_enable_modal, [data-dismiss='modal']", function(e) {
+                            location.reload(true);
+                        });
+
+                        $(document).on("click", "#two_factor_enable_modal > .modal-dialog", function(e) {
+                            e.stopPropagation();
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default cancel_account">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse-3" class="panel-heading collapsed">
+                <h4 class="panel-title panel-close">
+                    Cancel account
+                </h4>
+            </a>
+            <div id="collapse-3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" action="/settings/cancel/" method="post" class="ng-pristine ng-valid"><input type="hidden" name="" value="">
+                        <fieldset>
+                            <legend></legend>
+                        </fieldset>
+                        Unhappy? <a href="/settings/cancel/" class="ajax-modal" rel="nofollow">Cancel my account</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

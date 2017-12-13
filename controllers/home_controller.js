@@ -44,3 +44,10 @@ exports.index = function(req, res) {
 		res.render('home/index', { applications: applications, errors: []});
 	});
 };
+
+// Render help_about
+exports.help_about = function(req, res) {
+	debug("--> help_about")
+	
+	res.render("help_about")
+}

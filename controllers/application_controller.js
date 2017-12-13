@@ -229,38 +229,7 @@ exports.step_create_avatar = function(req, res, next) {
 
 	// See if the user has selected a image to upload
 	if (req.file) {
-
-		// Check the MIME of the file upload
-		var types = ['jpg', 'jpeg', 'png']
-		magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
-			if (err) {
-                req.session.message = {text: ' Image not save.', type: 'warning'};
-                return res.redirect('/idm/applications/'+req.application.id);
-            }
-
-			if (result && types.includes(String(result.split('/')[1]))) {
-				// If the file is jpg, png or jpeg, update the application with the name of the image
-				models.oauth_client.update(
-					{ image: req.file.filename },
-					{
-						fields: ["image"],
-						where: {id: req.application.id }
-					}
-				).then(function(){
-					req.application.image = '/img/applications/'+req.file.filename
-					res.redirect('/idm/applications/'+req.application.id+'/step/roles');
-				}).catch(function(error) {
-					res.send('error')
-				});
-			} else {
-				// If not, delete the image 
-				fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
-					req.session.message = {text: ' Inavalid file.', type: 'danger'};
-					res.redirect('/idm/applications/'+req.application.id);            
-				});
-			}	
-		});
-
+		handle_uploaded_images(req, res, '/idm/applications/'+req.application.id+'/step/roles')
 	// If not, the default image is assigned to the application
 	} else {
 		req.application.image = '/img/logos/original/app.png'
@@ -321,65 +290,7 @@ exports.update_avatar = function(req, res) {
 
 	// See if the user has selected a image to upload
 	if (req.file) {
-
-		// Check the MIME of the file upload
-		var types = ['jpg', 'jpeg', 'png']
-		magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
-			if (err) {
-                req.session.message = {text: ' Image not save.', type: 'warning'};
-                return res.redirect('/idm/applications/'+req.application.id);
-            }
-
-			if (result && types.includes(String(result.split('/')[1]))) {
-					// If the file is jpg, png or jpeg, update the application with the name of the image
-					Jimp.read('public/img/applications/'+req.file.filename, function(err, image) {
-						// If error reading image redirect to show view
-						if (err) {
-			                req.session.message = {text: ' Image not cropped.', type: 'warning'};
-			                return res.redirect('/idm/applications/'+req.application.id);
-			            }
-
-			            var old_image = req.application.image.split('/')[3]
-			            // If error deleting old image redirect to show view
-			            fs.unlink('./public/img/applications/'+old_image, (err) => {
-			            	console.log(req.application.image)
-			            	if (err && err.code !== 'ENOENT') {
-								req.session.message = {text: ' Error saving image.', type: 'danger'};
-								return res.redirect('/idm/applications/'+req.application.id);
-			            	} else if (err.code === 'ENOENT') {
-			            		req.session.message = {text: ' Old image not found.', type: 'danger'};
-								return res.redirect('/idm/applications/'+req.application.id);
-			            	} else {
-			            		image.crop(Number(req.body.x), Number(req.body.y), Number(req.body.w), Number(req.body.h))
-					            	 .write('public/img/applications/'+req.file.filename)
-
-					            models.oauth_client.update(
-									{ image: req.file.filename },
-									{
-										fields: ['image'],
-										where: {id: req.application.id}
-									}
-								).then(function() {
-									// Send message of success when updating image 
-									req.session.message = {text: ' Application updated successfully.', type: 'success'};
-									res.redirect('/idm/applications/'+req.application.id);
-								}).catch(function(error){ 
-									// Send message of fail when updating image
-									res.locals.message = {text: ' Application update failed.', type: 'warning'};
-								 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
-								});
-			            	}
-						});			 
-					})
-			// If not, the default image is assigned to the application
-			} else {
-				fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
-					req.session.message = {text: ' Inavalid file.', type: 'danger'};
-					res.redirect('/idm/applications/'+req.application.id);            
-				});
-			}
-	  	});
-
+		handle_uploaded_images(req, res, '/idm/applications/'+req.application.id)
 	// If not redirect to show application info
   	} else {
   		req.session.message = {text: ' fail updating image.', type: 'warning'};
@@ -487,6 +398,73 @@ exports.destroy = function(req, res) {
 		res.redirect('/idm/applications');
 	});
 };
+
+
+// Function to check and crop an image and to update the name in the oauth_client table
+function handle_uploaded_images(req, res, redirect_uri) {
+
+	// Check the MIME of the file upload
+	var types = ['jpg', 'jpeg', 'png']
+	magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
+		if (err) {
+            req.session.message = {text: ' Image not save.', type: 'warning'};
+            return res.redirect('/idm/applications/'+req.application.id);
+        }
+
+		if (result && types.includes(String(result.split('/')[1]))) {
+				// If the file is jpg, png or jpeg, update the application with the name of the image
+				Jimp.read('public/img/applications/'+req.file.filename, function(err, image) {
+					// If error reading image redirect to show view
+					if (err) {
+		                req.session.message = {text: ' Image not cropped.', type: 'warning'};
+		                return res.redirect('/idm/applications/'+req.application.id);
+		            }
+		            
+		            image.crop(Number(req.body.x), Number(req.body.y), Number(req.body.w), Number(req.body.h))
+		            	 .write('public/img/applications/'+req.file.filename)
+
+		            models.oauth_client.update(
+						{ image: req.file.filename },
+						{
+							fields: ['image'],
+							where: {id: req.application.id}
+						}
+					).then(function() {
+						// Old image to be deleted
+						var old_image = req.application.image
+
+						if (old_image.includes('/img/applications/')) {
+							// If error deleting old image redirect to show view
+				            fs.unlink('./public'+old_image, (err) => {
+				            	if (err) {
+									req.session.message = {text: ' Error saving image.', type: 'danger'};
+									res.redirect('/idm/applications/'+req.application.id);
+				            	} else {
+				            		// Send message of success when updating image
+									req.session.message = {text: ' Image updated successfully.', type: 'success'};
+									res.redirect(redirect_uri);
+				            	}
+							});
+						} else {
+							// Send message of success when updating image
+							req.session.message = {text: ' Image updated successfully.', type: 'success'};
+							res.redirect(redirect_uri);
+						}
+					}).catch(function(error){ 
+						// Send message of fail when updating image
+						res.session.message = {text: ' Application image update failed.', type: 'warning'};
+					 	res.redirect('/idm/applications/'+req.application.id);
+					});			 
+				})
+		// If not, the default image is assigned to the application
+		} else {
+			fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
+				req.session.message = {text: ' Inavalid file.', type: 'danger'};
+				res.redirect('/idm/applications/'+req.application.id);            
+			});
+		}
+  	});
+}
 
 // Funtion to see if request is via AJAX or Browser and depending on this, send a request
 function send_response(req, res, response, url) {

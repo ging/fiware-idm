@@ -23,7 +23,6 @@ $(document).ready(function(){
 		// stop form from submitting normally
 	    event.preventDefault();
 
-
 	    if ($(this).find('#id_image')[0].files[0]) {
 	    	var types = ['jpg', 'jpeg', 'png']
 	    	var file_type = $(this).find('#id_image')[0].files[0].name.split('.').pop().toLowerCase()
@@ -44,12 +43,46 @@ $(document).ready(function(){
 
 });
 
+var jcrop_api;
+
+// Init Jcrop on image
+function initJcrop(width, height) {
+    $('#avatar-update').Jcrop({
+        onSelect: showCoords,
+        setSelect: [0,0,width,height],
+        aspectRatio: 10/12
+    }, function() {
+        jcrop_api = this;
+    });
+};
+
+// Read image and preview
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
-            $('#avatar-update').attr('src', e.target.result);
+            var image = new Image();
+            image.src = e.target.result
+            image.onload = function(ev) {
+                $('#avatar-update').attr('src', this.src);
+                if (!$('.avatar-update-container').find('.jcrop-holder').length) {
+                    initJcrop(this.width, this.height)  
+                } else {  
+                    jcrop_api.setImage(this.src, function(){
+                        this.setSelect([0,0,jcrop_api.getBounds()[0], jcrop_api.getBounds()[1]])
+                    })
+                }
+            }
         }
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+
+// Insert values of area cropped in hidden inputs
+function showCoords(c) {
+    $('#id_x').val(c.x)
+    $('#id_y').val(c.y)
+    $('#id_w').val(c.w)
+    $('#id_h').val(c.h)
+};

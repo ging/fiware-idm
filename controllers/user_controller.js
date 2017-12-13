@@ -12,6 +12,7 @@ var mmm = require('mmmagic'),
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 var debug = require('debug')('idm:user_controller')
+var Jimp = require("jimp");
 
 
 // MW to see if user can do some actions
@@ -196,44 +197,7 @@ exports.update_avatar = function(req, res) {
 
     // See if the user has selected a image to upload
     if (req.file) {
-
-        // Check the MIME of the file upload
-        var types = ['jpg', 'jpeg', 'png']
-        magic.detectFile('public/img/users/'+req.file.filename, function(err, result) {
-            if (err) {
-                req.session.message = {text: ' Image not save.', type: 'warning'};
-                return res.redirect('/idm/users/'+req.user.id);
-            }
-
-            if (result && types.includes(String(result.split('/')[1]))) {
-                // If the file is jpg, png or jpeg, update the application with the name of the image
-
-                    models.user.update(
-                        { image: req.file.filename,
-                          gravatar: false },
-                        {
-                            fields: ['image', 'gravatar'],
-                            where: {id: req.session.user.id}
-                        }
-                    ).then(function() {
-                        // Send message of success when updating image 
-                        req.session.user.image = '/img/users/' + req.file.filename
-                        req.session.message = {text: ' User updated successfully.', type: 'success'};
-                        res.redirect('/idm/users/'+req.user.id);
-                    }).catch(function(error){ 
-                        // Send message of fail when updating image
-                        res.locals.message = {text: ' User update failed.', type: 'warning'};
-                        res.render('users/edit', { user: req.user, errors: error.errors});
-                    }); 
-            // If not, the default image is assigned to the application
-            } else {
-                fs.unlink('./public/img/users/'+req.file.filename, (err) => {
-                    req.session.message = {text: ' Invalid file.', type: 'danger'};
-                    res.redirect('/idm/users/'+req.user.id);            
-                });
-            }
-        });
-
+        handle_uploaded_images(req, res, '/idm/users/'+req.session.user.id)
     // If not send error message
     } else {
         req.session.message = {text: ' fail uploading image.', type: 'warning'};
@@ -474,4 +438,71 @@ exports.activate = function(req, res, next) {
         
 
     }).catch(function(error){ callback(error) });
+}
+
+// Function to check and crop an image and to update the name in the user table
+function handle_uploaded_images(req, res, redirect_uri) {
+
+    // Check the MIME of the file upload
+    var types = ['jpg', 'jpeg', 'png']
+    magic.detectFile('public/img/users/'+req.file.filename, function(err, result) {
+        if (err) {
+            req.session.message = {text: ' Image not save.', type: 'warning'};
+            return res.redirect(redirect_uri);
+        }
+
+        if (result && types.includes(String(result.split('/')[1]))) {
+                // If the file is jpg, png or jpeg, update the user with the name of the image
+                Jimp.read('public/img/users/'+req.file.filename, function(err, image) {
+                    // If error reading image redirect to show view
+                    if (err) {
+                        req.session.message = {text: ' Image not cropped.', type: 'warning'};
+                        return res.redirect(redirect_uri);
+                    }
+                    
+                    image.crop(Number(req.body.x), Number(req.body.y), Number(req.body.w), Number(req.body.h))
+                         .write('public/img/users/'+req.file.filename)
+
+                    models.user.update(
+                        { image: req.file.filename },
+                        {
+                            fields: ['image'],
+                            where: {id: req.session.user.id}
+                        }
+                    ).then(function() {
+                        // Old image to be deleted
+                        var old_image = req.user.image
+                        if (!old_image.includes('original')) {
+                            // If error deleting old image redirect to show view
+                            fs.unlink('./public/img/users/'+old_image, (err) => {
+                                if (err) {
+                                    req.session.message = {text: ' Error saving image.', type: 'danger'};
+                                    res.redirect(redirect_uri);
+                                } else {
+                                    // Send message of success when updating image
+                                    req.session.user.image = '/img/users/' + req.file.filename
+                                    req.session.message = {text: ' Image updated successfully.', type: 'success'};
+                                    res.redirect(redirect_uri);
+                                }
+                            });
+                        } else {
+                            // Send message of success when updating image
+                            req.session.user.image = '/img/users/' + req.file.filename
+                            req.session.message = {text: ' Image updated successfully.', type: 'success'};
+                            res.redirect(redirect_uri);
+                        }
+                    }).catch(function(error){ 
+                        // Send message of fail when updating image
+                        res.session.message = {text: ' User image update failed.', type: 'warning'};
+                        res.redirect(redirect_uri);
+                    });          
+                })
+        // If not, the default image is assigned to the user
+        } else {
+            fs.unlink('./public/img/users/'+req.file.filename, (err) => {
+                req.session.message = {text: ' Inavalid file.', type: 'danger'};
+                res.redirect(redirect_uri);            
+            });
+        }
+    });
 }

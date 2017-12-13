@@ -87,7 +87,10 @@ $(document).ready(function(){
     });
     
 });
+
 var jcrop_api;
+
+// Init Jcrop on image
 function initJcrop(width, height) {
     $('.avatar-update-container').find('#avatar-update').Jcrop({
         onSelect: showCoords,
@@ -98,6 +101,7 @@ function initJcrop(width, height) {
     });
 };
 
+// Read image and preview
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -119,12 +123,10 @@ function readURL(input) {
     }
 }
 
+// Insert values of area cropped in hidden inputs
 function showCoords(c) {
-    console.log(c)
     $('#id_x').val(c.x)
     $('#id_y').val(c.y)
     $('#id_w').val(c.w)
     $('#id_h').val(c.h)
-    // variables can be accessed here as
-    // c.x, c.y, c.x2, c.y2, c.w, c.h
 };

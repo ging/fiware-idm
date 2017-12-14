@@ -6993,6 +6993,36 @@ ul.navbar-nav > li {
     float: right;
     min-height: 28px; }
 
+.panel-heading.note-toolbar > .btn-group {
+  float: left; }
+
+.panel-heading.note-toolbar > .btn-group > .note-btn-group > .note-btn {
+  border-color: #ccc;
+  border-radius: 3px;
+  color: black; }
+
+.panel-heading.note-toolbar > .btn-group > .note-btn {
+  border-color: #ccc;
+  border-radius: 3px;
+  color: black; }
+
+.panel-default > .note-editing-area > .note-editable ul > li {
+  list-style-type: disc; }
+
+.panel-default > .note-editing-area > .note-editable ol {
+  list-style-type: none; }
+
+.panel-default > .note-editing-area > .note-editable ol > li {
+  counter-increment: step-counter; }
+
+.panel-default > .note-editing-area > .note-editable ol > li::before {
+  content: counter(step-counter);
+  margin-right: 5px;
+  background-color: white;
+  color: black;
+  padding: 3px 8px;
+  border-radius: 3px; }
+
 .popover {
   background-color: #f1f1f2;
   border-radius: 3px;

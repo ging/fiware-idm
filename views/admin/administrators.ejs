@@ -24,9 +24,22 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-               <!--  <div class="list-group" id="members_content"><div class="list-group-item"><a class="item" href="/idm/users/idm_user/"><div class="avatar filter_field"><img src="/static/dashboard/img/logos/medium/user.png"></div><div class="name filter_field">idm</div>
-                </a></div></div>
-                <p class="alert alert-info empty" style="display: none;"></p> -->
+                <% if (users_admin.length <= 0) { -%>
+                    <p class="alert alert-info empty" style="display: block;">There are not admins</p>                    
+                <% } else { -%>
+                    <% for (var i = 0; i < users_admin.length; i++) { -%>
+                        <div class="list-group" id="members_content">
+                            <div class="list-group-item">
+                                <a class="item" href="/idm/users/<%= users_admin[i].id %>/">
+                                    <div class="avatar filter_field">
+                                        <img src="<%= users_admin[i].image %>">
+                                    </div>
+                                    <div class="name filter_field"><%= users_admin[i].username %></div>
+                                </a>
+                            </div>
+                        </div>
+                    <% } -%>                    
+                <% } -%>
             </div>
             <div class="panel-footer">
                 <nav id="members_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>

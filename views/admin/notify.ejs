@@ -9,7 +9,8 @@
                 </div>
             </h3>
         </div>
-        <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm_admin/" method="POST" enctype=""><input type="hidden" name="csrfmiddlewaretoken" value="ZX9NUiPiariibyM8ZQk4VxSOGuQWDYzt">
+        <form id="send_message_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm_admin/notify" method="POST" enctype="">
+            <input type="hidden" name="" value="">
             <div class="modal-body clearfix">
                 <fieldset>
                     <div class="form-group required">
@@ -60,13 +61,10 @@
                     </div>
                     <div class="form-group required">
                         <label class="control-label  required" for="id_body">Body</label>
-                        <div class="">
-                            <!-- <textarea class="form-control" cols="40" hidden="true" id="id_body" name="body" rows="10" style="overflow: hidden; word-wrap: break-word; height: 194px; display: none;">&lt;span style="display: block;"&gt;Dear FIWARE Lab user,&lt;/span&gt;&lt;br/&gt;</textarea>
-                            <script>
-                                var settings_id_body = {"lang": "es-ES", "width": 720, "styleWithSpan": true, "url": {"upload_attachment": "/summernote/upload_attachment/"}, "airMode": false, "direction": "ltr", "toolbar": [["style", ["style"]], ["style", ["bold", "italic", "underline", "clear"]], ["para", ["ul", "ol", "height"]], ["insert", ["link"]]], "height": 480};
-                            </script>
-                            <iframe id="id_body_iframe" src="/summernote/editor/id_body/summernote.html" frameborder="0" class="form-control" cols="40" rows="10" width="720" height="480" style="height: 480px;"></iframe> -->
-                        </div>
+                        <textarea class="form-control" cols="40" hidden="true" id="id_body" name="body" rows="10" style="overflow: hidden; word-wrap: break-word; height: 194px; display: none;">
+                                &lt;span style="display: block;"&gt;Dear FIWARE Lab user,&lt;/span&gt;&lt;br/&gt;
+                        </textarea>
+                        <iframe id="id_body_iframe" src="/summernote/editor.html" frameborder="0" class="form-control" cols="40" rows="10" width="720" height="480" style="height: 480px;"></iframe>
                     </div>
                 </fieldset>
                 <script type="text/javascript">
@@ -94,11 +92,24 @@
                         
                         // initial load
                         show_complementary_fields($('#id_notify option:selected').val());
-                        
+
                         // on change
                         $('#id_notify').on('change', function() {
                             show_complementary_fields(this.value);
                         });
+
+                        // Handle the submit button from the create role form
+                        $("#send_message_form").submit(function(event) {
+                            // stop form from submitting normally
+                            event.preventDefault();
+
+                            var message = $("#id_body_iframe").contents().find(".note-editing-area").find(".note-editable").html()
+
+                            $('#id_body').val(message)
+
+                            // Continue submitting
+                            $("#send_message_form")[0].submit();
+                        })
                     });
                 </script>
             </div>

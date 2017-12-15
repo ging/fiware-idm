@@ -91,7 +91,6 @@ router.get('/idm_admin/administrators',                 sessionController.login_
 router.put('/idm_admin/administrators',                 sessionController.login_required,    adminController.is_admin,     adminController.update_administrators)
 router.get('/idm_admin/user_accounts',                  sessionController.login_required,    adminController.is_admin,     adminController.show_user_accounts)
 router.post('/idm_admin/user_accounts',                 sessionController.login_required,    adminController.is_admin,     adminController.send_user)
-router.get('/idm_admin/user_accounts/:userId/update',   sessionController.login_required,    adminController.is_admin,     adminController.show_user_accounts_update)
 router.put('/idm_admin/user_accounts/:userId/update',   sessionController.login_required,    adminController.is_admin,     adminController.update_user_accounts_update)
 
 
@@ -125,14 +124,15 @@ var imageUserUpload = multer.diskStorage({
 })
 
 // Routes for users
-router.get('/idm/users/:userId',                        sessionController.login_required, userController.show);
-router.get('/idm/users/:userId/edit',                   sessionController.login_required, userController.owned_permissions, userController.edit);
-router.get('/idm/users/:userId/settings',               sessionController.login_required, userController.owned_permissions, userController.settings);
-router.put('/idm/users/:userId/edit/info',              sessionController.login_required, userController.owned_permissions, userController.update_info);
-router.put('/idm/users/:userId/edit/avatar',            sessionController.login_required, userController.owned_permissions, multer({storage: imageUserUpload}).single('image'), userController.update_avatar);
-router.put('/idm/users/:userId/edit/avatar/set',        sessionController.login_required, userController.owned_permissions, userController.set_avatar);
-router.delete('/idm/users/:userId/edit/avatar/delete',  sessionController.login_required, userController.owned_permissions, userController.delete_avatar);
-router.put('/idm/users/:userId/edit/gravatar',          sessionController.login_required, userController.owned_permissions, userController.set_gravatar);
+router.get('/idm/users/:userId',                        sessionController.login_required,   userController.show);
+router.get('/idm/users/:userId/edit',                   sessionController.login_required,   userController.owned_permissions,   userController.edit);
+router.get('/idm/users/:userId/settings',               sessionController.login_required,   userController.owned_permissions,   userController.settings);
+router.put('/idm/users/:userId/edit/info',              sessionController.login_required,   userController.owned_permissions,   userController.update_info);
+router.put('/idm/users/:userId/edit/avatar',            sessionController.login_required,   userController.owned_permissions,   multer({storage: imageUserUpload}).single('image'), userController.update_avatar);
+router.put('/idm/users/:userId/edit/avatar/set',        sessionController.login_required,   userController.owned_permissions,   userController.set_avatar);
+router.delete('/idm/users/:userId/edit/avatar/delete',  sessionController.login_required,   userController.owned_permissions,   userController.delete_avatar);
+router.put('/idm/users/:userId/edit/gravatar',          sessionController.login_required,   userController.owned_permissions,   userController.set_gravatar);
+router.post('/idm/users/available',                     sessionController.login_required,   authorizeUserController.available_users);
 
 
 // Route to save images of applications
@@ -162,7 +162,6 @@ router.delete('/idm/applications/:applicationId',                               
 // Routes to authorize users in applications
 router.get('/idm/applications/:applicationId/edit/users',                                   sessionController.login_required,    checkPermissionsController.owned_permissions,    authorizeUserController.get_users);
 router.post('/idm/applications/:applicationId/edit/users',                                  sessionController.login_required,    checkPermissionsController.owned_permissions,    authorizeUserController.authorize_users);
-router.post('/idm/applications/:applicationId/users/available',                             sessionController.login_required,    authorizeUserController.available_users);
 
 // Routes to handle roles of applications
 router.get('/idm/applications/:applicationId/edit/roles',                                   sessionController.login_required,    checkPermissionsController.owned_permissions,    roleController.manage_roles);

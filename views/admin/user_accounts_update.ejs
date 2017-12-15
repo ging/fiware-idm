@@ -11,12 +11,20 @@
 						</div>
 					</h3>
 				</div>
-				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm_admin/user_accounts/willywonka/update/" method="POST" enctype=""><input type="hidden" name="csrfmiddlewaretoken" value="xtuWXflHM6Je6SFHVMBzmWV4fhzKEavu">
+				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm_admin/user_accounts/<%= user.id%>/update?_method=put" method="POST" enctype="">
+					<input type="hidden" name="" value="">
 					<div class="modal-body clearfix">
-						<h5>User: <b>willywonka</b></h5> 
-						<h5>E-mail: <b>willywonka@test.com</b></h5>
-						<h5>Cloud project ID: <b>1143f3003c28491ab5884c7b7a6784d3</b></h5>
-						<h5>Current account type: <b>None</b></h5>
+						<h5>User: <b><%= user.username%></b></h5> 
+						<h5>E-mail: <b><%= user.email%></b></h5>
+						<h5>Cloud project ID: <b> - - - - </b></h5>
+						<% if (user.account_type) { -%>
+							<h5>Current account type: <b><%= user.account_type %></b></h5>
+							<h5>Started at: <b> <%= user.start %> </b></h5>
+							<h5>Duration:  <b> <%= user.duration_account_type %> days</b></h5>
+							<h5>Expires at: <b> <%= user.expires %> </b></h5>
+						<% } else { -%>
+							<h5>Current account type: <b> None </b></h5>
+						<% } -%>
 						<div class="panel">
 							<div class="panel-headding">  
 								<a data-toggle="collapse" data-parent="#accordion" href="#collapse-update" class="panel-heading collapsed">
@@ -28,19 +36,18 @@
 							<div id="collapse-update" class="panel-collapse collapse" style="height: 0px;">
 								<div class="panel-body">
 									<fieldset>
-										<input id="id_user_id" name="user_id" type="hidden" value="willywonka">
 										<div class="form-group required">
 											<label class="control-label  required" for="id_account_type">Account type</label>
 											<div class=" ">
 												<select class="form-control" id="id_account_type" name="account_type">
-													<option value="301e4a1f37d144ac9caaf9ba80a8ddd5">basic</option>
-													<option value="f0d323bc8f9e40a8a3b8fa1455624ee2">trial</option>
-													<option value="d8c6e3c4727142fc892aa8bac22b53f7">community</option>
+													<option value="basic">basic</option>
+													<option value="trial">trial</option>
+													<option value="community">community</option>
 												</select>
 											</div>
 										</div>
 										<div class="form-group " style="display: none;">
-											<label class="control-label  " for="id_duration">Duration in days. Important: starting a NEW period from TODAY</label>
+											<label class="control-label" for="id_duration">Duration in days. Important: starting a NEW period from TODAY</label>
 											<div class=" ">
 												<input class="form-control" id="id_duration" name="duration" type="number">
 											</div>

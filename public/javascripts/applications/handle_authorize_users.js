@@ -109,7 +109,7 @@ $(document).ready(function(){
 	    	$("#authorize_user").find("#spinner_update_owners_users").show('open')
         	var input = $(this).val();
         	timer = setTimeout(function(){
-        		input_change_authorize = available_users(input, input_change_authorize)
+        		input_change_authorize = available_users(input, input_change_authorize, 'table_row_available_user_template')
         	}, 300);
 	    }    
     });
@@ -303,48 +303,4 @@ function exit_authorize_users() {
     $("#authorize_user").find(".members").empty();
     $("#authorize_user").find(".alert-warning").hide("close");
 	$("#authorize_user").find('#update_owners_users_members').val('');
-}
-
-// Function to search available members
-function available_users(input, input_change_authorize) {
-
-	if (input.length > 1 && input_change_authorize !== input) {
-
-		$("#authorize_user").find('#perform_filter_available_update_owners_users').hide('close');
-		
-		var url = "/idm/applications/"+ application.id +"/users/available"
-    	var key = { username: input }
-    	
-    	$.post(url, key, function(data) {
-			if(data.constructor === Array){
-				$("#authorize_user").find(".available_members").empty()
-				for(available_user in data) {
-					var authorize_user_row = $('#table_row_available_user_template').html();
-		            authorize_user_row = authorize_user_row.replace(/username/g, String(data[available_user].username));
-		            authorize_user_row = authorize_user_row.replace(/user_id/g, String(data[available_user].id));
-		            authorize_user_row = authorize_user_row.replace(/user_avatar/g, String(data[available_user].image));
-		            $("#authorize_user").find(".available_members").append(authorize_user_row);
-		            $("#authorize_user").find("#spinner_update_owners_users").hide('close')
-		            $("#authorize_user").find('#no_available_update_owners_users').hide('close');
-				}
-			} else if (data === 'error') {
-    			exit_authorize_users()
-    			$("#authorize_user").modal('toggle')
-			} else {
-				$("#authorize_user").find("#spinner_update_owners_users").hide('close')
-				$("#authorize_user").find(".available_members").empty()
-				$("#authorize_user").find('#no_available_update_owners_users').show('open');
-			}
-		});
-	} else if (input_change_authorize !== input && input.length < 1){
-		$("#authorize_user").find(".available_members").empty()
-		$("#authorize_user").find('#no_available_update_owners_users').hide('close');
-        $("#authorize_user").find('#perform_filter_available_update_owners_users').show('open');
-        $("#authorize_user").find("#spinner_update_owners_users").hide('close')
-	} else {
-		$("#authorize_user").find("#spinner_update_owners_users").hide('close')
-	}
-
-	input_change_authorize = input;
-	return input_change_authorize
 }

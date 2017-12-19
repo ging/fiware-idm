@@ -16,8 +16,7 @@
   }
 }
 
-#notify,
-#user_accounts{
+#notify{
   .modal-header{
     border: none;
     padding-bottom: 0;
@@ -34,6 +33,21 @@
       background-color: #f2dede;
       border-color: #ebcccc;
     }
+
+    #id_user_ids {
+      white-space: nowrap;
+      width:100%;
+      overflow: hidden;
+    } 
+    #id_user_ids br {
+        display:none;
+
+    }
+    #id_user_ids * {
+        display:inline;
+        white-space:nowrap;
+    }
+
   }
   .modal-footer{
     @include well;

@@ -15,7 +15,11 @@
                 <td>
                     <table style="height: auto; padding: 20px 15px 10px; color: #666; background-color: #FFF; font-size: 13px;">
                       <tr><td>
-                        <%- include(view, data); %>
+                        <% if (view) { -%>
+                          <%- include(view, data); %>                          
+                        <% } else { -%>                        
+                          <%- data %>
+                        <% } -%>
                       </td></tr>
                     </table>
                 </td>

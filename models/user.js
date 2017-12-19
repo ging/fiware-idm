@@ -72,16 +72,6 @@ module.exports = function(sequelize, DataTypes) {
         }, admin: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
-        }, account_type: {
-            type: DataTypes.STRING(10),
-            defaultValue: undefined,
-            values: ['basic', 'community', 'trial', 'owner']
-        }, duration_account_type: {
-            type: DataTypes.INTEGER,
-            defaultValue: 0,
-        }, started_date_account_type: {
-            type: DataTypes.DATEONLY,
-            defaultValue: null,
         }, extra: {
             type: DataTypes.STRING
         }, scope: {

@@ -6892,6 +6892,12 @@ input:-webkit-autofill {
 .modal-body {
   padding: 15px; }
 
+.note-editor .modal-body {
+  margin-bottom: 15px; }
+
+.note-editor .modal-footer {
+  padding: 15px; }
+
 .list-group {
   margin-bottom: 0; }
 
@@ -10428,14 +10434,12 @@ ul.disabled-list li.active:hover {
     #administrators .list-group-item:last-child {
       border-bottom: 1px solid #DDD; }
 
-#notify .modal-header,
-#user_accounts .modal-header {
+#notify .modal-header {
   border: none;
   padding-bottom: 0;
   padding: 0; }
 
-#notify .modal-body,
-#user_accounts .modal-body {
+#notify .modal-body {
   min-height: 20px;
   padding: 15px 19px;
   margin-bottom: 20px;
@@ -10449,13 +10453,20 @@ ul.disabled-list li.active:hover {
   margin: 0;
   border-top-right-radius: 3px;
   border-top-left-radius: 3px; }
-  #notify .modal-body .weak_pwd_input,
-  #user_accounts .modal-body .weak_pwd_input {
+  #notify .modal-body .weak_pwd_input {
     background-color: #f2dede;
     border-color: #ebcccc; }
+  #notify .modal-body #id_user_ids {
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden; }
+  #notify .modal-body #id_user_ids br {
+    display: none; }
+  #notify .modal-body #id_user_ids * {
+    display: inline;
+    white-space: nowrap; }
 
-#notify .modal-footer,
-#user_accounts .modal-footer {
+#notify .modal-footer {
   min-height: 20px;
   padding: 15px 19px;
   margin-bottom: 20px;
@@ -10472,20 +10483,7 @@ ul.disabled-list li.active:hover {
   .role_list .list-group-item .ajax-inline-edit,
   .role_list .list-group-item #notify .modal-footer .ajax-inline-edit, #notify .modal-footer
   .services_list .list-group-item .ajax-inline-edit,
-  .services_list .list-group-item #notify .modal-footer .ajax-inline-edit, #notify .modal-footer .edit_organization_modal button, .edit_organization_modal #notify .modal-footer button,
-  #user_accounts .modal-footer .btn,
-  #user_accounts .modal-footer .permissions_list .list-group-item .ajax-inline-edit, .permissions_list .list-group-item
-  #user_accounts .modal-footer .ajax-inline-edit,
-  #user_accounts .modal-footer
-  .role_list .list-group-item .ajax-inline-edit,
-  .role_list .list-group-item
-  #user_accounts .modal-footer .ajax-inline-edit,
-  #user_accounts .modal-footer
-  .services_list .list-group-item .ajax-inline-edit,
-  .services_list .list-group-item
-  #user_accounts .modal-footer .ajax-inline-edit,
-  #user_accounts .modal-footer .edit_organization_modal button, .edit_organization_modal
-  #user_accounts .modal-footer button {
+  .services_list .list-group-item #notify .modal-footer .ajax-inline-edit, #notify .modal-footer .edit_organization_modal button, .edit_organization_modal #notify .modal-footer button {
     float: right; }
 
 #endpoints .endpoints_modal {

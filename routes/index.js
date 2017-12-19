@@ -89,10 +89,6 @@ router.get('/idm_admin/notify',                         sessionController.login_
 router.post('/idm_admin/notify',                        sessionController.login_required,    adminController.is_admin,     adminController.send_message)
 router.get('/idm_admin/administrators',                 sessionController.login_required,    adminController.is_admin,     adminController.index_administrators)
 router.put('/idm_admin/administrators',                 sessionController.login_required,    adminController.is_admin,     adminController.update_administrators)
-router.get('/idm_admin/user_accounts',                  sessionController.login_required,    adminController.is_admin,     adminController.show_user_accounts)
-router.post('/idm_admin/user_accounts',                 sessionController.login_required,    adminController.is_admin,     adminController.send_user)
-router.put('/idm_admin/user_accounts/:userId/update',   sessionController.login_required,    adminController.is_admin,     adminController.update_user_accounts_update)
-
 
 // Route to get home of user
 router.get('/idm',  sessionController.login_required,    homeController.index)

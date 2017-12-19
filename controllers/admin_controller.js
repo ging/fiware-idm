@@ -1,5 +1,7 @@
 var models = require('../models/models.js');
 var mailer = require('../lib/mailer').mailer();
+var config = require('../config');
+var ejs = require('ejs');
 var debug = require('debug')('idm:admin_controller')
 var gravatar = require('gravatar');
 
@@ -9,6 +11,7 @@ exports.is_admin =function(req, res, next) {
 
 	debug('--> is_admin')
 
+	// If users session has not the admin field redirect to initial page
 	if (req.session.user.admin) {
 		next();
 	} else {
@@ -20,14 +23,91 @@ exports.is_admin =function(req, res, next) {
 exports.show_notify = function(req, res) {
 	debug('--> notify')
 
-	res.render("admin/notify")
+	res.render("admin/notify", { errors: {}, users: [], subject: '' })
 }
 
 // POST /idm_admin/notify -- Send message with info obtain from body
 exports.send_message = function(req, res) {
 	debug('--> send_message')
-	debug(req.body)
-	res.send("send_message")
+
+	// Objects of errors to be sent to the view
+	var errors = {}
+
+	// If subject field is empty send an error message
+	if (!req.body.subject) {
+		errors['subject'] = true
+	}
+
+	// Check which option has been selected by the admin user
+	switch(req.body.notify) {
+	    case 'all_users':
+	        debug(' -> all_users')
+
+	        if (errors) {
+	        	errors['option'] = 'all_users'
+	        	res.render("admin/notify", {errors: errors, users: [], subject: ''})
+	        } else {
+		        // Get all enabled users
+		        get_all_users().then(function(users) {
+
+		        	// Map array of users to get emails and join all these emails into a string
+		        	var emails =  users.map(elem => elem.email).join()
+		        	
+		        	// Send an email message to the user
+		        	send_message(req.body.subject, emails, req.body.body)
+
+		        	req.session.message = {text: ' Success sending email.', type: 'success'};
+		        	res.redirect('/')
+		        }).catch(function(error) {
+		        	debug('  -> error' + error)
+		        	res.redirect('/')
+		        })		        
+	        }
+	        break;
+	    case 'organization':
+	        debug('  -> organization')
+
+	        if (errors) {
+	        	res.render("admin/notify", {errors: errors})
+	        } else {
+	    		res.locals.message = {text: ' Not implemented.', type: 'danger'};
+	        	res.render("admin/notify")
+	        }
+
+	    	/*get_organization(req, res).then(function(organization) {
+	    		debug('IMPLEMENTAR')
+	    	}).catch(function(error) {
+	    		debug(error)
+	    	})*/
+	        break;
+	    case 'users_by_id':
+	        debug(' -> users_by_id')
+	        debug(req.body)
+	        var user_ids = req.body.user_ids.split(',')
+	        debug(user_ids)
+
+	        check_users_by_id(user_ids).then(function(result) {
+	        	debug('-----------------------------------')
+	        	debug(result)
+	        	if (result.users_not_found.length > 0) {
+	        		errors['users_not_found'] = result.users_not_found
+	        	}
+
+	        	if (errors) {
+	        		errors['option'] = 'users_by_id'
+	        		res.render("admin/notify", {errors: errors, users: user_ids, subject: req.body.subject})
+		        } else {
+		    		
+		        }
+	        }).catch(function(error) {
+	        	debug('  -> error' + error)
+	        	res.redirect('/')
+	        })
+	        break;
+	    default:
+	    	res.locals.message = {text: ' Invalid option.', type: 'warning'}
+	        res.render("admin/notify", {errors: {}, users: [], subject: ''})
+	}
 }
 
 // GET /idm_admin/administrators --  Render administrators view
@@ -53,105 +133,105 @@ exports.index_administrators = function(req, res) {
 
 		res.render("admin/administrators", { users_admin: users_admin })
 	}).catch(function(error) {
-		console.log(error)
+		debug('  -> error' + error)
 		res.redirect('/')
 	})
 }
 
 // PUT /idm_admin/administrators --  Give admin role to specified users
 exports.update_administrators = function(req, res) {
-	debug('--> update_administrators')
-	debug(req.body)
+	debug('--> update_administrators')	
+	
+	models.user.findAll({
+		where: { admin: true },
+		attributes: ['id']
+	}).then(function(users) {
+		var actual_admins = users.map(elem => elem.id)
 
-	res.send("update_administrators")
-}
+		var new_admins = JSON.parse(req.body.submit_authorize)
+		var users_not_admin = []
 
-// GET /idm_admin/user_accounts --  Render user_accounts view
-exports.show_user_accounts = function(req, res) {
-	debug('--> user_accounts')
-
-	res.render("admin/user_accounts", { error: []})
-}
-
-// POST /idm_admin/user_accounts --  Search for user info using email
-exports.send_user = function(req, res) {
-	debug('--> send_user')
-
-	// Find which user corresponds to the input email
-	models.user.findOne({
-		where: { email: req.body.email},
-		attributes: ['id', 'email', 'username', 'account_type', 'duration_account_type', 'started_date_account_type']
-	}).then(function(user){
-
-		// If user found render view with information about user
-		if (user) {
-			debug(user)
-			if (user.account_type) {
-				user['start'] = user.started_date_account_type
-				var date_start = new Date(user.started_date_account_type)
-				user['expires'] = date_start.addDays(user.duration_account_type).toISOString().slice(0,10)
+		actual_admins.forEach(function(elem) {
+			if (new_admins.includes(elem)) {
+				new_admins.splice(new_admins.indexOf(elem), 1)
+			} else {
+				users_not_admin.push(elem)
 			}
-			res.render("admin/user_accounts_update", { user: user })
-		} else {
-			res.render("admin/user_accounts", {error: 'not_found'})
-		}
+		});
+
+		models.user.update({
+			admin: true
+		}, {
+			where: { id: new_admins},
+			fields: ['admin']
+		}).then(function(updated){
+			models.user.update({
+				admin: false
+			}, {
+				where: { id: users_not_admin},
+				fields: ['admin']
+			}).then(function(updated) {
+				req.session.message = {text: ' Success authorize admins.', type: 'success'};
+				res.redirect('/')
+			}).catch(function(error) {
+				debug('  -> error' + error)
+				req.session.message = {text: ' Fail authorize admins.', type: 'danger'};
+				res.redirect('/')
+			})
+		}).catch(function(error) {
+			debug('  -> error' + error)
+			req.session.message = {text: ' Fail authorize admins.', type: 'danger'};
+			res.redirect('/')
+		})
 	}).catch(function(error) {
+		debug('  -> error' + error)
 		res.redirect('/')
 	})
 }
 
-// PUT /idm_admin/user_accounts/:userId/update --  Update user to trial, basic or community role
-exports.update_user_accounts_update = function(req, res) {
-	debug('--> update_user_accounts_update')
-	// SEE HHOW TO DO WITH REGIONS AND DE OWNER ROLE WHO IS
-	// WHAT TRIAL COMMUNITY AND BASIC INVOLVE
-	// LA DURACION POR DEFECTO PUEDE QUE NO TENGA QUE SER 0. DEBIDO AL BASIC QUE NO TIENE
-	var date = new Date().toISOString().slice(0,10); 
+// Function te fill message template and send this to specific users
+function send_message(subject, emails, message) {
+	ejs.renderFile(__dirname + '/../views/templates/_base_email.ejs', {view: "",data: message}, function(error, mail) {
+    	// Error
+    	if (error) { debug('  -> error' + error) }
 
-	// See if request include roles differents to community, trial and basic
-	if (!['community', 'trial', 'basic'].includes[req.body.account_type]) {
-		var date = null;
-
-		// If the role is trial or community set start date. If is trial set duration to 0
-		if (['community', 'trial'].includes(req.body.account_type)) {
-			date = new Date().toISOString().slice(0,10); 
-		} else {
-			req.body.duration = 0
-		}
-
-		// Update database with values
-		models.user.update({
-			account_type: req.body.account_type,
-			duration_account_type: parseInt(req.body.duration),
-			started_date_account_type: date
-		}, {
-			where: { id: req.user.id },
-			fields: ['account_type', 'duration_account_type', 'started_date_account_type']
-		}).then(function(updated) {
-
-			// If success updating database send an email and redirect to
-			if (updated[0] === 1) {
-				if (req.body.notify === 'on') {
-					debug('send_an_email')
-				}
-				req.session.message = {text: ' Success updating user .', type: 'success'};
-				res.redirect('/')
-			} else {
-				req.session.message = {text: ' Fail updating user .', type: 'warning'};
-				res.redirect('/')
-			}
-		}).catch(function(error) {
-			res.redirect('/')
-		});
-	} else {
-		req.session.message = {text: ' Invalid role.', type: 'danger'};
-		res.redirect('/')
-	}
+        mailer.sendMail({to: emails, html: mail, subject: subject}, function(ev){
+            debug('  -> Result mail: '+ ev);
+        });
+    })
 }
 
-// Function to add days to specific date
-Date.prototype.addDays = function(days) {
-  var dat = new Date(this.valueOf());
-  dat.setDate(dat.getDate() + days);
-  return dat;
+// Function to gel all emails of users enabled from database
+function get_all_users() {
+	return models.user.findAll({
+		where: { enabled: true},
+		attributes: ['email']
+	}).then(function(users) {
+		return users
+	}).catch(function(error) {
+		return error
+	})
+}
+
+// Function to gel all emails of users from a specific organization
+function get_organization(organization_id) {
+	
+}
+
+// Function to check if all ids receive from client are in database
+function check_users_by_id(user_ids) {
+
+	return models.user.findAll({
+		where: { id: user_ids, enabled: true },
+		attributes: ['id', 'email']
+	}).then(function(users) {
+
+		// Check if users requested are in the database
+		var users_not_found = user_ids.filter(function(id) {
+			return !(users.map(elem => elem.id).includes(id))
+		})
+		return {users_not_found: users_not_found, users: users}
+	}).catch(function(error) {
+		return error
+	})
 }

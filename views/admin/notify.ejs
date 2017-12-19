@@ -17,47 +17,63 @@
                         <label class="control-label  required" for="id_notify">Notify</label>
                         <div class=" ">
                             <select class="form-control" id="id_notify" name="notify">
-                                <option value="all_users">Notify all users</option>
-                                <option value="organization">Notify an organization</option>
-                                <option value="users_by_id">Notify users by user ID</option>
-                                <option value="role">Notify users by role</option>
+                                <% if (errors.option === 'all-users') { -%>
+                                    <option value="all_users" selected>Notify all users</option>
+                                    <option value="organization">Notify an organization</option>
+                                    <option value="users_by_id">Notify users by user ID</option>
+                                <% } else if (errors.option === 'organization') { -%>
+                                    <option value="all_users">Notify all users</option>
+                                    <option value="organization" selected>Notify an organization</option>
+                                    <option value="users_by_id">Notify users by user ID</option>
+                                <% } else if (errors.option === 'users_by_id') { -%>
+                                    <option value="all_users">Notify all users</option>
+                                    <option value="organization">Notify an organization</option>
+                                    <option value="users_by_id" selected>Notify users by user ID</option>
+                                <% } else { -%>
+                                    <option value="all_users">Notify all users</option>
+                                    <option value="organization">Notify an organization</option>
+                                    <option value="users_by_id">Notify users by user ID</option>
+                                <% } -%>
                             </select>
                         </div>
                     </div>
                     <div class="form-group " style="display: none;">
-                        <label class="control-label  " for="id_organization">Organization ID</label>
-                        <div class=" ">
+                        <label class="control-label" for="id_organization">Organization ID</label>
+                        <div class="">
                             <input class="form-control" id="id_organization" name="organization" type="text">
                         </div>
                     </div>
                     <div class="form-group " style="display: none;">
                         <label class="control-label  " for="id_user_ids">User IDs in CSV format</label>
                         <div class=" ">
-                            <input class="form-control" id="id_user_ids" maxlength="50000" name="user_ids" type="text">
-                        </div>
-                    </div>
-                    <div class="form-group " style="display: none;">
-                        <label class="control-label  ">Role</label>
-                        <div class="radio-group radio ">
-                            <label>
-                                <input id="id_role_0" name="role" type="radio" value="trial">
-                                Trial
-                            </label>
-                            <label>
-                                <input id="id_role_1" name="role" type="radio" value="basic">
-                                Basic
-                            </label>
-                            <label>
-                                <input id="id_role_2" name="role" type="radio" value="community">
-                                Community
-                            </label>
+                            <div class="form-control single-line" id="id_user_ids" maxlength="50000" name="user_ids" contenteditable>
+                                <% for (var i = 0; i < users.length; i++) { -%>
+                                    <% if (i === users.length - 1) { -%>
+                                        <% if (errors.users_not_found && errors.users_not_found.includes(users[i])) { -%>
+                                            ><span style='color:red;'><b><%= users[i]%></b></span>
+                                        <% } else { -%>
+                                            ><span><%= users[i]%></span>
+                                        <% } -%>
+                                    <% } else { -%>
+                                        <% if (errors.users_not_found && errors.users_not_found.includes(users[i])) { -%>
+                                            <span style='color:red;'><b><%= users[i]%></b></span><span>,</span
+                                        <% } else { -%>
+                                            <span><%= users[i]%></span><span>,</span      
+                                        <% } -%>
+                                    <% } -%>
+                                <% } -%>
+                            </div>
+                            <input type="hidden" id="submit_user_ids" maxlength="50000" name="user_ids" type="text">
                         </div>
                     </div>
                     <div class="form-group required">
                         <label class="control-label  required" for="id_subject">Subject</label>
                         <div class=" ">
-                            <input class="form-control" id="id_subject" maxlength="50" name="subject" type="text">
+                            <input class="form-control" id="id_subject" maxlength="50" name="subject" type="text" value="<%= subject%>">
                         </div>
+                        <% if (errors.subject) { -%>
+                            <span class="help-block alert alert-danger ">This field is required.</span>                   
+                        <% } -%>
                     </div>
                     <div class="form-group required">
                         <label class="control-label  required" for="id_body">Body</label>
@@ -89,25 +105,44 @@
                                 $('.radio').closest('div.form-group').show();
                             }
                         }
-                        
+
+                        function set_values() {
+                            // Change value of hidden input of user_ids
+                            var user_ids = $('#id_user_ids').html()
+                            $('#submit_user_ids').val(user_ids)
+
+                            // Set in hidden textarea the values of the iframe body
+                            var message = $("#id_body_iframe").contents().find(".note-editing-area").find(".note-editable").html()
+                            $('#id_body').val(message)
+                        }
+
                         // initial load
                         show_complementary_fields($('#id_notify option:selected').val());
 
                         // on change
                         $('#id_notify').on('change', function() {
+                            $('.help-block').hide()
                             show_complementary_fields(this.value);
                         });
 
-                        // Handle the submit button from the create role form
-                        $("#send_message_form").submit(function(event) {
-                            // stop form from submitting normally
+                        // Handle the submit button form to submit assignment
+                        $("#id_user_ids").bind("keypress submit", function(event) {
+
+                            // stop form from submitting by pressing enter
+                            if (event.which == 13) {
+                                set_values()
+                                $("#send_message_form")[0].submit();
+                            }
+                        })
+
+                        $('#send_message_form').submit(function(event) {
+                            
+                            // Stop form from submiting
                             event.preventDefault();
 
-                            var message = $("#id_body_iframe").contents().find(".note-editing-area").find(".note-editable").html()
+                            set_values()
 
-                            $('#id_body').val(message)
-
-                            // Continue submitting
+                            // Continue with the submit request
                             $("#send_message_form")[0].submit();
                         })
                     });

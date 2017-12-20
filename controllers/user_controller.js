@@ -363,7 +363,7 @@ exports.create = function(req, res, next) {
         user.validate().then(function(err) {
 
             // If the two password are differents, send an error
-            if (req.body.password1 != req.body.password2) {
+            if (req.body.password1 !== req.body.password2) {
                 errors.push({message: "passwordDifferent"});
                 throw new Error("passwordDifferent");
             } else {

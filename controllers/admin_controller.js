@@ -43,7 +43,7 @@ exports.send_message = function(req, res) {
 	    case 'all_users':
 	        debug(' -> all_users')
 
-	        if (errors) {
+	        if (Object.keys(errors).length > 0) {
 	        	errors['option'] = 'all_users'
 	        	res.render("admin/notify", {errors: errors, users: [], subject: ''})
 	        } else {
@@ -82,27 +82,52 @@ exports.send_message = function(req, res) {
 	        break;
 	    case 'users_by_id':
 	        debug(' -> users_by_id')
-	        debug(req.body)
+
 	        var user_ids = req.body.user_ids.split(',')
-	        debug(user_ids)
 
-	        check_users_by_id(user_ids).then(function(result) {
-	        	debug('-----------------------------------')
-	        	debug(result)
-	        	if (result.users_not_found.length > 0) {
-	        		errors['users_not_found'] = result.users_not_found
-	        	}
+	        // Delete white spaces
+	        for (var i =0; i < user_ids.length; i++) {
+	        	// If is an empety element delete
+	        	if (user_ids[i] == "") {         
+			      user_ids.splice(i, 1);
+			      i--;
+			    } else {
+	        		user_ids[i] = user_ids[i].trim();				    	
+			    }
+	        }
 
-	        	if (errors) {
-	        		errors['option'] = 'users_by_id'
-	        		res.render("admin/notify", {errors: errors, users: user_ids, subject: req.body.subject})
-		        } else {
-		    		
-		        }
-	        }).catch(function(error) {
-	        	debug('  -> error' + error)
-	        	res.redirect('/')
-	        })
+	        if (user_ids.length > 0) {
+
+		        check_users_by_id(user_ids).then(function(result) {
+
+		        	// If users not found send an error message
+		        	if (result.users_not_found.length > 0) {
+		        		errors['users_not_found'] = result.users_not_found
+		        	}
+
+		        	if (Object.keys(errors).length > 0) {
+		        		errors['option'] = 'users_by_id'
+		        		res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject})
+			        } else {
+			    		// Map array of users to get emails and join all these emails into a string
+			        	var emails =  result.users.map(elem => elem.email).join()
+			        	debug("------------------")
+			        	debug(emails)
+			        	// Send an email message to the user
+			        	send_message(req.body.subject, emails, req.body.body)
+
+			        	req.session.message = {text: ' Success sending email.', type: 'success'};
+			        	res.redirect('/')
+			        }
+		        }).catch(function(error) {
+		        	debug('  -> error' + error)
+		        	res.redirect('/')
+		        })
+	        } else {
+	        	errors['option'] = 'users_by_id'
+	        	errors['not_users'] = true
+		        res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject})
+	        }
 	        break;
 	    default:
 	    	res.locals.message = {text: ' Invalid option.', type: 'warning'}

@@ -23,7 +23,7 @@ exports.owned_permissions = function(req, res, next) {
     if (req.session.user.id === req.user.id) {
         next();
     } else {
-        res.redirect('/')
+        res.redirect('/');
     }
 }
 
@@ -349,7 +349,7 @@ exports.create = function(req, res, next) {
         // Build a row and validate it
         var user = models.user.build({
             username: req.body.username, 
-            email: req.body.email, 
+            email: req.body.email,
             password: req.body.password1,
             enabled: false,
             activation_key: Math.random().toString(36).substr(2),
@@ -370,6 +370,34 @@ exports.create = function(req, res, next) {
 
                 // Save the row in the database
                 user.save().then(function() {
+
+                    if (req.body.use_gravatar) {
+                        var url = gravatar.url(user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
+
+                        // Send an http request to gravatar
+                        https.get(url, function(response) {
+                            response.setEncoding('utf-8');
+                            debug('  --> Request to gravatar status: ' + response.statusCode)
+                            
+                            // If exists set parameter in req.user
+                            if (response.statusCode === 200) {
+                                models.user.update(
+                                    { gravatar: true },
+                                    {
+                                        fields: ['gravatar'],
+                                        where: {id: user.id}
+                                    }
+                                ).then(function() {
+                                    debug('  --> Gravatar set')
+                                }).catch(function(error) {
+                                    debug('  -> error' + error)
+                                })
+                            }
+                        }).on('error', function(e) {
+                            debug('Failed connecting to gravatar: ' + e);
+                        });
+                    }
+
                     
                     // Send an email to the user
                     var link = config.host + '/activate?activation_key=' + user.activation_key + '&user=' + user.id;
@@ -439,15 +467,6 @@ exports.activate = function(req, res, next) {
 
     }).catch(function(error){ callback(error) });
 }
-
-// Render settings
-exports.settings = function(req, res) {
-    debug("--> settings")
-
-    res.render("users/settings")
-}
-
-
 
 // Function to check and crop an image and to update the name in the user table
 function handle_uploaded_images(req, res, redirect_uri) {

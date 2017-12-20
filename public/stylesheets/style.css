@@ -10456,15 +10456,6 @@ ul.disabled-list li.active:hover {
   #notify .modal-body .weak_pwd_input {
     background-color: #f2dede;
     border-color: #ebcccc; }
-  #notify .modal-body #id_user_ids {
-    white-space: nowrap;
-    width: 100%;
-    overflow: hidden; }
-  #notify .modal-body #id_user_ids br {
-    display: none; }
-  #notify .modal-body #id_user_ids * {
-    display: inline;
-    white-space: nowrap; }
 
 #notify .modal-footer {
   min-height: 20px;
@@ -10814,6 +10805,7 @@ ul.disabled-list li.active:hover {
   margin-bottom: 4px; }
 
 .conditions {
+  width: 100%;
   font-size: 10px;
   text-align: left;
   margin-bottom: 15px;

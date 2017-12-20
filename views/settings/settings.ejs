@@ -13,7 +13,8 @@
             </a>
             <div id="collapse-0" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
-                    <form accept-charset="UTF-8" action="/settings/password/" method="post" class="ng-pristine ng-valid"><input type="hidden" name="csrfmiddlewaretoken" value="ObQg151vCrbIzMXLOxSA2Wtqj1rfPhQy">
+                    <form accept-charset="UTF-8" action="/settings/password/" method="post" class="ng-pristine ng-valid">
+                        <!-- <input type="hidden" name="csrfmiddlewaretoken" value="ObQg151vCrbIzMXLOxSA2Wtqj1rfPhQy"> -->
                         <fieldset>
                             <legend></legend>
                             <div class="form-group required has-feedback">
@@ -54,7 +55,7 @@
                             <div class="form-group required">
                                 <label class="control-label  required" for="id_email">Email</label>
                                 <div class=" ">
-                                    <input class="form-control" id="id_email" name="email" type="email" value="apozohue10@gmail.com">
+                                    <input class="form-control" id="id_email" name="email" type="email" value="<%= session.user.email %>">
                                 </div>
                             </div>
                             <div class="form-group required has-feedback">
@@ -100,85 +101,35 @@
                     <div id="result">
                     </div>
                     <script type="text/javascript">
-                        function getCookie(name) {
-                            var cookieValue = null;
-                            if (document.cookie && document.cookie != '') {
-                                var cookies = document.cookie.split(';');
-                                for (var i = 0; i < cookies.length; i++) {
-                                    var cookie = jQuery.trim(cookies[i]);
-                                    // Does this cookie string begin with the name we want?
-                                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                        break;
-                                    }
-                                }
-                            }
-                            return cookieValue;
-                        };
-                        function csrfSafeMethod(method) {
-                            // these HTTP methods do not require CSRF protection
-                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                        }
-                        var csrftoken = getCookie('csrftoken');
-
-                        // AJAX setup functions
-                        var beforeSend = function(xhr, settings) {
-                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                            }
-                            horizon.modals.modal_spinner(gettext("Loading"));
-                        };
-
-                        var complete = function(){
-                            // Clear the global storage;
-                            horizon.modals._request = null;
-                            horizon.modals.spinner.modal('hide');
-                        };
-
-                        var error = function(jqXHR, status, errorThrown) {
-                            if (jqXHR.status === 401){
-                                var redir_url = jqXHR.getResponseHeader("X-Horizon-Location");
-                                if (redir_url){
-                                    location.href = redir_url;
-                                } else {
-                                    location.reload(true);
-                                }
-                            } else {
-                                if (!horizon.ajax.get_messages(jqXHR)) {
-                                    // Generic error handler. Really generic.
-                                    horizon.alert("danger", gettext("An error occurred. Please try again later."));
-                                }
-                            }
-                        };
 
                         // Perform AJAX requests
                         $("[name='enable'], [name='new_key']").click(function(e){
                             e.preventDefault();
-                            // If there's an existing modal request open, cancel it out.
+                            /*// If there's an existing modal request open, cancel it out.
                             if (horizon.modals._request && typeof(horizon.modals._request.abort) !== undefined) {
                                 horizon.modals._request.abort();
-                            }
+                            }*/
                             var $form = $("#two_factor_form"),
                             data = $form.serialize() +
                             "&" + $(this).attr("name").toLowerCase() +
                             "=" + $(this).attr("name").toLowerCase();
-                            horizon.modals._request = $.ajax({
+                            /*horizon.modals._request = */$.ajax({
                                 type: "POST",
                                 url: $form.attr('action'),
                                 data: data,
                                 dataType: 'html',
-                                beforeSend: beforeSend,
-                                complete: complete,
+                                //beforeSend: beforeSend,
+                                //complete: complete,
                                 success: function(data, textStatus, jqXHR){
                                     if (data.search("<div class=\"alert alert-message alert-danger\">") === -1){
                                         $form.closest(".modal").modal("hide");
-                                        modal = horizon.modals.success(data, textStatus, jqXHR);
+                                        //modal = horizon.modals.success(data, textStatus, jqXHR);
                                     } else {
                                         $form.closest(".modal").modal("hide");
                                         $form.replaceWith(data)
                                     }
-                                },
-                            error: error });
+                                }/*,
+                            error: error*/ });
                         });
 
                         $("body").on("click", ".cancel_newkey", function(e){
@@ -218,10 +169,12 @@
                         <fieldset>
                             <legend></legend>
                         </fieldset>
-                        Unhappy? <a href="/settings/cancel/" class="ajax-modal" rel="nofollow">Cancel my account</a>
+                        Unhappy? <a href="" class="ajax-modal" data-toggle="modal" data-target="#cancel_account_modal" rel="nofollow">Cancel my account</a>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<%- include _delete_user %>

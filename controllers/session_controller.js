@@ -87,7 +87,6 @@ exports.destroy = function(req, res) {
 
     debug("--> destroy");
 
-    delete req.session.application;
     delete req.session.user;
     res.redirect('/'); 
 };

@@ -17,6 +17,7 @@ var iotController = require('../controllers/iot_controller');
 var authorizeUserController = require('../controllers/authorize_user_controller');
 var checkPermissionsController = require('../controllers/check_permissions_controller');
 var adminController = require('../controllers/admin_controller');
+var settingsController = require('../controllers/settings_controller');
 
 // MW to see if query has delete method
 router.use( function( req, res, next ) {
@@ -90,6 +91,13 @@ router.post('/idm_admin/notify',                        sessionController.login_
 router.get('/idm_admin/administrators',                 sessionController.login_required,    adminController.is_admin,     adminController.index_administrators)
 router.put('/idm_admin/administrators',                 sessionController.login_required,    adminController.is_admin,     adminController.update_administrators)
 
+// Routes for settings
+router.get('/settings',             sessionController.login_required,   settingsController.settings);
+router.post('/settings/password',   sessionController.login_required,   settingsController.password);
+router.post('/settings/email',      sessionController.login_required,   settingsController.email);
+router.delete('/settings/cancel',   sessionController.login_required,   settingsController.cancel_account);
+
+
 // Route to get home of user
 router.get('/idm',  sessionController.login_required,    homeController.index)
 
@@ -122,7 +130,6 @@ var imageUserUpload = multer.diskStorage({
 // Routes for users
 router.get('/idm/users/:userId',                        sessionController.login_required,   userController.show);
 router.get('/idm/users/:userId/edit',                   sessionController.login_required,   userController.owned_permissions,   userController.edit);
-router.get('/idm/users/:userId/settings',               sessionController.login_required,   userController.owned_permissions,   userController.settings);
 router.put('/idm/users/:userId/edit/info',              sessionController.login_required,   userController.owned_permissions,   userController.update_info);
 router.put('/idm/users/:userId/edit/avatar',            sessionController.login_required,   userController.owned_permissions,   multer({storage: imageUserUpload}).single('image'), userController.update_avatar);
 router.put('/idm/users/:userId/edit/avatar/set',        sessionController.login_required,   userController.owned_permissions,   userController.set_avatar);

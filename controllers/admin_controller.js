@@ -111,8 +111,7 @@ exports.send_message = function(req, res) {
 			        } else {
 			    		// Map array of users to get emails and join all these emails into a string
 			        	var emails =  result.users.map(elem => elem.email).join()
-			        	debug("------------------")
-			        	debug(emails)
+
 			        	// Send an email message to the user
 			        	send_message(req.body.subject, emails, req.body.body)
 

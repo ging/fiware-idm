@@ -119,6 +119,8 @@ router.get('/password/request',     userController.password_request);
 router.post('/password/request',    userController.password_send_email);
 router.get('/password/reset',       userController.new_password);
 router.post('/password/reset',      userController.change_password);
+router.get('/confirmation',         userController.confirmation);
+router.post('/confirmation',        userController.resend_confirmation);
 
 
 // Route to save images of users

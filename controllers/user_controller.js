@@ -399,7 +399,7 @@ exports.create = function(req, res, next) {
 
                     
                     // Send an email to the user
-                    var link = config.host + '/activate?activation_key=' + user.activation_key + '&user=' + user.id;
+                    var link = config.host + '/activate?activation_key=' + user.activation_key + '&email=' + user.email;
 
                     var mail_data = {
                         name: user.username,
@@ -434,7 +434,7 @@ exports.activate = function(req, res, next) {
     // Search the user through the id
     models.user.find({
         where: {
-            id: req.query.user
+            email: req.query.email
         }
     }).then(function(user) {
         if (user) {
@@ -509,11 +509,11 @@ exports.password_send_email = function(req, res, callback) {
                     // Send an email message to the user
                     email.send('forgot_password', subject, user.email, mail_data)
 
-                    req.session.message = {text: 'Reset email send to ' + user.email, type: 'success'};
+                    req.session.message = {text: 'Reset password instructions send to ' + user.email, type: 'success'};
                     res.redirect('/auth/login');
                 }).catch(function(error) {
                     debug('  -> error' + error)
-                    callback(error)
+                    res.redirect('/')
                 })
             } else {
                 res.locals.message = {  text: `Sorry. You have specified an email address that is not registerd. 
@@ -592,6 +592,78 @@ exports.change_password = function(req, res, next) {
         }
     }).catch(function(error){ debug(error) });   
 }
+
+// GET /confirmation -- Render a view with instructions to resend confirmation
+exports.confirmation = function(req, res, next) {
+
+    debug("--> confirmation")
+
+    res.render('auth/confirmation', {error: '' })
+
+}
+
+// POST /confirmation -- Send a new message of activation to the user
+exports.resend_confirmation = function(req, res, next) {
+
+    debug("--> resend_confirmation")
+
+    if (!req.body.email) {
+        res.render('auth/confirmation', {error: 'empty_field'})
+    } else {
+        models.user.findOne({
+            where: { email: req.body.email}
+        }).then(function(user) {
+            if (user) {
+
+                if (user.enabled) {
+                    res.locals.message = {text: ' Email was already confirmed, please try signing in', type: 'danger'};
+                    res.render('auth/confirmation', {error: '' });
+                } else {
+                    var activation_key = Math.random().toString(36).substr(2);
+                    var activation_expires = new Date((new Date()).getTime() + 1000*3600*24)
+
+                    models.user.update(
+                        { activation_key: activation_key,
+                          activation_expires: activation_expires 
+                    }, {
+                        fields: ['activation_key', 'activation_expires'],
+                        where: { id: user.id}
+                    }).then(function(updated) {
+
+                        // Send an email to the user
+                        var link = config.host + '/activate?activation_key=' + activation_key + '&email=' + user.email;
+
+                        var mail_data = {
+                            name: user.username,
+                            link: link
+                        };
+
+                        var subject = 'Welcome to FIWARE';
+
+                        // Send an email message to the user
+                        email.send('activate', subject, user.email, mail_data)
+
+                        req.session.message = {text: 'Resend confirmation instructions email to ' + user.email, type: 'success'};
+                        res.redirect('/auth/login');
+                    }).catch(function(error) {
+                        debug('  -> error' + error)
+                        callback(error)
+                    })
+                }
+            } else {
+                res.locals.message = {  text: `Sorry. You have specified an email address that is not registerd. 
+                                               If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
+                                        type: 'danger'}
+                res.render('auth/confirmation', {error: ''})
+            }
+        }).catch(function(error) {
+            debug('  -> error' + error)
+            res.redirect('/')
+        })
+    }
+
+}
+
 
 // Function to check and crop an image and to update the name in the user table
 function handle_uploaded_images(req, res, redirect_uri) {

@@ -1,7 +1,5 @@
 var models = require('../models/models.js');
-var mailer = require('../lib/mailer').mailer();
 var config = require('../config');
-var ejs = require('ejs');
 var fs = require('fs');
 var gravatar = require('gravatar');
 var https = require('https');
@@ -14,6 +12,7 @@ var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 var debug = require('debug')('idm:user_controller')
 var Jimp = require("jimp");
 
+var email = require('../lib/email.js')
 
 // MW to see if user can do some actions
 exports.owned_permissions = function(req, res, next) {
@@ -409,11 +408,8 @@ exports.create = function(req, res, next) {
 
                     var subject = 'Welcome to FIWARE';
 
-                    ejs.renderFile(__dirname + '/../views/templates/_base_email.ejs', {view: 'activate', data: mail_data}, function(result, mail) {
-                        mailer.sendMail({to: user.email, html: mail, subject: subject}, function(ev){
-                            console.log("Result mail", ev);
-                        });
-                    });
+                    // Send an email message to the user
+                    email.send('activate', subject, user.email, mail_data)
 
                     res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
                     res.render('index', { errors: [] });
@@ -466,6 +462,135 @@ exports.activate = function(req, res, next) {
         
 
     }).catch(function(error){ callback(error) });
+}
+
+// GET /password/request -- Render a view with instructions to rest password
+exports.password_request = function(req, res, next) {
+
+    debug("--> password_request")
+
+    res.render('auth/password_request', {error: '' })
+
+}
+
+// POST /password/request -- Send an email with instructions to rest password
+exports.password_send_email = function(req, res, callback) {
+
+    debug("--> password_send_email")
+
+    if (!req.body.email) {
+        res.render('auth/password_request', {error: 'empty_field'})
+    } else {
+        models.user.findOne({
+            where: { email: req.body.email}
+        }).then(function(user) {
+            if (user) {
+                var reset_key = Math.random().toString(36).substr(2);
+                var reset_expires = new Date((new Date()).getTime() + 1000*3600*24)
+
+                models.user.update(
+                    { reset_key: reset_key,
+                      reset_expires: reset_expires 
+                }, {
+                    fields: ['reset_key', 'reset_expires'],
+                    where: { id: user.id}
+                }).then(function() {
+                    
+                    // Send an email to the user
+                    var link = config.host + '/password/reset?reset_key=' + reset_key + '&email=' + user.email;
+
+                    var mail_data = {
+                        name: user.username,
+                        link: link
+                    };
+
+                    var subject = 'Reset password instructions';
+
+                    // Send an email message to the user
+                    email.send('forgot_password', subject, user.email, mail_data)
+
+                    req.session.message = {text: 'Reset email send to ' + user.email, type: 'success'};
+                    res.redirect('/auth/login');
+                }).catch(function(error) {
+                    debug('  -> error' + error)
+                    callback(error)
+                })
+            } else {
+                res.locals.message = {  text: `Sorry. You have specified an email address that is not registerd. 
+                                               If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
+                                        type: 'danger'}
+                res.render('auth/password_request', {error: ''})
+            }
+        }).catch(function(error) {
+            debug('  -> error' + error)
+            res.redirect('/')
+        })
+    }
+}
+
+// GET /password/reset -- Render a view to change password
+exports.new_password = function(req, res, next) {
+
+    debug("--> new_password")
+
+    res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: [] })
+}
+
+// POST /password/reset -- Set new password in database
+exports.change_password = function(req, res, next) {
+
+    debug("--> change_password")
+
+    var errors = []
+
+    // If password new is empty push an error into the array
+    if (req.body.password1 == "") {
+        errors.push("password");
+    }
+
+    // If password(again) is empty push an error into the array
+    if (req.body.password2 == "") {
+        errors.push("confirm_password");
+    }
+
+    // If the two password are differents, send an error
+    if (req.body.password1 !== req.body.password2) {
+        errors.push("password_different");
+    }
+
+    // Search the user through the id
+    models.user.find({
+        where: {
+            email: req.query.email
+        }
+    }).then(function(user) {
+        if (user) {
+            if (user.reset_key === req.query.reset_key) {
+                if ((new Date()).getTime() > user.reset_expires.getTime()) {
+                    res.locals.message = {text: 'Error reseting user password', type: 'danger'};
+                    res.render('index', { errors: [] });
+                } else if (errors.length > 0) {
+                    res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: errors })
+                } else {
+                    models.user.update({ 
+                        password: req.body.password1
+                    },{
+                        fields: ['password'],
+                        where: { email: user.email}
+                    }).then(function() {
+                        req.session.message = { text: ' Password successfully changed', type: 'success'}
+                        res.redirect('/auth/login')
+                    }).catch(function(error) {
+                        debug('  -> error' + error)
+                        res.redirect('/auth/login')
+                    })   
+                }
+            };
+        } else {
+            res.locals.message = {text: 'Error reseting user password', type: 'danger'};
+            res.render('index', { errors: [] });
+        }
+    }).catch(function(error){ debug(error) });   
 }
 
 // Function to check and crop an image and to update the name in the user table

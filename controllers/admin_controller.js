@@ -1,10 +1,8 @@
 var models = require('../models/models.js');
-var mailer = require('../lib/mailer').mailer();
-var config = require('../config');
-var ejs = require('ejs');
 var debug = require('debug')('idm:admin_controller')
 var gravatar = require('gravatar');
 
+var email = require('../lib/email.js')
 
 // See if user is administrator
 exports.is_admin =function(req, res, next) {
@@ -52,9 +50,9 @@ exports.send_message = function(req, res) {
 
 		        	// Map array of users to get emails and join all these emails into a string
 		        	var emails =  users.map(elem => elem.email).join()
-		        	
+		        			     
 		        	// Send an email message to the user
-		        	send_message(req.body.subject, emails, req.body.body)
+		        	email.send('', req.body.subject, emails, req.body.body)
 
 		        	req.session.message = {text: ' Success sending email.', type: 'success'};
 		        	res.redirect('/')
@@ -113,7 +111,7 @@ exports.send_message = function(req, res) {
 			        	var emails =  result.users.map(elem => elem.email).join()
 
 			        	// Send an email message to the user
-			        	send_message(req.body.subject, emails, req.body.body)
+			        	email.send('', req.body.subject, emails, req.body.body)
 
 			        	req.session.message = {text: ' Success sending email.', type: 'success'};
 			        	res.redirect('/')
@@ -211,18 +209,6 @@ exports.update_administrators = function(req, res) {
 		debug('  -> error' + error)
 		res.redirect('/')
 	})
-}
-
-// Function te fill message template and send this to specific users
-function send_message(subject, emails, message) {
-	ejs.renderFile(__dirname + '/../views/templates/_base_email.ejs', {view: "",data: message}, function(error, mail) {
-    	// Error
-    	if (error) { debug('  -> error' + error) }
-
-        mailer.sendMail({to: emails, html: mail, subject: subject}, function(ev){
-            debug('  -> Result mail: '+ ev);
-        });
-    })
 }
 
 // Function to gel all emails of users enabled from database

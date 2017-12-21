@@ -26,6 +26,10 @@
         <span class="help-block alert alert-warning"><p>Session expired</p></span>
       <% } %>
 
+      <% if (nameErrors.indexOf("password_change") != -1) { %>
+        <span class="help-block alert alert-success"><p>Password changed. Please log in again to continue.</p></span>
+      <% } %>
+
       <% if (nameErrors.indexOf("invalid") != -1) { %>
         <div class="alert alert-message alert-danger">
           <ul class="errorlist"><li>Invalid user name or password.</li></ul>

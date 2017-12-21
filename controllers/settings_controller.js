@@ -24,18 +24,17 @@ exports.password = function(req, res) {
         errors.push("confirm_password");
     }
 
+    // If current password is empty send a message
+    if (req.body.current_password == "") {
+        errors.push("current_password");
+    }
 
     // If the two password are differents, send an error
     if (req.body.new_password !== req.body.confirm_password) {
         errors.push("password_different");
     }
 
-    // If current password is empty send a message
-    if (req.body.current_password == "") {
-        errors.push("current_password");
-    }
-
-
+    // If there are erros render the view with them. If not check password of user
 	if (errors.length > 0) {
 		res.render('settings/password', {errors: errors})
 	} else {
@@ -48,9 +47,20 @@ exports.password = function(req, res) {
 	        if (user) {
 	            // Verify password and if user is enabled to use the web
 	            if(user.verifyPassword(req.body.current_password)) {
-	            	// HACER ALGO
-	            	res.locals.message = { text: 'JAJAJ', type: 'success'}
-	                res.render('settings/password', {errors: errors})
+
+	            	models.user.update({ 
+	            		password: req.body.new_password
+	            	},{
+						fields: ['password'],
+						where: {id: req.session.user.id}
+					}).then(function() {
+						delete req.session.user
+						req.session.errors = [{ message: 'password_change' }]
+						res.redirect('/auth/login')
+	            	}).catch(function(error) {
+	            		debug('  -> error' + error)
+						res.redirect('/auth/login')
+	            	})
 	            } else { 
 	            	res.locals.message = { text: 'Unable to change password. Unauthorized', type: 'danger'}
 	            	res.render('settings/password', {errors: errors})

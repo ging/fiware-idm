@@ -92,10 +92,11 @@ router.get('/idm_admin/administrators',                 sessionController.login_
 router.put('/idm_admin/administrators',                 sessionController.login_required,    adminController.is_admin,     adminController.update_administrators)
 
 // Routes for settings
-router.get('/settings',             sessionController.login_required,   settingsController.settings);
-router.post('/settings/password',   sessionController.login_required,   settingsController.password);
-router.post('/settings/email',      sessionController.login_required,   settingsController.email);
-router.delete('/settings/cancel',   sessionController.login_required,   settingsController.cancel_account);
+router.get('/settings',                 sessionController.login_required,   settingsController.settings);
+router.post('/settings/password',       sessionController.login_required,   settingsController.password);
+router.post('/settings/email',          sessionController.login_required,   settingsController.email);
+router.get('/settings/email/verify',    sessionController.login_required,   settingsController.email_verify);
+router.delete('/settings/cancel',       sessionController.login_required,   settingsController.cancel_account);
 
 
 // Route to get home of user

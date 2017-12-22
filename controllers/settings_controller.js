@@ -51,9 +51,10 @@ exports.password = function(req, res) {
 	            if(user.verifyPassword(req.body.current_password)) {
 
 	            	models.user.update({ 
-	            		password: req.body.new_password
+	            		password: req.body.new_password,
+	            		date_password_change: new Date((new Date()).getTime())
 	            	},{
-						fields: ['password'],
+						fields: ['password', 'date_password_change'],
 						where: {id: req.session.user.id}
 					}).then(function() {
 						delete req.session.user

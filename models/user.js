@@ -56,6 +56,8 @@ module.exports = function(sequelize, DataTypes) {
                 }
                 this.setDataValue('password', encripted);
             }
+        }, date_password_change: {
+            type: DataTypes.DATE
         }, enabled: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

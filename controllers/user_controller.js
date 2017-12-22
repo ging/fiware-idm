@@ -350,6 +350,7 @@ exports.create = function(req, res, next) {
             username: req.body.username, 
             email: req.body.email,
             password: req.body.password1,
+            date_password_change: new Date((new Date()).getTime()),
             enabled: false,
             activation_key: Math.random().toString(36).substr(2),
             activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
@@ -464,7 +465,7 @@ exports.activate = function(req, res, next) {
     }).catch(function(error){ callback(error) });
 }
 
-// GET /password/request -- Render a view with instructions to rest password
+// GET /password/request -- Render a view with instructions to reset password
 exports.password_request = function(req, res, next) {
 
     debug("--> password_request")
@@ -473,7 +474,7 @@ exports.password_request = function(req, res, next) {
 
 }
 
-// POST /password/request -- Send an email with instructions to rest password
+// POST /password/request -- Send an email with instructions to reset password
 exports.password_send_email = function(req, res, callback) {
 
     debug("--> password_send_email")
@@ -484,7 +485,21 @@ exports.password_send_email = function(req, res, callback) {
         models.user.findOne({
             where: { email: req.body.email}
         }).then(function(user) {
-            if (user) {
+            
+            if (!user) {
+                res.locals.message = {  text: `Sorry. You have specified an email address that is not registered. 
+                                               If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
+                                        type: 'danger'}
+                res.render('auth/password_request', {error: ''})
+
+            } else if (!user.enabled) {
+                res.locals.message = {  text: `The email address you have specified is registered but not activated. 
+                                               Please check your email for the activation link or request a new one.
+                                               If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
+                                        type: 'danger'}
+                res.render('auth/password_request', {error: ''})
+
+            } else {
                 var reset_key = Math.random().toString(36).substr(2);
                 var reset_expires = new Date((new Date()).getTime() + 1000*3600*24)
 
@@ -514,12 +529,7 @@ exports.password_send_email = function(req, res, callback) {
                 }).catch(function(error) {
                     debug('  -> error' + error)
                     res.redirect('/')
-                })
-            } else {
-                res.locals.message = {  text: `Sorry. You have specified an email address that is not registerd. 
-                                               If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
-                                        type: 'danger'}
-                res.render('auth/password_request', {error: ''})
+                })                
             }
         }).catch(function(error) {
             debug('  -> error' + error)
@@ -558,7 +568,7 @@ exports.change_password = function(req, res, next) {
         errors.push("password_different");
     }
 
-    // Search the user through the id
+    // Search the user through the email
     models.user.find({
         where: {
             email: req.query.email
@@ -573,9 +583,10 @@ exports.change_password = function(req, res, next) {
                     res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: errors })
                 } else {
                     models.user.update({ 
-                        password: req.body.password1
+                        password: req.body.password1,
+                        date_password_change: new Date((new Date()).getTime())
                     },{
-                        fields: ['password'],
+                        fields: ['password', 'date_password_change'],
                         where: { email: user.email}
                     }).then(function() {
                         req.session.message = { text: ' Password successfully changed', type: 'success'}
@@ -616,7 +627,7 @@ exports.resend_confirmation = function(req, res, next) {
             if (user) {
 
                 if (user.enabled) {
-                    res.locals.message = {text: ' Email was already confirmed, please try signing in', type: 'danger'};
+                    res.locals.message = {text: ' User was already activated, please try signing in', type: 'danger'};
                     res.render('auth/confirmation', {error: '' });
                 } else {
                     var activation_key = Math.random().toString(36).substr(2);

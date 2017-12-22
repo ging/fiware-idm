@@ -115,13 +115,13 @@ router.delete('/auth/logout',	sessionController.destroy);
 // Routes for users creation
 router.get('/sign_up', 	            userController.new);
 router.post('/sign_up',             userController.create);
-router.get('/activate',             userController.activate);
-router.get('/password/request',     userController.password_request);
-router.post('/password/request',    userController.password_send_email);
-router.get('/password/reset',       userController.new_password);
-router.post('/password/reset',      userController.change_password);
-router.get('/confirmation',         userController.confirmation);
-router.post('/confirmation',        userController.resend_confirmation);
+router.get('/activate',             sessionController.login_not_required,   userController.activate);
+router.get('/password/request',     sessionController.login_not_required,   userController.password_request);
+router.post('/password/request',    sessionController.login_not_required,   userController.password_send_email);
+router.get('/password/reset',       sessionController.login_not_required,   userController.new_password);
+router.post('/password/reset',      sessionController.login_not_required,   userController.change_password);
+router.get('/confirmation',         sessionController.login_not_required,   userController.confirmation);
+router.post('/confirmation',        sessionController.login_not_required,   userController.resend_confirmation);
 
 
 // Route to save images of users

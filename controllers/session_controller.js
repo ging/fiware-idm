@@ -16,6 +16,18 @@ exports.login_required = function(req, res, next){
     }
 };
 
+// MW to perform actions forgot password and re send confirmation of registration
+exports.login_not_required = function(req, res, next){
+
+    debug("--> login_required");
+
+    if (req.session.user) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+};
+
 // GET /auth/login -- Form for login
 exports.new = function(req, res) {
 

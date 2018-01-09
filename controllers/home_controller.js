@@ -41,7 +41,8 @@ exports.index = function(req, res) {
 			// Order applications and render view
 			applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
 		}
-		res.render('home/index', { applications: applications, errors: []});
+
+		res.render('home/index', { applications: applications, change_password: req.session.user.change_password, errors: []});
 	});
 };
 

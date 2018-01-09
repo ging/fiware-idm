@@ -28,6 +28,24 @@ exports.login_not_required = function(req, res, next){
     }
 };
 
+// MW to see if user needs to change password
+exports.password_check_date = function(req, res, next) {
+
+    var today = new Date((new Date()).getTime())
+    var millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+    //var d = new Date("January 6, 2017 11:13:00");
+
+    var days_since_change = Math.round((today - req.session.user.change_password)/millisecondsPerDay); 
+
+    if (days_since_change > 365) {
+        req.session.change_password = true
+        res.redirect('/update_password')          
+    } else {
+        next();
+    }
+}
+
 // GET /auth/login -- Form for login
 exports.new = function(req, res) {
 
@@ -43,7 +61,7 @@ exports.new = function(req, res) {
 };
 
 // POST /auth/login -- Create Session
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
 
     debug("--> create");
 
@@ -78,7 +96,7 @@ exports.create = function(req, res) {
                 }
                 
                 // Create session
-                req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
+                req.session.user = {id:user.id, username:user.username, email: user.email, image: image, change_password: user.date_password};
 
                 // If user is admin add parameter to session
                 if (user.admin) {
@@ -93,6 +111,11 @@ exports.create = function(req, res) {
         }
     
 };
+
+// GET /update_password -- Render settings/password view with a warn to indicate user to change password
+exports.update_password = function(req, res) {
+    res.render('settings/password', {errors: [], warn_change_password: true})
+}
 
 // DELETE /auth/logout -- Delete Session
 exports.destroy = function(req, res) {

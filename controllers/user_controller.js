@@ -350,7 +350,7 @@ exports.create = function(req, res, next) {
             username: req.body.username, 
             email: req.body.email,
             password: req.body.password1,
-            date_password_change: new Date((new Date()).getTime()),
+            date_password: new Date((new Date()).getTime()),
             enabled: false,
             activation_key: Math.random().toString(36).substr(2),
             activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
@@ -584,9 +584,9 @@ exports.change_password = function(req, res, next) {
                 } else {
                     models.user.update({ 
                         password: req.body.password1,
-                        date_password_change: new Date((new Date()).getTime())
+                        date_password: new Date((new Date()).getTime())
                     },{
-                        fields: ['password', 'date_password_change'],
+                        fields: ['password', 'date_password'],
                         where: { email: user.email}
                     }).then(function() {
                         req.session.message = { text: ' Password successfully changed', type: 'success'}

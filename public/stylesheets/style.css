@@ -6796,6 +6796,13 @@ ul.select2-choices {
 .form-control-feedback {
   top: 34px; }
 
+.field-icon {
+  float: right;
+  margin-left: -25px;
+  margin-top: -25px;
+  position: relative;
+  z-index: 2; }
+
 .form-group .control-label {
   width: 100%; }
 

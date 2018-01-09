@@ -13,7 +13,7 @@ exports.settings = function(req, res) {
 // POST /settings/password -- Change password
 exports.password = function(req, res) {
     debug("--> password")
-
+	  	
     var errors = []
     
     // If password new is empty push an error into the array
@@ -38,7 +38,7 @@ exports.password = function(req, res) {
 
     // If there are erros render the view with them. If not check password of user
 	if (errors.length > 0) {
-		res.render('settings/password', {errors: errors})
+		res.render('settings/password', {errors: errors, warn_change_password: false})
 	} else {
 		// Search the user through the email
 	    models.user.find({
@@ -52,9 +52,9 @@ exports.password = function(req, res) {
 
 	            	models.user.update({ 
 	            		password: req.body.new_password,
-	            		date_password_change: new Date((new Date()).getTime())
+	            		date_password: new Date((new Date()).getTime())
 	            	},{
-						fields: ['password', 'date_password_change'],
+						fields: ['password', 'date_password'],
 						where: {id: req.session.user.id}
 					}).then(function() {
 						delete req.session.user
@@ -66,10 +66,10 @@ exports.password = function(req, res) {
 	            	})
 	            } else { 
 	            	res.locals.message = { text: 'Unable to change password. Unauthorized', type: 'danger'}
-	            	res.render('settings/password', {errors: errors})
+	            	res.render('settings/password', {errors: errors, warn_change_password: false})
 	        	}   
 	        } else { callback(new Error('invalid')); }
-	    }).catch(function(error){ callback(error) });
+	    }).catch(function(error){ debug(error)/*callback(error)*/ });
 	}
 }
 

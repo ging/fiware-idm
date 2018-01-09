@@ -45,15 +45,24 @@ exports.load_application = function(req, res, next, applicationId) {
 exports.index = function(req, res) {
 
 	debug("--> index");
+	var role = 'provider'
+	if (req.query.tab === 'panel_tabs__purchased_tab') {
+		role = 'purchaser'
+	} else if (req.query.tab === 'panel_tabs__authorized_tab') {
+		role = { [Op.notIn]: ['provider', 'purchaser'] }
+	} 
 
 	// Search applications in which the user is authorized
-	models.role_user.findAll({
-		where: { user_id: req.session.user.id },
+	models.role_user.findAndCountAll({
+		where: { user_id: req.session.user.id,
+				 role_id: role },
 		include: [{
 			model: models.oauth_client,
 			attributes: ['id', 'name', 'url', 'image']
-		}]
-	}).then(function(user_applications) {
+		}],
+		limit: 5
+	}).then(function(result) {
+		var user_applications = result.rows;
 		// Set message to send when rendering view and delete from request
 		if (req.session.message) {
 			res.locals.message = req.session.message;
@@ -74,14 +83,54 @@ exports.index = function(req, res) {
 					applications.push(app.OauthClient)
 				} 
 			});
-
-			// Order applications and render view
-			applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
 		}
-
-		res.render('applications/index', { applications: applications, errors: []});
+		if (req.xhr) {
+			res.send({applications: applications, number_applications: result.count})
+		} else {
+			res.render('applications/index', { applications: applications, number_applications: result.count, errors: []});			
+		}
 	}).catch(function(error) { next(error); });
 };
+
+// GET /filters/applications -- Filter applications by page
+exports.filter = function(req, res) {
+	debug(req.path)
+	var role = req.query.role;
+	if (req.query.role === 'other') {
+		role = { [Op.notIn]: ['provider', 'purchaser'] }
+	}
+
+	// Search applications in which the user is authorized
+	models.role_user.findAll({
+		where: { user_id: req.session.user.id,
+				 role_id: role },
+		include: [{
+			model: models.oauth_client,
+			attributes: ['id', 'name', 'url', 'image']
+		}],
+		offset: (req.query.page - 1)*5,
+		limit: 5
+	}).then(function(user_applications) {
+
+		var applications = []
+		// If user has applications, set image from file system and obtain info from each application
+		if (user_applications.length > 0) {
+			
+			user_applications.forEach(function(app) {
+				if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
+					if (app.OauthClient.image == 'default') {
+						app.OauthClient.image = '/img/logos/medium/app.png'
+					} else {
+						app.OauthClient.image = '/img/applications/'+app.OauthClient.image
+					}
+					applications.push(app.OauthClient)
+				} 
+			});
+		}
+
+		res.send({applications: applications})
+	}).catch(function(error) { next(error); });
+}
 
 // GET /idm/applications/:applicationId -- Show info about an application
 exports.show = function(req, res, next) {

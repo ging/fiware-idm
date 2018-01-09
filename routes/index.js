@@ -85,10 +85,10 @@ router.post('/oauth2/authorize', oauthController.response_type_required, functio
 router.post('/v3/auth/tokens', oauthController.authenticate_pep_proxy)
 
 // Routes to administrators
-router.get('/idm_admin/notify',                         sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.show_notify)
-router.post('/idm_admin/notify',                        sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.send_message)
-router.get('/idm_admin/administrators',                 sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.index_administrators)
-router.put('/idm_admin/administrators',                 sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.update_administrators)
+router.get('/idm_admin/notify',             sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.show_notify)
+router.post('/idm_admin/notify',            sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.send_message)
+router.get('/idm_admin/administrators',     sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.index_administrators)
+router.put('/idm_admin/administrators',     sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,     adminController.update_administrators)
 
 // Routes for settings
 router.get('/settings',                 sessionController.login_required,   sessionController.password_check_date,  settingsController.settings);
@@ -158,6 +158,7 @@ var imageAppUpload = multer.diskStorage({
 
 // Routes to create, edit and delete applications
 router.get('/idm/applications',  					                                        sessionController.login_required,   sessionController.password_check_date,  	 applicationController.index);
+router.get('/filters/applications',                                                         sessionController.login_required,   sessionController.password_check_date,      applicationController.filter);
 router.get('/idm/applications/new',                                                         sessionController.login_required,   sessionController.password_check_date,      applicationController.new);
 router.post('/idm/applications',                                                            sessionController.login_required,   sessionController.password_check_date,      applicationController.create);
 router.get('/idm/applications/:applicationId', 		                                        sessionController.login_required,   sessionController.password_check_date,  	 applicationController.show);

@@ -32,17 +32,7 @@
 				<div id="panel_tabs__providing_tab" class="tab-pane active">
 					<div class=" datatable" id="providing_table" data-pagination-url="/filters/applications" data-application_role="provider" data-pagination-pages="">
 						<div class="list-group" id="providing_table_content">
-							<!-- <% for (var i = 0; i < applications.length; i++) { -%>
-								<div class="list-group-item">
-									<a class="item" href="/idm/applications/<%= applications[i].id%>/">
-										<div class="avatar filter_field">
-											<img src="<%= applications[i].image %>">
-										</div>	
-										<div class="name filter_field"><%= applications[i].name %></div>
-										<div class="url filter_field"><%= applications[i].url %></div>
-									</a>
-								</div>
-							<% } -%> -->
+
 						</div>
 						<% if (typeof applications == "undefined") { -%>
 							<p class="alert alert-info empty" style="display: block;">You are not provider of any application.</p>
@@ -57,17 +47,7 @@
 				<div id="panel_tabs__purchased_tab" class="tab-pane">
 					<div class=" datatable" id="purchased_table" data-pagination-url="/filters/applications" data-application_role="purchaser" data-pagination-pages="">
 						<div class="list-group" id="purchased_table_content"></div>
-							<!-- <% for (var i = 0; i < applications.length; i++) { -%>
-								<div class="list-group-item">
-									<a class="item" href="/idm/applications/<%= applications[i].id%>/">
-										<div class="avatar filter_field">
-											<img src="<%= applications[i].image %>">
-										</div>
-										<div class="name filter_field"><%= applications[i].name %></div>
-										<div class="url filter_field"><%= applications[i].url %></div>
-									</a>
-								</div>
-							<% } -%> -->
+
 						<% if (typeof applications == "undefined") { -%>
 							<p class="alert alert-info empty" style="display: block;">You are not purchaser of any application.</p>
 						<% } -%>
@@ -81,17 +61,7 @@
 				<div id="panel_tabs__authorized_tab" class="tab-pane">
 					<div class=" datatable" id="authorized_table" data-pagination-url="/filters/applications" data-application_role="other" data-pagination-pages="">
 						<div class="list-group" id="authorized_table_content">
-							<!-- <% for (var i = 0; i < applications.length; i++) { -%>
-								<div class="list-group-item">
-									<a class="item" href="/idm/applications/<%= applications[i].id%>/">
-										<div class="avatar filter_field">
-											<img src="<%= applications[i].image %>">
-										</div>
-										<div class="name filter_field"><%= applications[i].name %></div>
-										<div class="url filter_field"><%= applications[i].url %></div>
-									</a>
-								</div>
-							<% } -%> -->
+
 						</div>
 						<% if (typeof applications == "undefined") { -%>
 							<p class="alert alert-info empty" style="display: block;">You are not authorized in any application.</p>

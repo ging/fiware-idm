@@ -11,7 +11,7 @@
                     Change your password
                 </h4>
             </a>
-            <div id="collapse-0" class="panel-collapse collapse" style="height: 0px;">
+            <div id="collapse-0" class="panel-collapse collapse change_password" style="height: 0px;">
                 <div class="panel-body">
                     <form accept-charset="UTF-8" action="/settings/password/" method="post" class="ng-pristine ng-valid">
                         <!-- <input type="hidden" name="csrfmiddlewaretoken" value="ObQg151vCrbIzMXLOxSA2Wtqj1rfPhQy"> -->
@@ -176,3 +176,17 @@
         </div>
     </div>
 </div>
+
+<script src="/javascripts/users/handle_password_strength.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        
+        $('#id_new_password').bind("keyup input",function(e) {
+            var input = $('#id_new_password')
+            var value_input = $('#id_new_password').val()
+            var label = input.closest('.form-group').find('label')
+            checkStrength(value_input, input, label)
+        })
+    })
+</script>

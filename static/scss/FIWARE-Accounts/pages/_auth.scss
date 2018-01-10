@@ -323,6 +323,34 @@
   .modal-header{
     @include modal-header;
   }
+  .modal-body{
+    .weak_pwd, .medium_pwd, .hard_pwd{
+      font-weight: bold;
+      font-size: 0.9em;
+      float: right;
+    }
+    .weak_pwd{
+      color: #a94442;
+    }
+    .medium_pwd{
+      color: #8a6d3b;
+    }
+    .hard_pwd{
+      color: #3c763d;
+    }
+    .weak_pwd_input{
+      background-color: #f2dede;
+      border-color: #ebcccc;
+    }
+    .medium_pwd_input{
+      background-color: #fcf8e3;
+      border-color: #faf2cc;
+    }
+    .hard_pwd_input{
+      background-color: #dff0d8;
+      border-color: #d0e9c6;
+    }
+  }
   .modal-footer {
     padding: 15px 0 0 0;
   }

@@ -10943,6 +10943,34 @@ ul.disabled-list li.active:hover {
       font-family: "NeoTechRegular";
       margin-top: 0;
       margin-bottom: 10px; }
+  .remember-password .modal-body .weak_pwd, .remember-password .modal-body .medium_pwd, .remember-password .modal-body .hard_pwd,
+  .resend-confirmation-instructions .modal-body .weak_pwd,
+  .resend-confirmation-instructions .modal-body .medium_pwd,
+  .resend-confirmation-instructions .modal-body .hard_pwd {
+    font-weight: bold;
+    font-size: 0.9em;
+    float: right; }
+  .remember-password .modal-body .weak_pwd,
+  .resend-confirmation-instructions .modal-body .weak_pwd {
+    color: #a94442; }
+  .remember-password .modal-body .medium_pwd,
+  .resend-confirmation-instructions .modal-body .medium_pwd {
+    color: #8a6d3b; }
+  .remember-password .modal-body .hard_pwd,
+  .resend-confirmation-instructions .modal-body .hard_pwd {
+    color: #3c763d; }
+  .remember-password .modal-body .weak_pwd_input,
+  .resend-confirmation-instructions .modal-body .weak_pwd_input {
+    background-color: #f2dede;
+    border-color: #ebcccc; }
+  .remember-password .modal-body .medium_pwd_input,
+  .resend-confirmation-instructions .modal-body .medium_pwd_input {
+    background-color: #fcf8e3;
+    border-color: #faf2cc; }
+  .remember-password .modal-body .hard_pwd_input,
+  .resend-confirmation-instructions .modal-body .hard_pwd_input {
+    background-color: #dff0d8;
+    border-color: #d0e9c6; }
   .remember-password .modal-footer,
   .resend-confirmation-instructions .modal-footer {
     padding: 15px 0 0 0; }
@@ -11959,3 +11987,43 @@ div#update_owners_members {
       width: 100%;
       opacity: 0.7;
       margin-top: 10px; }
+
+.change_password .panel-body .weak_pwd, .change_password .panel-body .medium_pwd, .change_password .panel-body .hard_pwd {
+  font-weight: bold;
+  font-size: 0.9em;
+  float: right; }
+
+.change_password .panel-body .weak_pwd {
+  color: #a94442; }
+
+.change_password .panel-body .medium_pwd {
+  color: #8a6d3b; }
+
+.change_password .panel-body .hard_pwd {
+  color: #3c763d; }
+
+.change_password .weak_pwd, .change_password .medium_pwd, .change_password .hard_pwd {
+  font-weight: bold;
+  font-size: 0.9em;
+  float: right; }
+
+.change_password .weak_pwd {
+  color: #a94442; }
+
+.change_password .medium_pwd {
+  color: #8a6d3b; }
+
+.change_password .hard_pwd {
+  color: #3c763d; }
+
+.change_password .weak_pwd_input {
+  background-color: #f2dede;
+  border-color: #ebcccc; }
+
+.change_password .medium_pwd_input {
+  background-color: #fcf8e3;
+  border-color: #faf2cc; }
+
+.change_password .hard_pwd_input {
+  background-color: #dff0d8;
+  border-color: #d0e9c6; }

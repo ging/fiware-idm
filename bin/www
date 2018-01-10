@@ -6,7 +6,14 @@
 
 var app = require('../app');
 var debug = require('debug')('idm:server');
+var fs = require("fs");
 var http = require('http');
+var https = require("https");
+
+var options = {
+    key: fs.readFileSync('certs/idm-2018-key.pem').toString(),
+    cert: fs.readFileSync('certs/idm-2018-cert.pem').toString()
+};
 
 /**
  * Get port from environment and store in Express.
@@ -28,6 +35,11 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+var serverSecure = https.createServer(options, app);
+serverSecure.listen(443, function() {
+  debug('Express server listening on port ' + server.address().port);
+});
 
 /**
  * Normalize a port into a number, string, or false.

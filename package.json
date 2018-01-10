@@ -12,6 +12,7 @@
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
+    "express-force-ssl": "^0.3.2",
     "express-partials": "^0.3.0",
     "express-session": "^1.15.5",
     "gravatar": "^1.6.0",

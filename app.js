@@ -8,6 +8,7 @@ var methodOverride = require('method-override');
 var session = require('express-session');
 var partials = require('express-partials');
 var sassMiddleware = require('node-sass-middleware');
+var forceSsl = require('express-force-ssl');
 
 var index = require('./routes/index');
 var config = require ('./config.js').session;
@@ -28,6 +29,7 @@ app.use(cookieParser(config.secret));
 app.use(session({
 	secret: config.secret
 }));
+app.use(forceSsl);
 
 // Middleware to convert sass files to css
 app.use(sassMiddleware({

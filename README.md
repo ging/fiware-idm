@@ -10,6 +10,9 @@ create database idm; // To create a new database
 git clone https://github.com/ging/mesias.git
 npm install
 cp config.js.template config.js
+
+Generate certificates for https
+./commands_to_generate_keys.sh
 ```
 
 ## How to run

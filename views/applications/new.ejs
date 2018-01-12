@@ -20,7 +20,8 @@
      </h3><h3 class="step-title">Application Information</h3>
    </div>
 
-   <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications" method="POST" enctype=""><input type="hidden" name="" value="">
+   <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications" method="POST" enctype="">
+    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
     <div class="modal-body clearfix">
 
       <fieldset>

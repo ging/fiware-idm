@@ -7,7 +7,7 @@
                 <h3>Delete uploaded image</h3>
             </div>
             <form id="delete_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/edit/avatar/delete?_method=delete" method="POST" enctype="">
-                <input type="hidden" name="" value="">
+                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                 <div class="modal-body clearfix">
                     <div class="left">
                         <fieldset>

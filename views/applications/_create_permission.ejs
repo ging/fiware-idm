@@ -7,7 +7,8 @@
 				<h3>
 				</h3><h3>Create permission</h3>  
 			</div>
-			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype=""><input type="hidden" name="" value="">
+			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype="">
+				<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 				<div class="modal-body clearfix">
 					<span id="xml_with_action_and_resource_not_allow" style="display: none;" class='help-block alert alert-danger'>If you use the advanced rule you cannot set also action and resource.</span>
 					<span id="define_rule" style="display: none;" class='help-block alert alert-danger'>You need to define both action and resource or an advanced XACML Rule.</span>

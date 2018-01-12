@@ -69,6 +69,7 @@ $(document).ready(function(){
         $.ajax({
             url: url,
             type: method,
+            beforeSend: beforeSend($("#create_permission_form").find('input:hidden[name=_csrf]').val()),
             data: body,
             success: function(result) {
                 // See if the result of post data is an error
@@ -117,13 +118,13 @@ $(document).ready(function(){
                     $('#create_permission').modal('toggle');
 
                     // Add message
-                    create_message(result.type, result.text)
+                    create_message(result.message.type, result.message.text)
                 }
             }
         });
     });
 
-    // To show form to edit a permission
+    // Complete form to edit a permission
     $("#update_owners_permissions").on("click",".edit_permission", function(event) { 
 
         // stop form from submitting normally

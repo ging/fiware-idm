@@ -21,7 +21,7 @@ exports.is_admin =function(req, res, next) {
 exports.show_notify = function(req, res) {
 	debug('--> notify')
 
-	res.render("admin/notify", { errors: {}, users: [], subject: '' })
+	res.render("admin/notify", { errors: {}, users: [], subject: '', csrfToken: req.csrfToken() })
 }
 
 // POST /idm_admin/notify -- Send message with info obtain from body
@@ -43,7 +43,7 @@ exports.send_message = function(req, res) {
 
 	        if (Object.keys(errors).length > 0) {
 	        	errors['option'] = 'all_users'
-	        	res.render("admin/notify", {errors: errors, users: [], subject: ''})
+	        	res.render("admin/notify", {errors: errors, users: [], subject: '', csrfToken: req.csrfToken()})
 	        } else {
 		        // Get all enabled users
 		        get_all_users().then(function(users) {
@@ -66,10 +66,10 @@ exports.send_message = function(req, res) {
 	        debug('  -> organization')
 
 	        if (errors) {
-	        	res.render("admin/notify", {errors: errors})
+	        	res.render("admin/notify", {errors: errors, csrfToken: req.csrfToken()})
 	        } else {
 	    		res.locals.message = {text: ' Not implemented.', type: 'danger'};
-	        	res.render("admin/notify")
+	        	res.render("admin/notify", {csrfToken: req.csrfToken()})
 	        }
 
 	    	/*get_organization(req, res).then(function(organization) {
@@ -105,7 +105,7 @@ exports.send_message = function(req, res) {
 
 		        	if (Object.keys(errors).length > 0) {
 		        		errors['option'] = 'users_by_id'
-		        		res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject})
+		        		res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
 			        } else {
 			    		// Map array of users to get emails and join all these emails into a string
 			        	var emails =  result.users.map(elem => elem.email).join()
@@ -123,12 +123,12 @@ exports.send_message = function(req, res) {
 	        } else {
 	        	errors['option'] = 'users_by_id'
 	        	errors['not_users'] = true
-		        res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject})
+		        res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
 	        }
 	        break;
 	    default:
 	    	res.locals.message = {text: ' Invalid option.', type: 'warning'}
-	        res.render("admin/notify", {errors: {}, users: [], subject: ''})
+	        res.render("admin/notify", {errors: {}, users: [], subject: '', csrfToken: req.csrfToken()})
 	}
 }
 
@@ -153,7 +153,7 @@ exports.index_administrators = function(req, res) {
 								image: image });
 		})
 
-		res.render("admin/administrators", { users_admin: users_admin })
+		res.render("admin/administrators", { users_admin: users_admin, csrfToken: req.csrfToken() })
 	}).catch(function(error) {
 		debug('  -> error' + error)
 		res.redirect('/')

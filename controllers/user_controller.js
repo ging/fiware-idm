@@ -98,7 +98,7 @@ exports.show = function(req, res, next) {
             applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
         }
 
-        res.render('users/show', {user: req.user, applications: applications})
+        res.render('users/show', {user: req.user, applications: applications, csrfToken: req.csrfToken()})
     }).catch(function(error) {
          next(error);
     });
@@ -135,15 +135,15 @@ exports.edit = function(req, res) {
                 req.user['image_gravatar'] = url
             }
 
-            res.render('users/edit', {user: req.user, error: []});
+            res.render('users/edit', {user: req.user, error: [], csrfToken: req.csrfToken()});
 
         }).on('error', function(e) {
             console.log('Failed connecting to gravatar: ' + e);
-            res.render('users/edit', {user: req.user, error: []});
+            res.render('users/edit', {user: req.user, error: [], csrfToken: req.csrfToken()});
         });
     } else {
         req.user.image_gravatar = gravatar.url(req.session.user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
-        res.render('users/edit', {user: req.user, error: []});
+        res.render('users/edit', {user: req.user, error: [], csrfToken: req.csrfToken()});
     }
 }
 
@@ -185,7 +185,7 @@ exports.update_info = function(req, res) {
         } else {
             req.user.image = '/img/users/'+req.user.image
         }
-        res.render('users/edit', { user: req.body.user, error: error});
+        res.render('users/edit', { user: req.body.user, error: error, csrfToken: req.csrfToken()});
     });
 }
 
@@ -197,6 +197,7 @@ exports.update_avatar = function(req, res) {
     // See if the user has selected a image to upload
     if (req.file) {
         handle_uploaded_images(req, res, '/idm/users/'+req.session.user.id)
+
     // If not send error message
     } else {
         req.session.message = {text: ' fail uploading image.', type: 'warning'};
@@ -275,7 +276,7 @@ exports.set_avatar = function(req, res) {
     }).catch(function(error) { 
         // Send message of fail when updating image
         res.locals.message = {text: ' set avatar failed.', type: 'warning'};
-        res.render('users/edit', { user: req.user, error: error});
+        res.render('users/edit', { user: req.user, error: error, csrfToken: req.csrfToken()});
     });
 }
 
@@ -300,7 +301,7 @@ exports.set_gravatar = function(req, res) {
     }).catch(function(error){ 
         // Send message of fail when updating image
         res.locals.message = {text: ' set gravatar failed.', type: 'warning'};
-        res.render('users/edit', { user: req.user, error: error});
+        res.render('users/edit', { user: req.user, error: error, csrfToken: req.csrfToken()});
     });
 }
 
@@ -329,7 +330,7 @@ exports.new = function(req, res) {
 
     debug("--> new")
 
-    res.render('users/new', {userInfo: {}, errors: []});
+    res.render('users/new', {userInfo: {}, errors: [], csrfToken: req.csrfToken()});
 };
 
 // POST /sign_up -- Create new user
@@ -340,7 +341,7 @@ exports.create = function(req, res, next) {
     // If body has parameters id or secret don't create user
     if (req.body.id) {
         res.locals.message = {text: ' User creation failed.', type: 'danger'};
-        res.render('users/new', {userInfo: {}, errors: []});
+        res.render('users/new', {userInfo: {}, errors: [], csrfToken: req.csrfToken()});
     } else {
         // Array of errors to send to the view
         errors = [];
@@ -413,7 +414,7 @@ exports.create = function(req, res, next) {
                     email.send('activate', subject, user.email, mail_data)
 
                     res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
-                    res.render('index', { errors: [] });
+                    res.render('index', { errors: [], csrfToken: req.csrfToken() });
                 }); 
             }
 
@@ -422,7 +423,7 @@ exports.create = function(req, res, next) {
             if (error.message != "passwordDifferent") {
                 errors = errors.concat(error.errors);
             }
-            res.render('users/new', { userInfo: user, errors: errors}); 
+            res.render('users/new', { userInfo: user, errors: errors, csrfToken: req.csrfToken()}); 
         });
     }
 };
@@ -443,22 +444,22 @@ exports.activate = function(req, res, next) {
             // Activate the user if is not or if the actual date not exceeds the expiration date
             if (user.enabled) {
                 res.locals.message = {text: 'User already activated', type: 'warning'};
-                res.render('index', { errors: [] });
+                res.render('index', { errors: [], csrfToken: req.csrfToken() });
             } else if (user.activation_key === req.query.activation_key) {
                 if ((new Date()).getTime() > user.activation_expires.getTime()) {
                     res.locals.message = {text: 'Error activating user', type: 'danger'};
-                    res.render('index', { errors: [] });
+                    res.render('index', { errors: [], csrfToken: req.csrfToken() });
                 } else {
                     user.enabled = true;
                     user.save().then(function() {
                         res.locals.message = {text: 'User activated. login using your credentials.', type: 'success'};
-                        res.render('index', { errors: [] });
+                        res.render('index', { errors: [], csrfToken: req.csrfToken() });
                     }); 
                 }
             };
         } else {
             res.locals.message = {text: 'Error activating user', type: 'danger'};
-            res.render('index', { errors: [] });
+            res.render('index', { errors: [], csrfToken: req.csrfToken() });
         }
         
 
@@ -470,7 +471,7 @@ exports.password_request = function(req, res, next) {
 
     debug("--> password_request")
 
-    res.render('auth/password_request', {error: '' })
+    res.render('auth/password_request', {error: '', csrfToken: req.csrfToken() })
 
 }
 
@@ -480,7 +481,7 @@ exports.password_send_email = function(req, res, callback) {
     debug("--> password_send_email")
 
     if (!req.body.email) {
-        res.render('auth/password_request', {error: 'empty_field'})
+        res.render('auth/password_request', {error: 'empty_field', csrfToken: req.csrfToken()})
     } else {
         models.user.findOne({
             where: { email: req.body.email}
@@ -490,14 +491,14 @@ exports.password_send_email = function(req, res, callback) {
                 res.locals.message = {  text: `Sorry. You have specified an email address that is not registered. 
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
                                         type: 'danger'}
-                res.render('auth/password_request', {error: ''})
+                res.render('auth/password_request', {error: '', csrfToken: req.csrfToken()})
 
             } else if (!user.enabled) {
                 res.locals.message = {  text: `The email address you have specified is registered but not activated. 
                                                Please check your email for the activation link or request a new one.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
                                         type: 'danger'}
-                res.render('auth/password_request', {error: ''})
+                res.render('auth/password_request', {error: '', csrfToken: req.csrfToken()})
 
             } else {
                 var reset_key = Math.random().toString(36).substr(2);
@@ -543,7 +544,7 @@ exports.new_password = function(req, res, next) {
 
     debug("--> new_password")
 
-    res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: [] })
+    res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: [], csrfToken: req.csrfToken() })
 }
 
 // POST /password/reset -- Set new password in database
@@ -578,9 +579,9 @@ exports.change_password = function(req, res, next) {
             if (user.reset_key === req.query.reset_key) {
                 if ((new Date()).getTime() > user.reset_expires.getTime()) {
                     res.locals.message = {text: 'Error reseting user password', type: 'danger'};
-                    res.render('index', { errors: [] });
+                    res.render('index', { errors: [], csrfToken: req.csrfToken() });
                 } else if (errors.length > 0) {
-                    res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: errors })
+                    res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: errors, csrfToken: req.csrfToken() })
                 } else {
                     models.user.update({ 
                         password: req.body.password1,
@@ -599,7 +600,7 @@ exports.change_password = function(req, res, next) {
             };
         } else {
             res.locals.message = {text: 'Error reseting user password', type: 'danger'};
-            res.render('index', { errors: [] });
+            res.render('index', { errors: [], csrfToken: req.csrfToken() });
         }
     }).catch(function(error){ debug(error) });   
 }
@@ -609,7 +610,7 @@ exports.confirmation = function(req, res, next) {
 
     debug("--> confirmation")
 
-    res.render('auth/confirmation', {error: '' })
+    res.render('auth/confirmation', {error: '', csrfToken: req.csrfToken() })
 
 }
 
@@ -619,7 +620,7 @@ exports.resend_confirmation = function(req, res, next) {
     debug("--> resend_confirmation")
 
     if (!req.body.email) {
-        res.render('auth/confirmation', {error: 'empty_field'})
+        res.render('auth/confirmation', {error: 'empty_field', csrfToken: req.csrfToken()})
     } else {
         models.user.findOne({
             where: { email: req.body.email}
@@ -628,7 +629,7 @@ exports.resend_confirmation = function(req, res, next) {
 
                 if (user.enabled) {
                     res.locals.message = {text: ' User was already activated, please try signing in', type: 'danger'};
-                    res.render('auth/confirmation', {error: '' });
+                    res.render('auth/confirmation', {error: '', csrfToken: req.csrfToken() });
                 } else {
                     var activation_key = Math.random().toString(36).substr(2);
                     var activation_expires = new Date((new Date()).getTime() + 1000*3600*24)
@@ -665,7 +666,7 @@ exports.resend_confirmation = function(req, res, next) {
                 res.locals.message = {  text: `Sorry. You have specified an email address that is not registerd. 
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`, 
                                         type: 'danger'}
-                res.render('auth/confirmation', {error: ''})
+                res.render('auth/confirmation', {error: '', csrfToken: req.csrfToken()})
             }
         }).catch(function(error) {
             debug('  -> error' + error)
@@ -708,7 +709,7 @@ function handle_uploaded_images(req, res, redirect_uri) {
                     ).then(function() {
                         // Old image to be deleted
                         var old_image = req.user.image
-                        if (!old_image.includes('original')) {
+                        if (old_image.includes('/img/users/')) {
                             // If error deleting old image redirect to show view
                             fs.unlink('./public/img/users/'+old_image, (err) => {
                                 if (err) {
@@ -722,7 +723,7 @@ function handle_uploaded_images(req, res, redirect_uri) {
                                 }
                             });
                         } else {
-                            // Send message of success when updating image
+                            // Send message of success when updating image                           
                             req.session.user.image = '/img/users/' + req.file.filename
                             req.session.message = {text: ' Image updated successfully.', type: 'success'};
                             res.redirect(redirect_uri);

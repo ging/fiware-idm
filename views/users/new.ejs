@@ -4,15 +4,8 @@
 		<div class="modal-header">
 			<h3>Registration</h3>
 		</div>
-		<form id="register_user_form"
-			ng-controller="DummyCtrl"
-			name=""
-			autocomplete=""
-			class=""
-			action="/sign_up/"
-			method="POST"
-			enctype=""
-		><input type='hidden' name='' value='' />
+		<form id="register_user_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/sign_up/" method="POST" enctype="">
+		<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 			<div class="modal-body clearfix">
 				<% var nameErrors = [] %>
 			    <% if (errors.length) { %>

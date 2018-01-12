@@ -87,7 +87,7 @@ exports.index = function(req, res) {
 		if (req.xhr) {
 			res.send({applications: applications, number_applications: result.count})
 		} else {
-			res.render('applications/index', { applications: applications, number_applications: result.count, errors: []});			
+			res.render('applications/index', { applications: applications, number_applications: result.count, errors: [], csrfToken: req.csrfToken()});			
 		}
 	}).catch(function(error) { next(error); });
 };
@@ -199,7 +199,8 @@ exports.show = function(req, res, next) {
 														  user_logged_permissions: user_logged_permissions,
 														  pep_proxy: pep_proxy,
 														  iot_sensors: iot_sensors,																	  
-														  errors: [] });
+														  errors: [], 
+														  csrfToken: req.csrfToken() });
 
 					}).catch(function(error) { next(error); });
 				}).catch(function(error) { next(error); });
@@ -209,7 +210,8 @@ exports.show = function(req, res, next) {
 														user_logged_permissions: [],
 														pep_proxy: undefined,
 														iot_sensors: [],																	  
-														errors: [] }); }
+														errors: [], 
+														csrfToken: req.csrfToken() }); }
 		}).catch(function(error) { next(error); });
 	}).catch(function(error) { next(error); });
 	
@@ -220,7 +222,7 @@ exports.new = function(req, res) {
 
 	debug("--> new");
 
-	res.render('applications/new', {application: {}, errors: []})
+	res.render('applications/new', {application: {}, errors: [], csrfToken: req.csrfToken()})
 };
 	
 // POST /idm/applications -- Create application
@@ -253,12 +255,12 @@ exports.create = function(req, res, next) {
 				})
 			}).catch(function(error){
 				res.locals.message = {text: ' Unable to create application',type: 'danger'}
-			 	res.render('applications/new', { application: application, errors: []});
+			 	res.render('applications/new', { application: application, errors: [], csrfToken: req.csrfToken()});
 			});	
 
 		// Render the view once again, sending the error found when validating
 		}).catch(function(error){ 
-		 	res.render('applications/new', { application: application, errors: error.errors}); 
+		 	res.render('applications/new', { application: application, errors: error.errors, csrfToken: req.csrfToken()}); 
 		});
 	}	
 };
@@ -268,7 +270,7 @@ exports.step_new_avatar = function(req, res, next) {
 
 	debug("--> step_new_avatar");
 
-	res.render('applications/step_create_avatar', { application: req.application, errors: []});
+	res.render('applications/step_create_avatar', { application: req.application, errors: [], csrfToken: req.csrfToken()});
 };
 
 // POST /idm/applications/:applicationId/step/avatar -- Create Avatar when creating an application
@@ -318,7 +320,8 @@ exports.step_new_roles = function(req, res, next) {
 				res.render('applications/step_create_roles', { application: { id: req.application.id, 
 																		      roles: roles, 
 																		      permissions: permissions,
-																		      role_permission_assign: role_permission_assign }});
+																		      role_permission_assign: role_permission_assign }, 
+															   csrfToken: req.csrfToken()});
 			}).catch(function(error) { next(error); });
 		}).catch(function(error) { next(error); });
 	}).catch(function(error) { next(error); });
@@ -329,7 +332,7 @@ exports.edit = function(req, res) {
 	
 	debug("--> edit");
 	
-	res.render('applications/edit', { application: req.application, errors: []});
+	res.render('applications/edit', { application: req.application, errors: [], csrfToken: req.csrfToken()});
 };
 
 // PUT /idm/applications/:applicationId/edit/avatar -- Update application avatar
@@ -378,12 +381,12 @@ exports.update_info = function(req, res) {
 				res.redirect('/idm/applications/'+req.application.id);
 			}).catch(function(error){
 				res.locals.message = {text: ' Unable to update application',type: 'danger'}
-			 	res.render('applications/edit', { application: application, errors: []});
+			 	res.render('applications/edit', { application: application, errors: [], csrfToken: req.csrfToken()});
 			});		
 		}).catch(function(error){
 			// Send message of warning of updating the application
 			res.locals.message = {text: ' Application update failed.', type: 'warning'};
-		 	res.render('applications/edit', { application: req.body.application, errors: error.errors});
+		 	res.render('applications/edit', { application: req.body.application, errors: error.errors, csrfToken: req.csrfToken()});
 		});
 	}
 };

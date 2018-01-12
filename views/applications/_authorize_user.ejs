@@ -1,6 +1,7 @@
 <!-- Form to authorize user and add role to the application -->
 <div id="authorize_user" class="modal fade" style="top: 0px;" role="dialog" aria-hidden="false">
     <form id="submit_authorized_users_form" class="" action="/idm/applications/<%= application.id %>/edit/users" method="POST">
+        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

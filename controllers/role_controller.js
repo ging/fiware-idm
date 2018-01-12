@@ -51,7 +51,8 @@ exports.manage_roles = function(req, res, next) {
 					res.render('applications/manage_roles', { application: { id: req.application.id, 
 																			 roles: roles, 
 																			 permissions: permissions,
-																			 role_permission_assign: role_permission_assign }});
+																			 role_permission_assign: role_permission_assign },
+															  csrfToken: req.csrfToken() });
 			}).catch(function(error) { next(error); });
 		}).catch(function(error) { next(error); });
 	}).catch(function(error) { next(error); });

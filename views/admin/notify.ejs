@@ -10,7 +10,7 @@
             </h3>
         </div>
         <form id="send_message_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm_admin/notify" method="POST" enctype="">
-            <input type="hidden" name="" value="">
+            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
             <div class="modal-body clearfix">
                 <fieldset>
                     <div class="form-group required">

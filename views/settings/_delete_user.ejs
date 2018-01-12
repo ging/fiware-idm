@@ -7,7 +7,7 @@
                 <h3>Cancel account</h3>
             </div>
             <form id="cancel_account_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/settings/cancel?_method=delete" method="POST" enctype="">
-                <!-- <input type="hidden" name="csrfmiddlewaretoken" value="EJuf0My0mpY3B50eQ3QF7QhxT2xzgXnT"> -->
+                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                 <div class="modal-body clearfix">
                     <div class="left">
                         <fieldset>

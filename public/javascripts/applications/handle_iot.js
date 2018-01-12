@@ -74,6 +74,7 @@ $(document).ready(function(){
         $.ajax({
             url: url,
             type: 'DELETE',
+            beforeSend: beforeSend($('input:hidden[name=_csrf]').val()),
             success: function(result) {
                 if (result.type === "success") {
                     $('#collapse_iot_sensors').find('.show_password').remove()

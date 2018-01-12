@@ -3,6 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var csrf = require('csurf')
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var session = require('express-session');
@@ -10,7 +11,13 @@ var partials = require('express-partials');
 var sassMiddleware = require('node-sass-middleware');
 var forceSsl = require('express-force-ssl');
 
-var index = require('./routes/index');
+
+// setup route middlewares
+var csrfProtection = csrf({ cookie: false })
+var parseForm = bodyParser.urlencoded({ extended: false })
+module.exports = { csrfProtection: csrfProtection, parseForm: parseForm}
+
+// Obtain secret from config file
 var config = require ('./config.js').session;
 
 var app = express();
@@ -27,9 +34,22 @@ app.use(bodyParser.urlencoded());
 app.use(partials());
 app.use(cookieParser(config.secret));
 app.use(session({
-	secret: config.secret
+  secret: config.secret
 }));
 app.use(forceSsl);
+
+app.get('/form', csrfProtection, function (req, res) {
+  // pass the csrfToken to the view
+  res.render('auth/index', { csrfToken: req.csrfToken() })
+})
+
+app.post('/process', parseForm, csrfProtection, function (req, res) {
+  res.send('data is being processed')
+})
+
+
+// Set routes
+var index = require('./routes/index');
 
 // Middleware to convert sass files to css
 app.use(sassMiddleware({
@@ -77,7 +97,8 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error', {errors: []});
+  res.render('error', {errors: [], csrfToken: req.csrfToken()});
 });
 
 module.exports = app;
+

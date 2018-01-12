@@ -57,7 +57,7 @@ exports.new = function(req, res) {
         res.locals.message = req.session.message;
         delete req.session.message
     }
-    res.render('index', {errors: errors});
+    res.render('index', {errors: errors, csrfToken: req.csrfToken()});
 };
 
 // POST /auth/login -- Create Session
@@ -114,7 +114,7 @@ exports.create = function(req, res, next) {
 
 // GET /update_password -- Render settings/password view with a warn to indicate user to change password
 exports.update_password = function(req, res) {
-    res.render('settings/password', {errors: [], warn_change_password: true})
+    res.render('settings/password', {errors: [], warn_change_password: true, csrfToken: req.csrfToken()})
 }
 
 // DELETE /auth/logout -- Delete Session

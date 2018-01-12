@@ -13,6 +13,7 @@
         <div class="site-client-roles">
             <div class="workflow workflow-roles static_page">
                 <form id="assign_role_permission_form" action="/idm/applications/<%= application.id %>/edit/roles" method="POST">
+                    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                     <input type="hidden" id="submit_assignment" name="submit_assignment" value="" />
                     <div class="modal-dialog">
                         <div class="modal-content">

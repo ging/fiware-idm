@@ -8,7 +8,7 @@
                     </h3>
                 </div>
                 <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/info?_method=put" method="POST" enctype="">
-                    <input type="hidden" name="" value="">
+                    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                     <div class="modal-body clearfix">
                         <div>
                             <fieldset>
@@ -58,29 +58,35 @@
                         Personal Avatar
                     </h3>
                 </div>
-                <form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar?_method=put" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="" value="">
-                    <div class="modal-body clearfix">
-                        <div class="row">
-                            <div class="avatar_col col-xs-12 col-md-6 used-avatar">
-                                <div class="profile_img">
-                                    <img id="avatar-update" src="<%= user.image %>" alt="your uploaded image" style="width: 100px; height: 100px;">
-                                </div>
-                                <div class="profile_actions">
-                                    <div class="clear_right"></div>
-                                    <% if (user.gravatar) { -%>
-                                        <button class="btn btn-primary always-enabled avatar-button" name="use_uploaded_image" type="submit" id="use_avatar">Use this image</button>
-                                    <% } else { -%>
-                                        <button class="btn btn-primary always-enabled avatar-button" disabled="disabled" name="use_uploaded_image" type="submit">Use this image</button>    
-                                    <% } -%>
-                                    <% if (user.image != "/img/logos/original/user.png") { -%>
-                                        <button type="button" class="btn btn-primary always-enabled ajax-modal" data-toggle="modal" data-target="#delete_avatar">Delete this image</button>
-                                    <% } else { -%>
-                                        <button type="button" class="btn btn-primary always-enabled ajax-modal" disabled="disabled">Delete this image</button>
-                                    <% } -%>
-                                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="avatar_col col-xs-12 col-md-6 used-avatar">
+                            <div class="profile_img">
+                                <img id="avatar-update" src="<%= user.image %>" alt="your uploaded image" style="width: 100px; height: 100px;">
                             </div>
-                            <div class="avatar_col col-xs-12 col-md-6">
+                            <div class="profile_actions">
+                                <div class="clear_right"></div>
+                                    <form id="use_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar?_method=put" method="POST" enctype="">
+                                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                                            <% if (user.gravatar) { -%>
+                                                <button class="btn btn-primary always-enabled avatar-button" name="use_uploaded_image" type="submit" id="use_avatar">Use this image</button>
+                                            <% } else { -%>
+                                                <button class="btn btn-primary always-enabled avatar-button" disabled="disabled" name="use_uploaded_image" type="submit">Use this image</button>    
+                                            <% } -%>
+                                    </form>
+                                    <form id="delete_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar?_method=delete" method="POST" enctype="">
+                                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                                            <% if (user.image != "/img/logos/original/user.png") { -%>
+                                                <button type="button" class="btn btn-primary always-enabled ajax-modal" data-toggle="modal" data-target="#delete_avatar">Delete this image</button>
+                                            <% } else { -%>
+                                                <button type="button" class="btn btn-primary always-enabled ajax-modal" disabled="disabled">Delete this image</button>
+                                            <% } -%>
+                                    </form>
+                            </div>
+                        </div>
+                        <div class="avatar_col col-xs-12 col-md-6">
+                            <form id="use_gravatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/gravatar?_method=put" method="POST" enctype="">
+                                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                                 <% if (user.image_gravatar) { -%>
                                     <div class="profile_img">
                                         <img id="gravatar-preview" src="<%= user.image_gravatar%>" alt="your gravatar">
@@ -100,39 +106,40 @@
                                     </div>
                                     <p class="profile_txt">We're compatible with Gravatar. Create your profile <a href="https://en.gravatar.com/" target="_blank">here</a>!</p>
                                 <% } -%>
-
-                            </div>
-
+                            </form>
                         </div>
-                        <div>
-                            <fieldset>
-                                <h6>Upload an image</h6> 
-                                <input id="id_x" name="x" type="hidden">
-                                <input id="id_y" name="y" type="hidden">
-                                <input id="id_w" name="w" type="hidden">
-                                <input id="id_h" name="h" type="hidden">
-                                <div class="form-group ">
-                                    <label class="control-label  " for="id_image"></label>
-                                    <div class="image_selected">
-                                        <input id="id_image" accept="image/*" name="image" type="file">
+                    </div>
+                    <div>
+                        <form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar" method="POST" enctype="multipart/form-data">
+                            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                                <fieldset>
+                                    <h6>Upload an image</h6> 
+                                    <input id="id_x" name="x" type="hidden">
+                                    <input id="id_y" name="y" type="hidden">
+                                    <input id="id_w" name="w" type="hidden">
+                                    <input id="id_h" name="h" type="hidden">
+                                    <div class="form-group ">
+                                        <label class="control-label  " for="id_image"></label>
+                                        <div class="image_selected">
+                                            <input id="id_image" accept="image/*" name="image" type="file">
+                                        </div>
                                     </div>
+                                </fieldset>
+                            </div>
+                            <div class="row avatar-update-container">
+                                <div class="col-md-10" style="display:none;">
+                                    <img id="avatar-update" src="/img/logos/original/app.png">
                                 </div>
-                            </fieldset>
-                        </div>
-                        <div class="row avatar-update-container">
-                            <div class="col-md-10" style="display:none;">
-                                <img id="avatar-update" src="/img/logos/original/app.png">
+                                <div class="col-md-2 update_actions" style="display:none;">
+                                    <h6>Select the part of the image you want to use as avatar.</h6>
+                                    <button id="crop-and-use-button" class="btn btn-primary always-enabled" name="crop_and_use" type="submit">Crop and use</button>
+                                    <a href="#" class="btn btn-default always-enabled" id="cancel-crop-button">Cancel</a>
+                                </div>
                             </div>
-                            <div class="col-md-2 update_actions" style="display:none;">
-                                <h6>Select the part of the image you want to use as avatar.</h6>
-                                <button id="crop-and-use-button" class="btn btn-primary always-enabled" name="crop_and_use" type="submit">Crop and use</button>
-                                <a href="#" class="btn btn-default always-enabled" id="cancel-crop-button">Cancel</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </form>
+                        </form>
+                </div>
+                <div class="modal-footer">
+                </div>
             </div>
         </div>
     </div>

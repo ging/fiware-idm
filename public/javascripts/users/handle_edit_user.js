@@ -16,8 +16,8 @@ $(document).ready(function(){
 		$('.avatar-update-container').children().hide("close")
 	});
 
-	var use_gravatar = false;
-	// Cancel select image
+	/*var use_gravatar = false;
+	// Use_gravatar
 	$('#use_gravatar').click(function() {
 		var user_id = window.location.pathname.split('/')[3]
 		var form_action = '/idm/users/'+ user_id +'/edit/gravatar?_method=put'
@@ -32,11 +32,11 @@ $(document).ready(function(){
 		var form_action = '/idm/users/'+ user_id +'/edit/avatar/set?_method=put'
 		$("#create_avatar_form").attr('action', form_action)
 		use_avatar = true;
-	});
+	});*/
 
     // Handle the submit button from the edit application form
 	$("#create_avatar_form").on("submit", function(event) {
-	    if (!use_gravatar && !use_avatar) {
+	    /*if (!use_gravatar && !use_avatar) {*/
 	    	// stop form from submitting normally
 	    	event.preventDefault();
 
@@ -51,7 +51,7 @@ $(document).ready(function(){
 		    	$('#id_image').replaceWith('<input id="id_image" name="image" type="file">')
 				$('.avatar-update-container').children().hide("close")
 		    }	    	
-	    }
+	    /*}*/
   	});
 
     // To remove message

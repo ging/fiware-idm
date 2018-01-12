@@ -41,6 +41,7 @@ $(document).ready(function(){
         $.ajax({
             url: url,
             type: 'DELETE',
+            beforeSend: beforeSend($('input:hidden[name=_csrf]').val()),
             success: function(result) {
                 if (result.type === "success") {
                     $('#avatar-update').attr('src', '/img/logos/original/app.png');

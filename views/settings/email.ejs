@@ -4,7 +4,7 @@
     </div>
     <div id="change_email_modal" class="static_page">
         <form id="change_email_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/settings/email" method="POST" enctype="">
-            <!-- <input type="hidden" name="csrfmiddlewaretoken" value="HR1UFZi6rInhUQcht3hewW3Rww8MHB3W"> -->
+            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
             <div class="modal-body clearfix">
                 <div class="left">
                     <fieldset>

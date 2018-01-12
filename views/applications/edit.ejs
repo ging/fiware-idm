@@ -14,7 +14,8 @@
 						Application Information
 					</h3>
 				</div>
-				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/info?_method=put" method="POST" enctype=""><input type="hidden" name="" value="">
+				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/info?_method=put" method="POST" enctype="">
+					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 					<div class="modal-body clearfix">
 
 						<fieldset>
@@ -85,6 +86,7 @@
 					</h3>
 				</div>
 				<form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/avatar?_method=put" method="POST" enctype="multipart/form-data">
+					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 					<input id="submit_avatar" type="hidden" name="" value="">
 					<div class="modal-body clearfix">
 						<div class="row">
@@ -141,8 +143,8 @@
 						Cancel
 					</h3>
 				</div>
-				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>?_method=delete" method="POST" enctype="multipart/form-data">
-					<input type="hidden" name="" value="">
+				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>?_method=delete" method="POST">
+					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 					<div class="modal-body clearfix">
 						<a class="panel-title" data-toggle="collapse" data-parent="#accordion" href="#destroy_application">
 							<h3>
@@ -173,6 +175,7 @@
 
 <%- include templates/_info_message %>
 
+<script src="/javascripts/handle_csrf_token.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_edit_application.js" type="text/javascript"></script>
 
 <script type="text/javascript">

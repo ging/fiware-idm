@@ -1,7 +1,7 @@
 <!-- Form to authorize user to be admin -->
 <div id="authorize_user" class="modal fade" style="top: 0px;" role="dialog" aria-hidden="false">
     <form id="submit_authorized_administrators_form" class="" action="/idm_admin/administrators?_method=put" method="POST">
-        <input type="hidden" name="" value="">
+        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

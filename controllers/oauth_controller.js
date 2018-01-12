@@ -36,7 +36,7 @@ exports.response_type_required = function(req, res, next) {
   }
 }
 
-// GET /oauth2/authorize -- Function to get form to sign in in user is not logged
+// GET /oauth2/authorize -- Function to get form to sign in if user is not logged
 exports.log_in = function(req, res, next) {
   models.oauth_client.findOne({
     where: {id: req.query.client_id},
@@ -51,7 +51,7 @@ exports.log_in = function(req, res, next) {
         state: req.query.state,
         redirect_uri: req.query.redirect_uri,
         image: ((application.image == 'default') ? '/img/logos/original/app.png' : ('/img/applications/'+application.image)) 
-      }, errors: [] }); 
+      }, errors: [], csrfToken: req.csrfToken() }); 
     } else {
       var text = 'Application with id = ' + req.query.client_id + ' doesn`t exist'
       req.session.message = {text: text, type: 'warning'};
@@ -199,7 +199,7 @@ function render_oauth_authorize(req, res) {
         response_type: req.query.response_type,
         id: req.query.client_id,
         redirect_uri: req.query.redirect_uri,
-        state: req.query.state }
+        state: req.query.state }, csrfToken: req.csrfToken()
       });
     } else {
       var text = 'User is not authorized in the application or application does not exist'

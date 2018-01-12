@@ -145,7 +145,7 @@ exports.edit_permission = function(req, res) {
 							 oauth_client_id: req.application.id }				
 				}).then(function() {
 					// Send message of success of updating permission
-					res.send({text: ' Permission was successfully edited.', type: 'success'});
+					res.send({message: {text: ' Permission was successfully edited.', type: 'success'}});
 				}).catch(function(error) {
 					// Send message of fail when creating role
 					res.send({text: ' Failed editing permission.', type: 'danger'})

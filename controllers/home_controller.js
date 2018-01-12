@@ -42,7 +42,7 @@ exports.index = function(req, res) {
 			applications.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} )
 		}
 
-		res.render('home/index', { applications: applications, change_password: req.session.user.change_password, errors: []});
+		res.render('home/index', { applications: applications, change_password: req.session.user.change_password, errors: [], csrfToken: req.csrfToken()});
 	});
 };
 
@@ -50,5 +50,5 @@ exports.index = function(req, res) {
 exports.help_about = function(req, res) {
 	debug("--> help_about")
 	
-	res.render("help_about")
+	res.render("help_about", {csrfToken: req.csrfToken()})
 }

@@ -58,7 +58,10 @@ $(document).ready(function(){
             url = $form.attr('action');
 
         // Send the data using post with element id name 
-        var posting = $.post(url, { name: $("#create_role_form").find('#id_name').val()});
+        var posting = $.post({
+                    url: url, 
+                    data: { name: $("#create_role_form").find('#id_name').val() },
+                    beforeSend: beforeSend($("#create_role_form").find('input:hidden[name=_csrf]').val()) });
 
         // Alerts the results 
         posting.done(function(result) {
@@ -137,6 +140,7 @@ $(document).ready(function(){
         $.ajax({
             url: $(this).attr('href'),
             type: 'PUT',
+            beforeSend: beforeSend($("#assign_role_permission_form").find('input:hidden[name=_csrf]').val()),
             data: { role_name: role_name },
             success: function(result) {
 

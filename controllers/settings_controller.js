@@ -7,7 +7,7 @@ var email = require('../lib/email.js')
 exports.settings = function(req, res) {
     debug("--> settings")
 
-    res.render("settings/settings")
+    res.render("settings/settings", {csrfToken: req.csrfToken()})
 }
 
 // POST /settings/password -- Change password
@@ -38,7 +38,7 @@ exports.password = function(req, res) {
 
     // If there are erros render the view with them. If not check password of user
 	if (errors.length > 0) {
-		res.render('settings/password', {errors: errors, warn_change_password: false})
+		res.render('settings/password', {errors: errors, warn_change_password: false, csrfToken: req.csrfToken()})
 	} else {
 		// Search the user through the email
 	    models.user.find({
@@ -66,7 +66,7 @@ exports.password = function(req, res) {
 	            	})
 	            } else { 
 	            	res.locals.message = { text: 'Unable to change password. Unauthorized', type: 'danger'}
-	            	res.render('settings/password', {errors: errors, warn_change_password: false})
+	            	res.render('settings/password', {errors: errors, warn_change_password: false, csrfToken: req.csrfToken()})
 	        	}   
 	        } else { callback(new Error('invalid')); }
 	    }).catch(function(error){ debug(error)/*callback(error)*/ });
@@ -93,20 +93,20 @@ exports.email = function(req, res) {
 
     // If there are erros render the view with them. If not check password of user
 	if (errors.length > 0) {
-		res.render('settings/email', {errors: errors})
+		res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
 	} else {
 
 		// If is the actual email send a message of error to the user
 		if (req.session.user.email === req.body.email) {
 			res.locals.message = { text: ' It is your actual email.', type: 'warning'}
-			res.render('settings/email', {errors: errors})
+			res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
 		}
 		models.user.findOne({
 			where: { email: req.body.email}
 		}).then(function(user) {
 			if (user)  {
 				res.locals.message = { text: ' Email already used.', type: 'danger'}
-				res.render('settings/email', {errors: errors})
+				res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
 			} else {
 				// Search the user through the email
 			    models.user.find({
@@ -145,14 +145,14 @@ exports.email = function(req, res) {
 			                    res.locals.message = { text: `An emails has been sent to verify your account.
 				            								  Follow the provided link to change your email`,
 				            						   type: 'success'}
-				            	res.render('settings/settings')
+				            	res.render('settings/settings', {csrfToken: req.csrfToken()})
 			                }).catch(function(error) {
 			                    debug('  -> error' + error)
 			                    res.redirect('/')
 			                })		               
 			            } else { 
 			            	res.locals.message = { text: 'Invalid password', type: 'danger'}
-			            	res.render('settings/email', {errors: errors})
+			            	res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
 			        	}   
 			        } else { 
 			        	callback(new Error('invalid'));
@@ -182,7 +182,7 @@ exports.email_verify = function(req, res) {
             if (user.verification_key === req.query.verification_key) {
                 if ((new Date()).getTime() > user.verification_expires.getTime()) {
                     res.locals.message = {text: 'Error changing email address', type: 'danger'};
-                    res.render('index', { errors: [] });
+                    res.render('index', { errors: [], csrfToken: req.csrfToken() });
                 } else {
                     models.user.update({ 
                         email: req.query.new_email
@@ -192,7 +192,7 @@ exports.email_verify = function(req, res) {
                     }).then(function() {
                     	req.session.user.email = req.query.new_email
                         res.locals.message = { text: ' Email successfully changed', type: 'success'}
-                        res.render('settings/settings')
+                        res.render('settings/settings', {csrfToken: req.csrfToken()})
                     }).catch(function(error) {
                         debug('  -> error ' + error)
                         res.redirect('/')

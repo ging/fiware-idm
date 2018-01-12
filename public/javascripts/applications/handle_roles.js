@@ -47,6 +47,10 @@ $(document).ready(function(){
         exit_role_form()
 	});
 
+    function htmlEntities(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
 	// Handle the submit button from the create role form
 	$("#create_role_form").submit(function(event) {
 
@@ -85,7 +89,7 @@ $(document).ready(function(){
                 
         		// Create new row in role column
         		var role_row = $('#table_row_role_template').html();
-                role_row = role_row.replace(/role_name/g, result.role.name);
+                role_row = role_row.replace(/role_name/g, htmlEntities(result.role.name));
                 role_row = role_row.replace(/role_id/g, String(result.role.id));
                 role_row = role_row.replace(/app_id/g, String(application.id));
                 $('#update_owners_roles').append(role_row);
@@ -120,7 +124,7 @@ $(document).ready(function(){
 
         edit_role = edit_role.replace(/app_id/g, app_id);
         edit_role = edit_role.replace(/role_id/g, role_id);
-        edit_role = edit_role.replace(/role_name/g, role_name);
+        edit_role = edit_role.replace(/role_name/g, htmlEntities(role_name));
 
         // Replace the row with the template edit_role edited
         $("#update_owners_roles").find("#"+role_id).replaceWith(edit_role);
@@ -157,7 +161,7 @@ $(document).ready(function(){
                 } else {
                     // Update role name
                     var role_row = $('#table_row_role_template').html();
-                    role_row = role_row.replace(/role_name/g, role_name);
+                    role_row = role_row.replace(/role_name/g, htmlEntities(role_name));
                     role_row = role_row.replace(/role_id/g, role_id);
                     role_row = role_row.replace(/app_id/g, String(application.id));
                     $("#update_owners_roles").find("#"+role_id).replaceWith(role_row);
@@ -195,7 +199,7 @@ $(document).ready(function(){
 
         // To return to the previous step
         var role_row = $('#table_row_role_template').html();
-        role_row = role_row.replace(/role_name/g, role.name);
+        role_row = role_row.replace(/role_name/g, htmlEntities(role.name));
         role_row = role_row.replace(/role_id/g, String(role.id));
         role_row = role_row.replace(/app_id/g, String(application.id));
 

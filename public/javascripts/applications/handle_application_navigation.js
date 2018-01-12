@@ -43,12 +43,16 @@ $(document).ready(function(){
 			var application_row = $('#application_row_template').html();
             application_row = application_row.replace(/application_id/g, applications[i].id);
             application_row = application_row.replace(/application_image/g, applications[i].image);
-            application_row = application_row.replace(/application_name/g, applications[i].name);
-            application_row = application_row.replace(/application_url/g, applications[i].url);
+            application_row = application_row.replace(/application_name/g, htmlEntities(applications[i].name));
+            application_row = application_row.replace(/application_url/g, htmlEntities(applications[i].url));
 
             table.append(application_row);
 			
 		}
+	}
+
+	function htmlEntities(str) {
+	    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 	}
 
 	function providing_applications(max) {

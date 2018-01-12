@@ -19,7 +19,7 @@ function available_users(input, input_change_authorize, template) {
 					$("#authorize_user").find(".available_members").empty()
 					for(available_user in data) {
 						var authorize_user_row = $('#'+template).html();
-			            authorize_user_row = authorize_user_row.replace(/username/g, String(data[available_user].username));
+			            authorize_user_row = authorize_user_row.replace(/username/g, htmlEntities(data[available_user].username));
 			            authorize_user_row = authorize_user_row.replace(/user_id/g, String(data[available_user].id));
 			            authorize_user_row = authorize_user_row.replace(/user_avatar/g, String(data[available_user].image));
 			            $("#authorize_user").find(".available_members").append(authorize_user_row);
@@ -47,4 +47,8 @@ function available_users(input, input_change_authorize, template) {
 
 	input_change_authorize = input;
 	return input_change_authorize
+}
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }

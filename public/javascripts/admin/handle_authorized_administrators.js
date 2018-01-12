@@ -78,6 +78,9 @@ $(document).ready(function() {
       
     });
 
+    function htmlEntities(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
     // Change available member to members column
     $("#available_members").on("click",".active", function(event) { 
@@ -99,7 +102,7 @@ $(document).ready(function() {
             $("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
         } else {
             var assign_role_user_row = $('#table_row_set_admin_row_template').html();
-            assign_role_user_row = assign_role_user_row.replace(/username/g, String(username));
+            assign_role_user_row = assign_role_user_row.replace(/username/g, htmlEntities(username));
             assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(user_id));
             assign_role_user_row = assign_role_user_row.replace(/user_avatar/g, String(image));
             $("#authorize_user").find(".members").append(assign_role_user_row);

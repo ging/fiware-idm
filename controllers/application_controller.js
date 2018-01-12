@@ -11,7 +11,6 @@ var debug = require('debug')('idm:application_controller');
 var gravatar = require('gravatar');
 var Jimp = require("jimp");
 
-
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 // Autoload info if path include applicationId

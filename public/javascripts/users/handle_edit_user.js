@@ -16,24 +16,6 @@ $(document).ready(function(){
 		$('.avatar-update-container').children().hide("close")
 	});
 
-	/*var use_gravatar = false;
-	// Use_gravatar
-	$('#use_gravatar').click(function() {
-		var user_id = window.location.pathname.split('/')[3]
-		var form_action = '/idm/users/'+ user_id +'/edit/gravatar?_method=put'
-		$("#create_avatar_form").attr('action', form_action)
-		use_gravatar = true;
-	});
-
-	var use_avatar = false;
-	// Cancel select image
-	$('#use_avatar').click(function() {
-		var user_id = window.location.pathname.split('/')[3]
-		var form_action = '/idm/users/'+ user_id +'/edit/avatar/set?_method=put'
-		$("#create_avatar_form").attr('action', form_action)
-		use_avatar = true;
-	});*/
-
     // Handle the submit button from the edit application form
 	$("#create_avatar_form").on("submit", function(event) {
 	    /*if (!use_gravatar && !use_avatar) {*/

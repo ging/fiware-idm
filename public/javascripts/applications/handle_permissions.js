@@ -39,6 +39,10 @@ $(document).ready(function(){
         exit_permission_form()
 	});
 
+    function htmlEntities(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
 	// Handle the submit button from the create  permission
 	$("#create_permission_form").submit(function(event) {
 
@@ -96,7 +100,7 @@ $(document).ready(function(){
                     if (method === 'POST') {
                         // Create new row in permission column
                         var permission = $('#table_row_permission_template').html();
-                        permission = permission.replace("perm_name", result.permission.name)
+                        permission = permission.replace("perm_name", htmlEntities(result.permission.name))
                         permission = permission.replace("perm_id", String(result.permission.id))
                         $("#list_permissions").append(permission)
 
@@ -110,7 +114,7 @@ $(document).ready(function(){
                             }
                         });
 
-                        $("#list_permissions").find('[data-permission-id='+permission_id+']').find('#display_name').text(name)          
+                        $("#list_permissions").find('[data-permission-id='+permission_id+']').find('#display_name').text(name)
                     }
 
                     // Exit from dialog

@@ -11,7 +11,6 @@ var partials = require('express-partials');
 var sassMiddleware = require('node-sass-middleware');
 var forceSsl = require('express-force-ssl');
 
-
 // setup route middlewares
 var csrfProtection = csrf({ cookie: false })
 var parseForm = bodyParser.urlencoded({ extended: false })

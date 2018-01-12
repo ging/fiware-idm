@@ -32,6 +32,10 @@ $(document).ready(function(){
   		}    
     	
     });
+
+    function htmlEntities(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
     
 	// Pop up with a form to authorize new users to the application
 	$('#auth_users_action_manage_application_users').click(function () {
@@ -61,10 +65,10 @@ $(document).ready(function(){
 				for (var i = 0; i < users_authorized.length; i++) {
 					if (!$("#authorize_user").find(".members").find("#"+users_authorized[i].user_id).length) {
 						var assign_role_user_row = $('#table_row_assign_role_user_template').html();
-				        assign_role_user_row = assign_role_user_row.replace(/username/g, String(users_authorized[i].username));
+				        assign_role_user_row = assign_role_user_row.replace(/username/g, htmlEntities(users_authorized[i].username));
 				        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(users_authorized[i].user_id));
 				        assign_role_user_row = assign_role_user_row.replace(/user_avatar/g, String(users_authorized[i].image));
-				        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
+				        assign_role_user_row = assign_role_user_row.replace(/application_name/g, htmlEntities(application.name));
 				        if (user_role_count[users_authorized[i].user_id] > 0) {
 				        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String(user_role_count[users_authorized[i].user_id] + " roles"));
 				        } else {
@@ -155,10 +159,10 @@ $(document).ready(function(){
 	        	$("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
 	    } else {
 	    	var assign_role_user_row = $('#table_row_assign_role_user_template').html();
-	        assign_role_user_row = assign_role_user_row.replace(/username/g, String(username));
+	        assign_role_user_row = assign_role_user_row.replace(/username/g, htmlEntities(username));
 	        assign_role_user_row = assign_role_user_row.replace(/user_id/g, String(user_id));
 	        assign_role_user_row = assign_role_user_row.replace(/user_avatar/g, String(image));
-	        assign_role_user_row = assign_role_user_row.replace(/application_name/g, String(application.name));
+	        assign_role_user_row = assign_role_user_row.replace(/application_name/g, htmlEntities(application.name));
 	        assign_role_user_row = assign_role_user_row.replace(/roles_count/g, String("No roles"));
 	        $("#authorize_user").find(".members").append(assign_role_user_row);
 	        for (j in roles) {

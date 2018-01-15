@@ -258,8 +258,14 @@ exports.create = function(req, res, next) {
 			});	
 
 		// Render the view once again, sending the error found when validating
-		}).catch(function(error){ 
-		 	res.render('applications/new', { application: application, errors: error.errors, csrfToken: req.csrfToken()}); 
+		}).catch(function(error){
+			var nameErrors = []
+			if (error.errors.length) {
+        		for (var i in error.errors) {
+        			nameErrors.push(error.errors[i].message)
+        		}
+  			}
+		 	res.render('applications/new', { application: application, errors: nameErrors, csrfToken: req.csrfToken()}); 
 		});
 	}	
 };

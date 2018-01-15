@@ -11,6 +11,7 @@ var parseForm = require('../app').parseForm;
 var applicationController = require('../controllers/application_controller');
 var sessionController = require('../controllers/session_controller');
 var userController = require('../controllers/user_controller');
+var organizationController = require('../controllers/organization_controller');
 var homeController = require('../controllers/home_controller');
 var oauthController = require('../controllers/oauth_controller');
 var roleController = require('../controllers/role_controller');
@@ -59,12 +60,13 @@ router.oauth = new oauthServer({
 
 
 // Autoloads
-router.param('applicationId', applicationController.load_application);
-router.param('pepId',         pepProxyController.load_pep);
-router.param('iotId',         iotController.load_iot);
-router.param('roleId',        roleController.load_role);
-router.param('permissionId',  permissionController.load_permission);
-router.param('userId',        userController.load_user);
+router.param('applicationId',   applicationController.load_application);
+router.param('pepId',           pepProxyController.load_pep);
+router.param('iotId',           iotController.load_iot);
+router.param('roleId',          roleController.load_role);
+router.param('permissionId',    permissionController.load_permission);
+router.param('userId',          userController.load_user);
+router.param('organizationId',  organizationController.load_organization);
 
 // Routes for Oauth2
 // MIRAR SI PONERLE EL CSRF PERO CREO QUE NO QUE EL CAMPO STATE YA LO HACE
@@ -149,6 +151,12 @@ router.delete('/idm/users/:userId/edit/avatar/delete',  sessionController.login_
 router.put('/idm/users/:userId/edit/gravatar',          sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   parseForm,  csrfProtection,     userController.set_gravatar);
 router.post('/idm/users/available',                     sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,     authorizeUserController.available_users);
 
+
+// Routes for organziations
+router.get('/idm/organizations',                    sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.index);
+router.get('/idm/organizations/new',                sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.new);
+router.post('/idm/organizations',                   sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection, organizationController.create);
+router.get('/idm/organizations/:organizationId',    sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.show);
 
 // Route to save images of applications
 var imageAppUpload = multer.diskStorage({

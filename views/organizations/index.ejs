@@ -1,0 +1,49 @@
+<div id="content_body">
+    <div class="page-header">
+        <h2>
+            Organizations
+        </h2>
+    </div>
+    <div id="organizations-table">
+        <div class="panel panel-default tab-group">
+            <div id="header_panel_tabs" class="panel-heading">
+                <div class="tab_group_actions clearfix">
+                    <div class="btn-group"> 
+                        <a href="/idm/organizations/new" title="Create" class="btn btn-primary">
+                            Create
+                        </a>
+                    </div>
+                </div>
+                <ul id="panel_tabs" class="nav nav-tabs ajax-tabs" data-sticky-tabs="sticky">
+                    <li class="active">
+                        <a href="?tab=panel_tabs__owned_organizations_tab" data-toggle="tab" data-target="#panel_tabs__owned_organizations_tab" data-loaded="true">Owner</a>
+                    </li>
+                    <li class="">
+                        <a href="?tab=panel_tabs__member_organizations_tab" data-toggle="tab" data-target="#panel_tabs__member_organizations_tab" data-loaded="false">Member</a>
+                    </li>
+                    <li class="">
+                        <a href="?tab=panel_tabs__other_organizations_tab" data-toggle="tab" data-target="#panel_tabs__other_organizations_tab" data-loaded="false">Other Org.</a>
+                    </li>
+                </ul>
+                <div id="spinner_panel_tabs" class="tab-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i>
+                </div>
+            </div>
+            <div id="body_panel_tabs" class="panel-body tab-content">
+                <div id="panel_tabs__owned_organizations_tab" class="tab-pane active">
+                    <div class=" datatable" id="owned_organizations" data-pagination-url="/filters/organizations" data-organization_role="owner" data-pagination-pages="">
+                        <!-- <div class="list-group" id="owned_organizations_content"><div class="list-group-item"><a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"><div class="avatar filter_field"><img src="/static/dashboard/img/logos/medium/group.png"></div><div class="name filter_field">alexph91 cloud</div>
+                            <div class="description filter_field">This organization is intended to be used in the cloud environment. As long as you are a trial or community user this organization will be authorized as purchaser in the Cloud Application.</div>
+                        </a><div class="switch filter_field"><a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"></a><a class="btn btn-link" href="/auth/switch/062b32c46a924d33b19235d7f982affa/">switch</a></div>
+                        </div></div> -->
+                        <p class="alert alert-info empty" style="display: block;">You are not owner of any organization.</p>
+                        <div class="panel-footer">
+                            <nav id="owned_organizations_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+                        </div>
+                    </div>
+                </div>
+                <div id="panel_tabs__member_organizations_tab" class="tab-pane"></div>
+                <div id="panel_tabs__other_organizations_tab" class="tab-pane"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,13 +1,5 @@
 <div id="content_body">
 
-	<% var nameErrors = [] %>
-	<% if (errors.length) { %>
-        <% for (var i in errors) { %>
-        	<% nameErrors.push(errors[i].message)%>
-        <% } %>
-      </span>
-  <% } %>
-
   <div id="create_application_modal" class="static_page">
     <div class="modal-header">
       <h3>
@@ -34,7 +26,7 @@
             <input class="form-control" id="id_name" name="application[name]" type="text" value="<%= application.name %>">
           </div>
         </div>
-        <% if (nameErrors.indexOf("name") != -1) { %>
+        <% if (errors.indexOf("name") != -1) { %>
 					<span class="help-block alert alert-danger ">Input required.</span>
 				<% } %>
 
@@ -44,7 +36,7 @@
             <textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= application.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= application.description %></textarea>
           </div>
         </div>
-        <% if (nameErrors.indexOf("description") != -1) { %>
+        <% if (errors.indexOf("description") != -1) { %>
 					<span class="help-block alert alert-danger ">Input required.</span>
 				<% } %>
 
@@ -59,7 +51,7 @@
             <input class="form-control" id="id_url" name="application[url]" type="text" value="<%= application.url %>">
           </div>
         </div>
-        <% if (nameErrors.indexOf("url") != -1) { %>
+        <% if (errors.indexOf("url") != -1) { %>
 					<span class="help-block alert alert-danger ">Input required.</span>
 				<% } %>
 
@@ -69,7 +61,7 @@
             <input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= application.redirect_uri %>" >
           </div>
         </div>
-        <% if (nameErrors.indexOf("redirectUri") != -1) { %>
+        <% if (errors.indexOf("redirectUri") != -1) { %>
 					<span class="help-block alert alert-danger ">Input required.</span>
 				<% } %>
 

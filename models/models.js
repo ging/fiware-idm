@@ -32,6 +32,9 @@ var scope = sequelize.import(path.join(__dirname,'oauth2/oauth_scope'));
 // Import user table
 var user = sequelize.import(path.join(__dirname,'user'));
 
+// Import organization table
+var organization = sequelize.import(path.join(__dirname,'organization'));
+
 // Import role table
 var role = sequelize.import(path.join(__dirname,'role'));
 
@@ -43,6 +46,9 @@ var role_user = sequelize.import(path.join(__dirname,'role_user'));
 
 // Import a table which will contains the ids of roles and permissions
 var role_permission = sequelize.import(path.join(__dirname,'role_permission'));
+
+// Import a table which will contains the ids of users and organizations and the role of the user in the organization
+var user_organization = sequelize.import(path.join(__dirname,'user_organization'));
 
 // Import sensor table
 var iot = sequelize.import(path.join(__dirname,'iot'));
@@ -92,15 +98,18 @@ role_user.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade
 role_user.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between roles and permissions
-// role.belongsToMany(permission, { through: role_permission, onDelete: 'cascade' })
-// permission.belongsToMany(role, { through: role_permission, onDelete: 'cascade' })
 role_permission.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
-//role_permission.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+
+// Relation between users and organizations
+user_organization.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+user_organization.belongsTo(organization, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Exportar tablas
 exports.oauth_client = oauth_client; 
 exports.user = user; 
+exports.organization = organization;
+exports.user_organization = user_organization;
 exports.role = role;
 exports.permission = permission;
 exports.iot = iot;

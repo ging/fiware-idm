@@ -1,0 +1,87 @@
+<div id="content_body">
+    <div id="detailOrganization">
+        <header>
+            <h3 class="name">
+                <%= organization.name %>
+                <a href="/idm/organizations/<%= organization.id %>/edit/" class="small">
+                    <i class="fa fa-edit"></i>
+                    <span>edit</span>
+                </a>
+            </h3>
+            <div class="logo">
+                <img alt="organization logo" src="<%= organization.image %>">
+            </div>
+        </header>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="description">
+                    <h5>
+                        Description
+                    </h5>
+                    <div class="info expander">
+                        <p>
+                        <%  var lines = organization.description.split(/\r\n|\r|\n/)%>
+                        <% for (var i = 0; i < lines.length; i++) { -%>
+                            <% if (lines[i].replace(/^\s+/, '').replace(/\s+$/, '') !== '') { -%>
+                                <%= lines[i] %>
+                                <br>
+                            <% } -%>
+                        <% } -%>
+                        </p>
+                    </div>
+                </div> 
+            </div>
+        </div>
+         <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-application_id="<%= organization.id %>" data-pagination-pages="">
+            <div class="panel-heading">
+                <span class="title">Members</span>
+                <div class="table_actions clearfix">
+                    <div class="filter table_search client">
+                        <input class="form-control" value="" type="text" name="members__filter__q" placeholder="Filter">
+                    </div>
+                    <div id="spinner_members" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+                    <!-- PONER AQUI EL MANAGE SI EL USUARIO ES OWNER -->
+                        <div class="btn-group"> 
+                            <button title="Manage" class="btn btn-default btn-sm ajax-modal" data-toggle="modal" data-target="#manage_member" id="members__action_manage_members">
+                                <i class="fa fa-cogs"></i> 
+                                <span class="action">
+                                    Manage
+                                </span>
+                            </button>
+                        </div>
+                </div>
+            </div>
+            <div class="panel-body datatable-content">
+                <p class="alert alert-info empty" style="display: block;">This organization does not have any member.</p>
+               <!--  <div class="list-group" id="members_content"><div class="list-group-item"><a class="item" href="/idm/users/alex-ja/"><div class="avatar filter_field"><img src="https://secure.gravatar.com/avatar/bd7aa626b50bf40dce0d3dfe2a220d58.jpg?s=36&amp;r=g&amp;d=mm"></div><div class="name filter_field">alex_ja</div>
+  </a></div><div class="list-group-item"><a class="item" href="/idm/users/alexph91/"><div class="avatar filter_field"><img src="/media/UserAvatar/medium/alexph91"></div><div class="name filter_field">alexph91</div>
+  </a></div></div> -->
+            </div>
+            <div class="panel-footer">
+                <nav id="members_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav> 
+            </div>
+        </div>
+        <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-application_id="<%= organization.id %>" data-pagination-pages="">
+            <div class="panel-heading">
+                <span class="title">Authorizing Applications</span>
+                <div class="table_actions clearfix">
+                    <div class="filter table_search client">
+                        <input class="form-control" value="" type="text" name="applications__filter__q" placeholder="Filter">
+                    </div>
+                    <div id="spinner_applications" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+                </div>
+            </div>
+            <div class="panel-body datatable-content">
+                <!-- <div class="list-group" id="applications_content"><div class="list-group-item"><a class="item" href="/idm/myApplications/13ac30ab521e4023acb473e4d99d650d/"><div class="avatar filter_field"><img src="/static/dashboard/img/logos/medium/app.png"></div><div class="name filter_field">aaaaaaa</div>
+                    <div class="url filter_field">aaaaaa</div>
+                </a></div><div class="list-group-item"><a class="item" href="/idm/myApplications/18/"><div class="avatar filter_field"><img src="/media//ApplicationAvatar/medium/WStore_cuad.png"></div><div class="name filter_field">Store - OLD</div>
+                    <div class="url filter_field">https://130.206.84.12/</div>
+                </a></div></div> -->
+                <p class="alert alert-info empty" style="display: block;">This organization does not have any authorizing applications</p>
+            </div>
+            <div class="panel-footer">
+                <nav id="applications_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+            </div>
+        </div>
+    </div>
+</div>

@@ -160,8 +160,8 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-                <% for (var i = 0; i < users_authorized.length; i++) { -%>
-                    <div id="<%= users_authorized[i].user_id %>" class="list-group" id="auth_users_content">
+                <div id="auth_users_content" class="list-group" id="auth_users_content">
+                    <% for (var i = 0; i < users_authorized.length; i++) { -%>
                         <div class="list-group-item">
                             <a class="item" href="/idm/users/<%= users_authorized[i].user_id %>/">
                                 <div class="avatar filter_field">
@@ -170,8 +170,8 @@
                                 <div class="name filter_field"><%= users_authorized[i].username %></div>
                             </a>
                         </div>
-                    </div>  
-                <% } -%>
+                    <% } -%>
+                </div>  
             </div>
             <div class="panel-footer">
                 <nav id="auth_users_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>

@@ -39,15 +39,19 @@ $(document).ready(function(){
 	}
 
 	function create_rows(applications, table) {
-		for (var i = 0; i < applications.length; i++) {
-			var application_row = $('#application_row_template').html();
-            application_row = application_row.replace(/application_id/g, applications[i].id);
-            application_row = application_row.replace(/application_image/g, applications[i].image);
-            application_row = application_row.replace(/application_name/g, htmlEntities(applications[i].name));
-            application_row = application_row.replace(/application_url/g, htmlEntities(applications[i].url));
+		if (applications.length > 0) {
+			for (var i = 0; i < applications.length; i++) {
+				var application_row = $('#application_row_template').html();
+	            application_row = application_row.replace(/application_id/g, applications[i].id);
+	            application_row = application_row.replace(/application_image/g, applications[i].image);
+	            application_row = application_row.replace(/application_name/g, htmlEntities(applications[i].name));
+	            application_row = application_row.replace(/application_url/g, htmlEntities(applications[i].url));
 
-            table.append(application_row);
-			
+	            table.append(application_row);
+				
+			}
+		} else {
+			table.find('.alert').show()
 		}
 	}
 

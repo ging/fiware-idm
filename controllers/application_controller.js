@@ -93,7 +93,9 @@ exports.index = function(req, res) {
 
 // GET /filters/applications -- Filter applications by page
 exports.filter = function(req, res) {
-	debug(req.path)
+	
+	debug("--> index");
+	
 	var role = req.query.role;
 	if (req.query.role === 'other') {
 		role = { [Op.notIn]: ['provider', 'purchaser'] }

@@ -1,5 +1,6 @@
 var models = require('../models/models.js');
 var debug = require('debug')('idm:organization_controller');
+var gravatar = require('gravatar');
 
 
 // Autoload info if path include organizationId
@@ -33,55 +34,94 @@ exports.load_organization = function(req, res, next, organizationId) {
 // GET /idm/organizations -- List all organizations of user
 exports.index = function(req, res) {
 
-	res.render('organizations/index', {csrfToken: req.csrfToken()})
-	/*debug("--> index");
-	
-	var role = 'provider'
-	if (req.query.tab === 'panel_tabs__purchased_tab') {
-		role = 'purchaser'
-	} else if (req.query.tab === 'panel_tabs__authorized_tab') {
-		role = { [Op.notIn]: ['provider', 'purchaser'] }
-	} 
+	debug("--> index");
 
-	// Search applications in which the user is authorized
-	models.role_user.findAndCountAll({
+	var role = 'owner'
+	if (req.query.tab === 'panel_tabs__member_organizations_tab') {
+		role = 'member'
+	}
+
+	models.user_organization.findAndCountAll({
 		where: { user_id: req.session.user.id,
-				 role_id: role },
+		 		 role: role},
 		include: [{
-			model: models.oauth_client,
-			attributes: ['id', 'name', 'url', 'image']
+			model: models.organization,
+			attributes: ['id', 'name', 'description', 'image']
 		}],
 		limit: 5
 	}).then(function(result) {
-		var user_applications = result.rows;
-		// Set message to send when rendering view and delete from request
-		if (req.session.message) {
-			res.locals.message = req.session.message;
-			delete req.session.message
-		}
+		
+		var user_organizations = result.rows;
 
-		var applications = []
-		// If user has applications, set image from file system and obtain info from each application
-		if (user_applications.length > 0) {
+		var organizations = [];
+		
+		if (user_organizations.length > 0) {
 			
-			user_applications.forEach(function(app) {
-				if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
-					if (app.OauthClient.image == 'default') {
-						app.OauthClient.image = '/img/logos/medium/app.png'
+			user_organizations.forEach(function(organization) {
+				if (organizations.length == 0 || !organizations.some(elem => (elem.id == organization.Organization.id))) {
+					if (organization.Organization.image == 'default') {
+						organization.Organization.image = '/img/logos/medium/group.png'
 					} else {
-						app.OauthClient.image = '/img/applications/'+app.OauthClient.image
+						organization.Organization.image = '/img/organizations/'+organization.Organization.image
 					}
-					applications.push(app.OauthClient)
+					organizations.push(organization.Organization)
 				} 
 			});
 		}
+
 		if (req.xhr) {
-			res.send({applications: applications, number_applications: result.count})
+			res.send({organizations: organizations, number_organizations: result.count})
 		} else {
-			res.render('applications/index', { applications: applications, number_applications: result.count, errors: [], csrfToken: req.csrfToken()});			
+			res.render('organizations/index', {csrfToken: req.csrfToken(), organizations: organizations})
 		}
-	}).catch(function(error) { next(error); });*/
+		
+	}).catch(function(error) {
+		debug('Error searching organizations ' + error)
+		var message = {text: ' Unable to search organizations',type: 'danger'}
+		send_response(req, res, message, '/idm')
+	})
 };
+
+// GET /filters/organizations -- Filter organizations by page and number
+exports.filter = function(req, res) {
+
+	debug("--> filter");
+
+	// Search organizations in which the user is member or owner
+	models.user_organization.findAll({
+		where: { user_id: req.session.user.id,
+				 role: req.query.role },
+		include: [{
+			model: models.organization,
+			attributes: ['id', 'name', 'description', 'image']
+		}],
+		offset: (req.query.page - 1)*5,
+		limit: 5
+	}).then(function(user_organizations) {
+
+		var organizations = []
+		// If user has organizations, set image from file system and obtain info from each organization
+		if (user_organizations.length > 0) {
+			
+			user_organizations.forEach(function(org) {
+				if (organizations.length == 0 || !organizations.some(elem => (elem.id == org.Organization.id))) {
+					if (org.Organization.image == 'default') {
+						org.Organization.image = '/img/logos/medium/group.png'
+					} else {
+						org.Organization.image = '/img/organizations/'+org.Organization.image
+					}
+					organizations.push(org.Organization)
+				} 
+			});
+		}
+
+		res.send({organizations: organizations})
+	}).catch(function(error) { 
+		debug('Error searching organizations ' + error)
+		var message = {text: ' Unable to search organizations',type: 'danger'}
+		send_response(req, res, message, '/idm')
+	});
+}
 
 // GET /idm/organizations/new -- Render a view to create a new organization
 exports.new = function(req, res) {
@@ -108,7 +148,14 @@ exports.create = function(req, res) {
 										'name', 
 										'description']
 			}).then(function(){
-				res.redirect('/idm/organizations/'+organization.id)
+				// Assign owner role to the user in the organizations
+        		models.user_organization.create({ 
+        			organization_id: organization.id, 
+        			role: 'owner', 
+        			user_id: req.session.user.id
+        		}).then(function(newAssociation) {
+					res.redirect('/idm/organizations/'+organization.id)
+        		})
 			}).catch(function(error){
 				res.locals.message = {text: ' Unable to create organization',type: 'danger'}
 			 	res.render('organizations/new', { organization: organization, errors: [], csrfToken: req.csrfToken()});
@@ -128,9 +175,97 @@ exports.create = function(req, res) {
 };
 
 
-// GET /idm/organizations/:organizationId -- Show info about an application
+// GET /idm/organizations/:organizationId -- Show info about an organization
 exports.show = function(req, res, next) {
-	res.render('organizations/show', { organization: req.organization, errors: [], csrfToken: req.csrfToken()});
+
+	debug("--> show");
+
+	models.user_organization.findAll({
+		where: { organization_id: req.organization.id, user_id: req.session.user.id}
+	}).then(function(user_organization) {
+		var roles = user_organization.map(elem => elem.role)
+		res.render('organizations/show', { organization: req.organization, roles: roles, errors: [], csrfToken: req.csrfToken()});
+	}).catch(function(error) {
+		debug('Error show organization: ' + error)
+		req.session.message = {text: ' Unable to find organization',type: 'danger'}
+		res.redirect('/idm')
+	})
+}
+
+// GET /idm/organizations/:organizationId -- Show info about an organization
+exports.get_members = function(req, res, next) {
+
+	debug("--> get_members");
+
+	models.user_organization.findAndCountAll({
+		where: { organization_id: req.organization.id },
+		include: [{
+			model: models.user,
+			where: (req.query.key) ? { username: { like: '%' + req.query.key + '%' } } : {} ,
+			attributes: ['id', 'username', 'image', 'gravatar', 'email']
+		}],
+		offset: (req.query.page) ? (req.query.page - 1)*5 : 0,
+		limit: 5
+	}).then(function(result) {
+
+		var users_organization = result.rows;
+
+		var users = []
+		// If user has organizations, set image from file system and obtain info from each organization
+		if (users_organization.length > 0) {
+			
+			users_organization.forEach(function(user) {
+				if (users.length == 0 || !users.some(elem => (elem.id == user.User.id))) {
+					if (user.User.gravatar) {
+            			user.User.image = gravatar.url(user.User.email, {s:100, r:'g', d: 'mm'}, {protocol: 'https'});
+					} else if (user.User.image == 'default') {
+						user.User.image = '/img/logos/medium/user.png'
+					} else {
+						user.User.image = '/img/users/'+user.User.image
+					}
+					users.push(user.User)
+				} 
+			});
+		}
+
+		res.send({users: users, users_number: result.count})
+	}).catch(function(error) {
+		debug('Error get members organization: ' + error)
+		var message = {text: ' Unable to find members',type: 'danger'}
+		send_response(req, res, message, '/idm')
+	})
+}
+
+// GET /idm/organizations/:organizationId/edit -- Show form to edit an organization
+exports.edit = function(req, res, next) {
+
+	debug("--> edit");
+
+	res.render('organizations/edit', { organization: req.organization, errors: [], csrfToken: req.csrfToken()});
+}
+
+
+// PUT /idm/organizations/:organizationId/edit/info -- Edit info of organization
+exports.update_info = function(req, res, next) {
+
+}
+
+
+// PUT /idm/organizations/:organizationId/edit/avatar -- Edit avatar of organization
+exports.update_avatar = function(req, res, next) {
+
+}
+
+
+// DELETE /idm/organizations/:organizationId/edit/delete_avatar -- Delete avatar of organization
+exports.delete_avatar = function(req, res, next) {
+
+}
+
+
+// DELETE /idm/organizations/:organizationId -- Delete an organization
+exports.destroy = function(req, res, next) {
+
 }
 
 

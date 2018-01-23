@@ -32,11 +32,8 @@
 				<div id="panel_tabs__providing_tab" class="tab-pane active">
 					<div class=" datatable" id="providing_table" data-pagination-url="/filters/applications" data-application_role="provider" data-pagination-pages="">
 						<div class="list-group" id="providing_table_content">
-
+							<p class="alert alert-info empty" style="display: none;">You are not provider of any application.</p>	
 						</div>
-						<% if (typeof applications == "undefined") { -%>
-							<p class="alert alert-info empty" style="display: block;">You are not provider of any application.</p>
-						<% } -%>	
 						<div class="panel-footer">
 							<nav id="providing_table_pagination_container">
 
@@ -46,11 +43,9 @@
 				</div>
 				<div id="panel_tabs__purchased_tab" class="tab-pane">
 					<div class=" datatable" id="purchased_table" data-pagination-url="/filters/applications" data-application_role="purchaser" data-pagination-pages="">
-						<div class="list-group" id="purchased_table_content"></div>
-
-						<% if (typeof applications == "undefined") { -%>
-							<p class="alert alert-info empty" style="display: block;">You are not purchaser of any application.</p>
-						<% } -%>
+						<div class="list-group" id="purchased_table_content">
+							<p class="alert alert-info empty" style="display: none;">You are not purchaser of any application.</p>
+						</div>
 						<div class="panel-footer">
 							<nav id="purchased_table_pagination_container">
 
@@ -61,11 +56,8 @@
 				<div id="panel_tabs__authorized_tab" class="tab-pane">
 					<div class=" datatable" id="authorized_table" data-pagination-url="/filters/applications" data-application_role="other" data-pagination-pages="">
 						<div class="list-group" id="authorized_table_content">
-
+							<p class="alert alert-info empty" style="display: none;">You are not authorized in any application.</p>
 						</div>
-						<% if (typeof applications == "undefined") { -%>
-							<p class="alert alert-info empty" style="display: block;">You are not authorized in any application.</p>
-						<% } -%>
 						<div class="panel-footer">
 							<nav id="authorized_table_pagination_container">
 
@@ -78,6 +70,6 @@
 	</div>
 </div>
 
-<%- include templates/_application_row.ejs %>
+<%- include ../templates/./applications/./_application_row %>
 
 <script src="/javascripts/applications/handle_application_navigation.js" type="text/javascript"></script>

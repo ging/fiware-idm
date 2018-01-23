@@ -1,0 +1,125 @@
+<div id="content_body">
+    <div class="panel panel-default ">
+        <div class="panel-body">
+            <div id="" class="edit">
+                <div class="modal-header">
+                    <h3>
+                        Organization Information
+                    </h3>
+                </div>
+                <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/organizations/<%= organization.id %>/edit/info" method="POST" enctype="">
+                    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                    <div class="modal-body clearfix">
+                        <div>
+                            <fieldset>
+                                <div class="form-group required">
+                                    <label class="control-label  required" for="id_name">Name</label>
+                                    <div class="">
+                                        <input class="form-control" id="id_name" maxlength="64" name="name" type="text" value="<%= organization.name %>">
+                                    </div>
+                                </div>
+                                <div class="form-group required">
+                                    <label class="control-label  required" for="id_description">Description</label>
+                                    <div class="">
+                                        <textarea class="form-control" cols="40" id="id_description" name="description" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= organization.description %></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="id_website">Website</label>
+                                    <div class="">
+                                        <input class="form-control" id="id_website" name="website" type="url" value="<%= organization.website %>">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update Organization </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default ">
+        <div class="panel-body">
+            <div id="" class="edit update-avatar-modal">
+                <div class="modal-header">
+                    <h3>
+                        Organization Avatar
+                    </h3>
+                </div>
+                <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/organizations/<%= organization.id %>/edit/avatar" method="POST" enctype="multipart/form-data">
+                    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                    <div class="modal-body clearfix">
+                        <div class="row">
+                            <div class="avatar_col col-xs-12 col-md-6 used-avatar">
+                                <div class="profile_img">
+                                    <img src="<%= organization.image %>" alt="uploaded image">
+                                </div>
+                                <div class="profile_actions">
+                                    <button class="btn btn-primary always-enabled ajax-modal" href="/idm/organizations/<%= organization.id %>/edit/delete_image" disabled="true">Delete this image</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <fieldset>
+                                <h6>Upload an image</h6> 
+                                <input id="id_x" name="x" type="hidden">
+                                <input id="id_y" name="y" type="hidden">
+                                <input id="id_w" name="w" type="hidden">
+                                <input id="id_h" name="h" type="hidden">
+                                <div class="form-group ">
+                                    <label class="control-label  " for="id_image"></label>
+                                    <div class=" ">
+                                        <input id="id_image" name="image" type="file">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="row avatar-update-container">
+                            <div class="col-md-2 update_actions" style="display:none;">
+                                <h6>Select the part of the image you want to use as avatar.</h6>
+                                <button id="crop-and-use-button" disabled="true" class="btn btn-primary always-enabled" name="crop_and_use" type="submit">Crop and use</button>
+                                <a href="#" class="btn btn-default always-enabled" id="cancel-crop-button">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default cancel_account">
+        <div class="panel-body">
+            <div id="cancel-organization-modal" class="edit">
+                <div class="modal-header">
+                    <h3>
+                        Cancel
+                    </h3>
+                </div>
+                <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/organizations/<%= organization.id %>/edit/cancel" method="POST" enctype="">
+                    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                    <div class="modal-body clearfix">
+                        <a class="panel-title" data-toggle="collapse" data-parent="#accordion" href="#destroy_organization">
+                            <h3>
+                                <span>Delete Organization</span>
+                            </h3>
+                        </a>
+                        <div>
+                            <fieldset>
+                                <input id="id_orgID" name="orgID" type="hidden" value="<%= organization.id %>">
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="destroy_organization" class="panel-collapse collapse">
+                            <span>This will delete the organization and all its data</span>
+                            <button type="submit" class="btn btn-danger">Delete Organization </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

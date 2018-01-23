@@ -130,12 +130,12 @@ var textByLine = text.split("\n")
 array_users = []
 array_users.push({id: 'admin', username: 'admin', email: "apozohue10@gmail.com",   password: '1234', date_password: new Date((new Date()).getTime()),enabled: 1, admin: 1})
 array_users.push({id: 'pepe', username: 'pepe', email: "alejandro_alex_91@hotmail.com",   password: '1234', date_password: new Date((new Date()).getTime()), enabled: 1, admin: 1})
-/*array_users.push({id: 'pepe', username: 'pepe',  email: "pepe@pepe.com",  password: '1234', date_password: new Date((new Date()).getTime()), enabled: 1})
+
 for (var i = 0; i < textByLine.length - 1; i++) {
   email = textByLine[i]+"@test.com"
   usuario = {id: String(textByLine[i]), username: String(textByLine[i]), email: email, password: '1234', date_password: new Date((new Date()).getTime()), enabled: 1}
   array_users.push(usuario)
-}*/
+}
 
 // sequelize.sync() initialize tabled in BD
 sequelize.sync().then(function() {  

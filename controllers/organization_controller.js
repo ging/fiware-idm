@@ -41,8 +41,8 @@ exports.owned_permissions = function(req, res, next) {
 		if (user) {
 			next()
 		} else {
-			var message = {error: {text: ' Not owner of organization',type: 'danger'}}
-			send_response(req, res, message, '/idm')
+			var message = {text: ' Not owner of organization',type: 'danger'}
+			send_response(req, res, message, '/idm/organizations/'+req.organization.id)
 		}
 	}).catch(function(error) {
 		debug('Error checking if user is owner of organization ' + error)
@@ -266,13 +266,48 @@ exports.edit = function(req, res, next) {
 
 	debug("--> edit");
 
-	res.render('organizations/edit', { organization: req.organization, errors: [], csrfToken: req.csrfToken()});
+	res.render('organizations/edit', { organization: req.organization, error: [], csrfToken: req.csrfToken()});
 }
 
 
 // PUT /idm/organizations/:organizationId/edit/info -- Edit info of organization
 exports.update_info = function(req, res, next) {
+	
+	debug("--> update_info")
 
+    // Build a row and validate if input values are correct (not empty) before saving values in user table
+    req.body.organization['id'] = req.organization.id;
+    var organization = models.organization.build(req.body.organization);
+
+    if (req.body.organization.description.replace(/^\s+/, '').replace(/\s+$/, '') === '') {
+        req.body.organization.description = null
+    }
+
+    organization.validate().then(function(err) {
+        models.organization.update(
+            { name: req.body.organization.name,
+              description: req.body.organization.description,
+              website: req.body.organization.website },
+            {
+                fields: ['name','description','website'],
+                where: {id: req.organization.id}
+            }
+        ).then(function() {
+            // Send message of success of updating organization
+            req.session.message = {text: ' organization updated successfully.', type: 'success'};
+            res.redirect('/idm/organizations/'+req.organization.id);
+        }).catch(function(error){
+            debug('Error updating values of organization ' + error)
+            req.session.message = {text: ' Fail update organization.', type: 'danger'};
+            res.redirect('/idm/organizations/'+req.organization.id);
+        })
+    }).catch(function(error){ 
+
+        // Send message of warning of updating organization
+        res.locals.message = {text: ' organization update failed.', type: 'warning'};
+        req.body.organization['image'] = req.organization.image
+        res.render('organizations/edit', { organization: req.body.organization, error: error, csrfToken: req.csrfToken()});
+    });
 }
 
 

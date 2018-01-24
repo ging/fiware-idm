@@ -393,6 +393,7 @@ exports.update_info = function(req, res) {
 		}).catch(function(error){
 			// Send message of warning of updating the application
 			res.locals.message = {text: ' Application update failed.', type: 'warning'};
+			req.body.application['image'] = req.application.image
 		 	res.render('applications/edit', { application: req.body.application, errors: error.errors, csrfToken: req.csrfToken()});
 		});
 	}

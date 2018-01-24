@@ -138,7 +138,7 @@ exports.edit = function(req, res) {
             res.render('users/edit', {user: req.user, error: [], csrfToken: req.csrfToken()});
 
         }).on('error', function(e) {
-            console.log('Failed connecting to gravatar: ' + e);
+            debug('Failed connecting to gravatar: ' + e);
             res.render('users/edit', {user: req.user, error: [], csrfToken: req.csrfToken()});
         });
     } else {
@@ -174,16 +174,24 @@ exports.update_info = function(req, res) {
             req.session.message = {text: ' User updated successfully.', type: 'success'};
             res.redirect('/idm/users/'+req.session.user.id);
         }).catch(function(error){
-            console.log(error)
+            debug('Error updating values of organization ' + error)
+            req.session.message = {text: ' Fail update user.', type: 'danger'};
+            res.redirect('/idm/users/'+req.session.user.id);
         })
     }).catch(function(error){ 
-        console.log(error)
+
         // Send message of warning of updating user
         res.locals.message = {text: ' User update failed.', type: 'warning'};
+
+
+        if (req.user.gravatar) {
+            req.body.gravatar = true
+            req.body.user.image_gravatar = gravatar.url(req.user.email, {s:100, r:'g', d: 'mm'}, {protocol: 'https'});
+        }
         if (req.user.image == 'default') {
-            req.user.image = '/img/logos/original/user.png'
+            req.body.user.image = '/img/logos/original/user.png'
         } else {
-            req.user.image = '/img/users/'+req.user.image
+            req.body.user.image = '/img/users/' + req.user.image
         }
         res.render('users/edit', { user: req.body.user, error: error, csrfToken: req.csrfToken()});
     });

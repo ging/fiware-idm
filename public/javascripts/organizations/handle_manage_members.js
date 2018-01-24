@@ -39,7 +39,7 @@ $(document).ready(function(){
         var url = "/idm/organizations/"+ organization_id +"/edit/members"
         
         $.get(url, function(data) {
-            if (data.error) {
+            if (data.type) {
                 exit_authorize_users()
                 create_message(data.error.type, data.error.text)
                 $("#authorize_user").modal('toggle')

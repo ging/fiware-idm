@@ -12,6 +12,7 @@ var applicationController = require('../controllers/application_controller');
 var sessionController = require('../controllers/session_controller');
 var userController = require('../controllers/user_controller');
 var organizationController = require('../controllers/organization_controller');
+var manageMembersController = require('../controllers/manage_members_controller');
 var homeController = require('../controllers/home_controller');
 var oauthController = require('../controllers/oauth_controller');
 var roleController = require('../controllers/role_controller');
@@ -153,17 +154,22 @@ router.post('/idm/users/available',                     sessionController.login_
 
 
 // Routes for organziations
-router.get('/idm/organizations',                                        sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.index);
-router.get('/filters/organizations',                                    sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.filter);
-router.get('/idm/organizations/new',                                    sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.new);
-router.post('/idm/organizations',                                       sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection, organizationController.create);
-router.get('/idm/organizations/:organizationId',                        sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.show);
-router.get('/idm/organizations/:organizationId/members',                sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.get_members);
-router.get('/idm/organizations/:organizationId/edit',                   sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.edit);
-router.put('/idm/organizations/:organizationId/edit/avatar',             sessionController.login_required,   sessionController.password_check_date,  multer({storage: imageAppUpload}).single('image'), parseForm,  csrfProtection,  organizationController.update_avatar);
-router.put('/idm/organizations/:organizationId/edit/info',               sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,    organizationController.update_info);
-router.delete('/idm/organizations/:organizationId/edit/delete_avatar',   sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,    organizationController.delete_avatar);
-router.delete('/idm/organizations/:organizationId',                      sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,    organizationController.destroy);
+router.get('/idm/organizations',                                         sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.index);
+router.get('/filters/organizations',                                     sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.filter);
+router.get('/idm/organizations/new',                                     sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.new);
+router.post('/idm/organizations',                                        sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection, organizationController.create);
+router.get('/idm/organizations/:organizationId',                         sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.show);
+router.get('/idm/organizations/:organizationId/members',                 sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.get_members);
+router.get('/idm/organizations/:organizationId/edit',                    sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  csrfProtection, organizationController.edit);
+router.put('/idm/organizations/:organizationId/edit/avatar',             sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  multer({storage: imageAppUpload}).single('image'), parseForm,  csrfProtection,  organizationController.update_avatar);
+router.put('/idm/organizations/:organizationId/edit/info',               sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.update_info);
+router.delete('/idm/organizations/:organizationId/edit/delete_avatar',   sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.delete_avatar);
+router.delete('/idm/organizations/:organizationId',                      sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.destroy);
+
+// Routes to manage members in organizations
+router.get('/idm/organizations/:organizationId/edit/members',            sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  csrfProtection,    manageMembersController.get_members);
+router.post('/idm/organizations/:organizationId/edit/members',           sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    manageMembersController.add_members);
+
 
 // Route to save images of applications
 var imageAppUpload = multer.diskStorage({

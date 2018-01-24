@@ -30,6 +30,27 @@ exports.load_organization = function(req, res, next, organizationId) {
 	}).catch(function(error) { next(error); });
 }
 
+// Check if user is owner of the organization
+exports.owned_permissions = function(req, res, next) {
+	
+	debug("--> owned_permissions");
+
+	models.user_organization.findOne({
+		where: { organization_id: req.organization.id, user_id: req.session.user.id, role: 'owner'}
+	}).then(function(user) {
+		if (user) {
+			next()
+		} else {
+			var message = {error: {text: ' Not owner of organization',type: 'danger'}}
+			send_response(req, res, message, '/idm')
+		}
+	}).catch(function(error) {
+		debug('Error checking if user is owner of organization ' + error)
+		var message = {text: ' Unable to manage request',type: 'danger'}
+		send_response(req, res, message, '/idm/organizations/'+req.organization.id)
+	})
+}
+
 
 // GET /idm/organizations -- List all organizations of user
 exports.index = function(req, res) {
@@ -184,6 +205,10 @@ exports.show = function(req, res, next) {
 		where: { organization_id: req.organization.id, user_id: req.session.user.id}
 	}).then(function(user_organization) {
 		var roles = user_organization.map(elem => elem.role)
+		if (req.session.message) {
+			res.locals.message = req.session.message
+			delete req.session.message
+		}
 		res.render('organizations/show', { organization: req.organization, roles: roles, errors: [], csrfToken: req.csrfToken()});
 	}).catch(function(error) {
 		debug('Error show organization: ' + error)

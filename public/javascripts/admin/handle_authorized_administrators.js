@@ -97,7 +97,7 @@ $(document).ready(function() {
         var image = row.parent().find(".avatar").children('img').first().attr('src')
 
         if ($("#authorize_user").find('ul.update_owners_users_members').find('#'+user_id).length) {
-            info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-warning'>User "+user_id+" has been already added</span>"
+            info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-warning'>User "+username+" has been already added</span>"
             $("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
             $("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
         } else {
@@ -107,7 +107,7 @@ $(document).ready(function() {
             assign_role_user_row = assign_role_user_row.replace(/user_avatar/g, String(image));
             $("#authorize_user").find(".members").append(assign_role_user_row);
 
-            info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+user_id+" added</span>"
+            info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+username+" added</span>"
             $("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
             $("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
 
@@ -127,7 +127,7 @@ $(document).ready(function() {
       var user_id = row.parent().attr("id")
       var username = row.find(".name").html()  
 
-      var info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+user_id+" removed from application</span>"
+      var info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+username+" removed from application</span>"
       $("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
       $("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
       row.parent().fadeOut(500, function(){ row.parent().remove(); });

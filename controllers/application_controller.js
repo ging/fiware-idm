@@ -13,6 +13,8 @@ var Jimp = require("jimp");
 
 var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
+var image = require ('../lib/image.js');
+
 // Autoload info if path include applicationId
 exports.load_application = function(req, res, next, applicationId) {
 
@@ -404,35 +406,27 @@ exports.delete_avatar = function(req, res) {
 
 	debug("--> delete_avatar");
 
-	// Delete image from filesystem
-	var image_name = req.application.image.split('/')[3]
-	fs.unlink('./public/img/applications/'+image_name, (err) => {
-        if (err) {
-        	// Send message of fail when deleting image
-            res.send({text: ' Failed to delete image.', type: 'warning'});
-        } else {
-        	// Change image to default one in oauth_client table
-			models.oauth_client.update(
-				{ image: 'default' },
-				{
-					fields: ["image"],
-					where: {id: req.application.id }
-				}
-			).then(function(deleted){
-				if (deleted[0] === 1) {
-					// Send message of success in deleting image
-		        	req.application.image = '/img/logos/original/app.png'
-		            res.send({text: ' Deleted image.', type: 'success'});
-				} else {
-					// Send message of fail when deleting an image
-		            res.send({text: ' Failed to delete image.', type: 'danger'});
-				}
-	        }).catch(function(error) {
-				// Send message of fail when deleting image
-				res.send({text: ' Failed to delete image.', type: 'danger'});
-			});                                   
-        }
-	});
+	var image_path = 'public' + req.application.image
+
+	image.destroy(image_path).then(function(val) {
+		return models.oauth_client.update(
+					{ image: 'default' },
+					{
+						fields: ["image"],
+						where: {id: req.application.id }
+					})
+	}).then(function(deleted) {
+		if (deleted[0] === 1) {
+			// Send message of success in deleting image
+        	req.application.image = '/img/logos/original/app.png'
+            res.send({text: ' Deleted image.', type: 'success'});
+		} else {
+			// Send message of fail when deleting an image
+            res.send({text: ' Failed to delete image.', type: 'danger'});
+		}
+	}).catch(function(error) {
+		res.send({text: ' Failed to delete image.', type: 'danger'});
+	})
 };
 
 // DELETE /idm/applications/:applicationId -- Delete application
@@ -459,71 +453,50 @@ exports.destroy = function(req, res) {
 	});
 };
 
-
 // Function to check and crop an image and to update the name in the oauth_client table
 function handle_uploaded_images(req, res, redirect_uri) {
 
 	// Check the MIME of the file upload
-	var types = ['jpg', 'jpeg', 'png']
-	magic.detectFile('public/img/applications/'+req.file.filename, function(err, result) {
-		if (err) {
-            req.session.message = {text: ' Image not save.', type: 'warning'};
-            return res.redirect('/idm/applications/'+req.application.id);
-        }
-
-		if (result && types.includes(String(result.split('/')[1]))) {
-				// If the file is jpg, png or jpeg, update the application with the name of the image
-				Jimp.read('public/img/applications/'+req.file.filename, function(err, image) {
-					// If error reading image redirect to show view
-					if (err) {
-		                req.session.message = {text: ' Image not cropped.', type: 'warning'};
-		                return res.redirect('/idm/applications/'+req.application.id);
-		            }
-		            
-		            image.crop(Number(req.body.x), Number(req.body.y), Number(req.body.w), Number(req.body.h))
-		            	 .write('public/img/applications/'+req.file.filename)
-
-		            models.oauth_client.update(
-						{ image: req.file.filename },
-						{
-							fields: ['image'],
-							where: {id: req.application.id}
-						}
-					).then(function() {
-						// Old image to be deleted
-						var old_image = req.application.image
-
-						if (old_image.includes('/img/applications/')) {
-							// If error deleting old image redirect to show view
-				            fs.unlink('./public'+old_image, (err) => {
-				            	if (err) {
-									req.session.message = {text: ' Error saving image.', type: 'danger'};
-									res.redirect('/idm/applications/'+req.application.id);
-				            	} else {
-				            		// Send message of success when updating image
-									req.session.message = {text: ' Image updated successfully.', type: 'success'};
-									res.redirect(redirect_uri);
-				            	}
-							});
-						} else {
-							// Send message of success when updating image
-							req.session.message = {text: ' Image updated successfully.', type: 'success'};
-							res.redirect(redirect_uri);
-						}
-					}).catch(function(error){ 
-						// Send message of fail when updating image
-						res.session.message = {text: ' Application image update failed.', type: 'warning'};
-					 	res.redirect('/idm/applications/'+req.application.id);
-					});			 
-				})
-		// If not, the default image is assigned to the application
+	var image_path = 'public/img/applications/'+req.file.filename
+	image.check(image_path).then(function(val) {
+		var crop_points = {x: req.body.x, y: req.body.y, w: req.body.w, h: req.body.h}
+		return image.crop(image_path, crop_points)
+	}).then(function(val) {
+		return models.oauth_client.update(
+			{ image: req.file.filename },
+			{
+				fields: ['image'],
+				where: {id: req.application.id}
+			}) 
+	}).then(function(updated) {
+		var old_image = 'public'+req.application.image
+		if (updated[0] === 1) {
+			// Old image to be deleted
+			if (old_image.includes('/img/applications/')) {
+				delete_image(req, res, old_image, true, redirect_uri, ' Image updated successfully.')
+			} else {
+				// Send message of success when updating image
+				req.session.message = {text: ' Image updated successfully.', type: 'success'};
+				res.redirect(redirect_uri);
+			}
 		} else {
-			fs.unlink('./public/img/applications/'+req.file.filename, (err) => {
-				req.session.message = {text: ' Inavalid file.', type: 'danger'};
-				res.redirect('/idm/applications/'+req.application.id);            
-			});
+			delete_image(req, res, image_path, false, redirect_uri, ' Image not updated.')
 		}
-  	});
+	}).catch(function(error) {
+		var message = (typeof error === 'string') ? error : ' Error saving image.'
+		delete_image(req, res, image_path, false, redirect_uri, message)
+	})
+}
+
+// Function to delete an image
+function delete_image(req, res, image_path, success, redirect_uri, message) {
+	image.destroy(image_path).then(function(val) {
+		req.session.message = {text: message, type: (success) ? 'success' : 'danger' };
+		res.redirect((success) ? redirect_uri :'/idm/applications/'+req.application.id); 
+	}).catch(function(error) {
+		req.session.message = {text: ' Error saving image.', type: 'danger'};
+		res.redirect('/idm/applications/'+req.application.id);
+	})
 }
 
 // Funtion to see if request is via AJAX or Browser and depending on this, send a request

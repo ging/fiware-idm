@@ -61,10 +61,10 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 					authzforce.handle(domain, submit_authzforce).then(function(authzforce_response) {
 
 						// Log info about request state
-						console.log("DOMAIN OF APPLICATION IS: " + authzforce_response[1].az_domain)
-						console.log("POLICY ID: " + authzforce_response[1].policy)
-						console.log("VERSION OF POLICY: " + authzforce_response[1].version_policy)
-						console.log("RESPONSE CODE FROM POLICY ACTIVATION: " + authzforce_response[2].status)
+						debug("DOMAIN OF APPLICATION IS: " + authzforce_response[1].az_domain)
+						debug("POLICY ID: " + authzforce_response[1].policy)
+						debug("VERSION OF POLICY: " + authzforce_response[1].version_policy)
+						debug("RESPONSE CODE FROM POLICY ACTIVATION: " + authzforce_response[2].status)
 
 						var type = 'success'
 						// Logs for authzforce policy creation or update
@@ -80,13 +80,13 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 							var message = 'Authzforce error' 
 							type = 'warning'
 						}
-						console.log("Authzforce create policy: " + message)
+						debug("Authzforce create policy: " + message)
 
 						// Logs for policy activation
 						if (authzforce_response[2].status === 200) {
-							console.log("Authzforce activate policy: success")
+							debug("Authzforce activate policy: success")
 						} else {
-							console.log("Authzforce activate policy: error")
+							debug("Authzforce activate policy: error")
 						}
 
 						if(domain.az_domain) {
@@ -99,7 +99,7 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 						req.session.message = {text: message, type: type};
 						res.redirect("/idm/applications/"+req.application.id)
 					}).catch(function(error) {
-						console.log(error)
+						debug(error)
 						req.session.message = {text: ' Authzforce error', type: 'warning'};
 						res.redirect("/idm/applications/"+req.application.id)
 					})
@@ -108,7 +108,7 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 					res.redirect("/idm/applications/"+req.application.id)
 				}
 			}).catch(function(error){
-				console.log(error)
+				debug(error)
 				req.session.message = {text: ' authzforce search error.', type: 'warning'};
 				res.redirect("/idm/applications/"+req.application.id);
 			})	
@@ -117,7 +117,7 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 			res.redirect("/idm/applications/"+req.application.id);
 		}
 	}).catch(function(error) {
-		console.log(error)
+		debug(error)
 		req.session.message = {text: ' permission search error.', type: 'warning'};
 		res.redirect("/idm/applications/"+req.application.id);
 	});
@@ -134,9 +134,9 @@ function create_domain(req,res, authzforce) {
 		version: authzforce.version_policy,
 		oauth_client_id: req.application.id
 	}).then(function(created) {
-		console.log("Success creating row in authzforce table")
+		debug("Success creating row in authzforce table")
 	}).catch(function(error) {
-		console.log("Error creating row in authzforce table")
+		debug("Error creating row in authzforce table")
 	})
 }
 
@@ -153,8 +153,8 @@ function update_domain(req, res, domain, version) {
 				 policy: domain.policy,
 				 oauth_client_id: req.application.id }
 	}).then(function(updated) {
-		console.log("Success updating authzforce table")
+		debug("Success updating authzforce table")
 	}).catch(function(error) {
-		console.log("Error updating authzforce table")
+		debug("Error updating authzforce table")
 	})	
 }

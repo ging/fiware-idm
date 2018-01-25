@@ -20,7 +20,7 @@
                                 </div>
                                 <% if (error) { %>
                                     <% if (error.errors) { %>
-                                        <% if (error.errors[0].message === "name") { -%>
+                                        <% if (error.errors.some(elem => elem.message === "name")) { -%>
                                             <span class="help-block alert alert-danger ">This input is required.</span>
                                         <% } -%>                                        
                                     <% } %>
@@ -33,7 +33,7 @@
                                 </div>
                                 <% if (error) { %>
                                     <% if (error.errors) { %>
-                                        <% if (error.errors[0].message === "description") { -%>
+                                        <% if (error.errors.some(elem => elem.message === "description")) { -%>
                                             <span class="help-block alert alert-danger ">This input is required.</span>
                                         <% } -%>                                        
                                     <% } %>

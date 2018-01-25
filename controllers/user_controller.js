@@ -13,6 +13,7 @@ var debug = require('debug')('idm:user_controller')
 var Jimp = require("jimp");
 
 var email = require('../lib/email.js')
+var image = require ('../lib/image.js');
 
 // MW to see if user can do some actions
 exports.owned_permissions = function(req, res, next) {
@@ -218,47 +219,34 @@ exports.delete_avatar = function(req, res) {
 
     debug("--> delete_avatar")
 
-    // Change image to default one in user table
-    models.user.findById(req.session.user.id).then(function(user) {
-        if (user) {
-            models.user.update(
-                { image: 'default' },
-                {
-                    fields: ["image"],
-                    where: {id: req.session.user.id }
-                }
-            ).then(function(){
-                fs.unlink('./public/img/users/'+user.image, (err) => {
-                    if (err) {
-                        // Send message of fail when deleting image
-                        req.session.message = {text: ' Failed to delete image.', type: 'warning'};
-                        res.redirect('/idm/users/'+req.user.id+'/edit');
-                    } else {
-                        // Send message of success in deleting image
-                        if (req.user.gravatar) {
-                            req.session.user.image = gravatar.url(req.session.user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
-                        } else {
-                            req.session.user.image = '/img/logos/small/user.png'                            
-                        }
-                        req.session.message = {text: ' Deleted image.', type: 'success'}
-                        res.redirect('/idm/users/'+req.user.id+'/edit'); 
-                    }
-                });
-            }).catch(function(error) {
-                // Send message of fail when deleting image
-                req.session.message = {text: ' Failed to delete image.', type: 'warning'}
-                res.redirect('/idm/users/'+req.user.id+'/edit'); 
-            });
+    var image_path = 'public/img/users/'+req.user.image
+
+    image.destroy(image_path).then(function(val) {
+        return models.user.update(
+                    { image: 'default' },
+                    {
+                        fields: ["image"],
+                        where: {id: req.user.id }
+                    })
+    }).then(function(deleted) {
+        if (deleted[0] === 1) {
+            // Send message of success in deleting image
+            if (req.user.gravatar) {
+                req.session.user.image = gravatar.url(req.session.user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
+            } else {
+                req.session.user.image = '/img/logos/small/user.png'                            
+            }
+            req.session.message = {text: ' Deleted image.', type: 'success'};
+            res.redirect('/idm/users/'+req.user.id+'/edit');
         } else {
-            // Send message of fail when deleting image
-            req.session.message = {text: ' user not found.', type: 'warning'}
-            res.redirect('/');    
+            // Send message of fail when deleting an image
+            req.session.message = {text: ' Failed to delete image.', type: 'danger'};
+            res.redirect('/idm/users/'+req.user.id+'/edit');
         }
     }).catch(function(error) {
-        // Send message of fail when deleting image
-        req.session.message = {text: ' Error searching user.', type: 'warning'}
-        res.redirect('/'); 
-    });
+        req.session.message = {text: ' Failed to delete image.', type: 'danger'};
+        res.redirect('/idm/users/'+req.user.id+'/edit');
+    })  
 }
 
 // PUT /idm/users/:userId/edit/avatar/set -- Use avatar as profile image
@@ -685,70 +673,52 @@ exports.resend_confirmation = function(req, res, next) {
 }
 
 
-// Function to check and crop an image and to update the name in the user table
+// Function to check and crop an image and to update the name in the oauth_client table
 function handle_uploaded_images(req, res, redirect_uri) {
 
     // Check the MIME of the file upload
-    var types = ['jpg', 'jpeg', 'png']
-    magic.detectFile('public/img/users/'+req.file.filename, function(err, result) {
-        if (err) {
-            req.session.message = {text: ' Image not save.', type: 'warning'};
-            return res.redirect(redirect_uri);
-        }
-
-        if (result && types.includes(String(result.split('/')[1]))) {
-                // If the file is jpg, png or jpeg, update the user with the name of the image
-                Jimp.read('public/img/users/'+req.file.filename, function(err, image) {
-                    // If error reading image redirect to show view
-                    if (err) {
-                        req.session.message = {text: ' Image not cropped.', type: 'warning'};
-                        return res.redirect(redirect_uri);
-                    }
-                    
-                    image.crop(Number(req.body.x), Number(req.body.y), Number(req.body.w), Number(req.body.h))
-                         .write('public/img/users/'+req.file.filename)
-
-                    models.user.update(
-                        { image: req.file.filename },
-                        {
-                            fields: ['image'],
-                            where: {id: req.session.user.id}
-                        }
-                    ).then(function() {
-                        // Old image to be deleted
-                        var old_image = req.user.image
-                        if (old_image.includes('/img/users/')) {
-                            // If error deleting old image redirect to show view
-                            fs.unlink('./public/img/users/'+old_image, (err) => {
-                                if (err) {
-                                    req.session.message = {text: ' Error saving image.', type: 'danger'};
-                                    res.redirect(redirect_uri);
-                                } else {
-                                    // Send message of success when updating image
-                                    req.session.user.image = '/img/users/' + req.file.filename
-                                    req.session.message = {text: ' Image updated successfully.', type: 'success'};
-                                    res.redirect(redirect_uri);
-                                }
-                            });
-                        } else {
-                            // Send message of success when updating image                           
-                            req.session.user.image = '/img/users/' + req.file.filename
-                            req.session.message = {text: ' Image updated successfully.', type: 'success'};
-                            res.redirect(redirect_uri);
-                        }
-                    }).catch(function(error){ 
-                        // Send message of fail when updating image
-                        res.session.message = {text: ' User image update failed.', type: 'warning'};
-                        res.redirect(redirect_uri);
-                    });          
-                })
-        // If not, the default image is assigned to the user
+    var image_path = 'public/img/users/'+req.file.filename
+    image.check(image_path).then(function(val) {
+        var crop_points = {x: req.body.x, y: req.body.y, w: req.body.w, h: req.body.h}
+        return image.crop(image_path, crop_points)
+    }).then(function(val) {
+        return models.user.update(
+            { image: req.file.filename },
+            {
+                fields: ['image'],
+                where: {id: req.user.id}
+            }) 
+    }).then(function(updated) {
+        var old_image = 'public/img/users/'+req.user.image
+        if (updated[0] === 1) {
+            // Old image to be deleted
+            if (!old_image.includes('default')) {
+                req.session.user.image = '/img/users/' + req.file.filename
+                delete_image(req, res, old_image, true, redirect_uri, ' Image updated successfully.')
+            } else {
+                // Send message of success when updating image
+                req.session.user.image = '/img/users/' + req.file.filename
+                req.session.message = {text: ' Image updated successfully.', type: 'success'};
+                res.redirect(redirect_uri);
+            }
         } else {
-            fs.unlink('./public/img/users/'+req.file.filename, (err) => {
-                req.session.message = {text: ' Inavalid file.', type: 'danger'};
-                res.redirect(redirect_uri);            
-            });
+            delete_image(req, res, image_path, false, redirect_uri, ' Image not updated.')
         }
-    });
+    }).catch(function(error) {
+        var message = (typeof error === 'string') ? error : ' Error saving image.'
+        delete_image(req, res, image_path, false, redirect_uri, message)
+    })
+}
+
+// Function to delete an image
+function delete_image(req, res, image_path, success, redirect_uri, message) {
+    image.destroy(image_path).then(function(val) {
+        req.session.user.image = '/img/users/' + req.file.filename
+        req.session.message = {text: message, type: (success) ? 'success' : 'danger' };
+        res.redirect((success) ? redirect_uri :'/idm/users/'+req.user.id); 
+    }).catch(function(error) {
+        req.session.message = {text: ' Error saving image.', type: 'danger'};
+        res.redirect('/idm/users/'+req.user.id);
+    })
 }
 

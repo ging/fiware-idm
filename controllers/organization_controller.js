@@ -3,6 +3,8 @@ var debug = require('debug')('idm:organization_controller');
 var gravatar = require('gravatar');
 
 
+var image = require ('../lib/image.js');
+
 // Autoload info if path include organizationId
 exports.load_organization = function(req, res, next, organizationId) {
 
@@ -302,7 +304,6 @@ exports.update_info = function(req, res, next) {
             res.redirect('/idm/organizations/'+req.organization.id);
         })
     }).catch(function(error){ 
-
         // Send message of warning of updating organization
         res.locals.message = {text: ' organization update failed.', type: 'warning'};
         req.body.organization['image'] = req.organization.image

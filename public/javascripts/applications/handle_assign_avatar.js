@@ -24,8 +24,9 @@ $(document).ready(function(){
 	    event.preventDefault();
 
 	    if ($(this).find('#id_image')[0].files[0]) {
-	    	var types = ['jpg', 'jpeg', 'png']
+	    	var types = ['jpg', 'jpeg', 'png', '.pdf']
 	    	var file_type = $(this).find('#id_image')[0].files[0].name.split('.').pop().toLowerCase()
+
 	    	if (types.includes(file_type)) {
 		    	// Continue with the submit request
 		    	$("#create_avatar_form")[0].submit();

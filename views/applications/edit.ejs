@@ -4,7 +4,6 @@
     	<% nameErrors.push(errors[i].message)%>
     <% } %>
 <% } %>
-
 <div id="content_body">
 	<div class="panel panel-default ">
 		<div class="panel-body">
@@ -29,7 +28,7 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("name") != -1) { %>
-							<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger ">This field is required.</span>
 							<% } %>
 
 							<div class="form-group required">
@@ -40,7 +39,7 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("description") != -1) { %>
-							<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger ">This field is required.</span>
 							<% } %>
 
 							<div class="form-group required">
@@ -55,7 +54,7 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("url") != -1) { %>
-							<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger ">This field is required.</span>
 							<% } %>
 
 							<div class="form-group required">
@@ -65,7 +64,7 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("redirectUri") != -1) { %>
-							<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger ">This field is required.</span>
 							<% } %>
 
 						</fieldset>

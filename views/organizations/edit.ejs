@@ -120,7 +120,7 @@
                         Cancel
                     </h3>
                 </div>
-                <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/organizations/<%= organization.id %>/edit/cancel" method="POST" enctype="">
+                <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/organizations/<%= organization.id %>?_method=delete" method="POST" enctype="">
                     <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                     <div class="modal-body clearfix">
                         <a class="panel-title" data-toggle="collapse" data-parent="#accordion" href="#destroy_organization">

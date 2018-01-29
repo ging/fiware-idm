@@ -1,7 +1,7 @@
 var models = require('../models/models.js');
 var debug = require('debug')('idm:organization_controller');
 var gravatar = require('gravatar');
-
+var fs = require('fs');
 
 var image = require ('../lib/image.js');
 
@@ -95,6 +95,10 @@ exports.index = function(req, res) {
 		if (req.xhr) {
 			res.send({organizations: organizations, number_organizations: result.count})
 		} else {
+			if (req.session.message) {
+				res.locals.message = req.session.message;
+				delete req.session.message
+			}
 			res.render('organizations/index', {csrfToken: req.csrfToken(), organizations: organizations})
 		}
 		
@@ -359,7 +363,26 @@ exports.delete_avatar = function(req, res, next) {
 
 // DELETE /idm/organizations/:organizationId -- Delete an organization
 exports.destroy = function(req, res, next) {
+	
+	debug("--> destroy");
 
+	// Destroy application with specific id
+	models.organization.destroy({
+		where: { id: req.organization.id }
+	}).then(function() {
+		// If the image is not the default one, delete image from filesystem
+		if (req.organization.image.includes('/img/organizations')) {
+			var image_name = req.organization.image.split('/')[3]
+			fs.unlink('./public/img/organizations/'+image_name);
+		}
+		// Send message of success in deleting application
+		req.session.message = {text: ' Organization deleted.', type: 'success'};
+		res.redirect('/idm/organizations')
+	}).catch(function(error) {
+		// Send message of fail when deleting application
+		req.session.message = {text: ' Organization delete error.', type: 'warning'};
+		res.redirect('/idm/organizations');
+	});
 }
 
 // Function to check and crop an image and to update the name in the oauth_client table

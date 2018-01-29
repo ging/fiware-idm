@@ -152,6 +152,15 @@ router.delete('/idm/users/:userId/edit/avatar/delete',  sessionController.login_
 router.put('/idm/users/:userId/edit/gravatar',          sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   parseForm,  csrfProtection,     userController.set_gravatar);
 router.post('/idm/users/available',                     sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,     authorizeUserController.available_users);
 
+// Route to save images of applications
+var imageOrgUpload = multer.diskStorage({
+    destination: function(req, file, callback) {
+        callback(null, './public/img/organizations/')
+    },
+    filename: function(req, file, callback) {
+        callback(null, uuid.v4() + path.extname(file.originalname))
+    }
+})
 
 // Routes for organziations
 router.get('/idm/organizations',                                         sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.index);
@@ -161,7 +170,7 @@ router.post('/idm/organizations',                                        session
 router.get('/idm/organizations/:organizationId',                         sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.show);
 router.get('/idm/organizations/:organizationId/members',                 sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.get_members);
 router.get('/idm/organizations/:organizationId/edit',                    sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  csrfProtection, organizationController.edit);
-router.put('/idm/organizations/:organizationId/edit/avatar',             sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  multer({storage: imageAppUpload}).single('image'), parseForm,  csrfProtection,  organizationController.update_avatar);
+router.put('/idm/organizations/:organizationId/edit/avatar',             sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  multer({storage: imageOrgUpload}).single('image'), parseForm,  csrfProtection,  organizationController.update_avatar);
 router.put('/idm/organizations/:organizationId/edit/info',               sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.update_info);
 router.delete('/idm/organizations/:organizationId/edit/delete_avatar',   sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.delete_avatar);
 router.delete('/idm/organizations/:organizationId',                      sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.destroy);

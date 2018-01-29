@@ -315,12 +315,45 @@ exports.update_info = function(req, res, next) {
 // PUT /idm/organizations/:organizationId/edit/avatar -- Edit avatar of organization
 exports.update_avatar = function(req, res, next) {
 
+	debug("--> update_avatar");
+
+	// See if the user has selected a image to upload
+	if (req.file) {
+		handle_uploaded_images(req, res, '/idm/organizations/'+req.organization.id)
+	// If not redirect to show application info
+  	} else {
+  		req.session.message = {text: ' fail updating image.', type: 'warning'};
+		res.redirect('/idm/organizations/'+req.organization.id);
+  	} 
 }
 
 
 // DELETE /idm/organizations/:organizationId/edit/delete_avatar -- Delete avatar of organization
 exports.delete_avatar = function(req, res, next) {
+	
+	debug("--> delete_avatar");
 
+	var image_path = 'public' + req.organization.image
+
+	image.destroy(image_path).then(function(val) {
+		return models.organization.update(
+					{ image: 'default' },
+					{
+						fields: ["image"],
+						where: {id: req.organization.id }
+					})
+	}).then(function(deleted) {
+		if (deleted[0] === 1) {
+			// Send message of success in deleting image
+        	req.organization.image = '/img/logos/original/group.png'
+            res.send({text: ' Deleted image.', type: 'success'});
+		} else {
+			// Send message of fail when deleting an image
+            res.send({text: ' Failed to delete image.', type: 'danger'});
+		}
+	}).catch(function(error) {
+		res.send({text: ' Failed to delete image.', type: 'danger'});
+	})
 }
 
 
@@ -329,6 +362,51 @@ exports.destroy = function(req, res, next) {
 
 }
 
+// Function to check and crop an image and to update the name in the oauth_client table
+function handle_uploaded_images(req, res, redirect_uri) {
+
+	// Check the MIME of the file upload
+	var image_path = 'public/img/organizations/'+req.file.filename
+	image.check(image_path).then(function(val) {
+		var crop_points = {x: req.body.x, y: req.body.y, w: req.body.w, h: req.body.h}
+		return image.crop(image_path, crop_points)
+	}).then(function(val) {
+		return models.organization.update(
+			{ image: req.file.filename },
+			{
+				fields: ['image'],
+				where: {id: req.organization.id}
+			}) 
+	}).then(function(updated) {
+		var old_image = 'public'+req.organization.image
+		if (updated[0] === 1) {
+			// Old image to be deleted
+			if (old_image.includes('/img/organizations/')) {
+				delete_image(req, res, old_image, true, redirect_uri, ' Image updated successfully.')
+			} else {
+				// Send message of success when updating image
+				req.session.message = {text: ' Image updated successfully.', type: 'success'};
+				res.redirect(redirect_uri);
+			}
+		} else {
+			delete_image(req, res, image_path, false, redirect_uri, ' Image not updated.')
+		}
+	}).catch(function(error) {
+		var message = (typeof error === 'string') ? error : ' Error saving image.'
+		delete_image(req, res, image_path, false, redirect_uri, message)
+	})
+}
+
+// Function to delete an image
+function delete_image(req, res, image_path, success, redirect_uri, message) {
+	image.destroy(image_path).then(function(val) {
+		req.session.message = {text: message, type: (success) ? 'success' : 'danger' };
+		res.redirect((success) ? redirect_uri :'/idm/organizations/'+req.organization.id); 
+	}).catch(function(error) {
+		req.session.message = {text: ' Error saving image.', type: 'danger'};
+		res.redirect('/idm/organizations/'+req.organization.id);
+	})
+}
 
 // Funtion to see if request is via AJAX or Browser and depending on this, send a request
 function send_response(req, res, response, url) {

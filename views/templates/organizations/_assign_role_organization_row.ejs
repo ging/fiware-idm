@@ -1,0 +1,34 @@
+<!-- Template to create rows with organizations assign roles in the application -->
+<script type="text/x-custom-template" id="table_row_assign_role_organization_template">
+    <li id="organization_id" class="list-group-item">
+        <div class="avatar filter_field">
+            <img alt="organization logo" src="organization_avatar">
+        </div>
+        <div class="member" data-update_owners_organizations-id="">
+            <div class="data">
+                <span class="name">organization_name</span>
+            </div>
+            <div class="active remove">
+                <a class="fa fa-close" href="#remove"></a>
+            </div>
+        </div>
+        <div class="dropdown role_options">
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="">
+                <span class="roles_display">roles_count</span>
+                <span class="fa fa-chevron-down"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right role_dropdown clearfix">
+                <li id="owner" class="app-roles-list">
+                    <span>Owner</span>
+                    <ol>
+                    </ol>
+                </li>
+                <li id="member" class="app-roles-list">
+                    <span>Member</span>
+                    <ol>
+                    </ol>
+                </li>
+            </ul>
+        </div>
+    </li>
+</script>

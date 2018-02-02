@@ -64,6 +64,24 @@
         <% if (errors.indexOf("redirectUri") != -1) { %>
 					<span class="help-block alert alert-danger ">Input required.</span>
 				<% } %>
+        <div class="form-group required">
+          <label class="control-label  required" for="id_url">
+            Provider
+            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Owner application" data-content="Select who is going be the provider of the application: yourself or one of the organizations in which you are owner." data-original-title="" title="">
+              <i class="fa fa-question-circle"></i>
+            </a>
+          </label>
+          <select class="form-control" id="select_provider" name="provider">
+            <option disabled>User:</option>
+            <option value="<%= session.user.id %>" ><%= session.user.username %></option>
+            <% if (organizations.length > 0) { -%>
+              <option disabled>Organizations:</option>
+              <% for (var i = 0; i < organizations.length; i++) { -%>
+                <option value="<%= organizations[i].Organization.id %>"><%= organizations[i].Organization.name %></option>  
+              <% } -%>              
+            <% } -%>
+          </select>
+        </div>
 
       </fieldset>
     </div>
@@ -78,6 +96,7 @@
     $(function () {
       $('[data-toggle="popover"]').popover({html:true});
       //$('[data-toggle="tooltip"]').tooltip();
+
     });
   </script>
 </div>

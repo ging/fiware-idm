@@ -3,13 +3,13 @@
         <header>
             <h4 class="name">
                 <%= application.name %>
-                <% if (user_logged_permissions.some(elem => elem.permission_id === '2')) { -%>   
+                <% if (user_logged_permissions.includes('2')) { -%>   
                     <a href="/idm/applications/<%= application.id %>/edit/" class="small">
                         <i class="fa fa-edit"></i>
                         <span>edit</span>
                     </a>
                 <% } -%>%>
-                <% if (user_logged_permissions.some(elem => elem.permission_id === '3')) { -%>
+                <% if (user_logged_permissions.includes('3')) { -%>
                     <a href="/idm/applications/<%= application.id %>/edit/roles/" class="small">
                         <i class="fa fa-cogs"></i>
                         <span>manage roles</span>
@@ -46,7 +46,7 @@
                     <h5>Callback URL</h5>
                     <p><%= application.redirect_uri %></p>
                 </div>
-                <% if (user_logged_permissions.some(elem => ['1', '5', '6'].includes(elem.permission_id))) { -%>
+                <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
                     <div class="extra">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_oauth2_credentials" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
@@ -70,7 +70,7 @@
                 <% } -%>
             </div>
         </div>
-        <% if (user_logged_permissions.some(elem => elem.permission_id === '2')) { -%>
+        <% if (user_logged_permissions.includes('2')) { -%>
             <div class="panel panel-default info">
                 <div class="panel-body">
                     <div class="extra">
@@ -104,7 +104,7 @@
                 </div>
             </div>
         <% } -%>
-        <% if (user_logged_permissions.some(elem => elem.permission_id === '2')) { -%>
+        <% if (user_logged_permissions.includes('2')) { -%>
             <div class="panel panel-default info">
                 <div class="panel-body">
                     <div class="extra">
@@ -146,8 +146,8 @@
                     <div class="filter table_search client">
                         <input class="form-control" value="" type="text" name="auth_users__filter__q" placeholder="Filter">
                     </div>
-                    <div id="spinner_auth_users" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
-                    <% if (user_logged_permissions.some(elem => ['1', '5', '6'].includes(elem.permission_id))) { -%>
+                    <div id="spinner_auth_users" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>                    
+                    <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
                         <div class="btn-group"> 
                             <button title="Authorize" class="btn btn-default btn-sm ajax-modal" data-toggle="modal" data-target="#authorize_user" id="auth_users_action_manage_application_users">
                                 <i class="fa fa-key"></i> 
@@ -160,24 +160,15 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-                <div id="auth_users_content" class="list-group" id="auth_users_content">
-                    <% for (var i = 0; i < users_authorized.length; i++) { -%>
-                        <div class="list-group-item">
-                            <a class="item" href="/idm/users/<%= users_authorized[i].user_id %>/">
-                                <div class="avatar filter_field">
-                                    <img alt="user logo" src="<%= users_authorized[i].image %>">
-                                </div>
-                                <div class="name filter_field"><%= users_authorized[i].username %></div>
-                            </a>
-                        </div>
-                    <% } -%>
-                </div>  
+                <div id="auth_users_content" class="list-group">
+                    <p class="alert alert-info empty" style="display: none;">No users found.</p>
+                </div>
             </div>
             <div class="panel-footer">
-                <nav id="auth_users_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+                <nav id="auth_users_pagination_container"></nav>
             </div>
         </div>
-        <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-application_id="<%= application.id %>" data-pagination-pages="">
+        <div class="panel panel-default datatable" id="auth_organizations" data-pagination-url="/filters/organizations" data-application_id="<%= application.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title">Authorized Organizations</span>
                 <div class="table_actions clearfix">
@@ -185,9 +176,9 @@
                         <input class="form-control" value="" type="text" name="organizations__filter__q" placeholder="Filter">
                     </div>
                     <div id="spinner_organizations" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
-                    <% if (user_logged_permissions.some(elem => ['1', '5', '6'].includes(elem.permission_id))) { -%>
+                    <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
                         <div class="btn-group"> 
-                            <button href="/idm/applications/<%= application.id %>/edit/organizations/" title="Authorize" class="btn btn-default btn-sm ajax-modal" id="organizations__action_manage_application_organizations">
+                            <button title="Authorize" data-toggle="modal" data-target="#authorize_organization" class="btn btn-default btn-sm ajax-modal" id="auth_organizations_action_manage_application_organizations">
                                 <i class="fa fa-key"></i> 
                                 <span class="action">
                                     Authorize
@@ -198,29 +189,37 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-                <div class="list-group" id="organizations_content"></div>
-                <p class="alert alert-info empty" style="display: block;">This application does not have any authorized organizations.</p>
+                <div id="auth_organizations_content" class="list-group">
+                    <p class="alert alert-info empty" style="display: none;">This application does not have any authorized organizations.</p>                    
+                </div>
             </div>
             <div class="panel-footer">
-                <nav id="organizations_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+                <nav id="auth_organizations_pagination_container"></nav>
             </div>
         </div>
     </div>
 </div>
 
 <%- include _authorize_user %>
+<%- include _authorize_organization %>
 <%- include ../templates/./applications/./_pep_proxy_row %>
 <%- include ../templates/./applications/./_iot_row %>
 <%- include ../templates/./users/./_available_user_row %>
 <%- include ../templates/./users/./_assign_role_user_row %>
+<%- include ../templates/./users/./_user_row %>
 <%- include ../templates/./other/./_info_message %>
+<%- include ../templates/./organizations/./_organization_row %>
+<%- include ../templates/./organizations/./_assign_role_organization_row %>
 
 <div class="messages"></div>
 <script src="/javascripts/handle_csrf_token.js" type="text/javascript"></script>
 <script src="/javascripts/users/search_available_users.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_iot.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_pep_proxy.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_get_authorized_users.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_get_authorized_organizations.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_authorize_users.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_authorize_organizations.js" type="text/javascript"></script>
 
 <script type="text/javascript">
     $('.panel-title a:first-child').mouseover(function(){

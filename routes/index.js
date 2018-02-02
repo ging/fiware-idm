@@ -19,7 +19,8 @@ var roleController = require('../controllers/role_controller');
 var permissionController = require('../controllers/permission_controller');
 var pepProxyController = require('../controllers/pep_proxy_controller');
 var iotController = require('../controllers/iot_controller');
-var authorizeUserController = require('../controllers/authorize_user_controller');
+var authorizeUserAppController = require('../controllers/authorize_user_app_controller');
+var authorizeOrgAppController = require('../controllers/authorize_org_app_controller');
 var checkPermissionsController = require('../controllers/check_permissions_controller');
 var adminController = require('../controllers/admin_controller');
 var settingsController = require('../controllers/settings_controller');
@@ -150,7 +151,7 @@ router.post('/idm/users/:userId/edit/avatar',           sessionController.login_
 router.put('/idm/users/:userId/edit/avatar',            sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   parseForm,  csrfProtection,     userController.set_avatar);
 router.delete('/idm/users/:userId/edit/avatar/delete',  sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   parseForm,  csrfProtection,     userController.delete_avatar);
 router.put('/idm/users/:userId/edit/gravatar',          sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   parseForm,  csrfProtection,     userController.set_gravatar);
-router.post('/idm/users/available',                     sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,     authorizeUserController.available_users);
+router.post('/idm/users/available',                     sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,     authorizeUserAppController.available_users);
 
 // Route to save images of applications
 var imageOrgUpload = multer.diskStorage({
@@ -174,6 +175,7 @@ router.put('/idm/organizations/:organizationId/edit/avatar',             session
 router.put('/idm/organizations/:organizationId/edit/info',               sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.update_info);
 router.delete('/idm/organizations/:organizationId/edit/delete_avatar',   sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.delete_avatar);
 router.delete('/idm/organizations/:organizationId',                      sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.destroy);
+router.post('/idm/organizations/available',                              sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,     authorizeOrgAppController.available_organizations);
 
 // Routes to manage members in organizations
 router.get('/idm/organizations/:organizationId/edit/members',            sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  csrfProtection,    manageMembersController.get_members);
@@ -196,7 +198,9 @@ router.get('/idm/applications',  					                                        se
 router.get('/filters/applications',                                                         sessionController.login_required,   sessionController.password_check_date,      csrfProtection,     applicationController.filter);
 router.get('/idm/applications/new',                                                         sessionController.login_required,   sessionController.password_check_date,      csrfProtection,     applicationController.new);
 router.post('/idm/applications',                                                            sessionController.login_required,   sessionController.password_check_date,      parseForm,  csrfProtection,     applicationController.create);
-router.get('/idm/applications/:applicationId', 		                                        sessionController.login_required,   sessionController.password_check_date,  	csrfProtection,     applicationController.show);
+router.get('/idm/applications/:applicationId/authorized_users',                             sessionController.login_required,   sessionController.password_check_date,      csrfProtection, applicationController.authorized_users);
+router.get('/idm/applications/:applicationId/authorized_organizations',                     sessionController.login_required,   sessionController.password_check_date,      csrfProtection, applicationController.authorized_organizations);
+router.get('/idm/applications/:applicationId', 		                                        sessionController.login_required,   sessionController.password_check_date,  	checkPermissionsController.owned_permissions,    csrfProtection,     applicationController.show);
 router.get('/idm/applications/:applicationId/step/avatar',                                  sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    applicationController.step_new_avatar);
 router.post('/idm/applications/:applicationId/step/avatar',                                 sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    multer({storage: imageAppUpload}).single('image'), parseForm,  csrfProtection,  applicationController.step_create_avatar);
 router.get('/idm/applications/:applicationId/step/roles',                                   sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    applicationController.step_new_roles);
@@ -207,8 +211,12 @@ router.delete('/idm/applications/:applicationId/edit/delete_avatar',            
 router.delete('/idm/applications/:applicationId',                                           sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    parseForm,  csrfProtection,    applicationController.destroy);
 
 // Routes to authorize users in applications
-router.get('/idm/applications/:applicationId/edit/users',                                   sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    authorizeUserController.get_users);
-router.post('/idm/applications/:applicationId/edit/users',                                  sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    parseForm,  csrfProtection,    authorizeUserController.authorize_users);
+router.get('/idm/applications/:applicationId/edit/users',                                   sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    authorizeUserAppController.get_users);
+router.post('/idm/applications/:applicationId/edit/users',                                  sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    parseForm,  csrfProtection,    authorizeUserAppController.authorize_users);
+
+// Routes to authorize organizations in applications
+router.get('/idm/applications/:applicationId/edit/organizations',                           sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    authorizeOrgAppController.get_organizations);
+router.post('/idm/applications/:applicationId/edit/organizations',                          sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    parseForm,  csrfProtection,    authorizeOrgAppController.authorize_organizations);
 
 // Routes to handle roles of applications
 router.get('/idm/applications/:applicationId/edit/roles',                                   sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    roleController.manage_roles);

@@ -99,7 +99,7 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 						req.session.message = {text: message, type: type};
 						res.redirect("/idm/applications/"+req.application.id)
 					}).catch(function(error) {
-						debug(error)
+						debug('Error ' + error)
 						req.session.message = {text: ' Authzforce error', type: 'warning'};
 						res.redirect("/idm/applications/"+req.application.id)
 					})
@@ -108,16 +108,16 @@ exports.submit_authzforce_policies = function(req, res, submit_assignment) {
 					res.redirect("/idm/applications/"+req.application.id)
 				}
 			}).catch(function(error){
-				debug(error)
+				debug('Error ' + error)
 				req.session.message = {text: ' authzforce search error.', type: 'warning'};
 				res.redirect("/idm/applications/"+req.application.id);
 			})	
 		} else {
-			req.session.message = {text: ' no permissions.', type: 'warning'};
+			req.session.message = {text: ' Not create rules.', type: 'warning'};
 			res.redirect("/idm/applications/"+req.application.id);
 		}
 	}).catch(function(error) {
-		debug(error)
+		debug('Error ' + error)
 		req.session.message = {text: ' permission search error.', type: 'warning'};
 		res.redirect("/idm/applications/"+req.application.id);
 	});

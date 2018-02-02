@@ -4,8 +4,17 @@ var uuid = require('uuid');
 var mmm = require('mmmagic'),
     Magic = mmm.Magic;
 
+var config = require('../config').database;
+
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+
+var sequelize = new Sequelize(config.name, config.user, config.password, 
+  { 
+    host: config.host,
+    dialect: 'mysql'
+  }      
+);
 
 var debug = require('debug')('idm:application_controller');
 var gravatar = require('gravatar');
@@ -20,26 +29,34 @@ exports.load_application = function(req, res, next, applicationId) {
 
 	debug("--> load_application");
 
-	// Search application whose id is applicationId
-	models.oauth_client.findById(applicationId).then(function(application) {
-		// If application exists, set image from file system
-		if (application) {
-			req.application = application
-			if (application.image == 'default') {
-				req.application.image = '/img/logos/original/app.png'
-			} else {
-				req.application.image = '/img/applications/'+application.image
-			}
-			// Send request to next function
-			next();
-		} else {
-			// Reponse with message
-			var response = {text: ' Application doesn`t exist.', type: 'danger'};
+	if (applicationId === 'idm_admin_app') {
+		// Reponse with message
+		var response = {text: ' Application doesn`t exist.', type: 'danger'};
 
-			// Send response depends on the type of request
-			send_response(req, res, response, '/idm/applications');
-		}
-	}).catch(function(error) { next(error); });
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications');
+	} else {
+		// Search application whose id is applicationId
+		models.oauth_client.findById(applicationId).then(function(application) {
+			// If application exists, set image from file system
+			if (application) {
+				req.application = application
+				if (application.image == 'default') {
+					req.application.image = '/img/logos/original/app.png'
+				} else {
+					req.application.image = '/img/applications/'+application.image
+				}
+				// Send request to next function
+				next();
+			} else {
+				// Reponse with message
+				var response = {text: ' Application doesn`t exist.', type: 'danger'};
+
+				// Send response depends on the type of request
+				send_response(req, res, response, '/idm/applications');
+			}
+		}).catch(function(error) { next(error); });		
+	}
 }
 
 // GET /idm/applications -- List all applications
@@ -54,7 +71,7 @@ exports.index = function(req, res) {
 	} 
 
 	// Search applications in which the user is authorized
-	models.role_user.findAndCountAll({
+	models.role_assignment.findAndCountAll({
 		where: { user_id: req.session.user.id,
 				 role_id: role },
 		include: [{
@@ -104,7 +121,7 @@ exports.filter = function(req, res) {
 	}
 
 	// Search applications in which the user is authorized
-	models.role_user.findAll({
+	models.role_assignment.findAll({
 		where: { user_id: req.session.user.id,
 				 role_id: role },
 		include: [{
@@ -139,93 +156,156 @@ exports.filter = function(req, res) {
 exports.show = function(req, res, next) {
 
 	debug("--> show");
-
-	// Search info about the users authorized in the application
-	models.role_user.findAll({
+		
+	// Search iot sensors of application
+	var search_iots = models.iot.findAll({
 		where: { oauth_client_id: req.application.id },
-		include: [{
-			model: models.user,
-			attributes: ['id', 'username', 'email', 'image', 'gravatar']
-		}]
-	}).then(function(users_application) {
-		// Array of users authorized in the application
-		var users_authorized = []
-		// Array of roles owned by the user logged
-		var user_logged_roles = []
+		attributes: ['id'],
+	})
 
-		users_application.forEach(function(app) {
-			if(app.User.id === req.session.user.id) {
-				user_logged_roles.push(app.role_id)
-			}
-			if(users_authorized.some(elem => elem.user_id === app.User.id) === false) {
-				var image = '/img/logos/medium/user.png'
-                if (app.User.gravatar) {
-					image = gravatar.url(app.User.email, {s:36, r:'g', d: 'mm'}, {protocol: 'https'});
-				} else if (app.User.image !== 'default') {
-                    image = '/img/users/' + app.User.image
-                }
-				users_authorized.push({ user_id: app.User.id, 
-										username: app.User.username,
-										image: image });
-			} 
-		});
+	// Search pep proxy of application
+	var search_pep = models.pep_proxy.findOne({
+		where: { oauth_client_id: req.application.id },
+		attributes: ['id'],
+	})
 
-		// Search permissions using the roles of the user logged			
-		models.role_permission.findAll({
-			where: { role_id: user_logged_roles },
-			attributes: ['permission_id'],
-		}).then(function(user_logged_permissions) {
-			if(user_logged_permissions.length > 0) {
-				// Set message to send when rendering view and delete from request
-				if (req.session.message) {
-					res.locals.message = req.session.message;
-					delete req.session.message
-				}
 
-				// Search iot sensors of application
-				models.iot.findAll({
-					where: { oauth_client_id: req.application.id },
-					attributes: ['id'],
-				}).then(function(iot_sensors) {
+	Promise.all([search_iots, search_pep]).then(function(values) {
 
-					// Search pep proxy of application
-					models.pep_proxy.findOne({
-						where: { oauth_client_id: req.application.id },
-						attributes: ['id'],
-					}).then(function(pep_proxy) {
-						if (req.session.pep) {
-							pep_proxy = req.session.pep;
-							delete req.session.pep
-						}
-						res.render('applications/show', { application: req.application, 
-														  users_authorized: users_authorized, 
-														  user_logged_permissions: user_logged_permissions,
-														  pep_proxy: pep_proxy,
-														  iot_sensors: iot_sensors,																	  
-														  errors: [], 
-														  csrfToken: req.csrfToken() });
+		var iot_sensors = values[0]
+		var pep_proxy = values[1]
 
-					}).catch(function(error) { next(error); });
-				}).catch(function(error) { next(error); });
+		// Send message if error exists
+		if (req.session.message) {
+			res.locals.message = req.session.message;
+			delete req.session.message
+		}
 
-			} else { res.render('applications/show', { 	application: req.application, 
-														users_authorized: users_authorized, 
-														user_logged_permissions: [],
-														pep_proxy: undefined,
-														iot_sensors: [],																	  
-														errors: [], 
-														csrfToken: req.csrfToken() }); }
-		}).catch(function(error) { next(error); });
-	}).catch(function(error) { next(error); });
-	
+		res.render('applications/show', { application: req.application, 
+										  user_logged_permissions: req.user_owned_permissions,
+										  pep_proxy: pep_proxy,
+										  iot_sensors: iot_sensors,																	  
+										  errors: [], 
+										  csrfToken: req.csrfToken() });
+	}).catch(function(error) {
+		debug('Error: ' + error)
+		
+		// Send an error if the the request is via AJAX or redirect if is via browser
+		var response = {text: ' Error showing app info.', type: 'danger'};
+		// Send response depends on the type of request
+		send_response(req, res, response, '/idm/applications');
+	})
 };
 
+// GET /idm/applications/:applicationId/authorize_users -- Send authorizes users of an application
+exports.authorized_users = function(req, res, next) {
+
+	debug("--> authorize_users");
+
+	var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
+	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
+
+	var query = `SELECT DISTINCT role_assignment.user_id, user.username, user.image, user.gravatar, user.email, 
+				(SELECT COUNT(DISTINCT user_id) FROM role_assignment RIGHT JOIN (SELECT * FROM user WHERE username LIKE :key) AS user
+				ON role_assignment.user_id=user.id WHERE oauth_client_id=:application_id AND user_id IS NOT NULL) AS count
+				FROM role_assignment 
+				RIGHT JOIN (SELECT * FROM user WHERE username LIKE :key) AS user
+				ON role_assignment.user_id=user.id 
+				WHERE oauth_client_id=:application_id AND user_id IS NOT NULL
+				LIMIT 5
+				OFFSET :offset`
+
+	sequelize.query(query, {replacements: {application_id: req.application.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(users_authorized){
+		var users = []
+
+		var count = 0
+
+		// If user has organizations, set image from file system and obtain info from each organization
+		if (users_authorized.length > 0) {
+			
+			count = users_authorized[0].count
+
+			users_authorized.forEach(function(user) {
+				if (user.gravatar) {
+        			user.image = gravatar.url(user.email, {s:100, r:'g', d: 'mm'}, {protocol: 'https'});
+				} else if (user.image == 'default') {
+					user.image = '/img/logos/medium/user.png'
+				} else {
+					user.image = '/img/users/'+user.image
+				}
+				users.push({id: user.user_id, username: user.username, image: user.image})
+			});
+		}
+		res.send({users: users, users_number: count})
+
+    }).catch(function(error) {
+    	debug('Error get users authorized: ' + error)
+		var message = {text: ' Unable to find members',type: 'danger'}
+		send_response(req, res, message, '/idm')
+    });
+}
+
+// GET /idm/applications/:applicationId/authorize_organizations -- Send authorizes organizations of an application
+exports.authorized_organizations = function(req, res, next) {
+
+	debug("--> get_organizations");
+
+	var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
+	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
+
+	var query = `SELECT DISTINCT role_assignment.organization_id, organization.name, organization.image, organization.description, 
+				(SELECT COUNT(DISTINCT organization_id) FROM role_assignment RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
+				ON role_assignment.organization_id=organization.id WHERE oauth_client_id=:application_id AND organization_id IS NOT NULL) AS count
+				FROM role_assignment 
+				RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
+				ON role_assignment.organization_id=organization.id 
+				WHERE oauth_client_id=:application_id AND organization_id IS NOT NULL
+				LIMIT 5
+				OFFSET :offset`
+
+	sequelize.query(query, {replacements: {application_id: req.application.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(organizations_authorized){
+		var organizations = []
+
+		var count = 0
+
+		// If user has organizations, set image from file system and obtain info from each organization
+		if (organizations_authorized.length > 0) {
+			
+			count = organizations_authorized[0].count
+
+			organizations_authorized.forEach(function(organization) {
+				if (organization.image == 'default') {
+					organization.image = '/img/logos/medium/group.png'
+				} else {
+					organization.image = '/img/organizations/'+organization.image
+				}
+				organizations.push({id: organization.organization_id, name: organization.name, image: organization.image, description: organization.description})
+			});
+		}
+		res.send({organizations: organizations, organizations_number: count})
+
+    }).catch(function(error) {
+    	debug('Error get organizations authorized: ' + error)
+		var message = {text: ' Unable to find organizations',type: 'danger'}
+		send_response(req, res, message, '/idm')
+    });
+}
+
 // GET /idm/applications/new -- Render a view to create a new application
-exports.new = function(req, res) {
+exports.new = function(req, res, next) {
 
 	debug("--> new");
 
-	res.render('applications/new', {application: {}, errors: [], csrfToken: req.csrfToken()})
+	models.user_organization.findAll({
+		where: { user_id: req.session.user.id, role: 'owner'},
+		include: [{
+			model: models.organization,
+			attributes: ['id', 'name']
+		}]
+	}).then(function(organizations) {
+		res.render('applications/new', {application: {}, organizations: organizations, errors: [], csrfToken: req.csrfToken()})		
+	}).catch(function(error) { next(error); });
+
 };
 	
 // POST /idm/applications -- Create application
@@ -233,45 +313,95 @@ exports.create = function(req, res, next) {
 
 	debug("--> create");
 
-	// If body has parameters id or secret don't create application
 	if (req.body.id || req.body.secret) {
 		req.session.message = {text: ' Application creation failed.', type: 'danger'};
 		res.redirect('/idm/applications')
 	} else {
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client
 		var application = models.oauth_client.build(req.body.application);
-		application.validate().then(function(err) {
-			application.save({fields: [ 'id', 
+		var validate = application.validate()
+		var save = validate.then(function() {
+			return application.save({fields: [ 'id', 
 										'name', 
 										'description', 
 										'url', 
 										'redirect_uri', 
 										'secret', 
-										'image']
-			}).then(function(){
-				// Assign by default the provider role to the user who is creating the application
-        		models.role_user.create({ oauth_client_id: application.id, 
-        								  role_id: 'provider', 
-        								  user_id: req.session.user.id}
-        		).then(function(newAssociation) {
-					res.redirect('/idm/applications/'+application.id+'/step/avatar');
-				})
-			}).catch(function(error){
-				res.locals.message = {text: ' Unable to create application',type: 'danger'}
-			 	res.render('applications/new', { application: application, errors: [], csrfToken: req.csrfToken()});
-			});	
+										'image'] })
+		})
+ 
+		// See if the user or the organization will be the provider of the application
+		if (req.body.provider !== req.session.user.id) {
 
-		// Render the view once again, sending the error found when validating
+			// Check if user is owner of the organization send
+			var organizations = models.user_organization.findOne({
+				where: { user_id: req.session.user.id, organization_id: req.body.provider, role: 'owner'}
+			})
+
+			// Create row in db role_assignment if organization exists
+			var create_row = organizations.then(function(row) {
+				if (row) {
+					return models.role_assignment.create({ 	oauth_client_id: application.id, 
+		    								  				role_id: 'provider', 
+		    								  				organization_id: req.body.provider,
+		    												role_organization: 'owner' })			
+				} else {
+					return Promise.reject()
+				}
+			}).catch(function(error) {
+				return Promise.reject("no_organization")
+			});
+
+			// If application is save in oauth_client_id, create assignment in role_assignment db
+			var assign = save.then(function() {
+				return create_row
+			})
+
+		} else {
+
+			// If application is save in oauth_client_id, create assignment in role_assignment db
+			var assign = save.then(function() {
+				return models.role_assignment.create({ 	oauth_client_id: application.id, 
+	        								  			role_id: 'provider', 
+	        								  			user_id: req.session.user.id})
+			})
+		}
+
+		Promise.all([save, assign]).then(function(values) {
+			res.redirect('/idm/applications/'+application.id+'/step/avatar');
 		}).catch(function(error){
-			var nameErrors = []
-			if (error.errors.length) {
-        		for (var i in error.errors) {
-        			nameErrors.push(error.errors[i].message)
-        		}
-  			}
-		 	res.render('applications/new', { application: application, errors: nameErrors, csrfToken: req.csrfToken()}); 
-		});
-	}	
+			if (error === "no_organization") {
+				// Destroy application with specific id
+				models.oauth_client.destroy({
+					where: { id: application.id }
+				}).then(function() {
+					// Send message of success in deleting application
+					req.session.message = {text: " Can't create application.", type: 'danger'};
+					res.redirect('/idm/applications')
+				}).catch(function(error) {
+					// Send message of fail when deleting application
+					req.session.message = {text: ' Application create error.', type: 'warning'};
+					res.redirect('/idm/applications');
+				});
+			} else {
+				var nameErrors = []
+				if (error.errors.length) {
+	        		for (var i in error.errors) {
+	        			nameErrors.push(error.errors[i].message)
+	        		}
+	  			}
+	  			models.user_organization.findAll({
+					where: { user_id: req.session.user.id, role: 'owner'},
+					include: [{
+						model: models.organization,
+						attributes: ['id', 'name']
+					}]
+				}).then(function(organizations) {
+					res.render('applications/new', {application: application, organizations: organizations, errors: nameErrors, csrfToken: req.csrfToken()})		
+				}).catch(function(error) { next(error); });
+			}
+		})
+	}
 };
 
 // GET /idm/applications/:applicationId/step/avatar -- Form to create avatar when creating an application

@@ -18,8 +18,9 @@
 				</div>
 			</div>
   			<div class="panel-body datatable-content">
-  					<div class="list-group" id="applications_content">
-  						<% var i; for (i=0; i < applications.length; i++) { %> 
+			  	<% if (applications.length > 0) { %>
+					<div class="list-group" id="applications_content">
+						<% var i; for (i=0; i < applications.length; i++) { %> 
 	  						<div class="list-group-item">
 	  							<a class="item" href="/idm/applications/<%= applications[i].id %>">
 	  								<div class="avatar filter_field">
@@ -30,10 +31,10 @@
 					  			</a>
 					  		</div>
 					  	<% } %>
-				  	</div>
-				  	<% if (applications.length < 1) { %>
-				  		<p class="alert alert-info empty">You are not authorized in any application.</p> 
-					<% } %>  
+				  	</div>				
+				<% } else { -%>					
+			  		<p class="alert alert-info empty">You are not authorized in any application.</p> 
+				<% } %>
  			</div>
   			<div class="panel-footer">
       			<a href="/idm/applications/">View All</a>
@@ -52,14 +53,23 @@
 				</div>
 			</div>
 			<div class="panel-body datatable-content">
-
-    	
-			      <!-- <div class="list-group" id="organizations_content"><div class="list-group-item"><a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"><div class="avatar filter_field"><img alt="organization logo" src="/static/dashboard/img/logos/medium/group.png"></div><div class="name filter_field">alexph91 cloud</div>
-			      <div class="description filter_field">This organization is intended to be used in the cloud environment. As long as you are a trial or community user this organization will be authorized as purchaser in the Cloud Application.</div>
-			      </a><div class="switch filter_field"><a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"></a><a class="btn btn-link" href="/auth/switch/062b32c46a924d33b19235d7f982affa/">switch</a></div>
-			  </div></div> -->
-			      <p class="alert alert-info empty" style="display: none;">You don't have any organizations.</p>	    
-
+			  	<% if (organizations.length > 0) { %>
+					<div class="list-group" id="applications_content">
+						<% var i; for (i=0; i < organizations.length; i++) { %> 
+	  						<div class="list-group-item">
+	  							<a class="item" href="/idm/organizations/<%= organizations[i].id %>">
+	  								<div class="avatar filter_field">
+											<img alt="application logo" src="<%= organizations[i].image %>">
+										</div>
+		  							<div class="name filter_field"><%= organizations[i].name %></div>
+		    						<div class="description filter_field"><%= organizations[i].description %></div>
+					  			</a>
+					  		</div>
+					  	<% } %>
+				  	</div>
+				<% } else { -%>
+			  		<p class="alert alert-info empty">You don't have any organizations.</p>
+				<% } %>			    
 			</div>
   			<div class="panel-footer">
       			<a href="/idm/organizations/">View All</a>
@@ -71,23 +81,6 @@
 
 	$( document ).ready(function() {
 		if (false) {
-
-			var error = function(jqXHR, status, errorThrown) {
-				if (jqXHR.status === 401){
-					var redir_url = jqXHR.getResponseHeader("X-Horizon-Location");
-					if (redir_url){
-						location.href = redir_url;
-					} else {
-						location.reload(true);
-					}
-				}
-				else {
-					if (!horizon.ajax.get_messages(jqXHR)) {
-						// Generic error handler. Really generic.
-						horizon.alert("danger", gettext("An error occurred. Please try again later."));
-					}
-				}
-			};
 
 			tours.initTour._options.onEnd = function() {
 				$.ajax({

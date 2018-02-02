@@ -2,14 +2,16 @@
 
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
-    'Role_User',
+    'Role_Assignment',
     { authorized: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         primaryKey: false
+    }, role_organization: {
+        type: DataTypes.STRING
     }
     }, {
-	    tableName: 'role_user',
+	    tableName: 'role_assignment',
 	    timestamps: false,
 	    underscored: true,
   	});

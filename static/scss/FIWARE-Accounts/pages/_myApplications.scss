@@ -73,6 +73,7 @@
     padding: 0;
   }
   .modal-footer{
+    margin-top: 25px;
     padding-top: 15px;
   }
 }
@@ -303,4 +304,27 @@
       }
     }
   }
+}
+
+#create_application_modal  {
+  .form-group > .btn-group {
+    display: block;
+    display: inline;
+    width: 100%;
+    
+    #select_provider {
+      display: block;
+      height: 34px;
+      border: 1px solid #A9A9A9;
+      background-color: #EAEAEC;
+      width: 100%;
+      text-align: left;
+        .fa {
+          float: right;
+          margin-right: 10px;
+          font-size: 20px;
+        }
+    }
+  }
+
 }

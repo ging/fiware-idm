@@ -42,7 +42,7 @@ var role = sequelize.import(path.join(__dirname,'role'));
 var permission = sequelize.import(path.join(__dirname,'permission'));
 
 // Import a table which will contains the ids of users, roles and oauth clients
-var role_user = sequelize.import(path.join(__dirname,'role_user'));
+var role_assignment = sequelize.import(path.join(__dirname,'role_assignment'));
 
 // Import a table which will contains the ids of roles and permissions
 var role_permission = sequelize.import(path.join(__dirname,'role_permission'));
@@ -93,9 +93,10 @@ pep_proxy.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 
 authzforce.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between roles, users and OAuthClients
-role_user.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
-role_user.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
-role_user.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role_assignment.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role_assignment.belongsTo(user, { foreignKey: { allowNull: true }, onDelete: 'cascade'});
+role_assignment.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+role_assignment.belongsTo(organization, { foreignKey: { allowNull: true }, onDelete: 'cascade'});
 
 // Relation between roles and permissions
 role_permission.belongsTo(role, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
@@ -115,7 +116,7 @@ exports.permission = permission;
 exports.iot = iot;
 exports.pep_proxy = pep_proxy;
 exports.authzforce = authzforce;
-exports.role_user = role_user;
+exports.role_assignment = role_assignment;
 exports.role_permission = role_permission;
 exports.oauth_client = oauth_client;
 exports.oauth_authorization_code = oauth_authorization_code;
@@ -201,11 +202,11 @@ sequelize.sync().then(function() {
                                     ]
                                   ).then(function() {
                                     console.log('Base de datos (tabla Role_Permisison) inicializada');
-                                    // INITIALIZE ROLE_USER TABLE
-                                    role_user.count().then(function (count) {
+                                    // INITIALIZE ROLE_ASSIGNMENT TABLE
+                                    role_assignment.count().then(function (count) {
                                       if(count === 0) { // tabla is initialized only if is empty
                                         oauth_client.findAll({ where: {name: ['app1', 'app2', 'app3']}}).then(function(app) { 
-                                          role_user.bulkCreate(
+                                          role_assignment.bulkCreate(
                                             [ {role_id: 'provider', user_id: 'admin', oauth_client_id: app[2].id},
                                               {role_id: 'd1591d7c-3c8f-42fe-b343-5c3f817d1d1e', user_id: 'admin', oauth_client_id: app[2].id},
                                               {role_id: 'purchaser', user_id: 'pepe', oauth_client_id: app[2].id},                                                
@@ -217,7 +218,7 @@ sequelize.sync().then(function() {
                                               {role_id: 'provider', user_id: 'admin', oauth_client_id: app[0].id}
                                             ]
                                           ).then(function() {
-                                            console.log('Base de datos (tabla Role_user) inicializada');
+                                            console.log('Base de datos (tabla Role Assignment) inicializada');
                                           });
                                         }); 
                                       }

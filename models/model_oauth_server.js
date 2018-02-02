@@ -5,7 +5,7 @@ var _ = require('lodash');
 var user = models.user;
 var iot = models.iot;
 var pep_proxy = models.pep_proxy;
-var role_user = models.role_user;
+var role_assignment = models.role_assignment;
 var oauth_client = models.oauth_client;
 var oauth_access_token = models.oauth_access_token;
 var oauth_access_token_pep_proxy = models.oauth_access_token_pep_proxy;
@@ -282,12 +282,12 @@ function getUserFromClient(client) {
   };
   //if (client.client_secret) options.where.secret = client.client_secret;
 
-  return role_user
+  return role_assignment
     .findOne(options)
-    .then(function (role_user) {
-      if (!role_user) return false;
-      if (!role_user.User) return false;
-      return role_user.User.toJSON();
+    .then(function (role_assignment) {
+      if (!role_assignment) return false;
+      if (!role_assignment.User) return false;
+      return role_assignment.User.toJSON();
     }).catch(function (err) {
       console.log("getUserFromClient - Err: ", err)
     });

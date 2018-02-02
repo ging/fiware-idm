@@ -1,18 +1,18 @@
 $(document).ready(function(){
 
-	var url = '/idm/organizations/'+window.location.pathname.split('/')[3]+'/members'
+	var url = '/idm/applications/'+window.location.pathname.split('/')[3]+'/authorized_users'
 	load_members(url)
 
 	function load_members(url, panel) {
-		$('#spinner_members').show('open')
+		$('#spinner_auth_users').show('open')
 		$.get(url, function(data, status) {
 			if (data.users.length > 0) {
 				members_pagination(data.users_number)
-				create_user_rows(data.users, $('#members_content'))	
+				create_user_rows(data.users, $('#auth_users_content'))	
 			} else {
-				$('#members_content').find('.alert').show('open')
+				$('#auth_users_content').find('.alert').show('open')
 			}
-			$('#spinner_members').hide('close')
+			$('#spinner_auth_users').hide('close')
 		})
 	}
 
@@ -31,22 +31,22 @@ $(document).ready(function(){
 	var doneTypingInterval = 500;
 
     $("#auth_users").find('.form-control').bind("keyup input",function(e) {
-    	$('#spinner_members').show('open')
+    	$('#spinner_auth_users').show('open')
     	clearTimeout(typingTimerMembers);
         typingTimerMembers = setTimeout(send_filter_request, doneTypingInterval);
     });
 
     function send_filter_request() {
     	$.get(url+'?key='+$("#auth_users").find('.form-control').val().toUpperCase(), function(data, status) {
-			$('#members_content').children('.list-group-item').remove()
-			$('#spinner_members').hide('close')
+			$('#auth_users_content').children('.list-group-item').remove()
+			$('#spinner_auth_users').hide('close')
 			if (data.users.length > 0) {
-				$('#members_content').find('.alert').hide()
+				$('#auth_users_content').find('.alert').hide()
 				members_pagination(data.users_number)
-				create_user_rows(data.users, $('#members_content'));
+				create_user_rows(data.users, $('#auth_users_content'));
 			} else {
-				$('#members_pagination_container').empty()
-				$('#members_content').find('.alert').show()
+				$('#auth_users_pagination_container').empty()
+				$('#auth_users_content').find('.alert').show()
 			}
 		})
     }
@@ -58,7 +58,7 @@ $(document).ready(function(){
 
 	function members_pagination(max) {
 
-		$('#members_pagination_container').bootpag({
+		$('#auth_users_pagination_container').bootpag({
 		    total: Math.ceil(max/5),
 		    page: 1,
 		    maxVisible: 5,
@@ -75,9 +75,9 @@ $(document).ready(function(){
 		    firstClass: 'first'
 		}).on("page", function(event, num){
 		    $.get(url+'?page='+num, function(data, status) {
-				$('#members_content').children('.list-group-item').remove()
-				create_user_rows(data.users, $('#members_content'));
-	    		$('#members_content').find('.alert').hide()	    		
+				$('#auth_users_content').children('.list-group-item').remove()
+				create_user_rows(data.users, $('#auth_users_content'));
+	    		$('#auth_users_content').find('.alert').hide()	    		
 			})
 		});
 	}

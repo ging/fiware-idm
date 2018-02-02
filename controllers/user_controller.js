@@ -55,7 +55,7 @@ exports.show = function(req, res, next) {
     debug("--> show")
 
     // Find user applications
-    models.role_user.findAll({
+    models.role_assignment.findAll({
         where: {user_id: req.user.id},
         include: [{
             model: models.oauth_client,

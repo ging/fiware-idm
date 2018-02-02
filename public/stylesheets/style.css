@@ -11164,6 +11164,7 @@ ul.disabled-list li.active:hover {
 #create_application_modal .modal-footer,
 #create_application_roles .modal-footer,
 #upload_image_modal .modal-footer {
+  margin-top: 25px;
   padding-top: 15px; }
 
 #create_permission_form .panel-group {
@@ -11342,6 +11343,22 @@ ul.disabled-list li.active:hover {
       padding: 10px 0 0; }
     #detailApplication > .site-client-roles .modal-content .modal-header .modal-footer {
       margin: 0 0 15px; }
+
+#create_application_modal .form-group > .btn-group {
+  display: block;
+  display: inline;
+  width: 100%; }
+  #create_application_modal .form-group > .btn-group #select_provider {
+    display: block;
+    height: 34px;
+    border: 1px solid #A9A9A9;
+    background-color: #EAEAEC;
+    width: 100%;
+    text-align: left; }
+    #create_application_modal .form-group > .btn-group #select_provider .fa {
+      float: right;
+      margin-right: 10px;
+      font-size: 20px; }
 
 #detailOrganization header .modal span {
   min-height: 30px;

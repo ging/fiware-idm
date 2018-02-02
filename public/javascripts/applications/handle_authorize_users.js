@@ -7,32 +7,6 @@ var application = {}
 // Handle authorize users to the application
 $(document).ready(function(){
 
-	// Filter authorized members in show view
-    $("#auth_users").find('.form-control').bind("keyup input",function(e) {
-    	input = $(this);
-	    filter = $(this).val().toUpperCase();
-	    ul = $("#auth_users").find(".datatable-content");
-	    li = ul.children("div");
-
-	    for (i = 0; i < li.length; i++) {
-	        span = li[i].querySelectorAll("div.name")[0];
-	        if (span.innerHTML.toUpperCase().indexOf(filter) > -1) {
-	            li[i].style.display = "";
-	        } else {
-	            li[i].style.display = "none";
-	        }
-	    }
-
-  		if(ul.children('div:visible').length == 0) {
-  			if (ul.find("#alert_no_users").length < 1){
-  				ul.append('<p class="alert alert-info empty" id="alert_no_users" style="display: block;">No users found.</p>');
-  			} 
-  		} else {
-  			ul.find("#alert_no_users").remove();
-  		}    
-    	
-    });
-
     function htmlEntities(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
@@ -193,11 +167,10 @@ $(document).ready(function(){
         var user_id = row.parent().attr("id")
         var username = row.find(".name").html()  
 
-        users_authorized.forEach(function(elem) {
-        	if (elem.user_id == user_id) {
-        		elem.added = 0        		
-        	}
-        })
+        users_authorized = users_authorized.filter(function(elem) {
+            return elem.user_id != user_id;
+        });
+
         delete user_role_count[user_id]
         var info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+username+" removed from application</span>"
     	$("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
@@ -228,11 +201,9 @@ $(document).ready(function(){
         		roles_display.html(String(user_role_count[user_id])+" roles")	
         	}
 
-        	for (var i= 0; i < users_authorized.length; i++) {
-        		if (users_authorized[i].user_id === user_id && users_authorized[i].role_id === role_id) {
-        			users_authorized[i].added = 0;
-        		}
-        	} 
+            users_authorized = users_authorized.filter(function(elem) {
+                return !(elem.user_id == user_id && elem.role_id == role_id);
+            });
 
         // Add role to user
         } else {
@@ -241,12 +212,7 @@ $(document).ready(function(){
         	user_role_count[user_id]++
         	roles_display.html(String(user_role_count[user_id]+" roles"))
 
-        	var index = users_authorized.findIndex(elem => (elem.user_id === user_id && elem.role_id === role_id));
-        	if (index > -1) {
-        		users_authorized[index].added = 1;
-        	} else {
-        		users_authorized.push({user_id: user_id, role_id: role_id, username: username, added: 1});
-        	} 
+            users_authorized.push({ user_id: user_id, role_id: role_id})
         }
     });
 

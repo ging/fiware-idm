@@ -1,4 +1,6 @@
 var models = require('../models/models.js');
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 var debug = require('debug')('idm:check_permissions_controller')
 
@@ -7,59 +9,68 @@ exports.owned_permissions = function(req, res, next) {
 
 	debug("--> owned_permissions")
 
-	// Search roles owned by user in the application
-	models.role_user.findAll({
-		where: { user_id: req.session.user.id, 
-				 oauth_client_id: req.application.id }
-	}).then(function(user_application) {
+	req.user_owned_permissions = []
+	req.user_owned_roles = []
+	req.user_organizations = []
 
-		// Use the roles of the user to obtain all permissions 
-		if (user_application.length > 0) {
-			var user_roles = []
-			user_application.forEach(function(app) {
-				user_roles.push(app.role_id)
-			});
-
-			req.user_roles = user_roles;
-			// Search permissions using the roles obtained
-			models.role_permission.findAll({
-				where: { role_id: user_roles },
-				attributes: ['permission_id'],
-			}).then(function(user_permissions) {
-
-				// Pre load permissions of user in request
-				var user_permissions_id = user_permissions.map(elem => elem.permission_id)
-				req.user_permissions = user_permissions_id;
-				// Check if the user can access to a specific route according to his permissions
-				if(check_user_action(req.application, req.path, req.method, user_permissions_id)) {
-					next();	
-				} else {
-					// Send an error if the the request is via AJAX or redirect if is via browser
-					var response = {text: ' failed.', type: 'danger'};
-
-					// Send response depends on the type of request
-					send_response(req, res, response, '/idm/applications');
-				}
-			}).catch(function(error) { 
-				// Reponse with message
-				var response = {text: ' Error searching user permissions', type: 'danger'};
-
-				// Send response depends on the type of request
-				send_response(req, res, response, '/idm/applications');
-			});
-		} else {
-			// Reponse with message
-			var response = {text: ' User is not authorized', type: 'danger'};
-
-			// Send response depends on the type of request
-			send_response(req, res, response, '/idm/applications');
+	// Search organizations in wich user is member or owner
+	var search_organizations = models.user_organization.findAll({ 
+		where: { user_id: req.session.user.id },
+		include: [{
+			model: models.organization,
+			attributes: ['id', 'name', 'description']
+		}]
+	})
+	// Search roles for user or the organization to which the user belongs
+	var search_roles = search_organizations.then(function(organizations) { 
+		var search_role_organizations = {}
+		if (organizations.length > 0) {
+			req.user_organizations = organizations
+			search_role_organizations = {organization_id: organizations.map(elem => elem.organization_id )}
 		}
-	}).catch(function(error) { 
-		// Reponse with message
-		var response = {text: ' Error searching user permissions', type: 'danger'};
+		return models.role_assignment.findAll({
+			where: { [Op.or]: [search_role_organizations, {user_id: req.session.user.id}], 
+					 oauth_client_id: req.application.id }
+		})
+	})
+	// Search permissions
+	var search_permissions = search_roles.then(function(roles) {
+		
+		if (roles.length > 0) {
+			var roles_id = roles.map(elem => elem.role_id)
+			
+			req.user_owned_roles = roles_id;
+
+			return models.role_permission.findAll({
+				where: { role_id: roles_id },
+				attributes: ['permission_id'],
+			})	
+		}
+	})
+
+	Promise.all([search_organizations, search_roles, search_permissions]).then(function(values) {
+		var user_permissions_id = []
+
+		if (values[2] && values[2].length > 0) {
+			// Pre load permissions of user in request
+			user_permissions_id = values[2].map(elem => elem.permission_id)
+			req.user_owned_permissions = user_permissions_id;
+		}
+		
+		// Check if the user can access to a specific route according to his permissions
+		if(check_user_action(req.application, req.path, req.method, user_permissions_id)) {
+			next();	
+		} else {
+			return Promise.reject('not_allow')
+		}			
+	}).catch(function(error){
+
+		debug('Error: ' + error)
+		// Send an error if the the request is via AJAX or redirect if is via browser
+		var response = {text: ' User is not authorized.', type: 'danger'};
 
 		// Send response depends on the type of request
-		send_response(req, res, response, '/idm/applications'); 
+		send_response(req, res, response, '/idm/applications');
 	});
 }
 
@@ -82,7 +93,7 @@ function check_user_action(application, path, method, permissions) {
 				return true;
 			}
 	        break;
-	    case (path.includes('edit/users')):
+	    case (path.includes('edit/users') || path.includes('edit/organizations')):
 	    	if (permissions.some(r=> ['1','5','6'].includes(r))) {
 	    		return true;
 	    	}
@@ -96,6 +107,9 @@ function check_user_action(application, path, method, permissions) {
 	        if (permissions.includes('2')) {
 				return true;
 			}
+	        break;
+	    case (path.includes(application.id) && method === 'GET'):
+			return true;
 	        break;
 	    default:
 	        return false;

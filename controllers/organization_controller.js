@@ -223,7 +223,7 @@ exports.show = function(req, res, next) {
 	})
 }
 
-// GET /idm/organizations/:organizationId -- Show info about an organization
+// GET /idm/organizations/:organizationId -- Send members of an organization
 exports.get_members = function(req, res, next) {
 
 	debug("--> get_members");

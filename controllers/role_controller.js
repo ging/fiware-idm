@@ -199,13 +199,13 @@ exports.role_permissions_assign = function(req, res) {
 					res.redirect("/idm/applications/"+req.application.id)					
 				}
 			}).catch(function(error) {
-				console.log(error)
+				debug('Error ' + error)
 				// Send message of fail in assign permissions to roles
 				req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
 				res.redirect("/idm/applications/"+req.application.id)
 			});
 		}).catch(function(error) {
-			console.log(error)
+			debug('Error ' + error)
 			// Send message of fail in assign permissions to roles
 			req.session.message = {text: ' Roles and permissions assignment error.', type: 'warning'};
 			res.redirect("/idm/applications/"+req.application.id)

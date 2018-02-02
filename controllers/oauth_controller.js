@@ -106,7 +106,7 @@ exports.authenticate_user = function(req, res, next){
 // POST /oauth2/authorize -- Function to handle authorization code requests
 exports.authorize = function(req, res, next){
 
-    models.role_user.findOne({
+    models.role_assignment.findOne({
       where: { user_id: req.session.user.id, oauth_client_id: req.query.client_id},
       include: [{
         model: models.oauth_client,
@@ -155,18 +155,18 @@ exports.authenticate = function(options){
     oauth.authenticate(request, response,options)
       .then(function (user_info) {
         // Request is authorized.
-        models.role_user.findAll({
+        models.role_assignment.findAll({
           where: { user_id: user_info.user.id, oauth_client_id: user_info.OauthClient.id},
           include: [{
             model: models.role,
             attributes: ['id', 'name']
           }]
-        }).then(function(role_user) {
+        }).then(function(role_assignment) {
           var response = {displayName: user_info.user.username, email: user_info.user.email, app_id: user_info.OauthClient.id}
           var roles = []
-          if (role_user) {
-            for (var i = 0; i < role_user.length; i++) {
-              roles.push({id: role_user[i].Role.id, name: role_user[i].Role.name})
+          if (role_assignment) {
+            for (var i = 0; i < role_assignment.length; i++) {
+              roles.push({id: role_assignment[i].Role.id, name: role_assignment[i].Role.name})
             }
             response['roles'] = roles
             res.send(response)  
@@ -183,7 +183,7 @@ exports.authenticate = function(options){
 
 // Function to show oauth/authorize view if user session exist
 function render_oauth_authorize(req, res) {
-  models.role_user.findOne({
+  models.role_assignment.findOne({
     where: { user_id: req.session.user.id, oauth_client_id: req.query.client_id},
     include: [{
       model: models.oauth_client,

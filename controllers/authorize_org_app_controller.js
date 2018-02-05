@@ -5,7 +5,7 @@ const Op = Sequelize.Op;
 
 var debug = require('debug')('idm:authorize_user_org_controller')
 
-// GET /idm/applications/:applicationId/edit/users -- Search users authorized
+// GET /idm/applications/:applicationId/edit/organizations -- Search organizations authorized
 exports.get_organizations = function(req, res, next) {
 
 	debug("--> get_organizations")
@@ -71,8 +71,7 @@ exports.get_organizations = function(req, res, next) {
 					}
 
 					// Sen info about roles, users authorized and application
-					res.send({ application: req.application, 
-							   organizations_authorized: organizations_authorized, 
+					res.send({ organizations_authorized: organizations_authorized, 
 							   roles: roles,
 							   errors: [] });
 				} else { 
@@ -87,48 +86,53 @@ exports.get_organizations = function(req, res, next) {
 }
 
 
-// POST /idm/applications/:applicationId/users/available -- Search users to authorize in an application
+// POST /idm/applications/:applicationId/organizations/available -- Search organizations to authorize in an application
 exports.available_organizations = function(req, res) {
 
-	/*debug("--> available_organizations")
+	debug("--> available_organizations")
 
-	// Obtain key to search in the user table
-	var key = req.body.username
+	// Obtain key to search in the organization table
+	var key = req.query.key
 
-	// Search if username is like the input key
-	models.user.findAll({
-	 	attributes: ['username', 'id', 'image', 'email', 'gravatar'],
-		where: {
-            username: {
-                like: '%' + key + '%'
-            }
-        }
-	}).then(function(users) {
-		// If found, send ana array of users with the username and the id of each one
-		if (users.length > 0) {
-			users.forEach(function(elem, index, array) {
-                if (elem.gravatar) {
-					elem.image = gravatar.url(elem.email, {s:36, r:'g', d: 'mm'}, {protocol: 'https'});
-				} else if (elem.image !== 'default') {
-                    elem.image = '/img/users/' + elem.image
-                } else {
-                	elem.image = '/img/logos/medium/user.png'
-                }
-			});
-			res.send(users)
-		} else {
-			// If the result is null send an error message
-			res.send('no_users_found')
-		}
-	});*/
+	if (key.length > 1 && key.includes("%") == false && key.includes("_") == false) {
+		// Search if username is like the input key
+		models.organization.findAll({
+		 	attributes: ['name', 'id', 'image'],
+			where: {
+	            name: {
+	                like: '%' + key + '%'
+	            }
+	        }
+		}).then(function(organizations) {
+
+			// If found, send ana array of organizations with the name and the id of each one
+			if (organizations.length > 0) {
+				organizations.forEach(function(elem, index, array) {
+					if (elem.image !== 'default') {
+	                    elem.image = '/img/organizations/' + elem.image
+	                } else {
+	                	elem.image = '/img/logos/medium/group.png'
+	                }
+				});
+				res.send({organizations: organizations})
+			} else {
+				// If the result is null send an error message
+				res.send({organizations: []})
+			}
+		});
+	} else {
+		res.send({organizations: []})
+	}
 
 }
 
 // POST /idm/applications/:applicationId/edit/users -- Authorize users in an application
 exports.authorize_organizations = function(req, res, next) {
 
-	/*debug("--> authorize_organizations")
+	debug("--> authorize_organizations")
 
+	debug(req.body.submit_authorize)
+	/*
 	var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
 
 	if (users_to_be_authorized.length > 0) {
@@ -177,7 +181,7 @@ exports.authorize_organizations = function(req, res, next) {
 
 				// Delete rows from role_assignment
 				var delete_rows = models.role_assignment.destroy({
-					where: {oauth_client_id: req.application.id, role_id: ids_changeable_roles_by_user}
+					where: {oauth_client_id: req.application.id, role_id: ids_changeable_roles_by_user, user_id: { [Op.eq]: null }, organization_id: { [Op.ne]: null }}
 				})
 
 				// Handle promise of delete and create rows

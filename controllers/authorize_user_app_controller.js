@@ -73,8 +73,7 @@ exports.get_users = function(req, res, next) {
 					}
 
 					// Sen info about roles, users authorized and application
-					res.send({ application: req.application, 
-							   users_authorized: users_authorized, 
+					res.send({ users_authorized: users_authorized, 
 							   roles: roles,
 							   errors: [] });
 				} else { 
@@ -179,7 +178,7 @@ exports.authorize_users = function(req, res, next) {
 
 				// Delete rows from role_assignment
 				var delete_rows = models.role_assignment.destroy({
-					where: {oauth_client_id: req.application.id, role_id: ids_changeable_roles_by_user}
+					where: {oauth_client_id: req.application.id, role_id: ids_changeable_roles_by_user, user_id: { [Op.ne]: null }, organization_id: { [Op.eq]: null }}
 				})
 
 				// Handle promise of delete and create rows

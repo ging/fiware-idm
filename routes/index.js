@@ -164,6 +164,8 @@ var imageOrgUpload = multer.diskStorage({
 })
 
 // Routes for organziations
+router.get('/idm/organizations/available',                               sessionController.login_required,   sessionController.password_check_date,  authorizeOrgAppController.available_organizations);
+
 router.get('/idm/organizations',                                         sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.index);
 router.get('/filters/organizations',                                     sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.filter);
 router.get('/idm/organizations/new',                                     sessionController.login_required,   sessionController.password_check_date,  csrfProtection, organizationController.new);
@@ -175,7 +177,6 @@ router.put('/idm/organizations/:organizationId/edit/avatar',             session
 router.put('/idm/organizations/:organizationId/edit/info',               sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.update_info);
 router.delete('/idm/organizations/:organizationId/edit/delete_avatar',   sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.delete_avatar);
 router.delete('/idm/organizations/:organizationId',                      sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  parseForm,  csrfProtection,    organizationController.destroy);
-router.post('/idm/organizations/available',                              sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,     authorizeOrgAppController.available_organizations);
 
 // Routes to manage members in organizations
 router.get('/idm/organizations/:organizationId/edit/members',            sessionController.login_required,   sessionController.password_check_date,  organizationController.owned_permissions,  csrfProtection,    manageMembersController.get_members);

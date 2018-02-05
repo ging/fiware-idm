@@ -41,12 +41,12 @@
                                         <a data-target="#" class="contextual-help" style="float: none;" data-toggle="popover" data-title="OAuth2 Credentials" data-placement="right" data-content="If you assign a role to the members of an organization, it will be also assigned to the owners of the organization" data-original-title="" title="" ><i class="fa fa-question-circle"></i></a>
                                     </h4>  
                                     <div class="form-group has-feedback">
-                                        <input type="text" name="" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="filter">
+                                        <input type="text" name="" id="update_authorized_organizations" class="filter update_owners_users_client_filter form-control input-sm" placeholder="filter">
                                     </div>
                                 </header>
                                 <div class="pre-scrollable filterable update_owners_users_client_filterable" id="update_organizations_scroll" >
 
-                                    <ul class="members update_owners_users_members list-group">
+                                    <ul id="authorized_organizations" class="members update_owners_users_members list-group">
                                     </ul>
 
                                     <ul class="no_results list-group alert alert-info" id="no_update_organizations" style="display: none;">

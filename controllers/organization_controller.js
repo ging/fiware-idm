@@ -9,27 +9,31 @@ var image = require ('../lib/image.js');
 exports.load_organization = function(req, res, next, organizationId) {
 
 	debug("--> load_organization");
-
-	// Search application whose id is applicationId
-	models.organization.findById(organizationId).then(function(organization) {
-		// If application exists, set image from file system
-		if (organization) {
-			req.organization = organization
-			if (organization.image == 'default') {
-				req.organization.image = '/img/logos/original/group.png'
+	
+	if(req.path === '/idm/organizations/available') {
+		next()
+	} else {
+		// Search application whose id is applicationId
+		models.organization.findById(organizationId).then(function(organization) {
+			// If application exists, set image from file system
+			if (organization) {
+				req.organization = organization
+				if (organization.image == 'default') {
+					req.organization.image = '/img/logos/original/group.png'
+				} else {
+					req.organization.image = '/img/organizations/'+organization.image
+				}
+				// Send request to next function
+				next();
 			} else {
-				req.organization.image = '/img/organizations/'+organization.image
-			}
-			// Send request to next function
-			next();
-		} else {
-			// Reponse with message
-			var response = {text: ' Organization doesn`t exist.', type: 'danger'};
+				// Reponse with message
+				var response = {text: ' Organization doesn`t exist.', type: 'danger'};
 
-			// Send response depends on the type of request
-			send_response(req, res, response, '/idm/organizations');
-		}
-	}).catch(function(error) { next(error); });
+				// Send response depends on the type of request
+				send_response(req, res, response, '/idm/organizations');
+			}
+		}).catch(function(error) { next(error); });
+	}
 }
 
 // Check if user is owner of the organization

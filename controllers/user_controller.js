@@ -31,22 +31,26 @@ exports.owned_permissions = function(req, res, next) {
 exports.load_user = function(req, res, next, userId) {
 
     debug("--> load_user");
-
-    // Search user whose id is userId
-    models.user.findOne({
-        where: {id: userId},
-        attributes: ['id', 'username', 'email', 'description', 'website', 'image', 'gravatar']
-    }).then(function(user) {
-        // If user exists, set image from file system
-        if (user) {
-            req.user = user
-            // Send request to next function
-            next();
-        } else { 
-            req.session.message = {text: ' User doesn`t exist.', type: 'danger'};
-            res.redirect('/')
-        }
-    }).catch(function(error) { next(error); });
+    
+    if(req.path === '/idm/users/available') {
+        next()
+    } else {
+        // Search user whose id is userId
+        models.user.findOne({
+            where: {id: userId},
+            attributes: ['id', 'username', 'email', 'description', 'website', 'image', 'gravatar']
+        }).then(function(user) {
+            // If user exists, set image from file system
+            if (user) {
+                req.user = user
+                // Send request to next function
+                next();
+            } else { 
+                req.session.message = {text: ' User doesn`t exist.', type: 'danger'};
+                res.redirect('/')
+            }
+        }).catch(function(error) { next(error); });
+    }
 }
 
 // GET /idm/users/:userId -- Show info about a user

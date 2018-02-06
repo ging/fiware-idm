@@ -29,3 +29,7 @@ function create_organization_rows(organizations, template, append_table) {
         $('#'+append_table).append(organization_row);
 	}
 }
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}

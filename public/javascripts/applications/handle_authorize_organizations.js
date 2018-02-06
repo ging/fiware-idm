@@ -5,6 +5,9 @@ var application = {}
 
 $(document).ready(function(){
 
+
+    var authorized_column = $("#authorize_organization").find("#authorized_organizations")
+
     function htmlEntities(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
@@ -41,7 +44,7 @@ $(document).ready(function(){
                         var organization_role =  organizations_authorized[i].role_organization
                         var organization_role_in_app = organizations_authorized[i].role_id
 
-    					if (!$("#authorize_organization").find("#authorized_organizations").find('#'+organization_row).length) {
+    					if (!authorized_column.find('#'+organization_row).length) {
     						var assign_role_user_row = $('#table_row_assign_role_organization_template').html();
     				        assign_role_user_row = assign_role_user_row.replace(/organization_name/g, htmlEntities(organizations_authorized[i].name));
     				        assign_role_user_row = assign_role_user_row.replace(/organization_id/g, String(organizations_authorized[i].organization_id));
@@ -51,15 +54,15 @@ $(document).ready(function(){
     				        } else {
     				        	assign_role_user_row = assign_role_user_row.replace(/roles_count/g, "No roles");
     				        }
-    				        $("#authorize_organization").find("#authorized_organizations").append(assign_role_user_row);
+    				        authorized_column.append(assign_role_user_row);
     				        for (j in roles) {
     				        	var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
-    				        	$("#authorize_organization").find("#authorized_organizations").find('#'+organization_row).find("#owner").find("ol").append(role)
-                                $("#authorize_organization").find("#authorized_organizations").find('#'+organization_row).find("#member").find("ol").append(role)
+    				        	authorized_column.find('#'+organization_row).find("#owner").find("ol").append(role)
+                                authorized_column.find('#'+organization_row).find("#member").find("ol").append(role)
     				        }
     					}
     					if (organizations_authorized[i].role_id) {
-    						$("#authorize_organization").find("#authorized_organizations").find('#'+organization_row).find('#'+organization_role).find('#'+organization_role_in_app).addClass("active")
+    						authorized_column.find('#'+organization_row).find('#'+organization_role).find('#'+organization_role_in_app).addClass("active")
     					}
     				}    			
                 } else {
@@ -90,7 +93,7 @@ $(document).ready(function(){
     $("#authorize_organization").find('#update_authorized_organizations').bind("keyup input",function(e) {
     	input = $(this);
 	    filter = $(this).val().toUpperCase();
-	    ul = $("#authorize_organization").find("#authorized_organizations");
+	    ul = authorized_column;
 	    li = ul.children();
 
 	    for (i = 0; i < li.length; i++) {
@@ -102,7 +105,7 @@ $(document).ready(function(){
 	        }
 	    }
 
-        if($("#authorize_organization").find("#authorized_organizations").children(':visible').length == 0) {
+        if(authorized_column.children(':visible').length == 0) {
            $("#no_update_organizations").show() 
         } else {
     	   $("#no_update_organizations").hide() 
@@ -133,16 +136,16 @@ $(document).ready(function(){
 	    } else {
 
             var assign_role_organization_row = $('#table_row_assign_role_organization_template').html();
-            assign_role_organization_row = assign_role_organization_row.replace(/organization_name/g, htmlEntities(organization_name));
+            assign_role_organization_row = assign_role_organization_row.replace(/organization_name/g, organization_name);
             assign_role_organization_row = assign_role_organization_row.replace(/organization_id/g, String(organization_id));
             assign_role_organization_row = assign_role_organization_row.replace(/organization_avatar/g, String(organization_image));
             assign_role_organization_row = assign_role_organization_row.replace(/roles_count/g, String("No roles"));
-            $("#authorize_organization").find("#authorized_organizations").append(assign_role_organization_row);
+            authorized_column.append(assign_role_organization_row);
 
             for (j in roles) {
                 var role = "<li id="+roles[j].id+" class='role_dropdown_role'><i class='fa fa-check'></i>"+roles[j].name+"</li>"
-                $("#authorize_organization").find("#authorized_organizations").find('#'+organization_id).find("#owner").find("ol").append(role)
-                $("#authorize_organization").find("#authorized_organizations").find('#'+organization_id).find("#member").find("ol").append(role)
+                authorized_column.find('#'+organization_id).find("#owner").find("ol").append(role)
+                authorized_column.find('#'+organization_id).find("#member").find("ol").append(role)
             }
 
 	        info_added_organization = "<span id='info_added_organization' style='display: none; text-align: center;' class='help-block alert alert-success'>Organization "+organization_name+" added</span>"
@@ -181,7 +184,7 @@ $(document).ready(function(){
             row.parent().remove(); 
         });
 
-        if($("#authorize_organization").find("#authorized_organizations").children().length <= 1) {
+        if(authorized_column.children().length <= 1) {
             $("#no_update_organizations").show('open')
         }
     });
@@ -212,21 +215,32 @@ $(document).ready(function(){
         	}
 
             organizations_authorized = organizations_authorized.filter(function(elem) {
-                return !(elem.organization_id == organization_id && elem.role_id == role_id && elem.role_organization == role_organization);
+                return !(elem.organization_id == organization_id && 
+                         elem.role_id == role_id && 
+                         elem.role_organization == role_organization);
             });
 
         // Add role to organization
         } else {
-
-        	$(this).addClass("active")
-        	organization_role_count[organization_id]++
-        	roles_display.html(String(organization_role_count[organization_id]+" roles"))
+            $(this).addClass("active")
+            organization_role_count[organization_id]++
+            roles_display.html(String(organization_role_count[organization_id]+" roles"))
 
             organizations_authorized.push({ organization_id: organization_id, role_id: role_id, role_organization: role_organization})
         }
 
     });
 
+    $("#authorized_organizations").on("click",".dropdown", function(event) { 
+        var offset = $(this).offset();
+        offset.left -= 20;
+        offset.top -= 20;
+        $('#update_organizations_scroll').animate({
+            scrollTop: offset.top,
+            scrollLeft: offset.left
+        });
+    });
+    
 
     // Handle the submit button form to submit assignment
 	$("#submit_authorized_organizations_form").bind("keypress submit", function(event) {
@@ -242,11 +256,11 @@ $(document).ready(function(){
 			for (var key in organization_role_count) {
 				if (organization_role_count[key] == 0) {	
 					$(".alert-warning").show("open")
-					$("#authorize_organization").find("#authorized_organizations").find("#"+key).find(".role_options").addClass("dropdown-empty")
+					authorized_column.find("#"+key).find(".role_options").addClass("dropdown-empty")
 				}
 			}
 
-			if ($("#authorize_organization").find("#authorized_organizations").find(".dropdown-empty").length === 0 || $("#authorize_organization").find(".modal-footer").find("#submit_button").val() == "Confirm") {
+			if (authorized_column.find(".dropdown-empty").length === 0 || $("#authorize_organization").find(".modal-footer").find("#submit_button").val() == "Confirm") {
 				// get the action attribute from the <form action=""> element 
 		        var $form = $(this),
 		            url = $form.attr('action');
@@ -257,7 +271,6 @@ $(document).ready(function(){
 		        // Continue with the submit request
 		        $('#submit_authorized_organizations_form')[0].submit();
 		      
-
 			} else {
 				$("#authorize_organization").find(".modal-footer").find("#submit_button").val("Confirm")	
 			}
@@ -269,21 +282,22 @@ $(document).ready(function(){
         $(".messages").empty();
     });
 
+
+    // Function to exit from dialog
+    function exit_authorize_organizations() {
+        organization_role_count = {}
+
+        $("#authorize_organization").find("#alert_error_search_available").hide("close");
+        $("#authorize_organization").find(".alert-warning").hide("close");
+        $("#authorize_organization").find("#no_update_organizations").hide()
+        $("#authorize_organization").find(".modal-footer").find("#submit_button").val("Save");
+        $("#authorize_organization").find('#no_available_update_organizations').hide('close');
+        $("#authorize_organization").find('#perform_filter_available_update_organizations').show('open');
+        $("#authorize_organization").find('#available_update_organizations').val('');
+        $("#authorize_organization").find(".available_organizations").empty();
+        $("#authorize_organization").find("#authorized_organizations").empty();
+        $("#authorize_organization").find(".alert-warning").hide("close");
+        $("#authorize_organization").find('#update_authorized_organizations').val('');
+    }
+
 });
-
-// Function to exit from dialog
-function exit_authorize_organizations() {
-	organization_role_count = {}
-
-	$("#authorize_organization").find("#alert_error_search_available").hide("close");
-    $("#authorize_organization").find(".alert-warning").hide("close");
-    $("#authorize_organization").find("#no_update_organizations").hide()
-    $("#authorize_organization").find(".modal-footer").find("#submit_button").val("Save");
-    $("#authorize_organization").find('#no_available_update_organizations').hide('close');
-    $("#authorize_organization").find('#perform_filter_available_update_organizations').show('open');
-    $("#authorize_organization").find('#available_update_organizations').val('');
-    $("#authorize_organization").find(".available_organizations").empty();
-    $("#authorize_organization").find("#authorized_organizations").empty();
-    $("#authorize_organization").find(".alert-warning").hide("close");
-	$("#authorize_organization").find('#update_authorized_organizations').val('');
-}

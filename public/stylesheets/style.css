@@ -6905,6 +6905,9 @@ input:-webkit-autofill {
 .note-editor .modal-footer {
   padding: 15px; }
 
+.pre-scrollable {
+  min-height: 200px; }
+
 .list-group {
   margin-bottom: 0; }
 

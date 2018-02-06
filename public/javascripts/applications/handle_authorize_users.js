@@ -73,29 +73,14 @@ $(document).ready(function(){
     	exit_authorize_users()
     });
 
-    var timer;
-    var input_change_authorize = null
-    // Send requests to server to obtain usernames and show in available members column
+    var typingTimerMembers;
+    var doneTypingInterval = 500;
+
+    // Send requests to server to obtain organization names and show in available members column
     $("#authorize_user").find('#available_update_owners_users').bind("keyup input",function(e) {
-
-    	if($(this).val().indexOf('%') > -1 || $(this).val().indexOf('_') > -1) {
-
-    		$("#authorize_user").find("#alert_error_search_available").show("open")
-    		$("#authorize_user").find(".available_members").empty()
-    		$("#authorize_user").find("#spinner_update_owners_users").hide('close')
-
-    		input_change_authorize = $(this).val();
-
-	    } else {
-      
-	    	$("#alert_error_search_available").hide("close")
-	    	clearTimeout(timer);
-	    	$("#authorize_user").find("#spinner_update_owners_users").show('open')
-        	var input = $(this).val();
-        	timer = setTimeout(function(){
-        		input_change_authorize = available_users(input, input_change_authorize, 'table_row_available_user_template')
-        	}, 300);
-	    }    
+        var input = $(this).val();
+        clearTimeout(typingTimerMembers);
+        typingTimerMembers = setTimeout(function() {available_users(input, 'table_row_available_user_template', 'available_members')}, doneTypingInterval);
     });
 
 
@@ -166,6 +151,16 @@ $(document).ready(function(){
     		}
 
 	    }
+    });
+
+    $("#authorized_users").on("click",".dropdown", function(event) { 
+        var offset = $(this).offset();
+        offset.left -= 20;
+        offset.top -= 20;
+        $('#update_owners_users_members_scroll').animate({
+            scrollTop: offset.top,
+            scrollLeft: offset.left
+        });
     });
 
     // Remove authorized member

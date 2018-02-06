@@ -9,6 +9,12 @@
                         <span>edit</span>
                     </a>
                 <% } -%>
+                <% if (roles.includes('member')) { -%>
+                    <a href="#" data-target="#exit_organization" data-toggle="modal" class="small ajax-modal">
+                        <i class="fa fa-sign-out"></i>
+                        <span>exit</span>
+                    </a>
+                <% } -%>
             </h3>
             <div class="logo">
                 <img alt="organization logo" src="<%= organization.image %>">
@@ -44,7 +50,7 @@
                 <% } -%>
             </div>
         </div>
-         <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-application_id="<%= organization.id %>" data-pagination-pages="">
+         <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-organization_id="<%= organization.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title">Members</span>
                 <div class="table_actions clearfix">
@@ -73,7 +79,7 @@
                 <nav id="members_pagination_container"></nav> 
             </div>
         </div>
-        <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-organization_id="<%= organization.id %>" data-pagination-pages="">
+        <div class="panel panel-default datatable" id="auth_applications" data-pagination-url="/filters/applications" data-organization_id="<%= organization.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title">Authorizing Applications</span>
                 <div class="table_actions clearfix">
@@ -84,12 +90,9 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-                <!-- <div class="list-group" id="applications_content"><div class="list-group-item"><a class="item" href="/idm/myApplications/13ac30ab521e4023acb473e4d99d650d/"><div class="avatar filter_field"><img src="/static/dashboard/img/logos/medium/app.png"></div><div class="name filter_field">aaaaaaa</div>
-                    <div class="url filter_field">aaaaaa</div>
-                </a></div><div class="list-group-item"><a class="item" href="/idm/myApplications/18/"><div class="avatar filter_field"><img src="/media//ApplicationAvatar/medium/WStore_cuad.png"></div><div class="name filter_field">Store - OLD</div>
-                    <div class="url filter_field">https://130.206.84.12/</div>
-                </a></div></div> -->
-                <p class="alert alert-info empty" style="display: block;">This organization does not have any authorizing applications</p>
+                <div class="list-group" id="applications_content">
+                    <p class="alert alert-info empty" style="display: none;">No applications found.</p>
+                </div>
             </div>
             <div class="panel-footer">
                 <nav id="applications_pagination_container"></nav>
@@ -101,6 +104,8 @@
 <div class="messages"></div>
 
 <%- include _manage_members %>
+<%- include _exit_organization %>
+<%- include ../templates/./applications/./_application_row %>
 <%- include ../templates/./users/./_user_row %>
 <%- include ../templates/./users/./_available_user_row %>
 <%- include ../templates/./users/./_org_role_user_row %>
@@ -109,4 +114,5 @@
 <script src="/javascripts/handle_csrf_token.js" type="text/javascript"></script>
 <script src="/javascripts/users/search_available_users.js" type="text/javascript"></script>
 <script src="/javascripts/organizations/handle_get_members.js" type="text/javascript"></script>
+<script src="/javascripts/organizations/handle_get_applications.js" type="text/javascript"></script>
 <script src="/javascripts/organizations/handle_manage_members.js" type="text/javascript"></script>

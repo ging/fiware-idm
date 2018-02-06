@@ -5,6 +5,18 @@ var fs = require('fs');
 
 var image = require ('../lib/image.js');
 
+var config = require('../config').database;
+
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
+var sequelize = new Sequelize(config.name, config.user, config.password, 
+  { 
+    host: config.host,
+    dialect: 'mysql'
+  }      
+);
+
 // Autoload info if path include organizationId
 exports.load_organization = function(req, res, next, organizationId) {
 
@@ -214,6 +226,7 @@ exports.show = function(req, res, next) {
 	models.user_organization.findAll({
 		where: { organization_id: req.organization.id, user_id: req.session.user.id}
 	}).then(function(user_organization) {
+
 		var roles = user_organization.map(elem => elem.role)
 		if (req.session.message) {
 			res.locals.message = req.session.message
@@ -227,7 +240,7 @@ exports.show = function(req, res, next) {
 	})
 }
 
-// GET /idm/organizations/:organizationId -- Send members of an organization
+// GET /idm/organizations/:organizationId/members -- Send members of an organization
 exports.get_members = function(req, res, next) {
 
 	debug("--> get_members");
@@ -269,6 +282,51 @@ exports.get_members = function(req, res, next) {
 		var message = {text: ' Unable to find members',type: 'danger'}
 		send_response(req, res, message, '/idm')
 	})
+}
+
+// GET /idm/organizations/:organizationId/applications -- Send members of an organization
+exports.get_applications = function(req, res, next) {
+
+	debug("--> get_applications");
+
+	var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
+	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
+
+	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
+				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id=:organization_id) AS count
+				FROM role_assignment 
+				RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id 
+				WHERE organization_id=:organization_id
+				LIMIT 5
+				OFFSET :offset`
+
+	sequelize.query(query, {replacements: {organization_id: req.organization.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(applications_authorized){
+		var applications = []
+
+		var count = 0
+
+		// If user has organizations, set image from file system and obtain info from each organization
+		if (applications_authorized.length > 0) {
+			
+			count = applications_authorized[0].count
+
+			applications_authorized.forEach(function(app) {
+				if (app.image == 'default') {
+					app.image = '/img/logos/medium/app.png'
+				} else {
+					app.image = '/img/applications/'+app.image
+				}
+				applications.push({id: app.oauth_client_id, name: app.name, image: app.image, url: app.url})
+			});
+		}
+		res.send({applications: applications, applications_number: count})
+	}).catch(function(error) {
+    	debug('Error get appliications authorized: ' + error)
+		var message = {text: ' Unable to find applications',type: 'danger'}
+		send_response(req, res, message, '/idm')
+    });
 }
 
 // GET /idm/organizations/:organizationId/edit -- Show form to edit an organization
@@ -388,6 +446,27 @@ exports.destroy = function(req, res, next) {
 		res.redirect('/idm/organizations');
 	});
 }
+
+
+// DELETE /idm/organizations/:organizationId/remove -- Handle users request to exit from the organization
+exports.remove = function(req, res, next) {
+	
+	debug("--> remove");
+
+	// Destroy application with specific id
+	models.user_organization.destroy({
+		where: { organization_id: req.organization.id, user_id: req.session.user.id, role: 'member' }
+	}).then(function() {
+		// Send message of success in deleting application
+		req.session.message = {text: ' User exit from organization.', type: 'success'};
+		res.redirect('/idm/organizations/' + req.organization.id)
+	}).catch(function(error) {
+		// Send message of fail when deleting application
+		req.session.message = {text: ' User exit error.', type: 'danger'};
+		res.redirect('/idm/organizations/' + req.organization.id);
+	});
+}
+
 
 // Function to check and crop an image and to update the name in the oauth_client table
 function handle_uploaded_images(req, res, redirect_uri) {

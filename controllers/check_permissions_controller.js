@@ -23,19 +23,22 @@ exports.owned_permissions = function(req, res, next) {
 	})
 	// Search roles for user or the organization to which the user belongs
 	var search_roles = search_organizations.then(function(organizations) { 
-		var search_role_organizations = {}
+		var search_role_organizations = []
 		if (organizations.length > 0) {
+
 			req.user_organizations = organizations
-			search_role_organizations = {organization_id: organizations.map(elem => elem.organization_id )}
+			for (var i = 0; i < organizations.length; i++) {
+				search_role_organizations.push({organization_id: organizations[i].organization_id, role_organization: organizations[i].role})
+			}
 		}
 		return models.role_assignment.findAll({
-			where: { [Op.or]: [search_role_organizations, {user_id: req.session.user.id}], 
+			where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: req.session.user.id}], 
 					 oauth_client_id: req.application.id }
 		})
 	})
 	// Search permissions
 	var search_permissions = search_roles.then(function(roles) {
-		
+
 		if (roles.length > 0) {
 			var roles_id = roles.map(elem => elem.role_id)
 			

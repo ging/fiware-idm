@@ -64,21 +64,17 @@ exports.get_users = function(req, res, next) {
 				attributes: ['id', 'name'],
 				order: [['id', 'DESC']]
 			}).then(function(roles) {
-				if (roles.length > 0) {
-					// Filter users_authorized depends on the permissions of the user logged
-					for (var i = 0; i < users_authorized.length; i++) {
-						if (roles.some(role => role.id === users_authorized[i].role_id) === false) {
-							users_authorized[i].role_id = ""
-						}
+				// Filter users_authorized depends on the permissions of the user logged
+				for (var i = 0; i < users_authorized.length; i++) {
+					if (roles.some(role => role.id === users_authorized[i].role_id) === false) {
+						users_authorized[i].role_id = ""
 					}
-
-					// Sen info about roles, users authorized and application
-					res.send({ users_authorized: users_authorized, 
-							   roles: roles,
-							   errors: [] });
-				} else { 
-					res.send({text: ' failed.', type: 'danger'}); 
 				}
+
+				// Sen info about roles, users authorized and application
+				res.send({ users_authorized: users_authorized, 
+						   roles: roles,
+						   errors: [] });
 			}).catch(function(error) { next(error); });
 		}).catch(function(error) { next(error); });
 	} else {
@@ -93,35 +89,38 @@ exports.available_users = function(req, res) {
 
 	debug("--> available_users")
 
-	// Obtain key to search in the user table
-	var key = req.body.username
+	// Obtain key to search in the organization table
+	var key = req.query.key
 
-	// Search if username is like the input key
-	models.user.findAll({
-	 	attributes: ['username', 'id', 'image', 'email', 'gravatar'],
-		where: {
-            username: {
-                like: '%' + key + '%'
-            }
-        }
-	}).then(function(users) {
-		// If found, send ana array of users with the username and the id of each one
-		if (users.length > 0) {
-			users.forEach(function(elem, index, array) {
-                if (elem.gravatar) {
-					elem.image = gravatar.url(elem.email, {s:36, r:'g', d: 'mm'}, {protocol: 'https'});
-				} else if (elem.image !== 'default') {
-                    elem.image = '/img/users/' + elem.image
-                } else {
-                	elem.image = '/img/logos/medium/user.png'
-                }
-			});
-			res.send(users)
-		} else {
-			// If the result is null send an error message
-			res.send('no_users_found')
-		}
-	});
+	if (key.length > 1 && key.includes("%") == false && key.includes("_") == false) {
+		// Search if username is like the input key
+		models.user.findAll({
+		 	attributes: ['username', 'id', 'image'],
+			where: {
+	            username: {
+	                like: '%' + key + '%'
+	            }
+	        }
+		}).then(function(users) {
+
+			// If found, send ana array of users with the name and the id of each one
+			if (users.length > 0) {
+				users.forEach(function(elem, index, array) {
+					if (elem.image !== 'default') {
+	                    elem.image = '/img/users/' + elem.image
+	                } else {
+	                	elem.image = '/img/logos/medium/group.png'
+	                }
+				});
+				res.send({users: users})
+			} else {
+				// If the result is null send an error message
+				res.send({users: []})
+			}
+		});
+	} else {
+		res.send({users: []})
+	}
 
 }
 
@@ -204,6 +203,11 @@ exports.authorize_users = function(req, res, next) {
 				res.redirect('/idm/applications/'+req.application.id)
 			}
 		})
+	} else {
+		debug("There is no submit object")
+		// Send message of fail when updating authorizations
+		req.session.message = {text: ' Not allow.', type: 'danger'};
+		res.redirect('/idm/applications/'+req.application.id)
 	}
 }
 

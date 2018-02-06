@@ -13,7 +13,7 @@ exports.get_organizations = function(req, res, next) {
 	// See if the request is via AJAX or browser
 	if (req.xhr) {
 
-		// Search info about the users authorized in the application
+		// Search info about the organizations authorized in the application
 		models.role_assignment.findAll({
 			where: { oauth_client_id: req.application.id, user_id: { [Op.eq]: null }, organization_id: { [Op.ne]: null } },
 			include: [{
@@ -22,7 +22,7 @@ exports.get_organizations = function(req, res, next) {
 			}]
 		}).then(function(organizations_application) {
 
-			// Array of users authorized in the application
+			// Array of organizations authorized in the application
 			var organizations_authorized = []
 
 			organizations_application.forEach(function(app) {
@@ -35,7 +35,7 @@ exports.get_organizations = function(req, res, next) {
 												role_id: app.role_id, 
 												name: app.Organization.name,
 												image: image }); 	// Added parameter is to control which elements will be deleted or added 
-													 				// to the table when authorizing other users
+													 				// to the table when authorizing other organizations
 			});
 
 			// Array to indicate which roles are going to be search
@@ -56,27 +56,23 @@ exports.get_organizations = function(req, res, next) {
 				where_search_role.push({is_internal: true});
 			}
 
-			// Search roles to display when authorize users
+			// Search roles to display when authorize organizations
 			models.role.findAll({
 				where: { [Op.or]: where_search_role },
 				attributes: ['id', 'name'],
 				order: [['id', 'DESC']]
 			}).then(function(roles) {
-				if (roles.length > 0) {
-					// Filter organizations_authorized depends on the permissions of the user logged
-					for (var i = 0; i < organizations_authorized.length; i++) {
-						if (roles.some(role => role.id === organizations_authorized[i].role_id) === false) {
-							organizations_authorized[i].role_id = ""
-						}
+				// Filter organizations_authorized depends on the permissions of the user logged
+				for (var i = 0; i < organizations_authorized.length; i++) {
+					if (roles.some(role => role.id === organizations_authorized[i].role_id) === false) {
+						organizations_authorized[i].role_id = ""
 					}
-
-					// Sen info about roles, users authorized and application
-					res.send({ organizations_authorized: organizations_authorized, 
-							   roles: roles,
-							   errors: [] });
-				} else { 
-					res.send({text: ' failed.', type: 'danger'}); 
 				}
+
+				// Sen info about roles, organizations authorized and application
+				res.send({ organizations_authorized: organizations_authorized, 
+						   roles: roles,
+						   errors: [] });
 			}).catch(function(error) { next(error); });
 		}).catch(function(error) { next(error); });
 	} else {
@@ -86,7 +82,7 @@ exports.get_organizations = function(req, res, next) {
 }
 
 
-// POST /idm/applications/:applicationId/organizations/available -- Search organizations to authorize in an application
+// POST /idm/organizations/available -- Search organizations to authorize in an application
 exports.available_organizations = function(req, res) {
 
 	debug("--> available_organizations")
@@ -126,16 +122,14 @@ exports.available_organizations = function(req, res) {
 
 }
 
-// POST /idm/applications/:applicationId/edit/users -- Authorize users in an application
+// POST /idm/applications/:applicationId/edit/organizations -- Authorize organizations in an application
 exports.authorize_organizations = function(req, res, next) {
 
 	debug("--> authorize_organizations")
+	
+	var organizations_to_be_authorized = JSON.parse(req.body.submit_authorize)
 
-	debug(req.body.submit_authorize)
-	/*
-	var users_to_be_authorized = JSON.parse(req.body.submit_authorize)
-
-	if (users_to_be_authorized.length > 0) {
+	if (organizations_to_be_authorized.length > 0) {
 
 		// Array to indicate which roles are going to be search
 		var where_search_role = []
@@ -169,10 +163,10 @@ exports.authorize_organizations = function(req, res, next) {
 
 			// Array of roles ids of submit request
 			var ids_roles_to_be_changed = []
-			for (var i = 0; i < users_to_be_authorized.length; i++) {
-				if (users_to_be_authorized[i].role_id !== '') {					
-					ids_roles_to_be_changed.push(users_to_be_authorized[i].role_id)
-					new_assignment.push({user_id: users_to_be_authorized[i].user_id, role_id: users_to_be_authorized[i].role_id, oauth_client_id: req.application.id})
+			for (var i = 0; i < organizations_to_be_authorized.length; i++) {
+				if (organizations_to_be_authorized[i].role_id !== '') {					
+					ids_roles_to_be_changed.push(organizations_to_be_authorized[i].role_id)
+					new_assignment.push({organization_id: organizations_to_be_authorized[i].organization_id, role_organization: organizations_to_be_authorized[i].role_organization, role_id: organizations_to_be_authorized[i].role_id, oauth_client_id: req.application.id})
 				}
 			}
 
@@ -189,7 +183,7 @@ exports.authorize_organizations = function(req, res, next) {
 					// Create rows in role_assignment
 					return models.role_assignment.bulkCreate(new_assignment).then(function() {
 						// Send message of success in updating authorizations
-						req.session.message = {text: ' Modified users authorization.', type: 'success'};
+						req.session.message = {text: ' Modified organizations authorization.', type: 'success'};
 						res.redirect('/idm/applications/'+req.application.id)
 					}).catch(function(error) {
 						return Promise.reject()
@@ -197,7 +191,7 @@ exports.authorize_organizations = function(req, res, next) {
 				}).catch(function(error) {
 					debug('Error ' + error)
 					// Send message of fail when updating authorizations
-					req.session.message = {text: ' Modified users authorization error.', type: 'danger'};
+					req.session.message = {text: ' Modified organizations authorization error.', type: 'danger'};
 					res.redirect('/idm/applications/'+req.application.id)
 				})
 			} else {
@@ -207,7 +201,12 @@ exports.authorize_organizations = function(req, res, next) {
 				res.redirect('/idm/applications/'+req.application.id)
 			}
 		})
-	}*/
+	} else {
+		debug("There is no submit object")
+		// Send message of fail when updating authorizations
+		req.session.message = {text: ' Not allow.', type: 'danger'};
+		res.redirect('/idm/applications/'+req.application.id)
+	}
 }
 
 // Function to see if an array contains all elments of the other

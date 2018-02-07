@@ -1,13 +1,13 @@
 $(document).ready(function(){
 
 	var url = '/idm/applications/'+window.location.pathname.split('/')[3]+'/authorized_users'
-	load_members(url)
+	load_users(url)
 
-	function load_members(url, panel) {
+	function load_users(url, panel) {
 		$('#spinner_auth_users').show('open')
 		$.get(url, function(data, status) {
 			if (data.users.length > 0) {
-				members_pagination(data.users_number)
+				users_pagination(data.users_number)
 				create_user_rows(data.users, $('#auth_users_content'))	
 			} else {
 				$('#auth_users_content').find('.alert').show('open')
@@ -27,13 +27,13 @@ $(document).ready(function(){
 		}
 	}
 
-	var typingTimerMembers;
+	var typingTimerUsers;
 	var doneTypingInterval = 500;
 
     $("#auth_users").find('.form-control').bind("keyup input",function(e) {
     	$('#spinner_auth_users').show('open')
-    	clearTimeout(typingTimerMembers);
-        typingTimerMembers = setTimeout(send_filter_request, doneTypingInterval);
+    	clearTimeout(typingTimerUsers);
+        typingTimerUsers = setTimeout(send_filter_request, doneTypingInterval);
     });
 
     function send_filter_request() {
@@ -42,7 +42,7 @@ $(document).ready(function(){
 			$('#spinner_auth_users').hide('close')
 			if (data.users.length > 0) {
 				$('#auth_users_content').find('.alert').hide()
-				members_pagination(data.users_number)
+				users_pagination(data.users_number)
 				create_user_rows(data.users, $('#auth_users_content'));
 			} else {
 				$('#auth_users_pagination_container').empty()
@@ -56,7 +56,7 @@ $(document).ready(function(){
 	    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 	}
 
-	function members_pagination(max) {
+	function users_pagination(max) {
 
 		$('#auth_users_pagination_container').bootpag({
 		    total: Math.ceil(max/5),

@@ -23,6 +23,7 @@ var authorizeUserAppController = require('../controllers/authorize_user_app_cont
 var authorizeOrgAppController = require('../controllers/authorize_org_app_controller');
 var checkPermissionsController = require('../controllers/check_permissions_controller');
 var adminController = require('../controllers/admin_controller');
+var notifyController = require('../controllers/notify_controller');
 var settingsController = require('../controllers/settings_controller');
 
 // MW to see if query has delete method
@@ -93,10 +94,11 @@ router.post('/oauth2/authorize', oauthController.response_type_required, functio
 router.post('/v3/auth/tokens', oauthController.authenticate_pep_proxy)
 
 // Routes to administrators
-router.get('/idm_admin/notify',             sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  csrfProtection,     adminController.show_notify)
-router.post('/idm_admin/notify',            sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  parseForm,  csrfProtection,     adminController.send_message)
+router.get('/idm_admin/notify',             sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  csrfProtection,     notifyController.show_notify)
+router.post('/idm_admin/notify',            sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  parseForm,  csrfProtection,     notifyController.send_message)
 router.get('/idm_admin/administrators',     sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  csrfProtection,     adminController.index_administrators)
 router.put('/idm_admin/administrators',     sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  parseForm,  csrfProtection,     adminController.update_administrators)
+router.get('/idm_admin/admin_users',        sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  csrfProtection,     adminController.admin_users)
 
 // Routes for settings
 router.get('/settings',                 sessionController.login_required,   sessionController.password_check_date,  csrfProtection,  settingsController.settings);
@@ -144,10 +146,11 @@ var imageUserUpload = multer.diskStorage({
 })
 
 // Routes for users
-//router.post('/idm/users/available',                     sessionController.login_required,   sessionController.password_check_date,  parseForm,  csrfProtection,     authorizeUserAppController.available_users);
-router.get('/idm/users/available',                     sessionController.login_required,   sessionController.password_check_date,  csrfProtection,  authorizeUserAppController.available_users);
+router.get('/idm/users/available',                      sessionController.login_required,   sessionController.password_check_date,  csrfProtection,  authorizeUserAppController.available_users);
 
 router.get('/idm/users/:userId',                        sessionController.login_required,   sessionController.password_check_date,  csrfProtection, userController.show);
+router.get('/idm/users/:userId/organizations',          sessionController.login_required,   sessionController.password_check_date,  csrfProtection, userController.get_organizations);
+router.get('/idm/users/:userId/applications',           sessionController.login_required,   sessionController.password_check_date,  csrfProtection, userController.get_applications);
 router.get('/idm/users/:userId/edit',                   sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   parseForm,  csrfProtection,     userController.edit);
 router.put('/idm/users/:userId/edit/info',              sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   parseForm,  csrfProtection,     userController.update_info);
 router.post('/idm/users/:userId/edit/avatar',           sessionController.login_required,   sessionController.password_check_date,  userController.owned_permissions,   multer({storage: imageUserUpload}).single('image'),  parseForm,  csrfProtection,    userController.update_avatar);

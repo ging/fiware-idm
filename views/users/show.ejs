@@ -45,7 +45,7 @@
                 <% } -%>
             </div>
         </div>
-        <div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-user_id="<%= user.id %>" data-pagination-pages="">
+        <div class="panel panel-default datatable" id="auth_organizations" data-pagination-url="/filters/organizations" data-user_id="<%= user.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title">Organizations</span>
                 <div class="table_actions clearfix">
@@ -58,28 +58,15 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-                <!-- <div class="list-group" id="organizations_content">
-                    <div class="list-group-item">
-                        <a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/">
-                            <div class="avatar filter_field">
-                                <img alt="organization logo" src="/static/dashboard/img/logos/medium/group.png">
-                            </div>
-                            <div class="name filter_field">alexph91 cloud</div>
-                            <div class="description filter_field">This organization is intended to be used in the cloud environment. As long as you are a trial or community user this organization will be authorized as purchaser in the Cloud Application.</div>
-                        </a>
-                        <div class="switch filter_field">
-                            <a class="item" href="/idm/organizations/062b32c46a924d33b19235d7f982affa/"></a>
-                            <a class="btn btn-link" href="/auth/switch/062b32c46a924d33b19235d7f982affa/">switch</a>
-                        </div>
-                    </div>
-                </div> -->
-                <p class="alert alert-info empty" style="display: block;">You don't have any organizations.</p>
+                <div class="list-group" id="auth_organizations_content">
+                    <p class="alert alert-info empty" style="display: none;">You are not member or owner of any organizations.</p>  
+                </div>                
             </div>
             <div class="panel-footer">
-                <nav id="organizations_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="1" class="next disabled"><a href="javascript:void(0);">»</a></li><li data-lp="1" class="last disabled"><a href="javascript:void(0);">Last</a></li></ul></nav>
+                <nav id="auth_organizations_pagination_container"></nav>
             </div>
         </div>
-        <div class="panel panel-default datatable" id="applications" data-pagination-url="/filters/applications" data-user_id="<%= user.id %>" data-pagination-pages="">
+        <div class="panel panel-default datatable" id="auth_applications" data-pagination-url="/filters/applications" data-user_id="<%= user.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title">Applications</span>
                 <div class="table_actions clearfix">
@@ -92,28 +79,22 @@
                 </div>
             </div>
             <div class="panel-body datatable-content">
-                <% if (applications.length > 0) { -%>
-                    <% for (var i = 0; i < applications.length; i++) { -%>
-                        <div class="list-group" id="applications_content">
-                            <div class="list-group-item">
-                                <a class="item" href="/idm/applications/<%= applications[i].id %>/">
-                                    <div class="avatar filter_field">
-                                        <img alt="application logo" src="<%= applications[i].image %>">
-                                    </div>
-                                    <div class="name filter_field"><%= applications[i].name %></div>
-                                    <div class="url filter_field"><%= applications[i].url %></div>
-                                </a>
-                            </div>
-                        </div>
-                    <% } -%>
-                <% } else { -%>
-                    <p class="alert alert-info empty" style="display: block;">You are not authorized in any application.</p>
-                <% } -%>
+                <div class="list-group" id="auth_applications_content">
+                    <p class="alert alert-info empty" style="display: none;">You are not authorized in any application.</p>
+                </div>
             </div>
 
             <div class="panel-footer">
-                <nav id="applications_pagination_container"><ul class="pagination bootpag"><li data-lp="1" class="first disabled"><a href="javascript:void(0);">First</a></li><li data-lp="1" class="prev disabled"><a href="javascript:void(0);">«</a></li><li data-lp="1" class="active"><a href="javascript:void(0);">1</a></li><li data-lp="2"><a href="javascript:void(0);">2</a></li><li data-lp="3"><a href="javascript:void(0);">3</a></li><li data-lp="2" class="next"><a href="javascript:void(0);">»</a></li><li data-lp="3" class="last"><a href="javascript:void(0);">Last</a></li></ul></nav>
+                <nav id="auth_applications_pagination_container"></nav>
             </div>
         </div>
     </div>
 </div>
+
+<%- include ../templates/./applications/./_application_row %>
+<%- include ../templates/./organizations/./_organization_row %>
+
+<script src="/javascripts/users/handle_get_applications.js" type="text/javascript"></script>
+<script src="/javascripts/users/handle_get_organizations.js" type="text/javascript"></script>
+
+

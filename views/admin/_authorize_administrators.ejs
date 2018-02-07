@@ -43,29 +43,13 @@
                                         </div>
                                     </header>
                                     <div class="pre-scrollable filterable update_owners_users_client_filterable" id="update_owners_users_members_scroll" >
-                                        <% if (users_admin.length <= 0) { -%>
-                                            <ul class="no_results list-group alert alert-info" id="no_update_owners_users_members" style="display: none;">
-                                                <li>No users.</li>
-                                            </ul>                    
-                                        <% } else { -%>
-                                            <ul class="members update_owners_users_members list-group">
-                                                <% for (var i = 0; i < users_admin.length; i++) { -%>
-                                                    <li id="<%= users_admin[i].id %>" class="list-group-item">
-                                                        <div class="avatar filter_field">
-                                                            <img src="<%= users_admin[i].image %>">
-                                                        </div>
-                                                        <div class="member" data-update_owners_users-id="">
-                                                            <div class="data">
-                                                                <span class="name"><%= users_admin[i].username %></span>
-                                                            </div>
-                                                            <div class="active remove">
-                                                                <a class="fa fa-close" href="#remove"></a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                <% } -%>   
-                                            </ul>                 
-                                        <% } -%>                                    
+
+                                        <ul id="authorized_users" class="members update_owners_users_members list-group">
+                                        </ul>
+
+                                        <ul class="no_results list-group alert alert-info" id="no_update_owners_users_members" style="display: none;">
+                                            <li>No users.</li>
+                                        </ul>                                
                                     </div>
                                     <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
                                     <div class="alert alert-warning no_roles_warning" style="display: none;">Some users don't have any role assigned. If you save now they won't be authorized in the application</div>

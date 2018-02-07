@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	var url = '/idm/applications/'+window.location.pathname.split('/')[3]+'/authorized_organizations'
+	var url = '/idm/users/'+window.location.pathname.split('/')[3]+'/organizations'
 	load_organizations(url)
 
 	function load_organizations(url, panel) {

@@ -15,6 +15,16 @@ var Jimp = require("jimp");
 var email = require('../lib/email.js')
 var image = require ('../lib/image.js');
 
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
+var sequelize = new Sequelize(config.database.name, config.database.user, config.database.password, 
+  { 
+    host: config.database.host,
+    dialect: 'mysql'
+  }      
+);
+
 // MW to see if user can do some actions
 exports.owned_permissions = function(req, res, next) {
 
@@ -106,6 +116,98 @@ exports.show = function(req, res, next) {
         res.render('users/show', {user: req.user, applications: applications, csrfToken: req.csrfToken()})
     }).catch(function(error) {
          next(error);
+    });
+}
+
+// GET /idm/users/:userId/get_applications -- Send applications in where user is authorized
+exports.get_applications = function(req, res, next) {
+
+    debug("--> get_applications");
+
+    var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
+    var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
+
+    var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
+                (SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
+                ON role_assignment.oauth_client_id=oauth_client.id WHERE user_id=:user_id) AS count
+                FROM role_assignment 
+                RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
+                ON role_assignment.oauth_client_id=oauth_client.id 
+                WHERE user_id=:user_id
+                LIMIT 5
+                OFFSET :offset`
+
+    sequelize.query(query, {replacements: {user_id: req.user.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(applications_authorized){
+        var applications = []
+
+        var count = 0
+
+        // If user has applciations, set image from file system and obtain info from each user
+        if (applications_authorized.length > 0) {
+            
+            count = applications_authorized[0].count
+
+            applications_authorized.forEach(function(app) {
+                if (app.image == 'default') {
+                    app.image = '/img/logos/medium/app.png'
+                } else {
+                    app.image = '/img/applications/'+app.image
+                }
+                applications.push({id: app.oauth_client_id, name: app.name, image: app.image, url: app.url})
+            });
+        }
+        res.send({applications: applications, applications_number: count})
+    }).catch(function(error) {
+        debug('Error get appliications authorized: ' + error)
+        var message = {text: ' Unable to find applications',type: 'danger'}
+        send_response(req, res, message, '/idm')
+    });
+}
+
+
+// GET /idm/organizations/:organizationId/get_organizations -- Send organizations to which user belongs
+exports.get_organizations = function(req, res, next) {
+
+    debug("--> get_organizations");
+
+    var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
+    var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
+
+    var query = `SELECT DISTINCT user_organization.organization_id, organization.name, organization.image, organization.description, 
+                (SELECT COUNT(DISTINCT organization_id) FROM user_organization RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
+                ON user_organization.organization_id=organization.id WHERE user_id=:user_id) AS count
+                FROM user_organization 
+                RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
+                ON user_organization.organization_id=organization.id 
+                WHERE user_id=:user_id
+                LIMIT 5
+                OFFSET :offset`
+
+    sequelize.query(query, {replacements: {user_id: req.user.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(organizations_authorized){
+        var organizations = []
+
+        var count = 0
+
+        // If user has organizations, set image from file system and obtain info from each organization
+        if (organizations_authorized.length > 0) {
+            
+            count = organizations_authorized[0].count
+
+            organizations_authorized.forEach(function(organization) {
+                if (organization.image == 'default') {
+                    organization.image = '/img/logos/medium/group.png'
+                } else {
+                    organization.image = '/img/organizations/'+organization.image
+                }
+                organizations.push({id: organization.organization_id, name: organization.name, image: organization.image, description: organization.description})
+            });
+        }
+        res.send({organizations: organizations, organizations_number: count})
+
+    }).catch(function(error) {
+        debug('Error get organizations authorized: ' + error)
+        var message = {text: ' Unable to find organizations',type: 'danger'}
+        send_response(req, res, message, '/idm')
     });
 }
 
@@ -726,3 +828,17 @@ function delete_image(req, res, image_path, success, redirect_uri, message) {
     })
 }
 
+
+// Funtion to see if request is via AJAX or Browser and depending on this, send a request
+function send_response(req, res, response, url) {
+    if (req.xhr) {
+        res.send(response);
+    } else {
+        if (response.message) {
+            req.session.message = response.message  
+        } else {
+            req.session.message = response;
+        }
+        res.redirect(url);
+    }
+}

@@ -3,7 +3,6 @@
     <h3>Log In</h3>
   </div>
   <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/oauth2/authorize?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" method="POST" enctype="">
-    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
     <div class="modal-body clearfix">
       <% var nameErrors = [] %>
       <% if (errors.length) { %>

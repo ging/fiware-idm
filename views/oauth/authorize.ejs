@@ -6,7 +6,6 @@
           <h3>Authorize <%= application.name %>?</h3>
         </div>
     	<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/oauth2/authorize?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" method="POST" enctype="">
-          <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
           <div class="modal-body clearfix">
             <div>
               <p>

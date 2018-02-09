@@ -1,27 +1,13 @@
 $(document).ready(function(){    
-    var timer;
-    var input_change_authorize = null
-    // Send requests to server to obtain usernames and show in available members column
+
+    var typingTimerMembers;
+    var doneTypingInterval = 500;
+
+    // Send requests to server to obtain organization names and show in available members column
     $("#authorize_user").find('#available_update_owners_users').bind("keyup input",function(e) {
-
-    	if($(this).val().indexOf('%') > -1 || $(this).val().indexOf('_') > -1) {
-
-    		$("#authorize_user").find("#alert_error_search_available").show("open")
-    		$("#authorize_user").find(".available_members").empty()
-    		$("#authorize_user").find("#spinner_update_owners_users").hide('close')
-
-    		input_change_authorize = $(this).val();
-
-	    } else {
-      
-	    	$("#alert_error_search_available").hide("close")
-	    	clearTimeout(timer);
-	    	$("#authorize_user").find("#spinner_update_owners_users").show('open')
-        	var input = $(this).val();
-        	timer = setTimeout(function(){
-        		input_change_authorize = available_users(input, input_change_authorize, 'table_row_available_user_template')
-        	}, 300);
-	    }    
+        var input = $(this).val();
+        clearTimeout(typingTimerMembers);
+        typingTimerMembers = setTimeout(function() {available_users(input, 'table_row_available_user_template', 'available_members')}, doneTypingInterval);
     });
 
     function htmlEntities(str) {
@@ -102,6 +88,44 @@ $(document).ready(function(){
             } else {
                 members[index_user] = {user_id: user_id, role: role}
             }
+        }
+    });
+
+    // Move scroll
+    $("#authorized_users").on("click",".dropdown", function(event) { 
+        var offset = $(this).offset();
+        offset.left -= 20;
+        offset.top -= 20;
+        $('#update_owners_users_members_scroll').animate({
+            scrollTop: offset.top,
+            scrollLeft: offset.left
+        });
+    });
+
+    // Remove authorized member
+    $("#authorized_users").on("click",".remove", function(event) { 
+
+        // Stop linking    
+        event.preventDefault();
+
+        // item of list
+        row = $(this).parent()
+
+        // Id and name of user
+        var user_id = row.parent().attr("id")
+        var username = row.find(".name").html()  
+
+        members = members.filter(function(elem) {
+            return elem.user_id != user_id;
+        });
+
+        var info_added_user = "<span id='info_added_user' style='display: none; text-align: center;' class='help-block alert alert-success'>User "+username+" removed from application</span>"
+        $("#authorize_user").find("#info_added_user").replaceWith(info_added_user);
+        $("#authorize_user").find("#info_added_user").fadeIn(800).delay(300).fadeOut(800);
+        row.parent().fadeOut(500, function(){ row.parent().remove(); });
+
+        if($("#authorize_user").find("#authorized_users").children().length <= 1) {
+            $("#no_update_owners_users_members").show()
         }
     });
 

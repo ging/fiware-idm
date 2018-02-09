@@ -42,6 +42,12 @@
                         <div class="">
                             <input class="form-control" id="id_organization" name="organization" type="text">
                         </div>
+                        <% if (errors.not_users_organization) { -%>
+                            <span class="help-block alert alert-danger ">Organization don't have users</span>
+                        <% } -%>
+                        <% if (errors.not_organization) { -%>
+                            <span class="help-block alert alert-danger ">Organization not found</span>
+                        <% } -%>
                     </div>
                     <div class="form-group " style="display: none;">
                         <label class="control-label  " for="id_user_ids">User IDs in CSV format</label>
@@ -52,7 +58,7 @@
                             <span class="help-block alert alert-danger ">Need to write some user ids</span>
                         <% } -%>
                         <% if (errors.users_not_found) { -%>
-                            <span class="help-block alert alert-danger ">Users not found: <b><%= errors.users_not_found%></b></span>                   
+                            <span class="help-block alert alert-danger ">Users not found: <b><%= errors.users_not_found%></b></span> 
                         <% } -%>
                     </div>
                     <div class="form-group required">

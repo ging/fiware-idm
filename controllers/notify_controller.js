@@ -4,6 +4,17 @@ var gravatar = require('gravatar');
 
 var email = require('../lib/email.js')
 
+var config = require('../config').database;
+
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
+var sequelize = new Sequelize(config.name, config.user, config.password, 
+  { 
+    host: config.host,
+    dialect: 'mysql'
+  }      
+);
 
 // GET /idm_admin/notify -- Render notify view
 exports.show_notify = function(req, res) {
@@ -27,97 +38,138 @@ exports.send_message = function(req, res) {
 	// Check which option has been selected by the admin user
 	switch(req.body.notify) {
 	    case 'all_users':
-	        debug(' -> all_users')
+	        send_message_all_users(req, res, errors)
 
-	        if (Object.keys(errors).length > 0) {
-	        	errors['option'] = 'all_users'
-	        	res.render("admin/notify", {errors: errors, users: [], subject: '', csrfToken: req.csrfToken()})
-	        } else {
-		        // Get all enabled users
-		        get_all_users().then(function(users) {
-
-		        	// Map array of users to get emails and join all these emails into a string
-		        	var emails =  users.map(elem => elem.email).join()
-		        			     
-		        	// Send an email message to the user
-		        	email.send('', req.body.subject, emails, req.body.body)
-
-		        	req.session.message = {text: ' Success sending email.', type: 'success'};
-		        	res.redirect('/')
-		        }).catch(function(error) {
-		        	debug('  -> error' + error)
-		        	res.redirect('/')
-		        })		        
-	        }
 	        break;
 	    case 'organization':
-	        debug('  -> organization')
-	        /////////////////////////// DIVIDIR CADA CASE EN FUNCIONES
-	        if (errors) {
-	        	res.render("admin/notify", {errors: errors, csrfToken: req.csrfToken()})
-	        } else {
-	    		res.locals.message = {text: ' Not implemented.', type: 'danger'};
-	        	res.render("admin/notify", {csrfToken: req.csrfToken()})
-	        }
+	        send_message_organization(req, res, errors)
 
-	    	/*get_organization(req, res).then(function(organization) {
-	    		debug('IMPLEMENTAR')
-	    	}).catch(function(error) {
-	    		debug(error)
-	    	})*/
 	        break;
 	    case 'users_by_id':
-	        debug(' -> users_by_id')
+	        send_message_users_by_id(req, res, errors)
 
-	        var user_ids = req.body.user_ids.split(',')
-
-	        // Delete white spaces
-	        for (var i =0; i < user_ids.length; i++) {
-	        	// If is an empety element delete
-	        	if (user_ids[i] == "") {         
-			      user_ids.splice(i, 1);
-			      i--;
-			    } else {
-	        		user_ids[i] = user_ids[i].trim();				    	
-			    }
-	        }
-
-	        if (user_ids.length > 0) {
-
-		        check_users_by_id(user_ids).then(function(result) {
-
-		        	// If users not found send an error message
-		        	if (result.users_not_found.length > 0) {
-		        		errors['users_not_found'] = result.users_not_found
-		        	}
-
-		        	if (Object.keys(errors).length > 0) {
-		        		errors['option'] = 'users_by_id'
-		        		res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
-			        } else {
-			    		// Map array of users to get emails and join all these emails into a string
-			        	var emails =  result.users.map(elem => elem.email).join()
-
-			        	// Send an email message to the user
-			        	email.send('', req.body.subject, emails, req.body.body)
-
-			        	req.session.message = {text: ' Success sending email.', type: 'success'};
-			        	res.redirect('/')
-			        }
-		        }).catch(function(error) {
-		        	debug('  -> error' + error)
-		        	res.redirect('/')
-		        })
-	        } else {
-	        	errors['option'] = 'users_by_id'
-	        	errors['not_users'] = true
-		        res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
-	        }
 	        break;
 	    default:
 	    	res.locals.message = {text: ' Invalid option.', type: 'warning'}
 	        res.render("admin/notify", {errors: {}, users: [], subject: '', csrfToken: req.csrfToken()})
 	}
+}
+
+// Function to send message to all users
+function send_message_all_users(req, res, errors) {
+	debug(' -> send_message_all_users')
+
+    if (Object.keys(errors).length > 0) {
+    	errors['option'] = 'all_users'
+    	res.render("admin/notify", {errors: errors, users: [], subject: '', csrfToken: req.csrfToken()})
+    } else {
+        // Get all enabled users
+        get_all_users().then(function(users) {
+
+        	// Map array of users to get emails and join all these emails into a string
+        	var emails =  users.map(elem => elem.email).join()
+        			     
+        	// Send an email message to the user
+        	email.send('', req.body.subject, emails, req.body.body)
+
+        	req.session.message = {text: ' Success sending email.', type: 'success'};
+        	res.redirect('/')
+        }).catch(function(error) {
+        	debug('  -> error' + error)
+        	req.session.message = {text: ' Fail sending email.', type: 'danger'};
+        	res.redirect('/')
+        })		        
+    }
+}
+
+// Function to send message to users of an organization
+function send_message_organization(req, res, errors) {
+	debug('  -> send_message_organization')
+    
+    var organization = req.body.organization
+
+    if (organization.length > 0) {
+
+    	get_organization(organization).then(function(users) {
+    		// If users not found send an error message
+        	if (users.length < 1) {
+        		errors['not_users_organization'] = true
+        	}
+
+        	if (Object.keys(errors).length > 0) {
+        		errors['option'] = 'organization'
+        		res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
+	        } else {
+	        	// Map array of users to get emails and join all these emails into a string
+	        	var emails =  users.map(elem => elem.email).join()
+
+	        	// Send an email message to the user
+	        	email.send('', req.body.subject, emails, req.body.body)
+
+	        	req.session.message = {text: ' Success sending email.', type: 'success'};
+	        	res.redirect('/')
+	        }
+    	}).catch(function(error) {
+    		debug('  -> error' + error)
+    		req.session.message = {text: ' Fail sending email.', type: 'danger'};
+        	res.redirect('/')
+    	})
+    } else {
+    	errors['option'] = 'organization'
+    	errors['not_organization'] = true
+        res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
+    }
+}
+
+// Function to send message to users by their id
+function send_message_users_by_id(req, res, errors) {
+	debug(' -> send_message_users_by_id')
+
+    var user_ids = req.body.user_ids.split(',')
+
+    // Delete white spaces
+    for (var i =0; i < user_ids.length; i++) {
+    	// If is an empety element delete
+    	if (user_ids[i] == "") {         
+	      user_ids.splice(i, 1);
+	      i--;
+	    } else {
+    		user_ids[i] = user_ids[i].trim();				    	
+	    }
+    }
+
+    if (user_ids.length > 0) {
+
+        check_users_by_id(user_ids).then(function(result) {
+
+        	// If users not found send an error message
+        	if (result.users_not_found.length > 0) {
+        		errors['users_not_found'] = result.users_not_found
+        	}
+
+        	if (Object.keys(errors).length > 0) {
+        		errors['option'] = 'users_by_id'
+        		res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
+	        } else {
+	    		// Map array of users to get emails and join all these emails into a string
+	        	var emails =  result.users.map(elem => elem.email).join()
+
+	        	// Send an email message to the user
+	        	email.send('', req.body.subject, emails, req.body.body)
+
+	        	req.session.message = {text: ' Success sending email.', type: 'success'};
+	        	res.redirect('/')
+	        }
+        }).catch(function(error) {
+        	debug('  -> error' + error)
+        	req.session.message = {text: ' Fail sending email.', type: 'danger'};
+        	res.redirect('/')
+        })
+    } else {
+    	errors['option'] = 'users_by_id'
+    	errors['not_users'] = true
+        res.render("admin/notify", {errors: errors, users: req.body.user_ids, subject: req.body.subject, csrfToken: req.csrfToken()})
+    }
 }
 
 
@@ -129,13 +181,24 @@ function get_all_users() {
 	}).then(function(users) {
 		return users
 	}).catch(function(error) {
-		return error
+		return Promise.reject(error)
 	})
 }
 
 // Function to gel all emails of users from a specific organization
 function get_organization(organization_id) {
 	
+	var query = `SELECT DISTINCT user_organization.user_id, user.email
+                FROM user_organization
+                RIGHT JOIN (SELECT * FROM user) AS user
+                ON user_organization.user_id=user.id 
+                WHERE organization_id=:organization_id`
+
+	return sequelize.query(query, {replacements: {organization_id: organization_id}, type: Sequelize.QueryTypes.SELECT}).then(function(users){
+		return users
+	}).catch(function(error) {
+		return Promise.reject(error)
+	})
 }
 
 // Function to check if all ids receive from client are in database
@@ -152,6 +215,6 @@ function check_users_by_id(user_ids) {
 		})
 		return {users_not_found: users_not_found, users: users}
 	}).catch(function(error) {
-		return error
+		return Promise.reject(error)
 	})
 }

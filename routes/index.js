@@ -2,10 +2,17 @@ var express = require('express');
 var multer  = require('multer');
 var path = require('path');
 var uuid = require('uuid');
-var router = express.Router();
+var csrf = require('csurf')
+var bodyParser = require('body-parser');
 
-var csrfProtection = require('../app').csrfProtection;
-var parseForm = require('../app').parseForm;
+var router = express.Router();
+var api = createApiRouter()
+
+// Mount Api and Oauth routes before to exclude CSRF protection
+router.use('/', api)
+
+var csrfProtection = csrf({ cookie: false })
+var parseForm = bodyParser.urlencoded({ extended: false })
 
 // Create controllers
 var applicationController = require('../controllers/application_controller');
@@ -14,7 +21,6 @@ var userController = require('../controllers/user_controller');
 var organizationController = require('../controllers/organization_controller');
 var manageMembersController = require('../controllers/manage_members_controller');
 var homeController = require('../controllers/home_controller');
-var oauthController = require('../controllers/oauth_controller');
 var roleController = require('../controllers/role_controller');
 var permissionController = require('../controllers/permission_controller');
 var pepProxyController = require('../controllers/pep_proxy_controller');
@@ -53,15 +59,6 @@ router.get('/', csrfProtection, function(req, res, next) {
 });
 
 
-// Create Oauth Server model
-var oauthServer = require('oauth2-server');
-
-router.oauth = new oauthServer({
-  model: require('../models/model_oauth_server.js'),
-  debug: true
-});
-
-
 // Autoloads
 router.param('applicationId',   applicationController.load_application);
 router.param('pepId',           pepProxyController.load_pep);
@@ -70,28 +67,6 @@ router.param('roleId',          roleController.load_role);
 router.param('permissionId',    permissionController.load_permission);
 router.param('userId',          userController.load_user);
 router.param('organizationId',  organizationController.load_organization);
-
-// Routes for Oauth2
-// MIRAR SI PONERLE EL CSRF PERO CREO QUE NO QUE EL CAMPO STATE YA LO HACE
-router.get('/auth/token',       oauthController.authenticate());
-router.post('/oauth2/token',    oauthController.token);
-router.get('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
-    if (req.session.user) {
-        oauthController.logged(req, res, next)
-    } else {
-        oauthController.log_in(req, res, next)
-    }
-});
-router.post('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
-    if (req.session.user) {
-        oauthController.authorize(req, res, next)
-    } else {
-        oauthController.authenticate_user(req, res, next)
-    }
-});
-
-// -- Pruebas con el Pep Proxy
-router.post('/v3/auth/tokens', oauthController.authenticate_pep_proxy)
 
 // Routes to administrators
 router.get('/idm_admin/notify',             sessionController.login_required,    sessionController.password_check_date,  adminController.is_admin,  csrfProtection,     notifyController.show_notify)
@@ -121,7 +96,7 @@ router.get('/update_password',  sessionController.login_required,   csrfProtecti
 // Routes for users sessions
 router.get('/auth/login',		csrfProtection,     sessionController.new);
 router.post('/auth/login',      parseForm,  csrfProtection,     sessionController.create);
-router.delete('/auth/logout',   parseForm,  csrfProtection,     sessionController.destroy);
+router.delete('/auth/logout',   sessionController.destroy);
 
 // Routes for users creation
 router.get('/sign_up', 	            csrfProtection,     userController.new);
@@ -249,5 +224,53 @@ router.delete('/idm/applications/:applicationId/iot/:iotId/delete',             
 router.get('/idm/applications/:applicationId/pep/register',                                 sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    pepProxyController.register_pep);
 router.get('/idm/applications/:applicationId/pep/:pepId/reset_password',                    sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    pepProxyController.reset_password_pep);
 router.delete('/idm/applications/:applicationId/pep/:pepId/delete',                         sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    parseForm,  csrfProtection,    pepProxyController.delete_pep);
+
+
+
+
+
+
+// -- Pruebas con el Pep Proxy
+//router.post('/v3/auth/tokens', oauthController.authenticate_pep_proxy)
+
+
+function createApiRouter() {
+    var apiController = require('../controllers/api/index');
+    var oauthController = require('../controllers/oauth_controller');
+    
+    var router = new express.Router()
+    // Create Oauth Server model
+    var oauthServer = require('oauth2-server');
+    router.oauth = new oauthServer({
+      model: require('../models/model_oauth_server.js'),
+      debug: true
+    });
+
+
+    // Routes for Oauth2
+    router.get('/auth/token',       oauthController.authenticate());
+    router.post('/oauth2/token',    oauthController.token);
+    router.get('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
+        if (req.session.user) {
+            oauthController.logged(req, res, next)
+        } else {
+            oauthController.log_in(req, res, next)
+        }
+    });
+    router.post('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
+        if (req.session.user) {
+            oauthController.authorize(req, res, next)
+        } else {
+            oauthController.authenticate_user(req, res, next)
+        }
+    });
+
+
+    // Routes to API
+    router.get('/applications', apiController.authenticate.check_token, apiController.application.info);
+
+    
+    return router
+}
 
 module.exports = router;

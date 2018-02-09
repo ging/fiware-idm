@@ -51,7 +51,7 @@ exports.log_in = function(req, res, next) {
         state: req.query.state,
         redirect_uri: req.query.redirect_uri,
         image: ((application.image == 'default') ? '/img/logos/original/app.png' : ('/img/applications/'+application.image)) 
-      }, errors: [], csrfToken: req.csrfToken() }); 
+      }, errors: [] }); 
     } else {
       var text = 'Application with id = ' + req.query.client_id + ' doesn`t exist'
       req.session.message = {text: text, type: 'warning'};
@@ -87,11 +87,13 @@ exports.authenticate_user = function(req, res, next){
 
         // Create req.session.user and save id and username
         // The session is defined by the existence of: req.session.user
-        user.image = '/img/logos/small/user.png'
-        if (user.image !== 'default') {
-            user.image = '/img/users/' + user.image
-        }        
-        req.session.user = {id:user.id, username:user.username, email: user.email, image: user.image};
+        var image = '/img/logos/small/user.png'
+        if (user.gravatar) {
+            image = gravatar.url(user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
+        } else if (user.image !== 'default') {
+            image = '/img/users/' + user.image
+        }    
+        req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
 
         render_oauth_authorize(req, res, next);
         
@@ -182,7 +184,7 @@ exports.authenticate = function(options){
 }
 
 // Function to show oauth/authorize view if user session exist
-function render_oauth_authorize(req, res) {
+function render_oauth_authorize(req, res, next) {
   models.role_assignment.findOne({
     where: { user_id: req.session.user.id, oauth_client_id: req.query.client_id},
     include: [{
@@ -199,7 +201,7 @@ function render_oauth_authorize(req, res) {
         response_type: req.query.response_type,
         id: req.query.client_id,
         redirect_uri: req.query.redirect_uri,
-        state: req.query.state }, csrfToken: req.csrfToken()
+        state: req.query.state }
       });
     } else {
       var text = 'User is not authorized in the application or application does not exist'

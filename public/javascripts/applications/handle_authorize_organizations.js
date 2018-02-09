@@ -158,6 +158,17 @@ $(document).ready(function(){
 	    }
     });
 
+    // Move scroll
+    $("#authorized_organizations").on("click",".dropdown", function(event) { 
+        var offset = $(this).offset();
+        offset.left -= 20;
+        offset.top -= 20;
+        $('#update_owners_users_members_scroll').animate({
+            scrollTop: offset.top,
+            scrollLeft: offset.left
+        });
+    });
+
     
     // Remove authorized member
     $("#authorized_organizations").on("click",".remove", function(event) { 

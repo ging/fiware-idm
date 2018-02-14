@@ -18,6 +18,16 @@ var debug = require('debug')('idm:api-authenticate');
 var userController = require('../../controllers/user_controller.js');
 var pepProxyController = require('../../controllers/pep_proxy_controller.js');
 
+
+// Middleware to see if the token correspond to user
+var is_user = function(req, res, next) {
+	if (req.user_id) {
+		next()
+	} else {
+		res.status(401).json({ error: {message: 'You are not allow to perform the action', code: 401, title: 'Unauthorized'}})
+	}
+}
+
 // Middleware to check users token
 var validate_token = function(req, res, next) {
 
@@ -25,11 +35,14 @@ var validate_token = function(req, res, next) {
 
 	check_validate_token_request(req).then(function(token_id) {
 
-		return authenticate_token(token_id).then(function(user_id) { 
-			req.user_id = user_id
-			// METER DE ALGUNA MANERA QUE PUEDA DEIFERENCIAR ENTRE PEP PROXY Y USUARIOS
-			// PARA LOS USUARIOS METERLE OTRO MIDDLEWARE DESPUES PARA COMPROBAR REQUESTE A LA API Y QUE SI ES PEP PROXY QUE NO LE DEJE
-			// SE PODRIA HACER SI AL HACER LA BUSQUEDA SE LE AÑADE UN CAMPO PRA SABER SI VIENE DE LA COLUMNA DEL PEP O DEL USER
+		return authenticate_token(token_id).then(function(agent) { 
+			if (agent.pep_proxy_id) {
+				req.pep_proxy_id = agent.pep_proxy_id
+			}
+
+			if (agent.user_id) {
+				req.user_id = agent.user_id	
+			}
 			next()
 		}).catch(function(error) {
 			return Promise.reject(error) 
@@ -274,5 +287,6 @@ function arrayContainsArray (superset, subset) {
 
 module.exports = {
 	validate_token: validate_token,
-	create_token: create_token
+	create_token: create_token,
+	is_user: is_user
 }

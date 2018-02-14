@@ -59,6 +59,13 @@ var pep_proxy = sequelize.import(path.join(__dirname,'pep_proxy'));
 // Import authzforce table
 var authzforce = sequelize.import(path.join(__dirname,'authzforce'));
 
+// Import auth token table
+var auth_token = sequelize.import(path.join(__dirname,'auth_token'));
+
+
+// Relation between users and auth tokens
+auth_token.belongsTo(user, {onDelete: 'cascade'});
+auth_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
 
 // Relation between OAuthClient and access token
 oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
@@ -123,6 +130,7 @@ exports.oauth_authorization_code = oauth_authorization_code;
 exports.oauth_access_token = oauth_access_token;
 exports.oauth_refresh_token = oauth_refresh_token;
 exports.scope = scope;
+exports.auth_token = auth_token;
 
 // To read all users inside users_prueba.txt
 var fs = require("fs");

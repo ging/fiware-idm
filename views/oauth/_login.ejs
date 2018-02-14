@@ -13,7 +13,7 @@
       <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
         <span class="help-block alert alert-warning"><p>Session expired</p></span>
       <% } %>
-      <% if (nameErrors.indexOf("invalid") != -1) { %>
+      <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
         <div class="alert alert-message alert-danger">
           <ul class="errorlist"><li>Invalid user name or password.</li></ul>
         </div>

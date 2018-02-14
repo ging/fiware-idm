@@ -423,7 +423,7 @@ exports.authenticate = function(email, password, callback) {
             if(user.verifyPassword(password) && user.enabled){
                 callback(null, user);
             } else { callback(new Error('invalid')); }   
-        } else { callback(new Error('invalid')); }
+        } else { callback(new Error('user_not_found')); }
     }).catch(function(error){ callback(error) });
 };
 

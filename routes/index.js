@@ -6,10 +6,6 @@ var csrf = require('csurf')
 var bodyParser = require('body-parser');
 
 var router = express.Router();
-var api = createApiRouter()
-
-// Mount Api and Oauth routes before to exclude CSRF protection
-router.use('/', api)
 
 var csrfProtection = csrf({ cookie: false })
 var parseForm = bodyParser.urlencoded({ extended: false })
@@ -225,52 +221,5 @@ router.get('/idm/applications/:applicationId/pep/register',                     
 router.get('/idm/applications/:applicationId/pep/:pepId/reset_password',                    sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    csrfProtection,    pepProxyController.reset_password_pep);
 router.delete('/idm/applications/:applicationId/pep/:pepId/delete',                         sessionController.login_required,   sessionController.password_check_date,      checkPermissionsController.owned_permissions,    parseForm,  csrfProtection,    pepProxyController.delete_pep);
 
-
-
-
-
-
-// -- Pruebas con el Pep Proxy
-//router.post('/v3/auth/tokens', oauthController.authenticate_pep_proxy)
-
-
-function createApiRouter() {
-    var apiController = require('../controllers/api/index');
-    var oauthController = require('../controllers/oauth_controller');
-    
-    var router = new express.Router()
-    // Create Oauth Server model
-    var oauthServer = require('oauth2-server');
-    router.oauth = new oauthServer({
-      model: require('../models/model_oauth_server.js'),
-      debug: true
-    });
-
-
-    // Routes for Oauth2
-    router.get('/auth/token',       oauthController.authenticate());
-    router.post('/oauth2/token',    oauthController.token);
-    router.get('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
-        if (req.session.user) {
-            oauthController.logged(req, res, next)
-        } else {
-            oauthController.log_in(req, res, next)
-        }
-    });
-    router.post('/oauth2/authorize', oauthController.response_type_required, function (req, res, next) {
-        if (req.session.user) {
-            oauthController.authorize(req, res, next)
-        } else {
-            oauthController.authenticate_user(req, res, next)
-        }
-    });
-
-
-    // Routes to API
-    router.get('/applications', apiController.authenticate.check_token, apiController.application.info);
-
-    
-    return router
-}
 
 module.exports = router;

@@ -127,6 +127,27 @@ exports.reset_password_pep = function(req, res, next) {
 	});
 }
 
+// MW to check pep proxy authentication
+exports.authenticate = function(id, password, callback) {
+
+    debug("--> authenticate")
+
+    // Search the user through the email
+    models.pep_proxy.find({
+        where: {
+            id: id
+        }
+    }).then(function(pep_proxy) {
+        if (pep_proxy) {
+            // Verify password 
+            if(pep_proxy.verifyPassword(password)){
+                callback(null, pep_proxy);
+            } else { callback(new Error('invalid')); }   
+        } else { callback(new Error('pep_proxy_not_found')); }
+    }).catch(function(error){ callback(error) });
+};
+
+
 // Funtion to see if request is via AJAX or Browser and depending on this, send a request
 function send_response(req, res, response, url) {
 	if (req.xhr) {

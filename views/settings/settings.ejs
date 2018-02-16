@@ -13,7 +13,7 @@
             </a>
             <div id="collapse-0" class="panel-collapse collapse change_password" style="height: 0px;">
                 <div class="panel-body">
-                    <form accept-charset="UTF-8" action="/settings/password/" method="post" class="ng-pristine ng-valid">
+                    <form accept-charset="UTF-8" action="/idm/settings/password/" method="post" class="ng-pristine ng-valid">
                         <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                         <fieldset>
                             <legend></legend>
@@ -49,7 +49,7 @@
             </a>
             <div id="collapse-1" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
-                    <form accept-charset="UTF-8" action="/settings/email/" method="post" class="ng-pristine ng-valid">
+                    <form accept-charset="UTF-8" action="/idm/settings/email/" method="post" class="ng-pristine ng-valid">
                         <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                         <fieldset>
                             <legend></legend>
@@ -79,7 +79,7 @@
             </a>
             <div id="collapse-2" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
-                    <form accept-charset="UTF-8" action="/settings/twofactor/" id="two_factor_form" method="post" class="ng-pristine ng-valid">
+                    <form accept-charset="UTF-8" action="/idm/settings/twofactor/" id="two_factor_form" method="post" class="ng-pristine ng-valid">
                         <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                         <p>You have this option <b>disabled</b>.</p>
                         <p>We highly recommend you enable it, since it provides a higher level of security to access your account.</p>
@@ -138,7 +138,7 @@
                             e.preventDefault();
                             $.ajax({
                                 type: "POST",
-                                url: "/settings/twofactor/disable/",
+                                url: "/idm/settings/twofactor/disable/",
                                 dataType: 'html',
                                 beforeSend: beforeSend,
                                 complete: complete,

@@ -49,7 +49,15 @@ cd fiware-idm/
 npm install
 </pre>
 
-- Duplicate config.template in config.js. 
+- Duplicate config.template in config.js and configure data base access credentials:
+
+<pre>
+config.database = {};
+config.database.host = 'localhost';       // default: 'localhost'
+config.database.name = 'idm';             // default: 'idm'
+config.database.user = 'root';            // default: 'root'
+config.database.password = 'idm';         // default: 'idm'
+</pre>
 
 - Generate certificates OpenSSL for HTTPS
 

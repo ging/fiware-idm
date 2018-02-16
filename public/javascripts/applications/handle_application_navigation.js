@@ -77,7 +77,7 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-			var url = '/filters/applications?role=provider&page='+num
+			var url = '/idm/applications/filtered?role=provider&page='+num
 		    $.get(url, function(data, status) {
 
 				var table = $('#providing_table_content')
@@ -107,7 +107,7 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-		    var url = '/filters/applications?role=purchaser&page='+num
+		    var url = '/idm/applications/filtered?role=purchaser&page='+num
 		    $.get(url, function(data, status) {
 				var table = $('#purchased_table_content')
 
@@ -136,7 +136,7 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-		    var url = '/filters/applications?role=other&page='+num
+		    var url = '/idm/applications/filtered?role=other&page='+num
 		    $.get(url, function(data, status) {
 				var table = $('#authorized_table_content')
 

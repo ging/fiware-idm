@@ -15,8 +15,9 @@ var sequelize = new Sequelize(config.name, config.user, config.password,
 
 var debug = require('debug')('idm:api-authenticate');
 
-var userController = require('../../controllers/user_controller.js');
-var pepProxyController = require('../../controllers/pep_proxy_controller.js');
+// ESTA AUTENTICACION SE DEBERIA AHCER CON LOS CONTROLLERS DE LA API Y NO LOS DE LA WEB
+var userController = require('../../controllers/web/users.js');
+var pepProxyController = require('../../controllers/web/pep_proxies.js');
 
 
 // Middleware to see if the token correspond to user

@@ -15,9 +15,10 @@ var forceSsl = require('express-force-ssl');
 var config = require ('./config.js').session;
 
 // Create vars that store routes
-var index = require('./routes/index');
-var api = require('./routes/api');
-var oauth2 = require('./routes/oauth2');
+//var index = require('./routes/index');
+var index = require('./routes/web/index');
+var api = require('./routes/api/index');
+var oauth2 = require('./routes/oauth2/oauth2');
 
 var app = express();
 
@@ -35,8 +36,8 @@ app.disable('x-powered-by');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
-// Set routes for api and oauth2
-app.use('/', api);
+// Set routes for api
+app.use('/v1', api);
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

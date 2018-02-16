@@ -77,7 +77,7 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-			var url = '/filters/organizations?role=owner&page='+num
+			var url = '/idm/organizations/filtered?role=owner&page='+num
 		    $.get(url, function(data, status) {
 
 				var table = $('#owned_organizations_content')
@@ -107,7 +107,7 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-		    var url = '/filters/organizations?role=member&page='+num
+		    var url = '/idm/organizations/filtered?role=member&page='+num
 		    $.get(url, function(data, status) {
 				var table = $('#member_organizations_content')
 

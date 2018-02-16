@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	var url = '/idm_admin/admin_users'
+	var url = '/idm/admins/users'
 	load_admins(url)
 
 	function load_admins(url, panel) {

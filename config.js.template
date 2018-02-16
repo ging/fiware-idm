@@ -3,16 +3,16 @@ var config = {};
 config.host = 'http://localhost:3000';
 
 config.session = {
-	secret: 'nodejs_idm'	// Must be change
+	secret: 'nodejs_idm'	// Must be changed
 }
 
 config.password_encryption = {
-	key: 'nodejs_idm'		// Must be change
+	key: 'nodejs_idm'		// Must be changed
 }
 
 config.authzforce = {
 	enabled: false,
-	host: localhost,
+	host: '',
 	port: 8080
 }
 

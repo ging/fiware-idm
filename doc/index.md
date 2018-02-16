@@ -51,16 +51,16 @@ npm install
 
 - Duplicate config.template in config.js. 
 
-- Generate certificates for https
+- Generate certificates OpenSSL for HTTPS
 
 <pre>
-./commands_to_generate_keys.sh
+./generate_openssl_keys.sh
 </pre>
 
-- Start server
+- Start server with admin rights (server listens in 443 port by default).
 
 <pre>
-npm start
+sudo npm start
 </pre>
 
 <a name="def-docker"></a>

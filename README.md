@@ -11,6 +11,10 @@ git clone https://github.com/ging/mesias.git
 npm install
 cp config.js.template config.js
 
+// run migrations
+npm run-script migrate_db -- --url mysql://user:pass@host/idm
+
+
 Generate certificates for https
 ./commands_to_generate_keys.sh
 ```

@@ -61,22 +61,6 @@ module.exports = function(sequelize, DataTypes) {
         }, enabled: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
-        }, activation_key: {
-            type: DataTypes.STRING
-        }, activation_expires: {
-            type: DataTypes.DATE
-        }, reset_key : {
-            type: DataTypes.STRING,
-            defaultValue: undefined
-        }, reset_expires : {
-            type: DataTypes.DATE,
-            defaultValue: undefined
-        }, verification_key : {
-            type: DataTypes.STRING,
-            defaultValue: undefined
-        }, verification_expires : {
-            type: DataTypes.DATE,
-            defaultValue: undefined
         }, admin: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

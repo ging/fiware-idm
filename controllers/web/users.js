@@ -454,9 +454,7 @@ exports.create = function(req, res, next) {
             email: req.body.email,
             password: req.body.password1,
             date_password: new Date((new Date()).getTime()),
-            enabled: false,
-            activation_key: Math.random().toString(36).substr(2),
-            activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
+            enabled: false
         });
 
         // If password(again) is empty push an error into the array
@@ -474,49 +472,56 @@ exports.create = function(req, res, next) {
                 // Save the row in the database
                 user.save().then(function() {
 
-                    if (req.body.use_gravatar) {
-                        var url = gravatar.url(user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
+                    models.user_registration_profile.create({ 
+                        user_email: user.email,
+                        activation_key: Math.random().toString(36).substr(2),
+                        activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
+                    }).then(function(user_registration) {
+                        if (req.body.use_gravatar) {
+                            var url = gravatar.url(user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
 
-                        // Send an http request to gravatar
-                        https.get(url, function(response) {
-                            response.setEncoding('utf-8');
-                            debug('  --> Request to gravatar status: ' + response.statusCode)
-                            
-                            // If exists set parameter in req.user
-                            if (response.statusCode === 200) {
-                                models.user.update(
-                                    { gravatar: true },
-                                    {
-                                        fields: ['gravatar'],
-                                        where: {id: user.id}
-                                    }
-                                ).then(function() {
-                                    debug('  --> Gravatar set')
-                                }).catch(function(error) {
-                                    debug('  -> error' + error)
-                                })
-                            }
-                        }).on('error', function(e) {
-                            debug('Failed connecting to gravatar: ' + e);
-                        });
-                    }
+                            // Send an http request to gravatar
+                            https.get(url, function(response) {
+                                response.setEncoding('utf-8');
+                                debug('  --> Request to gravatar status: ' + response.statusCode)
+                                
+                                // If exists set parameter in req.user
+                                if (response.statusCode === 200) {
+                                    models.user.update(
+                                        { gravatar: true },
+                                        {
+                                            fields: ['gravatar'],
+                                            where: {id: user.id}
+                                        }
+                                    ).then(function() {
+                                        debug('  --> Gravatar set')
+                                    }).catch(function(error) {
+                                        debug('  -> error' + error)
+                                    })
+                                }
+                            }).on('error', function(e) {
+                                debug('Failed connecting to gravatar: ' + e);
+                            });
+                        }
 
-                    
-                    // Send an email to the user
-                    var link = config.host + '/activate?activation_key=' + user.activation_key + '&email=' + user.email;
+                        
+                        // Send an email to the user
+                        var link = config.host + '/activate?activation_key=' + user_registration.activation_key + '&email=' + user.email;
 
-                    var mail_data = {
-                        name: user.username,
-                        link: link
-                    };
+                        var mail_data = {
+                            name: user.username,
+                            link: link
+                        };
 
-                    var subject = 'Welcome to FIWARE';
+                        var subject = 'Welcome to FIWARE';
 
-                    // Send an email message to the user
-                    email.send('activate', subject, user.email, mail_data)
+                        // Send an email message to the user
+                        email.send('activate', subject, user.email, mail_data)
 
-                    res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
-                    res.render('index', { errors: [], csrfToken: req.csrfToken() });
+                        res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
+                        res.render('index', { errors: [], csrfToken: req.csrfToken() });
+                    })
+
                 }); 
             }
 
@@ -536,19 +541,23 @@ exports.activate = function(req, res, next) {
     debug("--> activate")
 
     // Search the user through the id
-    models.user.find({
+    models.user_registration_profile.find({
         where: {
-            email: req.query.email
-        }
-    }).then(function(user) {
+            user_email: req.query.email
+        },
+        include: [ models.user ]
+    }).then(function(user_registration_profile) {
+
+        var user = user_registration_profile.User
+
         if (user) {
 
             // Activate the user if is not or if the actual date not exceeds the expiration date
             if (user.enabled) {
                 res.locals.message = {text: 'User already activated', type: 'warning'};
                 res.render('index', { errors: [], csrfToken: req.csrfToken() });
-            } else if (user.activation_key === req.query.activation_key) {
-                if ((new Date()).getTime() > user.activation_expires.getTime()) {
+            } else if (user_registration_profile.activation_key === req.query.activation_key) {
+                if ((new Date()).getTime() > user_registration_profile.activation_expires.getTime()) {
                     res.locals.message = {text: 'Error activating user', type: 'danger'};
                     res.render('index', { errors: [], csrfToken: req.csrfToken() });
                 } else {
@@ -565,7 +574,7 @@ exports.activate = function(req, res, next) {
         }
         
 
-    }).catch(function(error){ callback(error) });
+    }).catch(function(error){ next(error) });
 }
 
 // GET /password/request -- Render a view with instructions to reset password
@@ -606,12 +615,13 @@ exports.password_send_email = function(req, res, callback) {
                 var reset_key = Math.random().toString(36).substr(2);
                 var reset_expires = new Date((new Date()).getTime() + 1000*3600*24)
 
-                models.user.update(
+
+                models.user_registration_profile.update(
                     { reset_key: reset_key,
                       reset_expires: reset_expires 
                 }, {
                     fields: ['reset_key', 'reset_expires'],
-                    where: { id: user.id}
+                    where: { user_email: user.email}
                 }).then(function() {
                     
                     // Send an email to the user
@@ -672,26 +682,25 @@ exports.change_password = function(req, res, next) {
     }
 
     // Search the user through the email
-    models.user.find({
+    models.user_registration_profile.find({
         where: {
-            email: req.query.email
-        }
-    }).then(function(user) {
+            user_email: req.query.email
+        },
+        include: [ models.user ]
+    }).then(function(user_registration_profile) {
+
+        var user = user_registration_profile.User
         if (user) {
-            if (user.reset_key === req.query.reset_key) {
-                if ((new Date()).getTime() > user.reset_expires.getTime()) {
+            if (user_registration_profile.reset_key === req.query.reset_key) {
+                if ((new Date()).getTime() > user_registration_profile.reset_expires.getTime()) {
                     res.locals.message = {text: 'Error reseting user password', type: 'danger'};
                     res.render('index', { errors: [], csrfToken: req.csrfToken() });
                 } else if (errors.length > 0) {
                     res.render('auth/password_reset', { key: req.query.reset_key, email: req.query.email, errors: errors, csrfToken: req.csrfToken() })
                 } else {
-                    models.user.update({ 
-                        password: req.body.password1,
-                        date_password: new Date((new Date()).getTime())
-                    },{
-                        fields: ['password', 'date_password'],
-                        where: { email: user.email}
-                    }).then(function() {
+                    user.password = req.body.password1
+                    user.date_password = new Date((new Date()).getTime())
+                    user.save().then(function() {
                         req.session.message = { text: ' Password successfully changed', type: 'success'}
                         res.redirect('/auth/login')
                     }).catch(function(error) {
@@ -736,12 +745,12 @@ exports.resend_confirmation = function(req, res, next) {
                     var activation_key = Math.random().toString(36).substr(2);
                     var activation_expires = new Date((new Date()).getTime() + 1000*3600*24)
 
-                    models.user.update(
+                    models.user_registration_profile.update(
                         { activation_key: activation_key,
                           activation_expires: activation_expires 
                     }, {
                         fields: ['activation_key', 'activation_expires'],
-                        where: { id: user.id}
+                        where: { user_email: user.email}
                     }).then(function(updated) {
 
                         // Send an email to the user

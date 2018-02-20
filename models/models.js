@@ -32,6 +32,9 @@ var scope = sequelize.import(path.join(__dirname,'oauth2/oauth_scope'));
 // Import user table
 var user = sequelize.import(path.join(__dirname,'user'));
 
+// Import user registration profile table
+var user_registration_profile = sequelize.import(path.join(__dirname,'user_registration_profile'));
+
 // Import organization table
 var organization = sequelize.import(path.join(__dirname,'organization'));
 
@@ -62,6 +65,8 @@ var authzforce = sequelize.import(path.join(__dirname,'authzforce'));
 // Import auth token table
 var auth_token = sequelize.import(path.join(__dirname,'auth_token'));
 
+// Relation between users and their parameters to create or change an account
+user_registration_profile.belongsTo(user, {foreignKey: 'user_email', targetKey: 'email', onDelete: 'cascade'})
 
 // Relation between users and auth tokens
 auth_token.belongsTo(user, {onDelete: 'cascade'});
@@ -114,7 +119,8 @@ user_organization.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 
 user_organization.belongsTo(organization, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Exportar tablas
-exports.user = user; 
+exports.user = user;
+exports.user_registration_profile = user_registration_profile;
 exports.organization = organization;
 exports.user_organization = user_organization;
 exports.role = role;

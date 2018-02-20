@@ -35,7 +35,6 @@ Welcome to the main repository for the UPM's implementation of the FIWARE Identi
 	+ nodejs 
 	+ npm
 	+ mysql-server
-	Note: Both can be installed from (http://nodejs.org/download/)
 
 - Clone Proxy repository:
 
@@ -50,18 +49,26 @@ cd fiware-idm/
 npm install
 </pre>
 
-- Duplicate config.template in config.js and configure app host there. 
-
-- Generate certificates for https
+- Duplicate config.template in config.js and configure data base access credentials:
 
 <pre>
-./commands_to_generate_keys.sh
+config.database = {};
+config.database.host = 'localhost';       // default: 'localhost'
+config.database.name = 'idm';             // default: 'idm'
+config.database.user = 'root';            // default: 'root'
+config.database.password = 'idm';         // default: 'idm'
 </pre>
 
-- Start server
+- Generate certificates OpenSSL for HTTPS
 
 <pre>
-npm start
+./generate_openssl_keys.sh
+</pre>
+
+- Start server with admin rights (server listens in 443 port by default).
+
+<pre>
+sudo npm start
 </pre>
 
 <a name="def-docker"></a>
@@ -69,8 +76,8 @@ npm start
 
 We also provide a Docker image to facilitate you the building of this GE.
 
-- [Here](https://github.com/ging/fiware-pep-proxy/tree/master/extras/docker) you will find the Dockerfile and the documentation explaining how to use it.
-- In [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) you will find the public image.
+- [Here](https://github.com/ging/fiware-idm/tree/master/extras/docker) you will find the Dockerfile and the documentation explaining how to use it.
+- In [Docker Hub](https://hub.docker.com/r/fiware/idm/) you will find the public image.
 
 <a name="def-api"></a>
 ## API Overview

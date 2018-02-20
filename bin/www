@@ -5,41 +5,43 @@
  */
 
 var app = require('../app');
+var config = require('../config')
 var debug = require('debug')('idm:server');
 var fs = require("fs");
 var http = require('http');
 var https = require("https");
 
-var options = {
-    key: fs.readFileSync('certs/idm-2018-key.pem').toString(),
-    cert: fs.readFileSync('certs/idm-2018-cert.pem').toString()
-};
+if (config.https.enabled) {
+  var options = {
+      key: fs.readFileSync(config.https.key_file).toString(),
+      cert: fs.readFileSync(config.https.cert_file).toString()
+  };
+}
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
 /**
- * Create HTTP server.
+ * Create HTTP or HTTPS server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer(app); 
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
+server.listen(config.port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-var serverSecure = https.createServer(options, app);
-serverSecure.listen(443, function() {
-  debug('Express server listening on port ' + server.address().port);
-});
+if (config.https.enabled) {
+  var serverSecure = https.createServer(options, app);
+
+  serverSecure.listen(config.https.port, function() {
+    debug('Listening on port ' + serverSecure.address().port);
+  });
+
+}
+ 
+
 
 /**
  * Normalize a port into a number, string, or false.

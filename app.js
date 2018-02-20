@@ -12,10 +12,9 @@ var sassMiddleware = require('node-sass-middleware');
 var forceSsl = require('express-force-ssl');
 
 // Obtain secret from config file
-var config = require ('./config.js').session;
+var config = require ('./config.js');
 
 // Create vars that store routes
-//var index = require('./routes/index');
 var index = require('./routes/web/index');
 var api = require('./routes/api/index');
 var oauth2 = require('./routes/oauth2/oauth2');
@@ -38,15 +37,16 @@ app.use(bodyParser.urlencoded());
 
 // Set routes for api
 app.use('/v1', api);
+app.use('/v3', api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(partials());
-app.use(cookieParser(config.secret));
+app.use(cookieParser(config.session.secret));
 app.use(session({
-  secret: config.secret
+  secret: config.session.secret
 }));
-app.use(forceSsl);
+
 
 // Middleware to convert sass files to css
 app.use(sassMiddleware({
@@ -59,6 +59,7 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
+
 
 // Helpers dinamicos:
 app.use(function(req, res, next) {
@@ -77,27 +78,16 @@ app.use(function(req, res, next) {
   next();
 });
 
-// Set routes for browser
-app.use('/', index);
+
 // Set routes for oauth2
 app.use('/oauth2', oauth2);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// Error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error', {errors: []});
-});
+// Force HTTPS connection to web server
+if (config.https.enabled) {
+  app.use('/', forceSsl, index);
+} else {
+  app.use('/', index);
+}
 
 module.exports = app;
 

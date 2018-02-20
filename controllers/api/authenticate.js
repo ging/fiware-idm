@@ -74,7 +74,41 @@ function check_validate_token_request(req) {
 	})
 }
 
-// POST /auth/tokens -- Create a token
+
+// GET /v1/auth/tokens -- Get info from a token
+var info_token = function(req, res, next) {
+	
+	debug(' --> info_token')
+
+	check_info_token_request(req).then(function(tokens) {
+		res.status(201).json(tokens)
+	}).catch(function(error) {
+		debug('Error: ' + error)
+		if (!error.error) {
+			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+		}
+		res.status(error.error.code).json(error)
+	})
+}
+
+// Function to check if parameters exist in request
+function check_info_token_request(req) {
+
+	return new Promise(function(resolve, reject) {
+		switch(true) {
+			case (!req.headers['x-subject-token']):
+				reject({ error: {message: 'Expecting to find X-Subject-token in requests', code: 400, title: 'Bad Request'}})
+				break;
+			case (!req.headers['x-auth-token']):
+				reject({ error: {message: 'Expecting to find X-Auth-token in requests', code: 400, title: 'Bad Request'}})
+				break;
+			default:
+				resolve({auth: req.headers['x-auth-token'], subject: req.headers['x-subject-token']})
+		}
+	})
+}
+
+// POST /v1/auth/tokens -- Create a token
 var create_token = function(req, res, next) {
 	
 	debug(' --> create_token')
@@ -174,7 +208,6 @@ function search_user(req) {
 					 SELECT id, 'pep_proxy' as Source FROM pep_proxy WHERE id=:email;`
 
 		sequelize.query(query, {replacements: {email: user.name}, type: Sequelize.QueryTypes.SELECT}).then(function(row){
-			debug(row.length)
 			if (row.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {
@@ -253,7 +286,7 @@ function search_token(req) {
 
 // Function to search token in database
 function authenticate_token(token_id) {
-	// HABRA UQE METERLE AQUI EL INCLUDE DE PEP PROXY Y DE USER
+	
 	return models.auth_token.findOne({
 		where: { access_token: token_id }
 	}).then(function(token_row) {		
@@ -264,7 +297,7 @@ function authenticate_token(token_id) {
 			var token_owner = (token_row.user_id) ? {user_id: token_row.user_id} : {pep_proxy_id: token_row.pep_proxy_id} 
 			return Promise.resolve(token_owner)
 		} else {
-			return Promise.reject({ error: {message: 'Token not found', code: 404, title: 'Unauthorized'}})
+			return Promise.reject({ error: {message: 'Token not found', code: 404, title: 'Not Found'}})
 		}
 	}).catch(function(error) {
 		return Promise.reject(error)
@@ -289,5 +322,6 @@ function arrayContainsArray (superset, subset) {
 module.exports = {
 	validate_token: validate_token,
 	create_token: create_token,
+	info_token: info_token,
 	is_user: is_user
 }

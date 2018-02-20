@@ -1,7 +1,7 @@
 var models = require('../../models/models.js');
 
 // Authzforce module
-var config = require ('../../config.js').authzforce;
+var config_authzforce = require ('../../config.js').authzforce;
 var authzforce_controller = require('./authzforces');
 
 var Sequelize = require('sequelize');
@@ -191,7 +191,7 @@ exports.role_permissions_assign = function(req, res) {
 
 			// Inset values into role_permission table
 			models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
-				if (config.enabled) {
+				if (config_authzforce.enabled) {
 					authzforce_controller.submit_authzforce_policies(req, res, submit_assignment)
 				} else {
 					// Send message of success of assign permissions to roles

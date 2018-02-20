@@ -114,7 +114,6 @@ user_organization.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 
 user_organization.belongsTo(organization, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Exportar tablas
-exports.oauth_client = oauth_client; 
 exports.user = user; 
 exports.organization = organization;
 exports.user_organization = user_organization;

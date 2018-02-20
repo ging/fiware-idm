@@ -1,27 +1,41 @@
 var config = {};
 
 config.host = 'http://localhost:3000';
+config.port = 3000
 
+// HTTPS enable
+config.https = {
+    enabled: false,
+    cert_file: 'certs/idm-2018-cert.pem',
+    key_file: 'certs/idm-2018-key.pem',
+    port: 443
+};
+
+// Secret for user sessions in web
 config.session = {
-	secret: 'nodejs_idm'	// Must be change
+	secret: 'nodejs_idm'	// Must be changed
 }
 
+// Key to encrypt user passwords
 config.password_encryption = {
-	key: 'nodejs_idm'		// Must be change
+	key: 'nodejs_idm'		// Must be changed
 }
 
+// Enable authzforce
 config.authzforce = {
 	enabled: false,
-	host: localhost,
+	host: '',
 	port: 8080
 }
 
+// Database info
 config.database = {};
 config.database.host = 'localhost';       // default: 'localhost'
 config.database.name = 'idm';             // default: 'idm'
 config.database.user = 'root';            // default: 'root'
 config.database.password = 'idm';         // default: 'idm'
 
+// Email configuration
 config.mail = {
     host: '{email_host}',
     port: 25,

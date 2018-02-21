@@ -63,93 +63,149 @@ exports.load_application = function(req, res, next, applicationId) {
 exports.index = function(req, res) {
 
 	debug("--> index");
-	var role = 'provider'
-	if (req.query.tab === 'panel_tabs__purchased_tab') {
-		role = 'purchaser'
-	} else if (req.query.tab === 'panel_tabs__authorized_tab') {
-		role = { [Op.notIn]: ['provider', 'purchaser'] }
-	} 
 
-	// Search applications in which the user is authorized
-	models.role_assignment.findAndCountAll({
-		where: { user_id: req.session.user.id,
-				 role_id: role },
-		include: [{
-			model: models.oauth_client,
-			attributes: ['id', 'name', 'url', 'image']
-		}],
-		limit: 5
-	}).then(function(result) {
-		var user_applications = result.rows;
-		// Set message to send when rendering view and delete from request
-		if (req.session.message) {
-			res.locals.message = req.session.message;
-			delete req.session.message
-		}
-
-		var applications = []
-		// If user has applications, set image from file system and obtain info from each application
-		if (user_applications.length > 0) {
-			
-			user_applications.forEach(function(app) {
-				if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
-					if (app.OauthClient.image == 'default') {
-						app.OauthClient.image = '/img/logos/medium/app.png'
-					} else {
-						app.OauthClient.image = '/img/applications/'+app.OauthClient.image
-					}
-					applications.push(app.OauthClient)
-				} 
-			});
-		}
-		if (req.xhr) {
-			res.send({applications: applications, number_applications: result.count})
-		} else {
-			res.render('applications/index', { applications: applications, number_applications: result.count, errors: [], csrfToken: req.csrfToken()});			
-		}
-	}).catch(function(error) { next(error); });
-};
-
-// GET /filters/applications -- Filter applications by page
-exports.filter = function(req, res) {
-	
-	debug("--> index");
-	
-	var role = req.query.role;
-	if (req.query.role === 'other') {
-		role = { [Op.notIn]: ['provider', 'purchaser'] }
+	if (req.session.message) {
+		res.locals.message = req.session.message;
+		delete req.session.message
 	}
 
-	// Search applications in which the user is authorized
-	models.role_assignment.findAll({
-		where: { user_id: req.session.user.id,
-				 role_id: role },
-		include: [{
-			model: models.oauth_client,
-			attributes: ['id', 'name', 'url', 'image']
-		}],
-		offset: (req.query.page - 1)*5,
-		limit: 5
-	}).then(function(user_applications) {
+	res.render('applications/index', { applications: [], number_applications: 0, errors: [], csrfToken: req.csrfToken()});
+};
 
-		var applications = []
+// GET /idm/applications/filtered_user -- Filter applications of user by page
+exports.filter_user = function(req, res, next) {
+	
+	debug("--> filter_user");
+	
+	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
+
+	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
+				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id WHERE user_id=:user_id AND role_id=:role) AS count
+				FROM role_assignment 
+				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id 
+				WHERE user_id=:user_id AND role_id=:role
+				LIMIT 5
+				OFFSET :offset`
+
+	if (req.query.role === 'other') {
+		query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
+				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id WHERE user_id=:user_id AND role_id NOT IN ('provider', 'purchaser')) AS count
+				FROM role_assignment 
+				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id 
+				WHERE user_id=:user_id AND role_id NOT IN ('provider', 'purchaser')
+				LIMIT 5
+				OFFSET :offset`
+	}
+
+	sequelize.query(query, {replacements: {user_id: req.session.user.id, role: req.query.role, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(user_applications){
+
+		var count = 0
 		// If user has applications, set image from file system and obtain info from each application
 		if (user_applications.length > 0) {
-			
+			count = user_applications[0].count
 			user_applications.forEach(function(app) {
-				if (applications.length == 0 || !applications.some(elem => (elem.id == app.OauthClient.id))) {
-					if (app.OauthClient.image == 'default') {
-						app.OauthClient.image = '/img/logos/medium/app.png'
-					} else {
-						app.OauthClient.image = '/img/applications/'+app.OauthClient.image
-					}
-					applications.push(app.OauthClient)
-				} 
+				if (app.image == 'default') {
+					app.image = '/img/logos/medium/app.png'
+				} else {
+					app.image = '/img/applications/'+app.image
+				}
 			});
 		}
 
-		res.send({applications: applications})
-	}).catch(function(error) { next(error); });
+		res.send({applications: user_applications, number_applications: count})
+
+    }).catch(function(error) {
+    	debug('Error get users authorized: ' + error)
+		var message = {text: ' Unable to find user applications',type: 'danger'}
+		send_response(req, res, message, '/idm/applications')
+    });
+}
+
+// GET /idm/applications/filtered_organization -- Filter applications of user organization by page
+exports.filter_organization = function(req, res) {
+	
+	debug("--> filter_organization");
+
+	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
+
+	var query = `SELECT DISTINCT role_assignment.oauth_client_id, organization.name AS organization_name, oauth_client.name, oauth_client.image, oauth_client.url, 
+				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id IN (:organization_id) AND role_id=:role) AS count
+				FROM role_assignment 
+				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id
+				RIGHT JOIN (SELECT * FROM organization) AS organization
+				ON role_assignment.organization_id=organization.id
+				WHERE organization_id IN(:organization_id) AND role_id=:role
+				LIMIT 5
+				OFFSET :offset`
+
+	if (req.query.role === 'other') {
+		query = `SELECT DISTINCT role_assignment.oauth_client_id, organization.name AS organization_name, oauth_client.name, oauth_client.image, oauth_client.url, 
+				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id IN(:organization_id) AND role_id NOT IN ('provider', 'purchaser')) AS count
+				FROM role_assignment 
+				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
+				ON role_assignment.oauth_client_id=oauth_client.id
+				RIGHT JOIN (SELECT * FROM organization) AS organization
+				ON role_assignment.organization_id=organization.id
+				WHERE organization_id IN(:organization_id) AND role_id NOT IN ('provider', 'purchaser')
+				LIMIT 5
+				OFFSET :offset`
+	}
+
+	var search_organizations = models.user_organization.findAll({ 
+		where: { user_id: req.session.user.id },
+		include: [{
+			model: models.organization,
+			attributes: ['id']
+		}]
+	})
+
+	var search_applications = search_organizations.then(function(organizations) {
+		debug("--------------------------------------")
+		debug(organizations)
+		debug(organizations.map(elem => elem.organization_id))
+		debug("--------------------------------------")
+		return sequelize.query(	query, { 
+									replacements: {	
+										organization_id: (organizations.length > 0) ? organizations.map(elem => elem.organization_id) : [''], 
+										role: req.query.role, 
+										offset: offset 
+									}, 
+									type: Sequelize.QueryTypes.SELECT})
+	}) 
+
+	search_applications.then(function(org_applications){
+		
+		debug("///////////////////////////////////////")
+		debug(org_applications)
+		debug("///////////////////////////////////////")
+
+		var count = 0
+		// If user has applications, set image from file system and obtain info from each application
+		if (org_applications.length > 0) {
+			count = org_applications[0].count
+			org_applications.forEach(function(app) {
+				if (app.image == 'default') {
+					app.image = '/img/logos/medium/app.png'
+				} else {
+					app.image = '/img/applications/'+app.image
+				}
+			});
+		}
+
+		res.send({applications: org_applications, number_applications: count})
+
+    }).catch(function(error) {
+    	debug('Error get users authorized: ' + error)
+		var message = {text: ' Unable to find user applications',type: 'danger'}
+		send_response(req, res, message, '/idm/applications')
+    });
 }
 
 // GET /idm/applications/:applicationId -- Show info about an application

@@ -4,32 +4,29 @@
 			Applications
 		</h2>
 	</div>
-	<div id="myApplications-table">
+	<h4> User </h4>
+	<div id="user_applications" class="myApplications-table">
 		<div class="panel panel-default tab-group">
 			<div id="header_panel_tabs" class="panel-heading">
-				<div class="tab_group_actions clearfix">
-					<div class="btn-group"> 
-						<a href="/idm/applications/new/" title="Register" class="btn btn-primary">
-							Register
-						</a>
-					</div>
-				</div>
 				<ul id="panel_tabs" class="nav nav-tabs ajax-tabs" data-sticky-tabs="sticky">
 					<li class="active">
-						<a href="?tab=panel_tabs__providing_tab" data-toggle="tab" data-target="#panel_tabs__providing_tab" data-loaded="false">Providing</a>
+						<a href="/idm/applications/filtered_user?role=provider" data-toggle="tab" data-target="#panel_tabs_user_providing_tab" data-loaded="false">Providing</a>
 					</li>
 					<li class="">
-						<a href="?tab=panel_tabs__purchased_tab" data-toggle="tab" data-target="#panel_tabs__purchased_tab" data-loaded="false">Purchased</a>
+						<a href="/idm/applications/filtered_user?role=purchaser" data-toggle="tab" data-target="#panel_tabs_user_purchased_tab" data-loaded="false">Purchased</a>
 					</li>
 					<li class="">
-						<a href="?tab=panel_tabs__authorized_tab" data-toggle="tab" data-target="#panel_tabs__authorized_tab" data-loaded="false">Authorized</a>
+						<a href="/idm/applications/filtered_user?role=other" data-toggle="tab" data-target="#panel_tabs_user_authorized_tab" data-loaded="false">Authorized</a>
+					</li>
+					<li class="" style="float: right;">
+						<a class="register_button" href="/idm/applications/new/">Register</a>
 					</li>
 				</ul>
 				<div id="spinner_panel_tabs" class="tab-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i>
 				</div>
 			</div>
 			<div id="body_panel_tabs" class="panel-body tab-content">
-				<div id="panel_tabs__providing_tab" class="tab-pane active">
+				<div id="panel_tabs_user_providing_tab" class="tab-pane active">
 					<div class=" datatable" id="providing_table" data-pagination-url="/filters/applications" data-application_role="provider" data-pagination-pages="">
 						<div class="list-group" id="providing_table_content">
 							<p class="alert alert-info empty" style="display: none;">You are not provider of any application.</p>	
@@ -41,7 +38,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="panel_tabs__purchased_tab" class="tab-pane">
+				<div id="panel_tabs_user_purchased_tab" class="tab-pane">
 					<div class=" datatable" id="purchased_table" data-pagination-url="/filters/applications" data-application_role="purchaser" data-pagination-pages="">
 						<div class="list-group" id="purchased_table_content">
 							<p class="alert alert-info empty" style="display: none;">You are not purchaser of any application.</p>
@@ -53,7 +50,68 @@
 						</div>
 					</div>
 				</div>
-				<div id="panel_tabs__authorized_tab" class="tab-pane">
+				<div id="panel_tabs_user_authorized_tab" class="tab-pane">
+					<div class=" datatable" id="authorized_table" data-pagination-url="/filters/applications" data-application_role="other" data-pagination-pages="">
+						<div class="list-group" id="authorized_table_content">
+							<p class="alert alert-info empty" style="display: none;">You are not authorized in any application.</p>
+						</div>
+						<div class="panel-footer">
+							<nav id="authorized_table_pagination_container">
+
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<h4> Organizations </h4>
+	<div id="organization_applications" class="myApplications-table">
+		<div class="panel panel-default tab-group">
+			<div id="header_panel_tabs" class="panel-heading">
+				<ul id="panel_tabs" class="nav nav-tabs ajax-tabs" data-sticky-tabs="sticky">
+					<li class="active">
+						<a href="/idm/applications/filtered_organization?role=provider" data-toggle="tab" data-target="#panel_tabs_org_providing_tab" data-loaded="false">Providing</a>
+					</li>
+					<li class="">
+						<a href="/idm/applications/filtered_organization?role=purchaser" data-toggle="tab" data-target="#panel_tabs_org_purchased_tab" data-loaded="false">Purchased</a>
+					</li>
+					<li class="">
+						<a href="/idm/applications/filtered_organization?role=other" data-toggle="tab" data-target="#panel_tabs_org_authorized_tab" data-loaded="false">Authorized</a>
+					</li>
+					<li class="" style="float: right;">
+						<a class="register_button" href="/idm/applications/new/">Register</a>
+					</li>
+				</ul>
+				<div id="spinner_panel_tabs" class="tab-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i>
+				</div>
+			</div>
+			<div id="body_panel_tabs" class="panel-body tab-content">
+				<div id="panel_tabs_org_providing_tab" class="tab-pane active">
+					<div class=" datatable" id="providing_table" data-pagination-url="/filters/applications" data-application_role="provider" data-pagination-pages="">
+						<div class="list-group" id="providing_table_content">
+							<p class="alert alert-info empty" style="display: none;">You are not provider of any application.</p>	
+						</div>
+						<div class="panel-footer">
+							<nav id="providing_table_pagination_container">
+
+							</nav>
+						</div>
+					</div>
+				</div>
+				<div id="panel_tabs_org_purchased_tab" class="tab-pane">
+					<div class=" datatable" id="purchased_table" data-pagination-url="/filters/applications" data-application_role="purchaser" data-pagination-pages="">
+						<div class="list-group" id="purchased_table_content">
+							<p class="alert alert-info empty" style="display: none;">You are not purchaser of any application.</p>
+						</div>
+						<div class="panel-footer">
+							<nav id="purchased_table_pagination_container">
+
+							</nav>
+						</div>
+					</div>
+				</div>
+				<div id="panel_tabs_org_authorized_tab" class="tab-pane">
 					<div class=" datatable" id="authorized_table" data-pagination-url="/filters/applications" data-application_role="other" data-pagination-pages="">
 						<div class="list-group" id="authorized_table_content">
 							<p class="alert alert-info empty" style="display: none;">You are not authorized in any application.</p>
@@ -72,4 +130,5 @@
 
 <%- include ../templates/./applications/./_application_row %>
 
-<script src="/javascripts/applications/handle_application_navigation.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_application_user_navigation.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_application_organization_navigation.js" type="text/javascript"></script>

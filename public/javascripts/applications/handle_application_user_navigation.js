@@ -1,48 +1,49 @@
 $(document).ready(function(){
 
 	// Init some values
-	change_role('?tab=panel_tabs__providing_tab', $('#panel_tabs').find('li:first').find('a:first'))
+	usr_change_role('/idm/applications/filtered_user?role=provider', $('#user_applications').find('#panel_tabs').find('li:first').find('a:first'))
 
-	$('.ajax-tabs').on('click', 'li', function() {
+	$('#user_applications').find('.ajax-tabs').on('click', 'li', function() {
+
 		var panel = $(this).find('a:first')
 		
 		if (panel.attr('data-loaded') === 'false') {
 			
-			$('#spinner_panel_tabs').show()
+			$('#user_applications').find('#spinner_panel_tabs').show()
 
 			var url = panel.attr('href')
-			change_role(url, panel)
+			usr_change_role(url, panel)
 
-			$('#spinner_panel_tabs').hide()
+			$('#user_applications').find('#spinner_panel_tabs').hide()
 		}
 	})
 
-	function change_role(url, panel) {
+	function usr_change_role(url, panel) {
 		$.get(url, function(data, status) {
 			var table;
 
-			if (url.includes('panel_tabs__providing_tab')) {
-				table = $('#providing_table_content')
-				providing_applications(data.number_applications)				
-			} else if (url.includes('panel_tabs__purchased_tab')) {
-				table = $('#purchased_table_content')
-				purchased_applications(data.number_applications)
-			} else if (url.includes('panel_tabs__authorized_tab')) {						
-				table = $('#authorized_table_content')
-				authorized_applications(data.number_applications)
+			if (url.includes('provider')) {
+				table = $('#user_applications').find('#providing_table_content')
+				usr_providing_applications(data.number_applications)				
+			} else if (url.includes('purchaser')) {
+				table = $('#user_applications').find('#purchased_table_content')
+				usr_purchased_applications(data.number_applications)
+			} else if (url.includes('other')) {						
+				table = $('#user_applications').find('#authorized_table_content')
+				usr_authorized_applications(data.number_applications)
 			}
 
-			create_rows(data.applications, table);
+			usr_create_rows(data.applications, table);
 			panel.attr('data-loaded', 'true')
 			
 		})
 	}
 
-	function create_rows(applications, table) {
+	function usr_create_rows(applications, table) {
 		if (applications.length > 0) {
 			for (var i = 0; i < applications.length; i++) {
 				var application_row = $('#application_row_template').html();
-	            application_row = application_row.replace(/application_id/g, applications[i].id);
+	            application_row = application_row.replace(/application_id/g, applications[i].oauth_client_id);
 	            application_row = application_row.replace(/application_image/g, applications[i].image);
 	            application_row = application_row.replace(/application_name/g, htmlEntities(applications[i].name));
 	            application_row = application_row.replace(/application_url/g, htmlEntities(applications[i].url));
@@ -59,9 +60,9 @@ $(document).ready(function(){
 	    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 	}
 
-	function providing_applications(max) {
+	function usr_providing_applications(max) {
 
-		$('#providing_table_pagination_container').bootpag({
+		$('#user_applications').find('#providing_table_pagination_container').bootpag({
 		    total: Math.ceil(max/5),
 		    page: 1,
 		    maxVisible: 5,
@@ -77,21 +78,21 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-			var url = '/idm/applications/filtered?role=provider&page='+num
+			var url = '/idm/applications/filtered_user?role=provider&page='+num
 		    $.get(url, function(data, status) {
 
-				var table = $('#providing_table_content')
+				var table = $('#user_applications').find('#providing_table_content')
 
 				table.empty()
-				create_rows(data.applications, table);
+				usr_create_rows(data.applications, table);
 				
 			})
 		});
 	}
 
-	function purchased_applications(max) {
+	function usr_purchased_applications(max) {
 
-		$('#purchased_table_pagination_container').bootpag({
+		$('#user_applications').find('#purchased_table_pagination_container').bootpag({
 		    total: Math.ceil(max/5),
 		    page: 1,
 		    maxVisible: 5,
@@ -107,20 +108,20 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-		    var url = '/idm/applications/filtered?role=purchaser&page='+num
+		    var url = '/idm/applications/filtered_user?role=purchaser&page='+num
 		    $.get(url, function(data, status) {
-				var table = $('#purchased_table_content')
+				var table = $('#user_applications').find('#purchased_table_content')
 
 				table.empty()
-				create_rows(data.applications, table);
+				usr_create_rows(data.applications, table);
 				
 			})
 		}); 
 	}
 
-	function authorized_applications(max) {
+	function usr_authorized_applications(max) {
 
-		$('#authorized_table_pagination_container').bootpag({
+		$('#user_applications').find('#authorized_table_pagination_container').bootpag({
 		    total: Math.ceil(max/5),
 		    page: 1,
 		    maxVisible: 5,
@@ -136,12 +137,12 @@ $(document).ready(function(){
 		    lastClass: 'last',
 		    firstClass: 'first'
 		}).on("page", function(event, num){
-		    var url = '/idm/applications/filtered?role=other&page='+num
+		    var url = '/idm/applications/filtered_user?role=other&page='+num
 		    $.get(url, function(data, status) {
-				var table = $('#authorized_table_content')
+				var table = $('#user_applications').find('#authorized_table_content')
 
 				table.empty()
-				create_rows(data.applications, table);
+				usr_create_rows(data.applications, table);
 				
 			})
 		});

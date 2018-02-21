@@ -328,3 +328,27 @@
   }
 
 }
+
+.myApplications-table {
+  .panel-heading {
+    .register_button {
+      background-color: #193B6B; 
+      color: white;
+      margin-top: 4px;
+      margin-right: 3px;
+      text-align: center;
+      border: none;
+      border-radius: 3px 3px 3px 3px;
+    }
+
+    .register_button:hover {
+      background-color: #0f2442 !important;
+      border-bottom: 1px;
+    }
+
+  }
+  h4 {
+    display: block;
+    display: inline;
+  }
+}

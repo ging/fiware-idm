@@ -7466,10 +7466,10 @@ ul#perform_filter_available_update_owners_organizations {
   margin-top: 15px; }
 
 #organizations-table .panel-heading,
-#myApplications-table .panel-heading {
+.myApplications-table .panel-heading {
   padding: 0; }
   #organizations-table .panel-heading .nav-tabs,
-  #myApplications-table .panel-heading .nav-tabs {
+  .myApplications-table .panel-heading .nav-tabs {
     margin-bottom: 0;
     border-bottom: 0; }
 
@@ -7743,10 +7743,10 @@ textarea {
       filter: alpha(opacity=100); }
 
 #organizations-table .panel-heading,
-#myApplications-table .panel-heading {
+.myApplications-table .panel-heading {
   padding: 0; }
   #organizations-table .panel-heading .nav-tabs,
-  #myApplications-table .panel-heading .nav-tabs {
+  .myApplications-table .panel-heading .nav-tabs {
     margin-bottom: 0;
     border-bottom: 0; }
 
@@ -11363,6 +11363,23 @@ ul.disabled-list li.active:hover {
       margin-right: 10px;
       font-size: 20px; }
 
+.myApplications-table .panel-heading .register_button {
+  background-color: #193B6B;
+  color: white;
+  margin-top: 4px;
+  margin-right: 3px;
+  text-align: center;
+  border: none;
+  border-radius: 3px 3px 3px 3px; }
+
+.myApplications-table .panel-heading .register_button:hover {
+  background-color: #0f2442 !important;
+  border-bottom: 1px; }
+
+.myApplications-table h4 {
+  display: block;
+  display: inline; }
+
 #detailOrganization header .modal span {
   min-height: 30px;
   display: inline-block; }
@@ -11484,17 +11501,17 @@ p#no_available_update_owners {
     right: 7px;
     padding: 2px 4px; } }
 
-#myApplications-table .panel-body .panel-footer,
+.myApplications-table .panel-body .panel-footer,
 #organizations-table .panel-body .panel-footer {
   clear: both;
   margin: 0 -15px;
   min-height: 45px;
   border-top: none; }
-  #myApplications-table .panel-body .panel-footer ul.pagination,
+  .myApplications-table .panel-body .panel-footer ul.pagination,
   #organizations-table .panel-body .panel-footer ul.pagination {
     float: right;
     margin: 0; }
-    #myApplications-table .panel-body .panel-footer ul.pagination li a,
+    .myApplications-table .panel-body .panel-footer ul.pagination li a,
     #organizations-table .panel-body .panel-footer ul.pagination li a {
       padding: 4px 7px; }
 

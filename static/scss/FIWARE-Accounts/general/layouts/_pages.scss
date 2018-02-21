@@ -139,7 +139,7 @@ ul#perform_filter_available_update_owners_organizations{
   margin-top: 15px;
 }
 #organizations-table,
-#myApplications-table{
+.myApplications-table{
   .panel-heading{
     padding: 0;
     .nav-tabs{ margin-bottom: 0; border-bottom: 0;}
@@ -438,7 +438,7 @@ textarea {
 }
 
 #organizations-table,
-#myApplications-table{
+.myApplications-table{
   .panel-heading{
     padding: 0;
     .nav-tabs{ margin-bottom: 0; border-bottom: 0;}

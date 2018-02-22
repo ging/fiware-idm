@@ -57,22 +57,6 @@ module.exports = {
                 }, enabled: {
                     type: Sequelize.BOOLEAN,
                     defaultValue: false
-                }, activation_key: {
-                    type: Sequelize.STRING
-                }, activation_expires: {
-                    type: Sequelize.DATE
-                }, reset_key : {
-                    type: Sequelize.STRING,
-                    defaultValue: undefined
-                }, reset_expires : {
-                    type: Sequelize.DATE,
-                    defaultValue: undefined
-                }, verification_key : {
-                    type: Sequelize.STRING,
-                    defaultValue: undefined
-                }, verification_expires : {
-                    type: Sequelize.DATE,
-                    defaultValue: undefined
                 }, admin: {
                     type: Sequelize.BOOLEAN,
                     defaultValue: false

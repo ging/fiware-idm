@@ -4,7 +4,7 @@ module.exports = {
     up: function (queryInterface, Sequelize) {
         return queryInterface.createTable('role',
             {
-                 id: {
+                id: {
                     type: Sequelize.UUID,
                     defaultValue: Sequelize.UUIDV4,
                     primaryKey: true
@@ -16,6 +16,12 @@ module.exports = {
                 }, is_internal: {
                     type: Sequelize.BOOLEAN,
                     defaultValue: 0
+                }, oauth_client_id: {
+                    type: Sequelize.UUID,
+                    references: {   
+                        model: 'oauth_client',
+                        key: 'id'
+                    }
                 }
             },
             {

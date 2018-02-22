@@ -11,7 +11,20 @@ module.exports = {
                   unique: true,
                 },
                 expires: Sequelize.DATE,
-                valid: Sequelize.BOOLEAN
+                valid: Sequelize.BOOLEAN,
+                user_id: {
+                    type: Sequelize.UUID,
+                    references: {
+                        model: 'user',
+                        key: 'id'
+                    }
+                }, pep_proxy: {
+                    type: Sequelize.STRING,
+                    references: {
+                        model: 'pep_proxy',
+                        key: 'id'
+                    }
+                }
             },
             {
                 sync: {force: true}

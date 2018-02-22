@@ -11,7 +11,35 @@ module.exports = {
                   unique: true,
                 },
                 expires: Sequelize.DATE,
-                scope: Sequelize.STRING
+                scope: Sequelize.STRING,
+                oauth_client_id: {
+                    type: Sequelize.UUID,
+                    references: {
+                        model: 'oauth_client',
+                        key: 'id'
+                    }
+                },
+                user_id: {
+                    type: Sequelize.UUID,
+                    references: {
+                        model: 'user',
+                        key: 'id'
+                    }
+                },
+                iot: {
+                    type: Sequelize.STRING,
+                    references: {
+                        model: 'iot',
+                        key: 'id'
+                    }
+                },
+                pep_proxy: {
+                    type: Sequelize.STRING,
+                    references: {
+                        model: 'pep_proxy',
+                        key: 'id'
+                    }
+                }
             },
             {
                 sync: {force: true}

@@ -17,6 +17,13 @@ module.exports = {
                       }
                       this.setDataValue('password', encripted);
                   }
+                },
+                oauth_client_id: {
+                    type: Sequelize.UUID,
+                    references: {
+                        model: 'oauth_client',
+                        key: 'id'
+                    }
                 }
             },
             {

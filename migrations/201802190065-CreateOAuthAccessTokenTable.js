@@ -14,7 +14,35 @@ module.exports = {
                 scope: Sequelize.STRING,
                 refresh_token: Sequelize.STRING,
                 valid: Sequelize.BOOLEAN,
-                extra: Sequelize.JSON
+                extra: Sequelize.JSON,
+                oauth_client_id: {
+                    type: Sequelize.UUID,
+                    references: {
+                        model: 'oauth_client',
+                        key: 'id'
+                    }
+                },
+                user_id: {
+                    type: Sequelize.UUID,
+                    references: {
+                        model: 'user',
+                        key: 'id'
+                    }
+                },
+                iot: {
+                    type: Sequelize.STRING,
+                    references: {
+                        model: 'iot',
+                        key: 'id'
+                    }
+                },
+                pep_proxy: {
+                    type: Sequelize.STRING,
+                    references: {
+                        model: 'pep_proxy',
+                        key: 'id'
+                    }
+                }
             },
             {
                 sync: {force: true}

@@ -11,6 +11,13 @@ module.exports = {
                     type: Sequelize.UUID,
                 }, version: {
                     type: Sequelize.INTEGER
+                },
+                oauth_client_id: {
+                    type: Sequelize.UUID,
+                    references: {
+                        model: 'oauth_client',
+                        key: 'id'
+                    }
                 }
             },
             {

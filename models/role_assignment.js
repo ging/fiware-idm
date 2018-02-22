@@ -3,7 +3,13 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
     'Role_Assignment',
-    { authorized: {
+    { 
+    id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4
+    },
+    authorized: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         primaryKey: false

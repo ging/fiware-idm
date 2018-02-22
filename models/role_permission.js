@@ -3,9 +3,16 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
     'Role_Permission',
-    { }, {
-	    tableName: 'role_permission',
-	    timestamps: false,
-	    underscored: true,
-  	});
+    {
+    	id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4
+      }
+    }, {
+      tableName: 'role_permission',
+      timestamps: false,
+      underscored: true,
+    } 
+  );
 }

@@ -69,7 +69,18 @@ exports.index = function(req, res) {
 		delete req.session.message
 	}
 
-	res.render('applications/index', { applications: [], number_applications: 0, errors: [], csrfToken: req.csrfToken()});
+	var search_organizations = models.user_organization.findAll({ 
+		where: { user_id: req.session.user.id },
+		include: [{
+			model: models.organization,
+			attributes: ['id' ,'name']
+		}]
+	}).then(function(organizations) {
+		res.render('applications/index', { organizations: organizations, csrfToken: req.csrfToken()});
+	}).catch(function(error) {
+		debug('Error: ' + error)
+		res.render('applications/index', { organizations: [], csrfToken: req.csrfToken()});
+	})
 };
 
 // GET /idm/applications/filtered_user -- Filter applications of user by page
@@ -132,55 +143,39 @@ exports.filter_organization = function(req, res) {
 
 	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-	var query = `SELECT DISTINCT role_assignment.oauth_client_id, organization.name AS organization_name, oauth_client.name, oauth_client.image, oauth_client.url, 
+	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
 				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id IN (:organization_id) AND role_id=:role) AS count
+				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id=:organization_id AND role_id=:role) AS count
 				FROM role_assignment 
 				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
 				ON role_assignment.oauth_client_id=oauth_client.id
 				RIGHT JOIN (SELECT * FROM organization) AS organization
 				ON role_assignment.organization_id=organization.id
-				WHERE organization_id IN(:organization_id) AND role_id=:role
+				WHERE organization_id=:organization_id AND role_id=:role
 				LIMIT 5
 				OFFSET :offset`
 
 	if (req.query.role === 'other') {
-		query = `SELECT DISTINCT role_assignment.oauth_client_id, organization.name AS organization_name, oauth_client.name, oauth_client.image, oauth_client.url, 
+		query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
 				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id IN(:organization_id) AND role_id NOT IN ('provider', 'purchaser')) AS count
+				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id=:organization_id AND role_id NOT IN ('provider', 'purchaser')) AS count
 				FROM role_assignment 
 				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
 				ON role_assignment.oauth_client_id=oauth_client.id
 				RIGHT JOIN (SELECT * FROM organization) AS organization
 				ON role_assignment.organization_id=organization.id
-				WHERE organization_id IN(:organization_id) AND role_id NOT IN ('provider', 'purchaser')
+				WHERE organization_id=:organization_id AND role_id NOT IN ('provider', 'purchaser')
 				LIMIT 5
 				OFFSET :offset`
 	}
 
-	var search_organizations = models.user_organization.findAll({ 
-		where: { user_id: req.session.user.id },
-		include: [{
-			model: models.organization,
-			attributes: ['id']
-		}]
-	})
-
-	var search_applications = search_organizations.then(function(organizations) {
-		debug("--------------------------------------")
-		debug(organizations)
-		debug(organizations.map(elem => elem.organization_id))
-		debug("--------------------------------------")
-		return sequelize.query(	query, { 
-									replacements: {	
-										organization_id: (organizations.length > 0) ? organizations.map(elem => elem.organization_id) : [''], 
-										role: req.query.role, 
-										offset: offset 
-									}, 
-									type: Sequelize.QueryTypes.SELECT})
-	}) 
-
-	search_applications.then(function(org_applications){
+	sequelize.query(query, { 
+		replacements: {	
+			organization_id: req.query.organization, 
+			role: req.query.role, 
+			offset: offset }, 
+		type: Sequelize.QueryTypes.SELECT
+	}).then(function(org_applications){
 		
 		debug("///////////////////////////////////////")
 		debug(org_applications)

@@ -4,7 +4,7 @@
 			Applications
 		</h2>
 	</div>
-	<h4> User </h4>
+	<h4> <%= session.user.username %>'s apps </h4>
 	<div id="user_applications" class="myApplications-table">
 		<div class="panel panel-default tab-group">
 			<div id="header_panel_tabs" class="panel-heading">
@@ -65,22 +65,33 @@
 			</div>
 		</div>
 	</div>
-	<h4> Organizations </h4>
+	<h4> <%= session.user.username %>'s organizations' apps </h4>
 	<div id="organization_applications" class="myApplications-table">
 		<div class="panel panel-default tab-group">
 			<div id="header_panel_tabs" class="panel-heading">
 				<ul id="panel_tabs" class="nav nav-tabs ajax-tabs" data-sticky-tabs="sticky">
-					<li class="active">
+					<li class="role active">
 						<a href="/idm/applications/filtered_organization?role=provider" data-toggle="tab" data-target="#panel_tabs_org_providing_tab" data-loaded="false">Providing</a>
 					</li>
-					<li class="">
+					<li class="role">
 						<a href="/idm/applications/filtered_organization?role=purchaser" data-toggle="tab" data-target="#panel_tabs_org_purchased_tab" data-loaded="false">Purchased</a>
 					</li>
-					<li class="">
+					<li class="role">
 						<a href="/idm/applications/filtered_organization?role=other" data-toggle="tab" data-target="#panel_tabs_org_authorized_tab" data-loaded="false">Authorized</a>
 					</li>
-					<li class="" style="float: right;">
+					<li id="tab_register_app" class="" style="float: right;">
 						<a class="register_button" href="/idm/applications/new/">Register</a>
+					</li>
+					<li id="tab_select" class="" style="float: right; margin-right: 10px; margin-top: 4px;">
+						 <select class="form-control" id="select_org">
+						 	<% if (organizations.length > 0) { -%>
+							 	<% for (var i = 0; i < organizations.length; i++) { -%>
+				                	<option value="<%= organizations[i].Organization.id %>"><%= organizations[i].Organization.name %></option>  
+				              	<% } -%>  
+						 	<% } else { -%>
+						 		<option disabled selected>No organizations</option>
+						 	<% } -%>
+				          </select>
 					</li>
 				</ul>
 				<div id="spinner_panel_tabs" class="tab-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i>
@@ -90,6 +101,8 @@
 				<div id="panel_tabs_org_providing_tab" class="tab-pane active">
 					<div class=" datatable" id="providing_table" data-pagination-url="/filters/applications" data-application_role="provider" data-pagination-pages="">
 						<div class="list-group" id="providing_table_content">
+						</div>
+						<div class="list-group">
 							<p class="alert alert-info empty" style="display: none;">You are not provider of any application.</p>	
 						</div>
 						<div class="panel-footer">
@@ -102,7 +115,9 @@
 				<div id="panel_tabs_org_purchased_tab" class="tab-pane">
 					<div class=" datatable" id="purchased_table" data-pagination-url="/filters/applications" data-application_role="purchaser" data-pagination-pages="">
 						<div class="list-group" id="purchased_table_content">
-							<p class="alert alert-info empty" style="display: none;">You are not purchaser of any application.</p>
+						</div>
+						<div class="list-group">
+							<p class="alert alert-info empty" style="display: none;">You are not purchaser of any application.</p>	
 						</div>
 						<div class="panel-footer">
 							<nav id="purchased_table_pagination_container">
@@ -114,7 +129,9 @@
 				<div id="panel_tabs_org_authorized_tab" class="tab-pane">
 					<div class=" datatable" id="authorized_table" data-pagination-url="/filters/applications" data-application_role="other" data-pagination-pages="">
 						<div class="list-group" id="authorized_table_content">
-							<p class="alert alert-info empty" style="display: none;">You are not authorized in any application.</p>
+						</div>
+						<div class="list-group">
+							<p class="alert alert-info empty" style="display: none;">You are not authorized in any application.</p>	
 						</div>
 						<div class="panel-footer">
 							<nav id="authorized_table_pagination_container">

@@ -304,7 +304,7 @@ function authenticate_token(token_id) {
 	})
 }
 
-// Function to see if an array contains all elments of the other
+// Function to check if an array contains all elments of the other
 function arrayContainsArray (superset, subset) {
 	
 	if (!Array.isArray(subset)) {

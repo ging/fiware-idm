@@ -11376,6 +11376,10 @@ ul.disabled-list li.active:hover {
   background-color: #0f2442 !important;
   border-bottom: 1px; }
 
+.myApplications-table .panel-heading #select_org {
+  height: 31px;
+  max-width: 140px; }
+
 .myApplications-table h4 {
   display: block;
   display: inline; }

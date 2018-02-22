@@ -2,13 +2,13 @@
 
 module.exports = function(sequelize, DataTypes) {
     var User_Registration_Profile = sequelize.define(
-        'User_Registration_Profile', 
-        { 
+        'User_Registration_Profile',
+        {
             id: {
-                        type: Sequelize.UUID,
+                        type: DataTypes.UUID,
                         primaryKey: true,
-                        defaultValue: Sequelize.UUIDV4
-            }
+                        defaultValue: DataTypes.UUIDV4
+            },
             activation_key: {
                 type: DataTypes.STRING
             }, activation_expires: {
@@ -26,7 +26,6 @@ module.exports = function(sequelize, DataTypes) {
                 type: DataTypes.DATE,
                 defaultValue: undefined
             }
-        }
         }, {
             tableName: 'user_registration_profile',
             timestamps: false,

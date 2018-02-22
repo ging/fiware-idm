@@ -22,8 +22,8 @@
 
 This project is part of [FIWARE](http://fiware.org). You will find more information about this FIWARE GE [here](https://catalogue.fiware.org/enablers/identity-management-keyrock).
 
-- You will find the source code of this project in GitHub [here](https://github.com/ging/fiware-idm)
-- You will find the documentation of this project in Read the Docs [here](http://fiware-idm.readthedocs.org/)
+- You will find the source code of this project in GitHub [here](https://github.com/ging/mesias)
+- You will find the documentation of this project in Read the Docs [here](http://mesias.readthedocs.org/)
 
 Welcome to the main repository for the UPM's implementation of the FIWARE Identity Management Generic Enabler. Thanks to this component and together with PEP Proxy and Authorization PDP GEs, you will add authentication and authorization security to your services and applications.
 
@@ -81,15 +81,18 @@ We also provide a Docker image to facilitate you the building of this GE.
 
 <a name="def-api"></a>
 ## API Overview
+Several resources could be managed through the API like users, applications or organizations.
 
+Finally, one of the main uses of this Generic Enabler is to allow developers to add identity management (authentication and authorization) to their applications based on FIWARE identity. This is posible thanks to [OAuth2](https://oauth.net/2/) protocol.
 
+- [OAuth2 API](http://mesias.readthedocs.org/en/latest/oauth2/
 
 <a name="def-advanced"></a>
 ## Advanced Documentation
 
-- [How to run tests](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
-- [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/)
-- [Installation & Administration Guide](http://fiware-idm.readthedocs.org/en/latest/admin_guide/)
+- [How to run tests](http://mesias.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
+- [User & Programmers Manual](http://mesias.readthedocs.org/en/latest/user_guide/)
+- [Installation & Administration Guide](http://mesias.readthedocs.org/en/latest/admin_guide/)
 
 <a name="def-license"></a>
 ## License

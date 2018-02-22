@@ -176,10 +176,6 @@ exports.filter_organization = function(req, res) {
 			offset: offset }, 
 		type: Sequelize.QueryTypes.SELECT
 	}).then(function(org_applications){
-		
-		debug("///////////////////////////////////////")
-		debug(org_applications)
-		debug("///////////////////////////////////////")
 
 		var count = 0
 		// If user has applications, set image from file system and obtain info from each application

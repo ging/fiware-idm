@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "migrate_local": "./node_modules/.bin/sequelize db:migrate",
-    "seed_local": "./node_modules/.bin/sequelize db:seed:all"
+    "migrate_db": "./node_modules/.bin/sequelize db:migrate",
+    "seed_db": "./node_modules/.bin/sequelize db:seed:all"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
@@ -32,8 +32,8 @@
     "nodemailer": "~4.1.0",
     "nodemailer-smtp-transport": "~2.7.4",
     "oauth2-server": "git+https://github.com/ging/node-oauth2-server",
-    "sequelize": "^4.8.0",
-    "sequelize-cli": "^2.4.0",
+    "sequelize": "^4.22.0",
+    "sequelize-cli": "^4.0.0",
     "serve-favicon": "~2.4.2"
   }
 }

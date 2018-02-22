@@ -392,10 +392,12 @@ exports.create = function(req, res, next) {
 			// Create row in db role_assignment if organization exists
 			var create_row = organizations.then(function(row) {
 				if (row) {
-					return models.role_assignment.create({ 	oauth_client_id: application.id, 
-		    								  				role_id: 'provider', 
-		    								  				organization_id: req.body.provider,
-		    												role_organization: 'owner' })			
+					return models.role_assignment.create({
+						oauth_client_id: application.id, 
+		    		role_id: 'provider', 
+		    		organization_id: req.body.provider,
+		    		role_organization: 'owner'
+		    	})
 				} else {
 					return Promise.reject()
 				}
@@ -409,15 +411,15 @@ exports.create = function(req, res, next) {
 			})
 
 		} else {
-
 			// If application is save in oauth_client_id, create assignment in role_assignment db
 			var assign = save.then(function() {
-				return models.role_assignment.create({ 	oauth_client_id: application.id, 
-	        								  			role_id: 'provider', 
-	        								  			user_id: req.session.user.id})
+				return models.role_assignment.create({
+					oauth_client_id: application.id, 
+	        role_id: 'provider', 
+	        user_id: req.session.user.id
+	      })
 			})
 		}
-
 		Promise.all([save, assign]).then(function(values) {
 			res.redirect('/idm/applications/'+application.id+'/step/avatar');
 		}).catch(function(error){

@@ -34,7 +34,7 @@ Welcome to the main repository for the UPM's implementation of the FIWARE Identi
 
 	+ nodejs 
 	+ npm
-	+ mysql-server
+	+ mysql-server (^5.7)
 
 - Clone Proxy repository:
 

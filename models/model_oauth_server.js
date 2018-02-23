@@ -1,6 +1,7 @@
 // Model to create Oauth2 server
 var models = require('./models.js');
 var _ = require('lodash');
+var debug = require('debug')('idm:oauth2-model_oauth_server')
 
 var user = models.user;
 var iot = models.iot;
@@ -13,7 +14,7 @@ var oauth_authorization_code = models.oauth_authorization_code;
 var oauth_refresh_token = models.oauth_refresh_token;
 
 function getAccessToken(bearerToken) {
-  console.log("-------getAccesToken-------")
+  debug("-------getAccesToken-------")
   return oauth_access_token
     .findOne({
       where: {access_token: bearerToken},
@@ -55,12 +56,12 @@ function getAccessToken(bearerToken) {
       return token;
     })
     .catch(function (err) {
-      console.log("getAccessToken - Err: "+ err)
+      debug("getAccessToken - Err: "+ err)
     });
 }
 
 function getClient(clientId, clientSecret) {
-  console.log("-------getClient-------")
+  debug("-------getClient-------")
   const options = {
     where: {id: clientId},
     attributes: ['id', 'redirect_uri', 'scope', 'grant_type']
@@ -81,12 +82,12 @@ function getClient(clientId, clientSecret) {
       //clientWithGrants.accessTokenLifetime  = integer optional
       return clientWithGrants
     }).catch(function (err) {
-      console.log("getClient - Err: ", err)
+      debug("getClient - Err: ", err)
     });
 }
 
 function getUserFromEmail(email) {
-  console.log("-------getUserFromEmail-------")
+  debug("-------getUserFromEmail-------")
   return user
     .findOne({
       where: {email: email},
@@ -96,12 +97,12 @@ function getUserFromEmail(email) {
       return user.toJSON();
     })
     .catch(function (err) {
-      console.log("getUser - Err: ", err)
+      debug("getUser - Err: ", err)
     });
 }
 
 function getUser(username, password) {
-  console.log("-------getUser-------")
+  debug("-------getUser-------")
   return user
     .findOne({
       where: {username: username},
@@ -111,12 +112,12 @@ function getUser(username, password) {
       return user.verifyPassword(password) ? user.toJSON() : false;
     })
     .catch(function (err) {
-      console.log("getUser - Err: ", err)
+      debug("getUser - Err: ", err)
     });
 }
 
 function getIotSensor(id, password) {
-  console.log("-------getIotSensor-------")
+  debug("-------getIotSensor-------")
   return iot
     .findOne({
       where: {id: id},
@@ -126,12 +127,12 @@ function getIotSensor(id, password) {
       return iot.verifyPassword(password) ? iot.toJSON() : false;
     })
     .catch(function (err) {
-      console.log("getIot - Err: ", err)
+      debug("getIot - Err: ", err)
     });
 }
 
 function getPepProxy(id, password) {
-  console.log("-------getPepProxy-------")
+  debug("-------getPepProxy-------")
   return pep_proxy
     .findOne({
       where: {id: id},
@@ -141,12 +142,12 @@ function getPepProxy(id, password) {
       return pep_proxy.verifyPassword(password) ? pep_proxy.toJSON() : false;
     })
     .catch(function (err) {
-      console.log("getPepProxy - Err: ", err)
+      debug("getPepProxy - Err: ", err)
     });
 }
 
 function revokeAuthorizationCode(code) {
-  console.log("-------revokeAuthorizationCode-------")
+  debug("-------revokeAuthorizationCode-------")
   return oauth_authorization_code.findOne({
     where: {
       authorization_code: code.code
@@ -163,12 +164,12 @@ function revokeAuthorizationCode(code) {
     expiredCode.expiresAt = new Date('2015-05-28T06:59:53.000Z')
     return expiredCode
   }).catch(function (err) {
-    console.log("getUser - Err: ", err)
+    debug("getUser - Err: ", err)
   });
 }
 
 function revokeToken(token) {
-  console.log("-------revokeToken-------")
+  debug("-------revokeToken-------")
   return oauth_refresh_token.findOne({
     where: {
       refresh_token: token.refreshToken
@@ -185,12 +186,12 @@ function revokeToken(token) {
     expiredToken.refreshTokenExpiresAt = new Date('2015-05-28T06:59:53.000Z')
     return expiredToken
   }).catch(function (err) {
-    console.log("revokeToken - Err: ", err)
+    debug("revokeToken - Err: ", err)
   });
 }
 
 function saveToken(token, client, user, pep_proxy, iot) {
-  console.log("-------saveToken-------")
+  debug("-------saveToken-------")
   return Promise.all([
       oauth_access_token.create({
         access_token: token.accessToken,
@@ -226,12 +227,12 @@ function saveToken(token, client, user, pep_proxy, iot) {
       )
     })
     .catch(function (err) {
-      console.log("revokeToken - Err: ", err)
+      debug("revokeToken - Err: ", err)
     });
 }
 
 function getAuthorizationCode(code) {
-  console.log("-------getAuthorizationCode-------")
+  debug("-------getAuthorizationCode-------")
   return oauth_authorization_code
     .findOne({
       attributes: ['oauth_client_id', 'expires', 'user_id', 'scope'],
@@ -251,12 +252,12 @@ function getAuthorizationCode(code) {
         scope: authCodeModel.scope,
       };
     }).catch(function (err) {
-      console.log("getAuthorizationCode - Err: ", err)
+      debug("getAuthorizationCode - Err: ", err)
     });
 }
 
 function saveAuthorizationCode(code, client, user) {
-  console.log("-------saveAuthorizationCode-------")
+  debug("-------saveAuthorizationCode-------")
   return oauth_authorization_code
     .create({
       expires: code.expiresAt,
@@ -269,13 +270,13 @@ function saveAuthorizationCode(code, client, user) {
       code.code = code.authorizationCode
       return code
     }).catch(function (err) {
-      console.log("saveAuthorizationCode - Err: ", err)
+      debug("saveAuthorizationCode - Err: ", err)
     });
 }
 
 
 function getUserFromClient(client) {
-  console.log("-------getUserFromClient-------")
+  debug("-------getUserFromClient-------")
   var options = {
     where: {oauth_client_id: client.id},
     include: [user]
@@ -289,12 +290,12 @@ function getUserFromClient(client) {
       if (!role_assignment.User) return false;
       return role_assignment.User.toJSON();
     }).catch(function (err) {
-      console.log("getUserFromClient - Err: ", err)
+      debug("getUserFromClient - Err: ", err)
     });
 }
 
 function getRefreshToken(refreshToken) {
-  console.log("-------getRefreshToken-------")
+  debug("-------getRefreshToken-------")
   if (!refreshToken || refreshToken === 'undefined') return false
 
   return oauth_refresh_token
@@ -316,17 +317,17 @@ function getRefreshToken(refreshToken) {
       return tokenTemp;
 
     }).catch(function (err) {
-      console.log("getRefreshToken - Err: ", err)
+      debug("getRefreshToken - Err: ", err)
     });
 }
 
 // function validateScope(token, client) {
-//   console.log("-------validateScope-------")
+//   debug("-------validateScope-------")
 //   return (user.scope === scope && client.scope === scope && scope !== null) ? scope : false
 // }
 
 // function verifyScope(token, scope) {
-//   console.log("-------verifyScope-------")
+//   debug("-------verifyScope-------")
 //     return token.scope === scope
 // }
 

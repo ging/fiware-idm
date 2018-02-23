@@ -9,10 +9,10 @@ var config = require('../../config').database;
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-var sequelize = new Sequelize(config.name, config.user, config.password, 
+var sequelize = new Sequelize(config.database, config.username, config.password, 
   { 
     host: config.host,
-    dialect: 'mysql'
+    dialect: config.dialect
   }      
 );
 
@@ -366,6 +366,8 @@ exports.create = function(req, res, next) {
 	} else {
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client
 		var application = models.oauth_client.build(req.body.application);
+		application.grant_type = 'authorization_code'
+		application.response_type = 'code'
 		var validate = application.validate()
 		var save = validate.then(function() {
 			return application.save({fields: [ 'id', 
@@ -374,7 +376,9 @@ exports.create = function(req, res, next) {
 										'url', 
 										'redirect_uri', 
 										'secret', 
-										'image'] })
+										'image',
+										'grant_type',
+										'response_type'] })
 		})
  
 		// See if the user or the organization will be the provider of the application

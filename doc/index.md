@@ -65,6 +65,13 @@ config.database.password = 'idm';         // default: 'idm'
 ./generate_openssl_keys.sh
 </pre>
 
+- Create database, run migrations and seeders:
+<pre>
+npm run-script create_db
+npm run-script migrate_db 
+npm run-script seed_db 
+</pre>
+
 - Start server with admin rights (server listens in 443 port by default).
 
 <pre>
@@ -85,7 +92,7 @@ Several resources could be managed through the API like users, applications or o
 
 Finally, one of the main uses of this Generic Enabler is to allow developers to add identity management (authentication and authorization) to their applications based on FIWARE identity. This is posible thanks to [OAuth2](https://oauth.net/2/) protocol.
 
-- [OAuth2 API](http://mesias.readthedocs.org/en/latest/oauth2/
+- [OAuth2 API](http://mesias.readthedocs.org/en/latest/api/#def-apiOAuth
 
 <a name="def-advanced"></a>
 ## Advanced Documentation

@@ -29,11 +29,13 @@ config.authzforce = {
 }
 
 // Database info
-config.database = {};
-config.database.host = 'localhost';       // default: 'localhost'
-config.database.name = 'idm';             // default: 'idm'
-config.database.user = 'root';            // default: 'root'
-config.database.password = 'idm';         // default: 'idm'
+config.database = {
+    host: 'localhost',       // default: 'localhost'
+    name: 'idm',             // default: 'idm'
+    user: 'idm',            // default: 'root'
+    password: 'root',        // default: 'idm'
+    dialect: 'mysql'
+};
 
 // Email configuration
 config.mail = {
@@ -42,4 +44,18 @@ config.mail = {
     from: 'noreply@host'
 }
 
+// External user authentication
+config.external_auth = {
+    enabled: false,
+    authentication_driver: 'custom_authentication_driver',
+    database: {
+        host: 'localhost',
+        name: 'keystone',
+        user: 'root',
+        password: 'root',
+        user_table: 'user',
+        dialect: 'mysql'
+    }
+
+}
 module.exports = config;

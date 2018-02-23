@@ -6,10 +6,10 @@ var config = require('../../config').database;
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-var sequelize = new Sequelize(config.name, config.user, config.password, 
+var sequelize = new Sequelize(config.database, config.username, config.password, 
   { 
     host: config.host,
-    dialect: 'mysql'
+    dialect: config.dialect
   }      
 );
 

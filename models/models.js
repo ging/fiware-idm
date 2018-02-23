@@ -6,7 +6,7 @@ var external_auth = require('../config').external_auth
 var Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-var sequelize = new Sequelize(database.name, database.user, database.password, 
+var sequelize = new Sequelize(database.database, database.username, database.password, 
   { 
     host: database.host,
     dialect: database.dialect
@@ -24,8 +24,8 @@ sequelize
 
 if (external_auth.enabled) {
   var ext_sequelize = new Sequelize(
-    external_auth.database.name, 
-    external_auth.database.user, 
+    external_auth.database.database,
+    external_auth.database.username, 
     external_auth.database.password, 
     { 
       host: external_auth.database.host,

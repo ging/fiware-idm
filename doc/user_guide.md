@@ -8,6 +8,7 @@
 
 This document describes the user and programming guide for Keyrock Identity Management component. Here you will find the necessary steps for use the Keyrock portal for create an account and manage it. You will also learn about role and applications management.
 
+<a name="def-user-guide"></a>
 ## User Guide
 
 ### Logging in
@@ -24,6 +25,7 @@ Go to "Sign in" if you heave previously created an account, otherwise "Sign up" 
 
 There are two main sections, Applications and Organizations. In the Applications section you can register new application by clicking on "Register".
 
+<a name="def-register-app"></a>
 ### Registering an application
 
 <a name="def-fig2"></a>

@@ -21,10 +21,10 @@ var image = require ('../../lib/image.js');
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-var sequelize = new Sequelize(config.database.name, config.database.user, config.database.password, 
+var sequelize = new Sequelize(config.database.database, config.database.username, config.database.password, 
   { 
     host: config.database.host,
-    dialect: 'mysql'
+    dialect: config.database.dialect
   }      
 );
 

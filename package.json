@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "migrate_db": "./node_modules/.bin/sequelize db:migrate",
-    "seed_db": "./node_modules/.bin/sequelize db:seed:all"
+    "create_db": "./node_modules/.bin/sequelize --env database db:create",
+    "migrate_db": "./node_modules/.bin/sequelize --env database db:migrate",
+    "seed_db": "./node_modules/.bin/sequelize --env database db:seed:all"
   },
   "dependencies": {
     "body-parser": "~1.18.2",

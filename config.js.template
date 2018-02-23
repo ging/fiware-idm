@@ -30,11 +30,11 @@ config.authzforce = {
 
 // Database info
 config.database = {
-    host: 'localhost',       // default: 'localhost'
-    name: 'idm',             // default: 'idm'
-    user: 'idm',            // default: 'root'
-    password: 'root',        // default: 'idm'
-    dialect: 'mysql'
+    host: 'localhost',           // default: 'localhost' 
+    password: 'idm',             // default: 'idm'
+    username: 'root',            // default: 'root'
+    database: 'idm',             // default: 'idm'
+    dialect: 'mysql'             // default: 'mysql'
 };
 
 // Email configuration
@@ -50,9 +50,9 @@ config.external_auth = {
     authentication_driver: 'custom_authentication_driver',
     database: {
         host: 'localhost',
-        name: 'keystone',
-        user: 'root',
-        password: 'root',
+        database: 'db_name',
+        username: 'db_user',
+        password: 'db_pass',
         user_table: 'user',
         dialect: 'mysql'
     }

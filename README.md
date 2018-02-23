@@ -11,9 +11,10 @@ git clone https://github.com/ging/mesias.git
 npm install
 cp config.js.template config.js
 
-// run migrations and seeders
-npm run-script migrate_db -- --url mysql://user:pass@host/idm
-npm run-script seed_db -- --url mysql://user:pass@host/idm
+// Create database, run migrations and seeders
+npm run-script create_db
+npm run-script migrate_db 
+npm run-script seed_db 
 
 Generate certificates for https (not needed for development in http)
 ./generate_openssl_keys.sh

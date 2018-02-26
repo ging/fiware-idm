@@ -18,7 +18,7 @@ module.exports = {
                         model: 'user',
                         key: 'id'
                     }
-                }, pep_proxy: {
+                }, pep_proxy_id: {
                     type: Sequelize.STRING,
                     references: {
                         model: 'pep_proxy',

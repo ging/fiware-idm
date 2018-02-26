@@ -9,13 +9,6 @@ var config = require('../../config').database;
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-var sequelize = new Sequelize(config.database, config.username, config.password, 
-  { 
-    host: config.host,
-    dialect: config.dialect
-  }      
-);
-
 var debug = require('debug')('idm:web-application_controller');
 var gravatar = require('gravatar');
 var Jimp = require("jimp");
@@ -89,30 +82,7 @@ exports.filter_user = function(req, res, next) {
 	debug("--> filter_user");
 	
 	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
-
-	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
-				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id WHERE user_id=:user_id AND role_id=:role) AS count
-				FROM role_assignment 
-				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id 
-				WHERE user_id=:user_id AND role_id=:role
-				LIMIT 5
-				OFFSET :offset`
-
-	if (req.query.role === 'other') {
-		query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
-				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id WHERE user_id=:user_id AND role_id NOT IN ('provider', 'purchaser')) AS count
-				FROM role_assignment 
-				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id 
-				WHERE user_id=:user_id AND role_id NOT IN ('provider', 'purchaser')
-				LIMIT 5
-				OFFSET :offset`
-	}
-
-	sequelize.query(query, {replacements: {user_id: req.session.user.id, role: req.query.role, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(user_applications){
+	models.helpers.search_distinct('role_assignment', 'oauth_client', req.session.user.id, 'user', '%%', offset, true, req.query.role).then(function(user_applications) {
 
 		var count = 0
 		// If user has applications, set image from file system and obtain info from each application
@@ -143,39 +113,7 @@ exports.filter_organization = function(req, res) {
 
 	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
-				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id=:organization_id AND role_id=:role) AS count
-				FROM role_assignment 
-				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id
-				RIGHT JOIN (SELECT * FROM organization) AS organization
-				ON role_assignment.organization_id=organization.id
-				WHERE organization_id=:organization_id AND role_id=:role
-				LIMIT 5
-				OFFSET :offset`
-
-	if (req.query.role === 'other') {
-		query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
-				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id=:organization_id AND role_id NOT IN ('provider', 'purchaser')) AS count
-				FROM role_assignment 
-				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id
-				RIGHT JOIN (SELECT * FROM organization) AS organization
-				ON role_assignment.organization_id=organization.id
-				WHERE organization_id=:organization_id AND role_id NOT IN ('provider', 'purchaser')
-				LIMIT 5
-				OFFSET :offset`
-	}
-
-	sequelize.query(query, { 
-		replacements: {	
-			organization_id: req.query.organization, 
-			role: req.query.role, 
-			offset: offset }, 
-		type: Sequelize.QueryTypes.SELECT
-	}).then(function(org_applications){
+	models.helpers.search_distinct('role_assignment', 'oauth_client', req.query.organization, 'organization', '%%', offset, true, req.query.role).then(function(org_applications) {
 
 		var count = 0
 		// If user has applications, set image from file system and obtain info from each application
@@ -252,17 +190,7 @@ exports.authorized_users = function(req, res, next) {
 	var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
 	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-	var query = `SELECT DISTINCT role_assignment.user_id, user.username, user.image, user.gravatar, user.email, 
-				(SELECT COUNT(DISTINCT user_id) FROM role_assignment RIGHT JOIN (SELECT * FROM user WHERE username LIKE :key) AS user
-				ON role_assignment.user_id=user.id WHERE oauth_client_id=:application_id AND user_id IS NOT NULL) AS count
-				FROM role_assignment 
-				RIGHT JOIN (SELECT * FROM user WHERE username LIKE :key) AS user
-				ON role_assignment.user_id=user.id 
-				WHERE oauth_client_id=:application_id AND user_id IS NOT NULL
-				LIMIT 5
-				OFFSET :offset`
-
-	sequelize.query(query, {replacements: {application_id: req.application.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(users_authorized){
+	models.helpers.search_distinct('role_assignment', 'user', req.application.id, 'oauth_client', key, offset, true).then(function(users_authorized) {
 		var users = []
 
 		var count = 0
@@ -300,17 +228,7 @@ exports.authorized_organizations = function(req, res, next) {
 	var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
 	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-	var query = `SELECT DISTINCT role_assignment.organization_id, organization.name, organization.image, organization.description, 
-				(SELECT COUNT(DISTINCT organization_id) FROM role_assignment RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
-				ON role_assignment.organization_id=organization.id WHERE oauth_client_id=:application_id AND organization_id IS NOT NULL) AS count
-				FROM role_assignment 
-				RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
-				ON role_assignment.organization_id=organization.id 
-				WHERE oauth_client_id=:application_id AND organization_id IS NOT NULL
-				LIMIT 5
-				OFFSET :offset`
-
-	sequelize.query(query, {replacements: {application_id: req.application.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(organizations_authorized){
+	models.helpers.search_distinct('role_assignment', 'organization', req.application.id, 'oauth_client', key, offset, true).then(function(organizations_authorized) {
 		var organizations = []
 
 		var count = 0

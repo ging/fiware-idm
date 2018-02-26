@@ -2,16 +2,6 @@ var models = require('../../models/models.js');
 
 var config = require('../../config').database;
 
-var Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-
-var sequelize = new Sequelize(config.database, config.username, config.password, 
-  { 
-    host: config.host,
-    dialect: config.dialect
-  }      
-);
-
 var debug = require('debug')('idm:web-home_controller')
 
 // GET /idm -- List all applications
@@ -26,14 +16,7 @@ exports.index = function(req, res) {
 	}
 
 	// Search applications in which the user is authorized
-	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.id, oauth_client.name, oauth_client.image, oauth_client.url 
-				FROM role_assignment 
-				RIGHT JOIN (SELECT * FROM oauth_client) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id 
-				WHERE user_id=:user_id
-				LIMIT 5`
-
-	var get_app = sequelize.query(query, {replacements: {user_id: req.session.user.id}, type: Sequelize.QueryTypes.SELECT}).then(function(user_applications){
+	var get_app = models.helpers.search_distinct('role_assignment', 'oauth_client', req.session.user.id, 'user', '%%', 0, false).then(function(user_applications) {
 
 		var applications = []
 

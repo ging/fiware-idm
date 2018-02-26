@@ -5,9 +5,9 @@ module.exports = {
         return queryInterface.createTable('user_organization',
             {
                 id: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.INTEGER,
                     primaryKey: true,
-                    defaultValue: Sequelize.UUIDV4
+                    autoIncrement: true
                 },
                 role: {
                     type: Sequelize.STRING(10)

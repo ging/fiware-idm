@@ -5,9 +5,9 @@ module.exports = {
         return queryInterface.createTable('user_registration_profile',
             {
                id: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.INTEGER,
                     primaryKey: true,
-                    defaultValue: Sequelize.UUIDV4
+                    autoIncrement: true
                 }, activation_key: {
                     type: Sequelize.STRING
                 }, activation_expires: {

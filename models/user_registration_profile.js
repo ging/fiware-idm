@@ -5,9 +5,9 @@ module.exports = function(sequelize, DataTypes) {
         'User_Registration_Profile',
         {
             id: {
-                        type: DataTypes.UUID,
-                        primaryKey: true,
-                        defaultValue: DataTypes.UUIDV4
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
             },
             activation_key: {
                 type: DataTypes.STRING

@@ -7,16 +7,6 @@ var image = require ('../../lib/image.js');
 
 var config = require('../../config').database;
 
-var Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-
-var sequelize = new Sequelize(config.database, config.username, config.password, 
-  { 
-    host: config.host,
-    dialect: config.dialect
-  }      
-);
-
 // Autoload info if path include organizationId
 exports.load_organization = function(req, res, next, organizationId) {
 
@@ -302,7 +292,8 @@ exports.get_applications = function(req, res, next) {
 				LIMIT 5
 				OFFSET :offset`
 
-	sequelize.query(query, {replacements: {organization_id: req.organization.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(applications_authorized){
+
+	models.helpers.search_distinct('role_assignment', 'oauth_client', req.organization.id, 'organization', key, offset, true).then(function(applications_authorized) {
 		var applications = []
 
 		var count = 0

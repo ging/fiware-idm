@@ -1,18 +1,6 @@
 var models = require('../../models/models.js');
 var uuid = require('uuid');
 
-var config = require('../../config').database;
-
-var Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-
-var sequelize = new Sequelize(config.database, config.username, config.password, 
-  { 
-    host: config.host,
-    dialect: config.dialect
-  }      
-);
-
 var debug = require('debug')('idm:api-authenticate');
 
 // ESTA AUTENTICACION SE DEBERIA AHCER CON LOS CONTROLLERS DE LA API Y NO LOS DE LA WEB
@@ -118,7 +106,7 @@ var create_token = function(req, res, next) {
 		// Check what methods are included in the request
 		var methods = []
 		if (req.body.auth.identity.methods.includes('password')) {
-			methods.push(search_user(req))
+			methods.push(search_identity(req))
 		}
 		if (req.body.auth.identity.methods.includes('token')) {
 			methods.push(search_token(req))
@@ -185,8 +173,8 @@ function check_create_token_request(req) {
 }
 
 
-// Function to check password method parameter for user an see if user exists
-function search_user(req) {
+// Function to check password method parameter for identity
+function search_identity(req) {
 	
 	return new Promise(function(resolve, reject) {
 
@@ -203,19 +191,15 @@ function search_user(req) {
 			reject({ error: {message: 'Expecting to find name and password in request body', code: 400, title: 'Bad Request'}})
 		}
 
-		var query = `SELECT email, 'user' as Source FROM user WHERE email=:email
-					 UNION ALL
-					 SELECT id, 'pep_proxy' as Source FROM pep_proxy WHERE id=:email;`
-
-		sequelize.query(query, {replacements: {email: user.name}, type: Sequelize.QueryTypes.SELECT}).then(function(row){
-			if (row.length <= 0) {
+		models.helpers.search_identity(user.name).then(function(identity) {
+			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {
-				if (row[0].Source === 'user') {
+				if (identity[0].Source === 'user') {
 					authenticate_user(user.name, user.password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })
-				} else if (row[0].Source === 'pep_proxy') {
+				} else if (identity[0].Source === 'pep_proxy') {
 					authenticate_pep_proxy(user.name, user.password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })

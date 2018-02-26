@@ -3,7 +3,12 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
     'User_Organization',
-    { 	
+    { 
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
     	role: {
             type: DataTypes.STRING(10)
         }

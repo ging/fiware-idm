@@ -6,16 +6,6 @@ var email = require('../../lib/email.js')
 
 var config = require('../../config').database;
 
-var Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-
-var sequelize = new Sequelize(config.database, config.username, config.password, 
-  { 
-    host: config.host,
-    dialect: config.dialect
-  }      
-);
-
 // GET /idm/admins/notify -- Render notify view
 exports.show_notify = function(req, res) {
 	debug('--> notify')
@@ -187,14 +177,8 @@ function get_all_users() {
 
 // Function to gel all emails of users from a specific organization
 function get_organization(organization_id) {
-	
-	var query = `SELECT DISTINCT user_organization.user_id, user.email
-                FROM user_organization
-                RIGHT JOIN (SELECT * FROM user) AS user
-                ON user_organization.user_id=user.id 
-                WHERE organization_id=:organization_id`
-
-	return sequelize.query(query, {replacements: {organization_id: organization_id}, type: Sequelize.QueryTypes.SELECT}).then(function(users){
+             
+    return models.helpers.search_distinct('user_organization', 'user', organization_id, 'organization', '%%', 0, false).then(function(users) {   
 		return users
 	}).catch(function(error) {
 		return Promise.reject(error)

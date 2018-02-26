@@ -5,10 +5,10 @@ var config = require('../config').database;
 var Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-var sequelize = new Sequelize(config.name, config.user, config.password, 
+var sequelize = new Sequelize(config.database, config.username, config.password, 
   { 
     host: config.host,
-    dialect: 'mysql'
+    dialect: config.dialect
   }      
 );
 
@@ -118,7 +118,9 @@ role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDele
 user_organization.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 user_organization.belongsTo(organization, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
-// Exportar tablas
+
+
+// Export tables
 exports.user = user;
 exports.user_registration_profile = user_registration_profile;
 exports.organization = organization;
@@ -136,3 +138,12 @@ exports.oauth_access_token = oauth_access_token;
 exports.oauth_refresh_token = oauth_refresh_token;
 exports.scope = scope;
 exports.auth_token = auth_token;
+
+// Export helpers
+var search_identity = require('./helpers/search_identity')
+var search_distinct = require('./helpers/search_distinct')
+
+exports.helpers = {
+  search_identity: search_identity,
+  search_distinct: search_distinct
+}

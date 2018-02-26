@@ -15,16 +15,6 @@ var Jimp = require("jimp");
 var email = require('../../lib/email.js')
 var image = require ('../../lib/image.js');
 
-var Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-
-var sequelize = new Sequelize(config.database.database, config.database.username, config.database.password, 
-  { 
-    host: config.database.host,
-    dialect: config.dialect
-  }      
-);
-
 // MW to see if user can do some actions
 exports.owned_permissions = function(req, res, next) {
 
@@ -127,17 +117,7 @@ exports.get_applications = function(req, res, next) {
     var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
     var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-    var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
-                (SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
-                ON role_assignment.oauth_client_id=oauth_client.id WHERE user_id=:user_id) AS count
-                FROM role_assignment 
-                RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
-                ON role_assignment.oauth_client_id=oauth_client.id 
-                WHERE user_id=:user_id
-                LIMIT 5
-                OFFSET :offset`
-
-    sequelize.query(query, {replacements: {user_id: req.user.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(applications_authorized){
+    models.helpers.search_distinct('role_assignment', 'oauth_client', req.session.user.id, 'user', key, offset, true).then(function(applications_authorized) {
         var applications = []
 
         var count = 0
@@ -173,17 +153,7 @@ exports.get_organizations = function(req, res, next) {
     var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
     var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-    var query = `SELECT DISTINCT user_organization.organization_id, organization.name, organization.image, organization.description, 
-                (SELECT COUNT(DISTINCT organization_id) FROM user_organization RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
-                ON user_organization.organization_id=organization.id WHERE user_id=:user_id) AS count
-                FROM user_organization 
-                RIGHT JOIN (SELECT * FROM organization WHERE name LIKE :key) AS organization
-                ON user_organization.organization_id=organization.id 
-                WHERE user_id=:user_id
-                LIMIT 5
-                OFFSET :offset`
-
-    sequelize.query(query, {replacements: {user_id: req.user.id, key: key, offset: offset}, type: Sequelize.QueryTypes.SELECT}).then(function(organizations_authorized){
+    models.helpers.search_distinct('user_organization', 'organization', req.session.user.id, 'user', key, offset, true).then(function(organizations_authorized) {
         var organizations = []
 
         var count = 0

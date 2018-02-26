@@ -1,5 +1,7 @@
 node_modules/
 public/img/applications
+public/img/users
+public/img/organizations
 npm-debug.log
 config.js
 certs/

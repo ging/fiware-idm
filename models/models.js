@@ -1,14 +1,15 @@
 var path = require('path');
-var config = require('../config').database;
+var database = require('../config').database;
+var external_auth = require('../config').external_auth
 
 // Load ORM Model
 var Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-var sequelize = new Sequelize(config.database, config.username, config.password, 
+var sequelize = new Sequelize(database.database, database.username, database.password, 
   { 
-    host: config.host,
-    dialect: config.dialect
+    host: database.host,
+    dialect: database.dialect
   }      
 );
 
@@ -21,6 +22,26 @@ sequelize
     console.log("Unable to connect to the database: ", err);
   })
 
+if (external_auth.enabled) {
+  var ext_sequelize = new Sequelize(
+    external_auth.database.database,
+    external_auth.database.username, 
+    external_auth.database.password, 
+    { 
+      host: external_auth.database.host,
+      dialect: external_auth.database.dialect
+    }      
+  );
+
+  ext_sequelize
+    .authenticate()
+    .then(() => {
+      console.log("Connection has been established seccessfully");
+    })
+    .catch(err => {
+      console.log("Unable to connect to the database: ", err);
+    })
+};
 
 // Import Oauth2 tables
 var oauth_client = sequelize.import(path.join(__dirname,'oauth2/oauth_client'));
@@ -30,7 +51,8 @@ var oauth_refresh_token = sequelize.import(path.join(__dirname,'oauth2/oauth_ref
 var scope = sequelize.import(path.join(__dirname,'oauth2/oauth_scope'));
 
 // Import user table
-var user = sequelize.import(path.join(__dirname,'user'));
+var user = external_auth.enabled ? 
+  ext_sequelize.import(path.join(__dirname, external_auth.database.user_table)) : sequelize.import(path.join(__dirname, 'user'));
 
 // Import user registration profile table
 var user_registration_profile = sequelize.import(path.join(__dirname,'user_registration_profile'));

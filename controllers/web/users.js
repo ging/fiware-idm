@@ -3,6 +3,9 @@ var config = require('../../config');
 var fs = require('fs');
 var gravatar = require('gravatar');
 var https = require('https');
+var auth_driver = config.external_auth.enabled ?
+    require('../../helpers/' + config.external_auth.authentication_driver) :
+    require('../../helpers/authentication_driver');
 
 var mmm = require('mmmagic'),
     Magic = mmm.Magic;
@@ -378,24 +381,7 @@ exports.set_gravatar = function(req, res) {
 }
 
 // MW to see if user is registered
-exports.authenticate = function(email, password, callback) {
-
-    debug("--> authenticate")
-
-    // Search the user through the email
-    models.user.find({
-        where: {
-            email: email
-        }
-    }).then(function(user) {
-        if (user) {
-            // Verify password and if user is enabled to use the web
-            if(user.verifyPassword(password) && user.enabled){
-                callback(null, user);
-            } else { callback(new Error('invalid')); }   
-        } else { callback(new Error('user_not_found')); }
-    }).catch(function(error){ callback(error) });
-};
+exports.authenticate = auth_driver.authenticate;
 
 // GET /sign_up -- View to create a new user
 exports.new = function(req, res) {

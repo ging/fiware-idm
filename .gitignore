@@ -5,3 +5,4 @@ public/img/organizations
 npm-debug.log
 config.js
 certs/
+helpers/custom_authentication_driver.js

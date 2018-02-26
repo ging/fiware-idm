@@ -1,9 +1,12 @@
 // User model 
-var config = require('../config.js').password_encryption
+var config = require('../config.js');
+var auth_driver = config.external_auth.enabled ?
+    require('../helpers/' + config.external_auth.authentication_driver) :
+    require('../helpers/authentication_driver');
 
 // Vars for encrypting
 var crypto = require('crypto');
-var key = config.key;
+var key = config.password_encryption.key;
 
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define(
@@ -76,10 +79,7 @@ module.exports = function(sequelize, DataTypes) {
         } 
     );
 
-    User.prototype.verifyPassword = function(password) {
-        var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');
-        return encripted === this.password;
-    }
+    User.prototype.verifyPassword = auth_driver.verifyPassword;
 
     return User;
 }

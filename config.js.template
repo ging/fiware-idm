@@ -44,4 +44,18 @@ config.mail = {
     from: 'noreply@host'
 }
 
+// External user authentication
+config.external_auth = {
+    enabled: false,
+    authentication_driver: 'custom_authentication_driver',
+    database: {
+        host: 'localhost',
+        database: 'db_name',
+        username: 'db_user',
+        password: 'db_pass',
+        user_table: 'user',
+        dialect: 'mysql'
+    }
+
+}
 module.exports = config;

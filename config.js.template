@@ -58,4 +58,10 @@ config.external_auth = {
     }
 
 }
+
+config.site = {
+    title: 'Identity Manager',
+    theme: 'default'
+};
+
 module.exports = config;

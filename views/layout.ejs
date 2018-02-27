@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#E6E6E6"/>
-  <meta charset="utf-8"><title> Fiware IdM </title>
+  <meta charset="utf-8"><title><%= site.title %></title>
   <script src="/javascripts/jquery-3.2.1.min.js"></script>
   <script src="/javascripts/bootstrap.min.js"></script>
   <script src="/javascripts/jquery.Jcrop.min.js"></script>
@@ -14,7 +14,15 @@
 
 <body>
 
-<%- include _header %>
+<% 
+  var header = '_header';
+
+  if (site.theme !== 'default') {
+    header = '../themes/' + site.theme + '/templates/_header';
+  }
+%>
+
+<%- include(header) %>
 
 <div id="container" class="container-fluid wrap">
 

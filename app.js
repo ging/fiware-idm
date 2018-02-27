@@ -47,10 +47,10 @@ app.use(session({
   secret: config.session.secret
 }));
 
-
+var styles = config.site.theme || 'default';
 // Middleware to convert sass files to css
 app.use(sassMiddleware({
-    src: path.join(__dirname, 'static/scss'),
+    src: path.join(__dirname, 'themes/' + styles),
     dest: path.join(__dirname, 'public/stylesheets'),
     debug: true,
     // outputStyle: 'compressed',
@@ -75,6 +75,9 @@ app.use(function(req, res, next) {
   
   // {text: 'message text', type: 'info | success | warning | danger'}
   res.locals.message = {};
+
+  res.locals.site = config.site;
+  
   next();
 });
 

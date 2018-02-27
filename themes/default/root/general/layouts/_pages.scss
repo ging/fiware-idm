@@ -528,7 +528,7 @@ textarea {
     h3{
       margin: 0 !important;
       font-size: 17px !important;
-      color: #48B9C9;
+      color: $brand-secundary;
       display: block !important;
       text-decoration: none;
     }
@@ -591,7 +591,7 @@ textarea {
       }
     }
     .used-avatar{
-      border: 3px solid #48b9c9;
+      border: 3px solid $brand-secundary;
       background-color: #eaf4f6;
     }
     //update container img

@@ -61,7 +61,12 @@ nav.container-fluid{
   padding: 3px 15px 2px;
 }
 
-.brand{
+
+
+.brand {
+  font-family: "NeoTechRegular";
+  font-size: 25px;
+  padding-top: 2px;
   background-repeat: no-repeat;
   height: 37px;
   float: left;
@@ -71,25 +76,6 @@ nav.container-fluid{
     width: 37px !important;
   }
 }
-
-.logo-fl-header .brand{
-  background-image: url(../img/FIWARE-lab-2x.png);
-  width: 150px;
-  background-size: 150px 37px;
-}
-
-.logo-f-header .brand {
-  background-image: url(../img/FIWARE-2x.png);
-  width: 123px;
-  background-size: 120px 37px;
-}
-
-
-
-.logo-f-header,
-.logo-fl-header{
-    float: left;
-  }
 
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover {
   color: $brand-secundary;

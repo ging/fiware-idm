@@ -10619,7 +10619,8 @@ ul.disabled-list li.active:hover {
     background-color: #f1f1f2;
     font-size: 12px;
     margin-top: 0px;
-    padding: 15px; }
+    padding: 15px;
+    height: 309px; }
     .presentation .media h3 {
       font-family: "NeoTechRegular";
       margin-bottom: 7px;
@@ -10631,7 +10632,7 @@ ul.disabled-list li.active:hover {
       margin: -1px 0 9px;
       letter-spacing: 0.1rem; }
     .presentation .media footer {
-      margin-top: 15px; }
+      margin-top: 135px; }
       @media (max-width: 861px) {
         .presentation .media footer a {
           display: block;

@@ -1,0 +1,97 @@
+<div class="presentation">
+  <section class="media">
+    <h3 class="media-heading">
+      FIWARE Lab
+    </h3>
+    <span>
+      FIWARE Lab is a working instance of FIWARE available for experimentation.
+    </span>
+    <p>
+      You will be able to setup the basic virtual infrastructure needed to run applications that make use of the APIs provided by FIWARE Generic Enablers deployed as a Service either globally or by you (as private instance).
+    </p>
+    <footer>
+      <a href="" class="btn btn-default sign_up">
+      Sign up
+      </a>
+    
+      <a href="#" id="myCustomTrigger" class="btn btn-default">Request Community Account upgrade</a>
+    </footer>
+  </section>
+
+  <section class="help-bar">
+    <div class="row">
+      <div class="help-box">
+        <a href="" onclick="confirm_help_box()">
+          <header>
+            <img src="/img/icons/help.png">
+            <h5>Need Help?</h5>
+            <i class="fa fa-chevron-right icon-white"></i>
+          </header>
+        </a>
+        <div>
+          Ask a question.
+        </div>
+      </div>
+      <div class="help-box">
+        <a target="_blank" href="http://catalogue.fiware.org/enablers">
+          <header>
+            <img src="/img/icons/ges.png">
+            <h5>Our GEs</h5>
+            <i class="fa fa-chevron-right icon-white"></i>
+          </header>
+        </a>
+        <div>
+          See our Catalogue.
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="help-box">
+        <a target="_blank" href="http://infographic.lab.fiware.org">
+          <header>
+            <img src="/img/icons/fi-ops.png">
+            <h5>FIWARE Lab nodes</h5>
+            <i class="fa fa-chevron-right icon-white"></i>
+          </header>
+        </a>
+        
+        <div>
+          Learn about FIWARE Ops.
+        </div>
+      </div>
+
+      <div class="help-box">
+        <a target="_blank" href="http://edu.fiware.org/">
+          <header>
+            <img src="/img/icons/more-info.png">
+            <h5>FIWARE Academy</h5>
+            <i class="fa fa-chevron-right icon-white"></i>
+          </header>
+        </a>
+        <div>
+          Train yourself.
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script type="text/javascript" src="https://jira.fiware.org/s/4d99dfea096a41baa8a46feda6f85823-T/en_GBek2res/6346/29/1.4.16/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-GB&amp;collectorId=a188b867"></script>
+<script type="text/javascript">window.ATL_JQ_PAGE_PROPS =  {
+  "triggerFunction": function(showCollectorDialog) {
+    //Requires that jQuery is available! 
+    jQuery("#myCustomTrigger").click(function(e) {
+      e.preventDefault();
+      showCollectorDialog();
+    });
+  }};
+</script>
+
+<script>
+  var confirm_help_box = function () {
+    var r = confirm("The communications sent to the FIWARE Lab support list are public and they generate public tickets (including email addresses and names). Please avoid sending private info to them unless you are happy to see them publicly available.");
+      if (r == true) {
+          window.location = "mailto:fiware-lab-help@lists.fiware.org?Subject=FIWARE Lab Assistance";
+    } 
+  }
+</script>

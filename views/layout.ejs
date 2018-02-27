@@ -16,9 +16,13 @@
 
 <% 
   var header = '_header';
+  var footer = '_footer';
 
   if (site.theme !== 'default') {
-    header = '../themes/' + site.theme + '/templates/_header';
+    if(fs.existsSync('themes/' + site.theme + '/templates/_header.ejs')) 
+      header = '../themes/' + site.theme + '/templates/_header';
+    if(fs.existsSync('themes/' + site.theme + '/templates/_footer.ejs')) 
+      footer = '../themes/' + site.theme + '/templates/_footer';
   }
 %>
 
@@ -34,7 +38,16 @@
 
 <div id="backdrop" style="display: none;" class="modal-backdrop  in"></div>
 
-<%- include _footer %>
+<% if (message.text) { %>
+<div class="messages">
+  <div class="alert alert-<%=message.type%> alert-dismissable fade in">
+    <a class="close" data-dismiss="alert" href="#">×</a>
+    <p><strong><%=message.type%>: </strong><%=message.text%></p>
+  </div>
+</div>
+<% } %>
+
+<%- include(footer) %>
 
 </body> 
 </html>

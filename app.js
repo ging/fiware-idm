@@ -77,6 +77,7 @@ app.use(function(req, res, next) {
   res.locals.message = {};
 
   res.locals.site = config.site;
+  res.locals.fs = require('fs');
   
   next();
 });

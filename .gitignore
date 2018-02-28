@@ -2,10 +2,8 @@ node_modules/
 public/img/applications
 public/img/users
 public/img/organizations
+public/stylesheets/style.css
 npm-debug.log
 config.js
 certs/
 helpers/custom_authentication_driver.js
-themes/*
-!themes/default
-!themes/fiware

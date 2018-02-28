@@ -332,7 +332,7 @@
 .myApplications-table {
   .panel-heading {
     .register_button {
-      background-color: #193B6B; 
+      background-color: $brand-primary; 
       color: white;
       margin-top: 4px;
       margin-right: 3px;
@@ -347,6 +347,7 @@
     }
 
     #select_org {
+      border-color: $brand-secundary; 
       height: 31px;
       max-width: 140px;
     }

@@ -29,6 +29,7 @@ module.exports = {
                     type: Sequelize.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, oauth_client_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',
                         key: 'id'

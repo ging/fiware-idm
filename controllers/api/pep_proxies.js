@@ -1,4 +1,26 @@
 var debug = require('debug')('idm:api-pep_proxies');
+var models = require('../../models/models.js');
+var uuid = require('uuid');
+
+// MW to check pep proxy authentication
+exports.authenticate = function(id, password, callback) {
+
+    debug("--> authenticate")
+    
+    // Search the user through the email
+    models.pep_proxy.find({
+        where: {
+            id: id
+        }
+    }).then(function(pep_proxy) {
+        if (pep_proxy) {
+            // Verify password 
+            if(pep_proxy.verifyPassword(password)){
+                callback(null, pep_proxy);
+            } else { callback(new Error('invalid')); }   
+        } else { callback(new Error('pep_proxy_not_found')); }
+    }).catch(function(error){ callback(error) });
+};
 
 // GET /v1/pep_proxies -- Send index of pep_proxies
 exports.index = function(req, res) {

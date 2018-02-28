@@ -27,6 +27,7 @@ module.exports = {
                 },
                 user_email: {
                     type: Sequelize.STRING,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'user',
                         key: 'email'

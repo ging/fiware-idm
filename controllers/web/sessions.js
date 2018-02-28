@@ -94,7 +94,7 @@ exports.create = function(req, res, next) {
                 } else if (user.image !== 'default') {
                     image = '/img/users/' + user.image
                 }
-                
+
                 // Create session
                 req.session.user = {id:user.id, username:user.username, email: user.email, image: image, change_password: user.date_password};
 

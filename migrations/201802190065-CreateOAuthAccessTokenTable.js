@@ -17,6 +17,7 @@ module.exports = {
                 extra: Sequelize.JSON,
                 oauth_client_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',
                         key: 'id'
@@ -24,6 +25,7 @@ module.exports = {
                 },
                 user_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'user',
                         key: 'id'
@@ -31,6 +33,7 @@ module.exports = {
                 },
                 iot: {
                     type: Sequelize.STRING,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'iot',
                         key: 'id'
@@ -38,6 +41,7 @@ module.exports = {
                 },
                 pep_proxy: {
                     type: Sequelize.STRING,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'pep_proxy',
                         key: 'id'

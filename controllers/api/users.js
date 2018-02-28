@@ -1,4 +1,16 @@
 var debug = require('debug')('idm:api-users');
+var models = require('../../models/models.js');
+var uuid = require('uuid');
+var config = require('../../config');
+
+var auth_driver = config.external_auth.enabled ?
+    require('../../helpers/' + config.external_auth.authentication_driver) :
+    require('../../helpers/authentication_driver');
+
+
+// MW to see if user is registered
+exports.authenticate = auth_driver.authenticate;
+
 
 // GET /v1/users -- Send index of users
 exports.index = function(req, res) {

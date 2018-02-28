@@ -138,7 +138,6 @@ exports.delete_role = function(req, res) {
 		res.send({text: ' Failed deleting role', type: 'danger'});
 	
 	} else {
-
 		// Destroy role
 		models.role.destroy({
 			where: { id: req.role.id,

@@ -17,6 +17,7 @@ module.exports = {
                 extra: Sequelize.JSON,
                 oauth_client_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',
                         key: 'id'
@@ -24,6 +25,7 @@ module.exports = {
                 },
                 user_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'user',
                         key: 'id'

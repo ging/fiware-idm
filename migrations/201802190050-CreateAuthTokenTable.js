@@ -14,12 +14,14 @@ module.exports = {
                 valid: Sequelize.BOOLEAN,
                 user_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'user',
                         key: 'id'
                     }
                 }, pep_proxy_id: {
                     type: Sequelize.STRING,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'pep_proxy',
                         key: 'id'

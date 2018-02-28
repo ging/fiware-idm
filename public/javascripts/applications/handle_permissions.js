@@ -195,7 +195,8 @@ $(document).ready(function(){
         // Send delete request
         $.ajax({
             url: url,
-            type: 'DELETE', 
+            type: 'DELETE',
+            beforeSend: beforeSend($('input:hidden[name=_csrf]').val()),
             success: function(result) {
                 if (result.type === "success") {
                     $("#update_owners_permissions").find('[data-permission-id='+permission_id+']').remove();

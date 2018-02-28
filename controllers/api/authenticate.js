@@ -3,9 +3,8 @@ var uuid = require('uuid');
 
 var debug = require('debug')('idm:api-authenticate');
 
-// ESTA AUTENTICACION SE DEBERIA AHCER CON LOS CONTROLLERS DE LA API Y NO LOS DE LA WEB
-var userController = require('../../controllers/web/users.js');
-var pepProxyController = require('../../controllers/web/pep_proxies.js');
+var userApiController = require('../../controllers/api/users.js');
+var pepProxyApiController = require('../../controllers/api/pep_proxies.js');
 
 
 // Middleware to see if the token correspond to user
@@ -175,7 +174,7 @@ function check_create_token_request(req) {
 
 // Function to check password method parameter for identity
 function search_identity(req) {
-	
+
 	return new Promise(function(resolve, reject) {
 
 		if (!req.body.auth.identity.password) {
@@ -192,6 +191,7 @@ function search_identity(req) {
 		}
 
 		models.helpers.search_identity(user.name).then(function(identity) {
+
 			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {
@@ -215,7 +215,8 @@ function search_identity(req) {
 function authenticate_user(email, password) {
 
 	return new Promise(function(resolve, reject) { 
-		userController.authenticate(email, password, function(error, user) {
+
+		userApiController.authenticate(email, password, function(error, user) {
 			if (error) { 
 				if (error.message === 'invalid') {
 	            	reject({ error: {message: 'Invalid email or password', code: 401, title: 'Unauthorized'}})
@@ -234,7 +235,7 @@ function authenticate_user(email, password) {
 function authenticate_pep_proxy(id, password) {
 
 	return new Promise(function(resolve, reject) { 
-		pepProxyController.authenticate(id, password, function(error, pep_proxy) {
+		pepProxyApiController.authenticate(id, password, function(error, pep_proxy) {
 			if (error) {  
 				if (error.message === 'invalid') {
 	            	reject({ error: {message: 'Invalid id or password', code: 401, title: 'Unauthorized'}})
@@ -273,7 +274,8 @@ function authenticate_token(token_id) {
 	
 	return models.auth_token.findOne({
 		where: { access_token: token_id }
-	}).then(function(token_row) {		
+	}).then(function(token_row) {
+	
 		if (token_row) {
 			if ((new Date()).getTime() > token_row.expires.getTime()) {
 				return Promise.reject({ error: {message: 'Token has expired', code: 401, title: 'Unauthorized'}})	

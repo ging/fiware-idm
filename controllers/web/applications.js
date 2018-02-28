@@ -288,6 +288,7 @@ exports.create = function(req, res, next) {
 		application.response_type = 'code'
 		var validate = application.validate()
 		var save = validate.then(function() {
+			application.description.trim()
 			return application.save({fields: [ 'id', 
 										'name', 
 										'description', 
@@ -478,7 +479,7 @@ exports.update_info = function(req, res) {
 		application.validate().then(function(err) {
 			models.oauth_client.update(
 				{ name: req.body.application.name,
-				  description: req.body.application.description,
+				  description: req.body.application.description.trim(),
 				  url: req.body.application.url,
 				  redirect_uri: req.body.application.redirect_uri },
 				{

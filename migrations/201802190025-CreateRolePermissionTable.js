@@ -11,6 +11,7 @@ module.exports = {
                 },
                 role_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'role',
                         key: 'id'
@@ -18,6 +19,7 @@ module.exports = {
                 },
                 permission_id: {
                     type: Sequelize.UUID,
+                    onDelete: 'CASCADE',
                     references: {
                         model: 'permission',
                         key: 'id'

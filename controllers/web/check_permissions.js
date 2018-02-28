@@ -59,7 +59,7 @@ exports.owned_permissions = function(req, res, next) {
 			user_permissions_id = values[2].map(elem => elem.permission_id)
 			req.user_owned_permissions = user_permissions_id;
 		}
-		
+
 		// Check if the user can access to a specific route according to his permissions
 		if(check_user_action(req.application, req.path, req.method, user_permissions_id)) {
 			next();	

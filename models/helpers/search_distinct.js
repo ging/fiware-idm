@@ -59,9 +59,7 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 				  where + '\n' + 
 				  and + '\n' + 
 				  limit + '\n' + 
-				  offset
-
-	console.log(query)				 
+				  offset			 
 
 
     return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})

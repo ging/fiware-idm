@@ -22,6 +22,7 @@
     font-size: 12px;
     margin-top: 0px;
     padding: 15px;
+    height: 309px; 
     h3{
       font-family: $corporate-font-family-sans-serif-Regular;
       margin-bottom: 7px;
@@ -35,7 +36,7 @@
       letter-spacing: 0.1rem;
     }
     footer{
-      margin-top: 15px;
+      margin-top: 135px;
       @media (max-width: 861px){
         a{
           display: block;

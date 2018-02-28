@@ -2,28 +2,41 @@
 
 + [Idm API](#def-apiIdm)
 + [Using the FIWARE LAB instance (OAuth2)](#def-apiOAuth)
-  - [Register your user account](#def-userAccount)
-  - [Register your application](#def-registerApplication)
-  - [OAuth2 Authentication](#def-oauth2Auth)
-    - [Authorization Code Grant](#def-codeGrant)
-      - [Authorization Request](#def-codeGrantAuthReq)
-      - [Authorization Response](#def-codeGrantAuthRes)
-      - [Access Token Request](#def-codeGrantTokReq)
-      - [Access Token Response](#def-codeGrantTokRes)
-    - [Implicit Grant](#def-implicitGrant)
-      - [Authorization Request](#def-impliGrantAuthReq)
-      - [Access Token Response](#def-impliGrantTokRes)
-    - [Resource Owner Password Credentials Grant](#def-passwordGrant)
-      - [Access Token Request](#def-passGrantTokReq)
-      - [Access Token Response](#def-passGrantTokRes)
-    - [Client Credentials Grant](#def-credentialsGrant)
-      - [Access Token Request](#def-credGrantTokReq)
-      - [Access Token Response](#def-credGrantTokRes)
-    - [Get user information and roles](#def-getUserInfo)
+  + [Register your user account](#def-userAccount)
+  + [Register your application](#def-registerApplication)
+  + [OAuth2 Authentication](#def-oauth2Auth)
+     - [Authorization Code Grant](#def-codeGrant)
+       - [Authorization Request](#def-codeGrantAuthReq)
+       - [Authorization Response](#def-codeGrantAuthRes)
+       - [Access Token Request](#def-codeGrantTokReq)
+       - [Access Token Response](#def-codeGrantTokRes)
+     - [Implicit Grant](#def-implicitGrant)
+       - [Authorization Request](#def-impliGrantAuthReq)
+       - [Access Token Response](#def-impliGrantTokRes)
+     - [Resource Owner Password Credentials Grant](#def-passwordGrant)
+       - [Access Token Request](#def-passGrantTokReq)
+       - [Access Token Response](#def-passGrantTokRes)
+     - [Client Credentials Grant](#def-credentialsGrant)
+        - [Access Token Request](#def-credGrantTokReq)
+       - [Access Token Response](#def-credGrantTokRes)
+    + [Get user information and roles](#def-getUserInfo)
 ---
 <a name="def-apiIdm"></a>
 # Idm API 
+Identity Manager (IdM) GE API specifications comply with existing standards for authentication and user and provide access information.
 
+This specification is intended for Service Consumers (with developement skills) and Cloud Providers. For the former, this document provides a full specification of how to interoperate with the Identity Management Service API. For the latter, this specification indicates the interface to be provided to the client application developers to provide the described functionalities. To use this information, the reader should first have a general understanding of the Generic Enabler service.
+
+The API user should be familiar with:
+
+ - RESTful web services
+ - HTTP/1.1
+ - JSON and/or XML data serialization formats.
+
+Users can perform these action through the API:
+
+ - Authentication
+ - Manage applications
 
 <a name="def-apiOAuth"></a>
 # Using the FIWARE LAB instance (OAuth2)
@@ -194,8 +207,14 @@ See [Authorization Code Grant](#def-codeGrantTokRes)
 
 <a name="def-getUserInfo"></a>
 ## Get user information and roles
-**Warning**
-Be aware that if you used the Client Credentials Grant to obtain the token there is no such thing as an 'authorizing user' because of the nature of this grant. You can still use this endpoint to validate the token, but the JSON (if the token is valid) will be empty.
+
+**Warning** 
+> Be aware that if you used the Client Credentials Grant to
+> obtain the token there is no such thing as an 'authorizing user'
+> because of the nature of this grant. You can still use this endpoint
+> to validate the token, but the JSON (if the token is valid) will be
+> empty.
+
  
 Request:
 ~~~

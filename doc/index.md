@@ -1,4 +1,5 @@
-#Identity Manager - Keyrock
+
+# Identity Manager - Keyrock
 
 [![License badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Documentation badge](https://img.shields.io/badge/docs-stable-brightgreen.svg?style=flat)](http://fiware-idm.readthedocs.org/en/stable/)
@@ -6,9 +7,11 @@
 [![Support badge]( https://img.shields.io/badge/support-sof-yellowgreen.svg)](http://stackoverflow.com/questions/tagged/fiware)
 
 + [Introduction](#def-introduction)
+	- [Software requirements](#def-requirements)
 + [How to Build & Install](#def-build)
     - [Docker](#def-docker)
 + [API Overview](#def-api)
++ [Changes Introduced in 7.x](#def-changes)
 + [Advanced documentation](#def-advanced)
 + [License](#def-license)
 
@@ -27,72 +30,104 @@ This project is part of [FIWARE](http://fiware.org). You will find more informat
 
 Welcome to the main repository for the UPM's implementation of the FIWARE Identity Management Generic Enabler. Thanks to this component and together with PEP Proxy and Authorization PDP GEs, you will add authentication and authorization security to your services and applications.
 
+<a name="def-requirements"></a>
+### Software requirements
+This GE is based on a javascript environment and SQL databases. In order to run the identity manager the following requirements must be installed:
+
+ - node.js
+ - npm
+ - mysql-server (^5.7)
+
+
 <a name="def-build"></a>
 ## How to Build & Install
 
-- Software requirements:
+ 1. Clone Proxy repository:
 
-	+ nodejs 
-	+ npm
-	+ mysql-server (^5.7)
+	~~~
+	git clone https://github.com/ging/fiware-idm.git
+	~~~
 
-- Clone Proxy repository:
+ 2. Install the dependencies:
 
-<pre>
-git clone https://github.com/ging/fiware-idm.git
-</pre>
+	~~~
+	cd fiware-idm/
+	npm install
+	~~~
 
-- Install the dependencies:
+ 3. Duplicate config.template in config.js:
 
-<pre>
-cd fiware-idm/
-npm install
-</pre>
+	~~~
+	cp config.js.template config.js
+	~~~
 
-- Duplicate config.template in config.js and configure data base access credentials:
-
-<pre>
-config.database = {};
-config.database.host = 'localhost';       // default: 'localhost'
-config.database.name = 'idm';             // default: 'idm'
-config.database.user = 'root';            // default: 'root'
-config.database.password = 'idm';         // default: 'idm'
-</pre>
-
-- Generate certificates OpenSSL for HTTPS
+ 4. Configure data base access credentials:
 
 <pre>
-./generate_openssl_keys.sh
+		config.database = {
+		    host: 'localhost',           // default: 'localhost' 
+		    password: 'idm',             // default: 'idm'
+		    username: 'root',            // default: 'root'
+		    database: 'idm',             // default: 'idm'
+		    dialect: 'mysql'             // default: 'mysql'
+		}
 </pre>
 
-- Create database, run migrations and seeders:
-<pre>
-npm run-script create_db
-npm run-script migrate_db 
-npm run-script seed_db 
+ 5. To listen HTTPs requests, generate certificates OpenSSL and
+    configure config.js:
+
+	~~~
+	./generate_openssl_keys.sh
+	~~~
+ <pre>
+		config.https = {
+		    enabled: true, 		//default: 'false'
+		    cert_file: 'certs/idm-2018-cert.pem',
+		    key_file: 'certs/idm-2018-key.pem',
+		    port: 443
+		}
 </pre>
 
-- Start server with admin rights (server listens in 443 port by default).
+ 6. Create database, run migrations and seeders:
 
-<pre>
-sudo npm start
-</pre>
+	~~~
+	npm run-script create_db
+	npm run-script migrate_db 
+	npm run-script seed_db 
+	~~~
+
+ 7. Start server with admin rights (server listens in 3000 port by
+    default or in 443 if HTTPs is enabled).
+
+	~~~
+	sudo npm start
+	~~~
+You can test de Identity manager using the default user:
+ - Email: admin@test.com
+ - Password: 1234
 
 <a name="def-docker"></a>
 ### Docker
 
 We also provide a Docker image to facilitate you the building of this GE.
 
-- [Here](https://github.com/ging/fiware-idm/tree/master/extras/docker) you will find the Dockerfile and the documentation explaining how to use it.
+- [Here](https://github.com/ging/mesias/tree/master/extras/docker) you will find the Dockerfile and the documentation explaining how to use it.
 - In [Docker Hub](https://hub.docker.com/r/fiware/idm/) you will find the public image.
+
+<a name="def-changes"></a>
+## Changes Introduced in 7.x
+They biggest change introduced in 7.x is that the identity manager no longer depends on Openstack components Keystone and Horizon. Now is fully implemented in Node JS. Another remarkable changes have been made:
+
+ 1. A driver has been implemented in order to make authentication against another database different from the default one.+
+ 2. The appearance of the web portal can be easily modified though configurable themes.
+ 3. Now users don't need to switch session in order to create an application that will belong to an organization.
+ 4. Permissions of an application can be edited or deleted.
 
 <a name="def-api"></a>
 ## API Overview
-Several resources could be managed through the API like users, applications or organizations.
+Several resources could be managed through the API like users, applications or organizations. Further information could be found in the [API section](http://mesias.readthedocs.org/en/latest/api/#def-apiIdm).
 
-Finally, one of the main uses of this Generic Enabler is to allow developers to add identity management (authentication and authorization) to their applications based on FIWARE identity. This is posible thanks to [OAuth2](https://oauth.net/2/) protocol.
-
-- [OAuth2 API](http://mesias.readthedocs.org/en/latest/api/#def-apiOAuth
+Finally, one of the main uses of this Generic Enabler is to allow developers to add identity management (authentication and authorization) to their applications based on FIWARE identity. This is posible thanks to [OAuth2](https://oauth.net/2/) protocol. For more information check the [OAuth2 API](http://mesias.readthedocs.org/en/latest/api/#def-apiOAuth).
 
 <a name="def-advanced"></a>
 ## Advanced Documentation

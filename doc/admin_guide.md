@@ -39,13 +39,11 @@ In order to execute Keyrock, it is needed to have previously installed the follo
 The following steps need to be performed to get Keyrock up and running:
 
 - Download the software, using [GitHub](http://github.com/ging/fiware-idm).
-
 <pre>
 <code>git clone https://github.com/ging/mesias</code>
 </pre>
 
 - Install all required libraries using NPM.
-
 <pre>
 <code>cd fiware-idm
 npm install</code>
@@ -55,6 +53,7 @@ npm install</code>
 <pre>
 <code>cp config.js.template config.js</code>
 </pre>
+
  - Edit it with the corresponding with basic info. Below you can see an example: 
 	
 Configure port and host:		
@@ -93,31 +92,28 @@ Configure email:
 	}
 ~~~
  - Create database, run migrations and seeders:
- <pre>
+<pre>
 <code>npm run-script create_db
 npm run-script migrate_db 
 npm run-script seed_db </code>
 </pre>
- - Launch the server:
 
+ - Launch the server:
 <pre>
 <code>npm start</code>
 </pre>
 
 - You can also install forever.js to run it in a production environment:
-
 <pre>
 <code>sudo npm install forever -g</code>
 </pre>
 
 - And then run the server using forever:
-
 <pre>
 <code>forever start bin/www</code>
 </pre>
 
 - To know the status of the process you can run the next command:
-
 <pre>
 <code>forever status</code>
 </pre>
@@ -126,9 +122,10 @@ npm run-script seed_db </code>
 Follow the next steps in order to enable the server to listen to HTTPs requests.
 
  - Generate OpenSSL certificates.
- <pre>
+<pre>
 <code>./generate_openssl_keys.sh</code>
 </pre>
+
  - Enable HTTPs in config.js.
 ~~~
 	config.https = {
@@ -147,9 +144,10 @@ Follow the next steps in order to enable the server to listen to HTTPs requests.
 You can also configure the Identity Manager to authenticate users through other database.
 
  - Copy file named custom_authentication_driver.js.template to custom_authentication_driver.js
- <pre>
+<pre>
 <code>cp helpers/custom_authentication_driver.js.template helpers/custom_authentication_driver.js</code>
 </pre>
+
 - Edit custom_authentication_driver.js according to your user table schema.
 - Enable use of driver in config.js file and customize database attributes.
 ~~~
@@ -196,7 +194,7 @@ You can change between these themes in config.js
 Additionally you can customize your own theme. In order to do that follow these steps:
 
  - Create a new subfolder in themes directory
- <pre>
+<pre>
 <code>mkdir themes/example</code>
 </pre>
  - Generate _colors.scss, _styles.scss and style.scss
@@ -301,6 +299,7 @@ The Sanity Check Procedures are the steps that a System Administrator will take 
 If you have correctly populated the database when installing the GE, the connection with it is up and running.
 
 The databases and tables needed are:
+
 ![](https://raw.githubusercontent.com/ging/mesias/master/doc/resources/AdminGuide_database_table.png)
 <p align="center">Figure 4: IdM databases table</p>
 

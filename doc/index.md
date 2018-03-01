@@ -1,4 +1,5 @@
 
+
 # Identity Manager - Keyrock
 
 [![License badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -44,22 +45,22 @@ This GE is based on a javascript environment and SQL databases. In order to run 
 
  1. Clone Proxy repository:
 
-	~~~
-	git clone https://github.com/ging/fiware-idm.git
-	~~~
+<pre>
+<code>git clone https://github.com/ging/mesias.git</code>
+</pre>
 
  2. Install the dependencies:
 
-	~~~
-	cd fiware-idm/
-	npm install
-	~~~
+<pre>
+<code>cd fiware-idm/
+npm install</code>
+</pre>
 
  3. Duplicate config.template in config.js:
 
-	~~~
-	cp config.js.template config.js
-	~~~
+<pre>
+<code>cp config.js.template config.js</code>
+</pre>
 
  4. Configure data base access credentials:
 
@@ -73,13 +74,13 @@ This GE is based on a javascript environment and SQL databases. In order to run 
 		}
 </pre>
 
- 5. To listen HTTPs requests, generate certificates OpenSSL and
-    configure config.js:
+ 5. To configure the server to listen HTTPs requests, generate certificates OpenSSL and configure config.js:
 
-	~~~
-	./generate_openssl_keys.sh
-	~~~
- <pre>
+<pre>
+<code>./generate_openssl_keys.sh</code>
+</pre>
+
+<pre>
 		config.https = {
 		    enabled: true, 		//default: 'false'
 		    cert_file: 'certs/idm-2018-cert.pem',
@@ -90,18 +91,20 @@ This GE is based on a javascript environment and SQL databases. In order to run 
 
  6. Create database, run migrations and seeders:
 
-	~~~
-	npm run-script create_db
-	npm run-script migrate_db 
-	npm run-script seed_db 
-	~~~
+<pre>
+<code>npm run-script create_db
+npm run-script migrate_db 
+npm run-script seed_db </code>
+</pre>
 
  7. Start server with admin rights (server listens in 3000 port by
     default or in 443 if HTTPs is enabled).
 
-	~~~
-	sudo npm start
-	~~~
+<pre>
+<code>sudo npm start</code>
+</pre>
+
+
 You can test de Identity manager using the default user:
  - Email: admin@test.com
  - Password: 1234

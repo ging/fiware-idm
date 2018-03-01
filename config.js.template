@@ -59,6 +59,7 @@ config.external_auth = {
 
 }
 
+// Config themes
 config.site = {
     title: 'Identity Manager',
     theme: 'default'

@@ -31,7 +31,7 @@ module.exports = {
                         key: 'id'
                     }
                 },
-                iot: {
+                iot_id: {
                     type: Sequelize.STRING,
                     onDelete: 'CASCADE',
                     references: {
@@ -39,7 +39,7 @@ module.exports = {
                         key: 'id'
                     }
                 },
-                pep_proxy: {
+                pep_proxy_id: {
                     type: Sequelize.STRING,
                     onDelete: 'CASCADE',
                     references: {

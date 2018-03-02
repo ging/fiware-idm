@@ -1,20 +1,21 @@
 // Model to create Oauth2 server
 var models = require('./models.js');
+var oauth2 = require('../config').oauth2;
 var _ = require('lodash');
 var debug = require('debug')('idm:oauth2-model_oauth_server')
 
 var user = models.user;
 var iot = models.iot;
-var pep_proxy = models.pep_proxy;
 var role_assignment = models.role_assignment;
 var oauth_client = models.oauth_client;
 var oauth_access_token = models.oauth_access_token;
-var oauth_access_token_pep_proxy = models.oauth_access_token_pep_proxy;
 var oauth_authorization_code = models.oauth_authorization_code;
 var oauth_refresh_token = models.oauth_refresh_token;
 
 function getAccessToken(bearerToken) {
+  
   debug("-------getAccesToken-------")
+  
   return oauth_access_token
     .findOne({
       where: {access_token: bearerToken},
@@ -23,10 +24,6 @@ function getAccessToken(bearerToken) {
         {
           model: user,
           attributes: ['id', 'username', 'email'],
-        }, 
-        {
-          model: pep_proxy,
-          attributes: ['id'],
         },
         {
           model: iot,
@@ -34,24 +31,24 @@ function getAccessToken(bearerToken) {
         },
         {
           model: oauth_client,
-          attributes: ['id']
+          attributes: ['id', 'grant_type']
         }
       ],
     })
     .then(function (accessToken) {
       if (!accessToken) return false;
-      var token = accessToken.toJSON();
+      var token = accessToken.toJSON()
+      token.oauth_client = accessToken.OauthClient
       if (accessToken.User) {
         token.user = accessToken.User;
       } else if (accessToken.Iot) {
-        token.iot = accessToken.Iot;
-      } else if (accessToken.PepProxy) {
-        token.pep_proxy = accessToken.PepProxy; 
+        token.user = accessToken.Iot;
       }
+
+      delete token.OauthClient
       delete token.User 
-      delete token.PepProxy 
       delete token.Iot
-      token.application = accessToken.OauthClient;
+
       //token.scope = token.scope
       return token;
     })
@@ -61,9 +58,11 @@ function getAccessToken(bearerToken) {
 }
 
 function getClient(clientId, clientSecret) {
+  
   debug("-------getClient-------")
+  
   const options = {
-    where: {id: clientId},
+    where: {id: clientId, secret: clientSecret},
     attributes: ['id', 'redirect_uri', 'scope', 'grant_type']
   };
   if (clientSecret) options.where.secret = clientSecret;
@@ -72,82 +71,93 @@ function getClient(clientId, clientSecret) {
     .findOne(options)
     .then(function (client) {
       if (!client) return new Error("client not found");
-      var clientWithGrants = client.toJSON()
-      clientWithGrants.grants = [clientWithGrants.grant_type]
-      delete clientWithGrants.grant_type
-      // Todo: need to create another table for redirect URIs
+      
+      var clientWithGrants = client
+
+      clientWithGrants.grants = clientWithGrants.grant_type
       clientWithGrants.redirectUris = [clientWithGrants.redirect_uri]
+      clientWithGrants.refreshTokenLifetime = oauth2.refresh_token_lifetime
+      clientWithGrants.accessTokenLifetime  = oauth2.access_token_lifetime
+
+      delete clientWithGrants.grant_type
       delete clientWithGrants.redirect_uri
-      //clientWithGrants.refreshTokenLifetime = integer optional
-      //clientWithGrants.accessTokenLifetime  = integer optional
+      
       return clientWithGrants
     }).catch(function (err) {
       debug("getClient - Err: ", err)
     });
 }
 
-function getUserFromEmail(email) {
-  debug("-------getUserFromEmail-------")
+
+function getIdentity(id, password) {
+
+  debug("-------getIdentity-------")
+
+  var search_user = user.findOne({
+    where: {email: id},
+    attributes: ['id', 'username', 'password', 'scope'],
+  })
+
+  var search_iot = iot.findOne({
+    where: {id: id},
+    attributes: ['id', 'password'],
+  })
+
+  return Promise.all([search_user, search_iot]).then(function(values) {
+
+    var user = values[0]
+    var iot = values[1]
+
+    if ((user && iot) || (!user && !iot)) {
+      return false
+    }
+
+    if (user) {
+      if (user.verifyPassword(password)) {
+          return user
+        } 
+    }
+
+    if (iot) {
+      if (iot.verifyPassword(password)) {
+          return iot
+        } 
+    }
+
+    return false
+
+  }).catch(function(err) {
+    debug("getIdentity - Err: ", err)
+  })
+}
+
+
+function getUser(email, password) {
+
+  debug("-------getUser-------")
   return user
     .findOne({
       where: {email: email},
       attributes: ['id', 'username', 'password', 'scope'],
     })
     .then(function (user) {
-      return user.toJSON();
+      if (user) {
+        if (user.verifyPassword(password)) {
+          return user.toJSON()
+        } 
+      }
+      return false
     })
     .catch(function (err) {
       debug("getUser - Err: ", err)
     });
 }
 
-function getUser(username, password) {
-  debug("-------getUser-------")
-  return user
-    .findOne({
-      where: {username: username},
-      attributes: ['id', 'username', 'password', 'scope'],
-    })
-    .then(function (user) {
-      return user.verifyPassword(password) ? user.toJSON() : false;
-    })
-    .catch(function (err) {
-      debug("getUser - Err: ", err)
-    });
-}
-
-function getIotSensor(id, password) {
-  debug("-------getIotSensor-------")
-  return iot
-    .findOne({
-      where: {id: id},
-      attributes: ['id', 'password'/*, 'scope'*/],
-    })
-    .then(function(iot) {
-      return iot.verifyPassword(password) ? iot.toJSON() : false;
-    })
-    .catch(function (err) {
-      debug("getIot - Err: ", err)
-    });
-}
-
-function getPepProxy(id, password) {
-  debug("-------getPepProxy-------")
-  return pep_proxy
-    .findOne({
-      where: {id: id},
-      attributes: ['id', 'password'/*, 'scope'*/],
-    })
-    .then(function(pep_proxy) {
-      return pep_proxy.verifyPassword(password) ? pep_proxy.toJSON() : false;
-    })
-    .catch(function (err) {
-      debug("getPepProxy - Err: ", err)
-    });
-}
 
 function revokeAuthorizationCode(code) {
+
   debug("-------revokeAuthorizationCode-------")
+
   return oauth_authorization_code.findOne({
     where: {
       authorization_code: code.code
@@ -169,7 +179,9 @@ function revokeAuthorizationCode(code) {
 }
 
 function revokeToken(token) {
+
   debug("-------revokeToken-------")
+
   return oauth_refresh_token.findOne({
     where: {
       refresh_token: token.refreshToken
@@ -190,25 +202,38 @@ function revokeToken(token) {
   });
 }
 
-function saveToken(token, client, user, pep_proxy, iot) {
+function saveToken(token, client, identity) {
+
   debug("-------saveToken-------")
+
+  var user_id = null 
+  var iot_id = null
+
+  if (identity) {
+    if (identity._modelOptions.tableName === "user") {
+      user_id = identity.id
+    }
+
+    if (identity._modelOptions.tableName === "iot") {
+      iot_id = identity.id
+    }
+  }
+
   return Promise.all([
       oauth_access_token.create({
         access_token: token.accessToken,
         expires: token.accessTokenExpiresAt,
         oauth_client_id: client.id,
-        user_id: (user) ? user.id : null,
-        pep_proxy_id: (pep_proxy) ? pep_proxy.id : null,
-        iot_id: (iot) ? iot.id : null,
+        user_id: user_id,
+        iot_id: iot_id,
         scope: token.scope
       }),
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
         expires: token.refreshTokenExpiresAt,
         oauth_client_id: client.id,
-        user_id: (user) ? user.id : null,
-        pep_proxy_id: (pep_proxy) ? pep_proxy.id : null,
-        iot_id: (iot) ? iot.id : null,
+        user_id: user_id,
+        iot_id: iot_id,
         scope: token.scope
       }) : [],
 
@@ -217,9 +242,6 @@ function saveToken(token, client, user, pep_proxy, iot) {
       return _.assign(  // expected to return client and user, but not returning
         {
           client: client,
-          user: (user) ? user : null,
-          iot: (iot) ? iot : null,
-          pep_proxy: (pep_proxy) ? pep_proxy : null,
           access_token: token.accessToken, // proxy
           refresh_token: token.refreshToken, // proxy
         },
@@ -227,12 +249,14 @@ function saveToken(token, client, user, pep_proxy, iot) {
       )
     })
     .catch(function (err) {
-      debug("revokeToken - Err: ", err)
+      debug("saveToken - Err: ", err)
     });
 }
 
 function getAuthorizationCode(code) {
+
   debug("-------getAuthorizationCode-------")
+
   return oauth_authorization_code
     .findOne({
       attributes: ['oauth_client_id', 'expires', 'user_id', 'scope'],
@@ -257,7 +281,9 @@ function getAuthorizationCode(code) {
 }
 
 function saveAuthorizationCode(code, client, user) {
+
   debug("-------saveAuthorizationCode-------")
+
   return oauth_authorization_code
     .create({
       expires: code.expiresAt,
@@ -276,7 +302,9 @@ function saveAuthorizationCode(code, client, user) {
 
 
 function getUserFromClient(client) {
+
   debug("-------getUserFromClient-------")
+
   var options = {
     where: {oauth_client_id: client.id},
     include: [user]
@@ -295,7 +323,9 @@ function getUserFromClient(client) {
 }
 
 function getRefreshToken(refreshToken) {
+
   debug("-------getRefreshToken-------")
+
   if (!refreshToken || refreshToken === 'undefined') return false
 
   return oauth_refresh_token
@@ -322,12 +352,16 @@ function getRefreshToken(refreshToken) {
 }
 
 // function validateScope(token, client) {
+
 //   debug("-------validateScope-------")
+
 //   return (user.scope === scope && client.scope === scope && scope !== null) ? scope : false
 // }
 
 // function verifyScope(token, scope) {
+
 //   debug("-------verifyScope-------")
+
 //     return token.scope === scope
 // }
 
@@ -339,16 +373,13 @@ module.exports = {
   getAuthorizationCode: getAuthorizationCode, //getOAuthAuthorizationCode renamed to,
   getClient: getClient,
   getRefreshToken: getRefreshToken,
-  getUserFromEmail: getUserFromEmail,
   getUser: getUser,
-  getIotSensor: getIotSensor,
-  getPepProxy: getPepProxy,
+  getIdentity: getIdentity,
   getUserFromClient: getUserFromClient,
-  //grantTypeAllowed, Removed in oauth2-server 3.0
   revokeAuthorizationCode: revokeAuthorizationCode,
   revokeToken: revokeToken,
-  saveToken: saveToken,//saveOAuthAccessToken, renamed to
-  saveAuthorizationCode: saveAuthorizationCode, //renamed saveOAuthAuthorizationCode,
+  saveToken: saveToken,
+  saveAuthorizationCode: saveAuthorizationCode,
   // validateScope: validateScope,
   // verifyScope: verifyScope,
 }

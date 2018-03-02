@@ -5,7 +5,7 @@ var router = express.Router();
 var oauthController = require('../../controllers/oauth2/oauth2');
 
 // Routes for Oauth2
-router.get('/token',     oauthController.authenticate());
+// router.get('/token',     oauthController.authenticate());
 router.post('/token',    oauthController.token);
 router.get('/authorize', oauthController.response_type_required, function (req, res, next) {
     if (req.session.user) {

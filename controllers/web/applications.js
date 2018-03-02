@@ -284,8 +284,8 @@ exports.create = function(req, res, next) {
 	} else {
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client
 		var application = models.oauth_client.build(req.body.application);
-		application.grant_type = 'authorization_code'
-		application.response_type = 'code'
+		application.grant_type = ['client_credentials', 'password', 'implicit', 'authorization_code', 'refresh_token']
+		application.response_type = ['code', 'token']
 		var validate = application.validate()
 		var save = validate.then(function() {
 			application.description.trim()

@@ -21,6 +21,12 @@ config.password_encryption = {
 	key: 'nodejs_idm'		// Must be changed
 }
 
+// Config oauth2 parameters
+config.oauth2 = {
+    access_token_lifetime: 60 * 60,                 // One hour
+    refresh_token_lifetime: 60 * 60 * 24 * 14       // Two weeks
+}
+
 // Enable authzforce
 config.authzforce = {
 	enabled: false,

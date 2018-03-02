@@ -159,7 +159,7 @@ exports.authorize = function(req, res, next){
     }).catch(function(error) { next(error); });
 }
 
-// POST /oauth2/token -- Function to handle token authentication
+// GET /oauth2/token -- Function to handle token authentication
 exports.authenticate = function(options){
 
   debug(' --> authenticate')
@@ -174,32 +174,22 @@ exports.authenticate = function(options){
     });
     var response = new Response(res);
 
-    oauth.authenticate(request, response,options)
-      .then(function (user_info) {
-        // Request is authorized.
-        models.role_assignment.findAll({
-          where: { user_id: user_info.user.id, oauth_client_id: user_info.OauthClient.id},
-          include: [{
-            model: models.role,
-            attributes: ['id', 'name']
-          }]
-        }).then(function(role_assignment) {
-          var response = {displayName: user_info.user.username, email: user_info.user.email, app_id: user_info.OauthClient.id}
-          var roles = []
-          if (role_assignment) {
-            for (var i = 0; i < role_assignment.length; i++) {
-              roles.push({id: role_assignment[i].Role.id, name: role_assignment[i].Role.name})
-            }
-            response['roles'] = roles
-            res.send(response)  
-          }
-        }).catch(function(error) { next(error); });
-        
-      })
-      .catch(function (err) {
-        // Request is not authorized.
-        res.status(err.code || 500).json(err)
-      });
+    oauth.authenticate(request, response,options).then(function (user_info) {
+      var response = {app_id: user_info.oauth_client.id}
+      if (user_info.user) {
+        if (user_info.user._modelOptions.tableName === 'iot') {
+          response['displayName'] = user_info.user.id
+        } else if (user_info.user._modelOptions.tableName === 'user') {
+          response['displayName'] = user_info.user.username
+          response['email'] = user_info.user.email
+        } 
+      }
+      res.send(response)      
+    }).catch(function (err) {
+      debug('Error ' + err)
+      // Request is not authorized.
+      res.status(err.code || 500).json(err)
+    });
   }
 }
 

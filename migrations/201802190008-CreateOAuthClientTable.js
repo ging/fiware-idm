@@ -26,10 +26,24 @@ module.exports = {
                 }, image: {
                   type: Sequelize.STRING,
                   defaultValue: 'default'
+                }, grant_type: {
+                  type: Sequelize.STRING,
+                  get: function () {
+                      return (this.getDataValue('grant_type')) ? this.getDataValue('grant_type').split(',') : []
+                  },
+                  set: function (val) {
+                     this.setDataValue('grant_type',val.join(','))
+                  } 
+                }, response_type:  {     
+                  type: Sequelize.STRING,
+                  get: function () {
+                      return (this.getDataValue('response_type')) ? this.getDataValue('response_type').split(',') : []
+                  },
+                  set: function (val) {
+                     this.setDataValue('response_type',val.join(','))
+                  } 
                 },
                 client_type: Sequelize.STRING(15), 
-                grant_type: Sequelize.STRING(25), 
-                response_type: Sequelize.STRING(5),
                 scope: Sequelize.STRING(80),
                 extra: Sequelize.JSON
             },

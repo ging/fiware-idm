@@ -98,8 +98,6 @@ auth_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(user, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(iot, {onDelete: 'cascade'});
-oauth_access_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
-
 
 // Relation between OAuthClient and authorization codes
 oauth_authorization_code.belongsTo(oauth_client, {onDelete: 'cascade'});
@@ -109,7 +107,6 @@ oauth_authorization_code.belongsTo(user, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(user, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(iot, {onDelete: 'cascade'});
-oauth_refresh_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
 
 // Relation between roles and OAuthClients
 role.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
@@ -166,6 +163,7 @@ var search_identity = require('./helpers/search_identity')
 var search_distinct = require('./helpers/search_distinct')
 
 exports.helpers = {
-  search_identity: search_identity,
+  search_pep_or_user: search_identity.search_pep_or_user,
+  search_iot_or_user: search_identity.search_iot_or_user,
   search_distinct: search_distinct
 }

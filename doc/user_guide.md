@@ -33,7 +33,7 @@ This document describes the user and programming guide for Identity Management c
 
 Go to "Sign in" if you heave previously created an account, otherwise "Sign up" to create a new account:
 
-![](https://raw.githubusercontent.com/ging/mesias/master/doc/resources/UserGuide_Login.png)
+![](https://raw.githubusercontent.com/ging/mesias/master/doc/resources/UserGuide_login.png)
 <p align="center">Figure 1: IdM Log in page</p>
 
 <a name="def-fig1"></a>

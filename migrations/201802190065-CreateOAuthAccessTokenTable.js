@@ -38,14 +38,6 @@ module.exports = {
                         model: 'iot',
                         key: 'id'
                     }
-                },
-                pep_proxy_id: {
-                    type: Sequelize.STRING,
-                    onDelete: 'CASCADE',
-                    references: {
-                        model: 'pep_proxy',
-                        key: 'id'
-                    }
                 }
             },
             {

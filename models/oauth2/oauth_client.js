@@ -24,10 +24,24 @@ module.exports = function(sequelize, DataTypes) {
     }, image: {
       type: DataTypes.STRING,
       defaultValue: 'default'
+    }, grant_type: {
+      type: DataTypes.STRING,
+      get: function () {
+          return (this.getDataValue('grant_type')) ? this.getDataValue('grant_type').split(',') : []
+      },
+      set: function (val) {
+         this.setDataValue('grant_type',val.join(','))
+      } 
+    }, response_type:  {     
+      type: DataTypes.STRING,
+      get: function () {
+          return (this.getDataValue('response_type')) ? this.getDataValue('response_type').split(',') : []
+      },
+      set: function (val) {
+         this.setDataValue('response_type',val.join(','))
+      } 
     },
     client_type: DataTypes.STRING(15), 
-    grant_type: DataTypes.STRING(25), 
-    response_type: DataTypes.STRING(5),
     scope: DataTypes.STRING(80),
     extra: DataTypes.JSON 
   }, {

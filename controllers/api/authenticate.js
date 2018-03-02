@@ -190,7 +190,7 @@ function search_identity(req) {
 			reject({ error: {message: 'Expecting to find name and password in request body', code: 400, title: 'Bad Request'}})
 		}
 
-		models.helpers.search_identity(user.name).then(function(identity) {
+		models.helpers.search_pep_or_user(user.name).then(function(identity) {
 
 			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})

@@ -16,9 +16,8 @@ exports.load_oauth = function(req, res, next, oauthTokenId) {
 		var subject_token = decodeURIComponent(oauthTokenId);
 
 		// Search info of oauth token and include pep proxy
-		search_oauth2_token(subject_token).then(function(token_owner) {
-			//req.pep_proxy = pep_proxy
-			req.token_owner = token_owner
+		search_oauth2_token(subject_token).then(function(oauth2_token_owner) {
+			req.oauth2_token_owner = oauth2_token_owner
 			next()
 		}).catch(function(error) {
 			debug("Error: " + error)
@@ -36,11 +35,10 @@ exports.check_request = function(req, res, next) {
 		res.status(400).json({ error: {message: 'Expecting to find X-Auth-token in requests', code: 400, title: 'Bad Request'}})
 	} else {
 		var auth_token = req.headers['x-auth-token']
-		//req.auth_token = req.headers['x-auth-token']
 
 		// Search info of auth token and include pep proxy
-		search_auth_token(auth_token).then(function(pep_proxy) {
-			req.pep_proxy = pep_proxy
+		search_auth_token(auth_token).then(function(auth_token_owner) {
+			req.auth_token_owner = auth_token_owner
 			next()
 		}).catch(function(error) {
 			debug("Error: " + error)
@@ -56,25 +54,52 @@ exports.check_request = function(req, res, next) {
 exports.info_token = function(req, res, next) {
 	
 	debug(' --> info_token')
-	
-	// Search for roles of iot agents
-	if (req.token_owner.iot_id) {
-		// ... search for roles of iots
-	} else {
 
-		var user = req.token_owner.user
-		var app_id = req.pep_proxy.oauth_client_id
-		// Search roles of user in application
-		search_user_info(user, app_id).then(function(user_info) {
+	if (req.auth_token_owner._modelOptions.tableName === 'user') {
+
+		// Search for roles of iot agents
+		/*if (req.oauth2_token_owner.iot) {
+
+		} else if (req.oauth2_token_owner.user) {
+
+		} else {
+			
+		}*/
+
+	} else if (req.auth_token_owner._modelOptions.tableName === 'pep_proxy') {
+		
+		var app_id = req.auth_token_owner.oauth_client_id
+
+		// Search for roles of iot agents
+		if (req.oauth2_token_owner.iot) {
+			// ... search for roles of iots
+		} else if (req.oauth2_token_owner.user) {
+			
+			var user = req.oauth2_token_owner.user
+			// Search roles of user in application
+			search_user_info(user, app_id).then(function(user_info) {
+				res.status(201).json(user_info)
+			}).catch(function(error) {
+				debug("Error: " + error)
+				if (!error.error) {
+					error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+				}
+				res.status(error.error.code).json(error)
+			})
+		} else {
+			var user_info = { 	organizations: [], 
+							displayName: '',
+							roles: [],
+							app_id: app_id,
+							isGravatarEnabled: false,
+							email: '',
+							id: '',
+							app_azf_domain: ''
+						}
 			res.status(201).json(user_info)
-		}).catch(function(error) {
-			debug("Error: " + error)
-			if (!error.error) {
-				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-			}
-			res.status(error.error.code).json(error)
-		})
+		}
 	}
+	
 }
 
 // Function to search token in database
@@ -84,15 +109,21 @@ function search_auth_token(token_id) {
 		where: { access_token: token_id },
 		include: [{
 			model: models.pep_proxy,
-			attributes: ['id', 'password', 'oauth_client_id']
+			attributes: ['id', 'oauth_client_id']
+		},
+		{
+			model: models.user,
+			attributes: ['id', 'username', 'email', 'image', 'gravatar']
 		}]
 	}).then(function(token_info) {		
 		if (token_info) {
 			if ((new Date()).getTime() > token_info.expires.getTime()) {
 				return Promise.reject({ error: {message: 'Auth token has expired', code: 401, title: 'Unauthorized'}})	
 			}
+
+			var auth_token_owner = (token_info.User) ? token_info.User : token_info.PepProxy
 			
-			return Promise.resolve(token_info.PepProxy)
+			return Promise.resolve(auth_token_owner)
 		} else {
 			return Promise.reject({ error: {message: 'Auth token not found', code: 404, title: 'Not Found'}})
 		}
@@ -114,9 +145,17 @@ function search_oauth2_token(token_id) {
 				return Promise.reject({ error: {message: 'Oauth token has expired', code: 401, title: 'Unauthorized'}})	
 			}
 
-			var token_owner = (token_info.user_id) ? {user: token_info.User} : {iot_id: token_info.iot_id}
-			token_owner['oauth_client_id'] = token_info.oauth_client_id 
-			return Promise.resolve(token_owner)
+			var oauth2_token_owner = { oauth_client_id: token_info.oauth_client_id }
+
+			if (token_info.user_id) {
+				oauth2_token_owner['user'] = token_info.User
+			}
+
+			if (token_info.iot_id) {
+				oauth2_token_owner['iot'] = token_info.iot_id
+			}
+			 
+			return Promise.resolve(oauth2_token_owner)
 		} else {
 			return Promise.reject({ error: {message: 'Oauth token not found', code: 404, title: 'Not Found'}})
 		}

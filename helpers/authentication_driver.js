@@ -19,7 +19,6 @@ exports.authenticate = function(username, password, callback) {
     }).then(function(user) {
         if (user) {
             // Verify password and if user is enabled to use the web
-            console.log('eieieiie');
             if(user.verifyPassword(password) && user.enabled){
                 callback(null, user);
             } else { callback(new Error('invalid')); }   
@@ -28,7 +27,6 @@ exports.authenticate = function(username, password, callback) {
 };
 
 exports.verifyPassword = function(password) {
-    console.log('voooy');
     var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');
     return encripted === this.password;
 }

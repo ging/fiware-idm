@@ -62,7 +62,7 @@ function getClient(clientId, clientSecret) {
   debug("-------getClient-------")
   
   const options = {
-    where: {id: clientId, secret: clientSecret},
+    where: {id: clientId},
     attributes: ['id', 'redirect_uri', 'scope', 'grant_type']
   };
   if (clientSecret) options.where.secret = clientSecret;
@@ -78,6 +78,7 @@ function getClient(clientId, clientSecret) {
       clientWithGrants.redirectUris = [clientWithGrants.redirect_uri]
       clientWithGrants.refreshTokenLifetime = oauth2.refresh_token_lifetime
       clientWithGrants.accessTokenLifetime  = oauth2.access_token_lifetime
+      clientWithGrants.authorizationCodeLifetime  = oauth2.authorization_code_lifetime
 
       delete clientWithGrants.grant_type
       delete clientWithGrants.redirect_uri
@@ -163,13 +164,7 @@ function revokeAuthorizationCode(code) {
       authorization_code: code.code
     }
   }).then(function (rCode) {
-    //if(rCode) rCode.destroy();
-    /***
-     * As per the discussion we need set older date
-     * revokeToken will expected return a boolean in future version
-     * https://github.com/oauthjs/node-oauth2-server/pull/274
-     * https://github.com/oauthjs/node-oauth2-server/issues/290
-     */
+
     var expiredCode = code
     expiredCode.expiresAt = new Date('2015-05-28T06:59:53.000Z')
     return expiredCode
@@ -188,12 +183,7 @@ function revokeToken(token) {
     }
   }).then(function (rT) {
     if (rT) rT.destroy();
-    /***
-     * As per the discussion we need set older date
-     * revokeToken will expected return a boolean in future version
-     * https://github.com/oauthjs/node-oauth2-server/pull/274
-     * https://github.com/oauthjs/node-oauth2-server/issues/290
-     */
+
     var expiredToken = token
     expiredToken.refreshTokenExpiresAt = new Date('2015-05-28T06:59:53.000Z')
     return expiredToken
@@ -218,6 +208,7 @@ function saveToken(token, client, identity) {
       iot_id = identity.id
     }
   }
+
 
   return Promise.all([
       oauth_access_token.create({
@@ -265,8 +256,8 @@ function getAuthorizationCode(code) {
     })
     .then(function (authCodeModel) {
       if (!authCodeModel) return false;
-      var client = authCodeModel.OauthClient.toJSON()
-      var user = authCodeModel.User.toJSON()
+      var client = authCodeModel.OauthClient
+      var user = authCodeModel.User
       return reCode = {
         code: code,
         client: client,
@@ -288,6 +279,7 @@ function saveAuthorizationCode(code, client, user) {
     .create({
       expires: code.expiresAt,
       oauth_client_id: client.id,
+      redirect_uri: client.redirect_uri,
       authorization_code: code.authorizationCode,
       user_id: user.id,
       scope: code.scope
@@ -330,19 +322,20 @@ function getRefreshToken(refreshToken) {
 
   return oauth_refresh_token
     .findOne({
-      attributes: ['client_id', 'user_id', 'expires'],
+      attributes: ['oauth_client_id', 'user_id', 'expires'],
       where: {refresh_token: refreshToken},
       include: [oauth_client, user]
 
     })
     .then(function (savedRT) {
+
       var tokenTemp = {
-        user: savedRT ? savedRT.User.toJSON() : {},
-        client: savedRT ? savedRT.OAuthClient.toJSON() : {},
+        user: savedRT ? savedRT.User : {},
+        client: savedRT ? savedRT.OauthClient : {},
         refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
         refreshToken: refreshToken,
         refresh_token: refreshToken,
-        scope: savedRT.scope
+        scope: savedRT ? savedRT.scope : ''
       };
       return tokenTemp;
 

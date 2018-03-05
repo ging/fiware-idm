@@ -23,6 +23,7 @@ config.password_encryption = {
 
 // Config oauth2 parameters
 config.oauth2 = {
+    authorization_code_lifetime: 5 * 60,            // Five minutes
     access_token_lifetime: 60 * 60,                 // One hour
     refresh_token_lifetime: 60 * 60 * 24 * 14       // Two weeks
 }

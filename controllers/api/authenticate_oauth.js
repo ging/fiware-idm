@@ -55,51 +55,36 @@ exports.info_token = function(req, res, next) {
 	
 	debug(' --> info_token')
 
-	if (req.auth_token_owner._modelOptions.tableName === 'user') {
+	var app_id = req.oauth2_token_owner.oauth_client_id
 
-		// Search for roles of iot agents
-		/*if (req.oauth2_token_owner.iot) {
-
-		} else if (req.oauth2_token_owner.user) {
-
-		} else {
-			
-		}*/
-
-	} else if (req.auth_token_owner._modelOptions.tableName === 'pep_proxy') {
+	// Search for roles of iot agents
+	if (req.oauth2_token_owner.iot) {
+		// ... search for roles of iots
+	} else if (req.oauth2_token_owner.user) {
 		
-		var app_id = req.auth_token_owner.oauth_client_id
-
-		// Search for roles of iot agents
-		if (req.oauth2_token_owner.iot) {
-			// ... search for roles of iots
-		} else if (req.oauth2_token_owner.user) {
-			
-			var user = req.oauth2_token_owner.user
-			// Search roles of user in application
-			search_user_info(user, app_id).then(function(user_info) {
-				res.status(201).json(user_info)
-			}).catch(function(error) {
-				debug("Error: " + error)
-				if (!error.error) {
-					error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-				}
-				res.status(error.error.code).json(error)
-			})
-		} else {
-			var user_info = { 	organizations: [], 
-							displayName: '',
-							roles: [],
-							app_id: app_id,
-							isGravatarEnabled: false,
-							email: '',
-							id: '',
-							app_azf_domain: ''
-						}
+		var user = req.oauth2_token_owner.user
+		// Search roles of user in application
+		search_user_info(user, app_id).then(function(user_info) {
 			res.status(201).json(user_info)
-		}
+		}).catch(function(error) {
+			debug("Error: " + error)
+			if (!error.error) {
+				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			}
+			res.status(error.error.code).json(error)
+		})
+	} else {
+		var user_info = { 	organizations: [], 
+						displayName: '',
+						roles: [],
+						app_id: app_id,
+						isGravatarEnabled: false,
+						email: '',
+						id: '',
+						app_azf_domain: ''
+					}
+		res.status(201).json(user_info)
 	}
-	
 }
 
 // Function to search token in database
@@ -210,7 +195,6 @@ function search_user_info(user, app_id) {
 		if (role_assignment.length <= 0) {
 			return Promise.reject({ error: {message: 'User is not authorized', code: 401, title: 'Unauthorized'}})
 		} else {
-
 			var user_info = { 	organizations: [], 
 							displayName: user.username,
 							roles: [],
@@ -218,7 +202,7 @@ function search_user_info(user, app_id) {
 							isGravatarEnabled: user.gravatar,
 							email: user.email,
 							id: user.id,
-							app_azf_domain: (config_authzforce) ? values[2].az_domain : ''
+							app_azf_domain: (config_authzforce && values[2]) ? values[2].az_domain : ''
 						}
 
 			for (i=0; i < role_assignment.length; i++) {

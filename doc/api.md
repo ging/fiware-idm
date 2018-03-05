@@ -1,3 +1,4 @@
+
 # API OVERVIEW
 
 + [Idm API](#def-apiIdm)
@@ -19,6 +20,9 @@
         - [Client Credentials Grant](#def-credentialsGrant)
              - [Access Token Request](#def-credGrantTokReq)
              - [Access Token Response](#def-credGrantTokRes)
+        - [Refresh Token Grant](#def-refreshToken)
+             - [Access Token Request](#def-refreseGrantTokReq)
+             - [Access Token Response](#def-refreshGrantTokRes)
         - [Get user information and roles](#def-getUserInfo)
 ---
 <a name="def-apiIdm"></a>
@@ -159,7 +163,10 @@ The `redirect_uri` attribute must match the `Callback URL` attribute provided to
 
 <a name="def-impliGrantTokRes"></a>
 #### Access Token Response
-See [Authorization Code Grant](#def-codeGrantTokRes)
+~~~
+HTTP/1.1 302 Found
+Location: https://client.example.com/callback_url?token=SplxlOBeZQQYbYS6WxSbIA&token_type=Bearer&expires_in=3600&state=xyz&
+~~~
 
 <a name="def-passwordGrant"></a>
 ### Resource Owner Password Credentials Grant
@@ -180,6 +187,28 @@ grant_type=password&username=demo&password=123
 ~~~
 <a name="def-passGrantTokRes"></a>
 #### Access Token Response
+See [Authorization Code Grant](#def-codeGrantTokRes)
+
+<a name="def-refreshToken"></a>
+### Refresh Token Grant
+
+The client can request for a new token using the refresh token obtained the first time through another grant type except the client credentials grant type.
+
+<a name="def-refreshGrantTokReq"></a>
+#### Access Token Request
+
+~~~
+POST /oauth2/token HTTP/1.1
+Host: idm-portal
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
+~~~
+
+<a name="def-refreshGrantTokRes"></a>
+#### Access Token Response
+
 See [Authorization Code Grant](#def-codeGrantTokRes)
 
 <a name="def-credentialsGrant"></a>

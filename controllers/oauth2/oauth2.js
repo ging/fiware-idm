@@ -16,17 +16,15 @@ oauth = new oauthServer({
 exports.token = function(req,res, next){
 
   debug(' --> token')
+  
 	var request = new Request(req);
 	var response = new Response(res);
 
-	oauth
-	  .token(request,response)
-	  .then(function(token) {
-	    // Todo: remove unnecessary values in response
-	    return res.json(response.body)
-	  }).catch(function(err){
-	    return res.status(500).json(err)
-	  })
+	oauth.token(request,response).then(function(token) {
+    return res.json(response.body)
+  }).catch(function(err){
+    return res.status(500).json(err)
+  })
 }
 
 // MW to see if query contains response_type attribute
@@ -130,23 +128,18 @@ exports.authorize = function(req, res, next){
       include: [{
         model: models.oauth_client,
         attributes: ['id', 'name', 'response_type', 'redirect_uri']
+      }, {
+        model: models.user,
+        attributes: ['id', 'username', 'gravatar', 'image']
       }]
     }).then(function(application) {
       if (application) {
-        req.body.email = req.session.user.email;
+        req.body.user = application.User
         var request = new Request(req);
         var response = new Response(res);
 
         return oauth.authorize(request, response).then(function(success) {
-          if (req.query.response_type == "code") {
-            redirect_uri = success.redirectUri + '?code=' + success.authorizationCode + '&state=' + req.query.state
-            res.status(302).redirect(redirect_uri)                
-          } else if (req.query.response_type == "token") {
-            redirect_uri = success.client.redirectUris[0] + '#access_token=' + success.access_token + '&state='+req.query.state+'&token_type='+response.body.token_type+'&expires_in=' + response.body.expires_in
-            res.status(302).redirect(redirect_uri)
-          } else {
-            throw new Error("Invalid response_type")
-          }
+          return res.redirect(success)
         }).catch(function(err){
           res.status(err.code || 500).json(err)
         })

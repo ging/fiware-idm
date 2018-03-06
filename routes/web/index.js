@@ -4,8 +4,7 @@ var bodyParser = require('body-parser');
 
 var router = express.Router();
 
-var csrfProtection = csrf({ cookie: false })
-var parseForm = bodyParser.urlencoded({ extended: false })
+var csrfProtection = csrf({ cookie: true })
 
 // Create controllers
 var web_session_controller = require('../../controllers/web/index').sessions;
@@ -24,9 +23,9 @@ router.use( function( req, res, next ) {
 router.get('/', csrfProtection, function(req, res, next) {
 	if (req.session.user) {
         res.redirect('/idm')
-    } else {
-    	res.render('index', { errors: [], csrfToken: req.csrfToken() });
-    }
+  } else {
+  	res.render('index', { errors: [], csrfToken: req.csrfToken() });
+  }
 });
 
 // Routes when user is logged
@@ -59,9 +58,14 @@ router.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error', {errors: []});
+  if (err.code === 'EBADCSRFTOKEN') {
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error', {errors: []});
+  }
+
+  res.status(403)
+  res.send('invalid csrf token')
 });
 
 

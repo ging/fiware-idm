@@ -57,6 +57,9 @@ var user = external_auth.enabled ?
 // Import user registration profile table
 var user_registration_profile = sequelize.import(path.join(__dirname,'user_registration_profile'));
 
+// Import user authorized application table
+var user_authorized_application = sequelize.import(path.join(__dirname,'user_authorized_application'));
+
 // Import organization table
 var organization = sequelize.import(path.join(__dirname,'organization'));
 
@@ -137,6 +140,9 @@ role_permission.belongsTo(permission, { foreignKey: { allowNull: false }, onDele
 user_organization.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 user_organization.belongsTo(organization, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
+// Relation between user that has authorized an application and the application itself
+user_authorized_application.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+user_authorized_application.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 
 // Export tables
@@ -157,6 +163,7 @@ exports.oauth_access_token = oauth_access_token;
 exports.oauth_refresh_token = oauth_refresh_token;
 exports.scope = scope;
 exports.auth_token = auth_token;
+exports.user_authorized_application = user_authorized_application;
 
 // Export helpers
 var search_identity = require('./helpers/search_identity')

@@ -6,6 +6,15 @@ var _ = require('lodash');
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+// MW to check if id of application is valid
+exports.check_application = function(req, res, next) {
+	if (req.params.applicationId === 'idm_admin_app') {
+		res.status(404).json({error: {message: "Application not found", code: 404, title: "Bad Request"}})
+	} else {
+		next()
+	}
+}
+
 // GET /v1/applications -- Send index of applications
 exports.index = function(req, res) {
 	debug('--> index')

@@ -5,7 +5,7 @@
         <div class="modal-header">
           <h3>Authorize <%= application.name %>?</h3>
         </div>
-    	<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/oauth2/authorize?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" method="POST" enctype="">
+    	<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/oauth2/enable_app?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" method="POST" enctype="">
           <div class="modal-body clearfix">
             <div>
               <p>
@@ -19,7 +19,7 @@
             </fieldset>
           </div>
           <div class="modal-footer">
-            <a href="/oauth2/authorize/cancel/" class="secondary cancel btn btn-default">Deny</a>
+            <a href="/" class="secondary cancel btn btn-default">Deny</a>
             <button type="submit" class="btn btn-primary">Authorize</button>
           </div>
         </form>

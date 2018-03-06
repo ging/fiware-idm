@@ -7,8 +7,8 @@ var api_appl_controller = require('../../controllers/api/index').applications;
 // Routes for applications
 router.get('/', 					api_appl_controller.index);
 router.post('/', 					api_appl_controller.create);
-router.get('/:applicationId', 		api_appl_controller.info);
-router.patch('/:applicationId', 	api_appl_controller.update);
-router.delete('/:applicationId', 	api_appl_controller.delete);
+router.get('/:applicationId', 		api_appl_controller.check_application,	api_appl_controller.info);
+router.patch('/:applicationId', 	api_appl_controller.check_application,	api_appl_controller.update);
+router.delete('/:applicationId', 	api_appl_controller.check_application,	api_appl_controller.delete);
 
 module.exports = router;

@@ -13,7 +13,8 @@ config.https = {
 
 // Secret for user sessions in web
 config.session = {
-	secret: 'nodejs_idm'	// Must be changed
+    secret: 'nodejs_idm',       // Must be changed
+    expires: 60 * 60 * 1000     // 1 hour
 }
 
 // Key to encrypt user passwords

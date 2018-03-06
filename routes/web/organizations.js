@@ -5,8 +5,7 @@ var path = require('path');
 var uuid = require('uuid');
 var csrf = require('csurf')
 var bodyParser = require('body-parser');
-var csrfProtection = csrf({ cookie: false })
-var parseForm = bodyParser.urlencoded({ extended: false })
+var csrfProtection = csrf({ cookie: true })
 
 // Home web Controller
 var web_org_controller = require('../../controllers/web/index').organizations;
@@ -32,19 +31,19 @@ router.get('/available',                               csrfProtection, web_auth_
 router.get('/',                                        csrfProtection, web_org_controller.index);
 router.get('/filtered',                   			   csrfProtection, web_org_controller.filter);
 router.get('/new',                                     csrfProtection, web_org_controller.new);
-router.post('/',                                       parseForm,  csrfProtection, web_org_controller.create);
+router.post('/',                                       csrfProtection, web_org_controller.create);
 router.get('/:organizationId',                         csrfProtection, web_org_controller.show);
 router.get('/:organizationId/members',                 csrfProtection, web_org_controller.get_members);
 router.get('/:organizationId/applications',            csrfProtection, web_org_controller.get_applications);
 router.get('/:organizationId/edit',                    web_org_controller.owned_permissions,  csrfProtection, web_org_controller.edit);
-router.put('/:organizationId/edit/avatar',             web_org_controller.owned_permissions,  multer({storage: imageOrgUpload}).single('image'), parseForm,  csrfProtection,  web_org_controller.update_avatar);
-router.put('/:organizationId/edit/info',               web_org_controller.owned_permissions,  parseForm,  csrfProtection,    web_org_controller.update_info);
-router.delete('/:organizationId/edit/delete_avatar',   web_org_controller.owned_permissions,  parseForm,  csrfProtection,    web_org_controller.delete_avatar);
-router.delete('/:organizationId',                      web_org_controller.owned_permissions,  parseForm,  csrfProtection,    web_org_controller.destroy);
-router.delete('/:organizationId/remove',               parseForm,  csrfProtection,    web_org_controller.remove);
+router.put('/:organizationId/edit/avatar',             web_org_controller.owned_permissions,  multer({storage: imageOrgUpload}).single('image'), csrfProtection,  web_org_controller.update_avatar);
+router.put('/:organizationId/edit/info',               web_org_controller.owned_permissions,  csrfProtection,    web_org_controller.update_info);
+router.delete('/:organizationId/edit/delete_avatar',   web_org_controller.owned_permissions,  csrfProtection,    web_org_controller.delete_avatar);
+router.delete('/:organizationId',                      web_org_controller.owned_permissions,  csrfProtection,    web_org_controller.destroy);
+router.delete('/:organizationId/remove',               csrfProtection,    web_org_controller.remove);
 
 // Routes to manage members in organizations
 router.get('/:organizationId/edit/members',            web_org_controller.owned_permissions,  csrfProtection,    web_man_memb_controller.get_members);
-router.post('/:organizationId/edit/members',           web_org_controller.owned_permissions,  parseForm,  csrfProtection,    web_man_memb_controller.add_members);
+router.post('/:organizationId/edit/members',           web_org_controller.owned_permissions,  csrfProtection,    web_man_memb_controller.add_members);
 
 module.exports = router;

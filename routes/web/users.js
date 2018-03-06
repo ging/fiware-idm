@@ -5,8 +5,7 @@ var path = require('path');
 var uuid = require('uuid');
 var csrf = require('csurf')
 var bodyParser = require('body-parser');
-var csrfProtection = csrf({ cookie: false })
-var parseForm = bodyParser.urlencoded({ extended: false })
+var csrfProtection = csrf({ cookie: true })
 
 // Home web Controller
 var web_user_controller = require('../../controllers/web/index').users;
@@ -31,11 +30,11 @@ router.get('/available',                       csrfProtection,  web_auth_user_co
 router.get('/:userId',                         csrfProtection, web_user_controller.show);
 router.get('/:userId/organizations',           csrfProtection, web_user_controller.get_organizations);
 router.get('/:userId/applications',            csrfProtection, web_user_controller.get_applications);
-router.get('/:userId/edit',                    web_user_controller.owned_permissions,   parseForm,  csrfProtection,     web_user_controller.edit);
-router.put('/:userId/edit/info',               web_user_controller.owned_permissions,   parseForm,  csrfProtection,     web_user_controller.update_info);
-router.post('/:userId/edit/avatar',            web_user_controller.owned_permissions,   multer({storage: imageUserUpload}).single('image'),  parseForm,  csrfProtection,    web_user_controller.update_avatar);
-router.put('/:userId/edit/avatar',             web_user_controller.owned_permissions,   parseForm,  csrfProtection,     web_user_controller.set_avatar);
-router.delete('/:userId/edit/avatar/delete',   web_user_controller.owned_permissions,   parseForm,  csrfProtection,     web_user_controller.delete_avatar);
-router.put('/:userId/edit/gravatar',           web_user_controller.owned_permissions,   parseForm,  csrfProtection,     web_user_controller.set_gravatar);
+router.get('/:userId/edit',                    web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.edit);
+router.put('/:userId/edit/info',               web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.update_info);
+router.post('/:userId/edit/avatar',            web_user_controller.owned_permissions,   multer({storage: imageUserUpload}).single('image'),  csrfProtection,    web_user_controller.update_avatar);
+router.put('/:userId/edit/avatar',             web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.set_avatar);
+router.delete('/:userId/edit/avatar/delete',   web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.delete_avatar);
+router.put('/:userId/edit/gravatar',           web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.set_gravatar);
 
 module.exports = router;

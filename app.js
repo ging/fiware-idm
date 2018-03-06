@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var csrf = require('csurf')
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-var session = require('express-session');
+//var session = require('express-session');
+var session = require('cookie-session');
 var partials = require('express-partials');
 var sassMiddleware = require('node-sass-middleware');
 var forceSsl = require('express-force-ssl');
@@ -44,7 +45,10 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(partials());
 app.use(cookieParser(config.session.secret));
 app.use(session({
-  secret: config.session.secret
+  secret: config.session.secret,
+  name: 'session',
+  secure: config.https.enabled,
+  maxAge: config.session.expires
 }));
 
 var styles = config.site.theme || 'default';
@@ -63,6 +67,7 @@ app.use(methodOverride('_method'));
 
 // Helpers dinamicos:
 app.use(function(req, res, next) {
+
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
   // init req.session.redir

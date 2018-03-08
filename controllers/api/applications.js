@@ -252,11 +252,11 @@ function check_update_body_request(body) {
 		}
 
 		if (body.application.name && body.application.name.length === 0) {
-			reect({error: {message: "Cannot set empty name", code: 400, title: "Bad Request"}})
+			reject({error: {message: "Cannot set empty name", code: 400, title: "Bad Request"}})
 		}
 
 		if (body.application.redirect_uri && body.application.redirect_uri.length === 0) {
-			reect({error: {message: "Cannot set empty redirect_uri", code: 400, title: "Bad Request"}})
+			reject({error: {message: "Cannot set empty redirect_uri", code: 400, title: "Bad Request"}})
 		}
 
 		if (body.application.id || body.application.secret || body.application.response_type) {

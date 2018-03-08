@@ -131,7 +131,7 @@ exports.info = function(req, res) {
 exports.update = function(req, res) {
 	debug('--> update')
 	
-	check_update_body_request(req.body).then(function(oauth_type) {
+	check_update_body_request(req.body).then(function() {
 		
 		return models.user.findOne({
 			where: { id: req.params.userId}

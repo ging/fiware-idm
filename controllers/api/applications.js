@@ -21,7 +21,7 @@ exports.index = function(req, res) {
 
 	// Search organizations in wich user is member or owner
 	var search_organizations = models.user_organization.findAll({ 
-		where: { user_id: req.user_id },
+		where: { user_id: req.user.id },
 		include: [{
 			model: models.organization,
 			attributes: ['id']
@@ -30,7 +30,7 @@ exports.index = function(req, res) {
 	search_organizations.then(function(organizations) {
 		return models.role_assignment.findAll({
 			where: { [Op.or]: [{ organization_id: organizations.map(elem => elem.organization_id)}, 
-							   {user_id: req.user_id}]},
+							   {user_id: req.user.id}]},
 			include: [{
 				model: models.oauth_client,
 				attributes: ['id' ,
@@ -61,14 +61,20 @@ exports.create = function(req, res) {
 	debug("--> create");
 
 	// Build a row and validate if input values are correct (not empty) before saving values in oauth_client
-	check_create_body_request(req.body).then(function(grant_type) {
+	check_create_body_request(req.body).then(function(oauth_type) {
 		
 		var application = models.oauth_client.build(req.body.application);
-	
+		
+		application.image = 'default'
 		application.id = uuid.v4()
 		application.secret = uuid.v4()
-		application.grant_type = grant_type[0]
-		application.response_type = (grant_type.length > 1) ? grant_type[1] : null
+		if (oauth_type.grant_type.length > 0) {
+			application.grant_type = oauth_type.grant_type
+			application.response_type = oauth_type.response_type
+		} else {
+			application.grant_type = ['client_credentials', 'password', 'implicit', 'authorization_code', 'refresh_token']
+			application.response_type = ['code', 'token']
+		}
 
 		var create_application = application.save({fields: ['id', 
 										  'secret', 
@@ -84,7 +90,7 @@ exports.create = function(req, res) {
 			return models.role_assignment.create({
 				oauth_client_id: application.id, 
 		        role_id: 'provider', 
-		        user_id: req.user_id
+		        user_id: req.user.id
 		    })
 		}) 
 
@@ -125,7 +131,7 @@ exports.info = function(req, res) {
 exports.update = function(req, res) {
 	debug('--> update')
 	
-	check_update_body_request(req.body).then(function(grant_type) {
+	check_update_body_request(req.body).then(function(oauth_type) {
 		
 		return models.oauth_client.findOne({
 			where: { id: req.params.applicationId}
@@ -139,12 +145,12 @@ exports.update = function(req, res) {
 				application.description = (req.body.application.description) ? req.body.application.description : application.description
 				application.url = (req.body.application.url) ? req.body.application.url : application.url
 				application.redirect_uri = (req.body.application.redirect_uri) ? req.body.application.redirect_uri : application.redirect_uri
-				application.image = (req.body.application.image) ? req.body.application.image : application.image
 				application.client_type = (req.body.application.client_type) ? req.body.application.client_type : application.client_type
-				
-				if (grant_type) {
-					application.grant_type = grant_type[0]
-					application.response_type = (grant_type.length > 1) ? grant_type[1] : null
+				application.image = 'default'
+
+				if (oauth_type) {
+					application.grant_type = oauth_type.grant_type
+					application.response_type = oauth_type.response_type
 				}
 
 				return application.save().then(function() {
@@ -197,26 +203,43 @@ function check_create_body_request(body) {
 			reject({error: {message: "Missing parameter application in body request", code: 400, title: "Bad Request"}})			
 		}
 
-		if (!body.application.name && body.application.name.length === 0) {
+		if (!body.application.name) {
 			reject({error: {message: "Missing parameter name in body request or empty name", code: 400, title: "Bad Request"}})
 		}
 
-		switch(body.application.grant_type) {
-			case 'client_credentials':
-				resolve(['client_credentials'])
-				break;
-			case 'password':
-				resolve(['password'])
-				break;
-			case 'authorization_code':
-				resolve(['authorization_code', 'code'])
-				break;
-			case 'implicit':
-				resolve(['implicit', 'token'])
-				break;
-			default:
-				reject({error: {message: "Invalid Grant Type", code: 400, title: "Bad Request"}})
+		if (!body.application.redirect_uri) {
+			reject({error: {message: "Missing parameter redirect_uri in body request", code: 400, title: "Bad Request"}})
 		}
+
+		var oauth_types = { grant_type: [], response_type: []}
+
+		if (body.application.grant_type) {
+			if (body.application.grant_type.includes('client_credentials')) {
+				oauth_types.grant_type.push('client_credentials')
+			}
+			if (body.application.grant_type.includes('password')) {
+				oauth_types.grant_type.push('password')
+			}
+			if (body.application.grant_type.includes('authorization_code')) {
+				oauth_types.grant_type.push('authorization_code')
+				oauth_types.response_type.push('code')
+			}
+			if (body.application.grant_type.includes('implicit')) {
+				oauth_types.grant_type.push('implicit')
+				oauth_types.response_type.push('token')
+			}
+			if (body.application.grant_type.includes('refresh_token')) {
+				oauth_types.grant_type.push('refresh_token')
+			}
+		}
+
+
+		if (body.application.grant_type && oauth_types.grant_type.length <= 0) {
+			reject({error: {message: "Invalid Grant Type", code: 400, title: "Bad Request"}})
+		} else {
+			resolve(oauth_types)
+		}
+
 	})	
 }
 
@@ -229,7 +252,11 @@ function check_update_body_request(body) {
 		}
 
 		if (body.application.name && body.application.name.length === 0) {
-			reject({error: {message: "Cannot set empty name", code: 400, title: "Bad Request"}})
+			reect({error: {message: "Cannot set empty name", code: 400, title: "Bad Request"}})
+		}
+
+		if (body.application.redirect_uri && body.application.redirect_uri.length === 0) {
+			reect({error: {message: "Cannot set empty redirect_uri", code: 400, title: "Bad Request"}})
 		}
 
 		if (body.application.id || body.application.secret || body.application.response_type) {
@@ -237,21 +264,30 @@ function check_update_body_request(body) {
 		}
 
 		if (body.application.grant_type) {
-			switch(body.application.grant_type) {
-				case 'client_credentials':
-					resolve(['client_credentials'])
-					break;
-				case 'password':
-					resolve(['password'])
-					break;
-				case 'authorization_code':
-					resolve(['authorization_code', 'code'])
-					break;
-				case 'implicit':
-					resolve(['implicit', 'token'])
-					break;
-				default:
-					reject({error: {message: "Invalid Grant Type", code: 400, title: "Bad Request"}})
+			var oauth_types = { grant_type: [], response_type: []}
+
+			if (body.application.grant_type.includes('client_credentials')) {
+				oauth_types.grant_type.push('client_credentials')
+			}
+			if (body.application.grant_type.includes('password')) {
+				oauth_types.grant_type.push('password')
+			}
+			if (body.application.grant_type.includes('authorization_code')) {
+				oauth_types.grant_type.push('authorization_code')
+				oauth_types.response_type.push('code')
+			}
+			if (body.application.grant_type.includes('implicit')) {
+				oauth_types.grant_type.push('implicit')
+				oauth_types.response_type.push('token')
+			}
+			if (body.application.grant_type.includes('refresh_token')) {
+				oauth_types.grant_type.push('refresh_token')
+			}
+
+			if (oauth_types.grant_type.length <= 0) {
+				reject({error: {message: "Invalid Grant Type", code: 400, title: "Bad Request"}})
+			} else {
+				resolve(oauth_types)
 			}
 		} else {
 			resolve()

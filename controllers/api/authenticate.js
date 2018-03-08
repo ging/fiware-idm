@@ -9,10 +9,10 @@ var pepProxyApiController = require('../../controllers/api/pep_proxies.js');
 
 // Middleware to see if the token correspond to user
 var is_user = function(req, res, next) {
-	if (req.user_id) {
+	if (req.user) {
 		next()
 	} else {
-		res.status(401).json({ error: {message: 'You are not allow to perform the action', code: 401, title: 'Unauthorized'}})
+		res.status(403).json({ error: {message: 'User not allow to perform the action', code: 403, title: 'Forbidden'}})
 	}
 }
 
@@ -24,12 +24,13 @@ var validate_token = function(req, res, next) {
 	check_validate_token_request(req).then(function(token_id) {
 
 		return authenticate_token(token_id).then(function(agent) { 
-			if (agent.pep_proxy_id) {
-				req.pep_proxy_id = agent.pep_proxy_id
+
+			if (agent._modelOptions.tableName === "pep_proxy") {
+				req.pep_proxy = agent
 			}
 
-			if (agent.user_id) {
-				req.user_id = agent.user_id	
+			if (agent._modelOptions.tableName === "user") {
+				req.user = agent	
 			}
 			next()
 		}).catch(function(error) {
@@ -114,9 +115,7 @@ var create_token = function(req, res, next) {
 		return Promise.all(methods)
 				.then(function(values) {
 					if (methods.length === 2) {
-						var passw_user = values[0][Object.keys(values[0])[0]]
-						var token_user = values[1][Object.keys(values[1])[0]]
-						if (passw_user !== token_user) {
+						if (values[0].id !== values[1].id) {
 							return Promise.reject({ error: {message: 'Token not correspond to user', code: 401, title: 'Unauthorized'}})
 						}
 					}
@@ -128,7 +127,11 @@ var create_token = function(req, res, next) {
 		var token_id = uuid.v4()
 		var expires = new Date((new Date()).getTime() + 1000*3600)
 		var row = {access_token: token_id, expires: expires, valid: true}
-		row = Object.assign({}, row, authenticated[0])
+		if (authenticated[0]._modelOptions.tableName === 'user') {
+			row = Object.assign({}, row, { user_id: authenticated[0].id})
+		} else {
+			row = Object.assign({}, row, {pep_proxy_id: authenticated[0].id})
+		}
 
 		models.auth_token.create(row).then(function(auth_row) {
 			var response_body = { token: { methods: req.body.auth.identity.methods, expires_at: expires}}
@@ -224,7 +227,7 @@ function authenticate_user(email, password) {
 					reject({ error: {message: 'Internal error', code: 500, title: 'Internal error'}})
 				}
 	        } else {
-				resolve({ user_id: user.id})         
+				resolve(user)         
 	        }
 		});
 	})
@@ -243,7 +246,7 @@ function authenticate_pep_proxy(id, password) {
 					reject({ error: {message: 'Internal error', code: 500, title: 'Internal error'}})
 				}
 	        } else {
-				resolve({ pep_proxy_id: pep_proxy.id})         
+				resolve(pep_proxy)         
 	        }
 
 		});
@@ -265,7 +268,7 @@ function search_token(req) {
 			reject({ error: {message: 'Expecting to find id of token in request body', code: 400, title: 'Bad Request'}})
 		}
 
-		authenticate_token(token_id).then(function(user_id) { resolve(user_id) }).catch(function(error) { reject(error) })
+		authenticate_token(token_id).then(function(agent) { resolve(agent) }).catch(function(error) { reject(error) })
 	})	
 }
 
@@ -273,14 +276,23 @@ function search_token(req) {
 function authenticate_token(token_id) {
 	
 	return models.auth_token.findOne({
-		where: { access_token: token_id }
+		where: { access_token: token_id },
+		include: [{
+			model: models.user,
+			attributes: ['id', 'username', 'email', 'date_password', 'enabled', 'admin']
+		}, {
+			model: models.pep_proxy,
+			attributes: ['id']
+		}]
 	}).then(function(token_row) {
 	
 		if (token_row) {
 			if ((new Date()).getTime() > token_row.expires.getTime()) {
 				return Promise.reject({ error: {message: 'Token has expired', code: 401, title: 'Unauthorized'}})	
 			}
-			var token_owner = (token_row.user_id) ? {user_id: token_row.user_id} : {pep_proxy_id: token_row.pep_proxy_id} 
+
+			var token_owner = (token_row.User) ? token_row.User : token_row.PepProxy
+
 			return Promise.resolve(token_owner)
 		} else {
 			return Promise.reject({ error: {message: 'Token not found', code: 404, title: 'Not Found'}})

@@ -121,14 +121,18 @@ exports.email = function(req, res) {
 			           		var verification_key = Math.random().toString(36).substr(2);
 			                var verification_expires = new Date((new Date()).getTime() + 1000*3600*24)
 
-			                models.user_registration_profile.update(
-			                    { verification_key: verification_key,
-			                      verification_expires: verification_expires 
-			                }, {
-			                    fields: ['verification_key', 'verification_expires'],
-			                    where: { user_email: user.email}
+			                models.user_registration_profile.findOrCreate({
+			                	defaults: { 
+			                		user_email: user.email,
+			                      	verification_key: verification_key,
+			                      	verification_expires: verification_expires
+			                    },
+			                    where: { user_email: user.email }
+			                }).then(function(user_prof) {
+		                		user_prof[0].verification_key = verification_key
+		                		user_prof[0].verification_expires = verification_expires
+		                		return user_prof[0].save({ fields: ['verification_key', 'verification_expires']})
 			                }).then(function() {
-
 			                    // Send an email to the user
 			                    var link = config.host + '/idm/settings/email/verify?verification_key=' + verification_key + '&new_email=' + req.body.email;
 
@@ -176,6 +180,7 @@ exports.email_verify = function(req, res) {
     	// Search the user through the id
 	    models.user_registration_profile.find({
 	        where: {
+	        	verification_key: req.query.verification_key,
 	            user_email: req.session.user.email
 	        },
         	include: [ models.user ]
@@ -187,8 +192,12 @@ exports.email_verify = function(req, res) {
                     res.locals.message = {text: 'Error changing email address', type: 'danger'};
                     res.render('index', { errors: [], csrfToken: req.csrfToken() });
                 } else {
-                	user.email = req.query.new_email 
-                    user.save().then(function(values) {
+                	models.user.update({ 
+                		email: req.query.new_email, 
+	                }, {
+                        fields: ['email'],
+                        where: { email: user.email}
+                    }).then(function(values) {
                     	req.session.user.email = req.query.new_email
                         res.locals.message = { text: ' Email successfully changed', type: 'success'}
                         res.render('settings/settings', {csrfToken: req.csrfToken()})

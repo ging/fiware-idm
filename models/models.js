@@ -91,7 +91,7 @@ var authzforce = sequelize.import(path.join(__dirname,'authzforce'));
 var auth_token = sequelize.import(path.join(__dirname,'auth_token'));
 
 // Relation between users and their parameters to create or change an account
-user_registration_profile.belongsTo(user, {foreignKey: 'user_email', targetKey: 'email', onDelete: 'cascade'})
+user_registration_profile.belongsTo(user, {foreignKey: 'user_email', targetKey: 'email', onDelete: 'cascade', onUpdate: 'cascade'})
 
 // Relation between users and auth tokens
 auth_token.belongsTo(user, {onDelete: 'cascade'});

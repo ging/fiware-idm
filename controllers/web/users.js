@@ -428,10 +428,20 @@ exports.create = function(req, res, next) {
                 // Save the row in the database
                 user.save().then(function() {
 
-                    models.user_registration_profile.create({ 
-                        user_email: user.email,
-                        activation_key: Math.random().toString(36).substr(2),
-                        activation_expires: new Date((new Date()).getTime() + 1000*3600*24)     // 1 day
+                    var activation_key = Math.random().toString(36).substr(2);
+                    var activation_expires = new Date((new Date()).getTime() + 1000*3600*24)
+
+                    models.user_registration_profile.findOrCreate({
+                        defaults: { 
+                            user_email: user.email,
+                            activation_key: activation_key,
+                            activation_expires: activation_expires
+                        },
+                        where: { user_email: user.email }
+                    }).then(function(user_prof) {
+                        user_prof[0].activation_key = activation_key
+                        user_prof[0].activation_expires = activation_expires
+                        return user_prof[0].save({ fields: ['activation_key', 'activation_expires']})
                     }).then(function(user_registration) {
                         if (req.body.use_gravatar) {
                             var url = gravatar.url(user.email, {s:100, r:'g', d: 404}, {protocol: 'https'});
@@ -462,7 +472,7 @@ exports.create = function(req, res, next) {
 
                         
                         // Send an email to the user
-                        var link = config.host + '/activate?activation_key=' + user_registration.activation_key + '&email=' + user.email;
+                        var link = config.host + '/activate?activation_key=' + activation_key + '&email=' + user.email;
 
                         var mail_data = {
                             name: user.username,
@@ -523,7 +533,10 @@ exports.activate = function(req, res, next) {
                         res.render('index', { errors: [], csrfToken: req.csrfToken() });
                     }); 
                 }
-            };
+            } else {
+                res.locals.message = {text: 'Error activating user', type: 'danger'};
+                res.render('index', { errors: [], csrfToken: req.csrfToken() });
+            }
         } else {
             res.locals.message = {text: 'Error activating user', type: 'danger'};
             res.render('index', { errors: [], csrfToken: req.csrfToken() });
@@ -571,13 +584,17 @@ exports.password_send_email = function(req, res, callback) {
                 var reset_key = Math.random().toString(36).substr(2);
                 var reset_expires = new Date((new Date()).getTime() + 1000*3600*24)
 
-
-                models.user_registration_profile.update(
-                    { reset_key: reset_key,
-                      reset_expires: reset_expires 
-                }, {
-                    fields: ['reset_key', 'reset_expires'],
-                    where: { user_email: user.email}
+                models.user_registration_profile.findOrCreate({
+                    defaults: { 
+                        user_email: user.email,
+                        reset_key: reset_key,
+                        reset_expires: reset_expires
+                    },
+                    where: { user_email: user.email }
+                }).then(function(user_prof) {
+                    user_prof[0].reset_key = reset_key
+                    user_prof[0].reset_expires = reset_expires
+                    return user_prof[0].save({ fields: ['reset_key', 'reset_expires']})
                 }).then(function() {
                     
                     // Send an email to the user
@@ -664,7 +681,10 @@ exports.change_password = function(req, res, next) {
                         res.redirect('/auth/login')
                     })   
                 }
-            };
+            } else {
+                res.locals.message = {text: 'Error reseting user password', type: 'danger'};
+                res.render('index', { errors: [], csrfToken: req.csrfToken() });
+            }
         } else {
             res.locals.message = {text: 'Error reseting user password', type: 'danger'};
             res.render('index', { errors: [], csrfToken: req.csrfToken() });
@@ -702,7 +722,8 @@ exports.resend_confirmation = function(req, res, next) {
                     var activation_expires = new Date((new Date()).getTime() + 1000*3600*24)
 
                     models.user_registration_profile.update(
-                        { activation_key: activation_key,
+                        { user_email: user.email,
+                          activation_key: activation_key,
                           activation_expires: activation_expires 
                     }, {
                         fields: ['activation_key', 'activation_expires'],

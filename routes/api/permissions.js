@@ -4,6 +4,8 @@ var router = express.Router();
 // Permission API Controller
 var api_perm_controller = require('../../controllers/api/index').permissions;
 
+router.param('permissionId',   api_perm_controller.load_permission);
+
 // Routes for permissions
 router.get('/', 				api_perm_controller.index);
 router.post('/', 				api_perm_controller.create);

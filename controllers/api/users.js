@@ -29,8 +29,6 @@ exports.check_user = function(req, res, next) {
 	}
 }
 
-
-
 // GET /v1/users -- Send index of users
 exports.index = function(req, res) {
 	debug('--> index')

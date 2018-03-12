@@ -13,4 +13,7 @@ router.get('/:applicationId', 		api_appl_controller.info);
 router.patch('/:applicationId', 	api_appl_controller.update);
 router.delete('/:applicationId', 	api_appl_controller.delete);
 
+router.use('/:applicationId/roles',  require('./roles'))
+router.use('/:applicationId/permissions',  require('./permissions'))
+
 module.exports = router;

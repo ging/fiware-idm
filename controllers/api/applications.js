@@ -11,8 +11,8 @@ exports.load_application = function(req, res, next, applicationId) {
 
 	debug("--> load_application");
 
-	if (req.params.applicationId === 'idm_admin_app') {
-		res.status(404).json({error: {message: "Application not found", code: 404, title: "Bad Request"}})
+	if (applicationId === 'idm_admin_app') {
+		res.status(403).json({error: {message: "Not allowed", code: 403, title: "Forbidden"}})
 	} else {
 		// Search application whose id is applicationId
 		models.oauth_client.findById(applicationId).then(function(application) {

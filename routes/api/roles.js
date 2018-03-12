@@ -4,6 +4,8 @@ var router = express.Router();
 // Role API Controller
 var api_role_controller = require('../../controllers/api/index').roles;
 
+router.param('roleId',   api_role_controller.load_role);
+
 // Routes for roles
 router.get('/', 			api_role_controller.index);
 router.post('/', 			api_role_controller.create);

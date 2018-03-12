@@ -23,7 +23,7 @@ var validate_token = function(req, res, next) {
 
 	check_validate_token_request(req).then(function(token_id) {
 
-		return authenticate_token(token_id).then(function(agent) { 
+		return search_token(token_id).then(function(agent) { 
 
 			if (agent._modelOptions.tableName === "pep_proxy") {
 				req.pep_proxy = agent
@@ -101,19 +101,25 @@ var create_token = function(req, res, next) {
 	
 	debug(' --> create_token')
 
+	var response_methods = []
+
 	check_create_token_request(req).then(function(checked) {	
+		
+		response_methods = checked
+
+		var methods = []
 
 		// Check what methods are included in the request
-		var methods = []
-		if (req.body.auth.identity.methods.includes('password')) {
-			methods.push(search_identity(req))
+		if (checked.includes('password')) {
+			methods.push(search_identity(req.body.name, req.body.password))
 		}
-		if (req.body.auth.identity.methods.includes('token')) {
-			methods.push(search_token(req))
+		if (checked.includes('token')) {
+			methods.push(search_token(req.body.token))
 		}
 
 		return Promise.all(methods)
 				.then(function(values) {
+
 					if (methods.length === 2) {
 						if (values[0].id !== values[1].id) {
 							return Promise.reject({ error: {message: 'Token not correspond to user', code: 401, title: 'Unauthorized'}})
@@ -134,7 +140,7 @@ var create_token = function(req, res, next) {
 		}
 
 		models.auth_token.create(row).then(function(auth_row) {
-			var response_body = { token: { methods: req.body.auth.identity.methods, expires_at: expires}}
+			var response_body = { token: { methods: response_methods, expires_at: expires}}
 			res.setHeader('X-Subject-Token', token_id)
 			res.status(201).json(response_body)
 		}).catch(function(error) {
@@ -155,55 +161,47 @@ var create_token = function(req, res, next) {
 // Function to check if parameters exist in request
 function check_create_token_request(req) {
 	return new Promise(function(resolve, reject) {
-		switch(true) {
-			case (!req.headers['content-type'] || req.headers['content-type'] !== 'application/json'):
-				reject({ error: {message: 'Missing parameter: header Content-Type: application/json', code: 400, title: 'Bad Request'}})
-				break;
-			case (!req.body.auth):
-				reject({ error: {message: 'Expecting to find auth in request body', code: 400, title: 'Bad Request'}})
-				break;
-			case (!req.body.auth.identity):
-				reject({ error: {message: 'Expecting to find identity in request body', code: 400, title: 'Bad Request'}})
-				break;
-			case (!req.body.auth.identity.methods || !arrayContainsArray(['password', 'token'], req.body.auth.identity.methods)):
-				reject({ error: {message: 'Expecting to find methods password or token in request body', code: 400, title: 'Bad Request'}})
-				break;
-			default:
-				resolve(req.body.auth.identity.methods)
+		
+		if (!req.headers['content-type'] || req.headers['content-type'] !== 'application/json') {
+			reject({ error: {message: 'Missing parameter: header Content-Type: application/json', code: 400, title: 'Bad Request'}})	
+		}
+
+		var methods = []
+
+		if (req.body.name && req.body.password) {
+			methods.push('password')
+		} 
+
+		if (req.body.token) {
+			methods.push('token')
+		}
+
+		if (methods.length <= 0) {
+			reject({ error: {message: 'Expecting to find name and password or token in body request', code: 400, title: 'Bad Request'}})
+		} else {
+			resolve(methods)
 		}
 	})
 }
 
 
 // Function to check password method parameter for identity
-function search_identity(req) {
-
+function search_identity(name, password) {
+	debug(name)
+	debug(password)
 	return new Promise(function(resolve, reject) {
 
-		if (!req.body.auth.identity.password) {
-			reject({ error: {message: 'Expecting to find password in request body', code: 400, title: 'Bad Request'}})
-		}
-
-		var user = req.body.auth.identity.password.user
-
-		if (!user) {
-			reject({ error: {message: 'Expecting to find user in request body', code: 400, title: 'Bad Request'}})
-		}
-		if (!user.name || !user.password) {
-			reject({ error: {message: 'Expecting to find name and password in request body', code: 400, title: 'Bad Request'}})
-		}
-
-		models.helpers.search_pep_or_user(user.name).then(function(identity) {
+		models.helpers.search_pep_or_user(name).then(function(identity) {
 
 			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {
 				if (identity[0].Source === 'user') {
-					authenticate_user(user.name, user.password)
+					authenticate_user(name, password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })
 				} else if (identity[0].Source === 'pep_proxy') {
-					authenticate_pep_proxy(user.name, user.password)
+					authenticate_pep_proxy(name, password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })
 				}
@@ -254,26 +252,8 @@ function authenticate_pep_proxy(id, password) {
 }
 
 
-// Function to check token method parameter
-function search_token(req) {
-
-	return new Promise(function(resolve, reject) {
-		if (!req.body.auth.identity.token) {
-			reject({ error: {message: 'Expecting to find token in request body', code: 400, title: 'Bad Request'}})
-		}
-
-		var token_id = req.body.auth.identity.token.id
-
-		if (!token_id) {
-			reject({ error: {message: 'Expecting to find id of token in request body', code: 400, title: 'Bad Request'}})
-		}
-
-		authenticate_token(token_id).then(function(agent) { resolve(agent) }).catch(function(error) { reject(error) })
-	})	
-}
-
 // Function to search token in database
-function authenticate_token(token_id) {
+function search_token(token_id) {
 	
 	return models.auth_token.findOne({
 		where: { access_token: token_id },

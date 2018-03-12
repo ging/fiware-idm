@@ -47,22 +47,24 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group ">
+				<div class="form-group has-feedback">
 					<label class="control-label" for="id_password1">
 						Password
 						<!-- <a href="" class="hard_pwd" data-toggle="tooltip" data-placement="top" title="">hard</a> -->
 					</label>
 					<div class=" ">
 						<input class="form-control" id="id_password1" name="password1" type="password" />
+						<span class="form-control-feedback fa fa-eye"></span>
 					</div>
 				</div>
 				<% if (nameErrors.indexOf("password1") != -1) { %>
 			        <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
 			    <% } %>
-				<div class="form-group ">
+				<div class="form-group has-feedback">
 					<label class="control-label" for="id_password2">Password (again)</label>
 					<div class=" ">
 						<input class="form-control" id="id_password2" name="password2" type="password" />
+						<span class="form-control-feedback fa fa-eye"></span>
 					</div>
 				</div>
 				<% if (nameErrors.indexOf("password2") != -1) { %>
@@ -124,4 +126,21 @@
 			checkStrength(value_input, input, label)
 		})
 	})
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".form-control-feedback").css('cursor', 'default');
+
+        $(".form-control-feedback").click(function() {
+            
+            if ($(this).hasClass('fa-eye')) {
+                $(this).siblings().attr('type', 'text')    
+            } else {
+                $(this).siblings().attr('type', 'password')
+            }
+
+            $(this).toggleClass('fa-eye fa-eye-slash');
+        });
+    })
 </script>

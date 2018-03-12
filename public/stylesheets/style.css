@@ -6797,7 +6797,8 @@ ul.select2-choices {
   outline: 0 !important; }
 
 .form-control-feedback {
-  top: 34px; }
+  top: 34px;
+  pointer-events: auto; }
 
 .field-icon {
   float: right;
@@ -8633,11 +8634,20 @@ body > .wrap {
     background-color: #f1f1f2;
     cursor: pointer;
     color: #5B5B5F; }
-  .permissions_list li i {
+  .permissions_list li i.fa-check {
     margin-right: 5px;
     min-width: 14px;
     opacity: 0;
     filter: alpha(opacity=0); }
+  .permissions_list li a.edit_permission {
+    position: relative;
+    float: right;
+    width: 6%;
+    top: 1px; }
+  .permissions_list li a.delete {
+    position: relative;
+    float: right;
+    width: 6%; }
 
 .permissions_list li.active {
   text-decoration: none;
@@ -8646,7 +8656,7 @@ body > .wrap {
   border-top: 1px solid #A9A9A9;
   border-bottom: 1px solid #A9A9A9;
   padding-left: 10px; }
-  .permissions_list li.active i {
+  .permissions_list li.active i.fa-check {
     opacity: 1;
     filter: alpha(opacity=100);
     color: #A94B4A; }

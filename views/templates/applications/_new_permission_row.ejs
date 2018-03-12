@@ -3,12 +3,11 @@
 	<li class="list-group-item is-internal" data-permission-id="perm_id">
 		<i style="width: 5%; float: left;" class="fa fa-check" disabled=""></i>
 		<p id="display_name" style="width: 75%; overflow: hidden; text-overflow: ellipsis; float: left;">perm_name</p>
-		<span class="divider" style="float: left; margin-right: 10px;">|</span>
-		<button style="position: relative; width: 6%; float: left;" class="edit_permission fa fa-edit">
-	    	<!-- <i class="fa fa-edit"></i> -->
-	    </button>
-        <button style="position: relative; width: 6%; float: left;" data-toggle="modal" data-target="#delete_permission" class="ajax-modal delete fa fa-trash-o">
-        	<!-- <i class="fa fa-trash-o"></i> -->
-        </button>
+	    <a data-toggle="modal" data-target="#delete_permission" class="ajax-modal delete">
+	    	<i class="fa fa fa-trash-o"></i>
+        </a>
+		<a class="edit_permission ">
+			<i class="fa fa fa-edit"></i>
+	    </a>
 	</li>
 </script>

@@ -5,11 +5,11 @@ var router = express.Router();
 var oauthController = require('../../controllers/oauth2/oauth2');
 
 // Routes for Oauth2
-router.get('/token',     	oauthController.authenticate_token);
-router.post('/token',       oauthController.token);
-router.get('/authorize', 	oauthController.response_type_required,  oauthController.load_application, 	oauthController.check_user);
-router.post('/authorize', 	oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);
-router.post('/enable_app', 	oauthController.response_type_required,  oauthController.load_user,	oauthController.enable_app);
+//router.get('/authenticate',    	oauthController.authenticate_token);
+router.post('/token',       	oauthController.token);
+router.get('/authorize', 		oauthController.response_type_required,  oauthController.load_application, 	oauthController.check_user);
+router.post('/authorize', 		oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);
+router.post('/enable_app', 		oauthController.response_type_required,  oauthController.load_user,	oauthController.enable_app);
 
 // catch 404 and forward to error handler
 router.use(function(req, res, next) {

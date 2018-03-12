@@ -133,10 +133,21 @@
       cursor: pointer;
       color: $text-color;
     }
-    i{
+    i.fa-check{
       margin-right: 5px;
       min-width: 14px;
       @include opacity (0);
+    }
+    a.edit_permission {
+      position: relative; 
+      float: right;
+      width: 6%;
+      top: 1px;
+    }
+    a.delete {
+      position: relative; 
+      float: right;
+      width: 6%;
     }
   }
   li.active{
@@ -146,7 +157,7 @@
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     padding-left: 10px;
-    i{
+    i.fa-check{
       @include opacity (1);
       color: $brand-primary;
     }

@@ -91,7 +91,13 @@ exports.create = function(req, res) {
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			if (error.errors[0].message === 'emailUsed') {
+				error = { error: {message: 'Email already used', code: 409, title: 'Conflict'}}
+			} else if (error.errors[0].message === 'email') {
+				error = { error: {message: 'Email not valid', code: 400, title: 'Bad Request'}}
+			} else {
+				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			}
 		}
 		res.status(error.error.code).json(error)
 	})
@@ -123,7 +129,7 @@ exports.info = function(req, res) {
 		if (!error.error) {
 			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
 		}
-		res.status(error.error.code).json(error)	
+		res.status(error.error.code).json(error)
 	})
 }
 
@@ -131,47 +137,59 @@ exports.info = function(req, res) {
 exports.update = function(req, res) {
 	debug('--> update')
 	
+	var user_previous_values = null
+
 	check_update_body_request(req.body).then(function() {
 		
 		return models.user.findOne({
 			where: { id: req.params.userId}
-		}).then(function(user) {
-
-			if (!user) {
-				return Promise.reject({error: {message: "user not found", code: 404, title: "Bad Request"}})
-			} else {
-				var user_previous_values = JSON.parse(JSON.stringify(user.dataValues))
-
-				user.username = (req.body.user.username) ? req.body.user.username : user.username
-				user.email = (req.body.user.email) ? req.body.user.email : user.email
-				user.description = (req.body.user.description) ? req.body.user.description : user.description
-				user.website = (req.body.user.website) ? req.body.user.website : user.website
-				user.gravatar = (req.body.user.gravatar) ? req.body.user.gravatar : user.gravatar
-				user.enabled = true
-				if (req.body.user.password) {
-					user.password = req.body.user.password
-					user.date_password = new Date((new Date()).getTime()) 
-				}
-
-				return user.save().then(function() {
-					delete user_previous_values.password
-					delete user_previous_values.date_password
-					delete user.dataValues.password
-					delete user.dataValues.date_password
-					var difference = diffObject(user_previous_values, user.dataValues)
-					var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the user parameters", code: 200, title: "OK"}
-					res.status(200).json(response);
-				}).catch(function(error) {
-					return Promise.reject(error)
-				})
-			}
-		}).catch(function(error) {
-			return Promise.reject(error)
 		})
+
+	}).then(function(user) {
+
+		if (!user) {
+			return Promise.reject({error: {message: "User not found", code: 404, title: "Bad Request"}})
+		} else {
+			user_previous_values = JSON.parse(JSON.stringify(user.dataValues))
+
+			user.username = (req.body.user.username) ? req.body.user.username : user.username
+			user.email = (req.body.user.email) ? req.body.user.email : user.email
+			user.description = (req.body.user.description) ? req.body.user.description : user.description
+			user.website = (req.body.user.website) ? req.body.user.website : user.website
+			user.gravatar = (req.body.user.gravatar) ? req.body.user.gravatar : user.gravatar
+			user.enabled = true
+			if (req.body.user.password) {
+				user.password = req.body.user.password
+				user.date_password = new Date((new Date()).getTime()) 
+			}
+
+			return user.validate()
+		}
+
+	}).then(function(user) {
+
+		return user.save()
+
+	}).then(function(user) {
+
+		delete user_previous_values.password
+		delete user_previous_values.date_password
+		delete user.dataValues.password
+		delete user.dataValues.date_password
+		var difference = diffObject(user_previous_values, user.dataValues)
+		var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the user parameters", code: 200, title: "OK"}
+		res.status(200).json(response);
+
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			if (error.errors[0].message === 'emailUsed') {
+				error = { error: {message: 'Email already used', code: 409, title: 'Conflict'}}
+			} else if (error.errors[0].message === 'email') {
+				error = { error: {message: 'Email not valid', code: 400, title: 'Bad Request'}}
+			} else {
+				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			}
 		}
 		res.status(error.error.code).json(error)
 	})

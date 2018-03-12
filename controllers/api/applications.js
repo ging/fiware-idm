@@ -6,12 +6,30 @@ var _ = require('lodash');
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-// MW to check if id of application is valid
-exports.check_application = function(req, res, next) {
+// MW to Autoload info if path include applicationId
+exports.load_application = function(req, res, next, applicationId) {
+
+	debug("--> load_application");
+
 	if (req.params.applicationId === 'idm_admin_app') {
 		res.status(404).json({error: {message: "Application not found", code: 404, title: "Bad Request"}})
 	} else {
-		next()
+		// Search application whose id is applicationId
+		models.oauth_client.findById(applicationId).then(function(application) {
+			// If application exists, set image from file system
+			if (application) {
+				req.application = application
+				next();
+			} else {
+				res.status(404).json({error: {message: "Application not found", code: 404, title: "Bad Request"}})
+			}
+		}).catch(function(error) { 
+			debug('Error: ' + error)
+			if (!error.error) {
+				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			}
+			res.status(error.error.code).json(error)
+		});
 	}
 }
 
@@ -110,60 +128,38 @@ exports.create = function(req, res) {
 exports.info = function(req, res) {
 	debug('--> info')
 
-	models.oauth_client.findOne({
-		where: { id: req.params.applicationId}
-	}).then(function(application) {
-		if (application) {
-			res.status(201).json({application: application.dataValues});
-		} else {
-			return Promise.reject({error: {message: "Application not found", code: 404, title: "Bad Request"}})
-		}
-	}).catch(function(error) {
-		debug('Error: ' + error)
-		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-		}
-		res.status(error.error.code).json(error)
-	})
+	res.status(201).json({application: req.application.dataValues});
 }
 
 // PATCH /v1/applications/:applicationId -- Edit application
 exports.update = function(req, res) {
 	debug('--> update')
 	
+	var application_previous_values = null
+
 	check_update_body_request(req.body).then(function(oauth_type) {
 		
-		return models.oauth_client.findOne({
-			where: { id: req.params.applicationId}
-		}).then(function(application) {
+		application_previous_values = JSON.parse(JSON.stringify(req.application.dataValues))
 
-			if (!application) {
-				return Promise.reject({error: {message: "Application not found", code: 404, title: "Bad Request"}})
-			} else {
-				var application_previous_values = JSON.parse(JSON.stringify(application.dataValues))
-				application.name = (req.body.application.name) ? req.body.application.name : application.name 
-				application.description = (req.body.application.description) ? req.body.application.description : application.description
-				application.url = (req.body.application.url) ? req.body.application.url : application.url
-				application.redirect_uri = (req.body.application.redirect_uri) ? req.body.application.redirect_uri : application.redirect_uri
-				application.client_type = (req.body.application.client_type) ? req.body.application.client_type : application.client_type
-				application.image = 'default'
+		req.application.name = (req.body.application.name) ? req.body.application.name : req.application.name 
+		req.application.description = (req.body.application.description) ? req.body.application.description : req.application.description
+		req.application.url = (req.body.application.url) ? req.body.application.url : req.application.url
+		req.application.redirect_uri = (req.body.application.redirect_uri) ? req.body.application.redirect_uri : req.application.redirect_uri
+		req.application.client_type = (req.body.application.client_type) ? req.body.application.client_type : req.application.client_type
+		req.application.image = 'default'
 
-				if (oauth_type) {
-					application.grant_type = oauth_type.grant_type
-					application.response_type = oauth_type.response_type
-				}
+		if (oauth_type) {
+			req.application.grant_type = oauth_type.grant_type
+			req.application.response_type = oauth_type.response_type
+		}
 
-				return application.save().then(function() {
-					var difference = diffObject(application_previous_values, application.dataValues)
-					var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the application parameters", code: 200, title: "OK"}
-					res.status(200).json(response);
-				}).catch(function(error) {
-					return Promise.reject(error)
-				})
-			}
-		}).catch(function(error) {
-			return Promise.reject(error)
-		})
+		return req.application.save()
+	}).then(function(application) {
+		
+		var difference = diffObject(application_previous_values, application.dataValues)
+		var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the application parameters", code: 200, title: "OK"}
+		res.status(200).json(response);
+
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {
@@ -177,14 +173,8 @@ exports.update = function(req, res) {
 exports.delete = function(req, res) {
 	debug('--> delete')
 
-	models.oauth_client.destroy({
-		where: { id: req.params.applicationId}
-	}).then(function(destroyed) {
-		if (destroyed) {
-			res.status(204).json("Appication "+req.params.applicationId+" destroyed");
-		} else {
-			return Promise.reject({error: {message: "Application not found", code: 404, title: "Bad Request"}})
-		}
+	req.application.destroy().then(function() {
+		res.status(204).json("Appication "+req.params.applicationId+" destroyed");
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {

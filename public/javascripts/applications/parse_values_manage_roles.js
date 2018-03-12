@@ -28,7 +28,7 @@ $(document).ready(function(){
         	$('#list_permissions').prepend(permission_row);
         	$('#list_permissions').find('[data-permission-id='+application.permissions[i].id+']').children('span').remove();
         	$('#list_permissions').find('[data-permission-id='+application.permissions[i].id+']').children('.edit_permission').remove();
-        	$('#list_permissions').find('[data-permission-id='+application.permissions[i].id+']').children('.fa-trash-o').remove();
+        	$('#list_permissions').find('[data-permission-id='+application.permissions[i].id+']').children('.delete').remove();
         } else {
         	$('#list_permissions').append(permission_row);
         }

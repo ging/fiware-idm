@@ -60,6 +60,16 @@ exports.info_token = function(req, res, next) {
 	// Search for roles of iot agents
 	if (req.oauth2_token_owner.iot) {
 		// ... search for roles of iots
+		var iot_info = { 	organizations: [], 
+						displayName: '',
+						roles: [],
+						app_id: app_id,
+						isGravatarEnabled: false,
+						email: '',
+						id: req.oauth2_token_owner.iot,
+						app_azf_domain: ''
+					}
+		res.status(201).json(iot_info)
 	} else if (req.oauth2_token_owner.user) {
 		
 		var user = req.oauth2_token_owner.user

@@ -1,8 +1,11 @@
 var models = require('../../models/models.js');
+var config_authzforce = require('../../config.js').authzforce
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 var debug = require('debug')('idm:oauth_controller');
 
@@ -245,19 +248,119 @@ exports.authenticate_token = function(req, res, next){
     var response = new Response(res);
 
     oauth.authenticate(request, response, options).then(function (user_info) {
-        var response = {app_id: user_info.oauth_client.id}
-        if (user_info.user) {
-            if (user_info.user._modelOptions.tableName === 'iot') {
-                response['displayName'] = user_info.user.id
-            } else if (user_info.user._modelOptions.tableName === 'user') {
-                response['displayName'] = user_info.user.username
-                response['email'] = user_info.user.email
-            } 
+        var user = user_info.user
+        var application_id = user_info.oauth_client.id
+        if (user._modelOptions.tableName === 'user') {
+
+            return search_user_info(user, application_id)
+        } else if (user._modelOptions.tableName === 'iot') {
+
+            // ... search for roles of iots
+            var iot_info = {    organizations: [], 
+                            displayName: '',
+                            roles: [],
+                            app_id: application_id,
+                            isGravatarEnabled: false,
+                            email: '',
+                            id: user_info.user.id,
+                            app_azf_domain: ''
+                        }
+            res.status(201).json(iot_info)
         }
-        res.send(response)      
+    }).then(function(response){
+        res.status(201).json(response) 
     }).catch(function (err) {
         debug('Error ' + err)
         // Request is not authorized.
         res.status(err.code || 500).json(err)
     });
+}
+
+function search_user_info(user, app_id) {
+
+    // Search organizations in wich user is member or owner
+    var search_organizations = models.user_organization.findAll({ 
+        where: { user_id: user.id },
+        include: [{
+            model: models.organization,
+            attributes: ['id']
+        }]
+    })
+    // Search roles for user or the organization to which the user belongs
+    var search_roles = search_organizations.then(function(organizations) { 
+        var search_role_organizations = []
+        if (organizations.length > 0) {
+
+            for (var i = 0; i < organizations.length; i++) {
+                search_role_organizations.push({organization_id: organizations[i].organization_id, role_organization: organizations[i].role})
+            }
+        }
+        return models.role_assignment.findAll({
+            where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: user.id}], 
+                     oauth_client_id: app_id },
+            include: [{
+                model: models.user,
+                attributes: ['id', 'username', 'email', 'gravatar']
+            },{
+                model: models.role,
+                attributes: ['id', 'name']
+            }, {
+                model: models.organization,
+                attributes: ['id', 'name', 'description', 'website']
+            }]
+        })
+    })
+
+    var search_authzforce = new Promise((resolve) => { resolve(); });
+    if (config_authzforce) {
+        search_authzforce = models.authzforce.findOne({
+            where: { oauth_client_id: app_id }
+        })  
+    }
+
+    return Promise.all([search_organizations, search_roles, search_authzforce]).then(function(values) {
+        var role_assignment = values[1]
+        
+        if (role_assignment.length <= 0) {
+            return Promise.reject({ error: {message: 'User is not authorized', code: 401, title: 'Unauthorized'}})
+        } else {
+            var user_info = {   organizations: [], 
+                            displayName: user.username,
+                            roles: [],
+                            app_id: app_id,
+                            isGravatarEnabled: user.gravatar,
+                            email: user.email,
+                            id: user.id,
+                            app_azf_domain: (config_authzforce && values[2]) ? values[2].az_domain : ''
+                        }
+
+            for (i=0; i < role_assignment.length; i++) {
+
+                var role = role_assignment[i].Role.dataValues
+
+                if (!['provider', 'purchaser'].includes(role.id)) {
+                    if (role_assignment[i].Organization) {
+                        
+                        var organization = role_assignment[i].Organization.dataValues
+                        var index = user_info.organizations.map(function(e) { return e.id; }).indexOf(organization.id);
+
+                        if (index < 0) {
+                            organization['roles'] = [role]
+                            user_info.organizations.push(organization)
+                        } else {
+                            user_info.organizations[index].roles.push(role)
+                        }
+                    }
+
+
+                    if (role_assignment[i].User) {
+                        user_info.roles.push(role)
+                    }
+                }
+            }
+
+            return Promise.resolve(user_info)
+
+        }
+    })
 }

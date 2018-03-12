@@ -6,9 +6,9 @@ var apiController = require('../../controllers/api/index');
 var api_authenticate_controller = require('../../controllers/api/index').authenticate;
 
 // GET INFO FROM OAUTH2 TOKENS
-var api_authenticate_oauth_controller = require('../../controllers/api/index').authenticate_oauth;
-router.param('oauthTokenId',   api_authenticate_oauth_controller.load_oauth);
-router.get('/access-tokens/:oauthTokenId', api_authenticate_oauth_controller.check_request, api_authenticate_oauth_controller.info_token);
+//var api_authenticate_oauth_controller = require('../../controllers/api/index').authenticate_oauth;
+//router.param('oauthTokenId',   api_authenticate_oauth_controller.load_oauth);
+//router.get('/access-tokens/:oauthTokenId', api_authenticate_oauth_controller.check_request, api_authenticate_oauth_controller.info_token);
 
 router.use('/auth',  require('./authenticate'))
 router.use('/applications', 					api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./applications'))

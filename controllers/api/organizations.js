@@ -2,6 +2,47 @@ var debug = require('debug')('idm:api-organizations');
 var models = require('../../models/models.js');
 var uuid = require('uuid');
 
+
+// MW to Autoload info if path include organizationId
+exports.load_organization = function(req, res, next, organizationId) {
+
+	debug("--> load_organization");
+	
+	// Search organization whose id is organizationId
+	models.user_organization.findOne({
+		where: { organization_id: req.params.organizationId, user_id: req.user.id},
+		include: [models.organization]
+	}).then(function(row) {
+		// If organization exists, set image from file system
+		if (row) {
+			req.organization = row.Organization
+			req.user_role_organization = row.role
+			next();
+		} else {
+			res.status(404).json({error: {message: "Organization not found", code: 404, title: "Bad Request"}})
+		}
+	}).catch(function(error) { 
+		debug('Error: ' + error)
+		if (!error.error) {
+			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+		}
+		res.status(error.error.code).json(error)
+	});
+}
+
+
+// MW to check role of user in organization
+exports.owned_permissions = function(req, res, next) {
+	debug("--> owned_permissions");
+
+	if (req.user_role_organization === 'owner') {
+		next()
+	} else {
+		res.status(403).json({error: {message: "User not allow to perform the action", code: 403, title: "Forbidden"}})		
+	}
+
+}
+
 // GET /v1/organizations -- Send index of organizations
 exports.index = function(req, res) {
 	debug('--> index')
@@ -78,54 +119,31 @@ exports.create = function(req, res) {
 exports.info = function(req, res) {
 	debug('--> info')
 
-	models.organization.findOne({
-		where: { id: req.params.organizationId}
-	}).then(function(organization) {
-		if (organization) {
-			res.status(201).json({organization: organization.dataValues});
-		} else {
-			return Promise.reject({error: {message: "organization not found", code: 404, title: "Bad Request"}})
-		}
-	}).catch(function(error) {
-		debug('Error: ' + error)
-		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-		}
-		res.status(error.error.code).json(error)
-	})
+	res.status(201).json({organization: req.organization });
+
 }
 
 // PUT /v1/organizations/:organizationId -- Edit organization
 exports.update = function(req, res) {
 	debug('--> update')
-	
+		
+	var organization_previous_values = null
+
 	check_update_body_request(req.body).then(function() {
 		
-		return models.organization.findOne({
-			where: { id: req.params.organizationId}
-		}).then(function(organization) {
+		organization_previous_values = JSON.parse(JSON.stringify(req.organization.dataValues))
 
-			if (!organization) {
-				return Promise.reject({error: {message: "organization not found", code: 404, title: "Bad Request"}})
-			} else {
-				var organization_previous_values = JSON.parse(JSON.stringify(organization.dataValues))
+		req.organization.name = (req.body.organization.name) ? req.body.organization.name : req.organization.name 
+		req.organization.website = (req.body.organization.website) ? req.body.organization.website : req.organization.website 
+		req.organization.description = (req.body.organization.description) ? req.body.organization.description : req.organization.description
+		req.organization.image = 'default'
 
-				organization.name = (req.body.organization.name) ? req.body.organization.name : organization.name 
-				organization.website = (req.body.organization.website) ? req.body.organization.website : organization.website 
-				organization.description = (req.body.organization.description) ? req.body.organization.description : organization.description
-				organization.image = 'default'
+		return req.organization.save()
 
-				return organization.save().then(function() {
-					var difference = diffObject(organization_previous_values, organization.dataValues)
-					var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the organization parameters", code: 200, title: "OK"}
-					res.status(200).json(response);
-				}).catch(function(error) {
-					return Promise.reject(error)
-				})
-			}
-		}).catch(function(error) {
-			return Promise.reject(error)
-		})
+	}).then(function(organization) {
+			var difference = diffObject(organization_previous_values, organization.dataValues)
+			var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the organization parameters", code: 200, title: "OK"}
+			res.status(200).json(response);
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {
@@ -139,14 +157,8 @@ exports.update = function(req, res) {
 exports.delete = function(req, res) {
 	debug('--> delete')
 
-	models.organization.destroy({
-		where: { id: req.params.organizationId}
-	}).then(function(destroyed) {
-		if (destroyed) {
-			res.status(204).json("Organization "+req.params.organizationId+" destroyed");
-		} else {
-			return Promise.reject({error: {message: "organization not found", code: 404, title: "Bad Request"}})
-		}
+	req.organization.destroy().then(function() {
+		res.status(204).json("Organization "+req.params.organizationId+" destroyed");
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {

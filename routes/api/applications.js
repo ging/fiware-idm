@@ -13,9 +13,17 @@ router.get('/:applicationId', 		api_appl_controller.info);
 router.patch('/:applicationId', 	api_appl_controller.update);
 router.delete('/:applicationId', 	api_appl_controller.delete);
 
+// Routes to handle roles
 router.use('/:applicationId/roles',  require('./roles'))
+// Routes to handle permissions
 router.use('/:applicationId/permissions',  require('./permissions'))
+// Routes to handle pep proxies
 router.use('/:applicationId/pep_proxies',  require('./pep_proxies'))
+// Routes to handle iot agents
 router.use('/:applicationId/iot_agents',   require('./iot_agents'))
+
+// Routes to handle roles permissions assignments
+router.use('/:applicationId/roles',  require('./role_permission_assignments'))
+
 
 module.exports = router;

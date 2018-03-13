@@ -10,28 +10,24 @@ exports.load_role = function(req, res, next, roleId) {
 
 	debug("--> load_role");
 
-	if (roleId === 'provider' || roleId === 'purchaser') {
-		res.status(403).json({error: {message: "Not allowed", code: 403, title: "Forbidden"}})
-	} else {
-		// Search role whose id is roleId
-		models.role.findOne({
-			where: { id: roleId, oauth_client_id: req.application.id}	
-		}).then(function(role) {
-			// If role exists, set image from file system
-			if (role) {
-				req.role = role
-				next();
-			} else {
-				res.status(404).json({error: {message: "Role not found", code: 404, title: "Not Found"}})
-			}
-		}).catch(function(error) { 
-			debug('Error: ' + error)
-			if (!error.error) {
-				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-			}
-			res.status(error.error.code).json(error)
-		});
-	}
+	// Search role whose id is roleId
+	models.role.findOne({
+		where: { id: roleId }	
+	}).then(function(role) {
+		// If role exists, set image from file system
+		if (role) {
+			req.role = role
+			next();
+		} else {
+			res.status(404).json({error: {message: "Role not found", code: 404, title: "Not Found"}})
+		}
+	}).catch(function(error) { 
+		debug('Error: ' + error)
+		if (!error.error) {
+			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+		}
+		res.status(error.error.code).json(error)
+	});
 }
 
 // GET /v1/:applicationId/roles' -- Send index of roles
@@ -94,43 +90,51 @@ exports.info = function(req, res) {
 exports.update = function(req, res) {
 	debug('--> update')
 	
-	var application_previous_values = null
+	if (req.role.id === 'provider' || req.role.id === 'purchaser') {
+		res.status(403).json({error: {message: "Not allowed", code: 403, title: "Forbidden"}})
+	} else {
+		var application_previous_values = null
 
-	check_update_body_request(req.body).then(function() {
-		
-		role_previous_values = JSON.parse(JSON.stringify(req.role.dataValues))
+		check_update_body_request(req.body).then(function() {
+			
+			role_previous_values = JSON.parse(JSON.stringify(req.role.dataValues))
 
-		req.role.name = (req.body.role.name) ? req.body.role.name : req.role.name 
+			req.role.name = (req.body.role.name) ? req.body.role.name : req.role.name 
 
-		return req.role.save()
-	}).then(function(role) {
-		
-		var difference = diffObject(role_previous_values, role.dataValues)
-		var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the role parameters", code: 200, title: "OK"}
-		res.status(200).json(response);
+			return req.role.save()
+		}).then(function(role) {
+			
+			var difference = diffObject(role_previous_values, role.dataValues)
+			var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the role parameters", code: 200, title: "OK"}
+			res.status(200).json(response);
 
-	}).catch(function(error) {
-		debug('Error: ' + error)
-		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-		}
-		res.status(error.error.code).json(error)
-	})
+		}).catch(function(error) {
+			debug('Error: ' + error)
+			if (!error.error) {
+				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			}
+			res.status(error.error.code).json(error)
+		})
+	}
 }
 
 // DELETE /v1/:applicationId/roles/:roleId -- Delete role
 exports.delete = function(req, res) {
 	debug('--> delete')
 	
-	req.role.destroy().then(function() {
-		res.status(204).json("Role "+req.params.roleId+" destroyed");
-	}).catch(function(error) {
-		debug('Error: ' + error)
-		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-		}
-		res.status(error.error.code).json(error)
-	})
+	if (req.role.id === 'provider' || req.role.id === 'purchaser') {
+		res.status(403).json({error: {message: "Not allowed", code: 403, title: "Forbidden"}})
+	} else {
+		req.role.destroy().then(function() {
+			res.status(204).json("Role "+req.params.roleId+" destroyed");
+		}).catch(function(error) {
+			debug('Error: ' + error)
+			if (!error.error) {
+				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			}
+			res.status(error.error.code).json(error)
+		})
+	}
 }
 
 

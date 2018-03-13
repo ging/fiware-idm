@@ -22,7 +22,7 @@ exports.load_permission = function(req, res, next, permissionId) {
 				req.permission = permission
 				next();
 			} else {
-				res.status(404).json({error: {message: "permission not found", code: 404, title: "Bad Request"}})
+				res.status(404).json({error: {message: "permission not found", code: 404, title: "Not Found"}})
 			}
 		}).catch(function(error) { 
 			debug('Error: ' + error)
@@ -56,7 +56,7 @@ exports.index = function(req, res) {
 		if (permissions.length > 0)
 			res.status(201).json({permissions: permissions});
 		else {
-			res.status(404).json({error: {message: "permissions not found", code: 404, title: "Bad Request"}})
+			res.status(404).json({error: {message: "permissions not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) {
 		debug('Error: ' + error)

@@ -22,7 +22,7 @@ exports.load_role = function(req, res, next, roleId) {
 				req.role = role
 				next();
 			} else {
-				res.status(404).json({error: {message: "Role not found", code: 404, title: "Bad Request"}})
+				res.status(404).json({error: {message: "Role not found", code: 404, title: "Not Found"}})
 			}
 		}).catch(function(error) { 
 			debug('Error: ' + error)
@@ -47,7 +47,7 @@ exports.index = function(req, res) {
 		if (roles.length > 0)
 			res.status(201).json({roles: roles});
 		else {
-			res.status(404).json({error: {message: "Roles not found", code: 404, title: "Bad Request"}})
+			res.status(404).json({error: {message: "Roles not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) {
 		debug('Error: ' + error)

@@ -16,7 +16,7 @@ exports.check_admin = function(req, res, next) {
 	if (req.user.admin) {
 		next()
 	} else {
-		res.status(404).json({error: {message: "User not authorized to perform action", code: 403, title: "Forbidden"}})
+		res.status(403).json({error: {message: "User not authorized to perform action", code: 403, title: "Forbidden"}})
 	}
 }
 
@@ -25,7 +25,7 @@ exports.check_user = function(req, res, next) {
 	if ((req.user.id === req.params.userId) || req.user.admin) {
 		next()
 	} else {
-		res.status(404).json({error: {message: "User not authorized to perform action", code: 403, title: "Forbidden"}})
+		res.status(403).json({error: {message: "User not authorized to perform action", code: 403, title: "Forbidden"}})
 	}
 }
 
@@ -46,7 +46,7 @@ exports.index = function(req, res) {
 		if (users.length > 0)
 			res.status(201).json({users: users});
 		else {
-			res.status(404).json({error: {message: "Users not found", code: 404, title: "Bad Request"}})
+			res.status(404).json({error: {message: "Users not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) {
 		debug('Error: ' + error)
@@ -120,7 +120,7 @@ exports.info = function(req, res) {
 		if (user) {
 			res.status(201).json({user: user});
 		} else {
-			res.status(404).json({error: {message: "User not found", code: 404, title: "Bad Request"}})
+			res.status(404).json({error: {message: "User not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) {
 		debug('Error: ' + error)
@@ -146,7 +146,7 @@ exports.update = function(req, res) {
 	}).then(function(user) {
 
 		if (!user) {
-			return Promise.reject({error: {message: "User not found", code: 404, title: "Bad Request"}})
+			return Promise.reject({error: {message: "User not found", code: 404, title: "Not Found"}})
 		} else {
 			user_previous_values = JSON.parse(JSON.stringify(user.dataValues))
 

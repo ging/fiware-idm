@@ -15,5 +15,7 @@ router.delete('/:applicationId', 	api_appl_controller.delete);
 
 router.use('/:applicationId/roles',  require('./roles'))
 router.use('/:applicationId/permissions',  require('./permissions'))
+router.use('/:applicationId/pep_proxies',  require('./pep_proxies'))
+router.use('/:applicationId/iot_agents',   require('./iot_agents'))
 
 module.exports = router;

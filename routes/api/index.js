@@ -17,7 +17,7 @@ router.use('/organizations', 					api_authenticate_controller.validate_token, ap
 // router.use('/roles', 							api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./roles'))
 // router.use('/permissions', 						api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./permissions'))
 // router.use('/pep_proxies', 						api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./pep_proxies'))
-router.use('/iot_agents', 						api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./iot_agents'))
+// router.use('/iot_agents', 						api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./iot_agents'))
 router.use('/role_permission_assignments', 		api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./role_permission_assignments'))
 router.use('/role_user_assignments', 			api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./role_user_assignments'))
 router.use('/role_organization_assignments', 	api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./role_organization_assignments'))

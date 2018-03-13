@@ -22,32 +22,106 @@ exports.authenticate = function(id, password, callback) {
     }).catch(function(error){ callback(error) });
 };
 
-// GET /v1/pep_proxies -- Send index of pep_proxies
-exports.index = function(req, res) {
-	debug('--> index')
-	res.send("ok")
+// MW to Autoload info if path include pep_proxyId
+exports.search_pep_proxy = function(req, res, next) {
+
+    debug("--> load_pep_proxy");
+
+    // Search application whose id is applicationId
+    models.pep_proxy.findOne({
+        where: { oauth_client_id: req.application.id }
+    }).then(function(pep_proxy) {
+        req.pep_proxy = pep_proxy
+        next();
+    }).catch(function(error) { 
+        debug('Error: ' + error)
+        if (!error.error) {
+            error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+        }
+        res.status(error.error.code).json(error)
+    });
 }
 
-// POST v1/pep_proxies -- Create pep_proxie
-exports.create = function(req, res) {
-	debug('--> create')
-	res.send("ok")
-}
-
-// GET v1/pep_proxies/:pep_proxyId -- Get info about pep_proxy
+// GET /v1/:applicationId/pep_proxies -- Send index of pep_proxies
 exports.info = function(req, res) {
 	debug('--> info')
-	res.send("ok")
+
+    if (req.pep_proxy) {
+	   delete req.pep_proxy.dataValues.password
+       res.status(201).json({pep_proxy: req.pep_proxy});
+    } else {
+       res.status(404).json({error: {message: "Pep Proxy not found", code: 404, title: "Not Found"}})
+    }
 }
 
-// PATCH v1/pep_proxies/:pep_proxyId -- Edit pep_proxy
-exports.update = function(req, res) {
-	debug('--> update')
-	res.send("ok")
+// POST /v1/:applicationId/pep_proxies -- Cretate pep_proxy
+exports.register = function(req, res) {
+	debug('--> register')
+	
+    if (req.pep_proxy) {
+        error = { error: {message: 'Pep Proxy already registered', code: 409, title: 'Conflict'}}
+        res.status(409).json(error)
+    } else {
+        // Id and password of the proxy
+        var id = 'pep_proxy_'+uuid.v4()
+        var password = 'pep_proxy_'+uuid.v4()
+
+        // Build a new row in the pep_proxy table
+        var pep_proxy = models.pep_proxy.build({id: id, password: password, oauth_client_id: req.application.id});
+        pep_proxy.save({
+            fields: ['id','password','oauth_client_id']
+        }).then(function(pep_proxy) {
+            res.status(201).json({pep_proxy: {id: id, password: password}});
+        }).catch(function(error) {
+            debug('Error: ' + error)
+            if (!error.error) {
+                error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+            }
+            res.status(error.error.code).json(error)
+        })
+    }
 }
 
-// DELETE v1/pep_proxies/:pep_proxyeId -- Delete pep_proxy
+// PATCH /v1/:applicationId/pep_proxies -- Reset password pep_proxy
+exports.reset_password = function(req, res) {
+    debug('--> reset_password')
+
+    if (req.pep_proxy) {
+        var password = 'pep_proxy_'+uuid.v4()
+        req.pep_proxy.password = password
+
+        req.pep_proxy.save().then(function(pep_proxy) {
+
+            var response = {new_password: password}
+            res.status(200).json(response);
+
+        }).catch(function(error) {
+            debug('Error: ' + error)
+            if (!error.error) {
+                error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+            }
+            res.status(error.error.code).json(error)
+        })
+    } else {
+        res.status(404).json({error: {message: "Pep Proxy not found", code: 404, title: "Not Found"}})
+    }
+}
+
+// DELETE /v1/:applicationId/pep_proxies -- Delete pep_proxy
 exports.delete = function(req, res) {
 	debug('--> delete')
-	res.send("ok")
+    
+    if (req.pep_proxy) {
+        req.pep_proxy.destroy().then(function() {
+            res.status(204).json("Pep Proxy "+req.pep_proxy.id+" destroyed");
+        }).catch(function(error) {
+            debug('Error: ' + error)
+            if (!error.error) {
+                error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+            }
+            res.status(error.error.code).json(error)
+        })
+    } else {
+        res.status(404).json({error: {message: "Pep Proxy not found", code: 404, title: "Not Found"}})
+    }
 }

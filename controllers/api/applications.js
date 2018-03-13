@@ -21,7 +21,7 @@ exports.load_application = function(req, res, next, applicationId) {
 				req.application = application
 				next();
 			} else {
-				res.status(404).json({error: {message: "Application not found", code: 404, title: "Bad Request"}})
+				res.status(404).json({error: {message: "Application not found", code: 404, title: "Not Found"}})
 			}
 		}).catch(function(error) { 
 			debug('Error: ' + error)

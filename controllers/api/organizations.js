@@ -19,7 +19,7 @@ exports.load_organization = function(req, res, next, organizationId) {
 			req.user_role_organization = row.role
 			next();
 		} else {
-			res.status(404).json({error: {message: "Organization not found", code: 404, title: "Bad Request"}})
+			res.status(404).json({error: {message: "Organization not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) { 
 		debug('Error: ' + error)
@@ -63,7 +63,7 @@ exports.index = function(req, res) {
 		if (organizations.length > 0)
 			res.status(201).json({organizations: organizations});
 		else {
-			res.status(404).json({error: {message: "Organizations not found", code: 404, title: "Bad Request"}})
+			res.status(404).json({error: {message: "Organizations not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) {
 		debug('Error: ' + error)

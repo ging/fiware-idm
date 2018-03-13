@@ -109,9 +109,16 @@ exports.update = function(req, res) {
 
 		req.permission.name = (req.body.permission.name) ? req.body.permission.name : req.permission.name
 		req.permission.description = (req.body.permission.description) ? req.body.permission.description : req.permission.description 
-		req.permission.action = (req.body.permission.action) ? req.body.permission.action : req.permission.action 
-		req.permission.resource = (req.body.permission.resource) ? req.body.permission.resource : req.permission.resource 
-		req.permission.xml = (req.body.permission.xml) ? req.body.permission.xml : req.permission.xml 
+		if (req.body.permission.action && req.body.permission.resource) {
+			req.permission.action = req.body.permission.action
+			req.permission.resource = req.body.permission.resource
+			req.permission.xml = null
+		}
+		if (req.body.permission.xml) {
+			req.permission.xml = req.body.permission.xml
+			req.permission.action = null
+			req.permission.resource = null
+		}
 
 		return req.permission.save()
 	}).then(function(permission) {
@@ -187,10 +194,6 @@ function check_update_body_request(body) {
 
 		if ((body.permission.resource || body.permission.action) && body.permission.xml) {
 			reject({error: {message: "Cannot set action and resource at the same time as xacml rule", code: 400, title: "Bad Request"}})
-		}
-
-		if(!(body.permission.action && body.permission.resource) && !body.permission.xml){
-			reject({error: {message: "Set action and resource or an advanced xacml rule", code: 400, title: "Bad Request"}})
 		}
 
 		resolve()

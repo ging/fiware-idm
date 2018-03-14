@@ -11,14 +11,17 @@ router.param('oauthTokenId',   api_authenticate_oauth_controller.load_oauth);
 router.get('/access-tokens/:oauthTokenId', api_authenticate_oauth_controller.check_request, api_authenticate_oauth_controller.info_token);
 
 router.use('/auth',  require('./authenticate'))
-router.use('/applications', 					api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./applications'))
-router.use('/users', 							api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./users'))
-router.use('/organizations', 					api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./organizations'))
-// router.use('/role_permission_assignments', 		api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./role_permission_assignments'))
-// router.use('/role_user_assignments', 			api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./role_user_assignments'))
-// router.use('/role_organization_assignments', 	api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./role_organization_assignments'))
-// router.use('/user_organization_assignments', 	api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./user_organization_assignments'))
-router.use('/service_providers', 				api_authenticate_controller.validate_token, api_authenticate_controller.is_user, require('./service_providers'))
+
+router.all('*', api_authenticate_controller.validate_token, api_authenticate_controller.is_user)
+
+router.use('/applications', 					require('./applications'))
+router.use('/users', 							require('./users'))
+router.use('/organizations', 					require('./organizations'))
+// router.use('/role_permission_assignments', 	require('./role_permission_assignments'))
+// router.use('/role_user_assignments', 		require('./role_user_assignments'))
+// router.use('/role_organization_assignments', require('./role_organization_assignments'))
+// router.use('/user_organization_assignments', require('./user_organization_assignments'))
+router.use('/service_providers', 				require('./service_providers'))
 
 // catch 404 and forward to error handler
 router.use(function(req, res, next) {

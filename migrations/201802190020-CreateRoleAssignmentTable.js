@@ -9,10 +9,6 @@ module.exports = {
                     primaryKey: true,
                     autoIncrement: true
                 },
-                authorized: {
-                    type: Sequelize.BOOLEAN,
-                    defaultValue: false,
-                },
                 role_organization: {
                     type: Sequelize.STRING
                 },

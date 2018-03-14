@@ -39,7 +39,7 @@ exports.index = function(req, res) {
 
 	// Search organizations in wich user is member or owner
 	var search_organizations = models.user_organization.findAll({ 
-		where: { user_id: req.user.id },
+		where: { user_id: req.token_owner.id },
 		include: [{
 			model: models.organization,
 			attributes: ['id']
@@ -48,7 +48,7 @@ exports.index = function(req, res) {
 	search_organizations.then(function(organizations) {
 		return models.role_assignment.findAll({
 			where: { [Op.or]: [{ organization_id: organizations.map(elem => elem.organization_id)}, 
-							   {user_id: req.user.id}]},
+							   {user_id: req.token_owner.id}]},
 			include: [{
 				model: models.oauth_client,
 				attributes: ['id' ,
@@ -108,7 +108,7 @@ exports.create = function(req, res) {
 			return models.role_assignment.create({
 				oauth_client_id: application.id, 
 		        role_id: 'provider', 
-		        user_id: req.user.id
+		        user_id: req.token_owner.id
 		    })
 		}) 
 

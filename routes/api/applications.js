@@ -25,5 +25,8 @@ router.use('/:applicationId/iot_agents',   require('./iot_agents'))
 // Routes to handle roles permissions assignments
 router.use('/:applicationId/roles',  require('./role_permission_assignments'))
 
+// Routes to handle roles users assignments
+router.use('/:applicationId/users',  require('./role_user_assignments'))
+
 
 module.exports = router;

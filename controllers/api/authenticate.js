@@ -9,8 +9,9 @@ var pepProxyApiController = require('../../controllers/api/pep_proxies.js');
 
 // Middleware to see if the token correspond to user
 var is_user = function(req, res, next) {
-	if (req.user) {
-		next()
+	
+	if (req.token_owner._modelOptions.tableName === "user") {
+		next()	
 	} else {
 		res.status(403).json({ error: {message: 'User not allow to perform the action', code: 403, title: 'Forbidden'}})
 	}
@@ -25,13 +26,7 @@ var validate_token = function(req, res, next) {
 
 		return search_token(token_id).then(function(agent) { 
 
-			if (agent._modelOptions.tableName === "pep_proxy") {
-				req.pep_proxy = agent
-			}
-
-			if (agent._modelOptions.tableName === "user") {
-				req.user = agent	
-			}
+			req.token_owner = agent
 			next()
 		}).catch(function(error) {
 			return Promise.reject(error) 

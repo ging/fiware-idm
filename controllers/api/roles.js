@@ -9,10 +9,15 @@ const Op = Sequelize.Op;
 exports.load_role = function(req, res, next, roleId) {
 
 	debug("--> load_role");
+	var where = { id: roleId, oauth_client_id: req.application.id } 
+	
+	if (roleId === 'provider' || roleId === 'purchaser') {
+		var where = { id: roleId, is_internal: true } 	
+	} 
 
 	// Search role whose id is roleId
 	models.role.findOne({
-		where: { id: roleId }	
+		where: where	
 	}).then(function(role) {
 		// If role exists, set image from file system
 		if (role) {

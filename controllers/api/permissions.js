@@ -10,9 +10,15 @@ exports.load_permission = function(req, res, next, permissionId) {
 
 	debug("--> load_permission");
 
+	var where = { id: permissionId, oauth_client_id: req.application.id } 
+
+	if (['1', '2', '3', '4', '5', '6'].includes(permissionId)) {
+		var where = { id: permissionId, is_internal: true } 	
+	}
+
 	// Search permission whose id is permissionId
 	models.permission.findOne({
-		where: { id: permissionId }	
+		where: where	
 	}).then(function(permission) {
 		// If permission exists, set image from file system
 		if (permission) {

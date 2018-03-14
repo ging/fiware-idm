@@ -1,7 +1,7 @@
 var debug = require('debug')('idm:api-role_permission_assignments');
 var models = require('../../models/models.js');
 
-// GET /v1/role_permission_assignments/:role_id/permissions -- Send index of role permissions assignments
+// GET /v1/applications/:applicationId/roles/:role_id/permissions -- Send index of role permissions assignments
 exports.index = function(req, res) {
 	debug('--> index')
 
@@ -27,7 +27,7 @@ exports.index = function(req, res) {
 	})
 }
 
-// PUT /v1/role_permission_assignments/:role_id/permissions/:permission_id -- Edit role permission assignment
+// PUT /v1/applications/:applicationId/roles/:role_id/permissions/:permission_id -- Edit role permission assignment
 exports.assign = function(req, res) {
 
 	debug('--> assign')
@@ -51,7 +51,7 @@ exports.assign = function(req, res) {
 	}
 }
 
-// DELETE /v1/role_permission_assignments/:role_id/permissions/:permission_id -- Remove role permission assignment
+// DELETE /v1/applications/:applicationId/roles/:role_id/permissions/:permission_id -- Remove role permission assignment
 exports.remove = function(req, res) {
 
 	debug('--> remove')

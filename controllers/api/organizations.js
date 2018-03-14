@@ -10,7 +10,7 @@ exports.load_organization = function(req, res, next, organizationId) {
 	
 	// Search organization whose id is organizationId
 	models.user_organization.findOne({
-		where: { organization_id: req.params.organizationId, user_id: req.user.id},
+		where: { organization_id: organizationId, user_id: req.token_owner.id},
 		include: [models.organization]
 	}).then(function(row) {
 		// If organization exists, set image from file system
@@ -49,7 +49,7 @@ exports.index = function(req, res) {
 
 	// Search organizations in wich user is member or owner
 	models.user_organization.findAll({
-		where: {user_id: req.user.id},
+		where: {user_id: req.token_owner.id},
 		attributes: ['role'],
 		include: [{
 			model: models.organization,
@@ -99,7 +99,7 @@ exports.create = function(req, res) {
 			return models.user_organization.create({
 				organization_id: organization.id, 
 		        role: 'owner', 
-		        user_id: req.user.id
+		        user_id: req.token_owner.id
 		    })
 		}) 
 

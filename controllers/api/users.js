@@ -11,9 +11,43 @@ var auth_driver = config.external_auth.enabled ?
 // MW to see if user is registered
 exports.authenticate = auth_driver.authenticate;
 
+// MW to Autoload info if path include userId
+exports.load_user = function(req, res, next, userId) {
+	
+	debug("--> load_user");
+
+	models.user.findOne({
+		where: { id: userId },
+		attributes: ['id', 
+					 'username', 
+					 'email', 
+					 'enabled',
+					 'admin',
+					 'image', 
+					 'gravatar', 
+					 'date_password', 
+					 'description', 
+					 'website']
+	}).then(function(user) {
+		if (user) {
+			req.user = user
+			next()
+		} else {
+			res.status(404).json({error: {message: "User not found", code: 404, title: "Not Found"}})
+		}
+	}).catch(function(error) {
+		debug('Error: ' + error)
+		if (!error.error) {
+			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+		}
+		res.status(error.error.code).json(error)
+	})
+}
+
+
 // MW to check if user is admin
 exports.check_admin = function(req, res, next) {
-	if (req.user.admin) {
+	if (req.token_owner.admin) {
 		next()
 	} else {
 		res.status(403).json({error: {message: "User not authorized to perform action", code: 403, title: "Forbidden"}})
@@ -22,12 +56,13 @@ exports.check_admin = function(req, res, next) {
 
 // MW to check if user in url is the same as token owner
 exports.check_user = function(req, res, next) {
-	if ((req.user.id === req.params.userId) || req.user.admin) {
+	if ((req.token_owner.id === req.user.id) || req.token_owner.admin) {
 		next()
 	} else {
 		res.status(403).json({error: {message: "User not authorized to perform action", code: 403, title: "Forbidden"}})
 	}
 }
+
 
 // GET /v1/users -- Send index of users
 exports.index = function(req, res) {
@@ -105,30 +140,7 @@ exports.create = function(req, res) {
 exports.info = function(req, res) {
 	debug('--> info')
 	
-	models.user.findOne({
-		where: { id: req.params.userId },
-		attributes: ['id', 
-					 'username', 
-					 'email', 
-					 'enabled', 
-					 'gravatar', 
-					 'date_password', 
-					 'description', 
-					 'website']
-	}).then(function(user) {
-
-		if (user) {
-			res.status(201).json({user: user});
-		} else {
-			res.status(404).json({error: {message: "User not found", code: 404, title: "Not Found"}})
-		}
-	}).catch(function(error) {
-		debug('Error: ' + error)
-		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-		}
-		res.status(error.error.code).json(error)
-	})
+	res.status(201).json({user: req.user});
 }
 
 // PUT /v1/users/:userId -- Edit user
@@ -139,42 +151,32 @@ exports.update = function(req, res) {
 
 	check_update_body_request(req.body).then(function() {
 		
-		return models.user.findOne({
-			where: { id: req.params.userId}
-		})
+		user_previous_values = JSON.parse(JSON.stringify(req.user.dataValues))
 
-	}).then(function(user) {
-
-		if (!user) {
-			return Promise.reject({error: {message: "User not found", code: 404, title: "Not Found"}})
-		} else {
-			user_previous_values = JSON.parse(JSON.stringify(user.dataValues))
-
-			user.username = (req.body.user.username) ? req.body.user.username : user.username
-			user.email = (req.body.user.email) ? req.body.user.email : user.email
-			user.description = (req.body.user.description) ? req.body.user.description : user.description
-			user.website = (req.body.user.website) ? req.body.user.website : user.website
-			user.gravatar = (req.body.user.gravatar) ? req.body.user.gravatar : user.gravatar
-			user.enabled = true
-			if (req.body.user.password) {
-				user.password = req.body.user.password
-				user.date_password = new Date((new Date()).getTime()) 
-			}
-
-			return user.validate()
+		req.user.username = (req.body.user.username) ? req.body.user.username : req.user.username
+		req.user.email = (req.body.user.email) ? req.body.user.email : req.user.email
+		req.user.description = (req.body.user.description) ? req.body.user.description : req.user.description
+		req.user.website = (req.body.user.website) ? req.body.user.website : req.user.website
+		req.user.gravatar = (req.body.user.gravatar) ? req.body.user.gravatar : req.user.gravatar
+		req.user.enabled = true
+		if (req.body.user.password) {
+			req.user.password = req.body.user.password
+			req.user.date_password = new Date((new Date()).getTime()) 
 		}
 
+		return req.user.validate()
+
 	}).then(function(user) {
 
-		return user.save()
+		return req.user.save()
 
 	}).then(function(user) {
 
 		delete user_previous_values.password
 		delete user_previous_values.date_password
-		delete user.dataValues.password
-		delete user.dataValues.date_password
-		var difference = diffObject(user_previous_values, user.dataValues)
+		delete req.user.dataValues.password
+		delete req.user.dataValues.date_password
+		var difference = diffObject(user_previous_values, req.user.dataValues)
 		var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the user parameters", code: 200, title: "OK"}
 		res.status(200).json(response);
 
@@ -198,10 +200,10 @@ exports.delete = function(req, res) {
 	debug('--> delete')
 	
 	models.user.destroy({
-		where: { id: req.params.userId}
+		where: { id: req.user.id}
 	}).then(function(destroyed) {
 		if (destroyed) {
-			res.status(204).json("User "+req.params.userId+" destroyed");
+			res.status(204).json("User "+req.user.id+" destroyed");
 		} else {
 			return Promise.reject({error: {message: "User not found", code: 404, title: "Bad Request"}})
 		}

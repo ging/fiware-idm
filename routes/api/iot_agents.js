@@ -8,9 +8,9 @@ router.param(':iotAgentId', api_iota_controller.load_iota)
 
 // Routes for pep_proxies
 router.get('/', 				api_iota_controller.index);
-router.post('/', 				api_iota_controller.register);
-router.get('/:iotAgentId', 	api_iota_controller.info);
-router.patch('/:iotAgentId', 	api_iota_controller.reset_password);
+router.post('/', 				api_iota_controller.create);
+router.get('/:iotAgentId', 		api_iota_controller.info);
+router.patch('/:iotAgentId', 	api_iota_controller.update);
 router.delete('/:iotAgentId', 	api_iota_controller.delete);
 
 module.exports = router;

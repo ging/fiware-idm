@@ -17,10 +17,6 @@ router.all('*', api_authenticate_controller.validate_token, api_authenticate_con
 router.use('/applications', 					require('./applications'))
 router.use('/users', 							require('./users'))
 router.use('/organizations', 					require('./organizations'))
-// router.use('/role_permission_assignments', 	require('./role_permission_assignments'))
-// router.use('/role_user_assignments', 		require('./role_user_assignments'))
-// router.use('/role_organization_assignments', require('./role_organization_assignments'))
-// router.use('/user_organization_assignments', require('./user_organization_assignments'))
 router.use('/service_providers', 				require('./service_providers'))
 
 // catch 404 and forward to error handler

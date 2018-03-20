@@ -47,7 +47,7 @@ exports.index = function(req, res) {
 		order: [['id', 'DESC']]
 	}).then(function(permissions) {
 		if (permissions.length > 0)
-			res.status(201).json({permissions: permissions});
+			res.status(200).json({permissions: permissions});
 		else {
 			res.status(404).json({error: {message: "permissions not found", code: 404, title: "Not Found"}})
 		}
@@ -87,7 +87,7 @@ exports.create = function(req, res) {
 exports.info = function(req, res) {
 	debug('--> info')
 
-	res.status(201).json({permission: req.permission});
+	res.status(200).json({permission: req.permission});
 }
 
 // PATCH /v1/:applicationId/permissions/:permissionId -- Edit permission

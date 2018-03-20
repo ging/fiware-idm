@@ -78,9 +78,9 @@ exports.index = function(req, res) {
 					 'description', 
 					 'website']
 	}).then(function(users) {
-		if (users.length > 0)
-			res.status(201).json({users: users});
-		else {
+		if (users.length > 0) {
+			res.status(200).json({users: users});
+		} else {
 			res.status(404).json({error: {message: "Users not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) {
@@ -139,8 +139,8 @@ exports.create = function(req, res) {
 // GET /v1/users/:userId -- Get info about user
 exports.info = function(req, res) {
 	debug('--> info')
-	
-	res.status(201).json({user: req.user});
+
+	res.status(200).json({user: req.user});
 }
 
 // PUT /v1/users/:userId -- Edit user

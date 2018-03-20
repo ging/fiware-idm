@@ -8,8 +8,8 @@ router.all('*', api_peppx_controller.search_pep_proxy)
 
 // Routes for pep_proxies
 router.get('/', 	api_peppx_controller.info);
-router.post('/', 	api_peppx_controller.register);
-router.patch('/', 	api_peppx_controller.reset_password);
+router.post('/', 	api_peppx_controller.create);
+router.patch('/', 	api_peppx_controller.update);
 router.delete('/', 	api_peppx_controller.delete);
 
 module.exports = router;

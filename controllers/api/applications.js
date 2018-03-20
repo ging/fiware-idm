@@ -6,6 +6,8 @@ var _ = require('lodash');
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+var api_check_perm_controller = require('./check_permissions');
+
 // MW to Autoload info if path include applicationId
 exports.load_application = function(req, res, next, applicationId) {
 
@@ -19,10 +21,12 @@ exports.load_application = function(req, res, next, applicationId) {
 			// If application exists, set image from file system
 			if (application) {
 				req.application = application
-				next();
+				return api_check_perm_controller.check_request(req, res, next)
 			} else {
 				res.status(404).json({error: {message: "Application not found", code: 404, title: "Not Found"}})
 			}
+		}).then(function(decision) {
+			next()
 		}).catch(function(error) { 
 			debug('Error: ' + error)
 			if (!error.error) {
@@ -64,7 +68,7 @@ exports.index = function(req, res) {
 		})
 	}).then(function(applications) {
 		var applications_filtered = _.uniqBy(applications.map(elem=> elem.OauthClient.dataValues), 'id');
-		res.status(201).json({user_applications: applications_filtered});
+		res.status(200).json({applications: applications_filtered});
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {
@@ -128,7 +132,7 @@ exports.create = function(req, res) {
 exports.info = function(req, res) {
 	debug('--> info')
 
-	res.status(201).json({application: req.application.dataValues});
+	res.status(200).json({application: req.application.dataValues});
 }
 
 // PATCH /v1/applications/:applicationId -- Edit application
@@ -167,6 +171,7 @@ exports.update = function(req, res) {
 		}
 		res.status(error.error.code).json(error)
 	})
+
 }
 
 // DELETE /v1/applications/:applicationId -- Delete application

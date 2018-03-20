@@ -1,32 +1,80 @@
 var express = require('express');
-var router = express.Router();
+var router = express();
 
-// Application API Controller
-var api_appl_controller = require('../../controllers/api/index').applications;
+// Load API Controllers
+var api_controller = require('../../controllers/api/index')
+var api_appl_controller = api_controller.applications;
+var api_user_controller = api_controller.users;
+var api_org_controller = api_controller.organizations;
+var api_check_perm_controller = api_controller.check_permissions;
+var api_role_controller = api_controller.roles;
+var api_perm_controller = api_controller.permissions;
+var api_peppx_controller = api_controller.pep_proxies;
+var api_iota_controller = api_controller.iot_agents;
+var api_role_pem_assign_controller = api_controller.role_permission_assignments;
+var api_role_user_assign_controller = api_controller.role_user_assignments;
+var api_role_org_assign_controller = api_controller.role_organization_assignments;
 
-router.param('applicationId',   api_appl_controller.load_application);
+// Load application with :applicationId parameter and check permissions of user in request
+router.param('applicationId',   	api_appl_controller.load_application);
+// Load other params
+router.param('roleId',   			api_role_controller.load_role);
+router.param('permissionId',   		api_perm_controller.load_permission);
+router.param('iotAgentId', 			api_iota_controller.load_iota);
+router.param('userId',   			api_user_controller.load_user);
+router.param('organizationId',   	api_org_controller.load_organization);
+router.param('organizationRoleId',  api_org_controller.load_organization_role);
 
 // Routes for applications
-router.get('/', 					api_appl_controller.index);
-router.post('/', 					api_appl_controller.create);
+router.post('/', 					api_check_perm_controller.check_request, 	api_appl_controller.create);
+router.get('/', 					api_check_perm_controller.check_request, 	api_appl_controller.index);
 router.get('/:applicationId', 		api_appl_controller.info);
 router.patch('/:applicationId', 	api_appl_controller.update);
 router.delete('/:applicationId', 	api_appl_controller.delete);
 
-// Routes to handle roles
-router.use('/:applicationId/roles',  require('./roles'))
-// Routes to handle permissions
-router.use('/:applicationId/permissions',  require('./permissions'))
-// Routes to handle pep proxies
-router.use('/:applicationId/pep_proxies',  require('./pep_proxies'))
-// Routes to handle iot agents
-router.use('/:applicationId/iot_agents',   require('./iot_agents'))
+// Routes for pep_proxies
+router.all('/:applicationId/pep_proxies', 		api_peppx_controller.search_pep_proxy)
+router.get('/:applicationId/pep_proxies', 		api_peppx_controller.info);
+router.post('/:applicationId/pep_proxies', 		api_peppx_controller.create);
+router.patch('/:applicationId/pep_proxies', 	api_peppx_controller.update);
+router.delete('/:applicationId/pep_proxies', 	api_peppx_controller.delete);
 
-// Routes to handle roles permissions assignments
-router.use('/:applicationId/roles',  require('./role_permission_assignments'))
+// Routes for iot agents
+router.get('/:applicationId/iot_agents', 				api_iota_controller.index);
+router.post('/:applicationId/iot_agents', 				api_iota_controller.create);
+router.get('/:applicationId/iot_agents/:iotAgentId', 	api_iota_controller.info);
+router.patch('/:applicationId/iot_agents/:iotAgentId', 	api_iota_controller.update);
+router.delete('/:applicationId/iot_agents/:iotAgentId', api_iota_controller.delete);
 
-// Routes to handle roles users assignments
-router.use('/:applicationId/users',  require('./role_user_assignments'))
+// Routes for roles
+router.get('/:applicationId/roles', 			api_role_controller.index);
+router.post('/:applicationId/roles', 			api_role_controller.create);
+router.get('/:applicationId/roles/:roleId', 	api_role_controller.info);
+router.patch('/:applicationId/roles/:roleId', 	api_role_controller.update);
+router.delete('/:applicationId/roles/:roleId', 	api_role_controller.delete);
 
+// Routes for permissions
+router.get('/:applicationId/permissions', 					api_perm_controller.index);
+router.post('/:applicationId/permissions', 					api_perm_controller.create);
+router.get('/:applicationId/permissions/:permissionId', 	api_perm_controller.info);
+router.patch('/:applicationId/permissions/:permissionId', 	api_perm_controller.update);
+router.delete('/:applicationId/permissions/:permissionId', 	api_perm_controller.delete);
+
+// Routes for role_permission_assignments
+router.get('/:applicationId/roles/:roleId/permissions', 					api_role_pem_assign_controller.index);
+router.post('/:applicationId/roles/:roleId/permissions/:permissionId', 		api_role_pem_assign_controller.create);
+router.delete('/:applicationId/roles/:roleId/permissions/:permissionId', 	api_role_pem_assign_controller.delete);
+
+// Routes for role_user_assignments
+router.get('/:applicationId/users', 							api_role_controller.search_changeable_roles,	api_role_user_assign_controller.index_users);
+router.get('/:applicationId/users/:userId/roles', 				api_role_controller.search_changeable_roles,	api_role_user_assign_controller.index_user_roles);
+router.post('/:applicationId/users/:userId/roles/:roleId', 		api_role_controller.search_changeable_roles,	api_role_user_assign_controller.create);
+router.delete('/:applicationId/users/:userId/roles/:roleId', 	api_role_controller.search_changeable_roles,	api_role_user_assign_controller.delete);
+
+// Routes for role_organization_assignments
+router.get('/:applicationId/organizations', 																		api_role_controller.search_changeable_roles,	api_role_org_assign_controller.index_organizations);
+router.get('/:applicationId/organizations/:organizationId/roles', 													api_role_controller.search_changeable_roles,	api_role_org_assign_controller.index_organization_roles);
+router.post('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', 	api_role_controller.search_changeable_roles,	api_role_org_assign_controller.create);
+router.delete('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', api_role_controller.search_changeable_roles,	api_role_org_assign_controller.delete);
 
 module.exports = router;

@@ -48,15 +48,15 @@ exports.info = function(req, res) {
 
     if (req.pep_proxy) {
 	   delete req.pep_proxy.dataValues.password
-       res.status(201).json({pep_proxy: req.pep_proxy});
+       res.status(200).json({pep_proxy: req.pep_proxy});
     } else {
        res.status(404).json({error: {message: "Pep Proxy not found", code: 404, title: "Not Found"}})
     }
 }
 
 // POST /v1/:applicationId/pep_proxies -- Cretate pep_proxy
-exports.register = function(req, res) {
-	debug('--> register')
+exports.create = function(req, res) {
+	debug('--> create')
 	
     if (req.pep_proxy) {
         error = { error: {message: 'Pep Proxy already registered', code: 409, title: 'Conflict'}}
@@ -83,8 +83,8 @@ exports.register = function(req, res) {
 }
 
 // PATCH /v1/:applicationId/pep_proxies -- Reset password pep_proxy
-exports.reset_password = function(req, res) {
-    debug('--> reset_password')
+exports.update = function(req, res) {
+    debug('--> update')
 
     if (req.pep_proxy) {
         var password = 'pep_proxy_'+uuid.v4()

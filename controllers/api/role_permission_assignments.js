@@ -14,7 +14,7 @@ exports.index = function(req, res) {
 		}]
 	}).then(function(rows) {
 		if (rows.length > 0)
-			res.status(201).json({role_permission_assignments: rows.map(elem => elem.Permission)});
+			res.status(200).json({role_permission_assignments: rows.map(elem => elem.Permission)});
 		else {
 			res.status(404).json({error: {message: "Assignments not found", code: 404, title: "Not Found"}})
 		}
@@ -28,9 +28,9 @@ exports.index = function(req, res) {
 }
 
 // PUT /v1/applications/:applicationId/roles/:role_id/permissions/:permission_id -- Edit role permission assignment
-exports.assign = function(req, res) {
+exports.create = function(req, res) {
 
-	debug('--> assign')
+	debug('--> create')
 
 	if (req.role.id === 'provider' || req.role.id === 'purchaser') {
 		res.status(403).json({error: {message: "Not allowed", code: 403, title: "Forbidden"}})
@@ -52,9 +52,9 @@ exports.assign = function(req, res) {
 }
 
 // DELETE /v1/applications/:applicationId/roles/:role_id/permissions/:permission_id -- Remove role permission assignment
-exports.remove = function(req, res) {
+exports.delete = function(req, res) {
 
-	debug('--> remove')
+	debug('--> delete')
 	
 	if (req.role.id === 'provider' || req.role.id === 'purchaser') {
 		res.status(403).json({error: {message: "Not allowed", code: 403, title: "Forbidden"}})
@@ -62,7 +62,11 @@ exports.remove = function(req, res) {
 		models.role_permission.destroy({
 			where: { role_id: req.role.id, permission_id: req.permission.id }
 		}).then(function(deleted) {
-			res.status(204).json("Assignment destroyed");
+			if (deleted) {
+				res.status(204).json("Assignment destroyed");
+			} else {
+				res.status(404).json({error: {message: "Assignments not found", code: 404, title: "Not Found"}})
+			} 
 		}).catch(function(error) {
 			debug('Error: ' + error)
 			if (!error.error) {

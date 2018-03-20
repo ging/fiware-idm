@@ -8,8 +8,9 @@ router.param('roleId',   require('../../controllers/api/index').roles.load_role)
 router.param('userId',   require('../../controllers/api/index').users.load_user);
 
 // Routes for role_user_assignments
-router.get('/:userId/roles', 				api_role_user_assign_controller.index);
-router.post('/:userId/roles/:roleId', 		api_role_user_assign_controller.assign);
-router.delete('/:userId/roles/:roleId', 	api_role_user_assign_controller.remove);
+router.get('/', 							api_role_user_assign_controller.index);
+router.get('/:userId/roles', 				api_role_user_assign_controller.info);
+router.post('/:userId/roles/:roleId', 		api_role_user_assign_controller.create);
+router.delete('/:userId/roles/:roleId', 	api_role_user_assign_controller.delete);
 
 module.exports = router;

@@ -10,7 +10,7 @@ router.param('userId',   api_user_controller.load_user);
 router.get('/', 			api_user_controller.check_admin,	api_user_controller.index);
 router.post('/', 			api_user_controller.check_admin,	api_user_controller.create);
 router.get('/:userId', 		api_user_controller.check_user,		api_user_controller.info);
-router.put('/:userId', 		api_user_controller.check_user,		api_user_controller.update);
+router.patch('/:userId', 	api_user_controller.check_user,		api_user_controller.update);
 router.delete('/:userId', 	api_user_controller.check_user,		api_user_controller.delete);
 
 module.exports = router;

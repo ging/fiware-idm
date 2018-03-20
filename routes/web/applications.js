@@ -34,8 +34,6 @@ var imageAppUpload = multer.diskStorage({
     }
 })
 
-
-
 // Routes to create, edit and delete applications
 router.get('/',  					                                      	 csrfProtection,     web_app_controller.index);
 router.get('/filtered_user',                                          		 csrfProtection,     web_app_controller.filter_user);

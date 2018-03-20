@@ -39,14 +39,35 @@ exports.load_role = function(req, res, next, roleId) {
 exports.index = function(req, res) {
 	debug('--> index')
 	
-	// Search organizations in wich user is member or owner
+	// Array to indicate which roles are going to be search
+	var where_search_role = []
+	if (req.needed_permissions.includes('3') && req.user_owned_permissions.includes('3')) {
+		where_search_role.push({oauth_client_id: req.application.id})
+		where_search_role.push({is_internal: true})
+	} else {
+		// If permission is assign only public owned roles
+		if (req.needed_permissions.includes('6') && req.user_owned_permissions.includes('6')) {
+			where_search_role.push({id: req.user_owned_roles.filter(elem => !(elem === 'provider' || elem === 'purchaser'))});
+		}
+
+		// If permission is assign all public owned roles
+		if (req.needed_permissions.includes('5') && req.user_owned_permissions.includes('5')) {
+			where_search_role.push({oauth_client_id: req.application.id})
+		}
+
+		// If permission is assign only internal roles
+		if (req.needed_permissions.includes('1') && req.user_owned_permissions.includes('1')) {
+			where_search_role.push({is_internal: true});
+		}
+	}
+
 	models.role.findAll({
-		where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
+		where: { [Op.or]: where_search_role },
 		attributes: ['id', 'name'],
 		order: [['id', 'DESC']]
 	}).then(function(roles) {
 		if (roles.length > 0)
-			res.status(201).json({roles: roles});
+			res.status(200).json({roles: roles});
 		else {
 			res.status(404).json({error: {message: "Roles not found", code: 404, title: "Not Found"}})
 		}
@@ -87,8 +108,8 @@ exports.create = function(req, res) {
 // GET /v1/:applicationId/roles/:roleId -- Get info about role
 exports.info = function(req, res) {
 	debug('--> info')
-
-	res.status(201).json({role: req.role});
+	
+	res.status(200).json({role: req.role});
 }
 
 // PATCH /v1/:applicationId/roles/:roleId -- Edit role
@@ -140,6 +161,51 @@ exports.delete = function(req, res) {
 			res.status(error.error.code).json(error)
 		})
 	}
+}
+
+// MW to search roles that user can change
+exports.search_changeable_roles = function(req, res, next) {
+
+	debug('--> search_changeable_roles')
+
+	if (req.needed_permissions.length >= 0) {
+		// Array to indicate which roles are going to be search
+		var where_search_role = []
+
+		// If permission is assign only public owned roles
+		if (req.needed_permissions.includes('6') && req.user_owned_permissions.includes('6')) {
+			where_search_role.push({id: req.user_owned_roles.filter(elem => !(elem === 'provider' || elem === 'purchaser'))});
+		}
+
+		// If permission is assign all public owned roles
+		if (req.needed_permissions.includes('5') && req.user_owned_permissions.includes('5')) {
+			where_search_role.push({oauth_client_id: req.application.id})
+		}
+
+		// If permission is assign only internal roles
+		if (req.needed_permissions.includes('1') && req.user_owned_permissions.includes('1')) {
+			where_search_role.push({is_internal: true});
+		}
+
+		// Search roles to display when authorize users
+		models.role.findAll({
+			where: { [Op.or]: where_search_role },
+			attributes: ['id', 'name'],
+			order: [['id', 'DESC']]
+		}).then(function(roles) {
+			req.changeable_role = roles
+			next()
+		}).catch(function(error) {
+			debug('Error: ' + error)
+			if (!error.error) {
+				error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+			}
+			res.status(error.error.code).json(error)
+		})
+	} else {
+		next()
+	}
+
 }
 
 

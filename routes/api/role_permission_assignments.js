@@ -9,7 +9,7 @@ router.param('permissionId',   require('../../controllers/api/index').permission
 
 // Routes for role_permission_assignments
 router.get('/:roleId/permissions', 						api_role_pem_assign_controller.index);
-router.post('/:roleId/permissions/:permissionId', 		api_role_pem_assign_controller.assign);
-router.delete('/:roleId/permissions/:permissionId', 	api_role_pem_assign_controller.remove);
+router.post('/:roleId/permissions/:permissionId', 		api_role_pem_assign_controller.create);
+router.delete('/:roleId/permissions/:permissionId', 	api_role_pem_assign_controller.delete);
 
 module.exports = router;

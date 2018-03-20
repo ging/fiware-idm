@@ -7,6 +7,7 @@ module.exports = {
   iot_agents: 						require('../../controllers/api/iot_agents'),
   users: 							require('../../controllers/api/users'),
   organizations: 					require('../../controllers/api/organizations'),
+  check_permissions:          require('../../controllers/api/check_permissions'),
   role_permission_assignments: 		require('../../controllers/api/role_permission_assignments'),
   role_user_assignments: 			require('../../controllers/api/role_user_assignments'),
   role_organization_assignments: 	require('../../controllers/api/role_organization_assignments'),

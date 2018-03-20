@@ -35,7 +35,7 @@ exports.index = function(req, res) {
 		attributes: ['id']
 	}).then(function(iots) {
 		if (iots.length > 0)
-			res.status(201).json({iots: iots});
+			res.status(200).json({iots: iots});
 		else {
 			res.status(404).json({error: {message: "Iot agents not found", code: 404, title: "Not Found"}})
 		}
@@ -49,8 +49,8 @@ exports.index = function(req, res) {
 }
 
 // POST /v1/:applicationId/iot_agents -- Create iot_agent
-exports.register = function(req, res) {
-	debug('--> register')
+exports.create = function(req, res) {
+	debug('--> create')
 	
     // Id and password of the iot agent
     var id = 'iot_sensor_'+uuid.v4()
@@ -76,12 +76,12 @@ exports.info = function(req, res) {
 	debug('--> info')
 	
    delete req.iot.dataValues.password
-   res.status(201).json({iot: req.iot});
+   res.status(200).json({iot: req.iot});
 }
 
 // PATCH /v1/:applicationId/iot_agents/:iot_agentId -- Reset iot_agent password
-exports.reset_password = function(req, res) {
-	debug('--> reset_password')
+exports.update = function(req, res) {
+	debug('--> update')
 
     var password = 'iot_sensor_'+uuid.v4()
     req.iot.password = password

@@ -1,6 +1,6 @@
 var models = require('../../models/models.js');
 var uuid = require('uuid');
-
+var config = require('../../config');
 var debug = require('debug')('idm:api-authenticate');
 
 var userApiController = require('../../controllers/api/users.js');
@@ -24,7 +24,7 @@ var validate_token = function(req, res, next) {
 
 	check_validate_token_request(req).then(function(token_id) {
 
-		return search_token(token_id).then(function(agent) { 
+		return search_token_owner(token_id).then(function(agent) { 
 
 			req.token_owner = agent
 			next()
@@ -58,13 +58,24 @@ function check_validate_token_request(req) {
 }
 
 
-// GET /v1/auth/tokens -- Get info from a token
-var info_token = function(req, res, next) {
+// DELETE /v1/auth/tokens -- Delete token
+var delete_token = function(req, res, next) {
 	
-	debug(' --> info_token')
+	debug(' --> delete_token')
 
-	check_info_token_request(req).then(function(tokens) {
-		res.status(201).json(tokens)
+	check_headers_request(req).then(function(tokens) {
+		// Searc Auth token
+		var search_auth_token = search_token(tokens.auth)
+		// Search Subject token
+		var search_subj_token = search_token(tokens.subject)
+
+		return Promise.all([search_auth_token, search_subj_token])
+	}).then(function(values) {
+		return check_requested_tokens(values[0], values[1])
+	}).then(function(token) {
+		return token.destroy()
+	}).then(function(deleted) {
+		res.status(204).json("Appication "+req.params.applicationId+" destroyed");
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {
@@ -74,8 +85,76 @@ var info_token = function(req, res, next) {
 	})
 }
 
+
+// GET /v1/auth/tokens -- Get info from a token
+var info_token = function(req, res, next) {
+	
+	debug(' --> info_token')
+
+	check_headers_request(req).then(function(tokens) {
+		// Searc Auth token
+		var search_auth_token = search_token(tokens.auth)
+		// Search Subject token
+		var search_subj_token = search_token(tokens.subject)
+
+		return Promise.all([search_auth_token, search_subj_token])
+	}).then(function(values) {
+		return check_requested_tokens(values[0], values[1])
+	}).then(function(token) {
+		res.status(200).json(token)
+	}).catch(function(error) {
+		debug('Error: ' + error)
+		if (!error.error) {
+			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+		}
+		res.status(error.error.code).json(error)
+	})
+}
+
+// Function to check if auth and subject token are valid
+function check_requested_tokens(auth_token_info, subj_token_info) {
+	return new Promise(function(resolve, reject) {
+		if (!auth_token_info) {
+			reject({ error: {message: 'Auth Token not found', code: 404, title: 'Not Found'}})
+		}
+
+		if (!subj_token_info) {
+			reject({ error: {message: 'Subject Token not found', code: 404, title: 'Not Found'}})	
+		}
+
+		if ((new Date()).getTime() > auth_token_info.expires.getTime()) {
+			reject({ error: {message: 'Auth Token has expired', code: 401, title: 'Unauthorized'}})	
+		}
+
+		if (auth_token_info.user_id && subj_token_info.user_id) {
+			if ((auth_token_info.user_id === subj_token_info.user_id) || auth_token_info.User.admin) {
+				delete subj_token_info.dataValues.pep_proxy_id
+				delete subj_token_info.dataValues.user_id
+				delete subj_token_info.dataValues.PepProxy
+				resolve(subj_token_info)
+			} else {
+				reject({ error: {message: 'User must be admin or owner of the two tokens', code: 403, title: 'Forbidden'}})
+
+			}
+
+		} else if (auth_token_info.pep_proxy_id && subj_token_info.pep_proxy_id) {
+			if ((auth_token_info.pep_proxy_id !== subj_token_info.pep_proxy_id)) {
+				reject({ error: {message: 'Pep Proxy must be owner of the two tokens', code: 403, title: 'Forbidden'}})
+			}
+
+			delete subj_token_info.dataValues.pep_proxy_id
+			delete subj_token_info.dataValues.user_id
+			delete subj_token_info.dataValues.User
+			resolve(subj_token_info)
+
+		} else {
+			reject({ error: {message: 'Subject and auth token are not owned by the same entity', code: 403, title: 'Forbidden'}})
+		}
+	})
+}
+
 // Function to check if parameters exist in request
-function check_info_token_request(req) {
+function check_headers_request(req) {
 
 	return new Promise(function(resolve, reject) {
 		switch(true) {
@@ -88,6 +167,25 @@ function check_info_token_request(req) {
 			default:
 				resolve({auth: req.headers['x-auth-token'], subject: req.headers['x-subject-token']})
 		}
+	})
+}
+
+// Function to search token in database
+function search_token(token_id) {
+	
+	return models.auth_token.findOne({
+		where: { access_token: token_id },
+		include: [{
+			model: models.user,
+			attributes: ['id', 'username', 'email', 'date_password', 'enabled', 'admin']
+		}, {
+			model: models.pep_proxy,
+			attributes: ['id']
+		}]
+	}).then(function(token_row) {
+		return Promise.resolve(token_row)
+	}).catch(function(error) {
+		return Promise.reject(error)
 	})
 }
 
@@ -109,7 +207,7 @@ var create_token = function(req, res, next) {
 			methods.push(search_identity(req.body.name, req.body.password))
 		}
 		if (checked.includes('token')) {
-			methods.push(search_token(req.body.token))
+			methods.push(search_token_owner(req.body.token))
 		}
 
 		return Promise.all(methods)
@@ -126,7 +224,7 @@ var create_token = function(req, res, next) {
 	}).then(function(authenticated) {
 		
 		var token_id = uuid.v4()
-		var expires = new Date((new Date()).getTime() + 1000*3600)
+		var expires = new Date((new Date()).getTime() + 1000*config.api.token_lifetime)
 		var row = {access_token: token_id, expires: expires, valid: true}
 		if (authenticated[0]._modelOptions.tableName === 'user') {
 			row = Object.assign({}, row, { user_id: authenticated[0].id})
@@ -182,8 +280,7 @@ function check_create_token_request(req) {
 
 // Function to check password method parameter for identity
 function search_identity(name, password) {
-	debug(name)
-	debug(password)
+	
 	return new Promise(function(resolve, reject) {
 
 		models.helpers.search_pep_or_user(name).then(function(identity) {
@@ -248,7 +345,7 @@ function authenticate_pep_proxy(id, password) {
 
 
 // Function to search token in database
-function search_token(token_id) {
+function search_token_owner(token_id) {
 	
 	return models.auth_token.findOne({
 		where: { access_token: token_id },
@@ -296,5 +393,6 @@ module.exports = {
 	validate_token: validate_token,
 	create_token: create_token,
 	info_token: info_token,
-	is_user: is_user
+	is_user: is_user,
+	delete_token: delete_token
 }

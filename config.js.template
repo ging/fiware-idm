@@ -29,6 +29,11 @@ config.oauth2 = {
     refresh_token_lifetime: 60 * 60 * 24 * 14       // Two weeks
 }
 
+// Config api parameters
+config.api = {
+    token_lifetime: 60 * 60     // One hour
+}
+
 // Enable authzforce
 config.authzforce = {
 	enabled: false,

@@ -7,16 +7,12 @@ var uuid = require('uuid');
 exports.load_organization = function(req, res, next, organizationId) {
 
 	debug("--> load_organization");
-	
+
 	// Search organization whose id is organizationId
-	models.user_organization.findOne({
-		where: { organization_id: organizationId, user_id: req.token_owner.id},
-		include: [models.organization]
-	}).then(function(row) {
+	models.organization.findById(organizationId).then(function(organization) {
 		// If organization exists, set image from file system
-		if (row) {
-			req.organization = row.Organization
-			req.user_role_organization = row.role
+		if (organization) {
+			req.organization = organization
 			next();
 		} else {
 			res.status(404).json({error: {message: "Organization not found", code: 404, title: "Not Found"}})
@@ -30,17 +26,41 @@ exports.load_organization = function(req, res, next, organizationId) {
 	});
 }
 
+// MW to check role organization
+exports.load_organization_role = function(req, res, next, organizationRoleId) {
+
+	debug("--> load_organization_role");
+	
+	if (organizationRoleId === 'owner' || organizationRoleId === 'member') {
+		req.role_organization = organizationRoleId
+		next()
+	} else {
+		res.status(404).json({error: {message: "Organization role not found", code: 404, title: "Not Found"}})
+	}
+}
+
 
 // MW to check role of user in organization
 exports.owned_permissions = function(req, res, next) {
 	debug("--> owned_permissions");
 
-	if (req.user_role_organization === 'owner') {
-		next()
-	} else {
-		res.status(403).json({error: {message: "User not allow to perform the action", code: 403, title: "Forbidden"}})		
-	}
-
+	models.user_organization.findOne({
+		where: { organization_id: req.organization.id, 
+				 user_id: req.token_owner.id,
+				 role: 'owner' }
+	}).then(function(row) {
+		if (row) {
+			next()
+		} else {
+			res.status(403).json({error: {message: "User not allow to perform the action", code: 403, title: "Forbidden"}})		
+		}
+	}).catch(function(error) {
+		debug('Error: ' + error)
+		if (!error.error) {
+			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
+		}
+		res.status(error.error.code).json(error)		
+	})
 }
 
 // GET /v1/organizations -- Send index of organizations

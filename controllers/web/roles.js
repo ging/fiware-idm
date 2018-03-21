@@ -20,43 +20,55 @@ exports.load_role = function(req, res, next, roleId) {
 }
 
 // GET /idm/applications/:applicationId/edit/roles -- Show roles and permissions
+exports.manage_roles_view = function(req, res, next) {
+
+	debug("--> manage_roles_view");
+
+	res.render('applications/manage_roles', { application: req.application, csrfToken: req.csrfToken() });
+}
+
+// GET /idm/applications/:applicationId/edit/roles/assignments -- Show roles and permissions
 exports.manage_roles = function(req, res, next) {
 
 	debug("--> manage_roles");
 
-	// Search roles of application and order them
-	models.role.findAll({
+	var search_roles = models.role.findAll({
 		where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
 		attributes: ['id', 'name'],
 		order: [['id', 'DESC']]
-	}).then(function(roles) {
-		// Search permissions of application and order them
-		models.permission.findAll({
-			where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
-			attributes: ['id', 'name'], 
-			order: [['id', 'ASC']]
-		}).then(function(permissions) {
-			// Search roles to permission assignment of application using id of roles
-			models.role_permission.findAll({
-				where: { role_id: roles.map(elem => elem.id) }						
-			}).then(function(application_roles_permissions) {
-					// Create and object with key as id of role and value an array of permissions id
-					role_permission_assign = {}
-					for (var i = 0; i < application_roles_permissions.length; i++) {
-						if (!role_permission_assign[application_roles_permissions[i].role_id]) {
-					        role_permission_assign[application_roles_permissions[i].role_id] = [];
-					    }
-					    role_permission_assign[application_roles_permissions[i].role_id].push(application_roles_permissions[i].permission_id);
-					}
-					res.render('applications/manage_roles', { application: { id: req.application.id, 
-																			 roles: roles, 
-																			 permissions: permissions,
-																			 role_permission_assign: role_permission_assign },
-															  csrfToken: req.csrfToken() });
-			}).catch(function(error) { next(error); });
-		}).catch(function(error) { next(error); });
-	}).catch(function(error) { next(error); });
+	})
+	var search_permissions = models.permission.findAll({
+		where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
+		attributes: ['id', 'name'], 
+		order: [['id', 'ASC']]
+	})
+	var search_assignments = search_roles.then(function(roles) {
+		return models.role_permission.findAll({
+			where: { role_id: roles.map(elem => elem.id) }						
+		})
+	})
 
+	Promise.all([search_roles, search_permissions, search_assignments]).then(function(values) {
+		var roles = values[0]
+		var permissions = values[1]
+		var role_permission_assign = {}
+
+		for (var i = 0; i < values[2].length; i++) {
+			if (!role_permission_assign[values[2][i].role_id]) {
+		        role_permission_assign[values[2][i].role_id] = [];
+		    }
+		    role_permission_assign[values[2][i].role_id].push(values[2][i].permission_id);
+		}
+
+		res.send({ application: {  id: req.application.id, 
+								   roles: roles, 
+								   permissions: permissions,
+								   role_permission_assign: role_permission_assign }})
+
+	}).catch(function(error) {
+		// Send message of fail when creating role
+		res.send({text: 'Error searching roles and permissions', type: 'danger'});
+	})
 }
 
 

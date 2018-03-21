@@ -61,7 +61,8 @@ router.get('/:applicationId/edit/organizations',                             web
 router.post('/:applicationId/edit/organizations',                            web_check_perm_controller.owned_permissions,    csrfProtection,    web_auth_org_controller.authorize_organizations);
 
 // Routes to handle roles of applications
-router.get('/:applicationId/edit/roles',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_role_controller.manage_roles);
+router.get('/:applicationId/edit/roles',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_role_controller.manage_roles_view);
+router.get('/:applicationId/edit/roles/assignments',                         web_check_perm_controller.owned_permissions,    csrfProtection,    web_role_controller.manage_roles);
 router.post('/:applicationId/edit/roles',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    web_role_controller.role_permissions_assign);
 router.post('/:applicationId/edit/roles/create',                             web_check_perm_controller.owned_permissions,    csrfProtection,    web_role_controller.create_role);
 router.put('/:applicationId/edit/roles/:roleId/edit',                        web_check_perm_controller.owned_permissions,    csrfProtection,    web_role_controller.edit_role);

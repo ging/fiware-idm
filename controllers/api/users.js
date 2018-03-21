@@ -2,11 +2,17 @@ var debug = require('debug')('idm:api-users');
 var models = require('../../models/models.js');
 var uuid = require('uuid');
 var config = require('../../config');
+var fs = require('fs');
+var path = require('path');
 
 var auth_driver = config.external_auth.enabled ?
     require('../../helpers/' + config.external_auth.authentication_driver) :
     require('../../helpers/authentication_driver');
 
+
+var email_list =  config.email_list_type ? 
+    fs.readFileSync(path.join(__dirname,"../../email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
+    []
 
 // MW to see if user is registered
 exports.authenticate = auth_driver.authenticate;
@@ -237,6 +243,19 @@ function check_create_body_request(body) {
 			reject({error: {message: "Missing parameter email in body request or empty email", code: 400, title: "Bad Request"}})
 		}
 
+		else if (config.email_list_type && body.user.email) {
+
+	        if (config.email_list_type === 'whitelist' && !email_list.includes(body.user.email.split('\@')[1])) {
+	            reject({error: {message: "Invalid email", code: 400, title: "Bad Request"}})
+	        }
+
+	        if (config.email_list_type === 'blacklist' && email_list.includes(body.user.email.split('\@')[1])) {
+	            reject({error: {message: "Invalid email", code: 400, title: "Bad Request"}})
+	        }
+
+	        resolve()
+	    } 
+
 		else {
 			resolve()
 		}
@@ -268,6 +287,19 @@ function check_update_body_request(body) {
 		else if (body.user.password && body.user.password.length <= 0) {
 			reject({error: {message: "Cannot set empty password", code: 400, title: "Bad Request"}})
 		}
+
+		else if (config.email_list_type && body.user.email) {
+
+	        if (config.email_list_type === 'whitelist' && !email_list.includes(body.user.email.split('\@')[1])) {
+	            reject({error: {message: "Invalid email", code: 400, title: "Bad Request"}})
+	        }
+
+	        if (config.email_list_type === 'blacklist' && email_list.includes(body.user.email.split('\@')[1])) {
+	            reject({error: {message: "Invalid email", code: 400, title: "Bad Request"}})
+	        }
+
+	        resolve()
+	    } 
 
 		else {
 			resolve()

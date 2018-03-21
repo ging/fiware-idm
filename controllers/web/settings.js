@@ -2,6 +2,12 @@ var models = require('../../models/models.js');
 var debug = require('debug')('idm:web-settings_controller')
 var config = require('../../config');
 var email = require('../../lib/email.js')
+var fs = require('fs');
+var path = require('path');
+
+var email_list =  config.email_list_type ? 
+    fs.readFileSync(path.join(__dirname,"../../email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
+    []
 
 // GET /idm/settings -- Render settings view
 exports.settings = function(req, res) {
@@ -80,6 +86,19 @@ exports.email = function(req, res) {
     debug("--> email")
     
     var errors = []
+
+    if (config.email_list_type && req.body.email) {
+
+        if (config.email_list_type === 'whitelist' && !email_list.includes(req.body.email.split('\@')[1])) {
+            res.locals.message = {text: ' Email change failed.', type: 'danger'};
+            return res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+        }
+
+        if (config.email_list_type === 'blacklist' && email_list.includes(req.body.email.split('\@')[1])) {
+            res.locals.message = {text: ' Email change failed.', type: 'danger'};
+            return res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+        }
+    } 
 
     // If password new is empty push an error into the array
     if (req.body.email == "") {

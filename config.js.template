@@ -11,6 +11,9 @@ config.https = {
     port: 443
 };
 
+// Config email list type to use domain filtering
+config.email_list_type = null   // whitelist or blacklist 
+
 // Secret for user sessions in web
 config.session = {
     secret: 'nodejs_idm',       // Must be changed

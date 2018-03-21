@@ -1,11 +1,16 @@
 var models = require('../../models/models.js');
 var config = require('../../config');
 var fs = require('fs');
+var path = require('path');
 var gravatar = require('gravatar');
 var https = require('https');
 var auth_driver = config.external_auth.enabled ?
     require('../../helpers/' + config.external_auth.authentication_driver) :
     require('../../helpers/authentication_driver');
+
+var email_list =  config.email_list_type ? 
+    fs.readFileSync(path.join(__dirname,"../../email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
+    []
 
 var mmm = require('mmmagic'),
     Magic = mmm.Magic;
@@ -395,6 +400,19 @@ exports.new = function(req, res) {
 exports.create = function(req, res, next) {
 
     debug("--> create")
+
+    if (config.email_list_type && req.body.email) {
+
+        if (config.email_list_type === 'whitelist' && !email_list.includes(req.body.email.split('\@')[1])) {
+            res.locals.message = {text: ' User creation failed.', type: 'danger'};
+            return res.render('users/new', {userInfo: {}, errors: [], csrfToken: req.csrfToken()});
+        }
+
+        if (config.email_list_type === 'blacklist' && email_list.includes(req.body.email.split('\@')[1])) {
+            res.locals.message = {text: ' User creation failed.', type: 'danger'};
+            return res.render('users/new', {userInfo: {}, errors: [], csrfToken: req.csrfToken()});
+        }
+    } 
 
     // If body has parameters id or secret don't create user
     if (req.body.id) {

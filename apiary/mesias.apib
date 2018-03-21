@@ -421,12 +421,13 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             X-Auth-token: token
     
     + Body
-    
-            {
-              "username": "alice",
-              "email": "alice@test.com",
-              "password": "passw0rd",
+        {
+            "user": {
+                "username": "alice",
+                "email": "alice@test.com",
+                "password": "passw0rd"
             }
+        }
 
 + Response 201 (application/json)
 

@@ -1,0 +1,17 @@
+mysql:
+  image: mysql/mysql-server:5.7.21
+  ports:
+    - "3307:3306"
+  environment:
+    - MYSQL_ROOT_PASSWORD=idm
+    - MYSQL_ROOT_HOST=172.17.0.3
+
+mesias:
+  image: mesias
+  links:
+    - mysql
+  ports:
+    - "4000:4000"
+    - "443:443"
+  volumes:
+      - /home/alex/ging/fiware/idm/mesias/config.js:/opt/mesias/config.js

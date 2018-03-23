@@ -1,6 +1,7 @@
 var models = require('../../models/models.js');
 var fs = require('fs');
 var uuid = require('uuid');
+var _ = require('lodash');
 var mmm = require('mmmagic'),
     Magic = mmm.Magic;
 
@@ -278,14 +279,33 @@ exports.create = function(req, res, next) {
 
 	debug("--> create");
 
+	var possible_grant_types = ['client_credentials', 'password', 'implicit', 'authorization_code', 'refresh_token']
+	if (req.body.grant_type) {
+		if (_.difference(req.body.grant_type, possible_grant_types).length > 0) {
+			req.session.message = {text: ' Application creation failed.', type: 'danger'};
+			return res.redirect('/idm/applications')
+		}
+
+	} 
 	if (req.body.id || req.body.secret) {
 		req.session.message = {text: ' Application creation failed.', type: 'danger'};
-		res.redirect('/idm/applications')
+		return res.redirect('/idm/applications')
 	} else {
+
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client
 		var application = models.oauth_client.build(req.body.application);
-		application.grant_type = ['client_credentials', 'password', 'implicit', 'authorization_code', 'refresh_token']
-		application.response_type = ['code', 'token']
+		application.grant_type = (req.body.grant_type) ? req.body.grant_type : [''] 
+
+		var reponse_type = []
+		if (application.grant_type.includes('authorization_code')) {
+			reponse_type.push('code')
+		}
+
+		if (application.grant_type.includes('implicit')) {
+			reponse_type.push('token')
+		}
+		application.response_type = reponse_type
+
 		var validate = application.validate()
 		var save = validate.then(function() {
 			application.description.trim()

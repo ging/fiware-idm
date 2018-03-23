@@ -1,0 +1,20 @@
+.select-multiple {
+
+	.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+	    width: 100%;
+	}
+
+	.dropdown-toggle {
+		color: $border-color;
+	    width: 100%;
+	    height: 34px;
+		padding: 6px;
+		box-shadow: none;
+		background-color: #EAEAEC;
+		@include border-top-radius (0);
+		@include border-bottom-radius (0);
+		border: 1px solid $border-color;
+	    padding-right: 25px;
+	    z-index: 1;
+	}
+}

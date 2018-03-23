@@ -64,6 +64,25 @@
         <% if (errors.indexOf("redirectUri") != -1) { %>
 					<span class="help-block alert alert-danger ">Input required.</span>
 				<% } %>
+
+        <div class="form-group required">
+          <label class="control-label  required" for="id_grant_type">
+            Grant Type
+            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="OAuth Grant Types" data-content="Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://mesias.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Mesias Docs</a> for more information" data-original-title="" title="">
+              <i class="fa fa-question-circle"></i>
+            </a>
+          </label>
+          <div class="select-multiple">
+            <select name="grant_type[]" class="selectpicker" data-dropup-auto="false" multiple>
+              <option selected value="authorization_code">Authorization Code</option>
+              <option selected value="implicit">Implicit</option>
+              <option selected value="password">Resource Owner Password</option>
+              <option selected value="client_credentials">Client Credentials</option>
+              <option selected value="refresh_token">Refresh Token</option>
+            </select>
+          </div>
+        </div>
+
         <div class="form-group required">
           <label class="control-label  required" for="id_url">
             Provider

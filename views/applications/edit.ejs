@@ -67,6 +67,48 @@
 								<span class="help-block alert alert-danger ">This field is required.</span>
 							<% } %>
 
+							<div class="form-group required">
+					          <label class="control-label  required" for="id_grant_type">
+					            Grant Type
+					            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="OAuth Grant Types" data-content="Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://mesias.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Mesias Docs</a> for more information" data-original-title="" title="">
+					              <i class="fa fa-question-circle"></i>
+					            </a>
+					          </label>
+					          <div class="select-multiple">
+					            <select name="grant_type[]" class="selectpicker" data-dropup-auto="false" multiple>
+					            	<% if (application.grant_type.includes('authorization_code')) { %>
+										<option selected value="authorization_code">Authorization Code</option>
+					            	<% } else { %>
+					            		<option value="authorization_code">Authorization Code</option>
+					            	<% } %>
+
+					            	<% if (application.grant_type.includes('implicit')) { %>
+										<option selected value="implicit">Implicit</option>
+					            	<% } else { %>
+					            		<option value="implicit">Implicit</option>
+					            	<% } %>
+
+					            	<% if (application.grant_type.includes('password')) { %>
+										<option selected value="password">Resource Owner Password</option>
+					            	<% } else { %>
+					            		<option value="password">Resource Owner Password</option>
+					            	<% } %>
+
+					            	<% if (application.grant_type.includes('client_credentials')) { %>
+										<option selected value="client_credentials">Client Credentials</option>
+					            	<% } else { %>
+					            		<option value="client_credentials">Client Credentials</option>
+					            	<% } %>
+
+					            	<% if (application.grant_type.includes('refresh_token')) { %>
+										<option selected value="refresh_token">Refresh Token</option>
+					            	<% } else { %>
+					            		<option value="refresh_token">Refresh Token</option>
+					            	<% } %>
+					            </select>
+					          </div>
+					        </div>
+
 						</fieldset>
 					</div>
 					<div class="modal-footer">

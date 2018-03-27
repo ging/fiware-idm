@@ -90,16 +90,20 @@
               <i class="fa fa-question-circle"></i>
             </a>
           </label>
-          <select class="form-control" id="select_provider" name="provider">
-            <option disabled>User:</option>
-            <option value="<%= session.user.id %>" ><%= session.user.username %></option>
-            <% if (organizations.length > 0) { -%>
-              <option disabled>Organizations:</option>
-              <% for (var i = 0; i < organizations.length; i++) { -%>
-                <option value="<%= organizations[i].Organization.id %>"><%= organizations[i].Organization.name %></option>  
-              <% } -%>         
-            <% } -%>
-          </select>
+          <div class="select-multiple">
+            <select name="provider" class="selectpicker" data-dropup-auto="false">
+              <optgroup label="User">
+                <option value="<%= session.user.id %>" ><%= session.user.username %></option>
+              </optgroup>
+              <% if (organizations.length > 0) { -%>
+                <optgroup label="Organizations">
+                  <% for (var i = 0; i < organizations.length; i++) { -%>
+                    <option value="<%= organizations[i].Organization.id %>"><%= organizations[i].Organization.name %></option>  
+                  <% } -%>  
+                </optgroup>       
+              <% } -%>
+            </select>
+          </div>
         </div>
 
       </fieldset>

@@ -296,15 +296,15 @@ exports.create = function(req, res, next) {
 		var application = models.oauth_client.build(req.body.application);
 		application.grant_type = (req.body.grant_type) ? req.body.grant_type : [''] 
 
-		var reponse_type = []
+		var response_type = []
 		if (application.grant_type.includes('authorization_code')) {
-			reponse_type.push('code')
+			response_type.push('code')
 		}
 
 		if (application.grant_type.includes('implicit')) {
-			reponse_type.push('token')
+			response_type.push('token')
 		}
-		application.response_type = reponse_type
+		application.response_type = response_type
 
 		var validate = application.validate()
 		var save = validate.then(function() {
@@ -485,7 +485,7 @@ exports.update_avatar = function(req, res) {
 exports.update_info = function(req, res) {
 
 	debug("--> update_info");
-
+	
 	// If body has parameters id or secret don't update the application
 	if (req.body.application.id || req.body.application.secret) {
 		res.locals.message = {text: ' Application edit failed.', type: 'danger'};
@@ -495,15 +495,27 @@ exports.update_info = function(req, res) {
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client table
 		req.body.application["id"] = req.application.id;
 		var application = models.oauth_client.build(req.body.application);
+		application.grant_type = (req.body.grant_type) ? req.body.grant_type : [''] 
+
+		var response_type = []
+		if (application.grant_type.includes('authorization_code')) {
+			response_type.push('code')
+		}
+
+		if (application.grant_type.includes('implicit')) {
+			response_type.push('token')
+		}
 
 		application.validate().then(function(err) {
 			models.oauth_client.update(
 				{ name: req.body.application.name,
 				  description: req.body.application.description.trim(),
 				  url: req.body.application.url,
-				  redirect_uri: req.body.application.redirect_uri },
+				  redirect_uri: req.body.application.redirect_uri,
+				  grant_type: req.body.grant_type,
+				  response_type: response_type },
 				{
-					fields: ['name','description','url','redirect_uri'],
+					fields: ['name','description','url','redirect_uri', 'grant_type', 'response_type'],
 					where: {id: req.application.id}
 				}
 			).then(function() {

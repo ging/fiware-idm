@@ -26,8 +26,8 @@
 
 This project is part of [FIWARE](http://fiware.org). You will find more information about this FIWARE GE [here](https://catalogue.fiware.org/enablers/identity-management-keyrock).
 
-- You will find the source code of this project in GitHub [here](https://github.com/ging/mesias)
-- You will find the documentation of this project in Read the Docs [here](http://mesias.readthedocs.org/)
+- You will find the source code of this project in GitHub [here](https://github.com/ging/fiware-idm)
+- You will find the documentation of this project in Read the Docs [here](http://fiware-idm.readthedocs.org/)
 
 Welcome to the main repository for the UPM's implementation of the FIWARE Identity Management Generic Enabler. Thanks to this component and together with PEP Proxy and Authorization PDP GEs, you will add authentication and authorization security to your services and applications.
 
@@ -46,7 +46,7 @@ This GE is based on a javascript environment and SQL databases. In order to run 
  1. Clone Proxy repository:
 
 <pre>
-<code>git clone https://github.com/ging/mesias.git</code>
+<code>git clone https://github.com/ging/fiware-idm.git</code>
 </pre>
 
  2. Install the dependencies:
@@ -114,7 +114,7 @@ You can test de Identity manager using the default user:
 
 We also provide a Docker image to facilitate you the building of this GE.
 
-- [Here](https://github.com/ging/mesias/tree/master/extras/docker) you will find the Dockerfile and the documentation explaining how to use it.
+- [Here](https://github.com/ging/fiware-idm/tree/master/extras/docker) you will find the Dockerfile and the documentation explaining how to use it.
 - In [Docker Hub](https://hub.docker.com/r/fiware/idm/) you will find the public image.
 
 <a name="def-changes"></a>
@@ -128,16 +128,16 @@ They biggest change introduced in 7.x is that the identity manager no longer dep
 
 <a name="def-api"></a>
 ## API Overview
-Several resources could be managed through the API like users, applications or organizations. Further information could be found in the [API section](http://mesias.readthedocs.org/en/latest/api/#def-apiIdm).
+Several resources could be managed through the API like users, applications or organizations. Further information could be found in the [API section](http://fiware-idm.readthedocs.org/en/latest/api/#def-apiIdm).
 
-Finally, one of the main uses of this Generic Enabler is to allow developers to add identity management (authentication and authorization) to their applications based on FIWARE identity. This is posible thanks to [OAuth2](https://oauth.net/2/) protocol. For more information check the [OAuth2 API](http://mesias.readthedocs.org/en/latest/api/#def-apiOAuth).
+Finally, one of the main uses of this Generic Enabler is to allow developers to add identity management (authentication and authorization) to their applications based on FIWARE identity. This is posible thanks to [OAuth2](https://oauth.net/2/) protocol. For more information check the [OAuth2 API](http://fiware-idm.readthedocs.org/en/latest/api/#def-apiOAuth).
 
 <a name="def-advanced"></a>
 ## Advanced Documentation
 
-- [How to run tests](http://mesias.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
-- [User & Programmers Manual](http://mesias.readthedocs.org/en/latest/user_guide/)
-- [Installation & Administration Guide](http://mesias.readthedocs.org/en/latest/admin_guide/)
+- [How to run tests](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
+- [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/)
+- [Installation & Administration Guide](http://fiware-idm.readthedocs.org/en/latest/admin_guide/)
 
 <a name="def-license"></a>
 ## License

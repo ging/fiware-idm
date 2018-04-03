@@ -1,0 +1,43 @@
+.tour-backdrop{
+  opacity: .5;
+}
+.tour-step-background{
+  border-radius: 0;
+  border: 3px solid $brand-secundary;
+}
+.tour-step-backdrop{
+  z-index: 2000;
+}
+.tour-profile-step{
+  border-radius: 0;
+  border-bottom: 3px solid $brand-secundary;
+}
+.tour{
+  .tour-title{
+    padding: 15px 15px 0px;
+    color: $brand-secundary;
+  }
+  .tour-subtitle{
+    background-color: $gray-lighter;
+    padding: 5px 15px 0;
+    font-size: 1.2em !important;
+    border: none;
+    font-weight: bold;
+    color: $brand-primary;
+  }
+  .tour-content{
+    .next-tour{
+      font-family: $corporate-font-family-sans-serif-Regular;
+      color: $gray-darker;
+      font-size: 1.1em;
+      &:hover{
+        text-decoration: underline !important;
+      }
+    }
+  }
+  .tour-navigation{
+    .btn-group:last-child{
+      float:right;
+    }
+  }
+}

@@ -7197,6 +7197,42 @@ hr {
   background-color: #00D3DE;
   color: #ffffff; }
 
+.tour-backdrop {
+  opacity: .5; }
+
+.tour-step-background {
+  border-radius: 0;
+  border: 3px solid #fcba04; }
+
+.tour-step-backdrop {
+  z-index: 2000; }
+
+.tour-profile-step {
+  border-radius: 0;
+  border-bottom: 3px solid #fcba04; }
+
+.tour .tour-title {
+  padding: 15px 15px 0px;
+  color: #fcba04; }
+
+.tour .tour-subtitle {
+  background-color: #f1f1f2;
+  padding: 5px 15px 0;
+  font-size: 1.2em !important;
+  border: none;
+  font-weight: bold;
+  color: #001630; }
+
+.tour .tour-content .next-tour {
+  font-family: "NeoTechRegular";
+  color: #222222;
+  font-size: 1.1em; }
+  .tour .tour-content .next-tour:hover {
+    text-decoration: underline !important; }
+
+.tour .tour-navigation .btn-group:last-child {
+  float: right; }
+
 .well, #authorize_application_modal, .login,
 .registration, .remember-password,
 .resend-confirmation-instructions, #create_application_modal,

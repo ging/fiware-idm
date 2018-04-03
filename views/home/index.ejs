@@ -77,33 +77,23 @@
 			</div>
 		</div>
     </div>
-<!--  <script type="text/javascript">
-
-	$( document ).ready(function() {
-		if (false) {
-
+    <script src="/javascripts/tour.js"></script>
+	<script type="text/javascript">
+		$( document ).ready(function() {
 			tours.initTour._options.onEnd = function() {
 				$.ajax({
 					type: "POST",
 					url: "/idm/users/alexph91/tour_ended/",
 					data: "Tour ended",
 					dataType: 'html',
-					beforeSend: beforeSend,
-					error: error
+					beforeSend: beforeSend
 				});
 			};
 
 			tours.initTour.init();
 			tours.initTour.start();
-		}
-
-		/* Add link to Help&About in last tour */
-		tours.orgsTour._options.steps[9].onShown = function(tour) {
-			$('#end-tours').attr('href', "/idm/help_about/");
-		};
-
-	});
-  </script> -->
+		});
+	</script>
 
 </div>
 

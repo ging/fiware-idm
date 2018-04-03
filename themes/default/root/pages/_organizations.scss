@@ -93,6 +93,9 @@
 
 .myApplications-table,
 #organizations-table{
+  .panel-heading{
+    padding: 5px;
+  }
   .panel-body{
     .panel-footer{
       clear: both;

@@ -6656,14 +6656,14 @@ ul.select2-choices {
 #no_available_update_owners_members,
 #no_available_update_owners_organizations,
 #no_available_update_owners {
-  background-color: #fff;
+  background-color: #fff5d9;
   border-color: #fcba04;
   color: #001630; }
 
 .btn, .permissions_list .list-group-item .ajax-inline-edit,
 .role_list .list-group-item .ajax-inline-edit,
 .services_list .list-group-item .ajax-inline-edit, .edit_organization_modal button {
-  padding: 4px 7px 6px;
+  padding: 5px 7px;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -6807,14 +6807,15 @@ ul.select2-choices {
   position: relative;
   z-index: 2; }
 
-.form-group .control-label {
-  width: 100%; }
-
-.form-group .radio-group {
-  height: 30px;
-  width: 100%; }
-  .form-group .radio-group label {
-    margin: 2px 5px; }
+.form-group {
+  margin-bottom: 10px; }
+  .form-group .control-label {
+    width: 100%; }
+  .form-group .radio-group {
+    height: 30px;
+    width: 100%; }
+    .form-group .radio-group label {
+      margin: 2px 5px; }
 
 .radio, .checkbox {
   margin-top: 0;
@@ -6860,6 +6861,9 @@ input:-webkit-autofill {
   border-bottom: 1px solid #A9A9A9;
   margin-bottom: 10px; }
 
+.nav-tabs > li {
+  margin-bottom: -6px; }
+
 .nav-tabs > li > a {
   border-left: none;
   border-right: none;
@@ -6874,7 +6878,7 @@ input:-webkit-autofill {
 .nav-tabs > li > a:hover, .nav-tabs > li > a:focus {
   background-color: transparent !important;
   border: none;
-  border-bottom: 3px solid #A9A9A9;
+  border-bottom: 3px solid #fcba04;
   color: #5B5B5F; }
 
 .nav-tabs > li > a i {
@@ -7156,7 +7160,7 @@ h5,
 h6 {
   font-family: "NeoTechRegular";
   font-weight: normal;
-  margin: 1px 0; }
+  margin: 5px 0; }
 
 li {
   list-style: none; }
@@ -7243,6 +7247,26 @@ header.navbar {
   header.navbar .container-fluid {
     max-width: 1200px; }
 
+.logo-header .brand {
+  background-image: url(../img/keyrock01.png);
+  width: 150px;
+  background-size: 135px auto;
+  background-repeat: no-repeat;
+  float: left;
+  height: 37px; }
+
+@media (max-width: 480px) {
+  .brand {
+    width: 26px !important;
+    margin-right: 5px; } }
+
+.brand-text {
+  font-family: "NeoTechRegular";
+  height: 37px;
+  float: left;
+  padding: 9px 0;
+  font-size: 1.1em; }
+
 .navbar-fixed-top {
   background-color: #f1f1f2;
   padding: 0; }
@@ -7278,18 +7302,6 @@ nav.container-fluid {
   max-width: 1200px;
   background-image: none;
   padding: 3px 15px 2px; }
-
-.brand {
-  font-family: "NeoTechRegular";
-  font-size: 25px;
-  padding-top: 2px;
-  background-repeat: no-repeat;
-  height: 37px;
-  float: left; }
-
-@media (max-width: 480px) {
-  .brand {
-    width: 37px !important; } }
 
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover {
   color: #fcba04;
@@ -7663,6 +7675,11 @@ ul#perform_filter_available_update_owners_organizations {
     font-size: 17px !important;
     color: #fcba04; }
 
+#submit_authorized_administrators_form .modal-header,
+#submit_authorized_organizations_form .modal-header,
+#submit_authorized_users_form .modal-header {
+  padding: 10px; }
+
 #content_body {
   position: relative;
   min-height: 1px;
@@ -7863,12 +7880,14 @@ textarea {
     .update-avatar-modal .modal-body .avatar_col {
       width: 47.3%; } }
   .update-avatar-modal .modal-body .avatar_col .profile_img {
-    width: 100px;
+    width: 30%;
     float: left; }
     .update-avatar-modal .modal-body .avatar_col .profile_img img {
       vertical-align: bottom; }
   .update-avatar-modal .modal-body .avatar_col .profile_txt {
-    margin: 8% 0; }
+    margin: 8% 0;
+    width: 70%;
+    float: left; }
   .update-avatar-modal .modal-body .avatar_col .profile_actions {
     margin: 4%;
     overflow: hidden; }
@@ -7966,7 +7985,7 @@ textarea {
   display: block;
   white-space: nowrap;
   text-decoration: none !important;
-  font-family: verdana;
+  font-family: verdana, sans-serif;
   font-size: 10px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 2px -2px 6px rgba(0, 0, 0, 0.5);
@@ -7982,6 +8001,9 @@ textarea {
       color: #001630; }
   .contextual-help i.active {
     color: #001630; }
+
+.pre-scrollable {
+  overflow-y: unset; }
 
 /* Sidebar
 -------------------------------------------------- */
@@ -11386,23 +11408,21 @@ ul.disabled-list li.active:hover {
       margin-right: 10px;
       font-size: 20px; }
 
-.myApplications-table .panel-heading .register_button {
-  background-color: #001630;
-  color: white;
-  margin-top: 4px;
-  margin-right: 3px;
-  text-align: center;
-  border: none;
-  border-radius: 3px 3px 3px 3px; }
-
-.myApplications-table .panel-heading .register_button:hover {
-  background-color: #0f2442 !important;
-  border-bottom: 1px; }
-
-.myApplications-table .panel-heading #select_org {
-  border-color: #fcba04;
-  height: 31px;
-  max-width: 140px; }
+.myApplications-table .panel-heading {
+  padding: 5px; }
+  .myApplications-table .panel-heading .register_button {
+    background-color: #001630;
+    color: white;
+    margin-top: 4px;
+    margin-right: 3px;
+    text-align: center;
+    border: none;
+    border-radius: 0; }
+  .myApplications-table .panel-heading .register_button:hover {
+    background-color: #0f2442 !important;
+    border-bottom: 1px; }
+  .myApplications-table .panel-heading #select_org {
+    height: 31px; }
 
 .myApplications-table h4 {
   display: block;
@@ -11528,6 +11548,10 @@ p#no_available_update_owners {
     position: absolute;
     right: 7px;
     padding: 2px 4px; } }
+
+.myApplications-table .panel-heading,
+#organizations-table .panel-heading {
+  padding: 5px; }
 
 .myApplications-table .panel-body .panel-footer,
 #organizations-table .panel-body .panel-footer {

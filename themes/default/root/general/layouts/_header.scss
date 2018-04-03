@@ -9,7 +9,27 @@ header.navbar{
     max-width: 1200px;
   }
 }
-
+.logo-header .brand {
+  background-image: url(../img/keyrock01.png);
+  width: 150px;
+  background-size: 135px auto;
+  background-repeat: no-repeat;
+  float: left;
+  height: 37px;
+}
+@media (max-width: 480px){
+  .brand{
+    width: 26px !important;
+    margin-right: 5px;
+  }
+}
+.brand-text {
+  font-family: "NeoTechRegular";
+  height: 37px;
+  float: left;
+  padding: 9px 0;
+  font-size: 1.1em;
+}
 .navbar-fixed-top{
   background-color: $navbar-default-bg;
   padding: 0;
@@ -62,20 +82,6 @@ nav.container-fluid{
 }
 
 
-
-.brand {
-  font-family: "NeoTechRegular";
-  font-size: 25px;
-  padding-top: 2px;
-  background-repeat: no-repeat;
-  height: 37px;
-  float: left;
-}
-@media (max-width: 480px){
-  .brand{
-    width: 37px !important;
-  }
-}
 
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover {
   color: $brand-secundary;
@@ -135,7 +141,7 @@ nav.container-fluid{
 }
 @media (min-width: 768px) and (max-width: 979px){
   header.navbar ul{
-    margin-top: 0px    
+    margin-top: 0px
   }
   .brand{
     padding: 0px 4px 0 0px !important;

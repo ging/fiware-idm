@@ -311,7 +311,7 @@
     display: block;
     display: inline;
     width: 100%;
-    
+
     #select_provider {
       display: block;
       height: 34px;
@@ -331,14 +331,15 @@
 
 .myApplications-table {
   .panel-heading {
+    padding: 5px;
     .register_button {
-      background-color: $brand-primary; 
+      background-color: $brand-primary;
       color: white;
       margin-top: 4px;
       margin-right: 3px;
       text-align: center;
       border: none;
-      border-radius: 3px 3px 3px 3px;
+      border-radius: 0;
     }
 
     .register_button:hover {
@@ -347,9 +348,7 @@
     }
 
     #select_org {
-      border-color: $brand-secundary; 
       height: 31px;
-      max-width: 140px;
     }
   }
   h4 {

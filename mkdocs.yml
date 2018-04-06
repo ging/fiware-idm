@@ -1,6 +1,6 @@
 site_name: Fiware-IdM
-site_url: http://mesias.readthedocs.org
-repo_url: https://github.com/ging/mesias
+site_url: http://fiware-idm.readthedocs.org
+repo_url: https://github.com/ging/fiware-idm
 site_description: Identity Management Keyrock Documentation
 docs_dir: doc
 site_dir: html

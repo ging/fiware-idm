@@ -40,7 +40,7 @@ The following steps need to be performed to get Keyrock up and running:
 
 - Download the software, using [GitHub](http://github.com/ging/fiware-idm).
 <pre>
-<code>git clone https://github.com/ging/mesias</code>
+<code>git clone https://github.com/ging/fiware-idm</code>
 </pre>
 
 - Install all required libraries using NPM.
@@ -177,10 +177,10 @@ If you have an authzforce instance deployed you can enable the Identity Manager 
 
 ### Configure themes
 You can customize the appearance of the web portal. By default there are two themes: default and fiwarelab.
-![](https://raw.githubusercontent.com/ging/mesias/master/doc/resources/AdminGuide_default_view.png)
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_default_view.png)
 <p align="center">Figure 1: IdM default view</p>
 
-![](https://raw.githubusercontent.com/ging/mesias/master/doc/resources/AdminGuide_fiware_view.png)
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_fiware_view.png)
 <p align="center">Figure 2: IdM fiware view</p>
 
 You can change between these themes in config.js
@@ -231,7 +231,7 @@ $brand-secundary: orange;
 	};
 ~~~
 Run the Identity manager and you will see the new appearance:
-![](https://raw.githubusercontent.com/ging/mesias/master/doc/resources/AdminGuide_customize_view.png)
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_customize_view.png)
 <p align="center">Figure 3: IdM custom view</p>
 
 You can also configure a new logo in _styles.scss.
@@ -300,7 +300,7 @@ If you have correctly populated the database when installing the GE, the connect
 
 The databases and tables needed are:
 
-![](https://raw.githubusercontent.com/ging/mesias/master/doc/resources/AdminGuide_database_table.png)
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_database_table.png)
 <p align="center">Figure 4: IdM databases table</p>
 
 ## Diagnosis Procedures

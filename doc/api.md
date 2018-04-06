@@ -50,12 +50,12 @@ Users can perform these action through the API:
 
 
 In order to start using the FIWARE IdM, you must first register your
-own account. You can see how to do that [User & Programmers Manual](http://mesias.readthedocs.org/en/latest/user_guide/#def-user-guide).
+own account. You can see how to do that [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/#def-user-guide).
 
 <a name="def-registerApplication"></a>
 ## Register your application
 
-The next step is registering your own application. The `Callback URL` attribute is a mandatory parameter used in OAuth2 authentication. The IdM provides you with a `Client ID` and a `Client Secret` which are used in OAuth2. You can see how to do that [User & Programmers Manual](http://mesias.readthedocs.org/en/latest/user_guide/#def-register-app).
+The next step is registering your own application. The `Callback URL` attribute is a mandatory parameter used in OAuth2 authentication. The IdM provides you with a `Client ID` and a `Client Secret` which are used in OAuth2. You can see how to do that [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/#def-register-app).
 
 <a name="def-oauth2Auth"></a>
 ## OAuth2 Authentication

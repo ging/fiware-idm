@@ -21,14 +21,14 @@ RUN sudo npm cache clean -f && \
 	sudo n stable
 
 # Download latest version of the code and install npm dependencies
-RUN git clone https://github.com/ging/mesias.git && \
-	cd mesias && \
+RUN git clone https://github.com/ging/fiware-idm.git && \
+	cd fiware-idm && \
 	npm install
 
 # Run PEP Proxy
-WORKDIR /opt/mesias
+WORKDIR /opt/fiware-idm
 
 # Run application
-COPY docker-entrypoint.sh /opt/mesias/docker-entrypoint.sh
+COPY docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
 RUN chmod 755 docker-entrypoint.sh
-ENTRYPOINT ["/opt/mesias/docker-entrypoint.sh"]
+ENTRYPOINT ["/opt/fiware-idm/docker-entrypoint.sh"]

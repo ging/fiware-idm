@@ -498,7 +498,7 @@ exports.create = function(req, res, next) {
                             link: link
                         };
 
-                        var subject = 'Welcome to FIWARE';
+                        var subject = 'Welcome to Keyrock';
 
                         // Send an email message to the user
                         email.send('activate', subject, user.email, mail_data)
@@ -757,7 +757,7 @@ exports.resend_confirmation = function(req, res, next) {
                             link: link
                         };
 
-                        var subject = 'Welcome to FIWARE';
+                        var subject = 'Welcome to Keyrock';
 
                         // Send an email message to the user
                         email.send('activate', subject, user.email, mail_data)

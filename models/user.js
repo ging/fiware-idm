@@ -67,6 +67,9 @@ module.exports = function(sequelize, DataTypes) {
         }, admin: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        }, starters_tour_ended: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }, extra: {
             type: DataTypes.STRING
         }, scope: {

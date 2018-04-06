@@ -424,38 +424,7 @@ exports.step_new_roles = function(req, res, next) {
 
 	debug("--> step_new_roles");
 
-	// Search roles of application and order them
-	models.role.findAll({
-		where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
-		attributes: ['id', 'name'],
-		order: [['id', 'DESC']]
-	}).then(function(roles) {
-		// Search permissions of application and order them
-		models.permission.findAll({
-			where: { [Op.or]: [{oauth_client_id: req.application.id}, {is_internal: true}] },
-			attributes: ['id', 'name'], 
-			order: [['id', 'ASC']]
-		}).then(function(permissions) {
-			// Search roles to permission assignment of application using id of roles
-			models.role_permission.findAll({
-				where: { role_id: roles.map(elem => elem.id) }						
-			}).then(function(application_roles_permissions) {
-				// Create and object with key as id of role and value an array of permissions id
-				role_permission_assign = {}
-				for (var i = 0; i < application_roles_permissions.length; i++) {
-					if (!role_permission_assign[application_roles_permissions[i].role_id]) {
-				        role_permission_assign[application_roles_permissions[i].role_id] = [];
-				    }
-				    role_permission_assign[application_roles_permissions[i].role_id].push(application_roles_permissions[i].permission_id);
-				}
-				res.render('applications/step_create_roles', { application: { id: req.application.id, 
-																		      roles: roles, 
-																		      permissions: permissions,
-																		      role_permission_assign: role_permission_assign }, 
-															   csrfToken: req.csrfToken()});
-			}).catch(function(error) { next(error); });
-		}).catch(function(error) { next(error); });
-	}).catch(function(error) { next(error); });
+	res.render('applications/step_create_roles', { application: req.application, csrfToken: req.csrfToken() });
 };
 
 // GET /idm/applications/:applicationId/edit -- View to edit application

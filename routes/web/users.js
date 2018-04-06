@@ -36,5 +36,6 @@ router.post('/:userId/edit/avatar',            web_user_controller.owned_permiss
 router.put('/:userId/edit/avatar',             web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.set_avatar);
 router.delete('/:userId/edit/avatar/delete',   web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.delete_avatar);
 router.put('/:userId/edit/gravatar',           web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.set_gravatar);
+router.put('/:userId/tour_ended',			   web_user_controller.owned_permissions,   csrfProtection,     web_user_controller.starter_tour_ended)
 
 module.exports = router;

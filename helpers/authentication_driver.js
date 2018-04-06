@@ -12,7 +12,7 @@ exports.authenticate = function(username, password, callback) {
 
     // Search the user
     models.user.find({
-        attributes: ['id', 'username', 'password', 'enabled', 'email', 'gravatar', 'image', 'admin', 'date_password'],
+        attributes: ['id', 'username', 'password', 'enabled', 'email', 'gravatar', 'image', 'admin', 'date_password', 'starters_tour_ended'],
         where: {
             email: username
         }

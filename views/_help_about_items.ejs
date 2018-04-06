@@ -45,22 +45,26 @@
                 <li><a href="#" class="launch-tour" data-next-tour="orgsTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
                 Organizations Tour: create your first organization and take a look at its home page.</a></li>
             </ul>
-            <script src="/javascripts/tour.js"></script>
+
             <script type="text/javascript">
                 $( document ).ready(function() {
                     $("body").on("click", ".launch-tour", function() {
+                        
                         var tour = $(this).attr('data-next-tour');
+
                         $.each(tours, function(i, tour) {
                             if (tour._getState('current_step')!== null && !tour.ended()) {
                                 tour.end();
                             }
                         });
                         if (tour !== undefined) {
+                            
                             tours[tour].init();
-                            if (tours[tour]._getState('current_step')!== null)
+                            if (tours[tour]._getState('current_step')!== null) {
                                 tours[tour].restart();
-                            else
+                            } else {
                                 tours[tour].start(true);
+                            }
                         }
                     });
                 });

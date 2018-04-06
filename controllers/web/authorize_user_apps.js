@@ -109,7 +109,7 @@ exports.available_users = function(req, res) {
 					if (elem.image !== 'default') {
 	                    elem.image = '/img/users/' + elem.image
 	                } else {
-	                	elem.image = '/img/logos/medium/group.png'
+	                	elem.image = '/img/logos/medium/user.png'
 	                }
 				});
 				res.send({users: users})

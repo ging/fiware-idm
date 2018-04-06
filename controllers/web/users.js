@@ -31,7 +31,8 @@ exports.owned_permissions = function(req, res, next) {
     if (req.session.user.id === req.user.id) {
         next();
     } else {
-        res.redirect('/');
+        var message = {text: ' Not allowed',type: 'danger'}
+        send_response(req, res, message, '/')
     }
 }
 
@@ -780,6 +781,26 @@ exports.resend_confirmation = function(req, res, next) {
         })
     }
 
+}
+
+// PUT /tour_ended -- Send a new message of activation to the user
+exports.starter_tour_ended = function(req, res, next) {
+    
+    debug("--> starter_tour_ended")
+
+    models.user.update(
+        { starters_tour_ended: true },
+        {
+            fields: ['starters_tour_ended'],
+            where: {id: req.session.user.id}
+        }
+    ).then(function(edited) {
+        req.session.user.starters_tour_ended = true 
+        res.send('tour ended');
+    }).catch(function(error) { 
+        // Send message of fail when setting tour ended
+        res.send('tour ended failed');
+    });    
 }
 
 

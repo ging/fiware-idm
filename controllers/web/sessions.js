@@ -96,8 +96,13 @@ exports.create = function(req, res, next) {
                 }
 
                 // Create session
-                req.session.user = {id:user.id, username:user.username, email: user.email, image: image, change_password: user.date_password};
-
+                req.session.user = {id:user.id, 
+                                    username:user.username, 
+                                    email: user.email, 
+                                    image: image, 
+                                    change_password: user.date_password, 
+                                    starters_tour_ended: user.starters_tour_ended};
+                
                 // If user is admin add parameter to session
                 if (user.admin) {
                     req.session.user.admin = user.admin

@@ -230,6 +230,10 @@ function saveToken(token, client, identity) {
 
     ])
     .then(function (resultsArray) {
+
+      if (user_id || iot_id) {
+        token[identity._modelOptions.tableName] = identity
+      }
       return _.assign(  // expected to return client and user, but not returning
         {
           client: client,

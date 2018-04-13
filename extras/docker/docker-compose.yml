@@ -13,5 +13,3 @@ mesias:
   ports:
     - "4000:4000"
     - "443:443"
-  volumes:
-      - /home/alex/ging/fiware/idm/mesias/config.js:/opt/mesias/config.js

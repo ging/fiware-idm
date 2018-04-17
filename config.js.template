@@ -48,7 +48,7 @@ var database_host = (process.env.DATABASE_HOST) ? process.env.DATABASE_HOST : 'l
 
 // Database info
 config.database = {
-    host: database_host,           // default: 'localhost' 
+    host: database_host,         // default: 'localhost' 
     password: 'idm',             // default: 'idm'
     username: 'root',            // default: 'root'
     database: 'idm',             // default: 'idm'
@@ -75,6 +75,7 @@ config.mail = {
     port: 25,
     from: 'noreply@localhost'
 }
+
 
 // Config themes
 config.site = {

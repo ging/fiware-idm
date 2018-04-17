@@ -1,4 +1,4 @@
-var database = require('./config').database;
+var database = require('../../config').database;
 var exec = require('child_process').exec;
 
 // Load ORM Model

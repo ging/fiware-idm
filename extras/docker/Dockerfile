@@ -25,10 +25,24 @@ RUN git clone https://github.com/ging/fiware-idm.git && \
 	cd fiware-idm && \
 	npm install
 
-# Run PEP Proxy
+# Change Workdir
 WORKDIR /opt/fiware-idm
 
-# Run application
+# Copy config file
+RUN cp config.js.template config.js
+
+# Create certificates for https
+RUN mkdir certs
+RUN openssl genrsa -out idm-2018-key.pem 2048
+RUN openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch
+RUN openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem
+RUN mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
+
+# Copy config database file
+COPY config_database.js extras/docker/config_database.js
+
+# Run Idm Keyrock
 COPY docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
 RUN chmod 755 docker-entrypoint.sh
+
 ENTRYPOINT ["/opt/fiware-idm/docker-entrypoint.sh"]

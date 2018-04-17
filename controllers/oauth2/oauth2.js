@@ -246,7 +246,6 @@ exports.authenticate_token = function(req, res, next){
         body: req.body
     });
     var response = new Response(res);
-
     oauth.authenticate(request, response, options).then(function (user_info) {
         var user = user_info.user
         var application_id = user_info.oauth_client.id

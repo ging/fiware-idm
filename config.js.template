@@ -44,6 +44,38 @@ config.authzforce = {
 	port: 8080
 }
 
+var database_host = (process.env.DATABASE_HOST) ? process.env.DATABASE_HOST : 'localhost'
+
+// Database info
+config.database = {
+    host: database_host,         // default: 'localhost' 
+    password: 'idm',             // default: 'idm'
+    username: 'root',            // default: 'root'
+    database: 'idm',             // default: 'idm'
+    dialect: 'mysql'             // default: 'mysql'
+};
+
+// External user authentication
+config.external_auth = {
+    enabled: false,
+    authentication_driver: 'custom_authentication_driver',
+    database: {
+        host: 'localhost',
+        database: 'db_name',
+        username: 'db_user',
+        password: 'db_pass',
+        user_table: 'user',
+        dialect: 'mysql'
+    }
+};
+
+// Email configuration
+config.mail = {
+    host: 'localhost',
+    port: 25,
+    from: 'noreply@localhost'
+}
+
 // Database info
 config.database = {
     host: 'localhost',           // default: 'localhost' 
@@ -58,21 +90,6 @@ config.mail = {
     host: 'localhost',
     port: 25,
     from: 'noreply@localhost'
-}
-
-// External user authentication
-config.external_auth = {
-    enabled: false,
-    authentication_driver: 'custom_authentication_driver',
-    database: {
-        host: 'localhost',
-        database: 'db_name',
-        username: 'db_user',
-        password: 'db_pass',
-        user_table: 'user',
-        dialect: 'mysql'
-    }
-
 }
 
 // Config themes

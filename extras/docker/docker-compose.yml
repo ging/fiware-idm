@@ -1,17 +1,38 @@
-mysql:
-  image: mysql/mysql-server:5.7.21
-  ports:
-    - "3307:3306"
-  environment:
-    - MYSQL_ROOT_PASSWORD=idm
-    - MYSQL_ROOT_HOST=172.17.0.3
+version: "2"
 
-mesias:
-  image: mesias
-  links:
-    - mysql
-  ports:
-    - "4000:4000"
-    - "443:443"
-  volumes:
-      - /home/alex/ging/fiware/idm/mesias/config.js:/opt/mesias/config.js
+networks:
+  idm_network:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.18.1.0/24
+         gateway: 172.18.1.1
+
+volumes:
+  vol-mysql:
+
+services:
+
+  mysql:
+    image: mysql/mysql-server:5.7.21
+    ports:
+      - "3306:3306"
+    networks:
+      idm_network:
+        ipv4_address: 172.18.1.5
+    volumes:
+      - vol-mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=idm
+      - MYSQL_ROOT_HOST=172.18.1.6
+
+  fiware-idm:
+    image: fiware/idm
+    ports:
+      - "3000:3000"
+      - "443:443"
+    networks:
+      idm_network:
+        ipv4_address: 172.18.1.6
+    environment:
+      - DATABASE_HOST=mysql

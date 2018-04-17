@@ -1,16 +1,14 @@
 #!/bin/bash
 
-./generate_openssl_keys.sh
-
-until nc -z -v -w30 mysql 3306
+# Wait until database container is deployed
+until nc -z -v -w30 $DATABASE_HOST 3306  > /dev/null 2>&1
 do
   echo "Waiting for database connection..."
   # wait for 2 seconds before check again
   sleep 2
 done
 
-npm run create_db
-npm run migrate_db
-npm run seed_db
+# Check if database is created, migrated and seeded
+node extras/docker/config_database.js
 
-sudo npm start
+sudo DATABASE_HOST=$DATABASE_HOST npm start

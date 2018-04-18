@@ -1295,9 +1295,10 @@ Applications are registered in Keyrock and consume OAuth2 resources.
 + Response 204 (application/json)
 
 
-## Role - Permission Relationships [/v1/roles/{role_id}/permissions]
+## Role - Permission Relationships [/v1/applications/{application_id}/roles/{role_id}/permissions]
 
 + Parameters
+    + application_id - Id of the application. 
     + role_id - Id of the role.
 
 ### List permissions associated to a role [GET]
@@ -1350,9 +1351,10 @@ Applications are registered in Keyrock and consume OAuth2 resources.
           ]
         }
 
-## Role - Permission Relationship [/v1/roles/{role_id}/permissions/{permission_id}]
+## Role - Permission Relationship [/v1/applications/{application_id}/roles/{role_id}/permissions/{permission_id}]
 
 + Parameters
+    + application_id - Id of the application.
     + role_id - Id of the role.
     + permission_id - Id of the permission.
 
@@ -1438,10 +1440,11 @@ Applications are registered in Keyrock and consume OAuth2 resources.
           ]
         }
 
-## Role - User Relationships in an Application [/v1/applications/{application_id}/users/{user_id}/roles]
+## Roles of User in an Application [/v1/applications/{application_id}/users/{user_id}/roles]
+
 + Parameters
-    + user_id - Id of the user.
     + application_id - Id of the application.
+    + user_id - Id of the user.
 
 ### List users role assignments [GET]
 + Request
@@ -1474,7 +1477,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
           ]
         }
 
-## Role - User Relationship in an Application[/v1/applications/{application_id}/users/{user_id}/roles/{role_id}]
+## Role - User Relationship in an Application [/v1/applications/{application_id}/users/{user_id}/roles/{role_id}]
 
 + Parameters
     + user_id - Id of the user.
@@ -1575,7 +1578,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
         }
 
 
-## Role - Organization Relationships in an Application [/v1/applications/{application_id}/organizations/{organization_id}/roles]
+## Roles of Organization in an Application [/v1/applications/{application_id}/organizations/{organization_id}/roles]
 + Parameters
     + organization_id - Id of the organization.
     + application_id - Id of the application.
@@ -1615,7 +1618,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
           ]
         }
 
-## Role - Organization Relationship in an Application[/v1/applications/{application_id}/organizations/{organization_id}/roles/{role_id}/organization_roles/{organization_role_id}]
+## Role - Organization Relationship in an Application [/v1/applications/{application_id}/organizations/{organization_id}/roles/{role_id}/organization_roles/{organization_role_id}]
 
 + Parameters
     + organization_id - Id of the organization.

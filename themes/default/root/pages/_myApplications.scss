@@ -355,4 +355,31 @@
     display: block;
     display: inline;
   }
+
+  .select-multiple .dropdown-toggle {
+    height: 31px;
+    margin-top: 4px;
+    margin-right: 3px;
+  }
+
+  .select-multiple .dropdown-menu {
+    width: 200px;
+  }
+
+  .dropdown-menu > li > a {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dropdown-menu > li > a > span {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  .dropdown-menu > li > a > span {
+      float: left;
+  }
 }

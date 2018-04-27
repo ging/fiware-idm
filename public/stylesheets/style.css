@@ -11464,6 +11464,27 @@ ul.disabled-list li.active:hover {
   display: block;
   display: inline; }
 
+.myApplications-table .select-multiple .dropdown-toggle {
+  height: 31px;
+  margin-top: 4px;
+  margin-right: 3px; }
+
+.myApplications-table .select-multiple .dropdown-menu {
+  width: 200px; }
+
+.myApplications-table .dropdown-menu > li > a {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis; }
+
+.myApplications-table .dropdown-menu > li > a > span {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis; }
+
+.myApplications-table .dropdown-menu > li > a > span {
+  float: left; }
+
 #detailOrganization header .modal span {
   min-height: 30px;
   display: inline-block; }

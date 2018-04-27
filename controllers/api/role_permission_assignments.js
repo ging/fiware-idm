@@ -86,7 +86,23 @@ exports.delete = function(req, res) {
 		models.role_permission.destroy({
 			where: { role_id: req.role.id, permission_id: req.permission.id }
 		}).then(function(deleted) {
-			if (deleted) {
+
+			if (deleted && config_authzforce.enabled) {
+				return search_role_permission(req, res).then(function(role_permission_assignment) {
+					if (Object.keys(role_permission_assignment).length > 0) {
+						authzforce_controller
+							.submit_authzforce_policies(req.application.id, role_permission_assignment)
+							.then(function(result) {
+								res.status(204).json("Assignment destroyed");
+							}).catch(function(error) {
+								Promise.reject(error)
+							})
+					} else {
+					}
+				}).catch(function(error) {
+					return Promise.reject(error)
+				})
+			} else if (deleted && !config_authzforce.enabled) {
 				res.status(204).json("Assignment destroyed");
 			} else {
 				res.status(404).json({error: {message: "Assignments not found", code: 404, title: "Not Found"}})

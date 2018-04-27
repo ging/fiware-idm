@@ -11,6 +11,7 @@ var session = require('cookie-session');
 var partials = require('express-partials');
 var sassMiddleware = require('node-sass-middleware');
 var forceSsl = require('express-force-ssl');
+var clc = require('cli-color');
 
 // Obtain secret from config file
 var config = require ('./config.js');
@@ -97,6 +98,15 @@ if (config.https.enabled) {
   app.use('/', forceSsl, index);
 } else {
   app.use('/', index);
+}
+
+// Check connection with Authzforce
+if (config.authzforce.enabled) {
+  require('./lib/authzforce.js').check_connection().then(function(status) {
+    console.log(clc.green('Connection with Authzforce: ' + status))
+  }).catch(function(error) {
+    console.log(clc.red(error))
+  })
 }
 
 module.exports = app;

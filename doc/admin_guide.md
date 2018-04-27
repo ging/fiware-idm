@@ -1,5 +1,6 @@
 
 
+
 # Installation and Administration Guide
 
 - [Introduction](#introduction)
@@ -166,7 +167,7 @@ You can also configure the Identity Manager to authenticate users through other 
 ~~~
 
 ### Authzforce 
-If you have an authzforce instance deployed you can enable the Identity Manager to automatically send requests to the Authzforce PAP in order to create the corresponding policies. Edit config file to perform these actions.
+The Identity Manager is enabled to automatically send requests to the AuthZforce PAP to create the corresponding policies. **This feature has been tested with AuthZforce 5.4.1**. In order to allow this characteristic you need to edit the config file:
 ~~~
 	config.authzforce = {
 		enabled: true,
@@ -235,6 +236,7 @@ Run the Identity manager and you will see the new appearance:
 <p align="center">Figure 3: IdM custom view</p>
 
 You can also configure a new logo in _styles.scss.
+
 ~~~
 /****************************** Custom styles rewrite */
 
@@ -257,7 +259,10 @@ You can also configure a new logo in _styles.scss.
 	}
 }
 ~~~
+
+
 Furthermore you can customize the header, footer, presentation and help of your portal. To do that create a folder, generate files and then customize them.
+
 <pre>
 <code>mkdir themes/example/templates
 cd themes/example/templates && touch _footer.ejs _header.ejs _presentation.ejs _help_about_items.ejs</code>

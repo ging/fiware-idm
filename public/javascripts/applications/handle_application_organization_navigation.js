@@ -17,8 +17,7 @@ $(document).ready(function(){
 		}
 	})
 
-	$('#select_org').bind('click', function() {
-
+	$("#select_org").on("changed.bs.select", function() {
 		$('#organization_applications').find('.alert').hide()
 		$('#organization_applications').find('#providing_table_content').empty()
 		$('#organization_applications').find('#purchased_table_content').empty()
@@ -38,6 +37,7 @@ $(document).ready(function(){
 		url = url + '&organization=' + organization_id
 
 		$.get(url, function(data, status) {
+
 			var table;
 			if (url.includes('provider')) {
 				table = $('#organization_applications').find('#providing_table_content')

@@ -2,8 +2,6 @@ var models = require('../../models/models.js');
 var fs = require('fs');
 var uuid = require('uuid');
 var _ = require('lodash');
-var mmm = require('mmmagic'),
-    Magic = mmm.Magic;
 
 var config = require('../../config').database;
 
@@ -13,8 +11,6 @@ const Op = Sequelize.Op;
 var debug = require('debug')('idm:web-application_controller');
 var gravatar = require('gravatar');
 var Jimp = require("jimp");
-
-var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 var image = require ('../../lib/image.js');
 

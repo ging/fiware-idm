@@ -12,10 +12,6 @@ var email_list =  config.email_list_type ?
     fs.readFileSync(path.join(__dirname,"../../email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
     []
 
-var mmm = require('mmmagic'),
-    Magic = mmm.Magic;
-
-var magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 var debug = require('debug')('idm:web-user_controller')
 var Jimp = require("jimp");

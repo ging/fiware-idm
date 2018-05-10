@@ -45,7 +45,7 @@ function check_validate_token_request(req) {
 
 	return new Promise(function(resolve, reject) {
 		switch(true) {
-			case (['POST', 'PATCH', 'PUT'].includes(req.method) && (!req.headers['content-type'] || req.headers['content-type'].startsWith'(application/json'))):
+			case (['POST', 'PATCH', 'PUT'].includes(req.method) && (!req.headers['content-type'] || !req.headers['content-type'].startsWith'(application/json'))):
 				reject({ error: {message: 'Missing parameter: header Content-Type: application/json', code: 400, title: 'Bad Request'}})
 				break;
 			case (!req.headers['x-auth-token']):
@@ -255,7 +255,7 @@ var create_token = function(req, res, next) {
 function check_create_token_request(req) {
 	return new Promise(function(resolve, reject) {
 
-		if (!req.headers['content-type'] || req.headers['content-type'].startsWith('application/json')) {
+		if (!req.headers['content-type'] || !req.headers['content-type'].startsWith('application/json')) {
 			reject({ error: {message: 'Missing parameter: header Content-Type: application/json', code: 400, title: 'Bad Request'}})
 		}
 

@@ -9,9 +9,9 @@ var pepProxyApiController = require('../../controllers/api/pep_proxies.js');
 
 // Middleware to see if the token correspond to user
 var is_user = function(req, res, next) {
-	
+
 	if (req.token_owner._modelOptions.tableName === "user") {
-		next()	
+		next()
 	} else {
 		res.status(403).json({ error: {message: 'User not allow to perform the action', code: 403, title: 'Forbidden'}})
 	}
@@ -24,12 +24,12 @@ var validate_token = function(req, res, next) {
 
 	check_validate_token_request(req).then(function(token_id) {
 
-		return search_token_owner(token_id).then(function(agent) { 
+		return search_token_owner(token_id).then(function(agent) {
 
 			req.token_owner = agent
 			next()
 		}).catch(function(error) {
-			return Promise.reject(error) 
+			return Promise.reject(error)
 		})
 	}).catch(function(error) {
 		debug('Error: ' + error)
@@ -45,7 +45,7 @@ function check_validate_token_request(req) {
 
 	return new Promise(function(resolve, reject) {
 		switch(true) {
-			case (['POST', 'PATCH', 'PUT'].includes(req.method) && (!req.headers['content-type'] || req.headers['content-type'] !== 'application/json')):
+			case (['POST', 'PATCH', 'PUT'].includes(req.method) && (!req.headers['content-type'] || req.headers['content-type'].startsWith'(application/json'))):
 				reject({ error: {message: 'Missing parameter: header Content-Type: application/json', code: 400, title: 'Bad Request'}})
 				break;
 			case (!req.headers['x-auth-token']):
@@ -60,7 +60,7 @@ function check_validate_token_request(req) {
 
 // DELETE /v1/auth/tokens -- Delete token
 var delete_token = function(req, res, next) {
-	
+
 	debug(' --> delete_token')
 
 	check_headers_request(req).then(function(tokens) {
@@ -88,7 +88,7 @@ var delete_token = function(req, res, next) {
 
 // GET /v1/auth/tokens -- Get info from a token
 var info_token = function(req, res, next) {
-	
+
 	debug(' --> info_token')
 
 	check_headers_request(req).then(function(tokens) {
@@ -119,11 +119,11 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
 		}
 
 		if (!subj_token_info) {
-			reject({ error: {message: 'Subject Token not found', code: 404, title: 'Not Found'}})	
+			reject({ error: {message: 'Subject Token not found', code: 404, title: 'Not Found'}})
 		}
 
 		if ((new Date()).getTime() > auth_token_info.expires.getTime()) {
-			reject({ error: {message: 'Auth Token has expired', code: 401, title: 'Unauthorized'}})	
+			reject({ error: {message: 'Auth Token has expired', code: 401, title: 'Unauthorized'}})
 		}
 
 		if (auth_token_info.user_id && subj_token_info.user_id) {
@@ -172,7 +172,7 @@ function check_headers_request(req) {
 
 // Function to search token in database
 function search_token(token_id) {
-	
+
 	return models.auth_token.findOne({
 		where: { access_token: token_id },
 		include: [{
@@ -191,13 +191,13 @@ function search_token(token_id) {
 
 // POST /v1/auth/tokens -- Create a token
 var create_token = function(req, res, next) {
-	
+
 	debug(' --> create_token')
 
 	var response_methods = []
 
-	check_create_token_request(req).then(function(checked) {	
-		
+	check_create_token_request(req).then(function(checked) {
+
 		response_methods = checked
 
 		var methods = []
@@ -222,7 +222,7 @@ var create_token = function(req, res, next) {
 				}).catch(function(error) { return Promise.reject(error) })
 
 	}).then(function(authenticated) {
-		
+
 		var token_id = uuid.v4()
 		var expires = new Date((new Date()).getTime() + 1000*config.api.token_lifetime)
 		var row = {access_token: token_id, expires: expires, valid: true}
@@ -254,16 +254,16 @@ var create_token = function(req, res, next) {
 // Function to check if parameters exist in request
 function check_create_token_request(req) {
 	return new Promise(function(resolve, reject) {
-		
-		if (!req.headers['content-type'] || req.headers['content-type'] !== 'application/json') {
-			reject({ error: {message: 'Missing parameter: header Content-Type: application/json', code: 400, title: 'Bad Request'}})	
+
+		if (!req.headers['content-type'] || req.headers['content-type'].startsWith('application/json')) {
+			reject({ error: {message: 'Missing parameter: header Content-Type: application/json', code: 400, title: 'Bad Request'}})
 		}
 
 		var methods = []
 
 		if (req.body.name && req.body.password) {
 			methods.push('password')
-		} 
+		}
 
 		if (req.body.token) {
 			methods.push('token')
@@ -280,7 +280,7 @@ function check_create_token_request(req) {
 
 // Function to check password method parameter for identity
 function search_identity(name, password) {
-	
+
 	return new Promise(function(resolve, reject) {
 
 		models.helpers.search_pep_or_user(name).then(function(identity) {
@@ -307,17 +307,17 @@ function search_identity(name, password) {
 // Authenticate user
 function authenticate_user(email, password) {
 
-	return new Promise(function(resolve, reject) { 
+	return new Promise(function(resolve, reject) {
 
 		userApiController.authenticate(email, password, function(error, user) {
-			if (error) { 
+			if (error) {
 				if (error.message === 'invalid') {
 	            	reject({ error: {message: 'Invalid email or password', code: 401, title: 'Unauthorized'}})
 				} else {
 					reject({ error: {message: 'Internal error', code: 500, title: 'Internal error'}})
 				}
 	        } else {
-				resolve(user)         
+				resolve(user)
 	        }
 		});
 	})
@@ -327,16 +327,16 @@ function authenticate_user(email, password) {
 // Authenticate pep proxy
 function authenticate_pep_proxy(id, password) {
 
-	return new Promise(function(resolve, reject) { 
+	return new Promise(function(resolve, reject) {
 		pepProxyApiController.authenticate(id, password, function(error, pep_proxy) {
-			if (error) {  
+			if (error) {
 				if (error.message === 'invalid') {
 	            	reject({ error: {message: 'Invalid id or password', code: 401, title: 'Unauthorized'}})
 				} else {
 					reject({ error: {message: 'Internal error', code: 500, title: 'Internal error'}})
 				}
 	        } else {
-				resolve(pep_proxy)         
+				resolve(pep_proxy)
 	        }
 
 		});
@@ -346,7 +346,7 @@ function authenticate_pep_proxy(id, password) {
 
 // Function to search token in database
 function search_token_owner(token_id) {
-	
+
 	return models.auth_token.findOne({
 		where: { access_token: token_id },
 		include: [{
@@ -357,10 +357,10 @@ function search_token_owner(token_id) {
 			attributes: ['id']
 		}]
 	}).then(function(token_row) {
-	
+
 		if (token_row) {
 			if ((new Date()).getTime() > token_row.expires.getTime()) {
-				return Promise.reject({ error: {message: 'Token has expired', code: 401, title: 'Unauthorized'}})	
+				return Promise.reject({ error: {message: 'Token has expired', code: 401, title: 'Unauthorized'}})
 			}
 
 			var token_owner = (token_row.User) ? token_row.User : token_row.PepProxy
@@ -376,7 +376,7 @@ function search_token_owner(token_id) {
 
 // Function to check if an array contains all elments of the other
 function arrayContainsArray (superset, subset) {
-	
+
 	if (!Array.isArray(subset)) {
 		return false;
 	}

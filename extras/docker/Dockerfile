@@ -1,29 +1,24 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER FIWARE Identity Manager Team. DIT-UPM
 
 WORKDIR /opt
 
 # Install Ubuntu dependencies
-RUN sudo apt-get update && \
-	sudo apt-get install curl git build-essential -y
+RUN apt-get update && \
+    apt-get install build-essential ca-certificates curl git netcat -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install PPA
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-
-# Install nodejs
-RUN sudo apt-get update && \
-	sudo apt-get install nodejs -y
-
-# Update npm
-RUN sudo npm cache clean -f && \
-	sudo npm install -g n && \
-	sudo n stable
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
 # Download latest version of the code and install npm dependencies
 RUN git clone https://github.com/ging/fiware-idm.git && \
-	cd fiware-idm && \
-	npm install
+    cd fiware-idm && \
+    npm cache clean -f && \
+    npm install
 
 # Change Workdir
 WORKDIR /opt/fiware-idm
@@ -32,11 +27,11 @@ WORKDIR /opt/fiware-idm
 RUN cp config.js.template config.js
 
 # Create certificates for https
-RUN mkdir certs
-RUN openssl genrsa -out idm-2018-key.pem 2048
-RUN openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch
-RUN openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem
-RUN mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
+RUN mkdir certs && \
+    openssl genrsa -out idm-2018-key.pem 2048 && \
+    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
+    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
+    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
 
 # Copy config database file
 COPY config_database.js extras/docker/config_database.js

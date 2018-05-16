@@ -1,0 +1,330 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<!-- <style type="text/css">
+    $red: #FF0000;
+$white: #FFFFFF;
+$green: #1abc9c;
+$grey: #888888;
+.block {
+  background: #f2f2f2;
+  position: relative;
+  padding: 15px;
+  border: 1px solid #ccc;
+  &:not(:first-child) {
+    margin-top: 10px;
+  }
+}
+
+.modifier {
+  float: right;
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.action {
+  color: $green;
+}
+
+.edit {
+  color: $grey;
+}
+
+.column-selector {
+  position: relative;
+}
+
+.remove {
+  color: $red;
+}
+
+.column-option {
+  float: left;
+}
+
+.dropdown-menu {
+  top: inherit;
+}
+
+.blocks {
+  margin-bottom: 0;
+}
+
+.panel {
+  border-radius: 0;
+}
+
+.row > .panel {
+  background-color: #f2f2f2;
+}
+
+.builder {
+  padding: 20px;
+}
+
+.block-placeholder {
+  background: #DADADA;
+  position: relative;
+}
+
+.block-placeholder:after {
+  content: " ";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background-color: #FFF;
+}
+
+</style>
+ -->
+
+<style type="text/css">
+
+.block {
+    background: #f2f2f2;
+    position: relative;
+    padding: 15px;
+    border: 1px solid #ccc;
+    &:not(:first-child) {
+        margin-top: 10px;
+    }
+}
+
+.block:hover {
+    cursor: move;
+}
+
+.panel-body {
+    padding: 0px;
+}
+
+.iot_panel {
+    width: 100%;
+}
+
+#iot_group_list > .iot_panel {
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0px 10px 0px;
+}
+
+.delete_group {
+    margin-bottom: 10px;
+    float: right;
+}
+
+#iot_group_list {
+    border-left: 1px solid #ccc;;
+}
+
+.block-actions > a.ajax-inline-edit {
+    right: 27px;
+    top: 9px;
+    margin-left: 5px;
+}
+
+.block-actions > a.delete {
+    right: 2px;
+    margin-left: 7px;
+}
+
+.block-actions > h4.panel-title {
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    right: 7px;
+}
+
+</style>
+<div id="content_body">
+    <div id="create_application_iots">
+        <div class="workflow workflow-roles static_page">
+            <form id="manage_iot_agents_form" action="/idm/applications/<%= application.id %>/iot_agents" method="POST">
+                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type="hidden" id="submit_iot_agents" name="submit_iot_agents" value="" />
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Manage Iot Agents</h3>
+                        </div>
+
+                        <div class="builder">
+                            <div class="builder-body">
+                                <div class="panel panel-default panel-body sortable">
+                                    <div class="column-container">
+                                        <section id="iot_individual_list" class="role_list">
+                                            <div class="col-xs-6 column sortable iot_panel">
+                                                <header>
+                                                    <h4>Iot Agents</h4>
+                                                    <button type="button" class="btn ajax-modal addIot">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </header>
+                                                <div class="blocks panel panel-default panel-body">
+                                                    <div class="block clearfix">
+                                                        <div class="block-actions">
+                                                            <h4 class="panel-title pull-left">
+                                                                <a data-toggle="collapse" href="#Iot_sdada" aria-expanded="true" aria-controls="Iot_sdada" class="collapsed">Iot_sdada<i class="fa fa-angle-up"></i></a>
+                                                            </h4>
+                                                            <a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-inline-edit">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                            <a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-modal delete">
+                                                                <i class="fa fa-trash-o"></i>
+                                                            </a>
+                                                            <div class="collapse_out">
+                                                                <div id="Iot_sdada" class="form-group collapse" role="tabpanel">
+                                                                    <div class="extra">
+                                                                        <h6 class="panel-heading">Username:</h6>
+                                                                        <p>asdasdasdasdas</p>
+                                                                        <h6 class="panel-heading">Password:</h6>
+                                                                        <p>asdasdasdasdas</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <section id="iot_group_list" class="role_list">
+                                            <div class="col-xs-6 column iot_panel">
+                                                <header>
+                                                    <h4>Iot Groups</h4>
+                                                    <button id="addGroupIot" type="button" class="btn ajax-modal">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </header>
+                                            </div>
+                                            <div id='group_9jb4uj' class="col-xs-6 column sortable iot_panel">
+                                                <header>
+                                                    <h4>group_9jb4uj</h4>
+                                                    <button type="button" class="btn ajax-modal addIot">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </header>
+                                                <div class="blocks panel panel-default panel-body">
+                                                </div>
+                                                <button class="btn btn-danger delete_group" type="submit">Delete Group</button>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-primary pull right" type="submit" value="Save" />
+                </div>
+            </form> 
+        </div>
+    </div>
+</div>  
+
+<div class="messages"></div>
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="popover"]').popover({html:true});
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        function make_panels_sortable() {
+            // Block Controls
+            $(".blocks").sortable({
+                connectWith: '.blocks',
+                placeholder: 'block-placeholder',
+                revert: 150,
+                start: function(e, ui) {
+
+                    placeholderHeight = ui.item.outerHeight();
+                    ui.placeholder.height(placeholderHeight + 15);
+                    $('<div class="block-placeholder-animator" data-height="' + placeholderHeight + '"></div>').insertAfter(ui.placeholder);
+
+                },
+                change: function(event, ui) {
+
+                    ui.placeholder.stop().height(0).animate({
+                        height: ui.item.outerHeight() + 15
+                    }, 300);
+
+                    placeholderAnimatorHeight = parseInt($(".block-placeholder-animator").attr("data-height"));
+
+                    $(".block-placeholder-animator").stop().height(placeholderAnimatorHeight + 15).animate({
+                        height: 0
+                    }, 300, function() {
+                        $(this).remove();
+                        placeholderHeight = ui.item.outerHeight();
+                        $('<div class="block-placeholder-animator" data-height="' + placeholderHeight + '"></div>').insertAfter(ui.placeholder);
+                    });
+
+                },
+                stop: function(e, ui) {
+
+                    $(".block-placeholder-animator").remove();
+
+                },
+            });     
+        }
+
+
+        // Init blocks to be sortables
+        make_panels_sortable()
+
+        $('#create_application_iots').on("click", '.addIot', function() {
+
+            var id_iot_agent = 'iot_' + Math.random().toString(36).substring(7);
+
+            $(this).closest('.column').find('.blocks').append('<div class="block clearfix"><div class="block-actions"><h4 class="panel-title pull-left"><a data-toggle="collapse" href="#'+id_iot_agent+'" aria-expanded="true" aria-controls="'+id_iot_agent+'" class="collapsed">'+id_iot_agent+'</a></h4><a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-inline-edit"><i class="fa fa-edit"></i></a><a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-modal delete"><i class="fa fa-trash-o"></i></a><div class="collapse_out"><div id="'+id_iot_agent+'" class="form-group collapse" role="tabpanel"><div><h6 class="panel-heading">Password:</h6><p>'+id_iot_agent+'</p></div></div></div></div></div>');
+
+        });
+
+        // add rows
+        $('#addGroupIot').click(function() {
+
+            var id_iot_group = 'group_' + Math.random().toString(36).substring(7);
+
+            // Create new Iot Group
+            var iot_group = $('<div id='+id_iot_group+' class="col-xs-6 column sortable iot_panel"><header><h4>'+id_iot_group+'</h4><button type="button" class="btn ajax-modal addIot"><i class="fa fa-plus"></i></button></header><div class="blocks panel panel-default panel-body"></div><button class="btn btn-danger delete_group" type="submit">Delete Group</button></div>')
+
+            iot_group.appendTo('#iot_group_list')
+
+            // Make new panel sortable
+            make_panels_sortable()
+        });
+
+        $.fn.extend({
+            removeclasser: function(re) {
+                return this.each(function() {
+                    var c = this.classList
+                    for (var i = c.length - 1; i >= 0; i--) {
+                        var classe = "" + c[i]
+                        if (classe.match(re)) c.remove(classe)
+                    }
+            })
+                return re;
+            },
+            translatecolumn: function(columns) {
+                var grid = [];
+                var items = columns.split(',');
+                for (i = 0; i < items.length; ++i) {
+                    if (items[i] == '1') {
+                        grid.push(12);
+                    }
+                    if (items[i] == '2') {
+                        grid.push(6);
+                    }
+                    if (items[i] == '3') {
+                        grid.push(4);
+                    }
+                }
+                return grid;
+            }
+        });
+    })
+</script>

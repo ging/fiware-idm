@@ -11,4 +11,4 @@ done
 # Check if database is created, migrated and seeded
 node extras/docker/config_database.js
 
-sudo DATABASE_HOST=$DATABASE_HOST npm start
+npm start

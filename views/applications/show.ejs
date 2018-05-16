@@ -15,6 +15,12 @@
                         <span>manage roles</span>
                     </a>
                 <% } -%>%>
+                <% if (user_logged_permissions.includes('3')) { -%>
+                    <a href="/idm/applications/<%= application.id %>/iot_agents" class="small">
+                        <i class="fa fa-bullseye"></i>
+                        <span>manage iots</span>
+                    </a>
+                <% } -%>%>
             </h4>
             <div class="logo">
                 <img alt="application logo" src="<%= application.image %>">

@@ -8,34 +8,37 @@ module.exports = {
             id: '1',
             is_internal: true,
             name: 'Get and assign all internal application roles',
-            oauth_client_id: 'idm_admin_app'
+            oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' // 'idm_admin_app'
           },
           {
             id: '2',
             is_internal: true,
             name: 'Manage the application',
-            oauth_client_id: 'idm_admin_app'
+            oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' // 'idm_admin_app'
           },
           {
             id: '3',
             is_internal: true,
             name: 'Manage roles',
-            oauth_client_id: 'idm_admin_app'},
+            oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' // 'idm_admin_app'
+          },
           {
             id: '4',
             is_internal: true,
             name: 'Manage authorizations',
-            oauth_client_id: 'idm_admin_app'},
+            oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' // 'idm_admin_app'
+          },
           {
             id: '5',
             is_internal: true,
             name: 'Get and assign all public application roles',
-            oauth_client_id: 'idm_admin_app'},
+            oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' // 'idm_admin_app'
+          },
           {
             id: '6',
-            is_internal: true, 
+            is_internal: true,
             name: 'Get and assign only public owned roles',
-            oauth_client_id: 'idm_admin_app'
+            oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' // 'idm_admin_app'
           },
         ]);
   },

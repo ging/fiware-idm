@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
         }
     }, is_internal: {
         type: DataTypes.BOOLEAN,
-        defaultValue: 0
+        defaultValue: false
     }
     }, {
         tableName: 'role',

@@ -15,7 +15,7 @@ module.exports = {
                     }
                 }, is_internal: {
                     type: Sequelize.BOOLEAN,
-                    defaultValue: 0
+                    defaultValue: false
                 }, oauth_client_id: {
                     type: Sequelize.UUID,
                     onDelete: 'CASCADE',

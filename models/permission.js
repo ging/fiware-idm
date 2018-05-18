@@ -19,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
         }
     }, is_internal: {
         type: DataTypes.BOOLEAN,
-        defaultValue: 0
+        defaultValue: false
     }, action: {
         type: DataTypes.STRING(255) // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
     }, resource: {

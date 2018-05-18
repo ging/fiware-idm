@@ -20,7 +20,7 @@ module.exports = {
                     }
                 }, is_internal: {
                     type: Sequelize.BOOLEAN,
-                    defaultValue: 0
+                    defaultValue: false
                 }, action: {
                     type: Sequelize.STRING(255) // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, resource: {

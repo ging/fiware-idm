@@ -9,24 +9,24 @@ module.exports = {
                     defaultValue: Sequelize.UUIDV4,
                     primaryKey: true
                 }, name: {
-                    type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                    validate: { 
+                    type: Sequelize.STRING(255), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                    validate: {
                         notEmpty: {msg: "error_empty_name"}
                     }
                 }, description: {
-                    type: Sequelize.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                    validate: { 
+                    type: Sequelize.TEXT(), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                    validate: {
                         notEmpty: {msg: "error_empty_description"}
                     }
                 }, is_internal: {
                     type: Sequelize.BOOLEAN,
                     defaultValue: 0
                 }, action: {
-                    type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+                    type: Sequelize.STRING(255) // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, resource: {
-                    type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+                    type: Sequelize.STRING(255) // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, xml: {
-                    type: Sequelize.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+                    type: Sequelize.TEXT() // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, oauth_client_id: {
                     type: Sequelize.UUID,
                     onDelete: 'CASCADE',

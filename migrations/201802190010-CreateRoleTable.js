@@ -9,8 +9,8 @@ module.exports = {
                     defaultValue: Sequelize.UUIDV4,
                     primaryKey: true
                 }, name: {
-                    type: Sequelize.STRING(64) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                    validate: { 
+                    type: Sequelize.STRING(64), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                    validate: {
                         notEmpty: {msg: "error_empty_name"}
                     }
                 }, is_internal: {
@@ -19,7 +19,7 @@ module.exports = {
                 }, oauth_client_id: {
                     type: Sequelize.UUID,
                     onDelete: 'CASCADE',
-                    references: {   
+                    references: {
                         model: 'oauth_client',
                         key: 'id'
                     }

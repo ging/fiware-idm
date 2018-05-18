@@ -15,8 +15,8 @@ module.exports = {
             email: "admin@test.com",
             password: crypto.createHmac('sha1', key).update('1234').digest('hex'),
             date_password: new Date((new Date()).getTime()),
-            enabled: 1,
-            admin: 1
+            enabled: true,
+            admin: true
           }
         ]);
   },

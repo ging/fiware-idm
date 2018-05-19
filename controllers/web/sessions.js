@@ -4,6 +4,9 @@ var debug = require('debug')('idm:web-session_controller')
 var models = require('../../models/models.js');
 var userController = require('./users');
 
+var adminsOnly = require('../../config.js').adminsOnly;
+if (typeof adminsOnly === 'undefined'){adminsOnly = false}
+
 // MW to authorized restricted http accesses
 exports.login_required = function(req, res, next){
 
@@ -107,6 +110,7 @@ exports.create = function(req, res, next) {
                 if (user.admin) {
                     req.session.user.admin = user.admin
                 }
+                req.session.adminsonly = adminsOnly
 
                 res.redirect('/idm');
             });

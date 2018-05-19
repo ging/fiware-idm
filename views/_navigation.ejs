@@ -8,12 +8,14 @@
         <a href="/idm" class="home">
           <h4 tabindex="1"><i class="fa"></i><span>Home</span></h4>
         </a>
+        <%if(!session.adminsonly) {%>
         <a href="/idm/organizations" class="organizations">
           <h4 tabindex="2"><i class="fa"></i><span>Organizations</span></h4>
         </a>
         <a href="/idm/applications" class="applications">
           <h4 tabindex="3"><i class="fa"></i><span>Applications</span></h4>
         </a>
+        <%}%>
         <%if(session.user.admin) {%>
           <h5>
             <span class="hidden-xs hidden-sm"> </span>
@@ -26,6 +28,14 @@
             <a href="/idm/admins/administrators" class="administrators">
               <h4 tabindex="2"><i class="fa"></i><span>Administrators</span></h4>
             </a>
+            <%if(session.adminsonly) {%>
+              <a href="/idm/organizations" class="organizations">
+                <h4 tabindex="3"><i class="fa"></i><span>Organizations</span></h4>
+              </a>
+              <a href="/idm/applications" class="applications">
+                <h4 tabindex="4"><i class="fa"></i><span>Applications</span></h4>
+              </a>
+              <%}%>
           </ul>
         <%}%>
       </ul>

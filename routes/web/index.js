@@ -2,6 +2,9 @@ var express = require('express');
 var csrf = require('csurf')
 var bodyParser = require('body-parser');
 
+var adminsOnly = require('../../config.js').adminsOnly;
+if (typeof adminsOnly === 'undefined'){adminsOnly = false}
+
 var router = express.Router();
 
 var csrfProtection = csrf({ cookie: true })
@@ -37,9 +40,17 @@ router.get('/update_password',      web_session_controller.login_required,   csr
 
 //  - Routes when user is logged
 router.use('/idm/admins',           web_session_controller.login_required, web_session_controller.password_check_date, web_admin_controller.is_admin, require('./admins'))
-router.use('/idm/applications',     web_session_controller.login_required, web_session_controller.password_check_date, require('./applications'))
+//router.use('/idm/applications',     web_session_controller.login_required, web_session_controller.password_check_date, require('./applications'))
 router.use('/idm/users',            web_session_controller.login_required, web_session_controller.password_check_date, require('./users'))
-router.use('/idm/organizations',    web_session_controller.login_required, web_session_controller.password_check_date, require('./organizations'))
+if(adminsOnly){
+  router.use('/idm/applications',     web_session_controller.login_required, web_session_controller.password_check_date, web_admin_controller.is_admin, require('./applications'))
+  router.use('/idm/organizations',    web_session_controller.login_required, web_session_controller.password_check_date, web_admin_controller.is_admin, require('./organizations'))
+
+}else{
+  router.use('/idm/applications',     web_session_controller.login_required, web_session_controller.password_check_date, require('./applications'))
+  router.use('/idm/organizations',    web_session_controller.login_required, web_session_controller.password_check_date, require('./organizations'))
+}
+//router.use('/idm/organizations',    web_session_controller.login_required, web_session_controller.password_check_date, require('./organizations'))
 router.use('/idm/settings',         web_session_controller.login_required, require('./settings'))
 router.use('/idm',                  web_session_controller.login_required, web_session_controller.password_check_date, csrfProtection,  require('./homes'))
 

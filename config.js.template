@@ -83,4 +83,8 @@ config.site = {
     theme: 'default'
 };
 
+// Only admins can manage organizations and apps
+config.adminsOnly = false;
+
+
 module.exports = config;

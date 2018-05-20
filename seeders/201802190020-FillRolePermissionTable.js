@@ -7,37 +7,37 @@ module.exports = {
           {
             id: '1',
             role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'provider',
-            permission_id: '1'
+            permission_id: '116ac246-e7ac-49ff-93b4-f7e94d997e6b'
           },
           {
             id: '2',
             role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'provider',
-            permission_id: '2'
+            permission_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b'
           },
           {
             id: '3',
             role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'provider',
-            permission_id: '3'
+            permission_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b'
           },
           {
             id: '4',
             role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'provider',
-            permission_id: '4'
+            permission_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b'
           },
           {
             id: '5',
             role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'provider',
-            permission_id: '5'
+            permission_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b'
           },
           {
             id: '6',
             role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'provider',
-            permission_id: '6'
+            permission_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b'
           },
           {
             id: '7',
-            role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e61', //'purchaser', 
-            permission_id: '5'
+            role_id: '416ac246-e7ac-49ff-93b4-f7e94d997e61', //'purchaser',
+            permission_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b'
           }
         ]);
   },

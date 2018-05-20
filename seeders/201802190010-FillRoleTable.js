@@ -5,13 +5,13 @@ module.exports = {
 
       return queryInterface.bulkInsert('role', [
           {
-            id: 'provider',
+            id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'provider',
             is_internal: true,
             name: 'Provider',
             oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' //'idm_admin_app'
           },
           {
-            id: 'purchaser',
+            id: '416ac246-e7ac-49ff-93b4-f7e94d997e61', //'purchaser',
             is_internal: true,
             name: 'Purchaser',
             oauth_client_id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b' //'idm_admin_app'

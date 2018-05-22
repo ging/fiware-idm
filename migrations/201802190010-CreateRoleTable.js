@@ -5,8 +5,9 @@ module.exports = {
         return queryInterface.createTable('role',
             {
                 id: {
-                    type: Sequelize.UUID,
-                    defaultValue: Sequelize.UUIDV4,
+                    type: Sequelize.STRING(32),
+                    // defaultValue: Sequelize.UUIDV4,
+                    unique: true,
                     primaryKey: true
                 }, name: {
                     type: Sequelize.STRING(64), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',

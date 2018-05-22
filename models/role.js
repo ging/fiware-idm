@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
     'Role',
     { id: {
-        type: DataTypes..STRING(32),
+        type: DataTypes.STRING(32),
         //defaultValue: DataTypes.UUIDV4,
         unique: true,
         primaryKey: true

@@ -9,16 +9,16 @@ RUN apt-get update && \
     apt-get install build-essential ca-certificates curl git netcat -y --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# Install node js
+# Install PPA
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 
 # Download latest version of the code and install npm dependencies
 RUN git clone https://github.com/ging/fiware-idm.git && \
-	cd fiware-idm && \
- 	npm cache clean -f && \
- 	npm install
+    cd fiware-idm && \
+    npm cache clean -f && \
+    npm install
 
 # Change Workdir
 WORKDIR /opt/fiware-idm
@@ -28,10 +28,10 @@ RUN cp config.js.template config.js
 
 # Create certificates for https
 RUN mkdir certs && \
-	openssl genrsa -out idm-2018-key.pem 2048 && \
-	openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
-	openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
-	mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
+    openssl genrsa -out idm-2018-key.pem 2048 && \
+    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
+    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
+    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
 
 # Copy config database file
 COPY config_database.js extras/docker/config_database.js

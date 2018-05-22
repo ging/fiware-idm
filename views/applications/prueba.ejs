@@ -1,83 +1,4 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<!-- <style type="text/css">
-    $red: #FF0000;
-$white: #FFFFFF;
-$green: #1abc9c;
-$grey: #888888;
-.block {
-  background: #f2f2f2;
-  position: relative;
-  padding: 15px;
-  border: 1px solid #ccc;
-  &:not(:first-child) {
-    margin-top: 10px;
-  }
-}
-
-.modifier {
-  float: right;
-  margin-left: 8px;
-  font-size: 14px;
-}
-
-.action {
-  color: $green;
-}
-
-.edit {
-  color: $grey;
-}
-
-.column-selector {
-  position: relative;
-}
-
-.remove {
-  color: $red;
-}
-
-.column-option {
-  float: left;
-}
-
-.dropdown-menu {
-  top: inherit;
-}
-
-.blocks {
-  margin-bottom: 0;
-}
-
-.panel {
-  border-radius: 0;
-}
-
-.row > .panel {
-  background-color: #f2f2f2;
-}
-
-.builder {
-  padding: 20px;
-}
-
-.block-placeholder {
-  background: #DADADA;
-  position: relative;
-}
-
-.block-placeholder:after {
-  content: " ";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 15px;
-  background-color: #FFF;
-}
-
-</style>
- -->
-
 <style type="text/css">
 
 .block {
@@ -88,6 +9,10 @@ $grey: #888888;
     &:not(:first-child) {
         margin-top: 10px;
     }
+}
+
+.collapse_out {
+    cursor: text;
 }
 
 .block:hover {
@@ -107,13 +32,18 @@ $grey: #888888;
     margin: 10px 0px 10px 0px;
 }
 
-.delete_group {
-    margin-bottom: 10px;
-    float: right;
+#iot_individual_list > .iot_panel > header {
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0px 10px 0px;
 }
 
 #iot_group_list {
-    border-left: 1px solid #ccc;;
+    border-left: 1px solid #ccc;
+}
+
+.delete_group {
+    margin-bottom: 10px;
+    float: right;
 }
 
 .block-actions > a.ajax-inline-edit {
@@ -132,6 +62,11 @@ $grey: #888888;
     overflow: hidden;
     text-overflow: ellipsis;
     right: 7px;
+}
+
+#iot_individual_message,
+#iot_groups_message {
+    width: 100%;
 }
 
 </style>
@@ -155,34 +90,15 @@ $grey: #888888;
                                             <div class="col-xs-6 column sortable iot_panel">
                                                 <header>
                                                     <h4>Iot Agents</h4>
-                                                    <button type="button" class="btn ajax-modal addIot">
+                                                    <button type="button" class="btn addIot">
                                                         <i class="fa fa-plus"></i>
                                                     </button>
                                                 </header>
                                                 <div class="blocks panel panel-default panel-body">
-                                                    <div class="block clearfix">
-                                                        <div class="block-actions">
-                                                            <h4 class="panel-title pull-left">
-                                                                <a data-toggle="collapse" href="#Iot_sdada" aria-expanded="true" aria-controls="Iot_sdada" class="collapsed">Iot_sdada<i class="fa fa-angle-up"></i></a>
-                                                            </h4>
-                                                            <a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-inline-edit">
-                                                                <i class="fa fa-edit"></i>
-                                                            </a>
-                                                            <a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-modal delete">
-                                                                <i class="fa fa-trash-o"></i>
-                                                            </a>
-                                                            <div class="collapse_out">
-                                                                <div id="Iot_sdada" class="form-group collapse" role="tabpanel">
-                                                                    <div class="extra">
-                                                                        <h6 class="panel-heading">Username:</h6>
-                                                                        <p>asdasdasdasdas</p>
-                                                                        <h6 class="panel-heading">Password:</h6>
-                                                                        <p>asdasdasdasdas</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                     
+                                                </div>
+                                                <div class="col-xs-6 alert alert-info" style="display: none;" id="iot_individual_message">
+                                                    There aren't IoT agents
                                                 </div>
                                             </div>
                                         </section>
@@ -196,17 +112,9 @@ $grey: #888888;
                                                     </button>
                                                 </header>
                                             </div>
-                                            <div id='group_9jb4uj' class="col-xs-6 column sortable iot_panel">
-                                                <header>
-                                                    <h4>group_9jb4uj</h4>
-                                                    <button type="button" class="btn ajax-modal addIot">
-                                                        <i class="fa fa-plus"></i>
-                                                    </button>
-                                                </header>
-                                                <div class="blocks panel panel-default panel-body">
-                                                </div>
-                                                <button class="btn btn-danger delete_group" type="submit">Delete Group</button>
-                                            </div>
+                                            <div class="col-xs-6 alert alert-info" style="display: none;" id="iot_groups_message">
+                                                There aren't IoT groups
+                                            </div> 
                                         </section>
                                     </div>
                                 </div>
@@ -225,6 +133,26 @@ $grey: #888888;
 <div class="messages"></div>
 
 <script type="text/javascript">
+    $('.panel-title a:first-child').mouseover(function(){
+        $(this).children().toggleClass('fa-rotate-180');
+    });
+    $('.panel-title a:first-child').mouseleave(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children().removeClass('fa-rotate-180');
+        } else {
+            $(this).children().addClass('fa-rotate-180');
+        }
+    });
+    $('.panel-title a:first-child').click(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children().addClass('fa-rotate-180');
+        } else {
+            $(this).children().removeClass('fa-rotate-180');
+        }
+    });
+</script>
+
+<script type="text/javascript">
     $(function () {
         $('[data-toggle="popover"]').popover({html:true});
         $('[data-toggle="tooltip"]').tooltip();
@@ -234,12 +162,23 @@ $grey: #888888;
 <script type="text/javascript">
     $(document).ready(function(){
 
+        if ($('#iot_group_list').find('.iot_panel').length < 2) {
+            $('#iot_groups_message').show()
+            $('.blocks').hide()
+        }
+
+        if ($('#iot_individual_list').find('.blocks').find('.block').length < 1) {
+            $('#iot_individual_message').show()
+        }
+
+
         function make_panels_sortable() {
             // Block Controls
             $(".blocks").sortable({
                 connectWith: '.blocks',
                 placeholder: 'block-placeholder',
-                revert: 150,
+                revert: true,
+                cancel: ".blocks .collapse_out",
                 start: function(e, ui) {
 
                     placeholderHeight = ui.item.outerHeight();
@@ -276,26 +215,66 @@ $grey: #888888;
         // Init blocks to be sortables
         make_panels_sortable()
 
+        // Add new iot agent
         $('#create_application_iots').on("click", '.addIot', function() {
 
-            var id_iot_agent = 'iot_' + Math.random().toString(36).substring(7);
+            $(this).closest('.iot_panel').find('.blocks').show()
+            $(this).closest('.iot_panel').find('#iot_individual_message').hide()
 
-            $(this).closest('.column').find('.blocks').append('<div class="block clearfix"><div class="block-actions"><h4 class="panel-title pull-left"><a data-toggle="collapse" href="#'+id_iot_agent+'" aria-expanded="true" aria-controls="'+id_iot_agent+'" class="collapsed">'+id_iot_agent+'</a></h4><a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-inline-edit"><i class="fa fa-edit"></i></a><a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-modal delete"><i class="fa fa-trash-o"></i></a><div class="collapse_out"><div id="'+id_iot_agent+'" class="form-group collapse" role="tabpanel"><div><h6 class="panel-heading">Password:</h6><p>'+id_iot_agent+'</p></div></div></div></div></div>');
+            var id_iot_agent = 'id_iot_' + Math.random().toString(36).substring(7);
+            var name_iot_agent = 'name_iot_' + Math.random().toString(36).substring(7);
+            var password_iot_agent = 'password_iot_' + Math.random().toString(36).substring(7);
 
+            var iot_row = $('#iot_row_template').html();
+            iot_row = iot_row.replace(/iot_name/g, name_iot_agent);
+            iot_row = iot_row.replace(/iot_id/g, id_iot_agent);
+            iot_row = iot_row.replace(/iot_password/g, password_iot_agent);
+
+            $(this).closest('.column').find('.blocks').append(iot_row);
         });
 
-        // add rows
+        // Delete iot agent
+        $('#create_application_iots').on("click", '.delete', function() {
+            // stop form from submitting normally
+            event.preventDefault();
+
+            $(this).closest('div.block').remove()
+        });
+
+        // Add new groups
         $('#addGroupIot').click(function() {
 
-            var id_iot_group = 'group_' + Math.random().toString(36).substring(7);
+            var id_iot_group = 'id_group_' + Math.random().toString(36).substring(7);
+            var name_iot_group = 'name_group_' + Math.random().toString(36).substring(7);
 
-            // Create new Iot Group
-            var iot_group = $('<div id='+id_iot_group+' class="col-xs-6 column sortable iot_panel"><header><h4>'+id_iot_group+'</h4><button type="button" class="btn ajax-modal addIot"><i class="fa fa-plus"></i></button></header><div class="blocks panel panel-default panel-body"></div><button class="btn btn-danger delete_group" type="submit">Delete Group</button></div>')
+            var iot_group_row = $('#iot_group_row_template').html();
+            iot_group_row = iot_group_row.replace(/iot_group_id/g, id_iot_group);
+            iot_group_row = iot_group_row.replace(/iot_group_name/g, name_iot_group);
 
-            iot_group.appendTo('#iot_group_list')
+            $('#iot_group_list').append(iot_group_row)
+
+            var groups = $('#iot_group_list').find('.iot_panel')
+
+            if (groups.length >= 2) {
+                $('#iot_groups_message').hide()
+            }
 
             // Make new panel sortable
             make_panels_sortable()
+        });
+
+        // Delete groups
+        $('#create_application_iots').on("click", '.delete_group', function(event) {
+            // stop form from submitting normally
+            event.preventDefault();
+
+            $(this).closest('div.iot_panel').remove()
+
+            var groups = $('#iot_group_list').find('.iot_panel')
+
+            if (groups.length < 2) {
+                $('#iot_groups_message').show()
+            }
         });
 
         $.fn.extend({
@@ -327,4 +306,46 @@ $grey: #888888;
             }
         });
     })
+</script>
+
+
+
+<script type="text/x-custom-template" id="iot_row_template">
+    <div class="block clearfix">
+        <div class="block-actions">
+            <h4 class="panel-title pull-left">
+                <a data-toggle="collapse" href="#iot_id" aria-expanded="true" aria-controls="iot_id" class="collapsed">iot_name<i class="fa fa-angle-up"></i></a>
+            </h4>
+            <a href="#" class="ajax-inline-edit" data-toggle="tooltip" data-placement="bottom" title="Reset Password of Iot Agent">
+                <i class="fa fa-refresh"></i>
+            </a>
+            <a href="#" class="ajax-modal delete" data-toggle="tooltip" data-placement="bottom" title="Delete Iot Agent">
+                <i class="fa fa-trash-o"></i>
+            </a>
+            <div class="collapse_out">
+                <div id="iot_id" class="form-group collapse" role="tabpanel">
+                    <div class="extra">
+                        <h6 class="panel-heading">Username:</h6>
+                        <p>iot_id</p>
+                        <h6 class="panel-heading">Password:</h6>
+                        <p>iot_password</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-custom-template" id="iot_group_row_template">
+    <div id='iot_group_id' class="col-xs-6 column sortable iot_panel">
+        <header>
+            <h4>iot_group_name</h4>
+            <button type="button" class="btn ajax-modal addIot">
+                <i class="fa fa-plus"></i>
+            </button>
+        </header>
+        <div class="blocks panel panel-default panel-body">
+        </div>
+        <button class="btn btn-danger delete_group" type="submit">Delete Group</button>
+    </div>
 </script>

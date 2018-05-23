@@ -13,13 +13,6 @@ exports.load_iot = function(req, res, next, iotId) {
 	next();
 }
 
-// GET /idm/applications/:applicationId/iot/edit -- Edit Iot sensors
-exports.edit_iot = function(req, res) {
-
-	debug("--> edit_iot");
-	res.render('applications/prueba', { application: req.application, errors: [], csrfToken: req.csrfToken()});
-}
-
 // GET /idm/applications/:applicationId/iot/register -- Register IoT sensor
 exports.register_iot = function(req, res, next) {
 	

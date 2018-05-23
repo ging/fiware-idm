@@ -74,10 +74,6 @@ router.get('/:applicationId/edit/permissions/:permissionId',                 web
 router.put('/:applicationId/edit/permissions/:permissionId/edit',            web_check_perm_controller.owned_permissions,    csrfProtection,    web_perm_controller.edit_permission);
 router.delete('/:applicationId/edit/permissions/:permissionId/delete',       web_check_perm_controller.owned_permissions,    csrfProtection,    web_perm_controller.delete_permission);
 
-
-router.get('/:applicationId/iot_agents',                                web_check_perm_controller.owned_permissions,    csrfProtection,    web_iota_controller.edit_iot);
-
-
 // Routes to handle iot of applications
 router.get('/:applicationId/iot/register',                                   web_check_perm_controller.owned_permissions,    csrfProtection,    web_iota_controller.register_iot);
 router.get('/:applicationId/iot/:iotId/reset_password',                      web_check_perm_controller.owned_permissions,    csrfProtection,    web_iota_controller.reset_password_iot);

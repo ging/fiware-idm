@@ -208,7 +208,7 @@ exports.enable_app = function(req, res, next){
 }
 
 // Generate code or token
-exports.oauth_authorize = function(req, res) {
+function oauth_authorize(req, res) {
 
     debug(' --> oauth_authorize')
 

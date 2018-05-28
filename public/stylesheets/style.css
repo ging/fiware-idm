@@ -5683,6 +5683,7 @@ button.list-group-item-danger {
 .registration, .remember-password,
 .resend-confirmation-instructions, #create_application_modal,
 #create_application_roles,
+#create_application_iots,
 #upload_image_modal, #edit_organization_modal {
   min-height: 20px;
   padding: 19px;
@@ -5696,6 +5697,7 @@ button.list-group-item-danger {
   .registration blockquote, .remember-password blockquote,
   .resend-confirmation-instructions blockquote, #create_application_modal blockquote,
   #create_application_roles blockquote,
+  #create_application_iots blockquote,
   #upload_image_modal blockquote, #edit_organization_modal blockquote {
     border-color: #ddd;
     border-color: rgba(0, 0, 0, 0.15); }
@@ -7241,6 +7243,7 @@ hr {
 .registration, .remember-password,
 .resend-confirmation-instructions, #create_application_modal,
 #create_application_roles,
+#create_application_iots,
 #upload_image_modal, #edit_organization_modal {
   min-height: 20px;
   padding: 15px;
@@ -8615,6 +8618,66 @@ body > .wrap {
       width: 58.33333%; } }
   @media (max-width: 768px) {
     #permissions_list {
+      padding-left: 0;
+      padding-right: 0; } }
+
+#iot_group_list {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px; }
+  @media (min-width: 768px) {
+    #iot_group_list {
+      float: left;
+      width: 50%; } }
+  @media (min-width: 992px) {
+    #iot_group_list {
+      float: left;
+      width: 50%; } }
+  @media (min-width: 1200px) {
+    #iot_group_list {
+      float: left;
+      width: 50%; } }
+  @media (max-width: 768px) {
+    #iot_group_list {
+      padding-left: 0;
+      padding-right: 0; } }
+
+#iot_individual_list {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px; }
+  @media (min-width: 768px) {
+    #iot_individual_list {
+      float: left;
+      width: 50%; } }
+  @media (min-width: 992px) {
+    #iot_individual_list {
+      float: left;
+      width: 50%; } }
+  @media (min-width: 1200px) {
+    #iot_individual_list {
+      float: left;
+      width: 50%; } }
+  @media (max-width: 768px) {
+    #iot_individual_list {
       padding-left: 0;
       padding-right: 0; } }
 
@@ -11157,26 +11220,31 @@ ul.disabled-list li.active:hover {
 
 #create_application_modal textarea,
 #create_application_roles textarea,
+#create_application_iots textarea,
 #upload_image_modal textarea {
   min-height: 40px; }
 
 #create_application_modal .modal-header,
 #create_application_roles .modal-header,
+#create_application_iots .modal-header,
 #upload_image_modal .modal-header {
   padding: 0;
   min-height: 32px;
   border-bottom: 1px solid transparent; }
   #create_application_modal .modal-header .step-title,
   #create_application_roles .modal-header .step-title,
+  #create_application_iots .modal-header .step-title,
   #upload_image_modal .modal-header .step-title {
     margin-bottom: 13px; }
   #create_application_modal .modal-header h3,
   #create_application_roles .modal-header h3,
+  #create_application_iots .modal-header h3,
   #upload_image_modal .modal-header h3 {
     font-size: 17px !important;
     color: #fcba04; }
     #create_application_modal .modal-header h3 .steps-group,
     #create_application_roles .modal-header h3 .steps-group,
+    #create_application_iots .modal-header h3 .steps-group,
     #upload_image_modal .modal-header h3 .steps-group {
       position: relative;
       z-index: 100;
@@ -11184,6 +11252,7 @@ ul.disabled-list li.active:hover {
       margin-bottom: 13px; }
       #create_application_modal .modal-header h3 .steps-group .step,
       #create_application_roles .modal-header h3 .steps-group .step,
+      #create_application_iots .modal-header h3 .steps-group .step,
       #upload_image_modal .modal-header h3 .steps-group .step {
         display: inline-block;
         background-color: #fff;
@@ -11203,15 +11272,18 @@ ul.disabled-list li.active:hover {
         z-index: 2; }
         #create_application_modal .modal-header h3 .steps-group .step:last-child,
         #create_application_roles .modal-header h3 .steps-group .step:last-child,
+        #create_application_iots .modal-header h3 .steps-group .step:last-child,
         #upload_image_modal .modal-header h3 .steps-group .step:last-child {
           margin-right: 0px; }
         @media (max-width: 480px) {
           #create_application_modal .modal-header h3 .steps-group .step,
           #create_application_roles .modal-header h3 .steps-group .step,
+          #create_application_iots .modal-header h3 .steps-group .step,
           #upload_image_modal .modal-header h3 .steps-group .step {
             margin-right: 45px; } }
       #create_application_modal .modal-header h3 .steps-group .line,
       #create_application_roles .modal-header h3 .steps-group .line,
+      #create_application_iots .modal-header h3 .steps-group .line,
       #upload_image_modal .modal-header h3 .steps-group .line {
         position: relative;
         z-index: 1;
@@ -11224,15 +11296,18 @@ ul.disabled-list li.active:hover {
         @media (max-width: 480px) {
           #create_application_modal .modal-header h3 .steps-group .line,
           #create_application_roles .modal-header h3 .steps-group .line,
+          #create_application_iots .modal-header h3 .steps-group .line,
           #upload_image_modal .modal-header h3 .steps-group .line {
             width: 175px; } }
     #create_application_modal .modal-header h3 .steps-group .completed,
     #create_application_roles .modal-header h3 .steps-group .completed,
+    #create_application_iots .modal-header h3 .steps-group .completed,
     #upload_image_modal .modal-header h3 .steps-group .completed {
       color: #8f8f8f !important;
       border: 2px solid #8f8f8f !important; }
     #create_application_modal .modal-header h3 div.active,
     #create_application_roles .modal-header h3 div.active,
+    #create_application_iots .modal-header h3 div.active,
     #upload_image_modal .modal-header h3 div.active {
       border: 2px solid #fcba04 !important;
       color: #001630 !important; }
@@ -11241,12 +11316,15 @@ ul.disabled-list li.active:hover {
 #create_application_modal .modal-footer,
 #create_application_roles .modal-body,
 #create_application_roles .modal-footer,
+#create_application_iots .modal-body,
+#create_application_iots .modal-footer,
 #upload_image_modal .modal-body,
 #upload_image_modal .modal-footer {
   padding: 0; }
 
 #create_application_modal .modal-footer,
 #create_application_roles .modal-footer,
+#create_application_iots .modal-footer,
 #upload_image_modal .modal-footer {
   margin-top: 25px;
   padding-top: 15px; }

@@ -89,14 +89,18 @@ app.use(function(req, res, next) {
 });
 
 
-// Set routes for oauth2
-app.use('/oauth2', oauth2);
-app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
-
 // Force HTTPS connection to web server
 if (config.https.enabled) {
+  // Set routes for oauth2
+  app.use('/oauth2', forceSsl, oauth2);
+  app.get('/user', forceSsl, require('./controllers/oauth2/oauth2').authenticate_token);
+
   app.use('/', forceSsl, index);
 } else {
+  // Set routes for oauth2
+  app.use('/oauth2', oauth2);
+  app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
+
   app.use('/', index);
 }
 

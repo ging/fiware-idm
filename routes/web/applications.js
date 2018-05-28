@@ -79,6 +79,8 @@ router.get('/:applicationId/iot/register',                                   web
 router.get('/:applicationId/iot/:iotId/reset_password',                      web_check_perm_controller.owned_permissions,    csrfProtection,    web_iota_controller.reset_password_iot);
 router.delete('/:applicationId/iot/:iotId/delete',                           web_check_perm_controller.owned_permissions,    csrfProtection,    web_iota_controller.delete_iot);
 
+
+
 // Routes to handle pep proxies of applications
 router.get('/:applicationId/pep/register',                                   web_check_perm_controller.owned_permissions,    csrfProtection,    web_peppx_controller.register_pep);
 router.get('/:applicationId/pep/:pepId/reset_password',                      web_check_perm_controller.owned_permissions,    csrfProtection,    web_peppx_controller.reset_password_pep);

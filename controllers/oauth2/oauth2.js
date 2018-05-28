@@ -119,7 +119,7 @@ exports.authenticate_user = function(req, res, next){
                     image = gravatar.url(user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
                 } else if (user.image !== 'default') {
                     image = '/img/users/' + user.image
-                }    
+                }
                 req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
 
                 check_user_authorized_application(req, res)
@@ -161,7 +161,7 @@ function check_user_authorized_application(req, res) {
     })
 }
 
-// Search user that has authorized tha application
+// Search user that has authorized the application
 function search_user_authorized_application(user_id, app_id) {
 
     debug(' --> search_user_authorized_application')
@@ -170,7 +170,7 @@ function search_user_authorized_application(user_id, app_id) {
         where: {user_id: user_id, oauth_client_id: app_id},
         include: [{
             model: models.user,
-            attributes: ['id', 'username', 'gravatar', 'image']
+            attributes: ['id', 'username', 'gravatar', 'image', 'email']
         }]
     }).then(function(user_is_authorized) {
         return user_is_authorized.User
@@ -185,6 +185,7 @@ exports.load_user = function(req, res, next) {
     debug(' --> load_user')
 
     if (req.session.user.id) {
+
         models.user.findOne({
             where: { id: req.session.user.id}
         }).then(function(user) {
@@ -194,22 +195,16 @@ exports.load_user = function(req, res, next) {
             next(error)
         })
     } else {
-        res.rediect('/')
+        res.redirect('/')
     }
 }
 
-// POST /oauth2/enable_app -- User authorize the application to see their details and 
+// POST /oauth2/enable_app -- User authorize the application to see their details
 exports.enable_app = function(req, res, next){
 
     debug(' --> enable_app')
 
-    models.user_authorized_application.create({ user_id: req.session.user.id, 
-                                                oauth_client_id: req.query.client_id})
-    .then(function(row) {
-        oauth_authorize(req, res)
-    }).catch(function(error) {
-        next(error)
-    })
+    oauth_authorize(req, res)
 }
 
 // Generate code or token
@@ -230,7 +225,7 @@ function oauth_authorize(req, res) {
 }
 
 
-// GET /oauth2/token -- Function to handle token authentication
+// GET /user -- Function to handle token authentication
 exports.authenticate_token = function(req, res, next){
 
     debug(' --> authenticate_token')
@@ -250,8 +245,7 @@ exports.authenticate_token = function(req, res, next){
         var user = user_info.user
         var application_id = user_info.oauth_client.id
         if (user._modelOptions.tableName === 'user') {
-
-            return search_user_info(user, application_id)
+            return check_user_enable_app(user.id, application_id)
         } else if (user._modelOptions.tableName === 'iot') {
 
             // ... search for roles of iots
@@ -275,91 +269,131 @@ exports.authenticate_token = function(req, res, next){
     });
 }
 
-function search_user_info(user, app_id) {
 
-    // Search organizations in wich user is member or owner
-    var search_organizations = models.user_organization.findAll({ 
-        where: { user_id: user.id },
-        include: [{
-            model: models.organization,
-            attributes: ['id']
-        }]
-    })
-    // Search roles for user or the organization to which the user belongs
-    var search_roles = search_organizations.then(function(organizations) { 
-        var search_role_organizations = []
-        if (organizations.length > 0) {
+// Check if user has enabled the application to read their details
+function check_user_enable_app(user_id, app_id) {
 
-            for (var i = 0; i < organizations.length; i++) {
-                search_role_organizations.push({organization_id: organizations[i].organization_id, role_organization: organizations[i].role})
+    debug(' --> check_user_enable_app')
+
+    return new Promise(function(resolve, reject) {
+        search_user_authorized_application(user_id, app_id).then(function(user) {
+            if (user) {
+                search_user_info_in_app(user_id, app_id).then(function(user_app_info) {
+                    var user_info = {   
+                        organizations: user_app_info.organizations, 
+                        displayName: user.username,
+                        roles: user_app_info.roles,
+                        app_id: app_id,
+                        isGravatarEnabled: user.gravatar,
+                        email: user.email,
+                        id: user.id,
+                        app_azf_domain: ''
+                    }
+
+
+                    // If authzforce is enabled search domain id
+                    if (config_authzforce) {
+                        models.authzforce.findOne({
+                            where: { oauth_client_id: app_id },
+                            attributes: ['az_domain']
+                        }).then(function(authzforce) {
+                            if (authzforce) {
+                                user_info.app_azf_domain = authzforce.az_domain
+                            }
+
+                            resolve(user_info)
+
+                        }).catch(function(error) {
+                            reject({message: 'Error search authzforce domain', code: 500, title: 'Internal error'})                
+                        })
+                    } else {
+                        resolve(user_info)
+                    }
+                })
+            } else {
+                reject({message: 'User does not authorized to read their profile details', code: 401, title: 'Unauthorized'})
             }
-        }
-        return models.role_assignment.findAll({
-            where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: user.id}], 
-                     oauth_client_id: app_id },
-            include: [{
-                model: models.user,
-                attributes: ['id', 'username', 'email', 'gravatar']
-            },{
-                model: models.role,
-                attributes: ['id', 'name']
-            }, {
-                model: models.organization,
-                attributes: ['id', 'name', 'description', 'website']
-            }]
+        }).catch(function(error) {
+            reject({message: 'Internal error', code: 500, title: 'Internal error'})
         })
     })
+}
 
-    var search_authzforce = new Promise((resolve) => { resolve(); });
-    if (config_authzforce) {
-        search_authzforce = models.authzforce.findOne({
-            where: { oauth_client_id: app_id }
-        })  
-    }
+// Search user roles in application
+function search_user_info_in_app(user_id, app_id) {
 
-    return Promise.all([search_organizations, search_roles, search_authzforce]).then(function(values) {
-        var role_assignment = values[1]
-        
-        if (role_assignment.length <= 0) {
-            return Promise.reject({ error: {message: 'User is not authorized', code: 401, title: 'Unauthorized'}})
-        } else {
-            var user_info = {   organizations: [], 
-                            displayName: user.username,
-                            roles: [],
-                            app_id: app_id,
-                            isGravatarEnabled: user.gravatar,
-                            email: user.email,
-                            id: user.id,
-                            app_azf_domain: (config_authzforce && values[2]) ? values[2].az_domain : ''
-                        }
+    var promise_array = []
 
-            for (i=0; i < role_assignment.length; i++) {
+    // Search organizations in wich user is member or owner
+    promise_array.push(
+        models.user_organization.findAll({ 
+            where: { user_id: user_id },
+            include: [{
+                model: models.organization,
+                attributes: ['id']
+            }]
+        })
+    )
 
-                var role = role_assignment[i].Role.dataValues
+    // Search roles for user or the organization to which the user belongs
+    promise_array.push(
+        promise_array[0].then(function(organizations) { 
+            var search_role_organizations = []
+            if (organizations.length > 0) {
 
-                if (!['provider', 'purchaser'].includes(role.id)) {
-                    if (role_assignment[i].Organization) {
-                        
-                        var organization = role_assignment[i].Organization.dataValues
-                        var index = user_info.organizations.map(function(e) { return e.id; }).indexOf(organization.id);
-
-                        if (index < 0) {
-                            organization['roles'] = [role]
-                            user_info.organizations.push(organization)
-                        } else {
-                            user_info.organizations[index].roles.push(role)
-                        }
-                    }
-
-
-                    if (role_assignment[i].User) {
-                        user_info.roles.push(role)
-                    }
+                for (var i = 0; i < organizations.length; i++) {
+                    search_role_organizations.push({organization_id: organizations[i].organization_id, role_organization: organizations[i].role})
                 }
             }
+            return models.role_assignment.findAll({
+                where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: user_id}], 
+                         oauth_client_id: app_id },
+                include: [{
+                    model: models.user,
+                    attributes: ['id', 'username', 'email', 'gravatar']
+                },{
+                    model: models.role,
+                    attributes: ['id', 'name']
+                }, {
+                    model: models.organization,
+                    attributes: ['id', 'name', 'description', 'website']
+                }]
+            })
+        })
+    )
 
-            return Promise.resolve(user_info)
+    return Promise.all(promise_array).then(function(values) {
+        var role_assignment = values[1]
 
+        var user_app_info = { roles: [], organizations: [] }
+
+        for (i=0; i < role_assignment.length; i++) {
+
+            var role = role_assignment[i].Role.dataValues
+
+            if (!['provider', 'purchaser'].includes(role.id)) {
+
+                if (role_assignment[i].Organization) {
+                    
+                    var organization = role_assignment[i].Organization.dataValues
+                    var index = user_app_info.organizations.map(function(e) { return e.id; }).indexOf(organization.id);
+
+                    if (index < 0) {
+                        organization['roles'] = [role]
+                        user_app_info.organizations.push(organization)
+                    } else {
+                        user_app_info.organizations[index].roles.push(role)
+                    }
+                }
+
+                if (role_assignment[i].User) {
+                    user_app_info.roles.push(role)
+                }
+            }
         }
+
+        return Promise.resolve(user_app_info)
+    }).catch(function(error) {
+        return Promise.reject({message: 'Internal error', code: 500, title: 'Internal error'})
     })
 }

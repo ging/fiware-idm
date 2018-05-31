@@ -9,7 +9,8 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize(database.database, database.username, database.password, 
   { 
     host: database.host,
-    dialect: database.dialect
+    dialect: database.dialect,
+    port: (database.port !== 'default') ? database.port : undefined
   }      
 );
 
@@ -29,7 +30,8 @@ if (external_auth.enabled) {
     external_auth.database.password, 
     { 
       host: external_auth.database.host,
-      dialect: external_auth.database.dialect
+      dialect: external_auth.database.dialect,
+      port: (external_auth.database.port !== 'default') ? external_auth.database.port : undefined
     }      
   );
 

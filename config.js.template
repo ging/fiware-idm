@@ -52,7 +52,9 @@ config.database = {
     password: 'idm',             // default: 'idm'
     username: 'root',            // default: 'root'
     database: 'idm',             // default: 'idm'
-    dialect: 'mysql'             // default: 'mysql'
+    dialect: 'mysql',            // default: 'mysql'
+    port: undefined              // default: undefined (which means that the port 
+                                 //          is the default for each dialect)
 };
 
 // External user authentication
@@ -65,7 +67,8 @@ config.external_auth = {
         username: 'db_user',
         password: 'db_pass',
         user_table: 'user',
-        dialect: 'mysql'
+        dialect: 'mysql',
+        port: undefined
     }
 }
 

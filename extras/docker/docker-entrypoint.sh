@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Restart Postfix service
+service postfix restart
+
 # Wait until database container is deployed
 until nc -z -v -w30 $DATABASE_HOST 3306  > /dev/null 2>&1
 do

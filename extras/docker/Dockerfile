@@ -6,8 +6,17 @@ WORKDIR /opt
 
 # Install Ubuntu dependencies
 RUN apt-get update && \
-    apt-get install build-essential ca-certificates curl git netcat -y --no-install-recommends && \
+    apt-get install build-essential debconf-utils ca-certificates curl git netcat -y --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
+
+# Install email dependency
+RUN apt-get update && \
+    echo "postfix postfix/mailname string noreply@localhost" | debconf-set-selections && \
+    echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
+    apt-get install -y mailutils
+
+# Configure mail
+RUN sed -i 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 
 # Install PPA
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \

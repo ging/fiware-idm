@@ -1,5 +1,5 @@
 var models = require('../../models/models.js');
-var config_authzforce = require('../../config.js').authzforce
+var config_authzforce = require('../../config.js').authorization.authzforce
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var Request = oauthServer.Request;
@@ -280,7 +280,7 @@ exports.authenticate_token = function(req, res, next) {
     }).catch(function (err) {
         debug('Error ' + err)
         // Request is not authorized.
-        return res.status(err.code || 500).json(err)
+        return res.status(err.code || 500).json(err.message || err)
     });
 }
 
@@ -321,8 +321,10 @@ function search_user_info(user_info, action, resource, authzforce) {
 
             if (action && resource) {
                 var permissions = values[1]
-                if (!permissions || permissions.length <= 0) {
-                    reject({message: 'User is not authorized', code: 401, title: 'Unauthorized'})
+                if (permissions && permissions.length > 0) {
+                    user_info.authorization_decision = "Permit"
+                } else {
+                    user_info.authorization_decision = "Deny"
                 }
             }
 
@@ -433,8 +435,8 @@ function user_permissions(roles_id, app_id, action, resource) {
                          action: action,
                          resource: resource }
             })
-        } else{
-            Promise.reject({message: 'User is not authorized', code: 401, title: 'Unauthorized'})
+        } else {
+            return []
         }
     })
 }

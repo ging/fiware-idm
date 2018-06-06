@@ -11,7 +11,11 @@
 				<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 				<div class="modal-body clearfix">
 					<span id="xml_with_action_and_resource_not_allow" style="display: none;" class='help-block alert alert-danger'>If you use the advanced rule you cannot set also action and resource.</span>
-					<span id="define_rule" style="display: none;" class='help-block alert alert-danger'>You need to define both action and resource or an advanced XACML Rule.</span>
+					<% if (authorization_level === 'advanced') { -%>
+						<span id="define_rule" style="display: none;" class='help-block alert alert-danger'>You need to define both action and resource or an advanced XACML Rule.</span>
+					<% } else { -%>
+						<span id="define_rule" style="display: none;" class='help-block alert alert-danger'>You need to define both action and resource.</span>
+					<% } -%>
 					<fieldset>
 						<input id="id_application_id" name="application_id" type="hidden" value="">
 						<div class="form-group required">
@@ -29,7 +33,11 @@
 						</div>
 						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 						<div class="panel-group" id="accordion">
-							<div class="panel">
+							<% if (authorization_level === 'advanced') { -%>
+								<div class="panel">
+							<% } else { -%>
+								<div class="panel" style="border-bottom: none;">
+							<% } -%>
 								<div class="panel-headding">  
 									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-verb-resource" class="panel-heading collapsed">
 										<h4 class="panel-title panel-close">
@@ -54,25 +62,27 @@
 									</div>
 								</div>
 							</div>
-							<div class="panel">
-								<div class="panel-headding">
-									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-xacml" class="panel-heading collapsed">
-										<h4 class="panel-title panel-close">
-											Advanced XACML Rule
-										</h4>
-									</a>
-								</div>
-								<div id="collapse-xacml" class="panel-collapse collapse">
-									<div class="panel-body">
-										<div class="form-group ">
-											<label class="control-label  " for="id_xml">Use XACML to define a more complex authorization policy.</label>
-											<div class=" ">
-												<textarea class="form-control" cols="40" id="id_xml" name="xml" rows="10"></textarea>
+							<% if (authorization_level === 'advanced') { -%>
+								<div class="panel">
+									<div class="panel-headding">
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-xacml" class="panel-heading collapsed">
+											<h4 class="panel-title panel-close">
+												Advanced XACML Rule
+											</h4>
+										</a>
+									</div>
+									<div id="collapse-xacml" class="panel-collapse collapse">
+										<div class="panel-body">
+											<div class="form-group ">
+												<label class="control-label  " for="id_xml">Use XACML to define a more complex authorization policy.</label>
+												<div class=" ">
+													<textarea class="form-control" cols="40" id="id_xml" name="xml" rows="10"></textarea>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							<% } -%>
 						</div>
 					</fieldset>
 				</div>

@@ -105,7 +105,7 @@ if (config.https.enabled) {
 }
 
 // Check connection with Authzforce
-if (config.authzforce.enabled) {
+if (config.authorization.authzforce.enabled) {
   require('./lib/authzforce.js').check_connection().then(function(status) {
     console.log(clc.green('Connection with Authzforce: ' + status))
   }).catch(function(error) {

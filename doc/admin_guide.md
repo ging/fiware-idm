@@ -1,6 +1,7 @@
 
 
 
+
 # Installation and Administration Guide
 
 - [Introduction](#introduction)
@@ -9,6 +10,7 @@
 	- [Enable HTTPs](#configure-themes)
 	- [External Authentication](#external-authentication)
 	- [Authzforce](#authzforce)
+	- [Email](#email)
 	- [Configure Themes](#configure-themes)
 - [System Administration](#system-administration)
 - [Sanity Check Procedures](#sanity-check-procedures)
@@ -84,14 +86,7 @@ Configure password encryption:
 		key: 'nodejs_idm'
 	}
 ~~~
-Configure email:
-~~~
-	config.mail = {
-	    host: 'idm_host',
-	    port: 25,
-	    from: 'noreply@host'
-	}
-~~~
+
  - Create database, run migrations and seeders:
 <pre>
 <code>npm run-script create_db
@@ -173,6 +168,17 @@ The Identity Manager is enabled to automatically send requests to the AuthZforce
 		enabled: true,
 		host: 'localhost',
 		port: 8080
+	}
+~~~
+
+### Email
+You can configure the IdM to send emails to users. Follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04) to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04. Then edit config file:
+
+~~~
+	config.mail = {
+	    host: 'idm_host',
+	    port: 25,
+	    from: 'noreply@host'
 	}
 ~~~
 

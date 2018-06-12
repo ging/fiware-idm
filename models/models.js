@@ -52,6 +52,9 @@ var oauth_access_token = sequelize.import(path.join(__dirname,'oauth2/oauth_acce
 var oauth_refresh_token = sequelize.import(path.join(__dirname,'oauth2/oauth_refresh_token'));
 var scope = sequelize.import(path.join(__dirname,'oauth2/oauth_scope'));
 
+// Import Eidas Credentials
+var eidas_credentials = sequelize.import(path.join(__dirname,'eidas_credentials'));
+
 // Import user table
 var user = external_auth.enabled ? 
   ext_sequelize.import(path.join(__dirname, external_auth.database.user_table)) : sequelize.import(path.join(__dirname, 'user'));
@@ -146,6 +149,8 @@ user_organization.belongsTo(organization, { foreignKey: { allowNull: false }, on
 user_authorized_application.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 user_authorized_application.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
+// Relation between eidas credentials and oauth client
+eidas_credentials.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Export tables
 exports.user = user;
@@ -166,6 +171,7 @@ exports.oauth_refresh_token = oauth_refresh_token;
 exports.scope = scope;
 exports.auth_token = auth_token;
 exports.user_authorized_application = user_authorized_application;
+exports.eidas_credentials = eidas_credentials;
 
 // Export helpers
 var search_identity = require('./helpers/search_identity')

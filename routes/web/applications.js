@@ -7,6 +7,9 @@ var csrf = require('csurf')
 var bodyParser = require('body-parser');
 var csrfProtection = csrf({ cookie: true })
 
+// Config file
+var config = require('../../config');
+
 // Home web Controller
 var web_app_controller = require('../../controllers/web/index').applications;
 var web_check_perm_controller = require('../../controllers/web/index').check_permissions;
@@ -79,11 +82,16 @@ router.get('/:applicationId/iot/register',                                   web
 router.get('/:applicationId/iot/:iotId/reset_password',                      web_check_perm_controller.owned_permissions,    csrfProtection,    web_iota_controller.reset_password_iot);
 router.delete('/:applicationId/iot/:iotId/delete',                           web_check_perm_controller.owned_permissions,    csrfProtection,    web_iota_controller.delete_iot);
 
-
-
 // Routes to handle pep proxies of applications
 router.get('/:applicationId/pep/register',                                   web_check_perm_controller.owned_permissions,    csrfProtection,    web_peppx_controller.register_pep);
 router.get('/:applicationId/pep/:pepId/reset_password',                      web_check_perm_controller.owned_permissions,    csrfProtection,    web_peppx_controller.reset_password_pep);
 router.delete('/:applicationId/pep/:pepId/delete',                           web_check_perm_controller.owned_permissions,    csrfProtection,    web_peppx_controller.delete_pep);
+
+// Routes to handle SAML with eidas
+if (config.eidas) {
+	var web_eidas_credentials_controller = require('../../controllers/web/index').eidas_credentials;
+	router.get('/:applicationId/step/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_eidas_credentials_controller.step_new_eidas_crendentials);
+	router.post('/:applicationId/step/eidas',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    web_eidas_credentials_controller.step_create_eidas_crendentials);
+}
 
 module.exports = router;

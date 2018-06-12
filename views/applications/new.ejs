@@ -1,126 +1,156 @@
+<style type="text/css">
+    .eidas {
+        display: flex;
+    }
+
+    .eidas_input {
+        width: 50%;
+        margin-bottom: 8px;
+        background-color: #EAEAEC;
+        border: 1px solid #A9A9A9;
+        color: #B6B6B6;
+    }
+
+</style>
+
 <div id="content_body">
-
-  <div id="create_application_modal" class="static_page">
-    <div class="modal-header">
-      <h3>
-       <div class="steps-group">
-         <div class="step active">1</div>
-         <div class="step">2</div>
-         <div class="step">3</div>
-         <div class="line"></div>
-       </div>
-     </h3><h3 class="step-title">Application Information</h3>
-   </div>
-
-   <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications" method="POST" enctype="">
-    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
-    <div class="modal-body clearfix">
-
-      <fieldset>
-        <input id="id_appID" name="appID" type="hidden">
-        <input id="id_redirect_to" name="redirect_to" type="hidden" value="create">
-
-        <div class="form-group required">
-          <label class="control-label  required" for="id_name">Name</label>
-          <div class=" ">
-            <input class="form-control" id="id_name" name="application[name]" type="text" value="<%= application.name %>">
-          </div>
+    <div id="create_application_modal" class="static_page">
+        <div class="modal-header">
+            <h3>
+                <div class="steps-group">
+                    <div class="step active">1</div>
+                    <div class="step">2</div>
+                    <div class="step">3</div>
+                    <div class="line"></div>
+                </div>
+            </h3><h3 class="step-title">Application Information</h3>
         </div>
-        <% if (errors.indexOf("name") != -1) { %>
-					<span class="help-block alert alert-danger ">Input required.</span>
-				<% } %>
+        <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications" method="POST" enctype="">
+            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+            <div class="modal-body clearfix">
 
-        <div class="form-group required">
-          <label class="control-label  required" for="id_description">Description</label>
-          <div class=" ">
-            <textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= application.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= application.description %></textarea>
-          </div>
+                <fieldset>
+
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_name">Name</label>
+                        <div class=" ">
+                            <input class="form-control" id="id_name" name="application[name]" type="text" value="<%= application.name %>">
+                        </div>
+                    </div>
+                    <% if (errors.indexOf("name") != -1) { %>
+                    <span class="help-block alert alert-danger ">Input required.</span>
+                    <% } %>
+
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_description">Description</label>
+                        <div class=" ">
+                            <textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= application.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= application.description %></textarea>
+                        </div>
+                    </div>
+                    <% if (errors.indexOf("description") != -1) { %>
+                    <span class="help-block alert alert-danger ">Input required.</span>
+                    <% } %>
+
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_url">
+                            URL 
+                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application URL" data-content="For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock." data-original-title="" title="">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                        </label>
+                        <div class=" ">
+                            <input class="form-control" id="id_url" name="application[url]" type="text" value="<%= application.url %>">
+                        </div>
+                    </div>
+                    <% if (errors.indexOf("url") != -1) { %>
+                    <span class="help-block alert alert-danger ">Input required.</span>
+                    <% } %>
+
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_callbackurl">Callback URL <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application Callback URL" data-content="The user agent will be redirected to this URL when OAuth flow is finished." data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
+                        <div class=" ">
+                            <input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= application.redirect_uri %>" >
+                        </div>
+                    </div>
+                    <% if (errors.indexOf("redirectUri") != -1) { %>
+                    <span class="help-block alert alert-danger ">Input required.</span>
+                    <% } %>
+
+                    <div class="form-group required">
+                        <label class="control-label  required" for="id_grant_type">
+                            Grant Type
+                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="OAuth Grant Types" data-content="Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information" data-original-title="" title="">
+                            <i class="fa fa-question-circle"></i>
+                        </a>
+                    </label>
+                    <div class="select-multiple">
+                        <select name="grant_type[]" class="selectpicker" data-dropup-auto="false" multiple>
+                            <option selected value="authorization_code">Authorization Code</option>
+                            <option selected value="implicit">Implicit</option>
+                            <option selected value="password">Resource Owner Password</option>
+                            <option selected value="client_credentials">Client Credentials</option>
+                            <option selected value="refresh_token">Refresh Token</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group required">
+                    <label class="control-label  required" for="id_provider">
+                        Provider
+                        <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Owner application" data-content="Select who is going be the provider of the application: yourself or one of the organizations in which you are owner." data-original-title="" title="">
+                            <i class="fa fa-question-circle"></i>
+                        </a>
+                    </label>
+                    <div class="select-multiple">
+                        <select name="provider" class="selectpicker" data-dropup-auto="false">
+                            <optgroup label="User">
+                                <option value="<%= session.user.id %>" ><%= session.user.username %></option>
+                            </optgroup>
+                            <% if (organizations.length > 0) { -%>
+                            <optgroup label="Organizations">
+                                <% for (var i = 0; i < organizations.length; i++) { -%>
+                                <option value="<%= organizations[i].Organization.id %>"><%= organizations[i].Organization.name %></option>  
+                                <% } -%>  
+                            </optgroup>       
+                            <% } -%>
+                        </select>
+                    </div>
+                </div>
+
+                <% if (eidas_enabled) { -%>
+                    <div class="form-group required">
+                        <label class="control-label required" for="id_provider">
+                            Authentication Endpoint
+                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Authentication Endpoint" data-content="Select if you also want to use eIDAs as authentication endpoint." data-original-title="" title="">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                        </label>
+                        <div class="btn-group eidas" data-toggle="buttons">
+                            <label class="btn btn-default eidas_input active focus">
+                                <input type="radio" name="type" value="idm" autocomplete="off" checked> IdM
+                            </label>
+                            <label class="btn btn-default eidas_input">
+                                <input type="radio" name="type" value="eidas" autocomplete="off"> IdM and eIDAs
+                            </label>
+                        </div>
+                    </div>
+                <% } -%>
+
+            </fieldset>
         </div>
-        <% if (errors.indexOf("description") != -1) { %>
-					<span class="help-block alert alert-danger ">Input required.</span>
-				<% } %>
-
-        <div class="form-group required">
-          <label class="control-label  required" for="id_url">
-            URL 
-            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application URL" data-content="For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock." data-original-title="" title="">
-              <i class="fa fa-question-circle"></i>
-            </a>
-          </label>
-          <div class=" ">
-            <input class="form-control" id="id_url" name="application[url]" type="text" value="<%= application.url %>">
-          </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Next</button>
         </div>
-        <% if (errors.indexOf("url") != -1) { %>
-					<span class="help-block alert alert-danger ">Input required.</span>
-				<% } %>
+    </form>
 
-        <div class="form-group required">
-          <label class="control-label  required" for="id_callbackurl">Callback URL <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application Callback URL" data-content="The user agent will be redirected to this URL when OAuth flow is finished." data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
-          <div class=" ">
-            <input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= application.redirect_uri %>" >
-          </div>
-        </div>
-        <% if (errors.indexOf("redirectUri") != -1) { %>
-					<span class="help-block alert alert-danger ">Input required.</span>
-				<% } %>
+</div>
 
-        <div class="form-group required">
-          <label class="control-label  required" for="id_grant_type">
-            Grant Type
-            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="OAuth Grant Types" data-content="Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information" data-original-title="" title="">
-              <i class="fa fa-question-circle"></i>
-            </a>
-          </label>
-          <div class="select-multiple">
-            <select name="grant_type[]" class="selectpicker" data-dropup-auto="false" multiple>
-              <option selected value="authorization_code">Authorization Code</option>
-              <option selected value="implicit">Implicit</option>
-              <option selected value="password">Resource Owner Password</option>
-              <option selected value="client_credentials">Client Credentials</option>
-              <option selected value="refresh_token">Refresh Token</option>
-            </select>
-          </div>
-        </div>
+</div>
 
-        <div class="form-group required">
-          <label class="control-label  required" for="id_provider">
-            Provider
-            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Owner application" data-content="Select who is going be the provider of the application: yourself or one of the organizations in which you are owner." data-original-title="" title="">
-              <i class="fa fa-question-circle"></i>
-            </a>
-          </label>
-          <div class="select-multiple">
-            <select name="provider" class="selectpicker" data-dropup-auto="false">
-              <optgroup label="User">
-                <option value="<%= session.user.id %>" ><%= session.user.username %></option>
-              </optgroup>
-              <% if (organizations.length > 0) { -%>
-                <optgroup label="Organizations">
-                  <% for (var i = 0; i < organizations.length; i++) { -%>
-                    <option value="<%= organizations[i].Organization.id %>"><%= organizations[i].Organization.name %></option>  
-                  <% } -%>  
-                </optgroup>       
-              <% } -%>
-            </select>
-          </div>
-        </div>
-
-      </fieldset>
-    </div>
-    <div class="modal-footer">
-      <button type="submit" class="btn btn-primary">Next</button>
-    </div>
-  </form>
-
-	</div>
-
-  <script type="text/javascript">
+<script type="text/javascript">
     $(function () {
-      
-      $('[data-toggle="popover"]').popover({html:true});
-      //$('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="popover"]').popover({html:true});
+        //$('[data-toggle="tooltip"]').tooltip();
 
     });
-  </script>
-</div>
+</script>

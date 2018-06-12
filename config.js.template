@@ -86,4 +86,9 @@ config.site = {
     theme: 'default'
 };
 
+// Config eIDAs Authentication
+config.eidas = {
+    enabled: false
+}
+
 module.exports = config;

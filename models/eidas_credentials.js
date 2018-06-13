@@ -6,21 +6,36 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
-    }, contact_person_name: {
+    }, support_contact_person_name: {
       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-      validate: { notEmpty: {msg: "contact_person_name"}}
-    }, contact_person_surname: {
+      validate: { notEmpty: {msg: "support_contact_person_name"}}
+    }, support_contact_person_surname: {
       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-      validate: { notEmpty: {msg: "contact_person_surname"}}
-    }, contact_person_email: {
+      validate: { notEmpty: {msg: "support_contact_person_surname"}}
+    }, support_contact_person_email: {
       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-      validate: { notEmpty: {msg: "contact_person_email"}}
-    }, contact_person_telephone_number: {
+      validate: { notEmpty: {msg: "support_contact_person_email"}}
+    }, support_contact_person_telephone_number: {
       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-      validate: { notEmpty: {msg: "contact_person_telephone_number"}}
-    }, contact_person_company: {
+      validate: { notEmpty: {msg: "support_contact_person_telephone_number"}}
+    }, support_contact_person_company: {
       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-      validate: { notEmpty: {msg: "contact_person_company"}}
+      validate: { notEmpty: {msg: "support_contact_person_company"}}
+    }, technical_contact_person_name: {
+      type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+      validate: { notEmpty: {msg: "technical_contact_person_name"}}
+    }, technical_contact_person_surname: {
+      type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+      validate: { notEmpty: {msg: "technical_contact_person_surname"}}
+    }, technical_contact_person_email: {
+      type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+      validate: { notEmpty: {msg: "technical_contact_person_email"}}
+    }, technical_contact_person_telephone_number: {
+      type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+      validate: { notEmpty: {msg: "technical_contact_person_telephone_number"}}
+    }, technical_contact_person_company: {
+      type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+      validate: { notEmpty: {msg: "technical_contact_person_company"}}
     }, organization_name: {
       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
       validate: { notEmpty: {msg: "organization_name"}}

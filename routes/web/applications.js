@@ -92,6 +92,7 @@ if (config.eidas) {
 	var web_eidas_credentials_controller = require('../../controllers/web/index').eidas_credentials;
 	router.get('/:applicationId/step/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_eidas_credentials_controller.step_new_eidas_crendentials);
 	router.post('/:applicationId/step/eidas',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    web_eidas_credentials_controller.step_create_eidas_crendentials);
+	router.get('/:applicationId/saml2/metadata',                         	     web_eidas_credentials_controller.saml2_metadata);
 }
 
 module.exports = router;

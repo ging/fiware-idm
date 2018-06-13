@@ -150,7 +150,7 @@ user_authorized_application.belongsTo(user, { foreignKey: { allowNull: false }, 
 user_authorized_application.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
 // Relation between eidas credentials and oauth client
-eidas_credentials.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
+eidas_credentials.belongsTo(oauth_client, { foreignKey: { allowNull: false, unique: true }, onDelete: 'cascade'});
 
 // Export tables
 exports.user = user;

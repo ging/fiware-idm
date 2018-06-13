@@ -8,22 +8,37 @@ module.exports = {
                   type: Sequelize.UUID,
                   defaultValue: Sequelize.UUIDV4,
                   primaryKey: true
-                }, contact_person_name: {
+                }, support_contact_person_name: {
                   type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                  validate: { notEmpty: {msg: "contact_person_name"}}
-                }, contact_person_surname: {
+                  validate: { notEmpty: {msg: "support_contact_person_name"}}
+                }, support_contact_person_surname: {
                   type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                  validate: { notEmpty: {msg: "contact_person_surname"}}
-                }, contact_person_email: {
+                  validate: { notEmpty: {msg: "support_contact_person_surname"}}
+                }, support_contact_person_email: {
                   type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                  validate: { notEmpty: {msg: "contact_person_email"}}
-                }, contact_person_telephone_number: {
+                  validate: { notEmpty: {msg: "support_contact_person_email"}}
+                }, support_contact_person_telephone_number: {
                   type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                  validate: { notEmpty: {msg: "contact_person_telephone_number"}}
-                }, contact_person_company: {
+                  validate: { notEmpty: {msg: "support_contact_person_telephone_number"}}
+                }, support_contact_person_company: {
                   type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                  validate: { notEmpty: {msg: "contact_person_company"}}
-                }, organization_name: {
+                  validate: { notEmpty: {msg: "support_contact_person_company"}}
+                }, technical_contact_person_name: {
+                  type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                  validate: { notEmpty: {msg: "technical_contact_person_name"}}
+                }, technical_contact_person_surname: {
+                  type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                  validate: { notEmpty: {msg: "technical_contact_person_surname"}}
+                }, technical_contact_person_email: {
+                  type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                  validate: { notEmpty: {msg: "technical_contact_person_email"}}
+                }, technical_contact_person_telephone_number: {
+                  type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                  validate: { notEmpty: {msg: "technical_contact_person_telephone_number"}}
+                }, technical_contact_person_company: {
+                  type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                  validate: { notEmpty: {msg: "technical_contact_person_company"}}
+                },organization_name: {
                   type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
                   validate: { notEmpty: {msg: "organization_name"}}
                 }, organization_url: {
@@ -32,6 +47,7 @@ module.exports = {
                 }, oauth_client_id: {
                     type: Sequelize.UUID,
                     onDelete: 'CASCADE',
+                    unique: true,
                     references: {   
                         model: 'oauth_client',
                         key: 'id'

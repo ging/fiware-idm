@@ -38,62 +38,119 @@
                 <fieldset>
 
                 <div class="form-group required eidas">
-                    <label class="control-label required" style="border-bottom: 1px solid #B6B6B6; margin-bottom: 8px;">Contact Person</label>
+                    <label class="control-label required" style="border-bottom: 1px solid #B6B6B6; margin-bottom: 8px;">Support Contact Person</label>
                     <div class="eidas_input">
-                        <label class="control-label required" for="id_contact_person_name">Name</label>
+                        <label class="control-label required" for="id_support_contact_person_name">Name</label>
                         <div class="">
-                            <input class="form-control" id="id_contact_person_name" name="eidas[contact_person_name]" type="text" value="<%= eidas_credentials.contact_person_name %>">
+                            <input class="form-control" id="id_support_contact_person_name" name="eidas[support_contact_person_name]" type="text" value="<%= eidas_credentials.support_contact_person_name %>">
                         </div>
-                        <% if (errors.indexOf("contact_person_name") != -1) { %>
+                        <% if (errors.indexOf("support_contact_person_name") != -1) { %>
                             <span class="help-block alert alert-danger ">Input required.</span>
                         <% } %>
                     </div>
                     
 
                     <div class="eidas_input">
-                        <label class="control-label required" for="id_contact_person_surname">Surname</label>
+                        <label class="control-label required" for="id_support_contact_person_surname">Surname</label>
                         <div class="">
-                            <input class="form-control" id="id_contact_person_surname" name="eidas[contact_person_surname]" type="text" value="<%= eidas_credentials.contact_person_surname %>">
+                            <input class="form-control" id="id_support_contact_person_surname" name="eidas[support_contact_person_surname]" type="text" value="<%= eidas_credentials.support_contact_person_surname %>">
                         </div>
-                        <% if (errors.indexOf("contact_person_surname") != -1) { %>
+                        <% if (errors.indexOf("support_contact_person_surname") != -1) { %>
                             <span class="help-block alert alert-danger ">Input required.</span>
                         <% } %>
                     </div>
                     
 
                     <div class="eidas_input">
-                        <label class="control-label required" for="id_contact_person_email">Email</label>
+                        <label class="control-label required" for="id_support_contact_person_email">Email</label>
                         <div class="">
-                            <input class="form-control" id="id_contact_person_email" name="eidas[contact_person_email]" type="text" value="<%= eidas_credentials.contact_person_email %>">
+                            <input class="form-control" id="id_support_contact_person_email" name="eidas[support_contact_person_email]" type="text" value="<%= eidas_credentials.support_contact_person_email %>">
                         </div>
-                        <% if (errors.indexOf("contact_person_email") != -1) { %>
+                        <% if (errors.indexOf("support_contact_person_email") != -1) { %>
                             <span class="help-block alert alert-danger ">Input required.</span>
                         <% } %>
                     </div>
                     
 
                     <div class="eidas_input">
-                        <label class="control-label required" for="id_contact_person_number">Telephone Number</label>
+                        <label class="control-label required" for="id_support_contact_person_number">Telephone Number</label>
                         <div class="">
-                            <input class="form-control" id="id_contact_person_number" name="eidas[contact_person_telephone_number]" type="text" value="<%= eidas_credentials.contact_person_telephone_number %>">
+                            <input class="form-control" id="id_support_contact_person_number" name="eidas[support_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.support_contact_person_telephone_number %>">
                         </div>
-                        <% if (errors.indexOf("contact_person_telephone_number") != -1) { %>
+                        <% if (errors.indexOf("support_contact_person_telephone_number") != -1) { %>
                             <span class="help-block alert alert-danger ">Input required.</span>
                         <% } %>
                     </div>
                     
 
                     <div class="eidas_input_company">
-                        <label class="control-label required" for="id_contact_person_company">Company</label>
+                        <label class="control-label required" for="id_support_contact_person_company">Company</label>
                         <div class="">
-                            <input class="form-control" id="id_contact_person_company" name="eidas[contact_person_company]" type="text" value="<%= eidas_credentials.contact_person_company %>">
+                            <input class="form-control" id="id_support_contact_person_company" name="eidas[support_contact_person_company]" type="text" value="<%= eidas_credentials.support_contact_person_company %>">
                         </div>
-                        <% if (errors.indexOf("contact_person_company") != -1) { %>
+                        <% if (errors.indexOf("support_contact_person_company") != -1) { %>
+                            <span class="help-block alert alert-danger ">Input required.</span>
+                        <% } %>
+                    </div>
+                    
+                </div>
+
+                <div class="form-group required eidas">
+                    <label class="control-label required" style="border-bottom: 1px solid #B6B6B6; margin-bottom: 8px;">Technical Contact Person</label>
+                    <div class="eidas_input">
+                        <label class="control-label required" for="id_technical_contact_person_name">Name</label>
+                        <div class="">
+                            <input class="form-control" id="id_technical_contact_person_name" name="eidas[technical_contact_person_name]" type="text" value="<%= eidas_credentials.technical_contact_person_name %>">
+                        </div>
+                        <% if (errors.indexOf("technical_contact_person_name") != -1) { %>
                             <span class="help-block alert alert-danger ">Input required.</span>
                         <% } %>
                     </div>
                     
 
+                    <div class="eidas_input">
+                        <label class="control-label required" for="id_technical_contact_person_surname">Surname</label>
+                        <div class="">
+                            <input class="form-control" id="id_technical_contact_person_surname" name="eidas[technical_contact_person_surname]" type="text" value="<%= eidas_credentials.technical_contact_person_surname %>">
+                        </div>
+                        <% if (errors.indexOf("technical_contact_person_surname") != -1) { %>
+                            <span class="help-block alert alert-danger ">Input required.</span>
+                        <% } %>
+                    </div>
+                    
+
+                    <div class="eidas_input">
+                        <label class="control-label required" for="id_technical_contact_person_email">Email</label>
+                        <div class="">
+                            <input class="form-control" id="id_technical_contact_person_email" name="eidas[technical_contact_person_email]" type="text" value="<%= eidas_credentials.technical_contact_person_email %>">
+                        </div>
+                        <% if (errors.indexOf("technical_contact_person_email") != -1) { %>
+                            <span class="help-block alert alert-danger ">Input required.</span>
+                        <% } %>
+                    </div>
+                    
+
+                    <div class="eidas_input">
+                        <label class="control-label required" for="id_technical_contact_person_number">Telephone Number</label>
+                        <div class="">
+                            <input class="form-control" id="id_technical_contact_person_number" name="eidas[technical_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.technical_contact_person_telephone_number %>">
+                        </div>
+                        <% if (errors.indexOf("technical_contact_person_telephone_number") != -1) { %>
+                            <span class="help-block alert alert-danger ">Input required.</span>
+                        <% } %>
+                    </div>
+                    
+
+                    <div class="eidas_input_company">
+                        <label class="control-label required" for="id_technical_contact_person_company">Company</label>
+                        <div class="">
+                            <input class="form-control" id="id_technical_contact_person_company" name="eidas[technical_contact_person_company]" type="text" value="<%= eidas_credentials.technical_contact_person_company %>">
+                        </div>
+                        <% if (errors.indexOf("technical_contact_person_company") != -1) { %>
+                            <span class="help-block alert alert-danger ">Input required.</span>
+                        <% } %>
+                    </div>
+                    
                 </div>
 
                 <div class="form-group required eidas">

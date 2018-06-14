@@ -88,7 +88,9 @@ config.site = {
 
 // Config eIDAs Authentication
 config.eidas = {
-    enabled: false
+    enabled: false,
+    sp_host: 'localhost',
+    idp_host: 'https://se-eidas.redsara.es/EidasNode/ServiceProvider'
 }
 
 module.exports = config;

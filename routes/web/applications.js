@@ -89,10 +89,11 @@ router.delete('/:applicationId/pep/:pepId/delete',                           web
 
 // Routes to handle SAML with eidas
 if (config.eidas) {
-	var web_eidas_credentials_controller = require('../../controllers/web/index').eidas_credentials;
-	router.get('/:applicationId/step/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_eidas_credentials_controller.step_new_eidas_crendentials);
-	router.post('/:applicationId/step/eidas',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    web_eidas_credentials_controller.step_create_eidas_crendentials);
-	router.get('/:applicationId/saml2/metadata',                         	     web_eidas_credentials_controller.saml2_metadata);
+    var saml2Controller = require('../../controllers/saml2/saml2');
+	router.get('/:applicationId/step/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_new_eidas_crendentials);
+	router.post('/:applicationId/step/eidas',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_create_eidas_crendentials);
+	router.get('/:applicationId/saml2/metadata',                         	     saml2Controller.search_eidas_credentials,       saml2Controller.saml2_metadata);
+    router.post('/:applicationId/saml2/login',                                   saml2Controller.search_eidas_credentials,       saml2Controller.saml2_application_login);
 }
 
 module.exports = router;

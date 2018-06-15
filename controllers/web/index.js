@@ -15,6 +15,5 @@ module.exports = {
   organizations: require('../../controllers/web/organizations'),
   manage_members: require('../../controllers/web/manage_members'),
   settings: require('../../controllers/web/settings'),
-  sessions: require('../../controllers/web/sessions'),
-  eidas_credentials: require('../../controllers/web/eidas_credentials')
+  sessions: require('../../controllers/web/sessions')
 }

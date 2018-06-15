@@ -10921,6 +10921,9 @@ ul.disabled-list li.active:hover {
   .registration .modal-footer {
     padding: 15px 0 0;
     margin-top: 10px; }
+    .login .modal-footer .second_submit_button,
+    .registration .modal-footer .second_submit_button {
+      margin-right: 10px; }
     .login .modal-footer .checkbox label,
     .registration .modal-footer .checkbox label {
       margin-top: -4px;

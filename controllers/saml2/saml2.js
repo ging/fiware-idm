@@ -76,8 +76,10 @@ exports.saml2_application_login = function(req, res, next) {
 	debug("--> saml2_application_login")
 
 	var options = {request_body: req.body};
-	sp.post_assert(idp, options, function(err, saml_response) {
+
+	req.sp.post_assert(idp, options, function(err, saml_response) {
 		if (err != null)
+			debug(err)
 			return res.send(500);
 
 		// Save name_id and session_index for logout

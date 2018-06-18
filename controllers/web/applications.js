@@ -281,8 +281,6 @@ exports.create = function(req, res, next) {
 
 	debug("--> create");
 
-	debug(req.body)
-
 	var possible_grant_types = ['client_credentials', 'password', 'implicit', 'authorization_code', 'refresh_token']
 	if (req.body.grant_type) {
 		if (_.difference(req.body.grant_type, possible_grant_types).length > 0) {
@@ -367,7 +365,7 @@ exports.create = function(req, res, next) {
 		}
 
 		Promise.all([save, assign]).then(function(values) {
-			if (config.eidas && req.body.type === 'eidas') {
+			if (config.eidas && req.body.eidas === 'eidas') {
 				res.redirect('/idm/applications/'+application.id+'/step/eidas');
 			} else {
 				res.redirect('/idm/applications/'+application.id+'/step/avatar');

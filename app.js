@@ -37,16 +37,14 @@ app.disable('x-powered-by');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
+var up_date = new Date();
+
 // Set routes for version
 app.use('/version', function (req, res) {
-  var version = require('./package.json').version;
-  res.send({
-    version: version, 
-    api: {
-      version: 'v1',
-      link: config.host + '/v1'
-    }
-  });
+  var version = require('./version.json');
+  version.keyrock.uptime = require('./lib/time').msToTime(new Date() - up_date);
+  version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
+  res.send(version);
 });
 
 // Set routes for api

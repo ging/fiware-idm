@@ -37,6 +37,18 @@ app.disable('x-powered-by');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
+// Set routes for version
+app.use('/version', function (req, res) {
+  var version = require('./package.json').version;
+  res.send({
+    version: version, 
+    api: {
+      version: 'v1',
+      link: config.host + '/v1'
+    }
+  });
+});
+
 // Set routes for api
 app.use('/v1', api);
 app.use('/v3', api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API

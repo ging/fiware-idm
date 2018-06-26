@@ -89,7 +89,7 @@ config.site = {
 // Config eIDAs Authentication
 config.eidas = {
     enabled: false,
-    sp_host: 'localhost',
+    gateway_host: 'localhost',
     idp_host: 'https://se-eidas.redsara.es/EidasNode/ServiceProvider',
     metadata_expiration: 60 * 60 * 24 * 365 // One year
 }

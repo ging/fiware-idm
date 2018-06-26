@@ -9,7 +9,7 @@ var saml2 = require('../../lib/saml2.js');
 // Create identity provider
 var idp_options = {
   sso_login_url: config.eidas.idp_host,
-  sso_logout_url: "https://"+config.eidas.sp_host+"/saml2/logout",
+  sso_logout_url: "https://"+config.eidas.gateway_host+"/saml2/logout",
   certificates: []
 };
 var idp = new saml2.IdentityProvider(idp_options);
@@ -124,10 +124,10 @@ exports.search_eidas_credentials = function(req, res, next) {
 
 			// Create service provider
 			var sp_options = {
-				entity_id: "https://"+config.eidas.sp_host+"/idm/applications/"+req.application.id+"/saml2/metadata",
+				entity_id: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/metadata",
 				private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key.pem").toString(),
 				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert.pem").toString(),
-				assert_endpoint: "https://"+config.eidas.sp_host+"/idm/applications/"+req.application.id+"/saml2/login",
+				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
 				nameid_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
 				auth_context: { comparison: "minimum", class_refs: ["http://eidas.europa.eu/LoA/low"] },
@@ -198,8 +198,8 @@ exports.create_auth_request = function(req, res, next) {
 
 	req.saml_auth_request = {
 		xml: xml,
-		postLocationUrl: "https://"+config.eidas.sp_host+"/idm/applications/"+req.application.id+"/saml2/login",
-		redirectLocationUrl: "https://"+config.eidas.sp_host+"/idm/applications/"+req.application.id+"/saml2/login"
+		postLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
+		redirectLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login"
 	}
 	next()
 }

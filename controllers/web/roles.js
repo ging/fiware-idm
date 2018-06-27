@@ -1,7 +1,7 @@
 var models = require('../../models/models.js');
 
 // Authzforce module
-var config_authzforce = require ('../../config.js').authorization;
+var config_authorization = require ('../../config.js').authorization;
 var authzforce_controller = require('./authzforces');
 
 var Sequelize = require('sequelize');
@@ -24,7 +24,7 @@ exports.manage_roles_view = function(req, res, next) {
 
 	debug("--> manage_roles_view");
 
-	res.render('applications/manage_roles', { application: req.application, authorization_level: config_authzforce.level, csrfToken: req.csrfToken() });
+	res.render('applications/manage_roles', { application: req.application, authorization_level: config_authorization.level, csrfToken: req.csrfToken() });
 }
 
 // GET /idm/applications/:applicationId/edit/roles/assignments -- Show roles and permissions
@@ -202,7 +202,7 @@ exports.role_permissions_assign = function(req, res) {
 
 			// Inset values into role_permission table
 			models.role_permission.bulkCreate(create_assign_roles_permissions).then(function() {
-				if (config_authzforce.authzforce.enabled) {
+				if (config_authorization.authzforce.enabled) {
 					authzforce_controller.submit_authzforce_policies(req, res, submit_assignment)
 				} else {
 					// Send message of success of assign permissions to roles

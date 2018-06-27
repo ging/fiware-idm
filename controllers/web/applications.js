@@ -398,7 +398,7 @@ exports.create = function(req, res, next) {
 						attributes: ['id', 'name']
 					}]
 				}).then(function(organizations) {
-					res.render('applications/new', {application: application, organizations: organizations, errors: nameErrors, csrfToken: req.csrfToken()})		
+					res.render('applications/new', {application: application, organizations: organizations, eidas_enabled: config.eidas.enabled, errors: nameErrors, csrfToken: req.csrfToken()})		
 				}).catch(function(error) { next(error); });
 			}
 		})
@@ -433,7 +433,7 @@ exports.step_new_roles = function(req, res, next) {
 
 	debug("--> step_new_roles");
 
-	res.render('applications/step_create_roles', { application: req.application, csrfToken: req.csrfToken() });
+	res.render('applications/step_create_roles', { application: req.application, authorization_level: config.authorization.level, csrfToken: req.csrfToken() });
 };
 
 // GET /idm/applications/:applicationId/edit -- View to edit application

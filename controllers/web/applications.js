@@ -3,7 +3,7 @@ var fs = require('fs');
 var uuid = require('uuid');
 var _ = require('lodash');
 
-var config = require('../../config').database;
+var config = require('../../config');
 
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -265,7 +265,13 @@ exports.new = function(req, res, next) {
 			attributes: ['id', 'name']
 		}]
 	}).then(function(organizations) {
-		res.render('applications/new', {application: {}, organizations: organizations, errors: [], csrfToken: req.csrfToken()})		
+		res.render('applications/new', {
+			application: {}, 
+			organizations: organizations, 
+			errors: [], 
+			eidas_enabled: config.eidas.enabled,
+			csrfToken: req.csrfToken()
+		})		
 	}).catch(function(error) { next(error); });
 
 };
@@ -290,6 +296,7 @@ exports.create = function(req, res, next) {
 
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client
 		var application = models.oauth_client.build(req.body.application);
+
 		application.grant_type = (req.body.grant_type) ? req.body.grant_type : [''] 
 
 		var response_type = []
@@ -301,6 +308,7 @@ exports.create = function(req, res, next) {
 			response_type.push('token')
 		}
 		application.response_type = response_type
+
 
 		var validate = application.validate()
 		var save = validate.then(function() {
@@ -328,11 +336,11 @@ exports.create = function(req, res, next) {
 			var create_row = organizations.then(function(row) {
 				if (row) {
 					return models.role_assignment.create({
-						oauth_client_id: application.id, 
-		    		role_id: 'provider', 
-		    		organization_id: req.body.provider,
-		    		role_organization: 'owner'
-		    	})
+							oauth_client_id: application.id, 
+				    		role_id: 'provider', 
+				    		organization_id: req.body.provider,
+				    		role_organization: 'owner'
+				    	})
 				} else {
 					return Promise.reject()
 				}
@@ -350,13 +358,18 @@ exports.create = function(req, res, next) {
 			var assign = save.then(function() {
 				return models.role_assignment.create({
 					oauth_client_id: application.id, 
-	        role_id: 'provider', 
-	        user_id: req.session.user.id
-	      })
+			        role_id: 'provider', 
+			        user_id: req.session.user.id
+	      		})
 			})
 		}
+
 		Promise.all([save, assign]).then(function(values) {
-			res.redirect('/idm/applications/'+application.id+'/step/avatar');
+			if (config.eidas && req.body.eidas === 'eidas') {
+				res.redirect('/idm/applications/'+application.id+'/step/eidas');
+			} else {
+				res.redirect('/idm/applications/'+application.id+'/step/avatar');
+			}
 		}).catch(function(error){
 			if (error === "no_organization") {
 				// Destroy application with specific id

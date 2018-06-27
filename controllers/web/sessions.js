@@ -9,7 +9,7 @@ exports.login_required = function(req, res, next){
 
     debug("--> login_required");
 
-    if (req.session.user) {
+    if (req.session.user || req.path.includes('/saml2/metadata') || req.path.includes('/saml2/login')) {
         next();
     } else {
         req.session.errors = [{message: 'sessionExpired'}];
@@ -32,18 +32,22 @@ exports.login_not_required = function(req, res, next){
 // MW to see if user needs to change password
 exports.password_check_date = function(req, res, next) {
 
-    var today = new Date((new Date()).getTime())
-    var millisecondsPerDay = 24 * 60 * 60 * 1000;
-
-    //var d = new Date("January 6, 2017 11:13:00");
-
-    var days_since_change = Math.round((today - req.session.user.change_password)/millisecondsPerDay); 
-
-    if (days_since_change > 365) {
-        req.session.change_password = true
-        res.redirect('/update_password')          
+    if (req.path.includes('/saml2/metadata') || req.path.includes('/saml2/login')) {
+        next()
     } else {
-        next();
+        var today = new Date((new Date()).getTime())
+        var millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+        //var d = new Date("January 6, 2017 11:13:00");
+
+        var days_since_change = Math.round((today - req.session.user.change_password)/millisecondsPerDay); 
+
+        if (days_since_change > 365) {
+            req.session.change_password = true
+            res.redirect('/update_password')          
+        } else {
+            next();
+        }
     }
 }
 

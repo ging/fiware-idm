@@ -20,6 +20,7 @@ var config = require ('./config.js');
 var index = require('./routes/web/index');
 var api = require('./routes/api/index');
 var oauth2 = require('./routes/oauth2/oauth2');
+var saml2 = require('./routes/saml2/saml2');
 
 var app = express();
 
@@ -103,12 +104,14 @@ app.use(function(req, res, next) {
 if (config.https.enabled) {
   // Set routes for oauth2
   app.use('/oauth2', forceSsl, oauth2);
+  app.use('/saml2', forceSsl, saml2);
   app.get('/user', forceSsl, require('./controllers/oauth2/oauth2').authenticate_token);
 
   app.use('/', forceSsl, index);
 } else {
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
+  app.use('/saml2',  saml2);
   app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
 
   app.use('/', index);

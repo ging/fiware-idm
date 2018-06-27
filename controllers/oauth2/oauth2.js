@@ -1,5 +1,6 @@
 var models = require('../../models/models.js');
 var config_authzforce = require('../../config.js').authorization.authzforce
+var config_eidas = require('../../config.js').eidas
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var Request = oauthServer.Request;
@@ -74,15 +75,31 @@ exports.check_user = function(req, res, next) {
     if (req.session.user) {
         check_user_authorized_application(req, res)
     } else {
-        res.render('oauth/index', {application: {
-            name: req.application.name,
-            description: req.application.description,
-            response_type: req.query.response_type,
-            id: req.query.client_id,
-            state: req.query.state,
-            redirect_uri: req.query.redirect_uri,
-            image: ((req.application.image == 'default') ? '/img/logos/original/app.png' : ('/img/applications/'+req.application.image)) 
-        }, errors: [] }); 
+        var render_values = {
+            application: {
+                name: req.application.name,
+                description: req.application.description,
+                response_type: req.query.response_type,
+                id: req.query.client_id,
+                state: req.query.state,
+                redirect_uri: req.query.redirect_uri,
+                image: ((req.application.image == 'default') ? '/img/logos/original/app.png' : ('/img/applications/'+req.application.image)) 
+            },
+            errors: []
+        }
+
+        render_values["saml_request"] = {
+            enabled: false
+        }
+
+        if (config_eidas.enabled) {
+            render_values.saml_request.xml = req.saml_auth_request.xml
+            render_values.saml_request.postLocationUrl = req.saml_auth_request.postLocationUrl
+            render_values.saml_request.redirectLocationUrl = req.saml_auth_request.redirectLocationUrl
+            render_values.saml_request.enabled = true
+        }
+
+        res.render('oauth/index', render_values); 
     }
 }
 

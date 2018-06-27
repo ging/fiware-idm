@@ -38,6 +38,7 @@ This GE is based on a javascript environment and SQL databases. In order to run 
  - node.js
  - npm
  - mysql-server (^5.7)
+ - build-essential
 
 
 <a name="def-build"></a>

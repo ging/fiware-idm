@@ -31,6 +31,21 @@ This project is part of [FIWARE](http://fiware.org). You will find more informat
 
 Welcome to the main repository for the UPM's implementation of the FIWARE Identity Management Generic Enabler. Thanks to this component and together with PEP Proxy and Authorization PDP GEs, you will add authentication and authorization security to your services and applications.
 
+Currently, the main concepts of Keyrock are:
+- Users
+	- Have a registered account in Keyrock.
+	- Can manage organizations and register applications.
+- Organizations
+	- Are group of users that share resources of an application (roles and permissions).
+	- Users can be members or owners (manage the organization).
+- Applications. 
+	- It has the client role in the OAuth 2.0 architecture and will request protected user data. More information can be found in [OAuth section](https://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth)
+	- Are able to authenticate users using their Oauth credentials (id and secret) which unequivocally identify the application.
+	- Define roles and permissions to manage authorization of users and organizations.
+	- Can register Pep Proxy to protect backends.
+	- Can register IoT Agents.
+
+
 <a name="def-requirements"></a>
 ### Software requirements
 This GE is based on a javascript environment and SQL databases. In order to run the identity manager the following requirements must be installed:
@@ -43,53 +58,55 @@ This GE is based on a javascript environment and SQL databases. In order to run 
 <a name="def-build"></a>
 ## How to Build & Install
 
- 1. Clone Proxy repository:
+You can deploy your own Keyrock instance by following this steps:
+
+- Clone Proxy repository:
 
 <pre>
 <code>git clone https://github.com/ging/fiware-idm.git</code>
 </pre>
 
- 2. Install the dependencies:
+- Install the dependencies:
 
 <pre>
 <code>cd fiware-idm/
 npm install</code>
 </pre>
 
- 3. Duplicate config.template in config.js:
+- Duplicate config.template in config.js:
 
 <pre>
 <code>cp config.js.template config.js</code>
 </pre>
 
- 4. Configure data base access credentials:
+- Configure data base access credentials:
 
 <pre>
-		config.database = {
-		    host: 'localhost',           // default: 'localhost' 
-		    password: 'idm',             // default: 'idm'
-		    username: 'root',            // default: 'root'
-		    database: 'idm',             // default: 'idm'
-		    dialect: 'mysql'             // default: 'mysql'
-		}
+config.database = {
+    host: 'localhost',           // default: 'localhost' 
+    password: 'idm',             // default: 'idm'
+    username: 'root',            // default: 'root'
+    database: 'idm',             // default: 'idm'
+    dialect: 'mysql'             // default: 'mysql'
+}
 </pre>
 
- 5. To configure the server to listen HTTPs requests, generate certificates OpenSSL and configure config.js:
+- To configure the server to listen HTTPs requests, generate certificates OpenSSL and configure config.js:
 
 <pre>
 <code>./generate_openssl_keys.sh</code>
 </pre>
 
 <pre>
-		config.https = {
-		    enabled: true, 		//default: 'false'
-		    cert_file: 'certs/idm-2018-cert.pem',
-		    key_file: 'certs/idm-2018-key.pem',
-		    port: 443
-		}
+config.https = {
+    enabled: true, 		//default: 'false'
+    cert_file: 'certs/idm-2018-cert.pem',
+    key_file: 'certs/idm-2018-key.pem',
+    port: 443
+}
 </pre>
 
- 6. Create database, run migrations and seeders:
+- Create database, run migrations and seeders:
 
 <pre>
 <code>npm run-script create_db
@@ -97,8 +114,7 @@ npm run-script migrate_db
 npm run-script seed_db </code>
 </pre>
 
- 7. Start server with admin rights (server listens in 3000 port by
-    default or in 443 if HTTPs is enabled).
+- Start server with admin rights (server listens in 3000 port by default or in 443 if HTTPs is enabled).
 
 <pre>
 <code>sudo npm start</code>

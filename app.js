@@ -37,6 +37,16 @@ app.disable('x-powered-by');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
+var up_date = new Date();
+
+// Set routes for version
+app.use('/version', function (req, res) {
+  var version = require('./version.json');
+  version.keyrock.uptime = require('./lib/time').msToTime(new Date() - up_date);
+  version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
+  res.send(version);
+});
+
 // Set routes for api
 app.use('/v1', api);
 app.use('/v3', api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API

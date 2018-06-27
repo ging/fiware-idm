@@ -1,10 +1,9 @@
-
 # Installation and Administration Guide
 
 - [Introduction](#introduction)
     - [Requirements](#requirements)
 - [System Installation](#system-installation)
-	- [Enable HTTPs](#configure-themes)
+	- [Enable HTTPs](#enable-https)
 	- [External Authentication](#external-authentication)
 	- [Authorization](#authorization)
 	- [Email](#email)
@@ -175,6 +174,17 @@ In order to allow this characteristic you need to edit the config file:
 			host: 'localhost',
 			port: 8080
 		}
+	}
+~~~
+
+### Email
+You can configure the IdM to send emails to users. Follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04) to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04. Then edit config file:
+
+~~~
+	config.mail = {
+	    host: 'idm_host',
+	    port: 25,
+	    from: 'noreply@host'
 	}
 ~~~
 

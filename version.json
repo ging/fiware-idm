@@ -1,0 +1,13 @@
+{
+	"keyrock": {
+		"version": "7.0.1",
+		"release_date": "2018-06-25",
+		"uptime": "",
+		"git_hash": "https://github.com/ging/fiware-idm/releases/tag/7.0.1",
+		"doc": "https://fiware-idm.readthedocs.io/en/7.0.1/",
+		"api": {
+			"version": "v1",
+			"link": ""
+		}
+	}
+}

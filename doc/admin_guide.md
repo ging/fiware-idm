@@ -1,6 +1,4 @@
 
-
-
 # Installation and Administration Guide
 
 - [Introduction](#introduction)
@@ -8,7 +6,8 @@
 - [System Installation](#system-installation)
 	- [Enable HTTPs](#configure-themes)
 	- [External Authentication](#external-authentication)
-	- [Authzforce](#authzforce)
+	- [Authorization](#authorization)
+	- [Email](#email)
 	- [Configure Themes](#configure-themes)
 - [System Administration](#system-administration)
 - [Sanity Check Procedures](#sanity-check-procedures)
@@ -84,14 +83,7 @@ Configure password encryption:
 		key: 'nodejs_idm'
 	}
 ~~~
-Configure email:
-~~~
-	config.mail = {
-	    host: 'idm_host',
-	    port: 25,
-	    from: 'noreply@host'
-	}
-~~~
+
  - Create database, run migrations and seeders:
 <pre>
 <code>npm run-script create_db
@@ -166,13 +158,34 @@ You can also configure the Identity Manager to authenticate users through other 
 	}
 ~~~
 
-### Authzforce 
-The Identity Manager is enabled to automatically send requests to the AuthZforce PAP to create the corresponding policies. **This feature has been tested with AuthZforce 5.4.1**. In order to allow this characteristic you need to edit the config file:
+### Authorization
+Configure Policy Decision Point (PDP)
+ - IdM can perform basic policy checks (HTTP verb + path)
+ - AuthZForce can perform basic policy checks as well as advanced
+
+If authorization level is advanced you can create rules, HTTP verb+resource and XACML advanced. In addition you need to have an instance of authzforce deployed to perform advanced authorization request from a Pep Proxy.
+If authorization level is basic, only HTTP verb+resource rules can be created
+
+In order to allow this characteristic you need to edit the config file:
 ~~~
-	config.authzforce = {
-		enabled: true,
-		host: 'localhost',
-		port: 8080
+	config.authorization = {
+		level: 'basic', // basic|advanced
+		authzforce: {
+			enabled: false,
+			host: 'localhost',
+			port: 8080
+		}
+	}
+~~~
+
+### Email
+You can configure the IdM to send emails to users. Follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04) to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04. Then edit config file:
+
+~~~
+	config.mail = {
+	    host: 'idm_host',
+	    port: 25,
+	    from: 'noreply@host'
 	}
 ~~~
 

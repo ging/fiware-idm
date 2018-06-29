@@ -17,6 +17,14 @@ exports.is_admin =function(req, res, next) {
 	}
 }
 
+// List of users
+exports.list_users =function(req, res, next) {
+
+	debug('--> list_users')
+
+	res.render('admin/users', { csrfToken: req.csrfToken() })
+}
+
 // GET /idm/admins/users -- Send admin users
 exports.admin_users = function(req, res, next) {
 	debug(' --> admin_users')

@@ -14,5 +14,6 @@ router.post('/notify',           csrfProtection,     web_notify_controller.send_
 router.get('/administrators',    csrfProtection,     web_admin_controller.index_administrators)
 router.put('/administrators',    csrfProtection,     web_admin_controller.update_administrators)
 router.get('/users',       		 csrfProtection,     web_admin_controller.admin_users)
+router.get('/list_users',        csrfProtection,     web_admin_controller.list_users)
 
 module.exports = router;

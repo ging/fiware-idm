@@ -2,8 +2,6 @@ var models = require('../../models/models.js');
 var debug = require('debug')('idm:web-admin_controller')
 var gravatar = require('gravatar');
 
-var email = require('../../lib/email.js')
-
 // See if user is administrator
 exports.is_admin =function(req, res, next) {
 
@@ -15,14 +13,6 @@ exports.is_admin =function(req, res, next) {
 	} else {
 		res.redirect('/')
 	}
-}
-
-// List of users
-exports.list_users =function(req, res, next) {
-
-	debug('--> list_users')
-
-	res.render('admin/users', { csrfToken: req.csrfToken() })
 }
 
 // GET /idm/admins/users -- Send admin users

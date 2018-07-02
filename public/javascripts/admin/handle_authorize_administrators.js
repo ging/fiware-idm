@@ -6,7 +6,7 @@ $(document).ready(function() {
     // Pop up with a form to authorize users to be admin
     $('#members__action_manage_administrators').click(function () {
 
-        var url = "/idm/admins/users?limit=all"
+        var url = "/idm/admins/administrators/list?limit=all"
         $.get(url, function(data) {
 
             if (data.type === 'error') {

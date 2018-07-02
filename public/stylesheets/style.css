@@ -6503,6 +6503,7 @@ button.close {
   .sidebar ul a.applications h4 span,
   .sidebar ul a.notify h4 span,
   .sidebar ul a.administrators h4 span,
+  .sidebar ul a.list_users h4 span,
   .sidebar ul a.user_accounts h4 span,
   .sidebar ul a.endpoints_management h4 span {
     display: none !important; } }
@@ -6515,6 +6516,7 @@ button.close {
   .sidebar ul a.applications h4 span,
   .sidebar ul a.notify h4 span,
   .sidebar ul a.administrators h4 span,
+  .sidebar ul a.list_users h4 span,
   .sidebar ul a.user_accounts h4 span,
   .sidebar ul a.endpoints_management h4 span {
     display: none !important; } }
@@ -8127,6 +8129,7 @@ textarea {
     .sidebar ul a.applications,
     .sidebar ul a.notify,
     .sidebar ul a.administrators,
+    .sidebar ul a.list_users,
     .sidebar ul a.user_accounts,
     .sidebar ul a.endpoints_management {
       line-height: 42px;
@@ -8141,6 +8144,7 @@ textarea {
         .sidebar ul a.applications,
         .sidebar ul a.notify,
         .sidebar ul a.administrators,
+        .sidebar ul a.list_users,
         .sidebar ul a.user_accounts,
         .sidebar ul a.endpoints_management {
           border-right: 1px solid #A9A9A9;
@@ -8153,6 +8157,7 @@ textarea {
         .sidebar ul a.applications,
         .sidebar ul a.notify,
         .sidebar ul a.administrators,
+        .sidebar ul a.list_users,
         .sidebar ul a.user_accounts,
         .sidebar ul a.endpoints_management {
           line-height: 37px; }
@@ -8163,6 +8168,7 @@ textarea {
           .sidebar ul a.applications:first-child,
           .sidebar ul a.notify:first-child,
           .sidebar ul a.administrators:first-child,
+          .sidebar ul a.list_users:first-child,
           .sidebar ul a.user_accounts:first-child,
           .sidebar ul a.endpoints_management:first-child {
             margin-left: 0; }
@@ -8173,6 +8179,7 @@ textarea {
           .sidebar ul a.applications:last-child,
           .sidebar ul a.notify:last-child,
           .sidebar ul a.administrators:last-child,
+          .sidebar ul a.list_users:last-child,
           .sidebar ul a.user_accounts:last-child,
           .sidebar ul a.endpoints_management:last-child {
             margin-right: 0; } }
@@ -8184,6 +8191,7 @@ textarea {
         .sidebar ul a.applications,
         .sidebar ul a.notify,
         .sidebar ul a.administrators,
+        .sidebar ul a.list_users,
         .sidebar ul a.user_accounts,
         .sidebar ul a.endpoints_management {
           float: left; } }
@@ -8201,6 +8209,8 @@ textarea {
       .sidebar ul a.notify i,
       .sidebar ul a.administrators h4,
       .sidebar ul a.administrators i,
+      .sidebar ul a.list_users h4,
+      .sidebar ul a.list_users i,
       .sidebar ul a.user_accounts h4,
       .sidebar ul a.user_accounts i,
       .sidebar ul a.endpoints_management h4,
@@ -8220,6 +8230,8 @@ textarea {
       .sidebar ul a.notify:hover i,
       .sidebar ul a.administrators:hover h4,
       .sidebar ul a.administrators:hover i,
+      .sidebar ul a.list_users:hover h4,
+      .sidebar ul a.list_users:hover i,
       .sidebar ul a.user_accounts:hover h4,
       .sidebar ul a.user_accounts:hover i,
       .sidebar ul a.endpoints_management:hover h4,
@@ -8232,6 +8244,7 @@ textarea {
       .sidebar ul a.applications i,
       .sidebar ul a.notify i,
       .sidebar ul a.administrators i,
+      .sidebar ul a.list_users i,
       .sidebar ul a.user_accounts i,
       .sidebar ul a.endpoints_management i {
         font-size: 1.3rem; }
@@ -8243,6 +8256,7 @@ textarea {
           .sidebar ul a.applications i,
           .sidebar ul a.notify i,
           .sidebar ul a.administrators i,
+          .sidebar ul a.list_users i,
           .sidebar ul a.user_accounts i,
           .sidebar ul a.endpoints_management i {
             float: left;
@@ -8254,6 +8268,7 @@ textarea {
             .sidebar ul a.applications i:first-child,
             .sidebar ul a.notify i:first-child,
             .sidebar ul a.administrators i:first-child,
+            .sidebar ul a.list_users i:first-child,
             .sidebar ul a.user_accounts i:first-child,
             .sidebar ul a.endpoints_management i:first-child {
               padding-left: 0px; }
@@ -8264,6 +8279,7 @@ textarea {
             .sidebar ul a.applications i:last-child,
             .sidebar ul a.notify i:last-child,
             .sidebar ul a.administrators i:last-child,
+            .sidebar ul a.list_users i:last-child,
             .sidebar ul a.user_accounts i:last-child,
             .sidebar ul a.endpoints_management i:last-child {
               border-right: none; } }
@@ -8274,6 +8290,7 @@ textarea {
       .sidebar ul a.applications h4,
       .sidebar ul a.notify h4,
       .sidebar ul a.administrators h4,
+      .sidebar ul a.list_users h4,
       .sidebar ul a.user_accounts h4,
       .sidebar ul a.endpoints_management h4 {
         margin-bottom: 16px; }
@@ -8284,6 +8301,7 @@ textarea {
         .sidebar ul a.applications h4 span,
         .sidebar ul a.notify h4 span,
         .sidebar ul a.administrators h4 span,
+        .sidebar ul a.list_users h4 span,
         .sidebar ul a.user_accounts h4 span,
         .sidebar ul a.endpoints_management h4 span {
           display: inline;
@@ -8297,6 +8315,7 @@ textarea {
             .sidebar ul a.applications h4 span i,
             .sidebar ul a.notify h4 span i,
             .sidebar ul a.administrators h4 span i,
+            .sidebar ul a.list_users h4 span i,
             .sidebar ul a.user_accounts h4 span i,
             .sidebar ul a.endpoints_management h4 span i {
               padding-right: 8px; } }
@@ -8314,6 +8333,8 @@ textarea {
         .sidebar ul a.notify h4 i,
         .sidebar ul a.administrators h4:focus,
         .sidebar ul a.administrators h4 i,
+        .sidebar ul a.list_users h4:focus,
+        .sidebar ul a.list_users h4 i,
         .sidebar ul a.user_accounts h4:focus,
         .sidebar ul a.user_accounts h4 i,
         .sidebar ul a.endpoints_management h4:focus,
@@ -8333,6 +8354,8 @@ textarea {
       .sidebar ul a.notify h4.active i,
       .sidebar ul a.administrators h4.active span,
       .sidebar ul a.administrators h4.active i,
+      .sidebar ul a.list_users h4.active span,
+      .sidebar ul a.list_users h4.active i,
       .sidebar ul a.user_accounts h4.active span,
       .sidebar ul a.user_accounts h4.active i,
       .sidebar ul a.endpoints_management h4.active span,
@@ -8352,6 +8375,8 @@ textarea {
       .sidebar ul a.notify h4.active:hover i,
       .sidebar ul a.administrators h4.active:hover span,
       .sidebar ul a.administrators h4.active:hover i,
+      .sidebar ul a.list_users h4.active:hover span,
+      .sidebar ul a.list_users h4.active:hover i,
       .sidebar ul a.user_accounts h4.active:hover span,
       .sidebar ul a.user_accounts h4.active:hover i,
       .sidebar ul a.endpoints_management h4.active:hover span,
@@ -9055,7 +9080,7 @@ ul.disabled-list li.active:hover {
 .fa-star-o:before {
   content: "\f006"; }
 
-.fa-user:before {
+.fa-user:before, a.list_users i:before {
   content: "\f007"; }
 
 .fa-film:before {

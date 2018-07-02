@@ -1,0 +1,28 @@
+<!-- Template to create rows with users assign roles in the application -->
+<script type="text/x-custom-template" id="table_row_user_row_template">
+    <tr id="user_id">
+        <td width="5%">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input">
+            </div>
+        </td>
+        <td align="left"><img alt="User" src="user_avatar"></td>
+        <td><p>user_id</p></td>
+        <td><a href="/idm/users/user_id">user_username</a></td>
+        <td><p>user_email</p></td>
+        <td class="enable" align="center">
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
+        </td>
+        <td align="center">
+            <div class="select-multiple form-group">
+                <select title="Select action" class="selectpicker" data-size="5" data-width="100%" data-dropup-auto="false" data-dropdown-align-right="true">
+                    <option class="edit_user" data-icon="fa fa-edit" value="edit">Edit</option>
+                    <option class="reset_password" data-icon="fa fa-key" value="password">Change password</option>  
+                </select>
+            </div>
+        </td>
+    </tr>
+</script>

@@ -1,5 +1,4 @@
 var config = require('../../config.js').database
-var debug = require('debug')('idm:search_distinct');
 
 
 // Load ORM Model
@@ -61,7 +60,7 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 				  and + '\n' +
 				  limit + '\n' +
 				  offset
- debug('===========search_distinct query: ' + query)
+ console.log('===========search_distinct query: ' + query);
 
     return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})
 }

@@ -1,5 +1,5 @@
 var config = require('../../config.js').database
-var debug = require('debug')('idm:web-organization_controller');
+var debug = require('debug')('idm:search_distinct');
 
 
 // Load ORM Model

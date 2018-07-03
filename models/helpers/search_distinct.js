@@ -5,15 +5,15 @@ var config = require('../../config.js').database
 var Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-var sequelize = new Sequelize(config.database, config.username, config.password, 
-  { 
+var sequelize = new Sequelize(config.database, config.username, config.password,
+  {
     host: config.host,
     dialect: config.dialect
-  }      
+  }
 );
 
 
-// Helper to find info about pep proxy or user 
+// Helper to find info about pep proxy or user
 module.exports = function(table, join_table, entity_id, entity_type, key, offset_value, count_rows, role) {
 	var select = 'SELECT DISTINCT '+table+'.'+join_table+'_id,'
 	if (join_table === 'user') {
@@ -31,7 +31,7 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 		var join = 'RIGHT JOIN (SELECT * FROM '+join_table+' WHERE name LIKE :key) AS '+join_table+''
 	}
 	var on = 'ON '+table+'.'+join_table+'_id='+join_table+'.id'
-	var where = 'WHERE '+entity_type+'_id=:entity_id' 
+	var where = 'WHERE '+entity_type+'_id=:entity_id'
 	var and = ''
 	if (table==='role_assignment') {
 		if (['user', 'organization'].includes(join_table) && !role) {
@@ -51,16 +51,16 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 		? ',(SELECT COUNT(DISTINCT '+join_table+'_id)' + ' ' + from + ' ' + join + ' ' + on + ' ' + where + ') AS count'
 		: ''
 
-	var query =   select + '\n' + 
+	var query =   select + '\n' +
 				  count + (count_rows ? '\n' : '') +
-				  from + '\n' + 
-				  join + '\n' + 
-				  on + '\n' + 
-				  where + '\n' + 
-				  and + '\n' + 
-				  limit + '\n' + 
-				  offset			 
-
+				  from + '\n' +
+				  join + '\n' +
+				  on + '\n' +
+				  where + '\n' +
+				  and + '\n' +
+				  limit + '\n' +
+				  offset
+ debug('===========search_distinct query: ' + query)
 
     return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})
 }

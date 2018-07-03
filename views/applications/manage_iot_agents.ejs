@@ -1,0 +1,94 @@
+<div id="content_body">
+    <div id="manage_iot_agents">
+        <div class="site-client-roles">
+            <div class="workflow workflow-roles static_page">
+            	<form id="manage_iot_agents_form" action="/idm/applications/<%= application.id %>/iot_agents" method="POST">
+            		<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+	                <input type="hidden" id="submit_iot_agents" name="submit_iot_agents" value="" />
+	                <div class="modal-dialog">
+	                    <div class="modal-content">
+	                        <div class="modal-header">
+	                            <h3>Manage Iot Agents</h3>
+	                        </div>
+	                        <fieldset class="js-tab-pane active tab-pane">
+		                        <section id="iot_list" class="iot_list">
+			                        <header>
+			                            <h4>Iot Agents</h4>
+			                            <button id="roleButton" type="button" data-toggle="modal" data-target="#create_role" class="btn ajax-modal">
+			                                <i class="fa fa-plus"></i>
+			                            </button>
+			                        </header>
+			                        <div class="btn-group-vertical roles update_owners_roles" data-toggle="buttons" id="update_owners_roles">
+										<div id="role_id" class="btn btn-default role">
+											<h4 class="panel-title">
+				                            	<a data-toggle="collapse" href="#collapse_oauth2_credentials" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
+				                                OAuth2 Credentials <i class="fa fa-angle-up"></i>
+				                            	</a>
+				                        	</h4>
+				                        	<a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-inline-edit">
+									        	<i class="fa fa-edit"></i>
+									        </a>
+									        <a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-modal delete">
+									        	<i class="fa fa-trash-o"></i>
+									        </a>
+				                        	<div class="collapse_out">
+					                            <div id="collapse_oauth2_credentials" class="form-group collapse" role="tabpanel">
+					                                <div>
+					                                    <h6 class="panel-heading">Password:</h6>
+					                                    <p>asdasdasdasdas</p>
+					                                </div>
+					                            </div>
+				                        	</div>
+										</div>
+										<div id="role_id" class="btn btn-default role no-editable">
+										    <input type="radio" name="" id="" autocomplete="off" data-update_owners-id="">
+										    <label style="width: 80%; overflow: hidden; text-overflow: ellipsis;">role_name</label>
+										    <a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-inline-edit">
+									        	<i class="fa fa-edit"></i>
+									        </a>
+									        <a data-toggle="modal" data-target="#delete_role" class="ajax-modal delete">
+									        	<i class="fa fa-trash-o"></i>
+									        </a>
+										</div>
+										<div id="role_id" class="btn btn-default role no-editable">
+										    <input type="radio" name="" id="" autocomplete="off" data-update_owners-id="">
+										    <label style="width: 80%; overflow: hidden; text-overflow: ellipsis;">role_name</label>
+										    <a href="/idm/applications/app_id/edit/roles/role_id/edit" class="ajax-inline-edit">
+									        	<i class="fa fa-edit"></i>
+									        </a>
+									        <a data-toggle="modal" data-target="#delete_role" class="ajax-modal delete">
+									        	<i class="fa fa-trash-o"></i>
+									        </a>
+										</div>
+	        						</div>
+								</section>
+
+								<section id="permissions_list" class="permissions_list">
+			                        <header>
+			                            <h4>Iot Agents Groups</h4>
+			                            <button id="permButton" type="button" data-toggle="modal" data-target="#create_permission" class="btn ajax-modal">
+			                            	<i class="fa fa-plus"></i>
+			                            </button>
+			                        </header>
+			                        <div class="alert alert-info" id="update_owners_info_message">
+	                                    Select a role to see and manage its permissions
+	                                </div>
+	                                <div class="" id="update_owners_permissions" style="display: none;">
+	                                	<ul id="list_permissions" class="permissions update_owners_permissions list-group">
+	                                		
+	                                	</ul>
+	                                </div>
+			                    </section>
+							</fieldset>
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                	<input class="btn btn-primary pull right" type="submit" value="Save" />
+	                </div>
+	            </form>	
+            </div>
+        </div>
+    </div>
+</div>	
+
+<div class="messages"></div>

@@ -37,11 +37,19 @@ config.api = {
     token_lifetime: 60 * 60     // One hour
 }
 
-// Enable authzforce
-config.authzforce = {
-	enabled: false,
-	host: '',
-	port: 8080
+// Configure Policy Decision Point (PDP)
+//  - IdM can perform basic policy checks (HTTP verb + path)
+//  - AuthZForce can perform basic policy checks as well as advanced 
+// If authorization level is advanced you can create rules, HTTP verb+resource and XACML advanced. In addition
+// you need to have an instance of authzforce deployed to perform advanced authorization request from a Pep Proxy.
+// If authorization level is basic, only HTTP verb+resource rules can be created
+config.authorization = {
+    level: 'basic',     // basic|advanced 
+    authzforce: {
+        enabled: false,
+        host: 'localhost',
+        port: 8080,
+    } 
 }
 
 var database_host = (process.env.DATABASE_HOST) ? process.env.DATABASE_HOST : 'localhost'
@@ -52,7 +60,9 @@ config.database = {
     password: 'idm',             // default: 'idm'
     username: 'root',            // default: 'root'
     database: 'idm',             // default: 'idm'
-    dialect: 'mysql'             // default: 'mysql'
+    dialect: 'mysql',            // default: 'mysql'
+    port: undefined              // default: undefined (which means that the port 
+                                 //          is the default for each dialect)
 };
 
 // External user authentication
@@ -65,7 +75,8 @@ config.external_auth = {
         username: 'db_user',
         password: 'db_pass',
         user_table: 'user',
-        dialect: 'mysql'
+        dialect: 'mysql',
+        port: undefined
     }
 }
 
@@ -82,5 +93,13 @@ config.site = {
     title: 'Identity Manager',
     theme: 'default'
 };
+
+// Config eIDAs Authentication
+config.eidas = {
+    enabled: false,
+    gateway_host: 'localhost',
+    idp_host: 'https://se-eidas.redsara.es/EidasNode/ServiceProvider',
+    metadata_expiration: 60 * 60 * 24 * 365 // One year
+}
 
 module.exports = config;

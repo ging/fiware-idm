@@ -1,4 +1,5 @@
 var models = require('../../models/models.js');
+var config_authzforce = require ('../../config.js').authorization;
 
 var debug = require('debug')('idm:web-permission_controller')
 
@@ -26,15 +27,17 @@ exports.create_permission = function(req, res) {
 											 	   description: req.body.description,
 											 	   action: req.body.action,
 											 	   resource: req.body.resource,
-											 	   xml: req.body.xml, 
+											 	   xml: (config_authzforce.level === 'advanced') ? req.body.xml : undefined, 
 											 	   oauth_client_id: req.application.id });
 
 		// Array of errors to be send 
 		var errors_inputs = [];
 
-		// See if fields action, resource and xml are in the same request
-		if ((req.body.action || req.body.resource) && req.body.xml) {
-			errors_inputs.push({message: 'xml_with_action_and_resource_not_allow'});
+		if (config_authzforce.level === 'advanced') {
+			// See if fields action, resource and xml are in the same request
+			if ((req.body.action || req.body.resource) && req.body.xml) {
+				errors_inputs.push({message: 'xml_with_action_and_resource_not_allow'});
+			}
 		}
 
 		// See if action and resource are defined when xml is not
@@ -110,15 +113,17 @@ exports.edit_permission = function(req, res) {
 												   description: req.body.description,
 												   resource: req.body.resource,
 												   action: req.body.action,
-												   xml: req.body.xml,
+												   xml: (config_authzforce.level === 'advanced') ? req.body.xml : undefined,
 												   oauth_client_id: req.application.id });
 
 		// Array of errors to be send 
 		var errors_inputs = [];
 
-		// See if fields action, resource and xml are in the same request
-		if ((req.body.action || req.body.resource) && req.body.xml) {
-			errors_inputs.push({message: 'xml_with_action_and_resource_not_allow'});
+		if (config_authzforce.level === 'advanced') {
+			// See if fields action, resource and xml are in the same request
+			if ((req.body.action || req.body.resource) && req.body.xml) {
+				errors_inputs.push({message: 'xml_with_action_and_resource_not_allow'});
+			}
 		}
 
 		// See if action and resource are defined when xml is not
@@ -138,7 +143,7 @@ exports.edit_permission = function(req, res) {
 					description: req.body.description,
 					resource: req.body.resource,
 					action: req.body.action,
-					xml: req.body.xml },
+					xml: (config_authzforce.level === 'advanced') ? req.body.xml : undefined },
 				{	
 					fields: ['name', 'description', 'action', 'resource', 'xml'],
 					where: { id: req.permission.id,

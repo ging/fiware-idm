@@ -36,6 +36,16 @@
       <% if (nameErrors.indexOf("password") != -1) { %>
         <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
       <% } %>
+
+    <% if (saml_request.enabled) { -%>
+      <input type="hidden" name="SAMLRequest" value="<%= saml_request.xml%>">
+      <input type="hidden" name="postLocationUrl" value="<%= saml_request.postLocationUrl%>">
+      <input type="hidden" name="redirectLocationUrl" value="<%= saml_request.redirectLocationUrl%>">
+      <input type="hidden" name="country" value="ES">
+      <input type="hidden" name="RelayState" value="MyRelayState">
+      <input type="hidden" name="sendmethods" value="POST">
+    <% } -%>
+
     </div>
     <div class="modal-footer">
       <div class="checkbox">
@@ -47,6 +57,9 @@
         </label>
       </div>
       <button type="submit" class="btn btn-primary pull-right">Sign In</button>
+      <% if (saml_request.enabled) { -%>
+        <button type="submit"  class="btn btn-primary pull-right second_submit_button" formaction="/saml2/login?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" >Sign Eidas</button>
+      <% } -%>
       <div class="actions">
         <a href="/sign_up/">
           Sign up

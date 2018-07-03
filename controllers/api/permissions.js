@@ -2,6 +2,8 @@ var debug = require('debug')('idm:api-permissions');
 var models = require('../../models/models.js');
 var uuid = require('uuid');
 
+var config_authzforce = require ('../../config.js').authorization;
+
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -165,12 +167,22 @@ function check_create_body_request(body) {
 			reject({error: {message: "Missing parameter name in body request or empty name", code: 400, title: "Bad Request"}})
 		}
 
-		if ((body.permission.resource || body.permission.action) && body.permission.xml) {
-			reject({error: {message: "Cannot set action and resource at the same time as xacml rule", code: 400, title: "Bad Request"}})
+		if (config_authzforce.level !== "advanced" && body.permission.xml) {
+			reject({error: {message: "Idm is not configured to create XACML advanced rules", code: 400, title: "Bad Request"}})
+		}
+
+		if (config_authzforce.level === "advanced") {
+			if ((body.permission.resource || body.permission.action) && body.permission.xml) {
+				reject({error: {message: "Cannot set action and resource at the same time as xacml rule", code: 400, title: "Bad Request"}})
+			}
 		}
 
 		if(!(body.permission.action && body.permission.resource) && !body.permission.xml){
-			reject({error: {message: "Set action and resource or an advanced xacml rule", code: 400, title: "Bad Request"}})
+			if (config_authzforce.level === "advanced") {
+				reject({error: {message: "Set action and resource or an advanced xacml rule", code: 400, title: "Bad Request"}})
+			} else {
+				reject({error: {message: "Set action and resource", code: 400, title: "Bad Request"}})
+			}
 		}
 		
 		resolve()
@@ -189,12 +201,18 @@ function check_update_body_request(body) {
 			reject({error: {message: "Cannot set empty name", code: 400, title: "Bad Request"}})
 		}
 
+		if (config_authzforce.level !== "advanced" && body.permission.xml) {
+			reject({error: {message: "Idm is not configured to create XACML advanced rules", code: 400, title: "Bad Request"}})
+		}
+
 		if (body.permission.id || body.permission.is_internal) {
 			reject({error: {message: "Cannot set id or is_internal", code: 400, title: "Bad Request"}})
 		}
 
-		if ((body.permission.resource || body.permission.action) && body.permission.xml) {
-			reject({error: {message: "Cannot set action and resource at the same time as xacml rule", code: 400, title: "Bad Request"}})
+		if (config_authzforce.level === "advanced") {
+			if ((body.permission.resource || body.permission.action) && body.permission.xml) {
+				reject({error: {message: "Cannot set action and resource at the same time as xacml rule", code: 400, title: "Bad Request"}})
+			}
 		}
 
 		resolve()

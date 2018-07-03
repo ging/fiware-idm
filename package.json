@@ -1,6 +1,6 @@
 {
-  "name": "idm",
-  "version": "0.0.0",
+  "name": "fiware-idm",
+  "version": "7.0.1",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,6 +10,7 @@
     "seed_db": "sequelize --env database db:seed:all"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "body-parser": "~1.18.2",
     "bootstrap-sass": "3.3.7",
     "cookie-parser": "~1.4.3",
@@ -36,6 +37,7 @@
     "node-sass-middleware": "~0.11.0",
     "nodemailer": "~4.1.0",
     "nodemailer-smtp-transport": "~2.7.4",
+<<<<<<< HEAD
     "oauth2-server": "git+https://github.com/ging/node-oauth2-server.git",
     "sequelize": "^4.22.0",
     "sequelize-cli": "^4.0.0",
@@ -56,4 +58,18 @@
     "url": "https://github.com/agaldemas/fiware-idm/issues"
   },
   "homepage": "https://github.com/agaldemas/fiware-idm#readme"
+=======
+    "oauth2-server": "git+https://github.com/ging/node-oauth2-server",
+    "request": "^2.85.0",
+    "sequelize": "^4.22.0",
+    "sequelize-cli": "^4.0.0",
+    "serve-favicon": "~2.4.2",
+    "underscore": "^1.8.3",
+    "xml-crypto": "^0.10.0",
+    "xml-encryption": "^0.11.0",
+    "xml2js": "^0.4.0",
+    "xmlbuilder": "~2.2.0",
+    "xmldom": "^0.1.0"
+  }
+>>>>>>> upstream/master
 }

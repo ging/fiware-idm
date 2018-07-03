@@ -86,7 +86,7 @@ exports.owned_permissions = function(req, res, next) {
 // - 6 Get and assign only public owned roles
 function check_user_action(application, path, method, permissions) {
 	switch(true) {
-		case (path.includes('step/avatar')):
+		case (path.includes('step/avatar') || path.includes('step/eidas')):
 			if (permissions.includes('2')) {
 				return true;
 			}

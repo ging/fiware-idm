@@ -5,8 +5,9 @@ module.exports = {
     return queryInterface.createTable('eidas_credentials',
             {
                 id: {
-                  type: Sequelize.UUID,
-                  defaultValue: Sequelize.UUIDV4,
+                  type: Sequelize.STRING(36), //Sequelize.UUID,
+                  //defaultValue: Sequelize.UUIDV4,
+                  unique: true,
                   primaryKey: true
                 }, support_contact_person_name: {
                   type: Sequelize.STRING(255), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
@@ -45,7 +46,7 @@ module.exports = {
                   type: Sequelize.STRING(255), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
                   validate: { notEmpty: {msg: "organization_url"}}
                 }, oauth_client_id: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.STRING(36), //Sequelize.UUID,
                     onDelete: 'CASCADE',
                     unique: true,
                     references: {

@@ -5,7 +5,7 @@ module.exports = {
 
       return queryInterface.bulkInsert('oauth_client', [
           {
-            id: '416ac246-e7ac-49ff-93b4-f7e94d997e6b', //'idm_admin_app', 
+            id: 'idm_admin_app', 
             name: 'idm',
             description: 'idm',
             url: '',

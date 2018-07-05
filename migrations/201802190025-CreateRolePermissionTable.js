@@ -18,7 +18,7 @@ module.exports = {
                     }
                 },
                 permission_id: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.STRING(36), //Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'permission',

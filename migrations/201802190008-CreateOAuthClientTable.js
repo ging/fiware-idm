@@ -5,8 +5,9 @@ module.exports = {
         return queryInterface.createTable('oauth_client',
             {
                 id: {
-                  type: Sequelize.UUID,
-                  defaultValue: Sequelize.UUIDV4,
+                  type: Sequelize.STRING(36), //Sequelize.UUID,
+                  unique: true,
+                  //defaultValue: Sequelize.UUIDV4,
                   primaryKey: true
                 }, name: {
                   type: Sequelize.STRING(255), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',

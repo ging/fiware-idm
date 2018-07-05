@@ -5,9 +5,10 @@ module.exports = {
         return queryInterface.createTable('organization',
             {
                 id: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.STRING(36), //Sequelize.UUID,
                     primaryKey: true,
-                    defaultValue: Sequelize.UUIDV4
+                    unique: true
+                    //defaultValue: Sequelize.UUIDV4
                 }, name: {
                     type: Sequelize.STRING(64), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
                     validate: { notEmpty: {msg: "name"}}

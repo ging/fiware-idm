@@ -5,7 +5,7 @@ module.exports = {
         return queryInterface.createTable('role',
             {
                 id: {
-                    type: Sequelize.STRING(32),
+                    type: Sequelize.STRING(36),
                     // defaultValue: Sequelize.UUIDV4,
                     unique: true,
                     primaryKey: true
@@ -18,7 +18,7 @@ module.exports = {
                     type: Sequelize.BOOLEAN,
                     defaultValue: false
                 }, oauth_client_id: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.STRING(36), //Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',

@@ -5,8 +5,9 @@ module.exports = {
         return queryInterface.createTable('permission',
             {
                 id: {
-                    type: Sequelize.UUID,
-                    defaultValue: Sequelize.UUIDV4,
+                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    //defaultValue: Sequelize.UUIDV4,
+                    unique: true,
                     primaryKey: true
                 }, name: {
                     type: Sequelize.STRING(255), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
@@ -28,7 +29,7 @@ module.exports = {
                 }, xml: {
                     type: Sequelize.TEXT() // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, oauth_client_id: {
-                    type: Sequelize.UUID,
+                    type: Sequelize.STRING(36), //Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',

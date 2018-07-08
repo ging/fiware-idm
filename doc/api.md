@@ -1,4 +1,5 @@
 
+
 # API OVERVIEW
 
 + [Idm API](#def-apiIdm)
@@ -40,7 +41,15 @@ The API user should be familiar with:
 Users can perform these action through the API:
 
  - Authentication
- - Manage applications
+ - Manage Applications
+ - Manage Users
+ - Manage Organizations
+ - Manage Roles
+ - Manage Permissions
+ - Manage IoT Agents
+ - Manage Pep Proxies
+
+You can find a full description of how to make API requests in the [Keyrock Apiary](https://keyrock.docs.apiary.io/). The API requests should include an authentication token that can be created as is described [here.](https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication)
 
 <a name="def-apiOAuth"></a>
 # Using the FIWARE LAB instance (OAuth2)

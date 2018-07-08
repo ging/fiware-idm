@@ -9,7 +9,8 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize(database.database, database.username, database.password, 
   { 
     host: database.host,
-    dialect: database.dialect
+    dialect: database.dialect,
+    port: (database.port !== 'default') ? database.port : undefined
   }      
 );
 
@@ -29,7 +30,8 @@ if (external_auth.enabled) {
     external_auth.database.password, 
     { 
       host: external_auth.database.host,
-      dialect: external_auth.database.dialect
+      dialect: external_auth.database.dialect,
+      port: (external_auth.database.port !== 'default') ? external_auth.database.port : undefined
     }      
   );
 
@@ -49,6 +51,9 @@ var oauth_authorization_code = sequelize.import(path.join(__dirname,'oauth2/oaut
 var oauth_access_token = sequelize.import(path.join(__dirname,'oauth2/oauth_access_token'));
 var oauth_refresh_token = sequelize.import(path.join(__dirname,'oauth2/oauth_refresh_token'));
 var scope = sequelize.import(path.join(__dirname,'oauth2/oauth_scope'));
+
+// Import Eidas Credentials
+var eidas_credentials = sequelize.import(path.join(__dirname,'eidas_credentials'));
 
 // Import user table
 var user = external_auth.enabled ? 
@@ -144,6 +149,8 @@ user_organization.belongsTo(organization, { foreignKey: { allowNull: false }, on
 user_authorized_application.belongsTo(user, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 user_authorized_application.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
 
+// Relation between eidas credentials and oauth client
+eidas_credentials.belongsTo(oauth_client, { foreignKey: { allowNull: false, unique: true }, onDelete: 'cascade'});
 
 // Export tables
 exports.user = user;
@@ -164,6 +171,7 @@ exports.oauth_refresh_token = oauth_refresh_token;
 exports.scope = scope;
 exports.auth_token = auth_token;
 exports.user_authorized_application = user_authorized_application;
+exports.eidas_credentials = eidas_credentials;
 
 // Export helpers
 var search_identity = require('./helpers/search_identity')

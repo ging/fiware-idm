@@ -20,6 +20,7 @@ var config = require ('./config.js');
 var index = require('./routes/web/index');
 var api = require('./routes/api/index');
 var oauth2 = require('./routes/oauth2/oauth2');
+var saml2 = require('./routes/saml2/saml2');
 
 var app = express();
 
@@ -36,6 +37,16 @@ app.disable('x-powered-by');
 // Parse request
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
+
+var up_date = new Date();
+
+// Set routes for version
+app.use('/version', function (req, res) {
+  var version = require('./version.json');
+  version.keyrock.uptime = require('./lib/time').msToTime(new Date() - up_date);
+  version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
+  res.send(version);
+});
 
 // Set routes for api
 app.use('/v1', api);
@@ -93,19 +104,21 @@ app.use(function(req, res, next) {
 if (config.https.enabled) {
   // Set routes for oauth2
   app.use('/oauth2', forceSsl, oauth2);
+  app.use('/saml2', forceSsl, saml2);
   app.get('/user', forceSsl, require('./controllers/oauth2/oauth2').authenticate_token);
 
   app.use('/', forceSsl, index);
 } else {
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
+  app.use('/saml2',  saml2);
   app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
 
   app.use('/', index);
 }
 
 // Check connection with Authzforce
-if (config.authzforce.enabled) {
+if (config.authorization.authzforce.enabled) {
   require('./lib/authzforce.js').check_connection().then(function(status) {
     console.log(clc.green('Connection with Authzforce: ' + status))
   }).catch(function(error) {

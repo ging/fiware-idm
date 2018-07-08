@@ -38,6 +38,7 @@ This GE is based on a javascript environment and SQL databases. In order to run 
  - node.js
  - npm
  - mysql-server (^5.7)
+ - build-essential
 
 
 <a name="def-build"></a>
@@ -65,13 +66,13 @@ npm install</code>
  4. Configure data base access credentials:
 
 <pre>
-		config.database = {
-		    host: 'localhost',           // default: 'localhost' 
-		    password: 'idm',             // default: 'idm'
-		    username: 'root',            // default: 'root'
-		    database: 'idm',             // default: 'idm'
-		    dialect: 'mysql'             // default: 'mysql'
-		}
+config.database = {
+    host: 'localhost',           // default: 'localhost' 
+    password: 'idm',             // default: 'idm'
+    username: 'root',            // default: 'root'
+    database: 'idm',             // default: 'idm'
+    dialect: 'mysql'             // default: 'mysql'
+}
 </pre>
 
  5. To configure the server to listen HTTPs requests, generate certificates OpenSSL and configure config.js:
@@ -81,12 +82,12 @@ npm install</code>
 </pre>
 
 <pre>
-		config.https = {
-		    enabled: true, 		//default: 'false'
-		    cert_file: 'certs/idm-2018-cert.pem',
-		    key_file: 'certs/idm-2018-key.pem',
-		    port: 443
-		}
+config.https = {
+    enabled: true, 		//default: 'false'
+    cert_file: 'certs/idm-2018-cert.pem',
+    key_file: 'certs/idm-2018-key.pem',
+    port: 443
+}
 </pre>
 
  6. Create database, run migrations and seeders:

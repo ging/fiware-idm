@@ -2,7 +2,7 @@ var debug = require('debug')('idm:api-role_permission_assignments');
 var models = require('../../models/models.js');
 
 var authzforce_controller = require('./authzforces');
-var config_authzforce = require ('../../config.js').authzforce;
+var config_authzforce = require ('../../config.js').authorization;
 
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -46,7 +46,7 @@ exports.create = function(req, res) {
 			defaults: { role_id: req.role.id, permission_id: req.permission.id }
 		}).spread(function(assignment, created) {
 			delete assignment.dataValues.id
-			if (created && config_authzforce.enabled) {
+			if (created && config_authzforce.authzforce.enabled) {
 				return search_role_permission(req, res).then(function(role_permission_assignment) {
 					if (Object.keys(role_permission_assignment).length > 0) {
 						authzforce_controller
@@ -87,7 +87,7 @@ exports.delete = function(req, res) {
 			where: { role_id: req.role.id, permission_id: req.permission.id }
 		}).then(function(deleted) {
 
-			if (deleted && config_authzforce.enabled) {
+			if (deleted && config_authzforce.authzforce.enabled) {
 				return search_role_permission(req, res).then(function(role_permission_assignment) {
 					if (Object.keys(role_permission_assignment).length > 0) {
 						authzforce_controller
@@ -102,7 +102,7 @@ exports.delete = function(req, res) {
 				}).catch(function(error) {
 					return Promise.reject(error)
 				})
-			} else if (deleted && !config_authzforce.enabled) {
+			} else if (deleted && !config_authzforce.authzforce.enabled) {
 				res.status(204).json("Assignment destroyed");
 			} else {
 				res.status(404).json({error: {message: "Assignments not found", code: 404, title: "Not Found"}})

@@ -25,7 +25,7 @@ function getAccessToken(bearerToken) {
       include: [
         {
           model: user,
-          attributes: ['id', 'username', 'email'],
+          attributes: ['id', 'username', 'email', 'gravatar'],
         },
         {
           model: iot,

@@ -233,7 +233,16 @@ var create_token = function(req, res, next) {
 		}
 
 		models.auth_token.create(row).then(function(auth_row) {
-			var response_body = { token: { methods: response_methods, expires_at: expires}}
+			var response_body = { 
+				token: { 
+					methods: response_methods, 
+					expires_at: expires
+				}, 
+				idm_authorization_config: {
+					level: config.authorization.level,
+					authzforce: config.authorization.authzforce.enabled
+				}
+			}
 			res.setHeader('X-Subject-Token', token_id)
 			res.status(201).json(response_body)
 		}).catch(function(error) {

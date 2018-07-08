@@ -70,13 +70,13 @@ router.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   if (err.code === 'EBADCSRFTOKEN') {
+    res.status(403)
+    res.send('invalid csrf token')
+  } else {
     // render the error page
     res.status(err.status || 500);
     res.render('error', {errors: []});
   }
-
-  res.status(403)
-  res.send('invalid csrf token')
 });
 
 

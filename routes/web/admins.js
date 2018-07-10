@@ -15,7 +15,8 @@ router.put('/administrators',    					 csrfProtection,     web_admin_controller.
 router.get('/administrators/list',       		 	 csrfProtection,     web_admin_controller.admin_users)
 router.get('/notify',            					 csrfProtection,     web_notify_controller.show_notify)
 router.post('/notify',           					 csrfProtection,     web_notify_controller.send_message)
-router.get('/list_users',        					 csrfProtection,     web_list_users_controller.list_users)
-router.get('/list_users/users',        			     csrfProtection,     web_list_users_controller.users)
+router.get('/list_users',        					 csrfProtection,     web_list_users_controller.show)
+router.get('/list_users/users',        			     csrfProtection,     web_list_users_controller.index)
+router.post('/list_users/users',        			 csrfProtection,     web_list_users_controller.create)
 
 module.exports = router;

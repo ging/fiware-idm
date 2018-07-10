@@ -209,15 +209,6 @@ $(document).ready(function() {
 
         // stop form from submitting normally
         event.preventDefault();
-
-        // Create new row in role column
-        var user_row = $('#table_row_user_row_template').html();
-        /*user_row = user_row.replace(/role_name/g, htmlEntities(result.role.name));
-        user_row = user_row.replace(/role_id/g, String(result.role.id));
-        user_row = user_row.replace(/app_id/g, String(application.id));*/
-        $('#user_table tr:last').after(user_row);
-        $('.selectpicker').selectpicker('render');
-        //users_pagination(users.length);
    
         if ($.trim($('#id_username').val()) == '') {
             $('#error_empty_username').show('open')
@@ -232,10 +223,21 @@ $(document).ready(function() {
             $('#error_empty_password2').show('open')
         }
 
-        /*// get the action attribute from the <form action=""> element 
+        // get the action attribute from the <form action=""> element 
         var $form = $(this),
             url = $form.attr('action');
 
+        /*var data = {
+            username:  $('#id_username').val(),
+            email:  $('#id_email').val(),
+            password1:  $('#id_password1').val(),
+            password2:  $('#id_password2').val(),
+            description:  $('#id_description').val(),
+            website:  $('#id_website').val(),
+            send_email:  $('#id_send_email').val(),
+            enabled: $('#id_enable').val() 
+        }
+*/
         // Send the data using post with element id name 
         var posting = $.post({
                     url: url, 
@@ -244,69 +246,48 @@ $(document).ready(function() {
 
         // Alerts the results 
         posting.done(function(result) {
-            
-        });*/
+            /*$('#user_table tr:last').after(user_row);
+            $('.selectpicker').selectpicker('render');
+            users_pagination(users.length);*/
+        });
 
     });
 
 
-    load_admins()
+    load_users()
+
+    var users = []
+    var users_filter = []
 
     function htmlEntities(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
 
-    function load_admins() {
-
-        var users = [
-            {
-                id: '982yh1h1uh1n2j1n',
-                username: 'john',
-                email: 'email_john',
-                image: '/img/logos/small/user.png', 
-                enable: 1
-            },
-            {
-                id: 'asdfsadfsadfsadf43',
-                username: 'mary',
-                email: 'email_mary',
-                image: '/img/logos/small/user.png',
-                enable: 0
-            },
-            {
-                id: '1342343vczsvsdfgf',
-                username: 'july',
-                email: 'email_july',
-                image: '/img/logos/small/user.png',
-                enable: 1
-            }
-        ]
-
-        users_pagination(users.length)
-        create_user_rows(users)    
-
-        /*$.get('/idm/admins/list_users/users', function(data, status) {
+    function load_users() {
+        
+        $.get('/idm/admins/list_users/users', function(data, status) {
             if (data.users.length > 0) {
-                users_pagination(data.users_number)
-                create_user_rows(data.users)    
+                users = data.users
+                users_pagination(data.count)
+                create_user_rows(users.slice(0,15))
             } else {
                 $('#admins_content').find('.alert').show('open')
             }
-        })*/
+        })  
     }
 
-    function create_user_rows(users) {
-        for (var i = 0; i < users.length; i++) {
-
+    function create_user_rows(rows) {
+        $("#user_table > tbody").html("");
+        for (var i = 0; i < rows.length; i++) {
             var user_row = $('#table_row_user_row_template').html();
-            user_row = user_row.replace(/user_username/g, htmlEntities(users[i].username));
-            user_row = user_row.replace(/user_id/g, String(users[i].id));
-            user_row = user_row.replace(/user_id/g, String(users[i].email));
-            user_row = user_row.replace(/user_avatar/g, String(users[i].image));
-            $('#user_table tr:last').after(user_row);
-            if (users[i].enable) {
-                $('#'+users[i].id).find('.enable').find("input[type='checkbox']").prop('checked', true)
+            user_row = user_row.replace(/user_username/g, htmlEntities(rows[i].username));
+            user_row = user_row.replace(/user_id/g, String(rows[i].id));
+            user_row = user_row.replace(/user_email/g, String(rows[i].email));
+            user_row = user_row.replace(/user_avatar/g, String(rows[i].image));
+            $('#user_table tbody').append(user_row);
+            if (rows[i].enabled) {
+                $('#'+rows[i].id).find('.enable').find("input[type='checkbox']").prop('checked', true)
             }
             $('.selectpicker').selectpicker('render');
         }
@@ -316,9 +297,9 @@ $(document).ready(function() {
     
     function users_pagination(max) {
         $('#users_pagination_container').bootpag({
-            total: Math.ceil(max/25),
+            total: Math.ceil(max/15),
             page: 1,
-            maxVisible: 25,
+            maxVisible: 15,
             leaps: true,
             firstLastUse: true,
             first: 'First',
@@ -331,13 +312,35 @@ $(document).ready(function() {
             lastClass: 'last',
             firstClass: 'first'
         }).on("page", function(event, num){
-            /*$.get(url+'?page='+num, function(data, status) {
-                $('#admins_content').children('.list-group-item').remove()
-                create_user_rows(data.admin_users, $('#admins_content'));
-                $('#admins_content').find('.alert').hide()              
-            })*/
+
+            var start = (num === 1) ? 0 : 15*num
+            var end = start + 15
+
+            if (users_filter.length <= 0) {
+                create_user_rows(users.slice(start, end))
+            } else {
+                create_user_rows(users_filter.slice(start, end))
+            }
         });
     }
+
+    var typingTimer
+    var doneTypingInterval = 500;
+
+    $("#users-page").find('.form-control').bind("keyup input",function(e) {
+        var filter = $(this).val();
+        users_filter = []
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(function() {
+            for (var i = 0; i < users.length; i++) {
+                if (users[i].username.includes(filter)) {
+                    users_filter.push(users[i])
+                }
+            }
+            create_user_rows(users_filter.slice(0,15))
+            users_pagination(users_filter.length)
+        }, doneTypingInterval);
+    });
 
 })
 

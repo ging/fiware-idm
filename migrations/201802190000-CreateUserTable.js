@@ -26,7 +26,7 @@ module.exports = {
                     unique: true,
                     validate: { 
                         notEmpty: {msg: "email"},
-                        isEmail: {msg: "email"},
+                        isEmail: {msg: "emailInvalid"},
                         isUnique: function (value, next) {
                             var self = this;
                             User.find({where: {email: value}})

@@ -11,20 +11,23 @@
                     <div class="left">
                         <fieldset>
                             <input id="id_userID" name="userID" type="hidden" value="">
+                            <span id="passwordDifferent" class="help-block alert alert-danger" style="display: none;">The two password fields didn't match</span>
+                            <span id="emailUsed" class="help-block alert alert-danger" style="display: none;">Email is already used</span>
+                            <span id="emailInvalid" class="help-block alert alert-danger" style="display: none;">Email is invalid</span>
                             <div class="form-group required">
                                 <label class="control-label  required" for="id_username">Username</label>
                                 <div class="">
                                     <input class="form-control" id="id_username" maxlength="64" name="username" type="text" value="">
                                 </div>
                             </div>
-                            <span id="error_empty_username" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+                            <span id="username" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
                             <div class="form-group required">
                                 <label class="control-label  required" for="id_email">Email</label>
                                 <div class="">
-                                    <input class="form-control" id="id_email" maxlength="64" name="email" type="text" value="">
+                                    <input class="form-control" id="id_email" maxlength="64" name="email" type="email" value="">
                                 </div>
                             </div>
-                            <span id="error_empty_email" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+                            <span id="email" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
                             <div class="form-group has-feedback">
                                 <label class="control-label" for="id_password1">
                                     Password
@@ -34,7 +37,7 @@
                                     <span class="form-control-feedback fa fa-eye"></span>
                                 </div>
                             </div>
-                            <span id="error_empty_password1" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+                            <span id="password1" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
                             <div class="form-group has-feedback">
                                 <label class="control-label" for="id_password2">Password (again)</label>
                                 <div class="">
@@ -42,12 +45,11 @@
                                     <span class="form-control-feedback fa fa-eye"></span>
                                 </div>
                             </div>
-                            <span id="error_empty_password2" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+                            <span id="password2" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
                             <div class="form-group">
                                 <label class="control-label" for="id_description">Description</label>
                                 <div class="">
-                                    <textarea class="form-control" cols="40" id="id_description" name="description" value="" rows="4" style="overflow: hidden; word-wrap: break-word; height: 150px;">
-                                    </textarea>
+                                    <textarea class="form-control" cols="40" id="id_description" name="description" value="" rows="4" style="overflow: hidden; word-wrap: break-word; height: 150px;"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -63,7 +65,7 @@
                                     </a>
                                     <div class="checkbox">
                                         <label>
-                                            <input type="checkbox" name="send_email" value="send_email">Send an email to the user 
+                                            <input type="checkbox" id="id_send_email" name="send_email" value="send_email">Send an email to the user 
                                         </label>
                                     </div>
                                 </label>
@@ -72,7 +74,7 @@
                                 <label class="control-label required" for="id_enabled">
                                     <div class="checkbox">
                                         <label>
-                                            <input type="checkbox" name="enable" value="enable">Enable 
+                                            <input type="checkbox" id="id_enabled" name="enable" value="enable">Enable 
                                         </label>
                                     </div>
                                 </label>
@@ -92,6 +94,5 @@
     $(function () {
         $('[data-toggle="popover"]').popover({html:true});
         $('[data-toggle="tooltip"]').tooltip();
-
     });
 </script>

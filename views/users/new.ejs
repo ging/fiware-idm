@@ -19,6 +19,9 @@
 			    <% if (nameErrors.indexOf("emailUsed") != -1) { %>
 			        <span class="help-block alert alert-danger ">Email is already used</span>
 			    <% } %>
+			    <% if (nameErrors.indexOf("emailInvalid") != -1) { %>
+			        <span class="help-block alert alert-danger ">Email is invalid</span>
+			    <% } %>
 				<div class="form-group ">
 					<label class="control-label" for="id_username">Username</label>
 					<div class=" ">

@@ -191,7 +191,7 @@ $(document).ready(function() {
             $('#edit_user_modal').modal('show');
         }
 
-        $('.selectpicker').selectpicker('val', '');;
+        $('.selectpicker').selectpicker('val', '');
         
     })
 
@@ -204,55 +204,111 @@ $(document).ready(function() {
     })
 
 
+    $('#users-page').on("click", "span.enable_user", function(e) {
+
+        e.preventDefault();
+
+        var user_id = $(this).closest('tr').attr('id')
+        var user_current_enablement = $(this).siblings("input[type='checkbox']").is(":checked")
+
+        var data = {
+            enabled: !user_current_enablement
+        }
+
+        // Send put request
+        var put_request = $.ajax({
+            url: '/idm/admins/list_users/users/' + user_id + '/enable',
+            type: 'PUT',
+            beforeSend: beforeSend($("#create_user_form").find('input:hidden[name=_csrf]').val()),
+            data: data
+        })
+
+        put_request.done(function() {
+            $('#'+user_id).find("input[type='checkbox']").prop('checked', !user_current_enablement)
+            for (i = 0; i < users.length; i++) {
+                if (users[i].id === user_id) {
+                    users[i].enabled = !user_current_enablement
+                }
+            }
+        })
+
+        put_request.fail(function(response) {
+            console.log(response)  
+        })
+    })
+
+
     // Handle the submit button from the create role form
     $("#create_user_form").submit(function(event) {
 
         // stop form from submitting normally
         event.preventDefault();
-   
-        if ($.trim($('#id_username').val()) == '') {
-            $('#error_empty_username').show('open')
-        }
-        if ($.trim($('#id_email').val()) == '') {
-            $('#error_empty_email').show('open')
-        }
-        if ($.trim($('#id_password1').val()) == '') {
-            $('#error_empty_password1').show('open')
-        }
-        if ($.trim($('#id_password2').val()) == '') {
-            $('#error_empty_password2').show('open')
+        
+        // Hide alerts
+        $('span.alert').hide('close')
+
+        // Payload to be send to the server
+        var data = {
+            username:  $(this).find('input#id_username').val(),
+            email:  $(this).find('input#id_email').val(),
+            password1:  $(this).find('input#id_password1').val(),
+            password2:  $(this).find('input#id_password2').val(),
+            description:  $(this).find('textarea#id_description').val(),
+            website:  $(this).find('input#id_website').val(),
+            send_email:  $(this).find('input#id_send_email').is(":checked"),
+            enabled: $(this).find('input#id_enabled').is(":checked") 
         }
 
-        // get the action attribute from the <form action=""> element 
-        var $form = $(this),
-            url = $form.attr('action');
-
-        /*var data = {
-            username:  $('#id_username').val(),
-            email:  $('#id_email').val(),
-            password1:  $('#id_password1').val(),
-            password2:  $('#id_password2').val(),
-            description:  $('#id_description').val(),
-            website:  $('#id_website').val(),
-            send_email:  $('#id_send_email').val(),
-            enabled: $('#id_enable').val() 
+        // Check values of inputs before send to the server
+        if (data.username == '') {
+            $('span.alert#username').show('open')
         }
-*/
-        // Send the data using post with element id name 
-        var posting = $.post({
-                    url: url, 
-                    data: { name: $("#create_role_form").find('#id_name').val() },
-                    beforeSend: beforeSend($("#create_role_form").find('input:hidden[name=_csrf]').val()) });
+        if (data.email == '') {
+            $('span.alert#email').show('open')
+        }
+        if (data.password1 == '') {
+            $('span.alert#password1').show('open')
+        }
+        if (data.password2 == '') {
+            $('span.alert#password2').show('open')
+        }
+        if (data.password1 !== data.password2) {
+            $('span.alert#passwordDifferent').show('open')
+        }
 
-        // Alerts the results 
-        posting.done(function(result) {
-            /*$('#user_table tr:last').after(user_row);
-            $('.selectpicker').selectpicker('render');
-            users_pagination(users.length);*/
-        });
+        // If there is no alert send post request to the server
+        if (!$('span.alert').is(":visible")) {
+            // Get the action attribute from the <form action=""> element 
+            var $form = $(this),
+                url = $form.attr('action');
+            
+            // Send the data using post with element id name 
+            var post_request = $.post({
+                url: url, 
+                data: data,
+                beforeSend: beforeSend($("#create_user_form").find('input:hidden[name=_csrf]').val()) 
+            });
+     
+            post_request.done(function(user) {
+                users.push(user)
+                $('#create_user_modal').modal('hide')                
+            });
+
+            post_request.fail(function(response) {
+                var errors = JSON.parse(response.responseText).errors
+                for (var i in errors) { 
+                    $('span.alert#'+errors[i].message).show('open')
+                }
+            })
+        }
 
     });
 
+    $('#create_user_modal').on('hidden.bs.modal', function () {
+        $("#create_user_form").find('input.form-control').val('')
+        $("#create_user_form").find('input[type="checkbox"]').prop('checked', false)
+        $('span.alert').hide('close')
+    })
 
     load_users()
 
@@ -293,8 +349,6 @@ $(document).ready(function() {
         }
     }
 
-    
-    
     function users_pagination(max) {
         $('#users_pagination_container').bootpag({
             total: Math.ceil(max/15),

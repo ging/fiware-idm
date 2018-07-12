@@ -124,6 +124,7 @@
     </div>
     <div id="users-page">
         <div class="panel panel-default datatable" id="auth_admins" data-pagination-url="/filters/users" data-application_id="idm_admin_app" data-pagination-pages="">
+            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
             <div class="panel-heading">
                 <div class="filter table_search client">
                     <input class="form-control" value="" type="text" name="list_users__filter__q" placeholder="Filter">
@@ -182,18 +183,113 @@
 // Handle the authorization of users to be administrators
 $(document).ready(function() {
 
-    $('#users-page').on("changed.bs.select", ".selectpicker", function(e, clickedIndex, newValue, oldValue) {
-        var selectedD = $(this).find('option').eq(clickedIndex).val();
+    var user_table = $('table#user_table')
 
-        if (selectedD === 'password') {
+    var edit_user_modal = $('div#edit_user_modal')
+    var form_edit_user =  $('form#edit_user_form', edit_user_modal)
+
+    var edit_input_username = $('input#id_username', form_edit_user)
+    var edit_input_email = $('input#id_email', form_edit_user)
+    var edit_input_description = $('textarea#id_description', form_edit_user)
+    var edit_input_website = $('input#id_website', form_edit_user)
+
+
+    var create_user_modal =  $("#create_user_form")
+    var form_create_user =  $('#create_user_modal')
+
+    $('#users-page').on("changed.bs.select", ".selectpicker", function(e, clickedIndex, newValue, oldValue) {
+        var selected = $(this).find('option').eq(clickedIndex).val();
+        
+        var user_id = $(this).closest('tr').attr('id')
+        var user = search_user_by_id(user_id).user
+
+        if (selected === 'password') {
             $('#change_password_modal').modal('show');
-        } else if (selectedD === 'edit') {
-            $('#edit_user_modal').modal('show');
+        } else if (selected === 'edit') {
+            edit_user(user)
         }
 
         $('.selectpicker').selectpicker('val', '');
         
     })
+
+    function edit_user(user) {
+
+        form_edit_user.attr('action', '/idm/admins/list_users/users/' + user.id +'/edit_info')
+
+        edit_input_username.val(user.username)
+        edit_input_email.val(user.email)
+        edit_input_description.val(user.description)
+        edit_input_website.val(user.website)
+
+        // Show modal
+        edit_user_modal.modal('show');
+        
+    }
+
+    // Handle the submit button from the create role form
+    form_edit_user.submit(function(event) {
+
+        // stop form from submitting normally
+        event.preventDefault();
+
+        // Hide alerts
+        $('span.alert', form_edit_user).hide()
+
+        // Payload to be send to the server
+        var data = {
+            username:  edit_input_username.val(),
+            email:  edit_input_email.val(),
+            description:  edit_input_description.val(),
+            website:  edit_input_website.val(),
+        }
+
+        // Check values of inputs before send to the server
+        if (data.username == '') {
+            $('span.alert#username', form_edit_user).show('open')
+        }
+        if (data.email == '') {
+            $('span.alert#email', form_edit_user).show('open')
+        }
+        console.log($('span.alert', form_edit_user).is(":visible"))
+        // If there is no alert send post request to the server
+        if (!$('span.alert', form_edit_user).is(":visible")) {
+            // Get the action attribute from the <form action=""> element 
+            var $form = $(this),
+                url = $form.attr('action');
+            
+            // Send put request
+            var put_request = $.ajax({
+                url: url,
+                type: 'PUT',
+                beforeSend: beforeSend($("#edit_user_form").find('input:hidden[name=_csrf]').val()),
+                data: data
+            })
+     
+            put_request.done(function(response) {
+                var user_index = search_user_by_id(response.user.id).index
+                users[user_index].username = response.user.username
+                users[user_index].email = response.user.email
+                users[user_index].description = response.user.description
+                users[user_index].website = response.user.website
+
+                var row = user_table.find('tr#'+response.user.id)
+
+                row.find("td").eq(3).html(response.user.username)
+                row.find("td").eq(4).html(response.user.email)
+
+                $('#edit_user_modal').modal('hide')                
+            });
+
+            put_request.fail(function(response) {
+                console.log(response)
+                var errors = JSON.parse(response.responseText).errors
+                for (var i in errors) { 
+                    $('span.alert#'+errors[i].message, form_edit_user).show('open')
+                }
+            })
+        }
+    });
 
     $('#check_all').click(function() {
         if ($(this).prop('checked')) { 
@@ -219,33 +315,38 @@ $(document).ready(function() {
         var put_request = $.ajax({
             url: '/idm/admins/list_users/users/' + user_id + '/enable',
             type: 'PUT',
-            beforeSend: beforeSend($("#create_user_form").find('input:hidden[name=_csrf]').val()),
+            beforeSend: beforeSend($('div#users-page').find('input:hidden[name=_csrf]').val()),
             data: data
         })
 
         put_request.done(function() {
             $('#'+user_id).find("input[type='checkbox']").prop('checked', !user_current_enablement)
-            for (i = 0; i < users.length; i++) {
-                if (users[i].id === user_id) {
-                    users[i].enabled = !user_current_enablement
-                }
-            }
+
+            search_user_by_id(user_id).user.enabled = !user_current_enablement
         })
 
         put_request.fail(function(response) {
-            console.log(response)  
+            
         })
     })
 
+    function search_user_by_id(id) {
+        for (i = 0; i < users.length; i++) {
+            if (users[i].id === id) {
+                return { user: users[i], index: i}
+            }
+        }
+    }
+
 
     // Handle the submit button from the create role form
-    $("#create_user_form").submit(function(event) {
+    form_create_user.submit(function(event) {
 
         // stop form from submitting normally
         event.preventDefault();
         
         // Hide alerts
-        $('span.alert').hide('close')
+        $('span.alert', form_create_user).hide()
 
         // Payload to be send to the server
         var data = {
@@ -286,7 +387,7 @@ $(document).ready(function() {
             var post_request = $.post({
                 url: url, 
                 data: data,
-                beforeSend: beforeSend($("#create_user_form").find('input:hidden[name=_csrf]').val()) 
+                beforeSend: beforeSend(form_create_user.find('input:hidden[name=_csrf]').val()) 
             });
      
             post_request.done(function(user) {
@@ -304,10 +405,10 @@ $(document).ready(function() {
 
     });
 
-    $('#create_user_modal').on('hidden.bs.modal', function () {
-        $("#create_user_form").find('input.form-control').val('')
-        $("#create_user_form").find('input[type="checkbox"]').prop('checked', false)
-        $('span.alert').hide('close')
+    create_user_modal.on('hidden.bs.modal', function () {
+        form_create_user.find('input.form-control').val('')
+        form_create_user.find('input[type="checkbox"]').prop('checked', false)
+        $('span.alert', form_create_user).hide()
     })
 
     load_users()

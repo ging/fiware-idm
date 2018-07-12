@@ -55,85 +55,139 @@ exports.create = function(req, res, next) {
     req.body.send_email = (req.body.send_email === 'true');
 
     if (config.email_list_type && req.body.email) {
-        if (config.email_list_type === 'whitelist' && !email_list.includes(req.body.email.split('\@')[1])) {
-            res.send({text: ' User creation failed.', type: 'danger'});
+        if (config.email_list_type === 'whitelist' && 
+        	!email_list.includes(req.body.email.split('\@')[1])) {
+            	res.send({text: ' User creation failed.', type: 'danger'});
         }
-        if (config.email_list_type === 'blacklist' && email_list.includes(req.body.email.split('\@')[1])) {
-            res.send({text: ' User creation failed.', type: 'danger'});
+        if (config.email_list_type === 'blacklist' && 
+        	email_list.includes(req.body.email.split('\@')[1])) {
+            	res.send({text: ' User creation failed.', type: 'danger'});
         }
     }
 
-    // If body has parameters id or secret don't create user
-    if (req.body.id) {
-        res.send({text: ' User creation failed.', type: 'danger'});
-    } else {
-        // Array of errors to send to the view
-        errors = [];
+    // Array of errors to send to the view
+    errors = [];
 
-        // Build a row and validate it
-        var user = models.user.build({
-            username: req.body.username, 
-            email: req.body.email,
-            password: req.body.password1,
-            date_password: new Date((new Date()).getTime()),
-            description: req.body.description,
-            website: req.body.website,
-            enabled: (req.body.enabled) ? true : false
-        });
+    // Build a row and validate it
+    var user = models.user.build({
+        username: req.body.username, 
+        email: req.body.email,
+        password: req.body.password1,
+        date_password: new Date((new Date()).getTime()),
+        description: req.body.description,
+        website: req.body.website,
+        enabled: (req.body.enabled) ? true : false
+    });
 
-        // If password(again) is empty push an error into the array
-        if (req.body.password2 == "") {
-            errors.push({message: "password2", type: "Validation error"});
+    // If password(again) is empty push an error into the array
+    if (req.body.password2 == "") {
+        errors.push({message: "password2", type: "Validation error"});
+    }
+
+    user.validate().then(function(err) {
+
+        // If the two password are differents, send an error
+        if (req.body.password1 !== req.body.password2) {
+            errors.push({message: "passwordDifferent"});
+            throw new Error("passwordDifferent");
+        } else {
+
+            // Save the row in the database
+            user.save().then(function() {
+
+                // Send an email to the user
+                if (req.body.send_email) {
+                    var mail_data = {
+                        username: user.username,
+                        email: user.email,
+                        password: req.body.password1,
+                        link: config.host
+                    };
+
+                    var subject = 'Keyrock user account';
+
+                    // Send an email message to the user
+                    email.send('user_info', subject, user.email, mail_data)
+                }
+
+                res.send({ 
+            		id: user.id,
+            		username: user.username,
+            		email: user.email,
+            		description: user.description,
+            		website: user.website,
+            		image: '/img/logos/medium/user.png',
+            		gravatar: user.gravatar,
+            		enabled: user.enabled
+                });
+
+            }); 
         }
 
-        user.validate().then(function(err) {
+    // If validation fails, send an array with all errors found
+    }).catch(function(error){ 
+        if (error.message != "passwordDifferent") {
+            errors = errors.concat(error.errors);
+        }
+        res.status(400).json({ errors: errors}); 
+    });
+};
 
-            // If the two password are differents, send an error
-            if (req.body.password1 !== req.body.password2) {
-                errors.push({message: "passwordDifferent"});
-                throw new Error("passwordDifferent");
-            } else {
+// PUT /idm/admins/list_users/users/:userId/user_info -- Edit user info
+exports.edit_info = function(req, res, next) {
 
-                // Save the row in the database
-                user.save().then(function() {
+    debug("--> edit_info")
 
-                    // Send an email to the user
-                    if (req.body.send_email) {
-	                    var mail_data = {
-	                        username: user.username,
-	                        email: user.email,
-	                        password: req.body.password1,
-	                        link: config.host
-	                    };
-
-	                    var subject = 'Keyrock user account';
-
-	                    // Send an email message to the user
-	                    email.send('user_info', subject, user.email, mail_data)
-                    }
-
-                    res.send({ 
-                		id: user.id,
-                		username: user.username,
-                		email: user.email,
-                		description: user.description,
-                		website: user.website,
-                		image: '/img/logos/medium/user.png',
-                		gravatar: user.gravatar,
-                		enabled: user.enabled
-                    });
-
-                }); 
-            }
-
-        // If validation fails, send an array with all errors found
-        }).catch(function(error){ 
-            if (error.message != "passwordDifferent") {
-                errors = errors.concat(error.errors);
-            }
-            res.status(400).json({ errors: errors}); 
-        });
+    if (config.email_list_type && req.body.email) {
+        if (config.email_list_type === 'whitelist' && 
+        	!email_list.includes(req.body.email.split('\@')[1])) {
+            	res.send({text: ' User creation failed.', type: 'danger'});
+        }
+        if (config.email_list_type === 'blacklist' && 
+        	email_list.includes(req.body.email.split('\@')[1])) {
+            	res.send({text: ' User creation failed.', type: 'danger'});
+        }
     }
+
+    var new_data = {
+    	username: req.body.username,
+        description: req.body.description,
+        website: req.body.website
+    }
+
+    if (req.body.email !== req.user.email) {
+    	new_data['email'] = req.body.email
+    }
+
+    // Build a row and validate it
+    var user = models.user.build(new_data);
+
+    // Validate user email and username
+    user.validate().then(function(err) {
+
+    	models.user.update(new_data,
+			{
+				fields: ['username', 'email', 'description', 'website'],
+				where: {id: req.user.id}
+			}
+		).then(function() {
+			res.status(200).json({ 
+            	user: {
+            		id: req.user.id,
+            		username: user.username,
+            		email: user.email ? user.email : req.user.email,
+            		description: user.description,
+            		website: user.website
+                }
+            });
+		}).catch(function(error) {
+	        res.status(400).json({ errors: errors}); 
+		})
+
+    // If validation fails, send an array with all errors found
+    }).catch(function(error){ 
+        res.status(400).json({ errors: error.errors}); 
+    });
 };
 
 

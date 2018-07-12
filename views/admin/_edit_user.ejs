@@ -11,18 +11,22 @@
                     <div class="left">
                         <fieldset>
                             <input id="id_userID" name="userID" type="hidden" value="">
+                            <span id="emailUsed" class="help-block alert alert-danger" style="display: none;">Email is already used</span>
+                            <span id="emailInvalid" class="help-block alert alert-danger" style="display: none;">Email is invalid</span>
                             <div class="form-group required">
                                 <label class="control-label  required" for="id_username">Username</label>
                                 <div class="">
                                     <input class="form-control" id="id_username" maxlength="64" name="user[username]" type="text" value="">
                                 </div>
                             </div>
+                            <span id="username" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio.</span>
                             <div class="form-group required">
                                 <label class="control-label  required" for="id_email">Email</label>
                                 <div class="">
                                     <input class="form-control" id="id_email" maxlength="64" name="user[email]" type="text" value="">
                                 </div>
                             </div>
+                            <span id="email" style="display: none;" class="help-block alert alert-danger ">Este campo es obligatorio. </span>
                             <div class="form-group">
                                 <label class="control-label" for="id_description">Description</label>
                                 <div class="">

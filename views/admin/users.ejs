@@ -185,17 +185,23 @@ $(document).ready(function() {
 
     var user_table = $('table#user_table')
 
-    var edit_user_modal = $('div#edit_user_modal')
-    var form_edit_user =  $('form#edit_user_form', edit_user_modal)
+    // Create user modal
+    var modal_create_user =  $("div#create_user_form")
+    var form_create_user =  $('form#create_user_modal', modal_create_user)
 
+    // Edit user info modal
+    var modal_edit_user = $('div#edit_user_modal')
+    var form_edit_user =  $('form#edit_user_form', modal_edit_user)
     var edit_input_username = $('input#id_username', form_edit_user)
     var edit_input_email = $('input#id_email', form_edit_user)
     var edit_input_description = $('textarea#id_description', form_edit_user)
     var edit_input_website = $('input#id_website', form_edit_user)
 
-
-    var create_user_modal =  $("#create_user_form")
-    var form_create_user =  $('#create_user_modal')
+    // change password modal
+    var modal_change_password = $('div#change_password_modal')
+    var form_change_password = $('form#change_password_form', modal_change_password)
+    var chg_pw_input_password1 = $('input#id_password1', form_change_password)
+    var chg_pw_input_password2 = $('input#id_password2', form_change_password)
 
     $('#users-page').on("changed.bs.select", ".selectpicker", function(e, clickedIndex, newValue, oldValue) {
         var selected = $(this).find('option').eq(clickedIndex).val();
@@ -204,7 +210,7 @@ $(document).ready(function() {
         var user = search_user_by_id(user_id).user
 
         if (selected === 'password') {
-            $('#change_password_modal').modal('show');
+            change_password(user)            
         } else if (selected === 'edit') {
             edit_user(user)
         }
@@ -213,9 +219,83 @@ $(document).ready(function() {
         
     })
 
+    function change_password(user) {
+
+        form_change_password.attr(
+            'action', 
+            '/idm/admins/list_users/users/' + user.id +'/change_password'
+        )
+
+        // Show modal
+        modal_change_password.modal('show');
+        
+    }
+
+    // Handle the submit button from the create role form
+    form_change_password.submit(function(event) {
+
+        // stop form from submitting normally
+        event.preventDefault();
+
+        // Hide alerts
+        $('span.alert', form_change_password).hide()
+
+        // Payload to be send to the server
+        var data = {
+            password1:  chg_pw_input_password1.val(),
+            password2:  chg_pw_input_password2.val()
+        }
+
+        // Check values of inputs before send to the server
+        if (data.password1 == '') {
+            $('span.alert#password1').show('open')
+        }
+        if (data.password2 == '') {
+            $('span.alert#password2').show('open')
+        }
+        if (data.password1 !== data.password2) {
+            $('span.alert#passwordDifferent').show('open')
+        }
+        
+        // If there is no alert send post request to the server
+        if (!$('span.alert', form_change_password).is(":visible")) {
+            // Get the action attribute from the <form action=""> element 
+            var $form = $(this),
+                url = $form.attr('action');
+            
+            // Send put request
+            var put_request = $.ajax({
+                url: url,
+                type: 'PUT',
+                beforeSend: beforeSend(form_change_password.find('input:hidden[name=_csrf]').val()),
+                data: data
+            })
+     
+            put_request.done(function(response) {
+                modal_change_password.modal('hide')
+            });
+
+            put_request.fail(function(response) {
+                var errors = JSON.parse(response.responseText).errors
+                for (var i in errors) { 
+                    $('span.alert#'+errors[i].message, form_change_password).show('open')
+                }
+            })
+        }
+    });
+
+    modal_change_password.on('hidden.bs.modal', function () {
+        form_change_password.find('input.form-control').val('')
+        $('span.alert', form_change_password).hide()
+    })
+
+
     function edit_user(user) {
 
-        form_edit_user.attr('action', '/idm/admins/list_users/users/' + user.id +'/edit_info')
+        form_edit_user.attr(
+            'action', 
+            '/idm/admins/list_users/users/' + user.id +'/edit_info'
+        )
 
         edit_input_username.val(user.username)
         edit_input_email.val(user.email)
@@ -223,7 +303,7 @@ $(document).ready(function() {
         edit_input_website.val(user.website)
 
         // Show modal
-        edit_user_modal.modal('show');
+        modal_edit_user.modal('show');
         
     }
 
@@ -251,7 +331,7 @@ $(document).ready(function() {
         if (data.email == '') {
             $('span.alert#email', form_edit_user).show('open')
         }
-        console.log($('span.alert', form_edit_user).is(":visible"))
+        
         // If there is no alert send post request to the server
         if (!$('span.alert', form_edit_user).is(":visible")) {
             // Get the action attribute from the <form action=""> element 
@@ -278,11 +358,10 @@ $(document).ready(function() {
                 row.find("td").eq(3).html(response.user.username)
                 row.find("td").eq(4).html(response.user.email)
 
-                $('#edit_user_modal').modal('hide')                
+                modal_edit_user.modal('hide')
             });
 
             put_request.fail(function(response) {
-                console.log(response)
                 var errors = JSON.parse(response.responseText).errors
                 for (var i in errors) { 
                     $('span.alert#'+errors[i].message, form_edit_user).show('open')
@@ -392,7 +471,7 @@ $(document).ready(function() {
      
             post_request.done(function(user) {
                 users.push(user)
-                $('#create_user_modal').modal('hide')                
+                $('#create_user_modal').modal('hide')
             });
 
             post_request.fail(function(response) {
@@ -405,7 +484,7 @@ $(document).ready(function() {
 
     });
 
-    create_user_modal.on('hidden.bs.modal', function () {
+    modal_create_user.on('hidden.bs.modal', function () {
         form_create_user.find('input.form-control').val('')
         form_create_user.find('input[type="checkbox"]').prop('checked', false)
         $('span.alert', form_create_user).hide()

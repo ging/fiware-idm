@@ -190,6 +190,58 @@ exports.edit_info = function(req, res, next) {
     });
 };
 
+// PUT /idm/admins/list_users/users/:userId/change_password -- Change password of user
+exports.change_password = function(req, res, next) {
+
+    debug("--> change_password")
+
+    // Array of errors to send to the view
+    errors = [];
+
+    // Build a row and validate it
+    var user = models.user.build({
+        password: req.body.password1,
+        date_password: new Date((new Date()).getTime())
+    });
+
+    // If password(again) is empty push an error into the array
+    if (req.body.password2 == "") {
+        errors.push({message: "password2", type: "Validation error"});
+    }
+
+    // Validate user email and username
+    user.validate().then(function(err) {
+
+    	// If the two password are differents, send an error
+        if (req.body.password1 !== req.body.password2) {
+            errors.push({message: "passwordDifferent"});
+            throw new Error("passwordDifferent");
+        } else {
+
+			models.user.update(
+				{
+					password: req.body.password1
+				},
+				{
+					fields: ['password'],
+					where: {id: req.user.id}
+				}
+			).then(function() {
+				res.status(200).json('success');
+			}).catch(function(error) {
+		        res.status(400).json({ errors: errors}); 
+			})
+		}
+
+    // If validation fails, send an array with all errors found
+    }).catch(function(error){ 
+        if (error.message != "passwordDifferent") {
+            errors = errors.concat(error.errors);
+        }
+        res.status(400).json({ errors: errors});
+    });
+};
+
 
 // PUT /idm/admins/list_users/users/:userId/enable -- Enable user
 exports.enable = function(req, res, next) {

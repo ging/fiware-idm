@@ -248,6 +248,21 @@ $(document).ready(function() {
     var chg_pw_input_password1 = $('input#id_password1', form_change_password)
     var chg_pw_input_password2 = $('input#id_password2', form_change_password)
 
+    $('#organization_applications').find('.ajax-tabs').on('click', 'li.role', function() {
+
+        var panel = $(this).find('a:first')
+
+        if (panel.attr('data-loaded') === 'false') {
+            
+            $('#organization_applications').find('#spinner_panel_tabs').show()
+
+            var url = panel.attr('href')
+            org_change_role(url, panel)
+
+            $('#organization_applications').find('#spinner_panel_tabs').hide()
+        }
+    })
+
     check_all.click(function() {
         if ($(this).prop('checked')) { 
             $('input.form-check-input').prop('checked', true);

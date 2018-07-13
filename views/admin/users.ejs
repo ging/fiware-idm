@@ -149,9 +149,9 @@
                 <div id="entries">
                     <p>Show</p>
                     <div class="select-multiple form-group">
-                        <select class="selectpicker" data-size="5" data-width="100%" data-dropup-auto="false" data-dropdown-align-right="true">
-                            <option class="" value="10">10</option>
+                        <select id="select_entries" class="selectpicker" data-size="5" data-width="100%" data-dropup-auto="false" data-dropdown-align-right="true">
                             <option class="" value="15">15</option>
+                            <option class="" value="20">20</option>
                             <option class="" value="30">30</option>
                             <option class="" value="50">50</option>
                         </select>
@@ -248,20 +248,11 @@ $(document).ready(function() {
     var chg_pw_input_password1 = $('input#id_password1', form_change_password)
     var chg_pw_input_password2 = $('input#id_password2', form_change_password)
 
-    $('#organization_applications').find('.ajax-tabs').on('click', 'li.role', function() {
-
-        var panel = $(this).find('a:first')
-
-        if (panel.attr('data-loaded') === 'false') {
-            
-            $('#organization_applications').find('#spinner_panel_tabs').show()
-
-            var url = panel.attr('href')
-            org_change_role(url, panel)
-
-            $('#organization_applications').find('#spinner_panel_tabs').hide()
-        }
-    })
+    $('select#select_entries.selectpicker').on('change', function(){
+        users_per_page = parseInt($(this).val());
+        create_user_rows(users.slice(0,users_per_page))
+        users_pagination(users.length, users_per_page)
+    });
 
     check_all.click(function() {
         if ($(this).prop('checked')) { 
@@ -300,7 +291,7 @@ $(document).ready(function() {
         }
     })
 
-    $('#users-page').on("changed.bs.select", ".selectpicker", function(e, clickedIndex, newValue, oldValue) {
+    $('#users-page').on("changed.bs.select", ".selectpicker:not(#select_entries)", function(e, clickedIndex, newValue, oldValue) {
         var selected = $(this).find('option').eq(clickedIndex).val();
         
         var user_id = $(this).closest('tr').attr('id')
@@ -629,7 +620,7 @@ $(document).ready(function() {
         $.get('/idm/admins/list_users/users', function(data, status) {
             if (data.users.length > 0) {
                 users = data.users
-                users_pagination(data.count)
+                users_pagination(data.count, users_per_page)
                 create_user_rows(users.slice(0,users_per_page))
             } else {
                 $('#admins_content').find('.alert').show('open')
@@ -665,11 +656,12 @@ $(document).ready(function() {
         }
     }
 
-    function users_pagination(max) {
+    function users_pagination(max, rows) {
+
         $('#users_pagination_container').bootpag({
-            total: Math.ceil(max/users_per_page),
+            total: Math.ceil(max/rows),
             page: 1,
-            maxVisible: users_per_page,
+            maxVisible: 5,
             leaps: true,
             firstLastUse: true,
             first: 'First',
@@ -683,8 +675,8 @@ $(document).ready(function() {
             firstClass: 'first'
         }).on("page", function(event, num) {            
 
-            var start = (num === 1) ? 0 : users_per_page*num
-            var end = start + users_per_page
+            var start = (num === 1) ? 0 : rows*num
+            var end = start + rows
 
             check_all.prop('checked', false);
 
@@ -710,7 +702,7 @@ $(document).ready(function() {
                 }
             }
             create_user_rows(users_filter.slice(0,users_per_page))
-            users_pagination(users_filter.length)
+            users_pagination(users_filter.length, users_per_page)
         }, doneTypingInterval);
     });
 

@@ -106,7 +106,7 @@ exports.create = function(req, res, next) {
                                     image: image, 
                                     change_password: user.date_password, 
                                     starters_tour_ended: user.starters_tour_ended};
-                
+
                 // If user is admin add parameter to session
                 if (user.admin) {
                     req.session.user.admin = user.admin

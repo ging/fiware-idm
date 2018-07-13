@@ -35,6 +35,26 @@
         border-bottom: 0;
     }
 
+    #users-page > .panel > .panel-heading > #entries {
+        display: flex;
+        -webkit-flex-flow: row wrap;
+        justify-content: flex-end;
+
+        border-bottom: 0;
+
+        margin-right: auto;
+
+    }
+
+    #users-page > .panel > .panel-heading > #entries > p {
+        padding: 6px;
+    }
+
+    #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .btn {
+        height: 30px;
+    }
+
+
     #users-page > .panel > .panel-body {
         padding: 0;
     }
@@ -126,6 +146,18 @@
         <div class="panel panel-default datatable" id="auth_admins" data-pagination-url="/filters/users" data-application_id="idm_admin_app" data-pagination-pages="">
             <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
             <div class="panel-heading">
+                <div id="entries">
+                    <p>Show</p>
+                    <div class="select-multiple form-group">
+                        <select class="selectpicker" data-size="5" data-width="100%" data-dropup-auto="false" data-dropdown-align-right="true">
+                            <option class="" value="10">10</option>
+                            <option class="" value="15">15</option>
+                            <option class="" value="30">30</option>
+                            <option class="" value="50">50</option>
+                        </select>
+                    </div>
+                    <p>entries</p>
+                </div>
                 <div class="filter table_search client">
                     <input class="form-control" value="" type="text" name="list_users__filter__q" placeholder="Filter">
                 </div>
@@ -183,11 +215,24 @@
 // Handle the authorization of users to be administrators
 $(document).ready(function() {
 
-    var user_table = $('table#user_table')
+    load_users()
+
+    var users = []
+    var users_filter = []
+    var users_selected = []
+
+    var users_per_page = 15
+
+    var user_table = $('table#user_table > tbody')
+    var check_all = $('input#check_all')
 
     // Create user modal
     var modal_create_user =  $("div#create_user_form")
     var form_create_user =  $('form#create_user_modal', modal_create_user)
+
+    // Delete user modal
+    var modal_delete_user =  $("div#delete_user_modal")
+    var form_delete_user =  $('form#delete_user_form', modal_delete_user)
 
     // Edit user info modal
     var modal_edit_user = $('div#edit_user_modal')
@@ -197,11 +242,48 @@ $(document).ready(function() {
     var edit_input_description = $('textarea#id_description', form_edit_user)
     var edit_input_website = $('input#id_website', form_edit_user)
 
-    // change password modal
+    // Change password modal
     var modal_change_password = $('div#change_password_modal')
     var form_change_password = $('form#change_password_form', modal_change_password)
     var chg_pw_input_password1 = $('input#id_password1', form_change_password)
     var chg_pw_input_password2 = $('input#id_password2', form_change_password)
+
+    check_all.click(function() {
+        if ($(this).prop('checked')) { 
+            $('input.form-check-input').prop('checked', true);
+            $('tr', user_table).each(function(index) {
+                
+                var user_id = $(this).attr('id')
+                var index = users_selected.indexOf(user_id);
+                if (index < 0) {
+                    users_selected.push(user_id)
+                }
+            });
+        } else {
+            $('tr', user_table).each(function() {
+                var user_id = $(this).attr('id')
+                var index = users_selected.indexOf(user_id);
+                if (index > -1) {
+                    users_selected.splice(index, 1);
+                }
+            });
+            $('input.form-check-input').prop('checked', false);
+        }
+    })
+
+    $('#users-page').on("click", "input.form-check-input:not(#check_all)", function(e) {
+
+        var user_id = $(this).closest('tr').attr('id')
+
+        if ($(this).prop('checked')) {
+            users_selected.push(user_id)
+        } else {
+            var index = users_selected.indexOf(user_id);
+            if (index > -1) {
+                users_selected.splice(index, 1);
+            }
+        }
+    })
 
     $('#users-page').on("changed.bs.select", ".selectpicker", function(e, clickedIndex, newValue, oldValue) {
         var selected = $(this).find('option').eq(clickedIndex).val();
@@ -218,6 +300,47 @@ $(document).ready(function() {
         $('.selectpicker').selectpicker('val', '');
         
     })
+
+    // Handle the submit button from the create role form
+    form_delete_user.submit(function(event) {
+
+        // stop form from submitting normally
+        event.preventDefault();
+
+        // Get the action attribute from the <form action=""> element 
+        var $form = $(this),
+            url = $form.attr('action');
+
+        var data = {
+            delete_users: users_selected
+        }
+        // Send put request
+        var delete_request = $.ajax({
+            url: url,
+            type: 'DELETE',
+            beforeSend: beforeSend(form_delete_user.find('input:hidden[name=_csrf]').val()),
+            data: data
+        })
+ 
+        delete_request.done(function(response) {
+            modal_delete_user.modal('hide')
+            for (i = users.length - 1; i >= 0; --i) {
+                var index = users_selected.indexOf(users[i].id);
+                if (index > -1) {
+                    user_table.find('tr#'+users[i].id).remove()
+                    users_selected.splice(index, 1);
+                    users.splice(i, 1);
+                }
+            }
+
+            users_pagination(users.length)
+            create_user_rows(users.slice(0,users_per_page))
+        });
+
+        delete_request.fail(function(response) {
+            
+        })
+    });
 
     function change_password(user) {
 
@@ -370,15 +493,6 @@ $(document).ready(function() {
         }
     });
 
-    $('#check_all').click(function() {
-        if ($(this).prop('checked')) { 
-            $('.form-check-input').prop('checked', true);
-        } else {
-            $('.form-check-input').prop('checked', false);
-        }
-    })
-
-
     $('#users-page').on("click", "span.enable_user", function(e) {
 
         e.preventDefault();
@@ -490,11 +604,6 @@ $(document).ready(function() {
         $('span.alert', form_create_user).hide()
     })
 
-    load_users()
-
-    var users = []
-    var users_filter = []
-
     function htmlEntities(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
@@ -506,7 +615,7 @@ $(document).ready(function() {
             if (data.users.length > 0) {
                 users = data.users
                 users_pagination(data.count)
-                create_user_rows(users.slice(0,15))
+                create_user_rows(users.slice(0,users_per_page))
             } else {
                 $('#admins_content').find('.alert').show('open')
             }
@@ -514,26 +623,38 @@ $(document).ready(function() {
     }
 
     function create_user_rows(rows) {
-        $("#user_table > tbody").html("");
+        
+        var selected = 0
+
+        user_table.html("");
+
         for (var i = 0; i < rows.length; i++) {
             var user_row = $('#table_row_user_row_template').html();
             user_row = user_row.replace(/user_username/g, htmlEntities(rows[i].username));
             user_row = user_row.replace(/user_id/g, String(rows[i].id));
             user_row = user_row.replace(/user_email/g, String(rows[i].email));
             user_row = user_row.replace(/user_avatar/g, String(rows[i].image));
-            $('#user_table tbody').append(user_row);
+            user_table.append(user_row);
             if (rows[i].enabled) {
                 $('#'+rows[i].id).find('.enable').find("input[type='checkbox']").prop('checked', true)
             }
+            if (users_selected.indexOf(rows[i].id) > -1) {
+                $('tr#'+rows[i].id).find("input.form-check-input").prop('checked', true);
+                selected = selected + 1
+            }
             $('.selectpicker').selectpicker('render');
+        }
+
+        if (i === selected) {
+            check_all.prop('checked', true);
         }
     }
 
     function users_pagination(max) {
         $('#users_pagination_container').bootpag({
-            total: Math.ceil(max/15),
+            total: Math.ceil(max/users_per_page),
             page: 1,
-            maxVisible: 15,
+            maxVisible: users_per_page,
             leaps: true,
             firstLastUse: true,
             first: 'First',
@@ -545,10 +666,12 @@ $(document).ready(function() {
             prevClass: 'prev',
             lastClass: 'last',
             firstClass: 'first'
-        }).on("page", function(event, num){
+        }).on("page", function(event, num) {            
 
-            var start = (num === 1) ? 0 : 15*num
-            var end = start + 15
+            var start = (num === 1) ? 0 : users_per_page*num
+            var end = start + users_per_page
+
+            check_all.prop('checked', false);
 
             if (users_filter.length <= 0) {
                 create_user_rows(users.slice(start, end))
@@ -571,7 +694,7 @@ $(document).ready(function() {
                     users_filter.push(users[i])
                 }
             }
-            create_user_rows(users_filter.slice(0,15))
+            create_user_rows(users_filter.slice(0,users_per_page))
             users_pagination(users_filter.length)
         }, doneTypingInterval);
     });

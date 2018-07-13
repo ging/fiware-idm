@@ -24,6 +24,7 @@ router.post('/notify',           					 	csrfProtection,     web_notify_controlle
 router.get('/list_users',        					 	csrfProtection,     web_list_users_controller.show)
 router.get('/list_users/users',        			     	csrfProtection,     web_list_users_controller.index)
 router.post('/list_users/users',        			 	csrfProtection,     web_list_users_controller.create)
+router.delete('/list_users/users',        			 	csrfProtection,     web_list_users_controller.delete)
 router.put('/list_users/users/:userId/edit_info',    	csrfProtection,     web_list_users_controller.edit_info)
 router.put('/list_users/users/:userId/change_password',	csrfProtection,     web_list_users_controller.change_password)
 router.put('/list_users/users/:userId/enable',       	csrfProtection,     web_list_users_controller.enable)

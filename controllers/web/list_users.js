@@ -260,3 +260,19 @@ exports.enable = function(req, res, next) {
         res.status(400).json({ errors: errors}); 
 	})
 }
+
+// DELETE /idm/admins/list_users/users -- Delete user
+exports.delete = function(req, res, next) {
+
+	debug('--> delete')
+
+	models.user.destroy({
+		where: { id: req.body.delete_users }
+	}).then(function(destroyed) {
+		debug(destroyed)
+		res.status(200).json('success')
+	}).catch(function(error) {
+		res.status(400).json('fail')
+	})
+
+}

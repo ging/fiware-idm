@@ -143,7 +143,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 			next()
 			
 		} else {
-			res.status(404).send("Application doesn`t exist or don't have saml2 metadata created")
+			next()
 		}
 	}).catch(function(error) {
 		req.session.errors = error
@@ -153,55 +153,60 @@ exports.search_eidas_credentials = function(req, res, next) {
 
 // Create auth xml request to be send to the idp
 exports.create_auth_request = function(req, res, next) {
-	var xml = req.sp.create_authn_request_xml(idp, {
-		extensions: {
-			'eidas:SPType': 'public',
-			'eidas:RequestedAttributes': [
-			{'eidas:RequestedAttribute': {
-				'@FriendlyName': 'LegalName',
-				'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalName',
-				'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-				'@isRequired': 'true'
-			}},
-			{'eidas:RequestedAttribute': {
-				'@FriendlyName': 'LegalPersonIdentifier',
-				'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalPersonIdentifier',
-				'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-				'@isRequired': 'true'
-			}},
-			{'eidas:RequestedAttribute': {
-				'@FriendlyName': 'FamilyName',
-				'@Name': 'http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName',
-				'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-				'@isRequired': 'true'
-			}},
-			{'eidas:RequestedAttribute': {
-				'@FriendlyName': 'FirstName',
-				'@Name': 'http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName',
-				'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-				'@isRequired': 'true'
-			}},
-			{'eidas:RequestedAttribute': {
-				'@FriendlyName': 'DateOfBirth',
-				'@Name': 'http://eidas.europa.eu/attributes/naturalperson/DateOfBirth',
-				'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-				'@isRequired': 'true'
-			}},
-			{'eidas:RequestedAttribute': {
-				'@FriendlyName': 'PersonIdentifier',
-				'@Name': 'http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier',
-				'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-				'@isRequired': 'true'
-			}}]
-		}
-	});
+	if (req.sp) {
 
-	req.saml_auth_request = {
-		xml: xml,
-		postLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
-		redirectLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login"
+		var xml = req.sp.create_authn_request_xml(idp, {
+			extensions: {
+				'eidas:SPType': 'public',
+				'eidas:RequestedAttributes': [
+				{'eidas:RequestedAttribute': {
+					'@FriendlyName': 'LegalName',
+					'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalName',
+					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+					'@isRequired': 'true'
+				}},
+				{'eidas:RequestedAttribute': {
+					'@FriendlyName': 'LegalPersonIdentifier',
+					'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalPersonIdentifier',
+					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+					'@isRequired': 'true'
+				}},
+				{'eidas:RequestedAttribute': {
+					'@FriendlyName': 'FamilyName',
+					'@Name': 'http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName',
+					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+					'@isRequired': 'true'
+				}},
+				{'eidas:RequestedAttribute': {
+					'@FriendlyName': 'FirstName',
+					'@Name': 'http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName',
+					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+					'@isRequired': 'true'
+				}},
+				{'eidas:RequestedAttribute': {
+					'@FriendlyName': 'DateOfBirth',
+					'@Name': 'http://eidas.europa.eu/attributes/naturalperson/DateOfBirth',
+					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+					'@isRequired': 'true'
+				}},
+				{'eidas:RequestedAttribute': {
+					'@FriendlyName': 'PersonIdentifier',
+					'@Name': 'http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier',
+					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+					'@isRequired': 'true'
+				}}]
+			}
+		});
+
+		req.saml_auth_request = {
+			xml: xml,
+			postLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
+			redirectLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login"
+		}
+		next()
+	} else {
+		next()
 	}
-	next()
 }
 
 // Function to generate SAML certifiactes

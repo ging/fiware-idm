@@ -92,7 +92,7 @@ exports.check_user = function(req, res, next) {
             enabled: false
         }
 
-        if (config_eidas.enabled) {
+        if (config_eidas.enabled && req.sp) {
             render_values.saml_request.xml = req.saml_auth_request.xml
             render_values.saml_request.postLocationUrl = req.saml_auth_request.postLocationUrl
             render_values.saml_request.redirectLocationUrl = req.saml_auth_request.redirectLocationUrl

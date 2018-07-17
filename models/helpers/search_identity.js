@@ -18,8 +18,9 @@ exports.search_pep_or_user = function(id) {
     var query = `SELECT email, 'user' as Source FROM "user" WHERE email=:id
                  UNION ALL
                  SELECT id, 'pep_proxy' as Source FROM pep_proxy WHERE id=:id;`
-
-    return sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT})
+    var res = sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT});
+    console.log("-----------------> res: ", res);
+    return res; //sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT})
 }
 
 // Helper to find info about iot or user

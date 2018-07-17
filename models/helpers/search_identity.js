@@ -15,7 +15,7 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
 
 // Helper to find info about pep proxy or user
 exports.search_pep_or_user = function(id) {
-    var query = `SELECT email, 'user' as Source FROM "user" WHERE email=:id;`
+    var query = `SELECT email, "user" as Source FROM "user" WHERE email=:id;`
                  //UNION ALL
                  //SELECT id, 'pep_proxy' as Source FROM pep_proxy WHERE id=:id;`
     var res = sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT});

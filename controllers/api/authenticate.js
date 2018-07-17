@@ -233,11 +233,11 @@ var create_token = function(req, res, next) {
 		}
 
 		models.auth_token.create(row).then(function(auth_row) {
-			var response_body = { 
-				token: { 
-					methods: response_methods, 
+			var response_body = {
+				token: {
+					methods: response_methods,
 					expires_at: expires
-				}, 
+				},
 				idm_authorization_config: {
 					level: config.authorization.level,
 					authzforce: config.authorization.authzforce.enabled
@@ -293,7 +293,7 @@ function search_identity(name, password) {
 	return new Promise(function(resolve, reject) {
 
 		models.helpers.search_pep_or_user(name).then(function(identity) {
-
+			console.log("authenticate.js search_pep_or_user(name).then(function(identity) identity: ", identity);
 			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {

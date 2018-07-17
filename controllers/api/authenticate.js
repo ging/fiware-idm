@@ -287,7 +287,7 @@ function check_create_token_request(req) {
 }
 
 
-// Function to check password method parameter for identity
+//  Function to check password method parameter for identity
 function search_identity(name, password) {
 
 	return new Promise(function(resolve, reject) {
@@ -297,11 +297,11 @@ function search_identity(name, password) {
 			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {
-				if (identity[0].Source === 'user') {
+				if (identity[0].source === 'user') {
 					authenticate_user(name, password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })
-				} else if (identity[0].Source === 'pep_proxy') {
+				} else if (identity[0].source === 'pep_proxy') {
 					authenticate_pep_proxy(name, password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })
@@ -325,9 +325,9 @@ function authenticate_user(email, password) {
 				} else {
 					reject({ error: {message: 'Internal error', code: 500, title: 'Internal error'}})
 				}
-	        } else {
+	    } else {
 				resolve(user)
-	        }
+	    }
 		});
 	})
 

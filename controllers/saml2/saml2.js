@@ -71,7 +71,7 @@ exports.login = function(req, res, next) {
   	res.redirect(307, 'https://se-eidas.redsara.es/EidasNode/ServiceProvider');
 }
 
-// POST /idm/applications/:applicationId/saml2/login -- Response from eIDAs with user credentials
+// POST /idm/applications/:applicationId/saml2/ReturnPage -- Response from eIDAs with user credentials
 exports.saml2_application_login = function(req, res, next) { 
 	debug("--> saml2_application_login")
 

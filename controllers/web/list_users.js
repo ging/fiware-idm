@@ -49,7 +49,7 @@ exports.index =function(req, res, next) {
 // POST /idm/admins/list_users/users -- Create new user
 exports.create = function(req, res, next) {
 
-    debug("--> create"	)
+    debug("--> create")
 
     req.body.enabled = (req.body.enabled === 'true');
     req.body.send_email = (req.body.send_email === 'true');
@@ -66,7 +66,7 @@ exports.create = function(req, res, next) {
     }
 
     // Array of errors to send to the view
-    errors = [];
+    var errors = [];
 
     // Build a row and validate it
     var user = models.user.build({
@@ -85,7 +85,6 @@ exports.create = function(req, res, next) {
     }
 
     user.validate().then(function(err) {
-
         // If the two password are differents, send an error
         if (req.body.password1 !== req.body.password2) {
             errors.push({message: "passwordDifferent"});
@@ -125,11 +124,11 @@ exports.create = function(req, res, next) {
         }
 
     // If validation fails, send an array with all errors found
-    }).catch(function(error){ 
+    }).catch(function(error){
         if (error.message != "passwordDifferent") {
             errors = errors.concat(error.errors);
         }
-        res.status(400).json({ errors: errors}); 
+        res.status(400).json({ errors: errors});
     });
 };
 
@@ -181,12 +180,12 @@ exports.edit_info = function(req, res, next) {
                 }
             });
 		}).catch(function(error) {
-	        res.status(400).json({ errors: errors}); 
+            res.status(400).json({ errors: errors}); 
 		})
 
     // If validation fails, send an array with all errors found
     }).catch(function(error){ 
-        res.status(400).json({ errors: error.errors}); 
+        res.status(400).json({ errors: error.errors});
     });
 };
 
@@ -196,7 +195,7 @@ exports.change_password = function(req, res, next) {
     debug("--> change_password")
 
     // Array of errors to send to the view
-    errors = [];
+    var errors = [];
 
     // Build a row and validate it
     var user = models.user.build({
@@ -208,10 +207,8 @@ exports.change_password = function(req, res, next) {
     if (req.body.password2 == "") {
         errors.push({message: "password2", type: "Validation error"});
     }
-
     // Validate user email and username
     user.validate().then(function(err) {
-
     	// If the two password are differents, send an error
         if (req.body.password1 !== req.body.password2) {
             errors.push({message: "passwordDifferent"});
@@ -234,7 +231,7 @@ exports.change_password = function(req, res, next) {
 		}
 
     // If validation fails, send an array with all errors found
-    }).catch(function(error){ 
+    }).catch(function(error){
         if (error.message != "passwordDifferent") {
             errors = errors.concat(error.errors);
         }

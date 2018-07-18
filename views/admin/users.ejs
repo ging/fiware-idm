@@ -1,11 +1,11 @@
 <style type="text/css">
 
-    #users-page > div > .table > tbody > tr > td, 
-    #users-page > div > .table > tbody > tr > th,
-    #users-page > div > .table > tfoot > tr > td, 
-    #users-page > div > .table > tfoot > tr > th, 
-    #users-page > div > .table > thead > tr > td, 
-    #users-page > div > .table > thead > tr > th {
+    .table > tbody > tr > td, 
+    .table > tbody > tr > th,
+    .table > tfoot > tr > td, 
+    .table > tfoot > tr > th, 
+    .table > thead > tr > td, 
+    .table > thead > tr > th {
         vertical-align: baseline;
         padding: 8px;
     }
@@ -14,13 +14,21 @@
         padding-bottom: 0px;
     }
 
+    .table > tbody > tr > td > p {
+        overflow:hidden; 
+        white-space: nowrap;
+    }
+
+    style="overflow:hidden; white-space: nowrap;"
+
     #users-page > div > .table > tbody > tr > td > label {
         padding-top: 8px;
     }
 
-    #users-page > div > .table {
+    .table {
         margin-left: auto; 
-        margin-right: auto; width: 100%;
+        margin-right: auto;
+        width: 100%;
     }
 
     #users-page > .panel {
@@ -31,7 +39,6 @@
         display: flex;
         -webkit-flex-flow: row wrap;
         justify-content: flex-end;
-
         border-bottom: 0;
     }
 
@@ -80,7 +87,7 @@
         margin-bottom: 0px;
         position: relative;
         display: inline-block;
-        width: 60px;
+        width: 50px;
         height: 24px;
     }
 
@@ -123,7 +130,7 @@
     input:checked + .slider:before {
         -webkit-transform: translateX(26px);
         -ms-transform: translateX(26px);
-        transform: translateX(35px);
+        transform: translateX(26px);
     }
 
     /* Rounded sliders */
@@ -177,17 +184,17 @@
                     <table id="user_table" class="table table-striped">
                         <thead>
                             <tr>
-                                <th width="5%">
+                                <th style="width: 2%;">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="check_all">
                                     </div> 
                                 </th>
-                                <th width="5%"></th>
-                                <th width="20%">Id</th>
-                                <th width="10%">Username</th>
-                                <th width="10%">Email</th>
-                                <th width="5%">Enable</th>
-                                <th width="10%">Actions</th>
+                                <th style="width: 5%;"></th>
+                                <th style="width: 35%;">Id</th>
+                                <th style="width: 20%;">Username</th>
+                                <th style="width: 20%;">Email</th>
+                                <th style="width: 5%;">Enable</th>
+                                <th style="width: 10%;">Actions</th>
                             </tr>
                         </thead>
                         <tbody> 
@@ -227,8 +234,8 @@ $(document).ready(function() {
     var check_all = $('input#check_all')
 
     // Create user modal
-    var modal_create_user =  $("div#create_user_form")
-    var form_create_user =  $('form#create_user_modal', modal_create_user)
+    var modal_create_user =  $("div#create_user_modal")
+    var form_create_user =  $('form#create_user_form', modal_create_user)
 
     // Delete user modal
     var modal_delete_user =  $("div#delete_user_modal")
@@ -313,39 +320,45 @@ $(document).ready(function() {
         // stop form from submitting normally
         event.preventDefault();
 
-        // Get the action attribute from the <form action=""> element 
-        var $form = $(this),
-            url = $form.attr('action');
 
-        var data = {
-            delete_users: users_selected
-        }
-        // Send put request
-        var delete_request = $.ajax({
-            url: url,
-            type: 'DELETE',
-            beforeSend: beforeSend(form_delete_user.find('input:hidden[name=_csrf]').val()),
-            data: data
-        })
- 
-        delete_request.done(function(response) {
-            modal_delete_user.modal('hide')
-            for (i = users.length - 1; i >= 0; --i) {
-                var index = users_selected.indexOf(users[i].id);
-                if (index > -1) {
-                    user_table.find('tr#'+users[i].id).remove()
-                    users_selected.splice(index, 1);
-                    users.splice(i, 1);
-                }
+        if (users_selected.length > 0) {
+            // Get the action attribute from the <form action=""> element 
+            var $form = $(this),
+                url = $form.attr('action');
+
+            var data = {
+                delete_users: users_selected
             }
+            // Send put request
+            var delete_request = $.ajax({
+                url: url,
+                type: 'DELETE',
+                beforeSend: beforeSend(form_delete_user.find('input:hidden[name=_csrf]').val()),
+                data: data
+            })
+     
+            delete_request.done(function(response) {
+                modal_delete_user.modal('hide')
+                for (i = users.length - 1; i >= 0; --i) {
+                    var index = users_selected.indexOf(users[i].id);
+                    if (index > -1) {
+                        user_table.find('tr#'+users[i].id).remove()
+                        users_selected.splice(index, 1);
+                        users.splice(i, 1);
+                    }
+                }
 
-            users_pagination(users.length)
-            create_user_rows(users.slice(0,users_per_page))
-        });
+                users_pagination(users.length, users_per_page)
+                create_user_rows(users.slice(0,users_per_page))
+                $('input.form-check-input').prop('checked', false);
+            });
 
-        delete_request.fail(function(response) {
-            
-        })
+            delete_request.fail(function(response) {
+                users_pagination(users.length, users_per_page)
+                create_user_rows(users.slice(0,users_per_page))
+                $('input.form-check-input').prop('checked', false);
+            })
+        }
     });
 
     function change_password(user) {
@@ -549,31 +562,31 @@ $(document).ready(function() {
 
         // Payload to be send to the server
         var data = {
-            username:  $(this).find('input#id_username').val(),
-            email:  $(this).find('input#id_email').val(),
-            password1:  $(this).find('input#id_password1').val(),
-            password2:  $(this).find('input#id_password2').val(),
-            description:  $(this).find('textarea#id_description').val(),
-            website:  $(this).find('input#id_website').val(),
-            send_email:  $(this).find('input#id_send_email').is(":checked"),
-            enabled: $(this).find('input#id_enabled').is(":checked") 
+            username:  $('input#id_username', form_create_user).val(),
+            email:  $('input#id_email', form_create_user).val(),
+            password1:  $('input#id_password1', form_create_user).val(),
+            password2:  $('input#id_password2', form_create_user).val(),
+            description:  $('textarea#id_description', form_create_user).val(),
+            website:  $('input#id_website', form_create_user).val(),
+            send_email:  $('input#id_send_email', form_create_user).is(":checked"),
+            enabled: $('input#id_enabled', form_create_user).is(":checked") 
         }
 
         // Check values of inputs before send to the server
         if (data.username == '') {
-            $('span.alert#username').show('open')
+            $('span.alert#username', form_create_user).show('open')
         }
         if (data.email == '') {
-            $('span.alert#email').show('open')
+            $('span.alert#email', form_create_user).show('open')
         }
         if (data.password1 == '') {
-            $('span.alert#password1').show('open')
+            $('span.alert#password1', form_create_user).show('open')
         }
         if (data.password2 == '') {
-            $('span.alert#password2').show('open')
+            $('span.alert#password2', form_create_user).show('open')
         }
         if (data.password1 !== data.password2) {
-            $('span.alert#passwordDifferent').show('open')
+            $('span.alert#passwordDifferent', form_create_user).show('open')
         }
 
         // If there is no alert send post request to the server
@@ -588,8 +601,8 @@ $(document).ready(function() {
                 data: data,
                 beforeSend: beforeSend(form_create_user.find('input:hidden[name=_csrf]').val()) 
             });
-     
-            post_request.done(function(user) {
+
+            post_request.done(function(response) {
                 users.push(user)
                 $('#create_user_modal').modal('hide')
             });
@@ -597,7 +610,7 @@ $(document).ready(function() {
             post_request.fail(function(response) {
                 var errors = JSON.parse(response.responseText).errors
                 for (var i in errors) { 
-                    $('span.alert#'+errors[i].message).show('open')
+                    $('span.alert#'+errors[i].message, form_create_user).show('open')
                 }
             })
         }
@@ -608,7 +621,7 @@ $(document).ready(function() {
         form_create_user.find('input.form-control').val('')
         form_create_user.find('input[type="checkbox"]').prop('checked', false)
         $('span.alert', form_create_user).hide()
-    })
+    });
 
     function htmlEntities(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

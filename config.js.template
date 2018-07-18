@@ -8,6 +8,7 @@ config.https = {
     enabled: false,
     cert_file: 'certs/idm-2018-cert.pem',
     key_file: 'certs/idm-2018-key.pem',
+    ca_certs: [],
     port: 443
 };
 

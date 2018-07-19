@@ -8,6 +8,9 @@ export default class EventManager{
 
 	    this.users_per_page = 15
 
+	    this.typingTimer
+    	this.doneTypingInterval = 500;
+
 	    this.user_table = $('table#user_table > tbody')
 	    this.check_all = $('input#check_all')
 
@@ -37,13 +40,27 @@ export default class EventManager{
 		this.ui_manager = ui_manager;
 	}
 	init_ui(){
+		// Pre load user rows
+		this.load_users = this.load_users.bind(this);
+
+		// Filter users
+		this.filter_users = this.filter_users.bind(this);
+
+		// User actions
+		this.submit_delete = this.submit_delete.bind(this);
+		this.submit_ch_pw = this.submit_ch_pw.bind(this);
+		this.submit_edit = this.submit_edit.bind(this);
+		this.submit_create = this.submit_create.bind(this);
+		this.enable_user = this.enable_user.bind(this);
+
 		this.select_all_users = this.select_all_users.bind(this);
 		this.select_users = this.select_users.bind(this);
 		this.select_action = this.select_action.bind(this);
-		this.submit_delete = this.submit_delete.bind(this);
 		this.ch_pw = this.ch_pw.bind(this);
-		this.submit_ch_pw = this.submit_ch_pw.bind(this);
 		this.edit_user = this.edit_user.bind(this);
-		this.submit_edit = this.submit_edit.bind(this);
+
+
+		this.search_user_by_id = this.search_user_by_id.bind(this);
+		this.htmlEntities = this.htmlEntities.bind(this);
 	}
 }

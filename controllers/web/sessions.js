@@ -32,6 +32,8 @@ exports.login_not_required = function(req, res, next){
 // MW to see if user needs to change password
 exports.password_check_date = function(req, res, next) {
 
+    debug("--> password_check_date");
+
     if (req.path.includes('/saml2/metadata') || req.path.includes('/saml2/ReturnPage')) {
         next()
     } else {

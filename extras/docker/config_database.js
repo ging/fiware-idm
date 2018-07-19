@@ -41,9 +41,17 @@ sequelize
                 exec('npm run-script seed_db', function(error, stdout, stderr){ 
                     if (error) {
                         console.log("Unable to seed database: ", err);
-                    }
 
+                    }
+                    if (process.env.IDM_ADMIN_PASS === undefined || process.env.IDM_ADMIN_USER === undefined || 
+                       process.env.IDM_ADMIN_EMAIL === undefined || process.env.IDM_ADMIN_PASS === undefined) {
+                        console.log( "****************");
+                        console.log( "WARNING: Seeding database with an admin user using default credentials." + 
+                        "This user must be deleted when running on a production instance");
+                        console.log( "****************");
+                    }
                     console.log("Database seeded")
+
                     process.exit()
                 });
             });

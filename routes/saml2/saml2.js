@@ -7,7 +7,7 @@ var saml2Controller = require('../../controllers/saml2/saml2');
 var oauthController = require('../../controllers/oauth2/oauth2');
 
 // Routes for Saml2
-//router.post('/login',      oauthController.load_application, 	saml2Controller.search_eidas_credentials, 	saml2Controller.login);
+router.post('/login',      oauthController.load_application, 	saml2Controller.search_eidas_credentials, 	saml2Controller.login);
 
 // catch 404 and forward to error handler
 router.use(function(req, res, next) {

@@ -9,16 +9,19 @@ ENV IDM_PORT "3000"
 
 
 
-# IMPORTANT: Use Docker Secrets to define these values:
+# IMPORTANT: For a Production Environment Use Docker Secrets to define 
+#  these values and add _FILE to the name of the variable.
+
 # ENV IDM_ADMIN_ID    "admin"
 # ENV IDM_ADMIN_USER  "admin"
 # ENV IDM_ADMIN_EMAIL "admin@test.com"
 # ENV IDM_ADMIN_PASS  "1234" 
-
-
-# IMPORTANT: Use Docker Secrets to define these values:
-# ENV IDM_SESSION_SECRET "nodejs_idm" # Must be changed.
-# ENV IDM_ENCRYPTION_KEY "nodejs_idm" # Must be changed.
+# ENV IDM_SESSION_SECRET "nodejs_idm" 
+# ENV IDM_ENCRYPTION_KEY "nodejs_idm" 
+# ENV IDM_DB_PASS "idm"
+# ENV IDM_DB_USER "root"
+# ENV IDM_EX_AUTH_DB_USER "db_user"
+# ENV IDM_EX_AUTH_DB_PASS "db_pass"
 
 
 # ENV IDM_HTTPS_ENABLED false
@@ -31,8 +34,6 @@ ENV IDM_PDP_LEVEL "basic"
 # ENV IDM_AUTHZFORCE_PORT" 8080"
 
 ENV DATABASE_HOST "localhost"
-ENV IDM_DB_PASS "idm"
-ENV IDM_DB_USER "root"
 ENV IDM_DB_NAME "idm"
 ENV IDM_DIALECT "mysql"
 
@@ -40,8 +41,6 @@ ENV IDM_DIALECT "mysql"
 # ENV IDM_EX_AUTH_DRIVER "custom_authentication_driver"
 # ENV IDM_EX_AUTH_DAB_HOST "localhost"
 # ENV IDM_EX_AUTH_DB_NAME "db_name"
-# ENV IDM_EX_AUTH_DB_USER "db_user"
-# ENV IDM_EX_AUTH_DB_PASS "db_pass"
 # ENV IDM_EX_AUTH_DB_USER_TABLE "user"
 # ENV IDM_EX_AUTH_DIALECT "mysql"
 

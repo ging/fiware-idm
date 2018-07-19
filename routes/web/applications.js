@@ -93,7 +93,7 @@ if (config.eidas) {
 	router.get('/:applicationId/step/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_new_eidas_crendentials);
 	router.post('/:applicationId/step/eidas',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_create_eidas_crendentials);
 	router.get('/:applicationId/saml2/metadata',                         	     saml2Controller.search_eidas_credentials,       saml2Controller.saml2_metadata);
-    router.post('/:applicationId/saml2/ReturnPage',                              saml2Controller.saml2_application_login);
+    router.post('/:applicationId/saml2/ReturnPage',                              saml2Controller.search_eidas_credentials,       saml2Controller.saml2_application_login);
 }
 
 module.exports = router;

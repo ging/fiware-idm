@@ -257,7 +257,7 @@ function generate_app_certificates(app_id,eidas_credentials)  {
 				  	' -subj "/C=ES/ST=Madrid/L=Madrid/' +
 				  	'O=' + eidas_credentials.organization_name +
 				  	'/OU=' + eidas_credentials.organization_name +
-				  	'/CN=' + eidas_credentials.organization_url +'"'
+				  	'/CN=' + eidas_credentials.organization_url.replace(/(^\w+:|^)\/\//, '') +'"'
 
 		var cert = 'openssl x509 -req -in '+csr_name+' -signkey '+key_name+' -out '+cert_name 
 

@@ -103,10 +103,11 @@ var info_token = function(req, res, next) {
 	}).then(function(token) {
 		res.status(200).json(token)
 	}).catch(function(error) {
+		// Log the actual error to the debug log
 		debug('Error: ' + error)
-		if (!error.error) {
-			error = { error: {message: 'Internal error', code: 500, title: 'Internal error'}}
-		}
+		// Always return the same 401 - Unauthorized error to the user.
+		// This avoids information leakage.
+		error = { error: {message: 'Invalid email or password', code: 401, title: 'Unauthorized'}}
 		res.status(error.error.code).json(error)
 	})
 }

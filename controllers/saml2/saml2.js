@@ -31,7 +31,7 @@ exports.step_create_eidas_crendentials = function(req, res, next) {
 
 	eidas_credentials.validate().then(function() {
 		eidas_credentials.save().then(function() {
-			generate_app_certificates(req.application.id).then(function() {
+			generate_app_certificates(req.application.id, eidas_credentials).then(function() {
 				res.redirect('/idm/applications/'+req.application.id+'/step/avatar');
 			}).catch(function(error) {
 				req.session.message = {text: ' Fail creating eidas certificates.', type: 'warning'};
@@ -78,18 +78,50 @@ exports.saml2_application_login = function(req, res, next) {
 	var options = {request_body: req.body};
 
 	req.sp.post_assert(idp, options, function(err, saml_response) {
-		if (err != null)
+		if (err != null) {
 			debug(err)
-			return res.send(500);
-
+			return res.sendStatus(500);
+		}
+		debug(saml_response)
 		// Save name_id and session_index for logout
 		// Note:  In practice these should be saved in the user session, not globally.
-		name_id = saml_response.user.name_id;
-		session_index = saml_response.user.session_index;
+		var name_id = saml_response.user.name_id;
+		var session_index = saml_response.user.session_index;
+
+		// var eidas_profile = {}
+
+		// for (var key in saml_response.user.attributes) {
+		//     if (saml_response.user.attributes.hasOwnProperty(key)) {
+		//     	eidas_profile[key] = saml_response.user.attributes[key][0]
+		//     }
+		// }
+
+		// create_user(name_id, eidas_profile)
 
 		res.send("Hello #{saml_response.user.name_id}!");
 	});
 }
+
+/*function create_user(name_id, eidas_profile) {
+	models.user.findOne({
+		where: { eidas_id: name_id },
+	}).then(function(user) {
+		if (user) {
+			//user.extras
+		} else {
+			// Build a row and validate it
+	        var user = models.user.build({
+	            username: req.body.username, 
+	            email: req.body.email,
+	            password: req.body.password1,
+	            date_password: new Date((new Date()).getTime()),
+	            enabled: false
+	        });
+		}
+	}).catch(function(error) {
+
+	})
+}*/
 
 // Search eidas credentials associated to application
 exports.search_eidas_credentials = function(req, res, next) {
@@ -210,7 +242,7 @@ exports.create_auth_request = function(req, res, next) {
 }
 
 // Function to generate SAML certifiactes
-function generate_app_certificates(app_id)  {
+function generate_app_certificates(app_id,eidas_credentials)  {
 
 	debug("--> generate_app_certificates")
 
@@ -220,7 +252,13 @@ function generate_app_certificates(app_id)  {
 		var cert_name = 'certs/applications/' + app_id + '-cert.pem'
 
 		var key = 'openssl genrsa -out '+key_name+' 2048'
-		var csr = 'openssl req -new -sha256 -key '+key_name+' -out '+csr_name+' -batch'
+		var csr = 'openssl req -new -sha256 -key ' + key_name + 
+				  	' -out ' + csr_name + 
+				  	' -subj "/C=ES/ST=Madrid/L=Madrid/' +
+				  	'O=' + eidas_credentials.organization_name +
+				  	'/OU=' + eidas_credentials.organization_name +
+				  	'/CN=' + eidas_credentials.organization_url +'"'
+
 		var cert = 'openssl x509 -req -in '+csr_name+' -signkey '+key_name+' -out '+cert_name 
 
 		var create_certificates =  key + ' && ' + csr + ' && ' + cert

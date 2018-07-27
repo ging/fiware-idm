@@ -70,6 +70,9 @@ module.exports = function(sequelize, DataTypes) {
         }, starters_tour_ended: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        }, eidas_id: {
+            type: DataTypes.STRING,
+            defaultValue: null
         }, extra: {
             type: DataTypes.STRING
         }, scope: {

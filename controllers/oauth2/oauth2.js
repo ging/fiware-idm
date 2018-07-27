@@ -250,6 +250,7 @@ exports.authenticate_token = function(req, res, next) {
     var action = (req.query.action) ? req.query.action : undefined
     var resource = (req.query.resource) ? req.query.resource : undefined
     var authzforce = (req.query.authzforce) ? req.query.authzforce : undefined
+    var req_app = (req.query.app_id) ? req.query.app_id : undefined
 
     if ((action || resource) && authzforce) {
         var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
@@ -282,7 +283,7 @@ exports.authenticate_token = function(req, res, next) {
             user_info.email = user.email
             user_info.id = user.id
 
-            return search_user_info(user_info, action, resource, authzforce)
+            return search_user_info(user_info, action, resource, req_app, authzforce)
         } else if (user._modelOptions.tableName === 'iot') {
 
             var iot_info = require('../../oauth_response/oauth_iot_response.json');
@@ -303,7 +304,7 @@ exports.authenticate_token = function(req, res, next) {
 
 
 // Check if user has enabled the application to read their details
-function search_user_info(user_info, action, resource, authzforce) {
+function search_user_info(user_info, action, resource, req_app, authzforce) {
 
     debug(' --> search_user_info')
 
@@ -315,7 +316,7 @@ function search_user_info(user_info, action, resource, authzforce) {
 
         promise_array.push(search_roles)
 
-        if (action && resource) {
+        if (action && resource && req_app) {
 
             var search_permissions = search_roles.then(function(roles) {
                 return user_permissions(roles.all, user_info.app_id, action, resource)
@@ -336,13 +337,13 @@ function search_user_info(user_info, action, resource, authzforce) {
             user_info.roles = roles.user
             user_info.organizations = roles.organizations
 
-            if (action && resource) {
-                var permissions = values[1]
-                if (permissions && permissions.length > 0) {
+            if (action && resource && req_app) {
+                if (values[1] && values[1].length > 0 && req_app === user_info.app_id) {
                     user_info.authorization_decision = "Permit"
                 } else {
                     user_info.authorization_decision = "Deny"
                 }
+
             }
 
             if (config_authzforce.enabled && authzforce) {
@@ -359,7 +360,6 @@ function search_user_info(user_info, action, resource, authzforce) {
         })
     })
 }
-
 
 // Search user roles in application
 function user_roles(user_id, app_id) {

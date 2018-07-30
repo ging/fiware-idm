@@ -144,7 +144,7 @@ exports.authenticate_user = function(req, res, next){
             });
         } else {
             req.session.errors = errors;
-            res.redirect("/auth/login");  
+            res.redirect("/auth/login");
         }
     }
 }

@@ -68,7 +68,7 @@ exports.login = function(req, res, next) {
 	delete req.body.password
 	delete req.query
 
-  	res.redirect(307, 'https://se-eidas.redsara.es/EidasNode/ServiceProvider');
+  	res.redirect(307, config.eidas.idp_host);
 }
 
 // POST /idm/applications/:applicationId/saml2/ReturnPage -- Response from eIDAs with user credentials
@@ -82,46 +82,66 @@ exports.saml2_application_login = function(req, res, next) {
 			debug(err)
 			return res.sendStatus(500);
 		}
-		debug(saml_response)
+
 		// Save name_id and session_index for logout
 		// Note:  In practice these should be saved in the user session, not globally.
 		var name_id = saml_response.user.name_id;
 		var session_index = saml_response.user.session_index;
 
-		// var eidas_profile = {}
+		var eidas_profile = {}
 
-		// for (var key in saml_response.user.attributes) {
-		//     if (saml_response.user.attributes.hasOwnProperty(key)) {
-		//     	eidas_profile[key] = saml_response.user.attributes[key][0]
-		//     }
-		// }
+		for (var key in saml_response.user.attributes) {
+		    if (saml_response.user.attributes.hasOwnProperty(key)) {
+		    	eidas_profile[key] = saml_response.user.attributes[key][0]
+		    }
+		}
 
-		// create_user(name_id, eidas_profile)
+		create_user(name_id, eidas_profile).then(function(user) {
 
-		res.send("Hello #{saml_response.user.name_id}!");
+            req.session.user = {
+            	id: user.id,
+                username: user.username,
+                image: '/img/logos/small/user.png'
+            };
+
+            var path = '/oauth2/authorize?'+
+            				'response_type=code' + '&' +
+            		   		'client_id=' + req.application.id + '&' +
+            		   		'state=xyz' + '&' +
+            		   		'redirect_uri=' + req.application.redirect_uri
+
+            res.redirect(path)
+		}).catch(function(error) {
+			req.session.errors = errors;
+            res.redirect("/auth/login");
+		})
 	});
 }
 
-/*function create_user(name_id, eidas_profile) {
-	models.user.findOne({
+function create_user(name_id, eidas_profile) {
+
+	return models.user.findOne({
 		where: { eidas_id: name_id },
 	}).then(function(user) {
 		if (user) {
-			//user.extras
+			return user
 		} else {
-			// Build a row and validate it
-	        var user = models.user.build({
-	            username: req.body.username, 
-	            email: req.body.email,
-	            password: req.body.password1,
-	            date_password: new Date((new Date()).getTime()),
-	            enabled: false
-	        });
-		}
-	}).catch(function(error) {
 
+	        var user = models.user.build({
+	            username: eidas_profile.FirstName,
+	            eidas_id: name_id,
+	            extra: JSON.stringify({eidas_profile: eidas_profile}),
+	            enabled: true
+	        })
+
+	        user.save().then(function() {
+	        	return user
+	        }).catch(function(error) {
+	        	return Promise.reject(error)
+	        })
+		}
 	})
-}*/
+}
 
 // Search eidas credentials associated to application
 exports.search_eidas_credentials = function(req, res, next) {

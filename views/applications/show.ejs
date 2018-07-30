@@ -235,14 +235,16 @@
                 <nav id="auth_organizations_pagination_container"></nav>
             </div>
         </div>
-        
+
     </div>
 </div>
 
 <%- include _authorize_user %>
 <%- include _authorize_organization %>
+<%- include _add_trusted_application %>
 <%- include ../templates/./applications/./_pep_proxy_row %>
 <%- include ../templates/./applications/./_iot_row %>
+<%- include ../templates/./applications/./_application_row %>
 <%- include ../templates/./users/./_available_user_row %>
 <%- include ../templates/./users/./_assign_role_user_row %>
 <%- include ../templates/./users/./_user_row %>
@@ -257,6 +259,7 @@
 <script src="/javascripts/applications/handle_iot.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_pep_proxy.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_get_authorized_users.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_get_trusted_applications.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_get_authorized_organizations.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_authorize_users.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_authorize_organizations.js" type="text/javascript"></script>

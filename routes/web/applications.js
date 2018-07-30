@@ -45,6 +45,7 @@ router.get('/new',                                                           csr
 router.post('/',                                                             csrfProtection,     web_app_controller.create);
 router.get('/:applicationId/authorized_users',                               csrfProtection, web_app_controller.authorized_users);
 router.get('/:applicationId/authorized_organizations',                       csrfProtection, web_app_controller.authorized_organizations);
+router.get('/:applicationId/trusted_applications',                           csrfProtection, web_app_controller.trusted_applications);
 router.get('/:applicationId', 		                                      	 web_check_perm_controller.owned_permissions,    csrfProtection,	web_app_controller.show);
 router.get('/:applicationId/step/avatar',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.step_new_avatar);
 router.post('/:applicationId/step/avatar',                                   web_check_perm_controller.owned_permissions,    multer({storage: imageAppUpload}).single('image'), csrfProtection,  web_app_controller.step_create_avatar);

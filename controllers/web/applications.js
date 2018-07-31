@@ -253,55 +253,6 @@ exports.authorized_organizations = function(req, res, next) {
     });
 }
 
-// GET /idm/applications/:applicationId/trusted_applications -- Send authorizes users of an application
-exports.trusted_applications = function(req, res, next) {
-
-	debug("--> trusted_applications");
-
-	var applications = {
-		applications: [
-			{
-				id: '1111111111',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '1111111111'
-			}, 
-			{
-				id: '2222222222',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '2222222222'
-			}, 
-			{
-				id: '3333333333',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '3333333333'
-			}, 
-			{
-				id: '4444444444',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '4444444444'
-			}, 
-			{
-				id: '5555555555',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '5555555555'
-			}, 
-			{
-				id: '6666666666',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '6666666666'
-			}
-		]
-	}
-
-	res.send(applications)
-}
-
 // GET /idm/applications/new -- Render a view to create a new application
 exports.new = function(req, res, next) {
 

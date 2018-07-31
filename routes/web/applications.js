@@ -15,6 +15,7 @@ var web_app_controller = require('../../controllers/web/index').applications;
 var web_check_perm_controller = require('../../controllers/web/index').check_permissions;
 var web_auth_user_controller = require('../../controllers/web/index').authorize_user_apps;
 var web_auth_org_controller = require('../../controllers/web/index').authorize_org_apps;
+var web_trusted_apps_controller = require('../../controllers/web/index').trusted_apps;
 var web_role_controller = require('../../controllers/web/index').roles;
 var web_perm_controller = require('../../controllers/web/index').permissions;
 var web_peppx_controller = require('../../controllers/web/index').pep_proxies;
@@ -37,15 +38,17 @@ var imageAppUpload = multer.diskStorage({
     }
 })
 
+router.get('/available',                       csrfProtection,  web_trusted_apps_controller.available_applications);
+
 // Routes to create, edit and delete applications
 router.get('/',  					                                      	 csrfProtection,     web_app_controller.index);
 router.get('/filtered_user',                                          		 csrfProtection,     web_app_controller.filter_user);
 router.get('/filtered_organization',                                         csrfProtection,     web_app_controller.filter_organization);
 router.get('/new',                                                           csrfProtection,     web_app_controller.new);
 router.post('/',                                                             csrfProtection,     web_app_controller.create);
-router.get('/:applicationId/authorized_users',                               csrfProtection, web_app_controller.authorized_users);
-router.get('/:applicationId/authorized_organizations',                       csrfProtection, web_app_controller.authorized_organizations);
-router.get('/:applicationId/trusted_applications',                           csrfProtection, web_app_controller.trusted_applications);
+router.get('/:applicationId/authorized_users',                               csrfProtection,     web_app_controller.authorized_users);
+router.get('/:applicationId/authorized_organizations',                       csrfProtection,     web_app_controller.authorized_organizations);
+router.get('/:applicationId/trusted_applications',                           csrfProtection,     web_trusted_apps_controller.get_trusted_applications);
 router.get('/:applicationId', 		                                      	 web_check_perm_controller.owned_permissions,    csrfProtection,	web_app_controller.show);
 router.get('/:applicationId/step/avatar',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.step_new_avatar);
 router.post('/:applicationId/step/avatar',                                   web_check_perm_controller.owned_permissions,    multer({storage: imageAppUpload}).single('image'), csrfProtection,  web_app_controller.step_create_avatar);
@@ -55,6 +58,9 @@ router.put('/:applicationId/edit/avatar', 		                          	 web_chec
 router.put('/:applicationId/edit/info',                                      web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.update_info);
 router.delete('/:applicationId/edit/delete_avatar',                          web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.delete_avatar);
 router.delete('/:applicationId',                                             web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.destroy);
+
+// Route to handl trusted applications
+router.post('/:applicationId/edit/trusted_applications',                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_trusted_apps_controller.set_trusted_applications);
 
 // Routes to authorize users in applications
 router.get('/:applicationId/edit/users',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_auth_user_controller.get_users);

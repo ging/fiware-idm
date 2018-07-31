@@ -1,6 +1,6 @@
 <!-- Form to authorize user to be admin -->
 <div id="add_trusted_app" class="modal fade" style="top: 0px;" role="dialog" aria-hidden="false">
-    <form id="trusted_applications_form" class="" action="/idm/applications/<%= application.id%>?_method=put" method="POST">
+    <form id="trusted_applications_form" action="/idm/applications/<%= application.id%>/edit/trusted_applications" method="POST">
         <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
         <div class="modal-dialog">
             <div class="modal-content">
@@ -10,53 +10,49 @@
                 </div>
                 <div class="modal-body clearfix">
                     <div class="tab-content">
-                        <fieldset id="manage_organization_users_application_roles__update_owners_users" class="js-tab-pane active">
-                            <input id="submit_authorize" name="submit_authorize" type="hidden" value="">
-                            <div class="membership update_owners_users_membership dropdown_fix add-members" data-show-roles="True">
-                                <div class="all-users">
+                        <fieldset>
+                            <input id="submit_trusted" name="submit_trusted" type="hidden" value="">
+                            <div class="handle_trusted_app">
+                                <div class="all-applications">
                                     <header>
                                         <h4>Applications</h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" name="" id="available_update_owners_users" class="filter update_owners_users_server_filter form-control input-sm" placeholder="filter" data-url="/filters/users">
+                                            <input type="text" id="filter_available_applications" class="form-control input-sm" placeholder="filter" data-url="/idm/applications/available">
                                         </div>
-                                        <div id="spinner_update_owners_users" class="filtering-spinner-inline" style="display: none;">
+                                        <div id="spinner_available_applications" class="filtering-spinner-inline" style="display: none;">
                                             <i class="fa fa-circle-o-notch fa-spin"></i>
                                         </div>
                                     </header>
-                                    <div class="pre-scrollable filterable update_owners_users_server_filterable" id="available_update_owners_users">
-                                        <ul id="available_members" class="available_members available_update_owners_users list-group">
+                                    <div class="pre-scrollable filterable">
+                                        <ul id="available_applications" class="list-group">
                                         </ul>
-                                        <ul class="no_results list-group alert alert-info" id="no_available_update_owners_users" style="display: none;">
-                                            <li>No users found.</li>
+                                        <ul class="no_results list-group alert alert-info" id="no_available_applications" style="display: none;">
+                                            <li>No applications found.</li>
                                         </ul>
-                                        <ul class="no_results list-group alert alert-info" id="perform_filter_available_update_owners_users" style="display: block;">
+                                        <ul class="no_results list-group alert alert-info" id="perform_filter_available_applications" style="display: block;">
                                             <li>Use the filter (type at least two characters).</li>
                                         </ul>
                                     </div>
                                     <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
                                 </div>
-                                <div class="members-list">
+                                <div class="trusted-applications">
                                     <header>
                                         <h4>Trusted applications</h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" name="" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="filter">
+                                            <input type="text" id="filter_trusted_applications" class="form-control input-sm" placeholder="filter">
                                         </div>
                                     </header>
-                                    <div class="pre-scrollable filterable update_owners_users_client_filterable" id="update_owners_users_members_scroll" >
-
-                                        <ul id="authorized_users" class="members update_owners_users_members list-group">
+                                    <div class="pre-scrollable filterable">
+                                        <ul id="trusted_applications_list" class="list-group">
                                         </ul>
-
-                                        <ul class="no_results list-group alert alert-info" id="no_update_owners_users_members" style="display: none;">
-                                            <li>No users.</li>
+                                        <ul class="no_results list-group alert alert-info" id="no_trusted_applications" style="display: none;">
+                                            <li>No trusted applications.</li>
                                         </ul>                                
                                     </div>
-                                    <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
-                                    <div class="alert alert-warning no_roles_warning" style="display: none;">Some users don't have any role assigned. If you save now they won't be authorized in the application</div>
                                 </div>
                             </div>
-                        </fieldset>
-                        <span id="info_added_user" style="display: none;" class='help-block alert alert-info'>User authorized as admin</span>
+                        </fieldset>    
+                        <span id="info_added_app" style="display: none;" class='help-block alert alert-info'>User authorized as admin</span>
                     </div>
                 </div>
                 <div class="modal-footer">

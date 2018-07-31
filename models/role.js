@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     'Role',
     { id: {
         type: DataTypes.STRING(36),
-        //defaultValue: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4,
         unique: true,
         primaryKey: true
     }, name: {

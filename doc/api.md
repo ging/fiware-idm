@@ -24,9 +24,9 @@
         - [Refresh Token Grant](#def-refreshToken)
              - [Access Token Request](#def-refreseGrantTokReq)
              - [Access Token Response](#def-refreshGrantTokRes)
-        - [Validate Access Tokens](#def-getUserInfo)
-             - [Get user information and roles](def-getUserInfo)
-             - [Validate authorization](def-validate-auth)
+        - [Validate Access Tokens](#def-validate-tokens)
+             - [Get user information and roles](#def-getUserInfo)
+             - [Validate authorization](#def-validate-auth)
 ---
 <a name="def-apiIdm"></a>
 # Idm API 

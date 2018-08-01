@@ -23,7 +23,7 @@ exports.load_application = function(req, res, next, applicationId) {
 				req.application = application
 				return api_check_perm_controller.check_request(req, res, next)
 			} else {
-				res.status(404).json({error: {message: "Application not found", code: 404, title: "Not Found"}})
+				return Promise.reject({error: {message: "Application not found", code: 404, title: "Not Found"}})
 			}
 		}).then(function(decision) {
 			next()

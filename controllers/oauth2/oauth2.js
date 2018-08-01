@@ -316,6 +316,10 @@ function search_user_info(user_info, action, resource, req_app, authzforce) {
 
         promise_array.push(search_roles)
 
+        var search_trusted_apps = trusted_applications(user_info.app_id)
+
+        promise_array.push(search_trusted_apps)
+
         if (action && resource && req_app) {
 
             var search_permissions = search_roles.then(function(roles) {
@@ -337,17 +341,24 @@ function search_user_info(user_info, action, resource, req_app, authzforce) {
             user_info.roles = roles.user
             user_info.organizations = roles.organizations
 
-            if (action && resource && req_app) {
-                if (values[1] && values[1].length > 0 && req_app === user_info.app_id) {
-                    user_info.authorization_decision = "Permit"
-                } else {
-                    user_info.authorization_decision = "Deny"
-                }
+            user_info.trusted_applications = values[1]
 
+            //user_info.trusted_applications.includes(req_app)
+            if (user_info.trusted_applications.includes(req_app)) {
+                user_info.authorization_decision = "Permit"
+            } else {
+                if (action && resource && req_app) {
+                    if (values[2] && values[2].length > 0 && req_app === user_info.app_id) {
+                        user_info.authorization_decision = "Permit"
+                    } else {
+                        user_info.authorization_decision = "Deny"
+                    }
+                }
             }
 
+
             if (config_authzforce.enabled && authzforce) {
-                var authzforce_domain = values[1]
+                var authzforce_domain = values[2]
                 if (authzforce_domain) {
                     user_info.app_azf_domain = authzforce_domain.az_domain
                 }
@@ -441,6 +452,7 @@ function user_roles(user_id, app_id) {
 
 // Search user permissions in application whose action and resource are recieved from Pep Proxy
 function user_permissions(roles_id, app_id, action, resource) {
+
     return models.role_permission.findAll({
         where: { role_id: roles_id },
         attributes: ['permission_id']
@@ -452,6 +464,20 @@ function user_permissions(roles_id, app_id, action, resource) {
                          action: action,
                          resource: resource }
             })
+        } else {
+            return []
+        }
+    })
+}
+
+// Search Trusted applications
+function trusted_applications(app_id) {
+    return models.trusted_application.findAll({
+        where: { oauth_client_id: app_id },
+        attributes: ['trusted_oauth_client_id']
+    }).then(function(trusted_apps) {
+        if (trusted_apps.length > 0) {
+            return trusted_apps.map(id => id.trusted_oauth_client_id)
         } else {
             return []
         }

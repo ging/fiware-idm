@@ -1779,7 +1779,75 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             
 + Response 204
 
+## Trusted Applications [/v1/applications/{application_id}/trusted_applications]
 
++ Parameters
+    + application_id - Id of the application. 
+
+### List trusted applications associated to an application [GET]
++ Request
+    + Headers
+            
+            X-Auth-token: token
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 299
+        ETag: W/"12b-fgVfRrc8fzRhPLgAGLWe+LLPg74"
+        Date: Wed, 01 Aug 2018 11:34:42 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+            "trusted_applications": [
+                "8692ec57-8514-4ef6-a347-3d1ac6409f79",
+                "78b4763f-139a-4820-a42b-3e265fb9d56e",
+                "462ee067-f10a-4c9c-aefe-079038830043",
+                "6781fd6c-9dd3-46d7-bdcc-4ca2af1ae42d",
+            ]
+        }
+
+## Trusted Applications [/v1/applications/{application_id}/trusted_applications/{trustedApplicationId}]
+
++ Parameters
+    + application_id - Id of the application.
+    + trustedApplicationId - Id of the application to be added as trusted.
+
+### Add trusted application [POST]
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+    
+    + Headers
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 123
+        ETag: W/"7b-uwB1nhIkCNnU+e+LWcHAN4IO5XQ"
+        Date: Wed, 01 Aug 2018 11:38:01 GMT
+        Connection: keep-alive
+    
+    + Body
+    
+        {
+            "oauth_client_id": "3e34cbf6-3579-4e54-878a-0a406962ac36",
+            "trusted_oauth_client_id":"0118ccb7-756e-42f9-8a19-5b4e83ca8c46"
+        }
+
+### Remove trusted application from an application [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 204 (application/json)
 
 ## Service Provider [/v1/service_providers/configs]
 

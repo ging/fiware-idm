@@ -11,54 +11,28 @@ exports.get_trusted_applications = function(req, res, next) {
 
 	debug("--> get_trusted_applications");
 
-	var applications = {
-		applications: [
-			{
-				id: '1111111111',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '1111111111'
-			}, 
-			{
-				id: '2222222222',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '2222222222'
-			}, 
-			{
-				id: '3333333333',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '3333333333'
-			}, 
-			{
-				id: '4444444444',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '4444444444'
-			}, 
-			{
-				id: '5555555555',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '5555555555'
-			},
-			{
-				id: '6666666666',
-				image: '/img/logos/medium/app.png',
-				url: 'puaj',
-				name: '6666666666'
-			}, 
-			{
-				id: '3333333333',
-				image: '/img/logos/medium/app.png',
-				url: 'puajirl',
-				name: '3333333333'
+	models.trusted_application.findAll({
+		where: { oauth_client_id: req.application.id },
+		attributes: ['trusted_oauth_client_id'],
+		include: [{
+			model: models.oauth_client,
+			attributes: ['id', 'name', 'image', 'url']
+		}]
+	}).then(function(result) {
+		var applications = result.map(function(id) {
+			if (id.OauthClient.dataValues.image == 'default') {
+				id.OauthClient.dataValues.image = '/img/logos/original/app.png'
+			} else {
+				id.OauthClient.dataValues.image = '/img/applications/'+application.image
 			}
-		]
-	}
-
-	res.send(applications)
+			return id.OauthClient.dataValues
+		})
+		res.send({applications: applications})
+	}).catch(function(error) {
+		debug('Error ' + error)
+		
+		res.status(500).send('Internal error')
+	})
 }
 
 // GET /idm/applications/:applicationId/set_trusted_applications -- Send authorizes users of an application
@@ -66,7 +40,42 @@ exports.set_trusted_applications = function(req, res, next) {
 
 	debug("--> set_trusted_applications");
 
-	
+	var array_id_trusted = JSON.parse(req.body.submit_trusted)
+
+	// Remove possible duplicates and null values
+	array_id_trusted = array_id_trusted.filter( function( item, index, inputArray ) {
+           return item && item !== req.application.id && inputArray.indexOf(item) == index;
+    });
+
+	models.trusted_application.destroy({
+		where: { 
+			oauth_client_id: req.application.id
+		}
+	}).then(function() {
+
+		// Array of objects with oauth_client_id and trusted_oauth_client_id
+		var create_trusted = []
+
+		for(var i = 0; i < array_id_trusted.length; i++) {
+			create_trusted.push({
+				oauth_client_id: req.application.id,
+				trusted_oauth_client_id: array_id_trusted[i]
+			})
+		}
+
+		models.trusted_application.bulkCreate(create_trusted).then(function() {
+				req.session.message = {text: ' Modified trusted applications.', type: 'success'};
+				res.redirect("/idm/applications/"+req.application.id)
+		}).catch(function(error) {
+			debug('Error ' + error)
+			req.session.message = {text: ' Trusted applications error.', type: 'warning'};
+			res.redirect("/idm/applications/"+req.application.id)
+		});
+	}).catch(function(error) {
+		debug('Error ' + error)
+		req.session.message = {text: ' Trusted applications error.', type: 'warning'};
+		res.redirect("/idm/applications/"+req.application.id)
+	});
 }
 
 // GET /idm/applications/available -- Search users to authorize in an application

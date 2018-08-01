@@ -13,5 +13,6 @@ module.exports = {
   role_organization_assignments: 	require('../../controllers/api/role_organization_assignments'),
   user_organization_assignments: 	require('../../controllers/api/user_organization_assignments'),
   service_provider: 				require('../../controllers/api/service_provider'),
-  authenticate_oauth:   require('../../controllers/api/authenticate_oauth')
+  authenticate_oauth:   require('../../controllers/api/authenticate_oauth'),
+  trusted_applications:   require('../../controllers/api/trusted_applications')
 }

@@ -179,6 +179,7 @@ exports.scope = scope;
 exports.auth_token = auth_token;
 exports.user_authorized_application = user_authorized_application;
 exports.eidas_credentials = eidas_credentials;
+exports.trusted_application =trusted_application;
 
 // Export helpers
 var search_identity = require('./helpers/search_identity')

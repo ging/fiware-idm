@@ -96,7 +96,7 @@ function check_user_action(application, path, method, permissions) {
 				return true;
 			}
 	        break;
-	    case (path.includes('edit/users') || path.includes('edit/organizations')):
+	    case (path.includes('edit/users') || path.includes('edit/organizations') || path.includes('edit/trusted_applications')):
 	    	if (permissions.some(r=> ['1','5','6'].includes(r))) {
 	    		return true;
 	    	}

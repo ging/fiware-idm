@@ -14,9 +14,12 @@ var api_iota_controller = api_controller.iot_agents;
 var api_role_pem_assign_controller = api_controller.role_permission_assignments;
 var api_role_user_assign_controller = api_controller.role_user_assignments;
 var api_role_org_assign_controller = api_controller.role_organization_assignments;
+var api_trusted_app_controller = api_controller.trusted_applications;
 
-// Load application with :applicationId parameter and check permissions of user in request
-router.param('applicationId',   	api_appl_controller.load_application);
+// Load application with :applicationId or :trustedApplicationId parameter and check permissions of user in request
+router.param('applicationId',   		api_appl_controller.load_application);
+router.param('trustedApplicationId',	api_trusted_app_controller.load_trusted_application);
+
 // Load other params
 router.param('roleId',   			api_role_controller.load_role);
 router.param('permissionId',   		api_perm_controller.load_permission);
@@ -76,5 +79,10 @@ router.get('/:applicationId/organizations', 																		api_role_controlle
 router.get('/:applicationId/organizations/:organizationId/roles', 													api_role_controller.search_changeable_roles,	api_role_org_assign_controller.index_organization_roles);
 router.post('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', 	api_role_controller.search_changeable_roles,	api_role_org_assign_controller.create);
 router.delete('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', api_role_controller.search_changeable_roles,	api_role_org_assign_controller.delete);
+
+// Routes for trusted applications
+router.get('/:applicationId/trusted_applications', 							api_trusted_app_controller.index);
+router.post('/:applicationId/trusted_applications/:trustedApplicationId', 	api_trusted_app_controller.create);
+router.delete('/:applicationId/trusted_applications/:trustedApplicationId', api_trusted_app_controller.delete);
 
 module.exports = router;

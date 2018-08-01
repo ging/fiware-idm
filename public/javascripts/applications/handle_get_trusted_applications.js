@@ -1,5 +1,5 @@
 var trusted_applications = []
-var trusted_applications_filtr = []
+var trusted_applications_filter = []
 
 var appTypingTimer;
 var appDoneTypingInterval = 500;
@@ -21,7 +21,7 @@ $(document).ready(function(){
 		$('div#spinner_trust_apps').show('open')
 		$.get(url, function(data, status) {
 			trusted_applications = data.applications
-			if (trusted_applications.length > 0) {
+			if (trusted_applications && trusted_applications.length > 0) {
 				applications_pagination(trusted_applications.length)
 				create_applications_rows(trusted_applications.slice(0,5), applications_table)	
 			} else {
@@ -52,7 +52,7 @@ $(document).ready(function(){
         clearTimeout(appTypingTimer);
         appTypingTimer = setTimeout(function() {
             for (var i = 0; i < trusted_applications.length; i++) {
-                if (trusted_applications[i].name.includes(filter)) {
+                if (trusted_applications[i].name.toLowerCase().includes(filter.toLowerCase())) {
                     trusted_applications_filter.push(trusted_applications[i])
                 }
             }

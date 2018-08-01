@@ -2,65 +2,6 @@
 // Handle the authorization of users to be administrators
 $(document).ready(function() {
 
-    $('#add_trusted_app').modal('show');
-
-    trusted_applications = [
-        {
-            id: '1111111111',
-            image: '/img/logos/medium/app.png',
-            url: 'puaj',
-            name: '1111111111'
-        }, 
-        {
-            id: '2222222222',
-            image: '/img/logos/medium/app.png',
-            url: 'puaj',
-            name: '2222222222'
-        }, 
-        {
-            id: '3333333333',
-            image: '/img/logos/medium/app.png',
-            url: 'puaj',
-            name: '3333333333'
-        }, 
-        {
-            id: '4444444444',
-            image: '/img/logos/medium/app.png',
-            url: 'puaj',
-            name: '4444444444'
-        }, 
-        {
-            id: '5555555555',
-            image: '/img/logos/medium/app.png',
-            url: 'puaj',
-            name: '5555555555'
-        },
-        {
-            id: '6666666666',
-            image: '/img/logos/medium/app.png',
-            url: 'puaj',
-            name: '6666666666'
-        }, 
-        {
-            id: '3333333333',
-            image: '/img/logos/medium/app.png',
-            url: 'puajirl',
-            name: '3333333333'
-        }
-    ]
-
-    if (trusted_applications.length > 0) {
-        for (var i = 0; i < trusted_applications.length; i++) {
-            var trusted_app_row = $('#trusted_application_row_template').html();
-            trusted_app_row = trusted_app_row.replace(/application_name/g, htmlEntities(trusted_applications[i].name));
-            trusted_app_row = trusted_app_row.replace(/application_id/g, String(trusted_applications[i].id));
-            trusted_app_row = trusted_app_row.replace(/application_image/g, String(trusted_applications[i].image));
-            $("#add_trusted_app").find("#trusted_applications_list").append(trusted_app_row);
-        }               
-    } else {
-        $("#no_trusted_applications").show()
-    }
-
     // Load info when open add trusted application modal
     $('#add_trusted_app_button').click(function () {
 
@@ -125,6 +66,14 @@ $(document).ready(function() {
         var application_name = row.find(".name").html()
         var application_image = row.find(".avatar").children('img').first().attr('src')
 
+        var list_trusted = $("#add_trusted_app").find('#trusted_applications_list')
+
+        if (list_trusted.length > 0) {
+            $("#no_trusted_applications").hide()
+        } else {
+            $("#no_trusted_applications").show()
+        }
+
         if ($("#add_trusted_app").find('#trusted_applications_list').find('#'+application_id).length) {
             var info_added_app = "<span id='info_added_app' style='display: none; text-align: center;' class='help-block alert alert-warning'>Application "+application_name+" has been already added</span>"
             $("span#info_added_app").replaceWith(info_added_app);
@@ -164,7 +113,7 @@ $(document).ready(function() {
 
     // Handle the submit button form to submit assignment
     $("#trusted_applications_form").bind("keypress submit", function(event) {
-        
+
         // stop form from submitting by pressing enter
         if (event.which == 13) {
             event.preventDefault();
@@ -173,7 +122,7 @@ $(document).ready(function() {
             // stop form from submitting normally
             event.preventDefault();
             var application_ids = []
-            $("#add_trusted_app").find('ul.trusted_applications_list').children().each(function() {
+            $("#add_trusted_app").find('ul#trusted_applications_list').children().each(function() {
                 application_ids.push(this.id)
             })
 
@@ -197,14 +146,11 @@ $(document).ready(function() {
 function exit_add_trusted_app() {
 
     $("#add_trusted_app").find("#alert_error_search_available").hide();
-    $("#add_trusted_app").find(".alert-warning").hide();
     $("#add_trusted_app").find("#no_trusted_applications").hide()
-    $("#add_trusted_app").find(".modal-footer").find("#submit_button").val("Save");
     $("#add_trusted_app").find('#no_available_applications').hide('close');
     $("#add_trusted_app").find('#perform_filter_available_applications').show('open');
-    $("#add_trusted_app").find('#available_update_owners_users').val('');
-    $("#add_trusted_app").find(".available_applications").empty();
+    $("#add_trusted_app").find('#filter_available_applications').val('');
+    $("#add_trusted_app").find("#available_applications").empty();
     $("#add_trusted_app").find("#trusted_applications_list").empty();
-    $("#add_trusted_app").find(".alert-warning").hide("close");
     $("#add_trusted_app").find('#filter_trusted_applications').val('');
 }

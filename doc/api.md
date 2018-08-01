@@ -24,7 +24,9 @@
         - [Refresh Token Grant](#def-refreshToken)
              - [Access Token Request](#def-refreseGrantTokReq)
              - [Access Token Response](#def-refreshGrantTokRes)
-        - [Get user information and roles](#def-getUserInfo)
+        - [Validate Access Tokens](#def-getUserInfo)
+             - [Get user information and roles](def-getUserInfo)
+             - [Validate authorization](def-validate-auth)
 ---
 <a name="def-apiIdm"></a>
 # Idm API 
@@ -243,8 +245,10 @@ grant_type=client_credentials
 
 See [Authorization Code Grant](#def-codeGrantTokRes)
 
-<a name="def-getUserInfo"></a>
-## Get user information and roles
+<a name="def-validate-tokens"></a>
+## Validate Access Tokens
+
+Once you have created an OAuth2.0 Access Token associated to a user, you can validate it in order to retrieve the user information and roles. Furthermore, if you have configured [Keyrock as PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization) you can use the same endpoint for checking if the user is authorized to perform an specific action in the application.
 
 **Warning** 
 > Be aware that if you used the Client Credentials Grant to
@@ -253,7 +257,9 @@ See [Authorization Code Grant](#def-codeGrantTokRes)
 > to validate the token, but the JSON (if the token is valid) will be
 > empty.
 
- 
+<a name="def-getUserInfo"></a>
+### Get user information and roles
+
 Request:
 ~~~
 GET /user?access_token=2YotnFZFEjr1zCsicMWpAA
@@ -261,30 +267,78 @@ GET /user?access_token=2YotnFZFEjr1zCsicMWpAA
 Example response:
 ~~~
     {
-      id: 1,
-      displayName: "Demo user",
-      email: "demo@fiware.org",
-      roles: [
+      "organizations": [
         {
-          id: 15,
-          name: "Manager"
-        },
-        {
-          id: 7
-          name: "Ticket manager"
-        }
-      ],
-      organizations: [
-        {
-           id: 12,
-           name: "Universidad Politecnica de Madrid",
-           roles: [
-             {
-               id: 14,
-               name: "Admin"
-             }
+          "id": "13e88767-7473-472d-9c33-110c5bed2a57",
+          "name": "test_org",
+          "description": "my org",
+          "website": null,
+          "roles": [
+            {
+              "id": "9c4e8db4-a56b-4731-bfc6-7dd8fb2fbea3",
+              "name": "test"
+            }
           ]
         }
-      ]
+      ],
+      "displayName": "My User",
+      "roles": [
+        {
+          "id": "9c4e8db4-a56b-4731-bfc6-7dd8fb2fbea3",
+          "name": "test"
+        }
+      ],
+      "app_id": "ff03921a-a772-4220-9854-e2d499ae474a",
+      "isGravatarEnabled": false,
+      "email": "myuser@test.com",
+      "id": "myuser",
+      "authorization_decision": "",
+      "app_azf_domain": "",
+      "username": "myuser"
+    }
+~~~
+
+<a name="def-validate-auth"></a>
+### Validate authorization
+
+If you have configured [Keyrock as PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization) you can use the same endpoint for checking if the user is authorized to perform an specific action to an specific resource in the scope of an application.
+
+In the user information response, the decision regarding authorization will be included.
+
+Request:
+~~~
+GET /user?access_token=2YotnFZFEjr1zCsicMWpAA&action=GET&resource=myResource&app_id=ea3edd2e-2220-4489-af7d-6d60fffb7d1a
+~~~
+Example response:
+~~~
+    {
+      "organizations": [
+        {
+          "id": "13e88767-7473-472d-9c33-110c5bed2a57",
+          "name": "test_org",
+          "description": "my org",
+          "website": null,
+          "roles": [
+            {
+              "id": "9c4e8db4-a56b-4731-bfc6-7dd8fb2fbea3",
+              "name": "test"
+            }
+          ]
+        }
+      ],
+      "displayName": "My User",
+      "roles": [
+        {
+          "id": "9c4e8db4-a56b-4731-bfc6-7dd8fb2fbea3",
+          "name": "test"
+        }
+      ],
+      "app_id": "ff03921a-a772-4220-9854-e2d499ae474a",
+      "isGravatarEnabled": false,
+      "email": "myuser@test.com",
+      "id": "myuser",
+      "authorization_decision": "Permit",
+      "app_azf_domain": "",
+      "username": "myuser"
     }
 ~~~

@@ -343,16 +343,11 @@ function search_user_info(user_info, action, resource, req_app, authzforce) {
 
             user_info.trusted_applications = values[1]
 
-            //user_info.trusted_applications.includes(req_app)
-            if (user_info.trusted_applications.includes(req_app)) {
-                user_info.authorization_decision = "Permit"
-            } else {
-                if (action && resource && req_app) {
-                    if (values[2] && values[2].length > 0 && req_app === user_info.app_id) {
-                        user_info.authorization_decision = "Permit"
-                    } else {
-                        user_info.authorization_decision = "Deny"
-                    }
+            if (action && resource && req_app) {
+                if (values[2] && values[2].length > 0 && (req_app === user_info.app_id || user_info.trusted_applications.includes(req_app))) {
+                    user_info.authorization_decision = "Permit"
+                } else {
+                    user_info.authorization_decision = "Deny"
                 }
             }
 

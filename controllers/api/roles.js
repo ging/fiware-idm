@@ -3,6 +3,7 @@ var models = require('../../models/models.js');
 var uuid = require('uuid');
 
 var Sequelize = require('sequelize');
+var _ = require('lodash');
 const Op = Sequelize.Op;
 
 // MW to Autoload info if path include roleId
@@ -66,9 +67,15 @@ exports.index = function(req, res) {
 		attributes: ['id', 'name'],
 		order: [['id', 'DESC']]
 	}).then(function(roles) {
-		if (roles.length > 0)
+		if (roles.length > 0) {
+			roles = _.map(roles, (role) => {
+	  			role.urls = {
+					permissions_url: "/v1/roles/" + role.id + "/permissions"
+				};
+	  			return role;
+	  		});
 			res.status(200).json({roles: roles});
-		else {
+		} else {
 			res.status(404).json({error: {message: "Roles not found", code: 404, title: "Not Found"}})
 		}
 	}).catch(function(error) {
@@ -107,9 +114,13 @@ exports.create = function(req, res) {
 
 // GET /v1/:applicationId/roles/:roleId -- Get info about role
 exports.info = function(req, res) {
-	debug('--> info')
+	debug('--> info');
+	var role = req.role;
+	role.urls = {
+		permissions_url: "/v1/roles/" + role.id + "/permissions"
+	};
 	
-	res.status(200).json({role: req.role});
+	res.status(200).json({role: role});
 }
 
 // PATCH /v1/:applicationId/roles/:roleId -- Edit role

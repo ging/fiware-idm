@@ -57,10 +57,10 @@ exports.index_organization_roles = function(req, res) {
 	})
 }
 
-// POST /v1/applications/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/organizationRoleId -- Edit role organization assignment
-exports.create = function(req, res) {
+// PUT /v1/applications/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/organizationRoleId -- Add role organization assignment
+exports.addRole = function(req, res) {
 
-	debug('--> create')
+	debug('--> addRole')
 
 	if (req.changeable_role) {
 		var changeable_role_id = req.changeable_role.map(elem => elem.id)
@@ -92,9 +92,9 @@ exports.create = function(req, res) {
 }
 
 // DELETE /v1/applications/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/organizationRoleId -- Remove role organization assignment
-exports.delete = function(req, res) {
+exports.removeRole = function(req, res) {
 
-	debug('--> delete')
+	debug('--> removeRole')
 
 	if (req.changeable_role) {
 		var changeable_role_id = req.changeable_role.map(elem => elem.id)

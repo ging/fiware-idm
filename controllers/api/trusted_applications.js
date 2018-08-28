@@ -52,9 +52,9 @@ exports.index = function(req, res) {
 	})
 }
 
-// POST /v1/applications/:applicationId/trusted_applications/:trustedApplicationId -- Add trusted application
-exports.create = function(req, res) {
-	debug('--> create')
+// PUT /v1/applications/:applicationId/trusted_applications/:trustedApplicationId -- Add trusted application
+exports.addTrusted = function(req, res) {
+	debug('--> addTrusted')
 
 	if (req.application.id === req.trusted_application) {
 		res.status(400).json({ error: {message: 'Bad request', code: 400, title: 'Bad Request'}})
@@ -79,9 +79,9 @@ exports.create = function(req, res) {
 
 }
 
-// POST /v1/applications/:applicationId/trusted_applications/:trustedApplicationId -- Delete trusted application
-exports.delete = function(req, res) {
-	debug('--> delete')
+// DELETE /v1/applications/:applicationId/trusted_applications/:trustedApplicationId -- Delete trusted application
+exports.removeTrusted = function(req, res) {
+	debug('--> removeTrusted')
 
 	if (req.application.id === req.trusted_application) {
 		res.status(400).json({ error: {message: 'Bad request', code: 400, title: 'Bad Request'}})

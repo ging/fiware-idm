@@ -46,7 +46,7 @@ exports.info = function(req, res) {
 }
 
 // PUT /v1/organizations/:organizationId/users/:userId/:organizationRoleId -- Set user organization assignment
-exports.setRole = function(req, res) {
+exports.addRole = function(req, res) {
 	debug('--> setRole')
 
 	models.user_organization.findOne({

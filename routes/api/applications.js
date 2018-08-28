@@ -87,7 +87,9 @@ router.post('/:applicationId/organizations/:organizationId/roles/:roleId/organiz
 
 // Routes for trusted applications
 router.get('/:applicationId/trusted_applications', 							api_trusted_app_controller.index);
-router.post('/:applicationId/trusted_applications/:trustedApplicationId', 	api_trusted_app_controller.create);
-router.delete('/:applicationId/trusted_applications/:trustedApplicationId', api_trusted_app_controller.delete);
+router.put('/:applicationId/trusted_applications/:trustedApplicationId', 	api_trusted_app_controller.addTrusted);
+router.delete('/:applicationId/trusted_applications/:trustedApplicationId', api_trusted_app_controller.removeTrusted);
+// POST endpoint is deprecated - maintained for backwards compatibility
+router.post('/:applicationId/trusted_applications/:trustedApplicationId', 	api_trusted_app_controller.addTrusted);
 
 module.exports = router;

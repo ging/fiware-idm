@@ -4,6 +4,7 @@ var uuid = require('uuid');
 var config = require('../../config');
 var fs = require('fs');
 var path = require('path');
+var _ = require('lodash');
 
 var auth_driver = config.external_auth.enabled ?
     require('../../helpers/' + config.external_auth.authentication_driver) :
@@ -84,7 +85,14 @@ exports.index = function(req, res) {
 					 'description', 
 					 'website']
 	}).then(function(users) {
-		if (users.length > 0) {
+			if (users.length > 0) {
+				users = _.map(users, (user) => {
+	  			user.urls = {
+					organization_roles_url: "/v1/users/" + user.id + "/organization_roles",
+					roles_url: "/v1/users/" + user.id + "/roles"
+				};
+	  			return user;
+			});
 			res.status(200).json({users: users});
 		} else {
 			res.status(404).json({error: {message: "Users not found", code: 404, title: "Not Found"}})
@@ -145,8 +153,12 @@ exports.create = function(req, res) {
 // GET /v1/users/:userId -- Get info about user
 exports.info = function(req, res) {
 	debug('--> info')
-
-	res.status(200).json({user: req.user});
+	var user= req.user;
+	user.urls = {
+		organization_roles_url: "/v1/users/" + user.id + "/organization_roles",
+		roles_url: "/v1/users/" + user.id + "/roles"
+	};
+	res.status(200).json({user: user});
 }
 
 // PUT /v1/users/:userId -- Edit user

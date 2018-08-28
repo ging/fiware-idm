@@ -71,14 +71,19 @@ router.delete('/:applicationId/roles/:roleId/permissions/:permissionId', 	api_ro
 // Routes for role_user_assignments
 router.get('/:applicationId/users', 							api_role_controller.search_changeable_roles,	api_role_user_assign_controller.index_users);
 router.get('/:applicationId/users/:userId/roles', 				api_role_controller.search_changeable_roles,	api_role_user_assign_controller.index_user_roles);
-router.post('/:applicationId/users/:userId/roles/:roleId', 		api_role_controller.search_changeable_roles,	api_role_user_assign_controller.create);
-router.delete('/:applicationId/users/:userId/roles/:roleId', 	api_role_controller.search_changeable_roles,	api_role_user_assign_controller.delete);
+router.put('/:applicationId/users/:userId/roles/:roleId', 		api_role_controller.search_changeable_roles,	api_role_user_assign_controller.addRole);
+router.delete('/:applicationId/users/:userId/roles/:roleId', 	api_role_controller.search_changeable_roles,	api_role_user_assign_controller.removeRole);
+// POST endpoint is deprecated - maintained for backwards compatibility
+router.post('/:applicationId/users/:userId/roles/:roleId', 		api_role_controller.search_changeable_roles,	api_role_user_assign_controller.addRole);
 
 // Routes for role_organization_assignments
 router.get('/:applicationId/organizations', 																		api_role_controller.search_changeable_roles,	api_role_org_assign_controller.index_organizations);
 router.get('/:applicationId/organizations/:organizationId/roles', 													api_role_controller.search_changeable_roles,	api_role_org_assign_controller.index_organization_roles);
-router.post('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', 	api_role_controller.search_changeable_roles,	api_role_org_assign_controller.create);
-router.delete('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', api_role_controller.search_changeable_roles,	api_role_org_assign_controller.delete);
+router.put('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', 	api_role_controller.search_changeable_roles,	api_role_org_assign_controller.addRole);
+router.delete('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', api_role_controller.search_changeable_roles,	api_role_org_assign_controller.removeRole);
+// POST endpoint is deprecated - maintained for backwards compatibility
+router.post('/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/:organizationRoleId', 	api_role_controller.search_changeable_roles,	api_role_org_assign_controller.addRole);
+
 
 // Routes for trusted applications
 router.get('/:applicationId/trusted_applications', 							api_trusted_app_controller.index);

@@ -45,9 +45,9 @@ exports.info = function(req, res) {
 	})
 }
 
-// POST /v1/organizations/:organizationId/users/:userId/:organizationRoleId -- Edit user organization assignment
-exports.create = function(req, res) {
-	debug('--> create')
+// PUT /v1/organizations/:organizationId/users/:userId/:organizationRoleId -- Set user organization assignment
+exports.setRole = function(req, res) {
+	debug('--> setRole')
 
 	models.user_organization.findOne({
 		where: { organization_id: req.organization.id, 
@@ -75,8 +75,8 @@ exports.create = function(req, res) {
 }
 
 // DELETE /v1/user_organization_assignments/:user_id/organizations/:organization_id -- Remove user organization assignment
-exports.delete = function(req, res) {
-	debug('--> delete')
+exports.removeRole = function(req, res) {
+	debug('--> removeRole')
 	
 	models.user_organization.destroy({
 		where: { role: req.role_organization, user_id: req.user.id, organization_id: req.organization.id }

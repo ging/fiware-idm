@@ -28,7 +28,6 @@ exports.authenticate = function(username, password, callback) {
 };
 
 exports.verifyPassword = function(salt, password) {
-
-    var encripted = crypto.createHmac('sha1', salt).update(password).digest('hex');
+    var encripted = crypto.createHmac('sha1', (salt) ? salt : key).update(password).digest('hex');
     return encripted === this.password;
 }

@@ -12,21 +12,23 @@ exports.authenticate = function(username, password, callback) {
 
     // Search the user
     models.user.find({
-        attributes: ['id', 'username', 'password', 'enabled', 'email', 'gravatar', 'image', 'admin', 'date_password', 'starters_tour_ended'],
+        attributes: ['id', 'username', 'salt', 'password', 'enabled', 'email', 'gravatar', 'image', 'admin', 'date_password', 'starters_tour_ended'],
         where: {
             email: username
         }
     }).then(function(user) {
         if (user) {
             // Verify password and if user is enabled to use the web
-            if(user.verifyPassword(password) && user.enabled){
+            if(user.verifyPassword(user.salt, password) && user.enabled){
                 callback(null, user);
-            } else { callback(new Error('invalid')); }   
+            } else {
+                callback(new Error('invalid')); }
         } else { callback(new Error('user_not_found')); }
     }).catch(function(error){ callback(error) });
 };
 
-exports.verifyPassword = function(password) {
-    var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');
+exports.verifyPassword = function(salt, password) {
+
+    var encripted = crypto.createHmac('sha1', salt).update(password).digest('hex');
     return encripted === this.password;
 }

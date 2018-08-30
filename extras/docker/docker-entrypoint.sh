@@ -33,7 +33,7 @@ file_env 'IDM_DB_USER'
 file_env 'IDM_ADMIN_ID'
 file_env 'IDM_ADMIN_USER'
 file_env 'IDM_ADMIN_EMAIL'
-file_env 'IDM_ADMIN_PASS' 
+file_env 'IDM_ADMIN_PASS'
 file_env 'IDM_EX_AUTH_DB_USER'
 file_env 'IDM_EX_AUTH_DB_PASS'
 
@@ -52,11 +52,7 @@ if [[ $IDM_DB_PASS == "idm" ]] && [[ $IDM_DB_USER == "root" ]]; then
 fi
 
 # Wait until database container is deployed
-<<<<<<< HEAD
-until nc -z -v -w30 $DATABASE_HOST 5432  > /dev/null 2>&1
-=======
 until nc -z -v -w30 $DATABASE_HOST ${IDM_DB_PORT:-3306}  > /dev/null 2>&1
->>>>>>> upstream/master
 do
   echo "Waiting for database connection..."
   # wait for 2 seconds before check again

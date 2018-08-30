@@ -4,10 +4,15 @@ MAINTAINER FIWARE Identity Manager Team. DIT-UPM
 
 WORKDIR /opt
 
-ENV IDM_HOST "http://localhost:3000"
-ENV IDM_PORT "3000"
-
-
+ENV IDM_HOST "http://localhost:3000" \
+    IDM_PORT "3000" \
+    IDM_PDP_LEVEL "basic" \
+    DATABASE_HOST "localhost" \
+    IDM_DB_NAME "idm" \
+    IDM_DIALECT "mysql" \
+    IDM_EMAIL_HOST "localhost" \
+    IDM_EMAIL_PORT "25" \
+    IDM_EMAIL_ADDRESS "noreply@localhost"
 
 # IMPORTANT: For a Production Environment Use Docker Secrets to define 
 #  these values and add _FILE to the name of the variable.
@@ -23,19 +28,12 @@ ENV IDM_PORT "3000"
 # ENV IDM_EX_AUTH_DB_USER "db_user"
 # ENV IDM_EX_AUTH_DB_PASS "db_pass"
 
-
 # ENV IDM_HTTPS_ENABLED false
 # ENV IDM_HTTPS_PORT "443"
-
-ENV IDM_PDP_LEVEL "basic"
 
 # ENV IDM_AUTHZFORCE_ENABLED false
 # ENV IDM_AUTHZFORCE_HOST "localhost"
 # ENV IDM_AUTHZFORCE_PORT" 8080"
-
-ENV DATABASE_HOST "localhost"
-ENV IDM_DB_NAME "idm"
-ENV IDM_DIALECT "mysql"
 
 # ENV IDM_EX_AUTH_ENABLED false
 # ENV IDM_EX_AUTH_DRIVER "custom_authentication_driver"
@@ -44,37 +42,38 @@ ENV IDM_DIALECT "mysql"
 # ENV IDM_EX_AUTH_DB_USER_TABLE "user"
 # ENV IDM_EX_AUTH_DIALECT "mysql"
 
-ENV IDM_EMAIL_HOST "localhost"
-ENV IDM_EMAIL_PORT "25"
-ENV IDM_EMAIL_ADDRESS "noreply@localhost"
-
-
-
 
 # Install Ubuntu dependencies
 RUN apt-get update && \
-    apt-get install build-essential debconf-utils ca-certificates curl git netcat -y --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends build-essential debconf-utils ca-certificates curl git netcat  && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install email dependency
 RUN apt-get update && \
     echo "postfix postfix/mailname string noreply@localhost" | debconf-set-selections && \
     echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-    apt-get install -y mailutils
+    apt-get install -y --no-install-recommends  mailutils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 
 # Configure mail
 RUN sed -i 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 
 # Install PPA
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends nodejs &&\
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Download latest version of the code and install npm dependencies
 RUN git clone https://github.com/ging/fiware-idm.git && \
+    rm -rf doc extras && \
     cd fiware-idm && \
     npm cache clean -f && \
-    npm install
+    npm install --production --silent && \
+    rm -rf /root/.npm/cache/*
 
 # Change Workdir
 WORKDIR /opt/fiware-idm

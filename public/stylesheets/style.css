@@ -11829,7 +11829,8 @@ div#update_owners_members {
   border-bottom: 1px solid #D5D5D5;
   color: #fcba04; }
 
-.add-members {
+.add-members,
+.handle_trusted_app {
   position: relative;
   float: left;
   width: 100%;
@@ -11837,9 +11838,11 @@ div#update_owners_members {
   padding-left: 15px;
   padding-right: 15px;
   padding: 0; }
-  .add-members .list-group-item {
+  .add-members .list-group-item,
+  .handle_trusted_app .list-group-item {
     margin: 0; }
-  .add-members .avatar {
+  .add-members .avatar,
+  .handle_trusted_app .avatar {
     float: left;
     margin-right: 0px;
     min-width: 36px;
@@ -11847,69 +11850,153 @@ div#update_owners_members {
     border-top-left-radius: 2px;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px; }
-  .add-members .all-users {
+  .add-members .all-users,
+  .add-members .all-applications,
+  .handle_trusted_app .all-users,
+  .handle_trusted_app .all-applications {
     border-right: 1px solid #A9A9A9; }
     @media (max-width: 768px) {
-      .add-members .all-users {
+      .add-members .all-users,
+      .add-members .all-applications,
+      .handle_trusted_app .all-users,
+      .handle_trusted_app .all-applications {
         border-right: none;
         margin-bottom: 20px; } }
   .add-members .all-users,
-  .add-members .members-list {
+  .add-members .all-applications,
+  .add-members .members-list,
+  .add-members .trusted-applications,
+  .handle_trusted_app .all-users,
+  .handle_trusted_app .all-applications,
+  .handle_trusted_app .members-list,
+  .handle_trusted_app .trusted-applications {
     padding: 0; }
     @media (max-width: 768px) {
       .add-members .all-users,
-      .add-members .members-list {
+      .add-members .all-applications,
+      .add-members .members-list,
+      .add-members .trusted-applications,
+      .handle_trusted_app .all-users,
+      .handle_trusted_app .all-applications,
+      .handle_trusted_app .members-list,
+      .handle_trusted_app .trusted-applications {
         padding-left: 0;
         padding-right: 0; } }
     .add-members .all-users header,
-    .add-members .members-list header {
+    .add-members .all-applications header,
+    .add-members .members-list header,
+    .add-members .trusted-applications header,
+    .handle_trusted_app .all-users header,
+    .handle_trusted_app .all-applications header,
+    .handle_trusted_app .members-list header,
+    .handle_trusted_app .trusted-applications header {
       min-height: 29px;
       margin-bottom: 0px;
       padding-bottom: 0;
       margin-top: 0;
       border-bottom: 1px solid #A9A9A9; }
       .add-members .all-users header h4,
-      .add-members .members-list header h4 {
+      .add-members .all-applications header h4,
+      .add-members .members-list header h4,
+      .add-members .trusted-applications header h4,
+      .handle_trusted_app .all-users header h4,
+      .handle_trusted_app .all-applications header h4,
+      .handle_trusted_app .members-list header h4,
+      .handle_trusted_app .trusted-applications header h4 {
         display: inline;
         line-height: 28px; }
       .add-members .all-users header .form-control,
-      .add-members .members-list header .form-control {
+      .add-members .all-applications header .form-control,
+      .add-members .members-list header .form-control,
+      .add-members .trusted-applications header .form-control,
+      .handle_trusted_app .all-users header .form-control,
+      .handle_trusted_app .all-applications header .form-control,
+      .handle_trusted_app .members-list header .form-control,
+      .handle_trusted_app .trusted-applications header .form-control {
         width: 100%;
         display: inline-block;
         float: right;
         height: 29px;
         padding: 0px 5px; }
       .add-members .all-users header .filtering-spinner-inline,
-      .add-members .members-list header .filtering-spinner-inline {
+      .add-members .all-applications header .filtering-spinner-inline,
+      .add-members .members-list header .filtering-spinner-inline,
+      .add-members .trusted-applications header .filtering-spinner-inline,
+      .handle_trusted_app .all-users header .filtering-spinner-inline,
+      .handle_trusted_app .all-applications header .filtering-spinner-inline,
+      .handle_trusted_app .members-list header .filtering-spinner-inline,
+      .handle_trusted_app .trusted-applications header .filtering-spinner-inline {
         width: 10px;
         float: right;
         margin: 4px 10px;
         display: none; }
         .add-members .all-users header .filtering-spinner-inline i,
-        .add-members .members-list header .filtering-spinner-inline i {
+        .add-members .all-applications header .filtering-spinner-inline i,
+        .add-members .members-list header .filtering-spinner-inline i,
+        .add-members .trusted-applications header .filtering-spinner-inline i,
+        .handle_trusted_app .all-users header .filtering-spinner-inline i,
+        .handle_trusted_app .all-applications header .filtering-spinner-inline i,
+        .handle_trusted_app .members-list header .filtering-spinner-inline i,
+        .handle_trusted_app .trusted-applications header .filtering-spinner-inline i {
           color: #5B5B5F; }
     .add-members .all-users li.list-group-item,
-    .add-members .members-list li.list-group-item {
+    .add-members .all-applications li.list-group-item,
+    .add-members .members-list li.list-group-item,
+    .add-members .trusted-applications li.list-group-item,
+    .handle_trusted_app .all-users li.list-group-item,
+    .handle_trusted_app .all-applications li.list-group-item,
+    .handle_trusted_app .members-list li.list-group-item,
+    .handle_trusted_app .trusted-applications li.list-group-item {
       border-bottom: 0px solid #DDD;
       margin-right: 10px; }
       .add-members .all-users li.list-group-item .member,
-      .add-members .members-list li.list-group-item .member {
+      .add-members .all-applications li.list-group-item .member,
+      .add-members .members-list li.list-group-item .member,
+      .add-members .trusted-applications li.list-group-item .member,
+      .handle_trusted_app .all-users li.list-group-item .member,
+      .handle_trusted_app .all-applications li.list-group-item .member,
+      .handle_trusted_app .members-list li.list-group-item .member,
+      .handle_trusted_app .trusted-applications li.list-group-item .member {
         display: inline;
         width: 87%; }
     .add-members .all-users .data,
-    .add-members .members-list .data {
+    .add-members .all-applications .data,
+    .add-members .members-list .data,
+    .add-members .trusted-applications .data,
+    .handle_trusted_app .all-users .data,
+    .handle_trusted_app .all-applications .data,
+    .handle_trusted_app .members-list .data,
+    .handle_trusted_app .trusted-applications .data {
       padding-top: 8px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; }
     .add-members .all-users .name,
-    .add-members .members-list .name {
+    .add-members .all-applications .name,
+    .add-members .members-list .name,
+    .add-members .trusted-applications .name,
+    .handle_trusted_app .all-users .name,
+    .handle_trusted_app .all-applications .name,
+    .handle_trusted_app .members-list .name,
+    .handle_trusted_app .trusted-applications .name {
       display: inline;
       padding-right: 0; }
     .add-members .all-users .fa-plus,
     .add-members .all-users .fa-close,
+    .add-members .all-applications .fa-plus,
+    .add-members .all-applications .fa-close,
     .add-members .members-list .fa-plus,
-    .add-members .members-list .fa-close {
+    .add-members .members-list .fa-close,
+    .add-members .trusted-applications .fa-plus,
+    .add-members .trusted-applications .fa-close,
+    .handle_trusted_app .all-users .fa-plus,
+    .handle_trusted_app .all-users .fa-close,
+    .handle_trusted_app .all-applications .fa-plus,
+    .handle_trusted_app .all-applications .fa-close,
+    .handle_trusted_app .members-list .fa-plus,
+    .handle_trusted_app .members-list .fa-close,
+    .handle_trusted_app .trusted-applications .fa-plus,
+    .handle_trusted_app .trusted-applications .fa-close {
       float: right;
       display: inline-block;
       padding-top: 4px; }
@@ -11958,7 +12045,8 @@ div#update_owners_members {
     filter: alpha(opacity=100);
     color: #5B5B5F; }
 
-.all-users {
+.all-users,
+.all-applications {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -11969,15 +12057,18 @@ div#update_owners_members {
   padding-right: 15px;
   padding-right: 15px !important; }
   @media (min-width: 768px) {
-    .all-users {
+    .all-users,
+    .all-applications {
       float: left;
       width: 41.66667%; } }
   @media (min-width: 1200px) {
-    .all-users {
+    .all-users,
+    .all-applications {
       float: left;
       width: 41.66667%; } }
 
-.members-list {
+.members-list,
+.trusted-applications {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -11988,24 +12079,31 @@ div#update_owners_members {
   padding-right: 15px;
   padding-left: 15px !important; }
   @media (min-width: 768px) {
-    .members-list {
+    .members-list,
+    .trusted-applications {
       float: left;
       width: 58.33333%; } }
   @media (min-width: 1200px) {
-    .members-list {
+    .members-list,
+    .trusted-applications {
       float: left;
       width: 58.33333%; } }
   @media (max-width: 480px) {
-    .members-list {
+    .members-list,
+    .trusted-applications {
       margin-top: 15px;
       margin-left: 0 !important; } }
 
 .all-users h4,
-.members-list h4 {
+.all-applications h4,
+.members-list h4,
+.trusted-applications h4 {
   display: inline; }
 
 .all-users .has-feedback,
-.members-list .has-feedback {
+.all-applications .has-feedback,
+.members-list .has-feedback,
+.trusted-applications .has-feedback {
   width: 120px;
   display: inline-block;
   float: right;
@@ -12014,19 +12112,25 @@ div#update_owners_members {
   margin: 0; }
 
 .all-users div.active,
-.members-list div.active {
+.all-applications div.active,
+.members-list div.active,
+.trusted-applications div.active {
   position: absolute;
   right: 15px;
   margin-top: -18px; }
 
 .all-users .role_options,
-.members-list .role_options {
+.all-applications .role_options,
+.members-list .role_options,
+.trusted-applications .role_options {
   float: right;
   display: inline-block;
   margin-top: -22px;
   margin-right: 19px; }
   .all-users .role_options a,
-  .members-list .role_options a {
+  .all-applications .role_options a,
+  .members-list .role_options a,
+  .trusted-applications .role_options a {
     position: relative; }
 
 #no_update_owners_members,

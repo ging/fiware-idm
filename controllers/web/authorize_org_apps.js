@@ -82,7 +82,7 @@ exports.get_organizations = function(req, res, next) {
 }
 
 
-// POST /idm/organizations/available -- Search organizations to authorize in an application
+// GET /idm/organizations/available -- Search organizations to authorize in an application
 exports.available_organizations = function(req, res) {
 
 	debug("--> available_organizations")

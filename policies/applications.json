@@ -58,6 +58,10 @@
         "applications:organizations:index": "1,5,6",
         "applications:organizations:roles:index": "1,5,6",
         "applications:organizations:roles:organization_roles:create": "1,5,6",
-        "applications:organizations:roles:organization_roles:delete": "1,5,6"
+        "applications:organizations:roles:organization_roles:delete": "1,5,6",
+
+        "applications:trusted_applications:index": "1,5,6",
+        "applications:trusted_applications:create": "1,5,6",
+        "applications:trusted_applications:delete": "1,5,6"
     }
 }

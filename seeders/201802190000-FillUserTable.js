@@ -10,10 +10,10 @@ module.exports = {
 
       return queryInterface.bulkInsert('user', [
           {
-            id: 'admin',
-            username: 'admin',
-            email: "admin@test.com",
-            password: crypto.createHmac('sha1', key).update('1234').digest('hex'),
+            id:  (process.env.IDM_ADMIN_ID || 'admin'),
+            username:  (process.env.IDM_ADMIN_USER || 'admin'),
+            email: (process.env.IDM_ADMIN_EMAIL || "admin@test.com"),
+            password: crypto.createHmac('sha1', key).update( (process.env.IDM_ADMIN_PASS ||'1234')).digest('hex'),
             date_password: new Date((new Date()).getTime()),
             enabled: 1, 
             admin: 1

@@ -5,6 +5,7 @@ module.exports = {
   applications: require('../../controllers/web/applications'),
   authorize_org_apps: require('../../controllers/web/authorize_org_apps'),
   authorize_user_apps: require('../../controllers/web/authorize_user_apps'),
+  trusted_apps: require('../../controllers/web/trusted_apps'),
   authzforces: require('../../controllers/web/authzforces'),
   check_permissions: require('../../controllers/web/check_permissions'),
   homes: require('../../controllers/web/homes'),

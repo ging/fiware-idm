@@ -10,7 +10,9 @@ router.param('organizationRoleId',   require('../../controllers/api/index').orga
 // Routes for user_organization_assignments
 router.get('/', 							api_user_org_assign_controller.index);
 router.get('/:userId/organization_roles', 						api_user_org_assign_controller.info);
-router.post('/:userId/organization_roles/:organizationRoleId', 		api_user_org_assign_controller.create);
-router.delete('/:userId/organization_roles/:organizationRoleId', 	api_user_org_assign_controller.delete);
+router.put('/:userId/organization_roles/:organizationRoleId', 		api_user_org_assign_controller.addRole);
+router.delete('/:userId/organization_roles/:organizationRoleId', 	api_user_org_assign_controller.removeRole);
+// POST endpoint is deprecated - maintained for backwards compatibility
+router.post('/:userId/organization_roles/:organizationRoleId', 		api_user_org_assign_controller.addRole);
 
 module.exports = router;

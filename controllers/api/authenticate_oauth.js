@@ -69,13 +69,13 @@ exports.info_token = function(req, res, next) {
 						id: req.oauth2_token_owner.iot,
 						app_azf_domain: ''
 					}
-		res.status(201).json(iot_info)
+		res.status(200).json(iot_info)
 	} else if (req.oauth2_token_owner.user) {
 		
 		var user = req.oauth2_token_owner.user
 		// Search roles of user in application
 		search_user_info(user, app_id).then(function(user_info) {
-			res.status(201).json(user_info)
+			res.status(200).json(user_info)
 		}).catch(function(error) {
 			debug("Error: " + error)
 			if (!error.error) {
@@ -93,7 +93,7 @@ exports.info_token = function(req, res, next) {
 						id: '',
 						app_azf_domain: ''
 					}
-		res.status(201).json(user_info)
+		res.status(200).json(user_info)
 	}
 }
 

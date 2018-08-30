@@ -98,12 +98,12 @@ function getIdentity(id, password) {
 
   var search_user = user.findOne({
     where: {email: id},
-    attributes: ['id', 'username', 'password', 'scope'],
+    attributes: ['id', 'username', 'salt', 'password', 'scope'],
   })
 
   var search_iot = iot.findOne({
     where: {id: id},
-    attributes: ['id', 'password'],
+    attributes: ['id', 'password', 'salt'],
   })
 
   return Promise.all([search_user, search_iot]).then(function(values) {
@@ -116,13 +116,13 @@ function getIdentity(id, password) {
     }
 
     if (user) {
-      if (user.verifyPassword(password)) {
+      if (user.verifyPassword(user.salt, password)) {
           return user
         } 
     }
 
     if (iot) {
-      if (iot.verifyPassword(password)) {
+      if (iot.verifyPassword(iot.salt, password)) {
           return iot
         } 
     }
@@ -145,7 +145,7 @@ function getUser(email, password) {
     })
     .then(function (user) {
       if (user) {
-        if (user.verifyPassword(password)) {
+        if (user.verifyPassword(user.salt, password)) {
           return user.toJSON()
         } 
       }

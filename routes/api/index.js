@@ -19,6 +19,17 @@ router.use('/users', 							require('./users'))
 router.use('/organizations', 					require('./organizations'))
 router.use('/service_providers', 				require('./service_providers'))
 
+
+router.get('/', function(req, res){
+	res.status(200).json({
+		auth_url : '/v1/auth',
+		access_tokens_url : '/v1/access-tokens',
+		applications_url : '/v1/applications',
+		organizations_url : '/v1/organizations',
+		service_providers_url : '/v1/service_providers',
+		users_url : '/v1/users'
+	});
+});
 // catch 404 and forward to error handler
 router.use(function(req, res, next) {
   var err = new Error('Not Found');

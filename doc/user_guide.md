@@ -12,6 +12,7 @@
 		- [Show application](#def-application-info)
 		- [Register Pep Proxy and Iot Agents](#def-register-pep-and-iot)
 		- [Authorize users and organizations](#def-authorize)
+		- [Authorize trusted applications](#def-trusted)
 	- [Organizations](#def-organizations)
 		- [List of organizations](#def-list-orgs)
 		- [Create an organization](#def-create-organizations)
@@ -151,6 +152,17 @@ It shows a modal where you can manage Users and Groups. You can see the users or
 <p align="center">Figure 19: KeyRock Authorize organizations</p>
 
 When you assign roles to an organization, you assign it to the users who are owners or memebers of the application. In next section is explained more in detail how to manage organizations.
+
+<a name="def-trusted"></a>
+#### Authorize trusted applications
+
+When validating permissions in [Keyrock's built-in PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization) as explained [here](http://fiware-idm.readthedocs.io/en/latest/api/#def-validate-auth) the application where the permission was created and assigned to the user is checked. 
+
+Keyrock allows application owners to trust in other applications. Thus, a PDP check will validate if the user has an specific permission in the current application or in one of the applications in which it trusts. For adding trusted applications you can use the API or the web interface:
+
+<a name="def-fig20"></a>
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_trusted_applications.png)
+<p align="center">Figure 20: KeyRock Trusted Applications</p>
 
 <a name="def-organizations"></a>
 ### Organizations

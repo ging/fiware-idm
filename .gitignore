@@ -6,4 +6,3 @@ public/stylesheets/style.css
 npm-debug.log
 certs/
 helpers/custom_authentication_driver.js
-.node_modules

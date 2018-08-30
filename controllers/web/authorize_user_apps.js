@@ -84,7 +84,7 @@ exports.get_users = function(req, res, next) {
 }
 
 
-// POST /idm/applications/:applicationId/users/available -- Search users to authorize in an application
+// GET /idm/applications/:applicationId/users/available -- Search users to authorize in an application
 exports.available_users = function(req, res) {
 
 	debug("--> available_users")

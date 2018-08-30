@@ -92,7 +92,7 @@ exports.check_user = function(req, res, next) {
             enabled: false
         }
 
-        if (config_eidas.enabled) {
+        if (config_eidas.enabled && req.sp) {
             render_values.saml_request.xml = req.saml_auth_request.xml
             render_values.saml_request.postLocationUrl = req.saml_auth_request.postLocationUrl
             render_values.saml_request.redirectLocationUrl = req.saml_auth_request.redirectLocationUrl
@@ -144,7 +144,7 @@ exports.authenticate_user = function(req, res, next){
             });
         } else {
             req.session.errors = errors;
-            res.redirect("/auth/login");  
+            res.redirect("/auth/login");
         }
     }
 }
@@ -250,6 +250,7 @@ exports.authenticate_token = function(req, res, next) {
     var action = (req.query.action) ? req.query.action : undefined
     var resource = (req.query.resource) ? req.query.resource : undefined
     var authzforce = (req.query.authzforce) ? req.query.authzforce : undefined
+    var req_app = (req.query.app_id) ? req.query.app_id : undefined
 
     if ((action || resource) && authzforce) {
         var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
@@ -282,7 +283,7 @@ exports.authenticate_token = function(req, res, next) {
             user_info.email = user.email
             user_info.id = user.id
 
-            return search_user_info(user_info, action, resource, authzforce)
+            return search_user_info(user_info, action, resource, req_app, authzforce)
         } else if (user._modelOptions.tableName === 'iot') {
 
             var iot_info = require('../../oauth_response/oauth_iot_response.json');
@@ -303,7 +304,7 @@ exports.authenticate_token = function(req, res, next) {
 
 
 // Check if user has enabled the application to read their details
-function search_user_info(user_info, action, resource, authzforce) {
+function search_user_info(user_info, action, resource, req_app, authzforce) {
 
     debug(' --> search_user_info')
 
@@ -315,7 +316,11 @@ function search_user_info(user_info, action, resource, authzforce) {
 
         promise_array.push(search_roles)
 
-        if (action && resource) {
+        var search_trusted_apps = trusted_applications(user_info.app_id)
+
+        promise_array.push(search_trusted_apps)
+
+        if (action && resource && req_app) {
 
             var search_permissions = search_roles.then(function(roles) {
                 return user_permissions(roles.all, user_info.app_id, action, resource)
@@ -336,17 +341,19 @@ function search_user_info(user_info, action, resource, authzforce) {
             user_info.roles = roles.user
             user_info.organizations = roles.organizations
 
-            if (action && resource) {
-                var permissions = values[1]
-                if (permissions && permissions.length > 0) {
+            user_info.trusted_applications = values[1]
+
+            if (action && resource && req_app) {
+                if (values[2] && values[2].length > 0 && (req_app === user_info.app_id || user_info.trusted_applications.includes(req_app))) {
                     user_info.authorization_decision = "Permit"
                 } else {
                     user_info.authorization_decision = "Deny"
                 }
             }
 
+
             if (config_authzforce.enabled && authzforce) {
-                var authzforce_domain = values[1]
+                var authzforce_domain = values[2]
                 if (authzforce_domain) {
                     user_info.app_azf_domain = authzforce_domain.az_domain
                 }
@@ -359,7 +366,6 @@ function search_user_info(user_info, action, resource, authzforce) {
         })
     })
 }
-
 
 // Search user roles in application
 function user_roles(user_id, app_id) {
@@ -441,6 +447,7 @@ function user_roles(user_id, app_id) {
 
 // Search user permissions in application whose action and resource are recieved from Pep Proxy
 function user_permissions(roles_id, app_id, action, resource) {
+
     return models.role_permission.findAll({
         where: { role_id: roles_id },
         attributes: ['permission_id']
@@ -452,6 +459,20 @@ function user_permissions(roles_id, app_id, action, resource) {
                          action: action,
                          resource: resource }
             })
+        } else {
+            return []
+        }
+    })
+}
+
+// Search Trusted applications
+function trusted_applications(app_id) {
+    return models.trusted_application.findAll({
+        where: { oauth_client_id: app_id },
+        attributes: ['trusted_oauth_client_id']
+    }).then(function(trusted_apps) {
+        if (trusted_apps.length > 0) {
+            return trusted_apps.map(id => id.trusted_oauth_client_id)
         } else {
             return []
         }

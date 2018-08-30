@@ -23,7 +23,7 @@ exports.load_application = function(req, res, next, applicationId) {
 				req.application = application
 				return api_check_perm_controller.check_request(req, res, next)
 			} else {
-				res.status(404).json({error: {message: "Application not found", code: 404, title: "Not Found"}})
+				return Promise.reject({error: {message: "Application not found", code: 404, title: "Not Found"}})
 			}
 		}).then(function(decision) {
 			next()
@@ -68,6 +68,20 @@ exports.index = function(req, res) {
 		})
 	}).then(function(applications) {
 		var applications_filtered = _.uniqBy(applications.map(elem=> elem.OauthClient.dataValues), 'id');
+
+		applications_filtered = _.map(applications_filtered, (application) =>{
+  			application.urls = {
+  				permissions_url: "/v1/applications/" + application.id + "/permissions",
+  				roles_url: "/v1/applications/" + application.id + "/roles",
+  				users_url:  "/v1/applications/" + application.id + "/users",
+  				pep_proxies_url: "/v1/applications/" + application.id + "/pep_proxies",
+  				iot_agents_url: "/v1/applications/" + application.id + "/iot_agents",
+  				trusted_applications_url: "/v1/applications/" + application.id + "/trusted_applications"
+  			}
+  			return application;
+		});
+
+
 		res.status(200).json({applications: applications_filtered});
 	}).catch(function(error) {
 		debug('Error: ' + error)
@@ -132,7 +146,16 @@ exports.create = function(req, res) {
 exports.info = function(req, res) {
 	debug('--> info')
 
-	res.status(200).json({application: req.application.dataValues});
+	var application = req.application.dataValues;
+	application.urls = {
+		permissions_url: "/v1/applications/" + application.id + "/permissions",
+		roles_url: "/v1/applications/" + application.id + "/roles",
+		users_url:  "/v1/applications/" + application.id + "/users",
+		pep_proxies_url: "/v1/applications/" + application.id + "/pep_proxies",
+		iot_agents_url: "/v1/applications/" + application.id + "/iot_agents",
+		trusted_applications_url: "/v1/applications/" + application.id + "/trusted_applications"
+	};
+	res.status(200).json({application: application});
 }
 
 // PATCH /v1/applications/:applicationId -- Edit application

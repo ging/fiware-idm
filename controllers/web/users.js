@@ -122,7 +122,7 @@ exports.get_applications = function(req, res, next) {
     var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
     var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-    models.helpers.search_distinct('role_assignment', 'oauth_client', req.session.user.id, 'user', key, offset, true).then(function(applications_authorized) {
+    models.helpers.search_distinct('role_assignment', 'oauth_client', req.user.id, 'user', key, offset, true).then(function(applications_authorized) {
         var applications = []
 
         var count = 0

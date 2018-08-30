@@ -4,6 +4,53 @@ MAINTAINER FIWARE Identity Manager Team. DIT-UPM
 
 WORKDIR /opt
 
+ENV IDM_HOST "http://localhost:3000"
+ENV IDM_PORT "3000"
+
+
+
+# IMPORTANT: For a Production Environment Use Docker Secrets to define 
+#  these values and add _FILE to the name of the variable.
+
+# ENV IDM_ADMIN_ID    "admin"
+# ENV IDM_ADMIN_USER  "admin"
+# ENV IDM_ADMIN_EMAIL "admin@test.com"
+# ENV IDM_ADMIN_PASS  "1234" 
+# ENV IDM_SESSION_SECRET "nodejs_idm" 
+# ENV IDM_ENCRYPTION_KEY "nodejs_idm" 
+# ENV IDM_DB_PASS "idm"
+# ENV IDM_DB_USER "root"
+# ENV IDM_EX_AUTH_DB_USER "db_user"
+# ENV IDM_EX_AUTH_DB_PASS "db_pass"
+
+
+# ENV IDM_HTTPS_ENABLED false
+# ENV IDM_HTTPS_PORT "443"
+
+ENV IDM_PDP_LEVEL "basic"
+
+# ENV IDM_AUTHZFORCE_ENABLED false
+# ENV IDM_AUTHZFORCE_HOST "localhost"
+# ENV IDM_AUTHZFORCE_PORT" 8080"
+
+ENV DATABASE_HOST "localhost"
+ENV IDM_DB_NAME "idm"
+ENV IDM_DIALECT "mysql"
+
+# ENV IDM_EX_AUTH_ENABLED false
+# ENV IDM_EX_AUTH_DRIVER "custom_authentication_driver"
+# ENV IDM_EX_AUTH_DAB_HOST "localhost"
+# ENV IDM_EX_AUTH_DB_NAME "db_name"
+# ENV IDM_EX_AUTH_DB_USER_TABLE "user"
+# ENV IDM_EX_AUTH_DIALECT "mysql"
+
+ENV IDM_EMAIL_HOST "localhost"
+ENV IDM_EMAIL_PORT "25"
+ENV IDM_EMAIL_ADDRESS "noreply@localhost"
+
+
+
+
 # Install Ubuntu dependencies
 RUN apt-get update && \
     apt-get install build-essential debconf-utils ca-certificates curl git netcat -y --no-install-recommends && \
@@ -32,9 +79,6 @@ RUN git clone https://github.com/agaldemas/fiware-idm.git && \
 # Change Workdir
 WORKDIR /opt/fiware-idm
 
-# Copy config file
-RUN cp config.js.template config.js
-
 # Create certificates for https
 RUN mkdir certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \
@@ -44,9 +88,15 @@ RUN mkdir certs && \
 
 # Copy config database file
 COPY config_database.js extras/docker/config_database.js
+# Copy config file
+COPY config.js.template config.js
 
 # Run Idm Keyrock
 COPY docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
 RUN chmod 755 docker-entrypoint.sh
 
 ENTRYPOINT ["/opt/fiware-idm/docker-entrypoint.sh"]
+
+# Ports used by idm
+EXPOSE ${IDM_PORT} 
+

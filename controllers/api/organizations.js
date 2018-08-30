@@ -81,7 +81,7 @@ exports.index = function(req, res) {
 		}]
 	}).then(function(organizations) {
 		if (organizations.length > 0)
-			res.status(201).json({organizations: organizations});
+			res.status(200).json({organizations: organizations});
 		else {
 			res.status(404).json({error: {message: "Organizations not found", code: 404, title: "Not Found"}})
 		}
@@ -139,7 +139,7 @@ exports.create = function(req, res) {
 exports.info = function(req, res) {
 	debug('--> info')
 
-	res.status(201).json({organization: req.organization });
+	res.status(200).json({organization: req.organization });
 
 }
 

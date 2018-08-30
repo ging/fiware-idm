@@ -14,11 +14,15 @@ module.exports = function(sequelize, DataTypes) {
     }, password: {
       type: DataTypes.STRING(40),
       set: function (password) {
-          var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');
+
+          var salt = crypto.randomBytes(16).toString('hex').slice(0,16)
+
+          var encripted = crypto.createHmac('sha1', salt).update(password).digest('hex');
           // Evita passwords vacíos
           if (password === '') {
               encripted = '';
           }
+          this.setDataValue('salt', salt);
           this.setDataValue('password', encripted);
       }
     }
@@ -28,8 +32,8 @@ module.exports = function(sequelize, DataTypes) {
       underscored: true
   });
 
-  PepProxy.prototype.verifyPassword = function(password) {
-    var encripted = crypto.createHmac('sha1', key).update(password).digest('hex');
+  PepProxy.prototype.verifyPassword = function(salt, password) {
+    var encripted = crypto.createHmac('sha1', (salt) ? salt : key).update(password).digest('hex');
     return encripted === this.password;
   }
 

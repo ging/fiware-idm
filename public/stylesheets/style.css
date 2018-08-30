@@ -3071,13 +3071,8 @@ fieldset[disabled] .services_list .list-group-item a.ajax-inline-edit,
   fieldset[disabled] .edit_organization_modal button:focus,
   .edit_organization_modal fieldset[disabled] button:focus,
   fieldset[disabled] .btn-primary.focus,
-<<<<<<< HEAD
-  fieldset[disabled] .edit_organization_modal button.focus,
-  .edit_organization_modal fieldset[disabled] button.focus {
-=======
   fieldset[disabled] .edit_organization_modal button.focus, .edit_organization_modal
   fieldset[disabled] button.focus {
->>>>>>> upstream/master
     background-color: #001630;
     border-color: #001630; }
   .btn-primary .badge, .edit_organization_modal button .badge {
@@ -3924,7 +3919,7 @@ tbody.collapse.in {
     .role_list .list-group-item .input-group-btn > .ajax-inline-edit:active,
     .services_list .list-group-item .input-group-btn > .ajax-inline-edit:active, .edit_organization_modal .input-group-btn > button:active {
       z-index: 2; }
-  
+
   .input-group-btn:first-child > .btn,
   .permissions_list .list-group-item .input-group-btn:first-child > .ajax-inline-edit,
   .role_list .list-group-item .input-group-btn:first-child > .ajax-inline-edit,
@@ -3932,7 +3927,7 @@ tbody.collapse.in {
   .edit_organization_modal .input-group-btn:first-child > button,
   .input-group-btn:first-child > .btn-group {
     margin-right: -1px; }
-  
+
   .input-group-btn:last-child > .btn,
   .permissions_list .list-group-item .input-group-btn:last-child > .ajax-inline-edit,
   .role_list .list-group-item .input-group-btn:last-child > .ajax-inline-edit,
@@ -8542,12 +8537,8 @@ ul.disabled-list li.active:hover {
     padding-left: 0;
     padding-right: 0; } }
 
-<<<<<<< HEAD
-.services_list .btn-default:hover a, .permissions_list .list-group-item .services_list .ajax-inline-edit:hover a, .role_list .list-group-item .services_list .ajax-inline-edit:hover a, .services_list .list-group-item .ajax-inline-edit:hover a {
-=======
 .services_list .btn-default:hover a, .permissions_list .list-group-item .services_list .ajax-inline-edit:hover a,
 .role_list .list-group-item .services_list .ajax-inline-edit:hover a, .services_list .list-group-item .ajax-inline-edit:hover a {
->>>>>>> upstream/master
   color: #001630; }
 
 .services_list .service {

@@ -688,7 +688,7 @@ $(document).ready(function() {
             firstClass: 'first'
         }).on("page", function(event, num) {            
 
-            var start = (num === 1) ? 0 : rows*num
+            var start = (num === 1) ? 0 : rows*(num - 1)
             var end = start + rows
 
             check_all.prop('checked', false);

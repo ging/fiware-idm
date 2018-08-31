@@ -27,7 +27,7 @@ services:
       - MYSQL_ROOT_HOST=172.18.1.6
 
   fiware-idm:
-    image: fiware-idm
+    image: fiware/idm
     ports:
       - "3000:3000"
       - "443:443"

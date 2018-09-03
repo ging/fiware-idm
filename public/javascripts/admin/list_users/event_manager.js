@@ -1,6 +1,6 @@
 import ui_manager from './ui_manager';
 
-export default class EventManager{
+export default class event_manager{
 	constructor() {
 		this.users = []
 	    this.users_filter = []
@@ -35,11 +35,11 @@ export default class EventManager{
 	    this.form_chg_pw = $('form#change_password_form', modal_chg_pw)
 	    this.chg_pw_input_pw1 = $('input#id_password1', form_chg_pw)
 	    this.chg_pw_input_pw2 = $('input#id_password2', form_chg_pw)
-	}
-	add_ui_manager(ui_manager){
-		this.ui_manager = ui_manager;
-	}
-	init_ui(){
+
+
+
+
+
 		// Pre load user rows
 		this.load_users = this.load_users.bind(this);
 
@@ -62,5 +62,12 @@ export default class EventManager{
 
 		this.search_user_by_id = this.search_user_by_id.bind(this);
 		this.htmlEntities = this.htmlEntities.bind(this);
+
+	}
+	add_ui_manager(ui_manager){
+		this.ui_manager = ui_manager;
+	}
+	init_ui(){
+
 	}
 }

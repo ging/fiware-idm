@@ -24,6 +24,13 @@ var saml2 = require('./routes/saml2/saml2');
 
 var app = express();
 
+app.set('forceSSLOptions', {
+  enable301Redirects: true,
+  trustXFPHeader: false,
+  httpsPort: config.https.port,
+  sslRequiredMessage: 'SSL Required.'
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

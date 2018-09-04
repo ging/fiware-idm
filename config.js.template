@@ -18,7 +18,7 @@ config.email_list_type = null   // whitelist or blacklist
 
 // Secret for user sessions in web
 config.session = {
-    secret:  (process.env.IDM_SESSION_SECRET || 'nodejs_idm'),       // Must be changed
+    secret:  (process.env.IDM_SESSION_SECRET || require('crypto').randomBytes(20).toString('hex')),       // Must be changed
     expires: 60 * 60 * 1000     // 1 hour
 }
 

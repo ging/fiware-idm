@@ -24,13 +24,6 @@ var saml2 = require('./routes/saml2/saml2');
 
 var app = express();
 
-app.set('forceSSLOptions', {
-  enable301Redirects: true,
-  trustXFPHeader: false,
-  httpsPort: config.https.port,
-  sslRequiredMessage: 'SSL Required.'
-});
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -58,6 +51,7 @@ app.use('/version', function (req, res) {
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(partials());
+
 app.use(cookieParser(config.session.secret));
 app.use(session({
   secret: config.session.secret,
@@ -106,6 +100,13 @@ app.use(function(req, res, next) {
 // Force HTTPS connection to web server
 if (config.https.enabled) {
   
+  app.set('forceSSLOptions', {
+    enable301Redirects: true,
+    trustXFPHeader: false,
+    httpsPort: config.https.port,
+    sslRequiredMessage: 'SSL Required.'
+  });
+
   // Set routes for api
   app.use('/v1', forceSsl, api);
   app.use('/v3', forceSsl, api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API

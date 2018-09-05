@@ -129,7 +129,8 @@ exports.create = function(req, res) {
 							      'website', 
 							      'url',  
 							      'gravatar',
-							      'enabled'] })
+							      'enabled',
+							      'salt'] })
 
 	}).then(function(user) {
 		var user = user.dataValues
@@ -166,7 +167,6 @@ exports.update = function(req, res) {
 	debug('--> update')
 	
 	var user_previous_values = null
-
 	check_update_body_request(req.body).then(function() {
 		
 		user_previous_values = JSON.parse(JSON.stringify(req.user.dataValues))
@@ -185,17 +185,14 @@ exports.update = function(req, res) {
 		return req.user.validate()
 
 	}).then(function(user) {
-
 		return req.user.save()
 
 	}).then(function(user) {
 
-		delete user_previous_values.password
-		delete user_previous_values.date_password
-		delete req.user.dataValues.password
-		delete req.user.dataValues.date_password
 		var difference = diffObject(user_previous_values, req.user.dataValues)
 		var response = (Object.keys(difference).length > 0) ? {values_updated: difference} : {message: "Request don't change the user parameters", code: 200, title: "OK"}
+		delete response.values_updated.password
+		delete response.values_updated.date_password
 		res.status(200).json(response);
 
 	}).catch(function(error) {

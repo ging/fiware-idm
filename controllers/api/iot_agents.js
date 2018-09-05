@@ -1,6 +1,7 @@
 var debug = require('debug')('idm:api-iot_agents');
 var models = require('../../models/models.js');
 var uuid = require('uuid');
+var crypto = require('crypto');
 
 // MW to Autoload info if path include iotId
 exports.load_iota = function(req, res, next, iotAgentId) {
@@ -9,7 +10,8 @@ exports.load_iota = function(req, res, next, iotAgentId) {
 
     // Search application whose id is applicationId
     models.iot.findOne({
-        where: { id: iotAgentId, oauth_client_id: req.application.id }
+        where: { id: iotAgentId, oauth_client_id: req.application.id },
+        attributes: ['id', 'password', 'oauth_client_id', 'salt']
     }).then(function(iot) {
     	if (iot) {
 	        req.iot = iot
@@ -59,7 +61,7 @@ exports.create = function(req, res) {
     // Build a new row in the iot table
     var iot = models.iot.build({id: id, password: password, oauth_client_id: req.application.id});
     iot.save({
-        fields: ['id','password','oauth_client_id']
+        fields: ['id','password', 'salt', 'oauth_client_id']
     }).then(function(iot) {
         res.status(201).json({iot: {id: id, password: password}});
     }).catch(function(error) {
@@ -76,6 +78,7 @@ exports.info = function(req, res) {
 	debug('--> info')
 	
    delete req.iot.dataValues.password
+   delete req.iot.dataValues.salt
    res.status(200).json({iot: req.iot});
 }
 
@@ -84,9 +87,12 @@ exports.update = function(req, res) {
 	debug('--> update')
 
     var password = 'iot_sensor_'+uuid.v4()
+
     req.iot.password = password
 
-    req.iot.save().then(function(iot) {
+    req.iot.save({
+        fields: ['password', 'salt']
+    }).then(function(iot) {
 
         var response = {new_password: password}
         res.status(200).json(response);

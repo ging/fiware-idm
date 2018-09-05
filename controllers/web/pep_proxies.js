@@ -31,7 +31,7 @@ exports.register_pep = function(req, res, next) {
 
 			// Build a new row in the pep_proxy table
 			var pep_proxy = models.pep_proxy.build({id: id, password: password, oauth_client_id: req.application.id});
-			pep_proxy.save({fields: ['id','password','oauth_client_id']}).then(function() {
+			pep_proxy.save({fields: ['id','password','oauth_client_id', 'salt']}).then(function() {
 				// Send message of success in create a pep proxy
 				var response = { message: {text: ' Create Pep Proxy.', type: 'success'}, 
 								 pep: {id: id, password: password}}

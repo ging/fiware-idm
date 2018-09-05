@@ -291,7 +291,7 @@ exports.authenticate_token = function(req, res, next) {
             iot_info.app_id = application_id
             iot_info.id = user.id
 
-            return res.status(201).json(iot_info)
+            return iot_info
         }
     }).then(function(response){
         return res.status(201).json(response) 

@@ -24,7 +24,7 @@ exports.register_iot = function(req, res, next) {
 
 	// Build a new row in the iot table
 	var iot = models.iot.build({id: id, password: password, oauth_client_id: req.application.id});
-	iot.save({fields: ['id','password','oauth_client_id']}).then(function() {
+	iot.save({fields: ['id','password','oauth_client_id', 'salt']}).then(function() {
 		// Send message of success in create an iot sensor
 		var response = { message: {text: ' Create IoT sensor.', type: 'success'}, 
 						 iot: {id: id, password: password}}

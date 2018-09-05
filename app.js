@@ -48,13 +48,10 @@ app.use('/version', function (req, res) {
   res.send(version);
 });
 
-// Set routes for api
-app.use('/v1', api);
-app.use('/v3', api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API
-
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(partials());
+
 app.use(cookieParser(config.session.secret));
 app.use(session({
   secret: config.session.secret,
@@ -102,18 +99,41 @@ app.use(function(req, res, next) {
 
 // Force HTTPS connection to web server
 if (config.https.enabled) {
+  
+  app.set('forceSSLOptions', {
+    enable301Redirects: true,
+    trustXFPHeader: false,
+    httpsPort: config.https.port,
+    sslRequiredMessage: 'SSL Required.'
+  });
+
+  // Set routes for api
+  app.use('/v1', forceSsl, api);
+  app.use('/v3', forceSsl, api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API
+
   // Set routes for oauth2
   app.use('/oauth2', forceSsl, oauth2);
-  app.use('/saml2', forceSsl, saml2);
   app.get('/user', forceSsl, require('./controllers/oauth2/oauth2').authenticate_token);
 
+  // Set routes for saml2 
+  app.use('/saml2', forceSsl, saml2);
+
+  // Set routes for GUI
   app.use('/', forceSsl, index);
 } else {
+
+  // Set routes for api
+  app.use('/v1', api);
+  app.use('/v3', api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API
+
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
-  app.use('/saml2',  saml2);
   app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
 
+  // Set routes for saml2
+  app.use('/saml2',  saml2);
+
+  // Set routes for GUI
   app.use('/', index);
 }
 

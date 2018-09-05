@@ -1,6 +1,7 @@
 var debug = require('debug')('idm:api-pep_proxies');
 var models = require('../../models/models.js');
 var uuid = require('uuid');
+var crypto = require('crypto');
 
 // MW to check pep proxy authentication
 exports.authenticate = function(id, password, callback) {
@@ -29,7 +30,8 @@ exports.search_pep_proxy = function(req, res, next) {
 
     // Search application whose id is applicationId
     models.pep_proxy.findOne({
-        where: { oauth_client_id: req.application.id }
+        where: { oauth_client_id: req.application.id },
+        attributes: ['id', 'password', 'oauth_client_id', 'salt']
     }).then(function(pep_proxy) {
         req.pep_proxy = pep_proxy
         next();
@@ -48,6 +50,7 @@ exports.info = function(req, res) {
 
     if (req.pep_proxy) {
 	   delete req.pep_proxy.dataValues.password
+       delete req.pep_proxy.dataValues.salt
        res.status(200).json({pep_proxy: req.pep_proxy});
     } else {
        res.status(404).json({error: {message: "Pep Proxy not found", code: 404, title: "Not Found"}})
@@ -69,7 +72,7 @@ exports.create = function(req, res) {
         // Build a new row in the pep_proxy table
         var pep_proxy = models.pep_proxy.build({id: id, password: password, oauth_client_id: req.application.id});
         pep_proxy.save({
-            fields: ['id','password','oauth_client_id']
+            fields: ['id','password', 'salt', 'oauth_client_id']
         }).then(function(pep_proxy) {
             res.status(201).json({pep_proxy: {id: id, password: password}});
         }).catch(function(error) {
@@ -88,9 +91,12 @@ exports.update = function(req, res) {
 
     if (req.pep_proxy) {
         var password = 'pep_proxy_'+uuid.v4()
+
         req.pep_proxy.password = password
 
-        req.pep_proxy.save().then(function(pep_proxy) {
+        req.pep_proxy.save({
+            fields: ['password', 'salt']
+        }).then(function(pep_proxy) {
 
             var response = {new_password: password}
             res.status(200).json(response);

@@ -25,6 +25,8 @@ module.exports = function(sequelize, DataTypes) {
           this.setDataValue('salt', salt);
           this.setDataValue('password', encripted);
       }
+    }, salt: {
+      type: DataTypes.STRING
     }
   }, {
       tableName: 'pep_proxy',

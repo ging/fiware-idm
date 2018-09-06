@@ -1,8 +1,13 @@
-import ui_manager from './ui_manager';
+class EventManager {
 
-export default class event_manager{
 	constructor() {
-		this.users = []
+		this.ui = {}
+
+		this.entries = $('select#select_entries.selectpicker')
+
+
+		this.change_table_entries = this.change_table_entries.bind(this);
+		/*this.users = []
 	    this.users_filter = []
 	    this.users_selected = []
 
@@ -36,13 +41,6 @@ export default class event_manager{
 	    this.chg_pw_input_pw1 = $('input#id_password1', form_chg_pw)
 	    this.chg_pw_input_pw2 = $('input#id_password2', form_chg_pw)
 
-
-
-
-
-		// Pre load user rows
-		this.load_users = this.load_users.bind(this);
-
 		// Filter users
 		this.filter_users = this.filter_users.bind(this);
 
@@ -61,13 +59,23 @@ export default class event_manager{
 
 
 		this.search_user_by_id = this.search_user_by_id.bind(this);
-		this.htmlEntities = this.htmlEntities.bind(this);
+		this.htmlEntities = this.htmlEntities.bind(this);*/
 
 	}
-	add_ui_manager(ui_manager){
-		this.ui_manager = ui_manager;
-	}
-	init_ui(){
 
+	add_ui_manager(uimanager) {
+	    this.ui = uimanager;
 	}
+
+	init_ui() {
+		this.entries.on('change', this.change_table_entries)
+	}
+
+	change_table_entries(users_per_page) {
+
+		users_per_page = parseInt(this.entries.val());
+        this.ui.render_users_pagination(users.slice(0,users_per_page))
+        this.ui.render_user_rows(users.length, users_per_page)
+	}
+
 }

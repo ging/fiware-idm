@@ -182,7 +182,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
 				nameid_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-				auth_context: { comparison: "minimum", class_refs: ["http://eidas.europa.eu/LoA/low"] },
+				auth_context: { comparison: "minimum", AuthnContextClassRef: ["http://eidas.europa.eu/LoA/low"] },
 				force_authn: true,
 				organization: organization,
 				contact: contact,
@@ -211,18 +211,18 @@ exports.create_auth_request = function(req, res, next) {
 			extensions: {
 				'eidas:SPType': 'public',
 				'eidas:RequestedAttributes': [
-				{'eidas:RequestedAttribute': {
+				/*{'eidas:RequestedAttribute': {
 					'@FriendlyName': 'LegalName',
 					'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalName',
 					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-					'@isRequired': 'true'
+					'@isRequired': 'false'
 				}},
 				{'eidas:RequestedAttribute': {
 					'@FriendlyName': 'LegalPersonIdentifier',
 					'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalPersonIdentifier',
 					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-					'@isRequired': 'true'
-				}},
+					'@isRequired': 'false'
+				}},*/
 				{'eidas:RequestedAttribute': {
 					'@FriendlyName': 'FamilyName',
 					'@Name': 'http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName',

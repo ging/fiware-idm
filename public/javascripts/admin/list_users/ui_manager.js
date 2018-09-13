@@ -5,15 +5,14 @@ class UiManager {
       this.user_row = $('#table_row_user_row_template');
 
       this.user_table = $('table#user_table > tbody')
-      this.check_all = $('input#check_all')
+      this.check_all_input = $('input#check_all')
 
       this.htmlEntities = this.htmlEntities.bind(this);
       this.render_users_pagination = this.render_users_pagination.bind(this);
       this.render_user_rows = this.render_user_rows.bind(this);
-
-      /*this.count_answer_letters = this.count_answer_letters.bind(this);
-      this.render_lang = this.render_lang.bind(this);*/
   }
+
+
 
   htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -36,22 +35,23 @@ class UiManager {
             prevClass: 'prev',
             lastClass: 'last',
             firstClass: 'first'
-        }).on("page", function(event, num) {            
+        }).on("page", (event, num) => {            
 
             var start = (num === 1) ? 0 : rows*(num - 1)
             var end = start + rows
 
-            check_all.prop('checked', false);
+            this.check_all_input.prop('checked', false);
 
             if (users_filter.length <= 0) {
-                render_user_rows(users.slice(start, end))
+                this.render_user_rows(users.slice(start, end))
             } else {
-                render_user_rows(users_filter.slice(start, end))
+                this.render_user_rows(users_filter.slice(start, end))
             }
         });
     }
+
     render_user_rows(rows) {
-        
+
         var selected = 0
 
         this.user_table.html("");
@@ -76,7 +76,7 @@ class UiManager {
         }
 
         if (i === selected) {
-            this.check_all.prop('checked', true);
+            this.check_all_input.prop('checked', true);
         }
     }
 }

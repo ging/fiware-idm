@@ -97,7 +97,6 @@ exports.saml2_application_login = function(req, res, next) {
 		}
 
 		create_user(name_id, eidas_profile).then(function(user) {
-
             req.session.user = {
             	id: user.id,
                 username: user.username,
@@ -112,7 +111,7 @@ exports.saml2_application_login = function(req, res, next) {
 
             res.redirect(path)
 		}).catch(function(error) {
-			req.session.errors = errors;
+			req.session.errors = error;
             res.redirect("/auth/login");
 		})
 	});
@@ -134,7 +133,7 @@ function create_user(name_id, eidas_profile) {
 	            enabled: true
 	        })
 
-	        user.save().then(function() {
+	        return user.save().then(function(user) {
 	        	return user
 	        }).catch(function(error) {
 	        	return Promise.reject(error)

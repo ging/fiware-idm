@@ -19,7 +19,6 @@ $(document).ready(function() {
         })
 
         put_request.done((result) => {
-        	console.log(result)
         	if (result.message.type === 'success') {
         		if (token_type === 'jwt') {
                 	$('#secret').html(result.jwt_secret)
@@ -36,7 +35,7 @@ $(document).ready(function() {
         })
 	})
 
-    $("#collapse_token_type").on("click","a.reset_secret", function(event) { 
+    $("div#jwt_secret").on("click","a.reset_secret", function(event) { 
 
         // Stop linking        
         event.preventDefault();

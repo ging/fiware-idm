@@ -62,7 +62,9 @@ exports.index = function(req, res) {
 							 'url', 
 							 'redirect_uri', 
 							 'grant_type', 
-							 'response_type', 
+							 'response_type',
+							 'token_type',
+							 'jwt_secret', 
 							 'client_type']
 			}]
 		})
@@ -112,6 +114,8 @@ exports.create = function(req, res) {
 			application.response_type = ['code', 'token']
 		}
 
+		applicaion.jwt_secret = req.application.jwt_secret = (req.body.application.token_type === 'bearer') ? null : crypto.randomBytes(16).toString('hex').slice(0,16)
+
 		var create_application = application.save({fields: ['id', 
 										  'secret', 
 										  'name', 
@@ -120,6 +124,8 @@ exports.create = function(req, res) {
 									      'redirect_uri', 
 									      'image',
 									      'grant_type',
+									      'token_type',
+									      'jwt_secret',
 									      'response_type'] })
 
 		var create_assignment = create_application.then(function(application) {
@@ -175,6 +181,9 @@ exports.update = function(req, res) {
 		req.application.client_type = (req.body.application.client_type) ? req.body.application.client_type : req.application.client_type
 		req.application.image = 'default'
 
+		req.application.token_type = (req.body.application.token_type) ? req.body.application.token_type : req.application.token_type
+		req.application.jwt_secret = (req.body.application.token_type === 'bearer') ? null : crypto.randomBytes(16).toString('hex').slice(0,16)
+
 		if (oauth_type) {
 			req.application.grant_type = oauth_type.grant_type
 			req.application.response_type = oauth_type.response_type
@@ -229,6 +238,12 @@ function check_create_body_request(body) {
 			reject({error: {message: "Missing parameter redirect_uri in body request", code: 400, title: "Bad Request"}})
 		}
 
+		if (body.application.token_type) {
+			if (!['jwt', 'bearer'].includes(body.application.token_type)) {
+				reject({error: {message: "Ivalid token type in body request", code: 400, title: "Bad Request"}})
+			}
+		}
+
 		var oauth_types = { grant_type: [], response_type: []}
 
 		if (body.application.grant_type) {
@@ -279,6 +294,12 @@ function check_update_body_request(body) {
 
 		if (body.application.id || body.application.secret || body.application.response_type) {
 			reject({error: {message: "Cannot set id, secret or response_type", code: 400, title: "Bad Request"}})
+		}
+
+		if (body.application.token_type) {
+			if (!['jwt', 'bearer'].includes(body.application.token_type)) {
+				reject({error: {message: "Ivalid token type in body request", code: 400, title: "Bad Request"}})
+			}
 		}
 
 		if (body.application.grant_type) {

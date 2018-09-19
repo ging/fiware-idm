@@ -614,7 +614,9 @@ exports.change_token_type = function(req, res, next) {
 			send_response(req, res, response, '/idm/applications/'+req.application.id);
 		} else {
 			var token_type = req.body.token_type
-			var jwt_secret = (token_type === 'bearer') ? null : crypto.randomBytes(16).toString('hex').slice(0,16)
+			var jwt_secret = (token_type === 'bearer') ? 
+								null : 
+								crypto.randomBytes(16).toString('hex').slice(0,16)
 
 			models.oauth_client.update(
 				{ token_type: token_type,
@@ -646,12 +648,17 @@ exports.reset_jwt_secret = function(req, res, next) {
 	
 	debug("--> reset_jwt_secret");
 
-	var jwt_secret = crypto.randomBytes(16).toString('hex').slice(0,16)
-	var response = { message: {text: ' Failed reset jwt.', type: 'warning'}}
+	var jwt_secret = (req.application.token_type === 'bearer') ? 
+						null : 
+						crypto.randomBytes(16).toString('hex').slice(0,16)
+
+	var response = { message: {text: ' Failed reset jwt.', type: 'warning'} }
+
 	if (req.application.token_type === 'jwt') {
+		
 		models.oauth_client.update(
 			{ 
-			  	jwt_secret: (token_type === 'bearer') ? null : jwt_secret },
+			  	jwt_secret: jwt_secret },
 			{
 				fields: ['jwt_secret'],
 				where: { id: req.application.id }

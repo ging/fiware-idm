@@ -278,7 +278,7 @@ function generate_app_certificates(app_id,eidas_credentials)  {
 				  	'/OU=' + eidas_credentials.organization_name +
 				  	'/CN=' + eidas_credentials.organization_url.replace(/(^\w+:|^)\/\//, '') +'"'
 
-		var cert = 'openssl x509 -req -in '+csr_name+' -signkey '+key_name+' -out '+cert_name 
+		var cert = 'openssl x509 -days 1095 -req -in '+csr_name+' -signkey '+key_name+' -out '+cert_name 
 
 		var create_certificates =  key + ' && ' + csr + ' && ' + cert
 		exec(create_certificates, function(error, stdout, stderr){

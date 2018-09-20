@@ -216,7 +216,19 @@ function generateJwtToken(token, client, identity) {
 
   return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
     token.accessToken = jsonwebtoken.sign(response, client.jwt_secret);
-    return storeToken(token, client, identity)
+
+    /*if (identity._modelOptions.tableName === "user" || identity._modelOptions.tableName === "iot") {
+      token[identity._modelOptions.tableName] = identity
+    }
+    return _.assign(  // expected to return client and user, but not returning
+      {
+        client: client,
+        access_token: token.accessToken, // proxy
+        refresh_token: token.refreshToken, // proxy
+      },
+      token
+    )
+    return storeToken(token, client, identity)*/
   }).catch(function(error) {
     debug("-------generateJwtToken-------", error)
   })

@@ -307,6 +307,17 @@
   }
 }
 
+#detailApplication {
+  #token_type {
+    .select-multiple {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+    border-bottom: 1px solid #D5D5D5;
+  }
+}
+
+
 #create_application_modal  {
   .form-group > .btn-group {
     display: block;

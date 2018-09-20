@@ -188,6 +188,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 				valid_until: config.eidas.metadata_expiration
 			};
 
+
 			var sp = new saml2.ServiceProvider(sp_options);
 
 			req.sp = sp

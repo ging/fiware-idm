@@ -180,7 +180,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert.pem").toString(),
 				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
-				nameid_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+				nameid_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified",
 				auth_context: { comparison: "minimum", AuthnContextClassRef: ["http://eidas.europa.eu/LoA/low"] },
 				force_authn: true,
 				organization: organization,

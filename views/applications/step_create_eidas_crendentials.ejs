@@ -176,6 +176,16 @@
                         <% } %>
                     </div>
 
+                    <div class="eidas_input_company">
+                         <label class="control-label required" for="id_company">NIF</label>
+                         <div class="">
+                             <input class="form-control" id="id_company" name="eidas[organization_nif]" type="text" value="<%= eidas_credentials.organization_url %>">
+                         </div>
+                         <% if (errors.indexOf("organization_nif") != -1) { %>
+                             <span class="help-block alert alert-danger ">Input required.</span>
+                         <% } %>
+                     </div>
+
 
                 </div>
 

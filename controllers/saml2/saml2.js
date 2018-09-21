@@ -150,6 +150,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 	models.eidas_credentials.findOne({
 		where: { oauth_client_id: req.application.id }
 	}).then(function(credentials) {
+
 		if (credentials) {
 			var organization = {
 				name: credentials.organization_name,
@@ -181,13 +182,13 @@ exports.search_eidas_credentials = function(req, res, next) {
 				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
 				nameid_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+				provider_name: credentials.organization_nif,
 				auth_context: { comparison: "minimum", AuthnContextClassRef: ["http://eidas.europa.eu/LoA/low"] },
 				force_authn: true,
 				organization: organization,
 				contact: contact,
 				valid_until: config.eidas.metadata_expiration
 			};
-
 
 			var sp = new saml2.ServiceProvider(sp_options);
 

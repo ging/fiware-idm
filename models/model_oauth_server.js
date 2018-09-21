@@ -5,6 +5,7 @@ var _ = require('lodash');
 var jsonwebtoken = require('jsonwebtoken');
 var debug = require('debug')('idm:oauth2-model_oauth_server')
 var config_authzforce = require('./../config.js').authorization.authzforce
+var config_oauth2 = require('./../config.js').oauth2
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -204,7 +205,7 @@ function saveToken(token, client, identity) {
   if (client.token_type === 'jwt') {
     return generateJwtToken(token, client, identity)
   } else {
-    return storeToken(token, client, identity)
+    return storeToken(token, client, identity, false)
   }
 }
 
@@ -215,28 +216,16 @@ function generateJwtToken(token, client, identity) {
   var iot_info = require('../oauth_response/oauth_iot_response.json');
 
   return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
-    token.accessToken = jsonwebtoken.sign(response, client.jwt_secret);
-
-    /*if (identity._modelOptions.tableName === "user" || identity._modelOptions.tableName === "iot") {
-      token[identity._modelOptions.tableName] = identity
-    }
-    return _.assign(  // expected to return client and user, but not returning
-      {
-        client: client,
-        access_token: token.accessToken, // proxy
-        refresh_token: token.refreshToken, // proxy
-      },
-      token
-    )
-    return storeToken(token, client, identity)*/
+    token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, { expiresIn: config_oauth2.access_token_lifetime });
+    return storeToken(token, client, identity, true)
   }).catch(function(error) {
     debug("-------generateJwtToken-------", error)
   })
 }
 
-function storeToken(token, client, identity) {
+function storeToken(token, client, identity, jwt) {
 
-  debug("-------saveBearerToken-------")
+  debug("-------storeToken-------")
 
   var user_id = null 
   var iot_id = null
@@ -252,14 +241,14 @@ function storeToken(token, client, identity) {
   }
 
   return Promise.all([
-      oauth_access_token.create({
+      !jwt ? oauth_access_token.create({
         access_token: token.accessToken,
         expires: token.accessTokenExpiresAt,
         oauth_client_id: client.id,
         user_id: user_id,
         iot_id: iot_id,
         scope: token.scope
-      }),
+      }) : [],
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
         expires: token.refreshTokenExpiresAt,

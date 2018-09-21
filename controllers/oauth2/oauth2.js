@@ -4,6 +4,7 @@ var config_authzforce = require('../../config.js').authorization.authzforce
 var config_eidas = require('../../config.js').eidas
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
+var jsonwebtoken = require('jsonwebtoken');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
 
@@ -246,7 +247,14 @@ exports.authenticate_token = function(req, res, next) {
 
     debug(' --> authenticate_token')
 
-    var action = (req.query.action) ? req.query.action : undefined
+    jsonwebtoken.verify(req.query.access_token, '5235c0b30e396ac1', function(err, decoded) {
+        if (err) {
+            debug("err", err)
+        }
+        debug(decoded) 
+    });
+
+    /*var action = (req.query.action) ? req.query.action : undefined
     var resource = (req.query.resource) ? req.query.resource : undefined
     var authzforce = (req.query.authzforce) ? req.query.authzforce : undefined
     var req_app = (req.query.app_id) ? req.query.app_id : undefined
@@ -278,5 +286,5 @@ exports.authenticate_token = function(req, res, next) {
         debug('Error ' + err)
         // Request is not authorized.
         return res.status(err.code || 500).json(err.message || err)
-    });
+    });*/
 }

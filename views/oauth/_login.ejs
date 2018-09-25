@@ -80,8 +80,13 @@
 
     // Handle the submit button from the create role form
     $("form#form_submit_authentication").on("submit", function(event) {
-      $('input#id_email').attr('name', '')
-      $('input#id_password').attr('name', '')
+      if ($('input#id_email').val() === '' ||) {
+        $('input#id_email').attr('name', '')
+      }
+
+      if ($('input#id_password').val() === '' ||) {
+        $('input#id_password').attr('name', '')
+      }
       return true;
     });
   })

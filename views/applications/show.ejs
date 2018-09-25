@@ -64,7 +64,11 @@
                                     <h6 class="panel-heading">Client Secret</h6>
                                     <p><%= application.secret %></p>
                                 </div>
-                                <div id="token_type">
+                                <% if (application.token_type === 'jwt') { -%>
+                                    <div id="token_type" class="jwt_type">
+                                <% } else { -%>
+                                    <div id="token_type">
+                                <% } -%>
                                     <h6 class="panel-heading">
                                         Token Type
                                         <a href="#" class="contextual-help" data-toggle="popover" data-title="Token Type" data-placement="left" data-content="It can be choosen between bearer and json web token." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>

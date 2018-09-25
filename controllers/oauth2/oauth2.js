@@ -1,5 +1,8 @@
 var models = require('../../models/models.js');
 var create_oauth_response = require('../../models/model_oauth_server.js').create_oauth_response;
+var user_roles = require('../../models/model_oauth_server.js').user_roles;
+var user_permissions = require('../../models/model_oauth_server.js').user_permissions;
+var trusted_applications = require('../../models/model_oauth_server.js').trusted_applications;
 var config_authzforce = require('../../config.js').authorization.authzforce
 var config_eidas = require('../../config.js').eidas
 var userController = require('../../controllers/web/users');
@@ -26,6 +29,10 @@ exports.token = function(req,res, next){
 	var response = new Response(res);
 
 	oauth.token(request,response).then(function(token) {
+        if (token.client.token_type === 'jwt') {
+            response.body.token_type = 'jwt'
+            delete response.body.expires_in
+        }
         res.json(response.body)
     }).catch(function(err){
         res.status(500).json(err)
@@ -305,12 +312,21 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
                             code: 401, 
                             title: 'Unauthorized'
                         }
-                        return res.status(400).json(message)
+                        return res.status(401).json(message)
                     }
-                    create_oauth_response(decoded.id, req_app, action, resource, authzforce, req_app)
-                        .then(function(response) {
-                            return res.status(201).json(response)
+
+                    if (action && resource && req_app) {
+                        create_decision(decoded.id, decoded.app_id, req_app, action, resource, decoded).then(function(decision) {
+                            decoded.authorization_decision = decision
+                            return res.status(201).json(decoded)
+                        }).catch(function(error) {
+                            debug('Error ' + err)
+                            // Request is not authorized.
+                            return res.status(err.code || 500).json(err.message || err)
                         })
+                    } else {
+                        return res.status(201).json(decoded)
+                    }
                 });
             } else {
                 var message = {
@@ -318,7 +334,7 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
                     code: 401, 
                     title: 'Unauthorized'
                 }
-                return res.status(400).json(message)
+                return res.status(401).json(message)
             }
         }).catch(function(err) {
             debug('Error ' + err)
@@ -333,4 +349,20 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
         }
         return res.status(400).json(message)
     }
+}
+
+function create_decision(user_id, app_id, req_app, action, resource) {
+    return user_roles(user_id, app_id).then(function(roles_id) {
+        return user_permissions(roles_id.all, app_id, action, resource).then(function(permissions) {
+            return trusted_applications(app_id).then(function(trusted_applications) {
+                if (action && resource && req_app) {
+                    if (permissions && permissions.length > 0 && (req_app === app_id || trusted_applications.includes(req_app))) {
+                        return "Permit"
+                    } else {
+                        return "Deny"
+                    }
+                }
+            })
+        })
+    })
 }

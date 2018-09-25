@@ -67,13 +67,12 @@ function getAccessToken(bearerToken) {
 function getClient(clientId, clientSecret) {
   
   debug("-------getClient-------")
-  
+
   const options = {
     where: {id: clientId},
     attributes: ['id', 'redirect_uri', 'token_type', 'jwt_secret', 'scope', 'grant_type']
   };
   if (clientSecret) options.where.secret = clientSecret;
-
   return oauth_client
     .findOne(options)
     .then(function (client) {
@@ -629,7 +628,10 @@ module.exports = {
   revokeToken: revokeToken,
   saveToken: saveToken,
   saveAuthorizationCode: saveAuthorizationCode,
-  create_oauth_response: create_oauth_response
+  create_oauth_response: create_oauth_response,
+  user_roles: user_roles,
+  user_permissions: user_permissions,
+  trusted_applications: trusted_applications
   // validateScope: validateScope,
   // verifyScope: verifyScope,
 }

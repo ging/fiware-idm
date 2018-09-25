@@ -6,8 +6,10 @@ $(document).ready(function() {
 		
 		if (token_type === 'jwt') {
 			$('div#jwt_secret').show()
+            $('div#token_type').addClass('jwt_type')
 		} else {
 			$('div#jwt_secret').hide()
+            $('div#token_type').removeClass('jwt_type')
 		}
 
 		// Send put request

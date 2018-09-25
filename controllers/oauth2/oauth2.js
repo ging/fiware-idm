@@ -5,6 +5,7 @@ var config_eidas = require('../../config.js').eidas
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var jsonwebtoken = require('jsonwebtoken');
+var is_hex = require('is-hex');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
 
@@ -247,18 +248,19 @@ exports.authenticate_token = function(req, res, next) {
 
     debug(' --> authenticate_token')
 
-    jsonwebtoken.verify(req.query.access_token, '5235c0b30e396ac1', function(err, decoded) {
-        if (err) {
-            debug("err", err)
-        }
-        debug(decoded) 
-    });
-
-    /*var action = (req.query.action) ? req.query.action : undefined
+    var action = (req.query.action) ? req.query.action : undefined
     var resource = (req.query.resource) ? req.query.resource : undefined
     var authzforce = (req.query.authzforce) ? req.query.authzforce : undefined
     var req_app = (req.query.app_id) ? req.query.app_id : undefined
 
+    if (req.query.access_token.length <= 40 && is_hex(req.query.access_token)) {
+        authenticate_bearer(req, res, action, resource, authzforce, req_app)
+    } else {
+        authenticate_jwt(req, res, action, resource, authzforce, req_app)
+    }
+}
+
+function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
     if ((action || resource) && authzforce) {
         var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
         return res.status(400).json(error)
@@ -274,17 +276,61 @@ exports.authenticate_token = function(req, res, next) {
         query: req.query,
         body: req.body
     });
+
     var response = new Response(res);
+
     oauth.authenticate(request, response, options).then(function (token_info) {
         var identity = token_info.user
         var application_id = token_info.oauth_client.id
 
         return create_oauth_response(identity, application_id, action, resource, authzforce, req_app)            
     }).then(function(response){
-        return res.status(201).json(response) 
+        return res.status(201).json(response)
     }).catch(function (err) {
         debug('Error ' + err)
         // Request is not authorized.
         return res.status(err.code || 500).json(err.message || err)
-    });*/
+    });
+}
+
+
+function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
+    if (req_app) {
+        models.oauth_client.findById(req_app).then(function(application) {
+            if (application && application.token_type === 'jwt') {
+                jsonwebtoken.verify(req.query.access_token, application.jwt_secret, function(err, decoded) {
+                    if (err) {
+                        var message = {
+                            message: err, 
+                            code: 401, 
+                            title: 'Unauthorized'
+                        }
+                        return res.status(400).json(message)
+                    }
+                    create_oauth_response(decoded.id, req_app, action, resource, authzforce, req_app)
+                        .then(function(response) {
+                            return res.status(201).json(response)
+                        })
+                });
+            } else {
+                var message = {
+                    message: 'Invalid req_app or token', 
+                    code: 401, 
+                    title: 'Unauthorized'
+                }
+                return res.status(400).json(message)
+            }
+        }).catch(function(err) {
+            debug('Error ' + err)
+            // Request is not authorized.
+            return res.status(err.code || 500).json(err.message || err)
+        })
+    } else {
+        var message = {
+            message: 'app_id must be included in the request', 
+            code: 400, 
+            title: 'Bad Request'
+        }
+        return res.status(400).json(message)
+    }
 }

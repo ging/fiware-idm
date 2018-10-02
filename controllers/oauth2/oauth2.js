@@ -1,6 +1,7 @@
 var models = require('../../models/models.js');
 var config_authzforce = require('../../config.js').authorization.authzforce
 var config_eidas = require('../../config.js').eidas
+var config_oauth2  = require('../../config.js').oauth2
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var Request = oauthServer.Request;
@@ -152,30 +153,35 @@ exports.authenticate_user = function(req, res, next){
 // Check if user has authorized the application
 function check_user_authorized_application(req, res) {
 
-    debug(' --> check_user_authorized_application')
+    if (config_oauth2.check_user_accept_application) {
+        
+        debug(' --> check_user_authorized_application')
 
-    search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
+        search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
+            if (user) {
+                req.user = user
+                oauth_authorize(req, res)
+            } else {
+                if (req.application.redirect_uri !== req.query.redirect_uri) {
+                    res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
+                }
 
-        if (user) {
-            req.user = user
-            oauth_authorize(req, res)
-        } else {
-            if (req.application.redirect_uri !== req.query.redirect_uri) {
-                res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
+                res.render('oauth/authorize', {application: {
+                    name: req.application.name,
+                    response_type: req.query.response_type,
+                    id: req.query.client_id,
+                    redirect_uri: req.query.redirect_uri,
+                    state: req.query.state }
+                });
             }
-
-            res.render('oauth/authorize', {application: {
-                name: req.application.name,
-                response_type: req.query.response_type,
-                id: req.query.client_id,
-                redirect_uri: req.query.redirect_uri,
-                state: req.query.state }
-            });
-        }
-    }).catch(function(error) {
-        req.session.errors = error
-        res.redirect('/')
-    })
+        }).catch(function(error) {
+            req.session.errors = error
+            res.redirect('/')
+        })
+    } else {
+        req.user = req.session.user
+        oauth_authorize(req, res)
+    }
 }
 
 // Search user that has authorized the application

@@ -35,10 +35,10 @@ Then, the IdM and the eIDAS node will interchange the needed SAML requests to fi
 Once the service has the Access Token, it can use it as always to authorize requests to other GEs. Furthermore, as the user is created in the IdM, permissions and roles could be managed in the same way than for a regular local user. 
 Next figures show the architecture and the dataflow interchanged between the entities.
 
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/eidas_arch.png = 740px)
+<img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/eidas_arch.png" width="740" align="center">
 <p align="center">Figure 1: eIDAS integration in FIWARE IAM model</p>
 
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/eidas_flow.png = 740px)
+<img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/eidas_flow.png" width="740" align="center">
 <p align="center">Figure 2: FIWARE identity - eIDAS data flow</p>
 
 

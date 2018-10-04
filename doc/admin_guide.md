@@ -1,3 +1,4 @@
+
 # Installation and Administration Guide
 
 - [Introduction](#introduction)
@@ -8,6 +9,7 @@
 	- [Authorization](#authorization)
 	- [Email](#email)
 	- [Configure Themes](#configure-themes)
+	- [Admin Panel](#admin-panel)
 - [System Administration](#system-administration)
 - [Sanity Check Procedures](#sanity-check-procedures)
     - [End to End testing](#end-to-end-testing)
@@ -188,17 +190,6 @@ You can configure the IdM to send emails to users. Follow this [tutorial](https:
 	}
 ~~~
 
-### Email
-You can configure the IdM to send emails to users. Follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04) to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04. Then edit config file:
-
-~~~
-	config.mail = {
-	    host: 'idm_host',
-	    port: 25,
-	    from: 'noreply@host'
-	}
-~~~
-
 ### Configure themes
 You can customize the appearance of the web portal. By default there are two themes: default and fiwarelab.
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_default_view.png)
@@ -291,6 +282,10 @@ Furthermore you can customize the header, footer, presentation and help of your 
 cd themes/example/templates && touch _footer.ejs _header.ejs _presentation.ejs _help_about_items.ejs</code>
 </pre>
 
+### Admin Panel
+Keyrock provides an interface in which administrators could easliy manage the users accounts. Actions as create, edit, delete, enable users as well as reset passwords of them could be performed through this functionality.
+
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_admin_panel.png)
 
 
 ## System Administration

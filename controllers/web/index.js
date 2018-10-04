@@ -1,6 +1,7 @@
 module.exports = {
   admins: require('../../controllers/web/admins'),
   notifies: require('../../controllers/web/notifies'),
+  list_users: require('../../controllers/web/list_users'),
   applications: require('../../controllers/web/applications'),
   authorize_org_apps: require('../../controllers/web/authorize_org_apps'),
   authorize_user_apps: require('../../controllers/web/authorize_user_apps'),

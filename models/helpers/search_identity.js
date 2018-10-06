@@ -8,7 +8,8 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize(config.database, config.username, config.password,
   {
     host: config.host,
-    dialect: config.dialect
+    dialect: config.dialect,
+    port: (database.port !== 'default') ? database.port : undefined
   }
 );
 

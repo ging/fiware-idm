@@ -260,10 +260,32 @@ exports.authenticate_token = function(req, res, next) {
     var authzforce = (req.query.authzforce) ? req.query.authzforce : undefined
     var req_app = (req.query.app_id) ? req.query.app_id : undefined
 
-    if (req.query.access_token.length <= 40 && is_hex(req.query.access_token)) {
-        authenticate_bearer(req, res, action, resource, authzforce, req_app)
+    if (req_app) {
+        models.oauth_client.findById(req_app).then(function(application) {
+            if (application && application.token_type === 'jwt') {
+                authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret)
+            } else if (application && application.token_type === 'bearer') {
+                authenticate_bearer(req, res, action, resource, authzforce, req_app)
+            } else {
+                var message = {
+                    message: 'Unauthorized', 
+                    code: 401, 
+                    title: 'Unauthorized'
+                }
+                return res.status(401).json(message)
+            }
+        }).catch(function(err) {
+            debug('Error ' + err)
+            // Request is not authorized.
+            return res.status(err.code || 500).json(err.message || err)
+        })
     } else {
-        authenticate_jwt(req, res, action, resource, authzforce, req_app)
+        var message = {
+            message: 'app_id must be included in the request', 
+            code: 400, 
+            title: 'Bad Request'
+        }
+        return res.status(400).json(message)
     }
 }
 
@@ -292,8 +314,7 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
     oauth.authenticate(request, response, options).then(function (token_info) {
         var identity = token_info.user
         var application_id = token_info.oauth_client.id
-
-        return create_oauth_response(identity, application_id, action, resource, authzforce, req_app)            
+        return create_oauth_response(identity, application_id, action, resource, authzforce, req_app)
     }).then(function(response){
         return res.status(201).json(response)
     }).catch(function (err) {
@@ -304,83 +325,36 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
 }
 
 
-function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
+function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_secret) {
 
     debug(' --> authenticate_jwt')
 
-    if (req_app) {
-        models.oauth_client.findById(req_app).then(function(application) {
-            if (application && application.token_type === 'jwt') {
-                jsonwebtoken.verify(req.query.access_token, application.jwt_secret, function(err, decoded) {
-                    if (err) {
-                        var message = {
-                            message: err, 
-                            code: 401, 
-                            title: 'Unauthorized'
-                        }
-                        return res.status(401).json(message)
-                    }
-
-                    /*create_decision(decoded.id, decoded.app_id, req_app, action, resource, decoded).then(function(decision) {
-                        decoded.authorization_decision = decision
-                        return res.status(201).json(decoded)
-                    }).catch(function(error) {
-                        debug('Error ' + err)
-                        // Request is not authorized.
-                        return res.status(err.code || 500).json(err.message || err)
-                    })*/
-                });
-            } else {
-                var message = {
-                    message: 'Unauthorized', 
-                    code: 401, 
-                    title: 'Unauthorized'
-                }
-                return res.status(401).json(message)
+    jsonwebtoken.verify(req.query.access_token, jwt_secret, function(err, decoded) {
+        if (err) {
+            var message = {
+                message: err,
+                code: 401,
+                title: 'Unauthorized'
             }
-        }).catch(function(err) {
-            debug('Error ' + err)
-            // Request is not authorized.
-            return res.status(err.code || 500).json(err.message || err)
-        })
-    } else {
-        var message = {
-            message: 'app_id must be included in the request', 
-            code: 400, 
-            title: 'Bad Request'
+            return res.status(401).json(message)
         }
-        return res.status(400).json(message)
-    }
-}
 
-function create_decision(user_id, app_id, req_app, action, resource) {
+        var identity = {
+            username: decoded.username,
+            gravatar: decoded.isGravatarEnabled,
+            email: decoded.email,
+            id: decoded.id,
+            type: decoded.type
+        }
 
-    debug(' --> create_decision')
+        var application_id = decoded.app_id
 
-    /*if (action && resource && req_app) {
-        create_decision(decoded.id, decoded.app_id, req_app, action, resource, decoded).then(function(decision) {
-            decoded.authorization_decision = decision
-            return res.status(201).json(decoded)
-        }).catch(function(error) {
+        create_oauth_response(identity, application_id, action, resource, authzforce, req_app).then(function(response) {
+            return res.status(201).json(response)
+        }).catch(function (err) {
             debug('Error ' + err)
             // Request is not authorized.
             return res.status(err.code || 500).json(err.message || err)
-        })
-    } else {
-        return res.status(201).json(decoded)
-    }*/    
-
-    return user_roles(user_id, app_id).then(function(roles_id) {
-        return user_permissions(roles_id.all, app_id, action, resource).then(function(permissions) {
-            return trusted_applications(app_id).then(function(trusted_applications) {
-                if (action && resource && req_app) {
-                    if (permissions && permissions.length > 0 && (req_app === app_id || trusted_applications.includes(req_app))) {
-                        return "Permit"
-                    } else {
-                        return "Deny"
-                    }
-                }
-            })
-        })
-    })
+        });
+    });
 }

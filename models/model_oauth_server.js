@@ -48,8 +48,10 @@ function getAccessToken(bearerToken) {
       token.oauth_client = accessToken.OauthClient
       if (accessToken.User) {
         token.user = accessToken.User;
+        token.user.dataValues['type'] = 'user'
       } else if (accessToken.Iot) {
         token.user = accessToken.Iot;
+        token.user.dataValues['type'] = 'iot'
       }
 
       delete token.OauthClient
@@ -121,14 +123,16 @@ function getIdentity(id, password) {
 
     if (user) {
       if (user.verifyPassword(user.salt, password)) {
+          user.dataValues["type"] = "user"
           return user
-        } 
+      } 
     }
 
     if (iot) {
       if (iot.verifyPassword(iot.salt, password)) {
+          iot.dataValues["type"] = "iot"
           return iot
-        } 
+      } 
     }
 
     return false
@@ -215,6 +219,7 @@ function generateJwtToken(token, client, identity) {
   var iot_info = require('../oauth_response/oauth_iot_response.json');
 
   return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
+    response['type'] = identity.type || identity.dataValues.type
     token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, { expiresIn: config_oauth2.access_token_lifetime });
     return storeToken(token, client, identity, true)
   }).catch(function(error) {
@@ -230,11 +235,11 @@ function storeToken(token, client, identity, jwt) {
   var iot_id = null
 
   if (identity) {
-    if (identity._modelOptions.tableName === "user") {
+    if (identity.dataValues.type === "user") {
       user_id = identity.id
     }
 
-    if (identity._modelOptions.tableName === "iot") {
+    if (identity.dataValues.type === "iot") {
       iot_id = identity.id
     }
   }
@@ -267,7 +272,7 @@ function storeToken(token, client, identity, jwt) {
     .then(function (resultsArray) {
 
       if (user_id || iot_id) {
-        token[identity._modelOptions.tableName] = identity
+        token[identity.dataValues.type] = identity.dataValues.type
       }
       return _.assign(  // expected to return client and user, but not returning
         {
@@ -388,7 +393,9 @@ function create_oauth_response(identity, application_id, action, resource, authz
 
   debug("-------create_oauth_response-------")
 
-  if (identity._modelOptions.tableName === 'user') {
+  var type = identity.type || identity.dataValues.type
+
+  if (type === 'user') {
 
       var user_info = require('../oauth_response/oauth_user_response.json');
 
@@ -399,15 +406,21 @@ function create_oauth_response(identity, application_id, action, resource, authz
       user_info.id = identity.id
 
       return search_user_info(user_info, action, resource, authzforce, req_app)
-  } else if (identity._modelOptions.tableName === 'iot') {
+  } else if (type === 'iot') {
 
       var iot_info = require('../oauth_response/oauth_iot_response.json');
 
       iot_info.app_id = application_id
       iot_info.id = identity.id
 
-      return iot_info
+      return search_iot_info(iot_info)
   }
+}
+
+function search_iot_info(iot_info) {
+  return new Promise(function(resolve, reject) {
+    resolve(iot_info)
+  })
 }
 
 // Check if user has enabled the application to read their details
@@ -433,10 +446,8 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
                 return user_permissions(roles.all, user_info.app_id, action, resource)
             })
             promise_array.push(search_permissions)
-        }
-
-        // Search authzforce if level 3 of security is enabled
-        if (config_authzforce.enabled && authzforce) {
+        } else if (config_authzforce.enabled && authzforce) {
+            // Search authzforce if level 3 of security is enabled
             var search_authzforce = app_authzforce_domain(user_info.app_id)
             promise_array.push(search_authzforce)
         }
@@ -446,10 +457,12 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
             var trusted_apps = values[0]
             var roles = values[1]
 
-            if (req_app !== user_info.app_id) {
-                if (trusted_apps.includes(user_info.app_id) === false) {
-                    reject({message: 'User not authorized in application', code: 401, title: 'Unauthorized'})    
-                }
+            if (req_app) {
+              if (req_app !== user_info.app_id) {
+                  if (trusted_apps.includes(user_info.app_id) === false) {
+                      reject({message: 'User not authorized in application', code: 401, title: 'Unauthorized'})    
+                  }
+              }
             }
 
             if (action && resource) {
@@ -458,10 +471,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
                 } else {
                     user_info.authorization_decision = "Deny"
                 }
-            }
-
-
-            if (config_authzforce.enabled && authzforce) {
+            } else if (config_authzforce.enabled && authzforce) {
                 var authzforce_domain = values[2]
                 if (authzforce_domain) {
                     user_info.app_azf_domain = authzforce_domain.az_domain
@@ -470,7 +480,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
 
             user_info.roles = roles.user
             user_info.organizations = roles.organizations
-            user_info.trusted_apps = values[1]
+            user_info.trusted_apps = trusted_apps
 
             resolve(user_info)
 
@@ -484,6 +494,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
 function user_roles(user_id, app_id) {
 
   debug("-------user_roles-------")
+  
   var promise_array = []
 
   // Search organizations in wich user is member or owner
@@ -563,6 +574,7 @@ function user_roles(user_id, app_id) {
 function user_permissions(roles_id, app_id, action, resource) {
 
     debug("-------user_permissions-------")
+
     return models.role_permission.findAll({
         where: { role_id: roles_id },
         attributes: ['permission_id']
@@ -584,6 +596,7 @@ function user_permissions(roles_id, app_id, action, resource) {
 function trusted_applications(app_id) {
 
   debug("-------trusted_applications-------")
+
     return models.trusted_application.findAll({
         where: { oauth_client_id: app_id },
         attributes: ['trusted_oauth_client_id']
@@ -600,6 +613,7 @@ function trusted_applications(app_id) {
 function app_authzforce_domain(app_id) {
 
   debug("-------app_authzforce_domain-------")
+
     return models.authzforce.findOne({
         where: { oauth_client_id: app_id },
         attributes: ['az_domain']

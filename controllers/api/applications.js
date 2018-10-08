@@ -114,7 +114,7 @@ exports.create = function(req, res) {
 			application.response_type = ['code', 'token']
 		}
 
-		applicaion.jwt_secret = req.application.jwt_secret = (req.body.application.token_type === 'bearer') ? null : crypto.randomBytes(16).toString('hex').slice(0,16)
+		application.jwt_secret = (req.body.application.token_type === 'bearer') ? null : crypto.randomBytes(16).toString('hex').slice(0,16)
 
 		var create_application = application.save({fields: ['id', 
 										  'secret', 

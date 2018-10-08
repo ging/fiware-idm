@@ -176,6 +176,7 @@
 
 <%- include _delete_user %>
 <script src="/javascripts/users/handle_password_strength.js" type="text/javascript"></script>
+<script src="/javascripts/others/see_password.js" type="text/javascript"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -186,22 +187,5 @@
             var label = input.closest('.form-group').find('label')
             checkStrength(value_input, input, label)
         })
-    })
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        $(".form-control-feedback").css('cursor', 'default');
-
-        $(".form-control-feedback").click(function() {
-            
-            if ($(this).hasClass('fa-eye')) {
-                $(this).siblings().attr('type', 'text')    
-            } else {
-                $(this).siblings().attr('type', 'password')
-            }
-
-            $(this).toggleClass('fa-eye fa-eye-slash');
-        });
     })
 </script>

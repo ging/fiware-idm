@@ -97,6 +97,9 @@ exports.saml2_application_login = function(req, res, next) {
 		}
 
 		create_user(name_id, eidas_profile).then(function(user) {
+
+			// TO DO CHECK SIGNATURE IN ASSERTION
+
             req.session.user = {
             	id: user.id,
                 username: user.username,

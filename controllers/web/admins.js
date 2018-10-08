@@ -2,8 +2,6 @@ var models = require('../../models/models.js');
 var debug = require('debug')('idm:web-admin_controller')
 var gravatar = require('gravatar');
 
-var email = require('../../lib/email.js')
-
 // See if user is administrator
 exports.is_admin =function(req, res, next) {
 

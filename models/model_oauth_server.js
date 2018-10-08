@@ -417,59 +417,66 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
 
     return new Promise(function(resolve, reject) {
 
-      var promise_array = []
+        var promise_array = []
 
-      var search_roles = user_roles(user_info.id, user_info.app_id)
+        // Insert search trusted applications promise
+        var search_trusted_apps = trusted_applications(req_app)
+        promise_array.push(search_trusted_apps)
 
-      promise_array.push(search_roles)
+        // Insert search search roles promise
+        var search_roles = user_roles(user_info.id, user_info.app_id)
+        promise_array.push(search_roles)
 
-      var search_trusted_apps = trusted_applications(user_info.app_id)
+        // Insert search permissions promise to generate decison
+        if (action && resource) {
+            var search_permissions = search_roles.then(function(roles) {
+                return user_permissions(roles.all, user_info.app_id, action, resource)
+            })
+            promise_array.push(search_permissions)
+        }
 
-      promise_array.push(search_trusted_apps)
+        // Search authzforce if level 3 of security is enabled
+        if (config_authzforce.enabled && authzforce) {
+            var search_authzforce = app_authzforce_domain(user_info.app_id)
+            promise_array.push(search_authzforce)
+        }
 
-      if (action && resource && req_app) {
+        Promise.all(promise_array).then(function(values) {
 
-          var search_permissions = search_roles.then(function(roles) {
-              return user_permissions(roles.all, user_info.app_id, action, resource)
-          })
-          promise_array.push(search_permissions)
-      }
+            var trusted_apps = values[0]
+            var roles = values[1]
 
-      // Search authzforce if level 3 enabled
-      if (config_authzforce.enabled && authzforce) {
-          var search_authzforce = app_authzforce_domain(user_info.app_id)
-          promise_array.push(search_authzforce)
-      }
+            if (req_app !== user_info.app_id) {
+                if (trusted_apps.includes(user_info.app_id) === false) {
+                    reject({message: 'User not authorized in application', code: 401, title: 'Unauthorized'})    
+                }
+            }
 
-      Promise.all(promise_array).then(function(values) {
+            if (action && resource) {
+                if (values[2] && values[2].length > 0) {
+                    user_info.authorization_decision = "Permit"
+                } else {
+                    user_info.authorization_decision = "Deny"
+                }
+            }
 
-          var roles = values[0]
 
-          user_info.roles = roles.user
-          user_info.organizations = roles.organizations
+            if (config_authzforce.enabled && authzforce) {
+                var authzforce_domain = values[2]
+                if (authzforce_domain) {
+                    user_info.app_azf_domain = authzforce_domain.az_domain
+                }
+            }
 
-          user_info.trusted_applications = values[1]
+            user_info.roles = roles.user
+            user_info.organizations = roles.organizations
+            user_info.trusted_apps = values[1]
 
-          if (action && resource && req_app) {
-              if (values[2] && values[2].length > 0 && (req_app === user_info.app_id || user_info.trusted_applications.includes(req_app))) {
-                  user_info.authorization_decision = "Permit"
-              } else {
-                  user_info.authorization_decision = "Deny"
-              }
-          }
+            resolve(user_info)
 
-          if (config_authzforce.enabled && authzforce) {
-              var authzforce_domain = values[2]
-              if (authzforce_domain) {
-                  user_info.app_azf_domain = authzforce_domain.az_domain
-              }
-          }
-
-          resolve(user_info)
-
-      }).catch(function(error) {
-          reject({message: 'Internal error', code: 500, title: 'Internal error'})
-      })
+        }).catch(function(error) {
+            reject({message: 'Internal error', code: 500, title: 'Internal error'})
+        })
     })
 }
 

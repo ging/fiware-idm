@@ -268,6 +268,9 @@ exports.authenticate_token = function(req, res, next) {
 }
 
 function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
+
+    debug(' --> authenticate_bearer')
+
     if ((action || resource) && authzforce) {
         var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
         return res.status(400).json(error)
@@ -302,6 +305,9 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
 
 
 function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
+
+    debug(' --> authenticate_jwt')
+
     if (req_app) {
         models.oauth_client.findById(req_app).then(function(application) {
             if (application && application.token_type === 'jwt') {
@@ -315,22 +321,18 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
                         return res.status(401).json(message)
                     }
 
-                    if (action && resource && req_app) {
-                        create_decision(decoded.id, decoded.app_id, req_app, action, resource, decoded).then(function(decision) {
-                            decoded.authorization_decision = decision
-                            return res.status(201).json(decoded)
-                        }).catch(function(error) {
-                            debug('Error ' + err)
-                            // Request is not authorized.
-                            return res.status(err.code || 500).json(err.message || err)
-                        })
-                    } else {
+                    /*create_decision(decoded.id, decoded.app_id, req_app, action, resource, decoded).then(function(decision) {
+                        decoded.authorization_decision = decision
                         return res.status(201).json(decoded)
-                    }
+                    }).catch(function(error) {
+                        debug('Error ' + err)
+                        // Request is not authorized.
+                        return res.status(err.code || 500).json(err.message || err)
+                    })*/
                 });
             } else {
                 var message = {
-                    message: 'Invalid req_app or token', 
+                    message: 'Unauthorized', 
                     code: 401, 
                     title: 'Unauthorized'
                 }
@@ -352,6 +354,22 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app) {
 }
 
 function create_decision(user_id, app_id, req_app, action, resource) {
+
+    debug(' --> create_decision')
+
+    /*if (action && resource && req_app) {
+        create_decision(decoded.id, decoded.app_id, req_app, action, resource, decoded).then(function(decision) {
+            decoded.authorization_decision = decision
+            return res.status(201).json(decoded)
+        }).catch(function(error) {
+            debug('Error ' + err)
+            // Request is not authorized.
+            return res.status(err.code || 500).json(err.message || err)
+        })
+    } else {
+        return res.status(201).json(decoded)
+    }*/    
+
     return user_roles(user_id, app_id).then(function(roles_id) {
         return user_permissions(roles_id.all, app_id, action, resource).then(function(permissions) {
             return trusted_applications(app_id).then(function(trusted_applications) {

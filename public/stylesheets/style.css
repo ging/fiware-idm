@@ -6501,6 +6501,7 @@ button.close {
   .sidebar ul a.applications h4 span,
   .sidebar ul a.notify h4 span,
   .sidebar ul a.administrators h4 span,
+  .sidebar ul a.list_users h4 span,
   .sidebar ul a.user_accounts h4 span,
   .sidebar ul a.endpoints_management h4 span {
     display: none !important; } }
@@ -6513,6 +6514,7 @@ button.close {
   .sidebar ul a.applications h4 span,
   .sidebar ul a.notify h4 span,
   .sidebar ul a.administrators h4 span,
+  .sidebar ul a.list_users h4 span,
   .sidebar ul a.user_accounts h4 span,
   .sidebar ul a.endpoints_management h4 span {
     display: none !important; } }
@@ -8125,6 +8127,7 @@ textarea {
     .sidebar ul a.applications,
     .sidebar ul a.notify,
     .sidebar ul a.administrators,
+    .sidebar ul a.list_users,
     .sidebar ul a.user_accounts,
     .sidebar ul a.endpoints_management {
       line-height: 42px;
@@ -8139,6 +8142,7 @@ textarea {
         .sidebar ul a.applications,
         .sidebar ul a.notify,
         .sidebar ul a.administrators,
+        .sidebar ul a.list_users,
         .sidebar ul a.user_accounts,
         .sidebar ul a.endpoints_management {
           border-right: 1px solid #A9A9A9;
@@ -8151,6 +8155,7 @@ textarea {
         .sidebar ul a.applications,
         .sidebar ul a.notify,
         .sidebar ul a.administrators,
+        .sidebar ul a.list_users,
         .sidebar ul a.user_accounts,
         .sidebar ul a.endpoints_management {
           line-height: 37px; }
@@ -8161,6 +8166,7 @@ textarea {
           .sidebar ul a.applications:first-child,
           .sidebar ul a.notify:first-child,
           .sidebar ul a.administrators:first-child,
+          .sidebar ul a.list_users:first-child,
           .sidebar ul a.user_accounts:first-child,
           .sidebar ul a.endpoints_management:first-child {
             margin-left: 0; }
@@ -8171,6 +8177,7 @@ textarea {
           .sidebar ul a.applications:last-child,
           .sidebar ul a.notify:last-child,
           .sidebar ul a.administrators:last-child,
+          .sidebar ul a.list_users:last-child,
           .sidebar ul a.user_accounts:last-child,
           .sidebar ul a.endpoints_management:last-child {
             margin-right: 0; } }
@@ -8182,6 +8189,7 @@ textarea {
         .sidebar ul a.applications,
         .sidebar ul a.notify,
         .sidebar ul a.administrators,
+        .sidebar ul a.list_users,
         .sidebar ul a.user_accounts,
         .sidebar ul a.endpoints_management {
           float: left; } }
@@ -8199,6 +8207,8 @@ textarea {
       .sidebar ul a.notify i,
       .sidebar ul a.administrators h4,
       .sidebar ul a.administrators i,
+      .sidebar ul a.list_users h4,
+      .sidebar ul a.list_users i,
       .sidebar ul a.user_accounts h4,
       .sidebar ul a.user_accounts i,
       .sidebar ul a.endpoints_management h4,
@@ -8218,6 +8228,8 @@ textarea {
       .sidebar ul a.notify:hover i,
       .sidebar ul a.administrators:hover h4,
       .sidebar ul a.administrators:hover i,
+      .sidebar ul a.list_users:hover h4,
+      .sidebar ul a.list_users:hover i,
       .sidebar ul a.user_accounts:hover h4,
       .sidebar ul a.user_accounts:hover i,
       .sidebar ul a.endpoints_management:hover h4,
@@ -8230,6 +8242,7 @@ textarea {
       .sidebar ul a.applications i,
       .sidebar ul a.notify i,
       .sidebar ul a.administrators i,
+      .sidebar ul a.list_users i,
       .sidebar ul a.user_accounts i,
       .sidebar ul a.endpoints_management i {
         font-size: 1.3rem; }
@@ -8241,6 +8254,7 @@ textarea {
           .sidebar ul a.applications i,
           .sidebar ul a.notify i,
           .sidebar ul a.administrators i,
+          .sidebar ul a.list_users i,
           .sidebar ul a.user_accounts i,
           .sidebar ul a.endpoints_management i {
             float: left;
@@ -8252,6 +8266,7 @@ textarea {
             .sidebar ul a.applications i:first-child,
             .sidebar ul a.notify i:first-child,
             .sidebar ul a.administrators i:first-child,
+            .sidebar ul a.list_users i:first-child,
             .sidebar ul a.user_accounts i:first-child,
             .sidebar ul a.endpoints_management i:first-child {
               padding-left: 0px; }
@@ -8262,6 +8277,7 @@ textarea {
             .sidebar ul a.applications i:last-child,
             .sidebar ul a.notify i:last-child,
             .sidebar ul a.administrators i:last-child,
+            .sidebar ul a.list_users i:last-child,
             .sidebar ul a.user_accounts i:last-child,
             .sidebar ul a.endpoints_management i:last-child {
               border-right: none; } }
@@ -8272,6 +8288,7 @@ textarea {
       .sidebar ul a.applications h4,
       .sidebar ul a.notify h4,
       .sidebar ul a.administrators h4,
+      .sidebar ul a.list_users h4,
       .sidebar ul a.user_accounts h4,
       .sidebar ul a.endpoints_management h4 {
         margin-bottom: 16px; }
@@ -8282,6 +8299,7 @@ textarea {
         .sidebar ul a.applications h4 span,
         .sidebar ul a.notify h4 span,
         .sidebar ul a.administrators h4 span,
+        .sidebar ul a.list_users h4 span,
         .sidebar ul a.user_accounts h4 span,
         .sidebar ul a.endpoints_management h4 span {
           display: inline;
@@ -8295,6 +8313,7 @@ textarea {
             .sidebar ul a.applications h4 span i,
             .sidebar ul a.notify h4 span i,
             .sidebar ul a.administrators h4 span i,
+            .sidebar ul a.list_users h4 span i,
             .sidebar ul a.user_accounts h4 span i,
             .sidebar ul a.endpoints_management h4 span i {
               padding-right: 8px; } }
@@ -8312,6 +8331,8 @@ textarea {
         .sidebar ul a.notify h4 i,
         .sidebar ul a.administrators h4:focus,
         .sidebar ul a.administrators h4 i,
+        .sidebar ul a.list_users h4:focus,
+        .sidebar ul a.list_users h4 i,
         .sidebar ul a.user_accounts h4:focus,
         .sidebar ul a.user_accounts h4 i,
         .sidebar ul a.endpoints_management h4:focus,
@@ -8331,6 +8352,8 @@ textarea {
       .sidebar ul a.notify h4.active i,
       .sidebar ul a.administrators h4.active span,
       .sidebar ul a.administrators h4.active i,
+      .sidebar ul a.list_users h4.active span,
+      .sidebar ul a.list_users h4.active i,
       .sidebar ul a.user_accounts h4.active span,
       .sidebar ul a.user_accounts h4.active i,
       .sidebar ul a.endpoints_management h4.active span,
@@ -8350,6 +8373,8 @@ textarea {
       .sidebar ul a.notify h4.active:hover i,
       .sidebar ul a.administrators h4.active:hover span,
       .sidebar ul a.administrators h4.active:hover i,
+      .sidebar ul a.list_users h4.active:hover span,
+      .sidebar ul a.list_users h4.active:hover i,
       .sidebar ul a.user_accounts h4.active:hover span,
       .sidebar ul a.user_accounts h4.active:hover i,
       .sidebar ul a.endpoints_management h4.active:hover span,
@@ -9053,7 +9078,7 @@ ul.disabled-list li.active:hover {
 .fa-star-o:before {
   content: "\f006"; }
 
-.fa-user:before {
+.fa-user:before, a.list_users i:before {
   content: "\f007"; }
 
 .fa-film:before {
@@ -10723,6 +10748,102 @@ ul.disabled-list li.active:hover {
 
 #id_regions {
   min-height: 200px; }
+
+#users-page {
+  /* The switch - the box around the slider */
+  /* Hide default HTML checkbox */
+  /* The slider */
+  /* Rounded sliders */ }
+  #users-page .switch {
+    vertical-align: bottom;
+    margin-bottom: 0px;
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px; }
+  #users-page .switch input {
+    display: none; }
+  #users-page .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s; }
+  #users-page .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s; }
+  #users-page input:checked + .slider {
+    background-color: #2196F3; }
+  #users-page input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3; }
+  #users-page input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px); }
+  #users-page .slider.round {
+    border-radius: 34px; }
+  #users-page .slider.round:before {
+    border-radius: 50%; }
+  #users-page .table > tbody > tr > td, #users-page .table > tbody > tr > th {
+    vertical-align: baseline;
+    padding: 8px; }
+  #users-page .table > tfoot > tr > td, #users-page .table > tfoot > tr > th {
+    vertical-align: baseline;
+    padding: 8px; }
+  #users-page .table > thead > tr > td, #users-page .table > thead > tr > th {
+    vertical-align: baseline;
+    padding: 8px; }
+  #users-page #users-page > div > .table > tbody > tr > td > p {
+    padding-bottom: 0px; }
+  #users-page .table > tbody > tr > td > p {
+    overflow: hidden;
+    white-space: nowrap; }
+  #users-page #users-page > div > .table > tbody > tr > td > label {
+    padding-top: 8px; }
+  #users-page .table {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%; }
+  #users-page #users-page > .panel {
+    border: 0; }
+    #users-page #users-page > .panel > .panel-heading {
+      display: flex;
+      -webkit-flex-flow: row wrap;
+      justify-content: flex-end;
+      border-bottom: 0; }
+      #users-page #users-page > .panel > .panel-heading > #entries {
+        display: flex;
+        -webkit-flex-flow: row wrap;
+        justify-content: flex-end;
+        border-bottom: 0;
+        margin-right: auto; }
+        #users-page #users-page > .panel > .panel-heading > #entries > p {
+          padding: 6px; }
+        #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .btn, #users-page #users-page > .panel > .panel-heading > #entries .permissions_list .list-group-item .select-multiple > .bootstrap-select > .ajax-inline-edit, .permissions_list .list-group-item #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page #users-page > .panel > .panel-heading > #entries
+        .role_list .list-group-item .select-multiple > .bootstrap-select > .ajax-inline-edit,
+        .role_list .list-group-item #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page #users-page > .panel > .panel-heading > #entries
+        .services_list .list-group-item .select-multiple > .bootstrap-select > .ajax-inline-edit,
+        .services_list .list-group-item #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page #users-page > .panel > .panel-heading > #entries .edit_organization_modal .select-multiple > .bootstrap-select > button, .edit_organization_modal #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > button {
+          height: 30px; }
+    #users-page #users-page > .panel > .panel-body {
+      padding: 0; }
+    #users-page #users-page > .panel > .panel-heading > .filter {
+      width: 25%; }
+      #users-page #users-page > .panel > .panel-heading > .filter > input {
+        height: 30px; }
+    #users-page #users-page > .panel > .panel-heading > .btn-group {
+      margin-left: 8px; }
 
 #splash #user_info {
   display: none; }

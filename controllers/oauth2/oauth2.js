@@ -85,6 +85,7 @@ exports.check_user = function(req, res, next) {
     } else {
         var render_values = {
             application: {
+                url: req.url,
                 name: req.application.name,
                 description: req.application.description,
                 response_type: req.query.response_type,

@@ -238,7 +238,8 @@ function oauth_authorize(req, res) {
     debug(' --> oauth_authorize')
 
     req.body.user = req.user
-
+    req.body.user.dataValues.type = 'user'
+    debug(req.body.user)
     var request = new Request(req);
     var response = new Response(res);
 
@@ -260,6 +261,11 @@ exports.authenticate_token = function(req, res, next) {
     var authzforce = (req.query.authzforce) ? req.query.authzforce : undefined
     var req_app = (req.query.app_id) ? req.query.app_id : undefined
 
+    if ((action || resource) && authzforce) {
+        var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
+        return res.status(400).json(error)
+    }
+
     if (req_app) {
         models.oauth_client.findById(req_app).then(function(application) {
             if (application && application.token_type === 'jwt') {
@@ -280,23 +286,13 @@ exports.authenticate_token = function(req, res, next) {
             return res.status(err.code || 500).json(err.message || err)
         })
     } else {
-        var message = {
-            message: 'app_id must be included in the request', 
-            code: 400, 
-            title: 'Bad Request'
-        }
-        return res.status(400).json(message)
+        authenticate_bearer(req, res, action, resource, authzforce, req_app)
     }
 }
 
 function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
 
     debug(' --> authenticate_bearer')
-
-    if ((action || resource) && authzforce) {
-        var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
-        return res.status(400).json(error)
-    }
 
     var options = {
         allowBearerTokensInQueryString: true
@@ -344,7 +340,7 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_s
             gravatar: decoded.isGravatarEnabled,
             email: decoded.email,
             id: decoded.id,
-            type: decoded.type
+            type: (decoded.type) ? decoded.type : 'app'
         }
 
         var application_id = decoded.app_id

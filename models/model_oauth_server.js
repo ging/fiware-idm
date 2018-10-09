@@ -205,10 +205,11 @@ function revokeToken(token) {
 function saveToken(token, client, identity) {
 
   debug("-------saveToken-------")
-  if (client.token_type === 'jwt') {
-    return generateJwtToken(token, client, identity)
-  } else {
+
+  if (client.token_type === 'bearer') {
     return storeToken(token, client, identity, false)
+  } else {
+    return generateJwtToken(token, client, identity)
   }
 }
 
@@ -219,7 +220,9 @@ function generateJwtToken(token, client, identity) {
   var iot_info = require('../oauth_response/oauth_iot_response.json');
 
   return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
-    response['type'] = identity.type || identity.dataValues.type
+    if (identity) {
+      response['type'] = identity.type || identity.dataValues.type
+    }
     token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, { expiresIn: config_oauth2.access_token_lifetime });
     return storeToken(token, client, identity, true)
   }).catch(function(error) {
@@ -302,6 +305,7 @@ function getAuthorizationCode(code) {
       if (!authCodeModel) return false;
       var client = authCodeModel.OauthClient
       var user = authCodeModel.User
+      user.dataValues["type"] = "user"
       return reCode = {
         code: code,
         client: client,
@@ -368,11 +372,23 @@ function getRefreshToken(refreshToken) {
     .findOne({
       attributes: ['oauth_client_id', 'user_id', 'expires'],
       where: {refresh_token: refreshToken},
-      include: [oauth_client, user]
-
+      include: [
+        {
+          model: user,
+          attributes: ['id', 'username', 'email', 'gravatar'],
+        },
+        {
+          model: iot,
+          attributes: ['id'],
+        },
+        {
+          model: oauth_client,
+          attributes: ['id', 'grant_type']
+        }
+      ]
     })
     .then(function (savedRT) {
-
+      debug(savedRT)
       var tokenTemp = {
         user: savedRT ? savedRT.User : {},
         client: savedRT ? savedRT.OauthClient : {},
@@ -381,6 +397,12 @@ function getRefreshToken(refreshToken) {
         refresh_token: refreshToken,
         scope: savedRT ? savedRT.scope : ''
       };
+      if (savedRT.User) {
+        tokenTemp.user.dataValues['type'] = 'user'
+      } else if (savedRT.Iot) {
+        tokenTemp.user.dataValues['type'] = 'iot'
+      }
+
       return tokenTemp;
 
     }).catch(function (err) {
@@ -393,7 +415,10 @@ function create_oauth_response(identity, application_id, action, resource, authz
 
   debug("-------create_oauth_response-------")
 
-  var type = identity.type || identity.dataValues.type
+  var type;
+  if (identity) {
+    type = identity.type || identity.dataValues.type
+  }
 
   if (type === 'user') {
 
@@ -414,10 +439,26 @@ function create_oauth_response(identity, application_id, action, resource, authz
       iot_info.id = identity.id
 
       return search_iot_info(iot_info)
+  } else {
+      return search_app_info(application_id)
   }
 }
 
+function search_app_info(application_id) {
+
+  debug("-------search_app_info-------")
+
+  return new Promise(function(resolve, reject) {
+    resolve({
+      app_id: application_id
+    })
+  })
+}
+
 function search_iot_info(iot_info) {
+
+  debug("-------search_iot_info-------")
+
   return new Promise(function(resolve, reject) {
     resolve(iot_info)
   })
@@ -460,7 +501,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
             if (req_app) {
               if (req_app !== user_info.app_id) {
                   if (trusted_apps.includes(user_info.app_id) === false) {
-                      reject({message: 'User not authorized in application', code: 401, title: 'Unauthorized'})    
+                      reject({message: 'User not authorized in application', code: 401, title: 'Unauthorized'})
                   }
               }
             }
@@ -620,26 +661,9 @@ function app_authzforce_domain(app_id) {
     })
 }
 
-// function validateScope(token, client) {
-
-//   debug("-------validateScope-------")
-
-//   return (user.scope === scope && client.scope === scope && scope !== null) ? scope : false
-// }
-
-// function verifyScope(token, scope) {
-
-//   debug("-------verifyScope-------")
-
-//     return token.scope === scope
-// }
-
 module.exports = {
-  //generateOAuthAccessToken, optional - used for jwt
-  //generateAuthorizationCode, optional
-  //generateOAuthRefreshToken, - optional
   getAccessToken: getAccessToken,
-  getAuthorizationCode: getAuthorizationCode, //getOAuthAuthorizationCode renamed to,
+  getAuthorizationCode: getAuthorizationCode,
   getClient: getClient,
   getRefreshToken: getRefreshToken,
   getUser: getUser,
@@ -653,7 +677,5 @@ module.exports = {
   user_roles: user_roles,
   user_permissions: user_permissions,
   trusted_applications: trusted_applications
-  // validateScope: validateScope,
-  // verifyScope: verifyScope,
 }
 

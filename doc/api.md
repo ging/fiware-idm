@@ -28,6 +28,8 @@
         - [Select OAuth Access Token](#def-select-token)
             - [Get user information and roles](#def-getUserInfo)
             - [Validate authorization](#def-validate-auth)
+            - [Access JWT Request](#def-JWTRequest)
+            - [Access JWT Response](#def-JWTResponse)
 
 ---
 <a name="def-apiIdm"></a>
@@ -358,3 +360,24 @@ JWT is a safe way to represent a set information between two parties. A JWT is c
 
 <p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_TokenTypeJwt.png" width="740" align="center"></p>
 <p align="center">Figure 1: JSON Web Token type</p>
+
+
+<a name="def-JWTRequest"></a>
+#### Access Token Request with JWT
+It is not need to configure anything additionally in the oauth request. If JWT is configured in the application, a JWT could be generated through one of the previous explained grant types.
+
+<a name="def-JWTResponse"></a>
+#### Access Token Response
+
+~~~
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Cache-Control: no-store
+Pragma: no-cache
+
+{
+    "access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdhbml6YXRpb25zIjpbXSwiZGlzcGxheU5hbWUiOiIiLCJyb2xlcyI6W3siaWQiOiI1ZGNlMDVmMS1lMjg0LTQyMmEtYmViMS1mODhiZTMwYTg5MDAiLCJuYW1lIjoiYWFhYWEifV0sImFwcF9pZCI6IjFiNWJhY2U2LWIzZDUtNGE1ZC05MjU5LWY1MzI1OTg3NDk3ZSIsInRydXN0ZWRfYXBwcyI6W10sImlzR3JhdmF0YXJFbmFibGVkIjpmYWxzZSwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsImlkIjoiYWRtaW4iLCJhdXRob3JpemF0aW9uX2RlY2lzaW9uIjoiIiwiYXBwX2F6Zl9kb21haW4iOiIzclQ5d3NyOUVlaW9OZ0pDckJFQUFnIiwidXNlcm5hbWUiOiJhZG1pbiIsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNTM5MDk1ODA2LCJleHAiOjE1MzkwOTk0MDZ9.-fYFHyPjPpA52gTEqMjppmERqiIZDgGKG5bJqVh0o68",
+    "token_type":"jwt",
+    "refresh_token":"a581cb04b116e26b175002bc2e05551042fafbda"
+}
+~~~

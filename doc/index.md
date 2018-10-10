@@ -127,6 +127,7 @@ Finally, one of the main uses of this Generic Enabler is to allow developers to 
 - [How to run tests](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
 - [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/)
 - [Installation & Administration Guide](http://fiware-idm.readthedocs.org/en/latest/admin_guide/)
+- [Connecting IdM to a eIDAS node](http://fiware-idm.readthedocs.org/en/latest/eidas/)
 
 ## License
 

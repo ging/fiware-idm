@@ -97,6 +97,9 @@ exports.saml2_application_login = function(req, res, next) {
 		}
 
 		create_user(name_id, eidas_profile).then(function(user) {
+
+			// TO DO CHECK SIGNATURE IN ASSERTION
+
             req.session.user = {
             	id: user.id,
                 username: user.username,
@@ -150,6 +153,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 	models.eidas_credentials.findOne({
 		where: { oauth_client_id: req.application.id }
 	}).then(function(credentials) {
+
 		if (credentials) {
 			var organization = {
 				name: credentials.organization_name,
@@ -188,7 +192,6 @@ exports.search_eidas_credentials = function(req, res, next) {
 				contact: contact,
 				valid_until: config.eidas.metadata_expiration
 			};
-
 
 			var sp = new saml2.ServiceProvider(sp_options);
 

@@ -1,5 +1,3 @@
-
-
 # User and Programmers Guide
 
 + [Introduction](#def-introduction)
@@ -156,7 +154,7 @@ When you assign roles to an organization, you assign it to the users who are own
 <a name="def-trusted"></a>
 #### Authorize trusted applications
 
-When validating permissions in [Keyrock's built-in PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization) as explained [here](http://fiware-idm.readthedocs.io/en/latest/api/#def-validate-auth) the application where the permission was created and assigned to the user is checked. 
+When validating permissions in [Keyrock's built-in PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization) as explained [here](http://fiware-idm.readthedocs.io/en/latest/api/#def-validate-auth) the application in which the permission was created and assigned to the user is checked. 
 
 Keyrock allows application owners to trust in other applications. Thus, a PDP check will validate if the user has an specific permission in the current application or in one of the applications in which it trusts. For adding trusted applications you can use the API or the web interface:
 

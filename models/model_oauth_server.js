@@ -2,7 +2,12 @@
 var models = require('./models.js');
 var oauth2 = require('../config').oauth2;
 var _ = require('lodash');
+var jsonwebtoken = require('jsonwebtoken');
 var debug = require('debug')('idm:oauth2-model_oauth_server')
+var config_authzforce = require('./../config.js').authorization.authzforce
+var config_oauth2 = require('./../config.js').oauth2
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 var user = models.user;
 var iot = models.iot;
@@ -43,8 +48,10 @@ function getAccessToken(bearerToken) {
       token.oauth_client = accessToken.OauthClient
       if (accessToken.User) {
         token.user = accessToken.User;
+        token.user.dataValues['type'] = 'user'
       } else if (accessToken.Iot) {
         token.user = accessToken.Iot;
+        token.user.dataValues['type'] = 'iot'
       }
 
       delete token.OauthClient
@@ -62,13 +69,12 @@ function getAccessToken(bearerToken) {
 function getClient(clientId, clientSecret) {
   
   debug("-------getClient-------")
-  
+
   const options = {
     where: {id: clientId},
-    attributes: ['id', 'redirect_uri', 'scope', 'grant_type']
+    attributes: ['id', 'redirect_uri', 'token_type', 'jwt_secret', 'scope', 'grant_type']
   };
   if (clientSecret) options.where.secret = clientSecret;
-
   return oauth_client
     .findOne(options)
     .then(function (client) {
@@ -98,7 +104,7 @@ function getIdentity(id, password) {
 
   var search_user = user.findOne({
     where: {email: id},
-    attributes: ['id', 'username', 'salt', 'password', 'scope'],
+    attributes: ['id', 'username', 'gravatar', 'email', 'salt', 'password', 'scope'],
   })
 
   var search_iot = iot.findOne({
@@ -117,14 +123,16 @@ function getIdentity(id, password) {
 
     if (user) {
       if (user.verifyPassword(user.salt, password)) {
+          user.dataValues["type"] = "user"
           return user
-        } 
+      } 
     }
 
     if (iot) {
       if (iot.verifyPassword(iot.salt, password)) {
+          iot.dataValues["type"] = "iot"
           return iot
-        } 
+      } 
     }
 
     return false
@@ -198,29 +206,56 @@ function saveToken(token, client, identity) {
 
   debug("-------saveToken-------")
 
+  if (client.token_type === 'bearer') {
+    return storeToken(token, client, identity, false)
+  } else {
+    return generateJwtToken(token, client, identity)
+  }
+}
+
+function generateJwtToken(token, client, identity) {
+  
+  debug("-------generateJwtToken-------")
+  var user_info = require('../oauth_response/oauth_user_response.json');
+  var iot_info = require('../oauth_response/oauth_iot_response.json');
+
+  return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
+    if (identity) {
+      response['type'] = identity.type || identity.dataValues.type
+    }
+    token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, { expiresIn: config_oauth2.access_token_lifetime });
+    return storeToken(token, client, identity, true)
+  }).catch(function(error) {
+    debug("-------generateJwtToken-------", error)
+  })
+}
+
+function storeToken(token, client, identity, jwt) {
+
+  debug("-------storeToken-------")
+
   var user_id = null 
   var iot_id = null
 
   if (identity) {
-    if (identity._modelOptions.tableName === "user") {
+    if (identity.dataValues.type === "user") {
       user_id = identity.id
     }
 
-    if (identity._modelOptions.tableName === "iot") {
+    if (identity.dataValues.type === "iot") {
       iot_id = identity.id
     }
   }
 
-
   return Promise.all([
-      oauth_access_token.create({
+      !jwt ? oauth_access_token.create({
         access_token: token.accessToken,
         expires: token.accessTokenExpiresAt,
         oauth_client_id: client.id,
         user_id: user_id,
         iot_id: iot_id,
         scope: token.scope
-      }),
+      }) : [],
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
         expires: token.refreshTokenExpiresAt,
@@ -240,7 +275,7 @@ function saveToken(token, client, identity) {
     .then(function (resultsArray) {
 
       if (user_id || iot_id) {
-        token[identity._modelOptions.tableName] = identity
+        token[identity.dataValues.type] = identity.dataValues.type
       }
       return _.assign(  // expected to return client and user, but not returning
         {
@@ -270,6 +305,7 @@ function getAuthorizationCode(code) {
       if (!authCodeModel) return false;
       var client = authCodeModel.OauthClient
       var user = authCodeModel.User
+      user.dataValues["type"] = "user"
       return reCode = {
         code: code,
         client: client,
@@ -336,11 +372,23 @@ function getRefreshToken(refreshToken) {
     .findOne({
       attributes: ['oauth_client_id', 'user_id', 'expires'],
       where: {refresh_token: refreshToken},
-      include: [oauth_client, user]
-
+      include: [
+        {
+          model: user,
+          attributes: ['id', 'username', 'email', 'gravatar'],
+        },
+        {
+          model: iot,
+          attributes: ['id'],
+        },
+        {
+          model: oauth_client,
+          attributes: ['id', 'grant_type']
+        }
+      ]
     })
     .then(function (savedRT) {
-
+      debug(savedRT)
       var tokenTemp = {
         user: savedRT ? savedRT.User : {},
         client: savedRT ? savedRT.OauthClient : {},
@@ -349,6 +397,12 @@ function getRefreshToken(refreshToken) {
         refresh_token: refreshToken,
         scope: savedRT ? savedRT.scope : ''
       };
+      if (savedRT.User) {
+        tokenTemp.user.dataValues['type'] = 'user'
+      } else if (savedRT.Iot) {
+        tokenTemp.user.dataValues['type'] = 'iot'
+      }
+
       return tokenTemp;
 
     }).catch(function (err) {
@@ -356,26 +410,260 @@ function getRefreshToken(refreshToken) {
     });
 }
 
-// function validateScope(token, client) {
 
-//   debug("-------validateScope-------")
+function create_oauth_response(identity, application_id, action, resource, authzforce, req_app) {
 
-//   return (user.scope === scope && client.scope === scope && scope !== null) ? scope : false
-// }
+  debug("-------create_oauth_response-------")
 
-// function verifyScope(token, scope) {
+  var type;
+  if (identity) {
+    type = identity.type || identity.dataValues.type
+  }
 
-//   debug("-------verifyScope-------")
+  if (type === 'user') {
 
-//     return token.scope === scope
-// }
+      var user_info = require('../oauth_response/oauth_user_response.json');
+
+      user_info.username = identity.username
+      user_info.app_id = application_id
+      user_info.isGravatarEnabled = identity.gravatar
+      user_info.email = identity.email
+      user_info.id = identity.id
+
+      return search_user_info(user_info, action, resource, authzforce, req_app)
+  } else if (type === 'iot') {
+
+      var iot_info = require('../oauth_response/oauth_iot_response.json');
+
+      iot_info.app_id = application_id
+      iot_info.id = identity.id
+
+      return search_iot_info(iot_info)
+  } else {
+      return search_app_info(application_id)
+  }
+}
+
+function search_app_info(application_id) {
+
+  debug("-------search_app_info-------")
+
+  return new Promise(function(resolve, reject) {
+    resolve({
+      app_id: application_id
+    })
+  })
+}
+
+function search_iot_info(iot_info) {
+
+  debug("-------search_iot_info-------")
+
+  return new Promise(function(resolve, reject) {
+    resolve(iot_info)
+  })
+}
+
+// Check if user has enabled the application to read their details
+function search_user_info(user_info, action, resource, authzforce, req_app) {
+
+    debug("-------search_user_info-------")
+
+    return new Promise(function(resolve, reject) {
+
+        var promise_array = []
+
+        // Insert search trusted applications promise
+        var search_trusted_apps = trusted_applications(req_app)
+        promise_array.push(search_trusted_apps)
+
+        // Insert search search roles promise
+        var search_roles = user_roles(user_info.id, user_info.app_id)
+        promise_array.push(search_roles)
+
+        // Insert search permissions promise to generate decison
+        if (action && resource) {
+            var search_permissions = search_roles.then(function(roles) {
+                return user_permissions(roles.all, user_info.app_id, action, resource)
+            })
+            promise_array.push(search_permissions)
+        } else if (config_authzforce.enabled && authzforce) {
+            // Search authzforce if level 3 of security is enabled
+            var search_authzforce = app_authzforce_domain(user_info.app_id)
+            promise_array.push(search_authzforce)
+        }
+
+        Promise.all(promise_array).then(function(values) {
+
+            var trusted_apps = values[0]
+            var roles = values[1]
+
+            if (req_app) {
+              if (req_app !== user_info.app_id) {
+                  if (trusted_apps.includes(user_info.app_id) === false) {
+                      reject({message: 'User not authorized in application', code: 401, title: 'Unauthorized'})
+                  }
+              }
+            }
+
+            if (action && resource) {
+                if (values[2] && values[2].length > 0) {
+                    user_info.authorization_decision = "Permit"
+                } else {
+                    user_info.authorization_decision = "Deny"
+                }
+            } else if (config_authzforce.enabled && authzforce) {
+                var authzforce_domain = values[2]
+                if (authzforce_domain) {
+                    user_info.app_azf_domain = authzforce_domain.az_domain
+                }
+            }
+
+            user_info.roles = roles.user
+            user_info.organizations = roles.organizations
+            user_info.trusted_apps = trusted_apps
+
+            resolve(user_info)
+
+        }).catch(function(error) {
+            reject({message: 'Internal error', code: 500, title: 'Internal error'})
+        })
+    })
+}
+
+// Search user roles in application
+function user_roles(user_id, app_id) {
+
+  debug("-------user_roles-------")
+  
+  var promise_array = []
+
+  // Search organizations in wich user is member or owner
+  promise_array.push(
+      models.user_organization.findAll({ 
+          where: { user_id: user_id },
+          include: [{
+              model: models.organization,
+              attributes: ['id']
+          }]
+      })
+  )
+
+  // Search roles for user or the organization to which the user belongs
+  promise_array.push(
+      promise_array[0].then(function(organizations) { 
+          var search_role_organizations = []
+          if (organizations.length > 0) {
+
+              for (var i = 0; i < organizations.length; i++) {
+                  search_role_organizations.push({organization_id: organizations[i].organization_id, role_organization: organizations[i].role})
+              }
+          }
+          return models.role_assignment.findAll({
+              where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: user_id}], 
+                       oauth_client_id: app_id,
+                       role_id: { [Op.notIn]: ['provider', 'purchaser']} },
+              include: [{
+                  model: models.user,
+                  attributes: ['id', 'username', 'email', 'gravatar']
+              },{
+                  model: models.role,
+                  attributes: ['id', 'name']
+              }, {
+                  model: models.organization,
+                  attributes: ['id', 'name', 'description', 'website']
+              }]
+          })
+      })
+  )
+
+  return Promise.all(promise_array).then(function(values) {
+      var role_assignment = values[1]
+
+      var user_app_info = { user: [], organizations: [], all: [] }
+
+      for (i=0; i < role_assignment.length; i++) {
+
+          var role = role_assignment[i].Role.dataValues
+
+          user_app_info.all.push(role.id)
+
+          if (role_assignment[i].Organization) {
+              
+              var organization = role_assignment[i].Organization.dataValues
+              var index = user_app_info.organizations.map(function(e) { return e.id; }).indexOf(organization.id);
+
+              if (index < 0) {
+                  organization['roles'] = [role]
+                  user_app_info.organizations.push(organization)
+              } else {
+                  user_app_info.organizations[index].roles.push(role)
+              }
+          }
+
+          if (role_assignment[i].User) {
+              user_app_info.user.push(role)
+          }
+      }
+      return Promise.resolve(user_app_info)
+  }).catch(function(error) {
+      return Promise.reject({message: 'Internal error', code: 500, title: 'Internal error'})
+  })
+}
+
+// Search user permissions in application whose action and resource are recieved from Pep Proxy
+function user_permissions(roles_id, app_id, action, resource) {
+
+    debug("-------user_permissions-------")
+
+    return models.role_permission.findAll({
+        where: { role_id: roles_id },
+        attributes: ['permission_id']
+    }).then(function(permissions) {
+        if (permissions.length > 0) {
+            return models.permission.findAll({
+                where: { id: permissions.map(elem => elem.permission_id),
+                         oauth_client_id: app_id,
+                         action: action,
+                         resource: resource }
+            })
+        } else {
+            return []
+        }
+    })
+}
+
+// Search Trusted applications
+function trusted_applications(app_id) {
+
+  debug("-------trusted_applications-------")
+
+    return models.trusted_application.findAll({
+        where: { oauth_client_id: app_id },
+        attributes: ['trusted_oauth_client_id']
+    }).then(function(trusted_apps) {
+        if (trusted_apps.length > 0) {
+            return trusted_apps.map(id => id.trusted_oauth_client_id)
+        } else {
+            return []
+        }
+    })
+}
+
+// Search authzforce domain for specific application
+function app_authzforce_domain(app_id) {
+
+  debug("-------app_authzforce_domain-------")
+
+    return models.authzforce.findOne({
+        where: { oauth_client_id: app_id },
+        attributes: ['az_domain']
+    })
+}
 
 module.exports = {
-  //generateOAuthAccessToken, optional - used for jwt
-  //generateAuthorizationCode, optional
-  //generateOAuthRefreshToken, - optional
   getAccessToken: getAccessToken,
-  getAuthorizationCode: getAuthorizationCode, //getOAuthAuthorizationCode renamed to,
+  getAuthorizationCode: getAuthorizationCode,
   getClient: getClient,
   getRefreshToken: getRefreshToken,
   getUser: getUser,
@@ -385,7 +673,9 @@ module.exports = {
   revokeToken: revokeToken,
   saveToken: saveToken,
   saveAuthorizationCode: saveAuthorizationCode,
-  // validateScope: validateScope,
-  // verifyScope: verifyScope,
+  create_oauth_response: create_oauth_response,
+  user_roles: user_roles,
+  user_permissions: user_permissions,
+  trusted_applications: trusted_applications
 }
 

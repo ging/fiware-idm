@@ -7,7 +7,10 @@
     "start": "node ./bin/www",
     "create_db": "./node_modules/.bin/sequelize --env database db:create",
     "migrate_db": "./node_modules/.bin/sequelize --env database db:migrate",
-    "seed_db": "./node_modules/.bin/sequelize --env database db:seed:all"
+    "seed_db": "./node_modules/.bin/sequelize --env database db:seed:all",
+    "generate_migration": "./node_modules/.bin/sequelize --env database migration:generate --name",
+    "undo_last_optional_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo --migrations-path migrations/optional",
+    "undo_last_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -42,6 +45,7 @@
     "sequelize": "^4.22.0",
     "sequelize-cli": "^4.0.0",
     "serve-favicon": "~2.4.2",
+    "umzug": "^2.1.0",
     "underscore": "^1.8.3",
     "xml-crypto": "^0.10.0",
     "xml-encryption": "^0.11.0",

@@ -17,7 +17,7 @@ exports.authenticate = function(username, password, callback) {
     }).then(function(user) {
         if (user) {
             // Verify password and if user is enabled
-            if(user.verifyPassword(password) && user.enabled) {
+            if(user.verifyPasswordExternal(password) && user.enabled) {
                 callback(null, user);
             } else { callback(new Error('invalid')); }   
         } else { callback(new Error('user_not_found')); }

@@ -6,6 +6,8 @@ var jsonwebtoken = require('jsonwebtoken');
 var debug = require('debug')('idm:oauth2-model_oauth_server')
 var config_authzforce = require('./../config.js').authorization.authzforce
 var config_oauth2 = require('./../config.js').oauth2
+var config_external_auth = require('./../config.js').external_auth
+var external_auth = require('./../config.js').external_auth
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -48,10 +50,10 @@ function getAccessToken(bearerToken) {
       token.oauth_client = accessToken.OauthClient
       if (accessToken.User) {
         token.user = accessToken.User;
-        token.user.dataValues['type'] = 'user'
+        token.user['type'] = 'user'
       } else if (accessToken.Iot) {
         token.user = accessToken.Iot;
-        token.user.dataValues['type'] = 'iot'
+        token.user['type'] = 'iot'
       }
 
       delete token.OauthClient
@@ -123,14 +125,14 @@ function getIdentity(id, password) {
 
     if (user) {
       if (user.verifyPassword(user.salt, password)) {
-          user.dataValues["type"] = "user"
+          user["type"] = "user"
           return user
       } 
     }
 
     if (iot) {
       if (iot.verifyPassword(iot.salt, password)) {
-          iot.dataValues["type"] = "iot"
+          iot["type"] = "iot"
           return iot
       } 
     }
@@ -220,9 +222,7 @@ function generateJwtToken(token, client, identity) {
   var iot_info = require('../oauth_response/oauth_iot_response.json');
 
   return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
-    if (identity) {
-      response['type'] = identity.type || identity.dataValues.type
-    }
+    response['type'] = (identity) ? identity.type : undefined
     token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, { expiresIn: config_oauth2.access_token_lifetime });
     return storeToken(token, client, identity, true)
   }).catch(function(error) {
@@ -238,11 +238,11 @@ function storeToken(token, client, identity, jwt) {
   var iot_id = null
 
   if (identity) {
-    if (identity.dataValues.type === "user") {
+    if (identity.type === "user") {
       user_id = identity.id
     }
 
-    if (identity.dataValues.type === "iot") {
+    if (identity.type === "iot") {
       iot_id = identity.id
     }
   }
@@ -275,7 +275,7 @@ function storeToken(token, client, identity, jwt) {
     .then(function (resultsArray) {
 
       if (user_id || iot_id) {
-        token[identity.dataValues.type] = identity.dataValues.type
+        token[identity.type] = identity.type
       }
       return _.assign(  // expected to return client and user, but not returning
         {
@@ -305,7 +305,7 @@ function getAuthorizationCode(code) {
       if (!authCodeModel) return false;
       var client = authCodeModel.OauthClient
       var user = authCodeModel.User
-      user.dataValues["type"] = "user"
+      user["type"] = "user"
       return reCode = {
         code: code,
         client: client,
@@ -329,7 +329,8 @@ function saveAuthorizationCode(code, client, user) {
       oauth_client_id: client.id,
       redirect_uri: client.redirect_uri,
       authorization_code: code.authorizationCode,
-      user_id: user.id,
+      user_id: (user.external_user && config_external_auth.enabled) ? null : user.id,
+      ext_user_id: (user.external_user && config_external_auth.enabled) ? user.id : null,
       scope: code.scope
     })
     .then(function () {
@@ -398,9 +399,9 @@ function getRefreshToken(refreshToken) {
         scope: savedRT ? savedRT.scope : ''
       };
       if (savedRT.User) {
-        tokenTemp.user.dataValues['type'] = 'user'
+        tokenTemp.user['type'] = 'user'
       } else if (savedRT.Iot) {
-        tokenTemp.user.dataValues['type'] = 'iot'
+        tokenTemp.user['type'] = 'iot'
       }
 
       return tokenTemp;
@@ -415,10 +416,7 @@ function create_oauth_response(identity, application_id, action, resource, authz
 
   debug("-------create_oauth_response-------")
 
-  var type;
-  if (identity) {
-    type = identity.type || identity.dataValues.type
-  }
+  var type = (identity) ? identity.type : undefined;
 
   if (type === 'user') {
 

@@ -6,6 +6,7 @@ var trusted_applications = require('../../models/model_oauth_server.js').trusted
 var config_authzforce = require('../../config.js').authorization.authzforce
 var config_eidas = require('../../config.js').eidas
 var config_oauth2  = require('../../config.js').oauth2
+var config_auth_external  = require('../../config.js').external_auth
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var jsonwebtoken = require('jsonwebtoken');
@@ -109,7 +110,11 @@ exports.check_user = function(req, res, next) {
             render_values.saml_request.enabled = true
         }
 
-        res.render('oauth/index', render_values); 
+        var errors = req.session.errors || {};
+        delete req.session.errors
+        render_values.errors = errors
+
+        res.render('oauth/index',  render_values);
     }
 }
 
@@ -132,26 +137,39 @@ exports.authenticate_user = function(req, res, next){
 
         // If not, authenticate and search if user is authorized in the application
         if (req.body.email && req.body.password) {
-            userController.authenticate(req.body.email, req.body.password, function(error, user) {
-                if (error) {  // If error, send message to /auth/login
-                    req.session.errors = [{message: error.message}];
-                    res.redirect("/auth/login");        
-                    return;
-                }
 
-                // Create req.session.user and save id and username
-                // The session is defined by the existence of: req.session.user
-                var image = '/img/logos/small/user.png'
-                if (user.gravatar) {
-                    image = gravatar.url(user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
-                } else if (user.image !== 'default') {
-                    image = '/img/users/' + user.image
-                }
-                req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
+            if (config_auth_external.enabled) {
+                return userController.authenticate_external(req.body.email, req.body.password, function(error, user) {
+                    if (error) {  // If error, send message to /auth/login
+                        req.session.errors = [{message: error.message}];
+                        return res.redirect('/oauth2'+req.url);
+                    } else {
+                        req.user = req.session.user = {id:user.id, username:user.username, email: user.email, external_user: true};
 
-                check_user_authorized_application(req, res)
+                        check_user_authorized_application(req, res)
+                    }
+                })
+            } else {
+                return userController.authenticate(req.body.email, req.body.password, function(error, user) {
+                    if (error) {  // If error, send message to /auth/login
+                        req.session.errors = [{message: error.message}];
+                        return res.redirect("/auth/login");
+                    } else {
 
-            });
+                        // Create req.session.user and save id and username
+                        // The session is defined by the existence of: req.session.user
+                        var image = '/img/logos/small/user.png'
+                        if (user.gravatar) {
+                            image = gravatar.url(user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
+                        } else if (user.image !== 'default') {
+                            image = '/img/users/' + user.image
+                        }
+                        req.user = req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
+
+                        check_user_authorized_application(req, res)
+                    }
+                });
+            }
         } else {
             req.session.errors = errors;
             res.redirect("/auth/login");
@@ -168,7 +186,6 @@ function check_user_authorized_application(req, res) {
 
         search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
             if (user) {
-                req.user = user
                 oauth_authorize(req, res)
             } else {
                 if (req.application.redirect_uri !== req.query.redirect_uri) {
@@ -188,7 +205,7 @@ function check_user_authorized_application(req, res) {
             res.redirect('/')
         })
     } else {
-        req.user = req.session.user
+        req.user = (req.user) ? req.user : req.session.user
         oauth_authorize(req, res)
     }
 }
@@ -232,7 +249,7 @@ exports.load_user = function(req, res, next) {
 }
 
 // POST /oauth2/enable_app -- User authorize the application to see their details
-exports.enable_app = function(req, res, next){
+exports.enable_app = function(req, res, next) {
 
     debug(' --> enable_app')
 
@@ -245,8 +262,8 @@ function oauth_authorize(req, res) {
     debug(' --> oauth_authorize')
 
     req.body.user = req.user
-    req.body.user.dataValues.type = 'user'
-    debug(req.body.user)
+    req.body.user['type'] = 'user'
+
     var request = new Request(req);
     var response = new Response(res);
 

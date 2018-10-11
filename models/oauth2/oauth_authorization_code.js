@@ -12,7 +12,8 @@ module.exports = function (sequelize, DataTypes) {
     redirect_uri: DataTypes.STRING(2000),
     scope: DataTypes.STRING,
     valid: DataTypes.BOOLEAN,
-    extra: DataTypes.JSON
+    extra: DataTypes.JSON,
+    ext_user_id: DataTypes.STRING
   }, {
     tableName: 'oauth_authorization_code',
     timestamps: false,

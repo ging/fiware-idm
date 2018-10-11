@@ -9,7 +9,8 @@ module.exports = function (sequelize, DataTypes) {
       unique: true,
     },
     expires: DataTypes.DATE,
-    scope: DataTypes.STRING
+    scope: DataTypes.STRING,
+    ext_user_id: DataTypes.STRING
   }, {
     tableName: 'oauth_refresh_token',
     timestamps: false,

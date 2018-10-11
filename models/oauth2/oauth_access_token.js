@@ -12,7 +12,8 @@ module.exports = function(sequelize, DataTypes) {
     scope: DataTypes.STRING,
     refresh_token: DataTypes.STRING,
     valid: DataTypes.BOOLEAN,
-    extra: DataTypes.JSON
+    extra: DataTypes.JSON,
+    ext_user_id: DataTypes.STRING
   }, {
     tableName: 'oauth_access_token',
     timestamps: false,

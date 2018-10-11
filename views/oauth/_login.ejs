@@ -2,7 +2,7 @@
   <div class="modal-header">
     <h3>Log In</h3>
   </div>
-  <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/oauth2/<%= application.url %>" method="POST" enctype="">
+  <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/oauth2<%= application.url %>" method="POST" enctype="">
     <div class="modal-body clearfix">
       <% var nameErrors = [] %>
       <% if (errors.length) { %>

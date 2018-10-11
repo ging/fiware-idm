@@ -4,9 +4,6 @@ var fs = require('fs');
 var path = require('path');
 var gravatar = require('gravatar');
 var https = require('https');
-var auth_driver = config.external_auth.enabled ?
-    require('../../helpers/' + config.external_auth.authentication_driver) :
-    require('../../helpers/authentication_driver');
 
 var email_list =  config.email_list_type ? 
     fs.readFileSync(path.join(__dirname,"../../email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
@@ -383,7 +380,9 @@ exports.set_gravatar = function(req, res) {
 }
 
 // MW to see if user is registered
-exports.authenticate = auth_driver.authenticate;
+exports.authenticate = require('../../helpers/authentication_driver').authenticate;
+exports.authenticate_external = config.external_auth.enabled ? require('../../helpers/' + config.external_auth.authentication_driver).authenticate : undefined;
+
 
 // GET /sign_up -- View to create a new user
 exports.new = function(req, res) {

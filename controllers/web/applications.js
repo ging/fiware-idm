@@ -46,7 +46,7 @@ exports.load_application = function(req, res, next, applicationId) {
 				// Send response depends on the type of request
 				send_response(req, res, response, '/idm/applications');
 			}
-		}).catch(function(error) { next(error); });		
+		}).catch(function(error) { next(error); });
 	}
 }
 

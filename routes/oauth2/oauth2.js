@@ -20,7 +20,7 @@ if (config.eidas.enabled) {
 } else {
 	router.get('/authorize', 		
       oauthController.response_type_required,  
-      oauthController.load_application, 	
+      oauthController.load_application,
       oauthController.check_user);
 }
 router.post('/authorize', 		oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);

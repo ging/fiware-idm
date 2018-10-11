@@ -1,9 +1,8 @@
 // User model 
 var config = require('../config.js');
-var auth_driver = config.external_auth.enabled ?
-    require('../helpers/' + config.external_auth.authentication_driver) :
-    require('../helpers/authentication_driver');
-
+var auth_driver = require('../helpers/authentication_driver');
+var auth_driver_external = require('../helpers/' + config.external_auth.authentication_driver);
+    
 // Vars for encrypting
 var crypto = require('crypto');
 var key = config.password_encryption.key;
@@ -92,6 +91,7 @@ module.exports = function(sequelize, DataTypes) {
     );
 
     User.prototype.verifyPassword = auth_driver.verifyPassword;
+    User.prototype.verifyPasswordExternal = auth_driver_external.verifyPasswordExternal;
 
     return User;
 }

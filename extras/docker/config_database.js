@@ -20,9 +20,8 @@ sequelize
     process.exit()
 })
 .catch(err => {
-  console.log('config db error:', err);
 
-    if (err.original.code === 'ER_BAD_DB_ERROR') {
+    if (err.original.code === 'ER_BAD_DB_ERROR' || err.original.code === '3D000') {
         exec('npm run-script create_db', function(error, stdout, stderr){
             if (error) {
                 console.log("Unable to create database: ", err);

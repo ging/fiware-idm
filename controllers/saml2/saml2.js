@@ -98,6 +98,8 @@ exports.saml2_application_login = function(req, res, next) {
 
 		create_user(name_id, eidas_profile).then(function(user) {
 
+			// TO DO CHECK SIGNATURE IN ASSERTION
+
             req.session.user = {
             	id: user.id,
                 username: user.username,
@@ -112,7 +114,7 @@ exports.saml2_application_login = function(req, res, next) {
 
             res.redirect(path)
 		}).catch(function(error) {
-			req.session.errors = errors;
+			req.session.errors = error;
             res.redirect("/auth/login");
 		})
 	});
@@ -134,7 +136,7 @@ function create_user(name_id, eidas_profile) {
 	            enabled: true
 	        })
 
-	        user.save().then(function() {
+	        return user.save().then(function(user) {
 	        	return user
 	        }).catch(function(error) {
 	        	return Promise.reject(error)
@@ -151,6 +153,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 	models.eidas_credentials.findOne({
 		where: { oauth_client_id: req.application.id }
 	}).then(function(credentials) {
+
 		if (credentials) {
 			var organization = {
 				name: credentials.organization_name,
@@ -181,8 +184,9 @@ exports.search_eidas_credentials = function(req, res, next) {
 				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert.pem").toString(),
 				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
-				nameid_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-				auth_context: { comparison: "minimum", class_refs: ["http://eidas.europa.eu/LoA/low"] },
+				nameid_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+				provider_name: credentials.organization_nif,
+				auth_context: { comparison: "minimum", AuthnContextClassRef: ["http://eidas.europa.eu/LoA/low"] },
 				force_authn: true,
 				organization: organization,
 				contact: contact,
@@ -209,20 +213,20 @@ exports.create_auth_request = function(req, res, next) {
 
 		var xml = req.sp.create_authn_request_xml(idp, {
 			extensions: {
-				'eidas:SPType': 'public',
+				'eidas:SPType': 'private',
 				'eidas:RequestedAttributes': [
-				{'eidas:RequestedAttribute': {
+				/*{'eidas:RequestedAttribute': {
 					'@FriendlyName': 'LegalName',
 					'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalName',
 					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-					'@isRequired': 'true'
+					'@isRequired': 'false'
 				}},
 				{'eidas:RequestedAttribute': {
 					'@FriendlyName': 'LegalPersonIdentifier',
 					'@Name': 'http://eidas.europa.eu/attributes/legalperson/LegalPersonIdentifier',
 					'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-					'@isRequired': 'true'
-				}},
+					'@isRequired': 'false'
+				}},*/
 				{'eidas:RequestedAttribute': {
 					'@FriendlyName': 'FamilyName',
 					'@Name': 'http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName',
@@ -279,7 +283,7 @@ function generate_app_certificates(app_id,eidas_credentials)  {
 				  	'/OU=' + eidas_credentials.organization_name +
 				  	'/CN=' + eidas_credentials.organization_url.replace(/(^\w+:|^)\/\//, '') +'"'
 
-		var cert = 'openssl x509 -req -in '+csr_name+' -signkey '+key_name+' -out '+cert_name 
+		var cert = 'openssl x509 -days 1095 -req -in '+csr_name+' -signkey '+key_name+' -out '+cert_name 
 
 		var create_certificates =  key + ' && ' + csr + ' && ' + cert
 		exec(create_certificates, function(error, stdout, stderr){

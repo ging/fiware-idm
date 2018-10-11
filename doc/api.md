@@ -1,5 +1,3 @@
-
-
 # API OVERVIEW
 
 + [Idm API](#def-apiIdm)
@@ -19,14 +17,20 @@
             - [Access Token Request](#def-passGrantTokReq)
             - [Access Token Response](#def-passGrantTokRes)
         - [Client Credentials Grant](#def-credentialsGrant)
-             - [Access Token Request](#def-credGrantTokReq)
-             - [Access Token Response](#def-credGrantTokRes)
+            - [Access Token Request](#def-credGrantTokReq)
+            - [Access Token Response](#def-credGrantTokRes)
         - [Refresh Token Grant](#def-refreshToken)
-             - [Access Token Request](#def-refreseGrantTokReq)
-             - [Access Token Response](#def-refreshGrantTokRes)
+            - [Access Token Request](#def-refreseGrantTokReq)
+            - [Access Token Response](#def-refreshGrantTokRes)
         - [Validate Access Tokens](#def-validate-tokens)
-             - [Get user information and roles](#def-getUserInfo)
-             - [Validate authorization](#def-validate-auth)
+            - [Get user information and roles](#def-getUserInfo)
+            - [Validate authorization](#def-validate-auth)
+        - [Select OAuth Access Token](#def-select-token)
+            - [Get user information and roles](#def-getUserInfo)
+            - [Validate authorization](#def-validate-auth)
+            - [Access JWT Request](#def-JWTRequest)
+            - [Access JWT Response](#def-JWTResponse)
+
 ---
 <a name="def-apiIdm"></a>
 # Idm API 
@@ -246,7 +250,7 @@ grant_type=client_credentials
 See [Authorization Code Grant](#def-codeGrantTokRes)
 
 <a name="def-validate-tokens"></a>
-## Validate Access Tokens
+### Validate Access Tokens
 
 Once you have created an OAuth2.0 Access Token associated to a user, you can validate it in order to retrieve the user information and roles. Furthermore, if you have configured [Keyrock as PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization) you can use the same endpoint for checking if the user is authorized to perform an specific action in the application.
 
@@ -341,4 +345,39 @@ Example response:
       "app_azf_domain": "",
       "username": "myuser"
     }
+~~~
+
+
+<a name="#def-select-token"></a>
+### Select Token Type
+
+Keyrock IdM allows you to choose the type of token to be generated when receiving an OAuth request. It can be choosen between Bearer or [JSON Web Tokens](https://tools.ietf.org/html/rfc7519). The token type could be selected in the interfaces as shown in the following figure:
+
+<p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_SelectTokenType.png" width="740" align="center"></p>
+<p align="center">Figure 1: Select token type</p>
+
+JWT is a safe way to represent a set information between two parties. A JWT is composed of a header, a payload and a signatures separated by dots. More information about JWT could be found in this [link.](https://jwt.io/) If JWT is selected, a secret is provided in order to validate the token and obtain the user information.
+
+<p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_TokenTypeJwt.png" width="740" align="center"></p>
+<p align="center">Figure 1: JSON Web Token type</p>
+
+
+<a name="def-JWTRequest"></a>
+#### Access Token Request with JWT
+It is not need to configure anything additionally in the oauth request. If JWT is configured in the application, a JWT could be generated through one of the previous explained grant types.
+
+<a name="def-JWTResponse"></a>
+#### Access Token Response
+
+~~~
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Cache-Control: no-store
+Pragma: no-cache
+
+{
+    "access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdhbml6YXRpb25zIjpbXSwiZGlzcGxheU5hbWUiOiIiLCJyb2xlcyI6W3siaWQiOiI1ZGNlMDVmMS1lMjg0LTQyMmEtYmViMS1mODhiZTMwYTg5MDAiLCJuYW1lIjoiYWFhYWEifV0sImFwcF9pZCI6IjFiNWJhY2U2LWIzZDUtNGE1ZC05MjU5LWY1MzI1OTg3NDk3ZSIsInRydXN0ZWRfYXBwcyI6W10sImlzR3JhdmF0YXJFbmFibGVkIjpmYWxzZSwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsImlkIjoiYWRtaW4iLCJhdXRob3JpemF0aW9uX2RlY2lzaW9uIjoiIiwiYXBwX2F6Zl9kb21haW4iOiIzclQ5d3NyOUVlaW9OZ0pDckJFQUFnIiwidXNlcm5hbWUiOiJhZG1pbiIsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNTM5MDk1ODA2LCJleHAiOjE1MzkwOTk0MDZ9.-fYFHyPjPpA52gTEqMjppmERqiIZDgGKG5bJqVh0o68",
+    "token_type":"jwt",
+    "refresh_token":"a581cb04b116e26b175002bc2e05551042fafbda"
+}
 ~~~

@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/github/license/ging/fiware-idm.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/readthedocs/fiware-idm.svg)](https://fiware-idm.readthedocs.io/en/latest/)
 [![Docker badge](https://img.shields.io/docker/pulls/fiware/idm.svg)](https://hub.docker.com/r/fiware/idm/)
-[![Support badge]( https://img.shields.io/badge/support-sof-yellowgreen.svg)](http://stackoverflow.com/questions/tagged/fiware)
+[![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/search?q=%5Bfiware%5D+keyrock)
 
 * [Introduction](#introduction)
     + [Software requirements](#software-requirements)
@@ -23,10 +23,10 @@
 
 ## Introduction
 
-This project is part of [FIWARE](http://fiware.org). You will find more information about this FIWARE GE [here](https://catalogue.fiware.org/enablers/identity-management-keyrock).
+This project is part of [FIWARE](http://fiware.org). You will find more information about this FIWARE GE [here](https://catalogue-server.fiware.org/enablers/identity-management-keyrock).
 
 - You will find the source code of this project in GitHub [here](https://github.com/ging/fiware-idm)
-- You will find the documentation of this project in Read the Docs [here](http://fiware-idm.readthedocs.org/)
+- You will find the documentation of this project in Read the Docs [here](https://fiware-idm.readthedocs.io/en/latest/)
 
 Welcome to the main repository for the UPM's implementation of the FIWARE Identity Management Generic Enabler. Thanks to this component and together with PEP Proxy and Authorization PDP GEs, you will add authentication and authorization security to your services and applications.
 
@@ -136,6 +136,7 @@ Finally, one of the main uses of this Generic Enabler is to allow developers to 
 - [How to run tests](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
 - [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/)
 - [Installation & Administration Guide](http://fiware-idm.readthedocs.org/en/latest/admin_guide/)
+- [Connecting IdM to a eIDAS node](http://fiware-idm.readthedocs.org/en/latest/eidas/)
 
 ---
 

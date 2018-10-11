@@ -42,6 +42,9 @@ module.exports = function(sequelize, DataTypes) {
     }, organization_url: {
       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
       validate: { notEmpty: {msg: "organization_url"}}
+    }, organization_nif: {
+       type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+       validate: { notEmpty: {msg: "organization_nif"}}
     }
   }, {
       tableName: 'eidas_credentials',

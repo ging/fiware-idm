@@ -1,12 +1,16 @@
 var models = require('../../models/models.js');
+var create_oauth_response = require('../../models/model_oauth_server.js').create_oauth_response;
+var user_roles = require('../../models/model_oauth_server.js').user_roles;
+var user_permissions = require('../../models/model_oauth_server.js').user_permissions;
+var trusted_applications = require('../../models/model_oauth_server.js').trusted_applications;
 var config_authzforce = require('../../config.js').authorization.authzforce
 var config_eidas = require('../../config.js').eidas
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
+var jsonwebtoken = require('jsonwebtoken');
+var is_hex = require('is-hex');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
-var Sequelize = require('sequelize');
-const Op = Sequelize.Op;
 
 var debug = require('debug')('idm:oauth_controller');
 
@@ -25,6 +29,10 @@ exports.token = function(req,res, next){
 	var response = new Response(res);
 
 	oauth.token(request,response).then(function(token) {
+        if (token.client.token_type === 'jwt') {
+            response.body.token_type = 'jwt'
+            delete response.body.expires_in
+        }
         res.json(response.body)
     }).catch(function(err){
         res.status(500).json(err)
@@ -77,6 +85,7 @@ exports.check_user = function(req, res, next) {
     } else {
         var render_values = {
             application: {
+                url: req.url,
                 name: req.application.name,
                 description: req.application.description,
                 response_type: req.query.response_type,
@@ -230,7 +239,8 @@ function oauth_authorize(req, res) {
     debug(' --> oauth_authorize')
 
     req.body.user = req.user
-
+    req.body.user.dataValues.type = 'user'
+    debug(req.body.user)
     var request = new Request(req);
     var response = new Response(res);
 
@@ -257,6 +267,34 @@ exports.authenticate_token = function(req, res, next) {
         return res.status(400).json(error)
     }
 
+    if (req_app) {
+        models.oauth_client.findById(req_app).then(function(application) {
+            if (application && application.token_type === 'jwt') {
+                authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret)
+            } else if (application && application.token_type === 'bearer') {
+                authenticate_bearer(req, res, action, resource, authzforce, req_app)
+            } else {
+                var message = {
+                    message: 'Unauthorized', 
+                    code: 401, 
+                    title: 'Unauthorized'
+                }
+                return res.status(401).json(message)
+            }
+        }).catch(function(err) {
+            debug('Error ' + err)
+            // Request is not authorized.
+            return res.status(err.code || 500).json(err.message || err)
+        })
+    } else {
+        authenticate_bearer(req, res, action, resource, authzforce, req_app)
+    }
+}
+
+function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
+
+    debug(' --> authenticate_bearer')
+
     var options = {
         allowBearerTokensInQueryString: true
     }
@@ -267,34 +305,15 @@ exports.authenticate_token = function(req, res, next) {
         query: req.query,
         body: req.body
     });
+
     var response = new Response(res);
+
     oauth.authenticate(request, response, options).then(function (token_info) {
-
-        var user = token_info.user
+        var identity = token_info.user
         var application_id = token_info.oauth_client.id
-
-        if (user._modelOptions.tableName === 'user') {
-
-            var user_info = require('../../oauth_response/oauth_user_response.json');
-
-            user_info.username = user.username
-            user_info.app_id = application_id
-            user_info.isGravatarEnabled = user.gravatar
-            user_info.email = user.email
-            user_info.id = user.id
-
-            return search_user_info(user_info, action, resource, req_app, authzforce)
-        } else if (user._modelOptions.tableName === 'iot') {
-
-            var iot_info = require('../../oauth_response/oauth_iot_response.json');
-
-            iot_info.app_id = application_id
-            iot_info.id = user.id
-
-            return res.status(201).json(iot_info)
-        }
+        return create_oauth_response(identity, application_id, action, resource, authzforce, req_app)
     }).then(function(response){
-        return res.status(201).json(response) 
+        return res.status(201).json(response)
     }).catch(function (err) {
         debug('Error ' + err)
         // Request is not authorized.
@@ -303,186 +322,36 @@ exports.authenticate_token = function(req, res, next) {
 }
 
 
-// Check if user has enabled the application to read their details
-function search_user_info(user_info, action, resource, req_app, authzforce) {
+function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_secret) {
 
-    debug(' --> search_user_info')
+    debug(' --> authenticate_jwt')
 
-    return new Promise(function(resolve, reject) {
-
-        var promise_array = []
-
-        var search_roles = user_roles(user_info.id, user_info.app_id)
-
-        promise_array.push(search_roles)
-
-        var search_trusted_apps = trusted_applications(user_info.app_id)
-
-        promise_array.push(search_trusted_apps)
-
-        if (action && resource && req_app) {
-
-            var search_permissions = search_roles.then(function(roles) {
-                return user_permissions(roles.all, user_info.app_id, action, resource)
-            })
-            promise_array.push(search_permissions)
+    jsonwebtoken.verify(req.query.access_token, jwt_secret, function(err, decoded) {
+        if (err) {
+            var message = {
+                message: err,
+                code: 401,
+                title: 'Unauthorized'
+            }
+            return res.status(401).json(message)
         }
 
-        // Search authzforce if level 3 enabled
-        if (config_authzforce.enabled && authzforce) {
-            var search_authzforce = app_authzforce_domain(user_info.app_id)
-            promise_array.push(search_authzforce)
+        var identity = {
+            username: decoded.username,
+            gravatar: decoded.isGravatarEnabled,
+            email: decoded.email,
+            id: decoded.id,
+            type: (decoded.type) ? decoded.type : 'app'
         }
 
-        Promise.all(promise_array).then(function(values) {
+        var application_id = decoded.app_id
 
-            var roles = values[0]
-
-            user_info.roles = roles.user
-            user_info.organizations = roles.organizations
-
-            user_info.trusted_applications = values[1]
-
-            if (action && resource && req_app) {
-                if (values[2] && values[2].length > 0 && (req_app === user_info.app_id || user_info.trusted_applications.includes(req_app))) {
-                    user_info.authorization_decision = "Permit"
-                } else {
-                    user_info.authorization_decision = "Deny"
-                }
-            }
-
-
-            if (config_authzforce.enabled && authzforce) {
-                var authzforce_domain = values[2]
-                if (authzforce_domain) {
-                    user_info.app_azf_domain = authzforce_domain.az_domain
-                }
-            }
-
-            resolve(user_info)
-
-        }).catch(function(error) {
-            reject({message: 'Internal error', code: 500, title: 'Internal error'})
-        })
-    })
-}
-
-// Search user roles in application
-function user_roles(user_id, app_id) {
-
-    var promise_array = []
-
-    // Search organizations in wich user is member or owner
-    promise_array.push(
-        models.user_organization.findAll({ 
-            where: { user_id: user_id },
-            include: [{
-                model: models.organization,
-                attributes: ['id']
-            }]
-        })
-    )
-
-    // Search roles for user or the organization to which the user belongs
-    promise_array.push(
-        promise_array[0].then(function(organizations) { 
-            var search_role_organizations = []
-            if (organizations.length > 0) {
-
-                for (var i = 0; i < organizations.length; i++) {
-                    search_role_organizations.push({organization_id: organizations[i].organization_id, role_organization: organizations[i].role})
-                }
-            }
-            return models.role_assignment.findAll({
-                where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: user_id}], 
-                         oauth_client_id: app_id,
-                         role_id: { [Op.notIn]: ['provider', 'purchaser']} },
-                include: [{
-                    model: models.user,
-                    attributes: ['id', 'username', 'email', 'gravatar']
-                },{
-                    model: models.role,
-                    attributes: ['id', 'name']
-                }, {
-                    model: models.organization,
-                    attributes: ['id', 'name', 'description', 'website']
-                }]
-            })
-        })
-    )
-
-    return Promise.all(promise_array).then(function(values) {
-        var role_assignment = values[1]
-
-        var user_app_info = { user: [], organizations: [], all: [] }
-
-        for (i=0; i < role_assignment.length; i++) {
-
-            var role = role_assignment[i].Role.dataValues
-
-            user_app_info.all.push(role.id)
-
-            if (role_assignment[i].Organization) {
-                
-                var organization = role_assignment[i].Organization.dataValues
-                var index = user_app_info.organizations.map(function(e) { return e.id; }).indexOf(organization.id);
-
-                if (index < 0) {
-                    organization['roles'] = [role]
-                    user_app_info.organizations.push(organization)
-                } else {
-                    user_app_info.organizations[index].roles.push(role)
-                }
-            }
-
-            if (role_assignment[i].User) {
-                user_app_info.user.push(role)
-            }
-        }
-        return Promise.resolve(user_app_info)
-    }).catch(function(error) {
-        return Promise.reject({message: 'Internal error', code: 500, title: 'Internal error'})
-    })
-}
-
-// Search user permissions in application whose action and resource are recieved from Pep Proxy
-function user_permissions(roles_id, app_id, action, resource) {
-
-    return models.role_permission.findAll({
-        where: { role_id: roles_id },
-        attributes: ['permission_id']
-    }).then(function(permissions) {
-        if (permissions.length > 0) {
-            return models.permission.findAll({
-                where: { id: permissions.map(elem => elem.permission_id),
-                         oauth_client_id: app_id,
-                         action: action,
-                         resource: resource }
-            })
-        } else {
-            return []
-        }
-    })
-}
-
-// Search Trusted applications
-function trusted_applications(app_id) {
-    return models.trusted_application.findAll({
-        where: { oauth_client_id: app_id },
-        attributes: ['trusted_oauth_client_id']
-    }).then(function(trusted_apps) {
-        if (trusted_apps.length > 0) {
-            return trusted_apps.map(id => id.trusted_oauth_client_id)
-        } else {
-            return []
-        }
-    })
-}
-
-// Search authzforce domain for specific application
-function app_authzforce_domain(app_id) {
-    return models.authzforce.findOne({
-        where: { oauth_client_id: app_id },
-        attributes: ['az_domain']
-    })
+        create_oauth_response(identity, application_id, action, resource, authzforce, req_app).then(function(response) {
+            return res.status(201).json(response)
+        }).catch(function (err) {
+            debug('Error ' + err)
+            // Request is not authorized.
+            return res.status(err.code || 500).json(err.message || err)
+        });
+    });
 }

@@ -36,6 +36,8 @@ services:
     #   - mongo
     #   - cygnus
     #   - ngsiproxy
+  fiware-idm:
+    image: fiware/idm
     ports:
       - "1026:1026"
     command: -dbhost mongo

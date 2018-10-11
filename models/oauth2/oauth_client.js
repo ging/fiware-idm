@@ -41,6 +41,16 @@ module.exports = function(sequelize, DataTypes) {
          this.setDataValue('response_type',val.join(','))
       }
     },
+    token_type: {
+      type: DataTypes.STRING(15),
+      defaultValue: 'bearer'
+
+    },
+    jwt_secret: {
+      type: DataTypes.STRING,
+      defaultValue: null
+
+    },
     client_type: DataTypes.STRING(15),
     scope: DataTypes.STRING(80),
     extra: DataTypes.JSON

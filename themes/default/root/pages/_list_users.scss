@@ -1,0 +1,155 @@
+#users-page {
+	/* The switch - the box around the slider */
+    .switch {
+        vertical-align: bottom;
+        margin-bottom: 0px;
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {display:none;}
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    .table > {
+	  tbody > tr > {
+	    td, th {
+	      vertical-align: baseline;
+	      padding: 8px;
+	    }
+	  }
+	  tfoot > tr > {
+	    td, th {
+	      vertical-align: baseline;
+	      padding: 8px;
+	    }
+	  }
+	  thead > tr > {
+	    td, th {
+	      vertical-align: baseline;
+	      padding: 8px;
+	    }
+	  }
+	}
+
+	.table > tbody > tr > td > p {
+	  padding-bottom: 0px;
+	}
+
+	.table > tbody > tr > td > p {
+	  overflow: hidden;
+	  white-space: nowrap;
+	}
+
+	.table > tbody > tr > td > label {
+	  padding-top: 8px;
+	}
+
+	.table {
+	  margin-left: auto;
+	  margin-right: auto;
+	  width: 100%;
+	}
+
+	.panel {
+	  	border: 0;
+	    .panel-heading {
+			display: flex;
+			-webkit-flex-flow: row wrap;
+			justify-content: flex-end;
+			border-bottom: 0;
+	      	#entries {
+		        display: flex;
+		        -webkit-flex-flow: row wrap;
+		        justify-content: flex-end;
+		        border-bottom: 0;
+		        margin-right: auto;
+		        p {
+		          	padding: 6px;
+		          	margin-left: 10px;
+		        }
+		        .select-multiple > .bootstrap-select > .btn {
+		          	height: 30px;
+		        }
+	      	}
+	      	.filter {
+	        	width: 25%;
+	        	input {
+	          		height: 30px;
+	        	}
+	      	}
+	      	.btn-group {
+	        	margin-left: 8px;
+	      	}
+	    }
+	    .panel-body {
+	      padding: 0;
+	    }
+	}
+
+	#no_users_found {
+		margin: auto;
+		text-align: center;
+		width: 50%;
+	}
+}
+
+#upper_message {
+	display: none; 
+	z-index: 10; 
+	position: absolute; 
+	left: 0; 
+	right: 0; 
+	margin: 0 auto; 
+	text-align: center; 
+	width: 50%;
+}

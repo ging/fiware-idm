@@ -5,5 +5,11 @@ site_description: Identity Management Keyrock Documentation
 docs_dir: doc
 site_dir: html
 theme: readthedocs
-extra_css: ["https://fiware.org/style/fiware_readthedocs.css"]
+extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://fiware.org/style/fiware_readthedocs_security.css"]
 #google_analytics: ['UA-******', 'fiware-idm.readthedocs.io']
+pages:
+  - 'Identity Manager - Keyrock': index.md
+  - 'Installation and Administration Guide': admin_guide.md
+  - 'Users and Programmers Guide': user_guide.md
+  - 'API Overview': api.md
+  - 'Connecting IdM to a eIDAS Node': eidas.md

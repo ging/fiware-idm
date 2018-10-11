@@ -13,6 +13,7 @@ var gravatar = require('gravatar');
 var Jimp = require("jimp");
 
 var image = require ('../../lib/image.js');
+var crypto = require('crypto'); 
 
 // Autoload info if path include applicationId
 exports.load_application = function(req, res, next, applicationId) {
@@ -503,7 +504,7 @@ exports.update_info = function(req, res) {
 			}).catch(function(error){
 				res.locals.message = {text: ' Unable to update application',type: 'danger'}
 			 	res.render('applications/edit', { application: application, errors: [], csrfToken: req.csrfToken()});
-			});		
+			});
 		}).catch(function(error){
 			// Send message of warning of updating the application
 			res.locals.message = {text: ' Application update failed.', type: 'warning'};
@@ -578,7 +579,7 @@ function handle_uploaded_images(req, res, redirect_uri) {
 			{ image: req.file.filename },
 			{
 				fields: ['image'],
-				where: {id: req.application.id}
+				where: { id: req.application.id }
 			}) 
 	}).then(function(updated) {
 		var old_image = 'public'+req.application.image
@@ -598,6 +599,82 @@ function handle_uploaded_images(req, res, redirect_uri) {
 		var message = (typeof error === 'string') ? error : ' Error saving image.'
 		delete_image(req, res, image_path, false, redirect_uri, message)
 	})
+}
+
+// PUT /idm/applications/:applicationId/change_token_type -- Select token between bearer and jwt
+exports.change_token_type = function(req, res, next) {
+	
+	debug("--> change_token_type");
+
+	var response = { message: {text: ' Failed change token type', type: 'danger'}}
+
+	if (req.application.token_type !== req.body.token_type) {
+		if (!['jwt', 'bearer'].includes(req.body.token_type)) {
+			// Send response depends on the type of request
+			send_response(req, res, response, '/idm/applications/'+req.application.id);
+		} else {
+			var token_type = req.body.token_type
+			var jwt_secret = (token_type === 'bearer') ? 
+								null : 
+								crypto.randomBytes(16).toString('hex').slice(0,16)
+
+			models.oauth_client.update(
+				{ token_type: token_type,
+				  jwt_secret: jwt_secret },
+				{
+					fields: ['token_type', 'jwt_secret'],
+					where: { id: req.application.id }
+				}
+			).then(function(reseted) {
+				if (reseted[0] === 1) {
+					if (req.body.token_type === 'jwt') {
+						response['jwt_secret'] = jwt_secret
+					}
+					response.message = {text: ' Change token type.', type: 'success'}
+				}
+				send_response(req, res, response, '/idm/applications/'+req.application.id);
+			}).catch(function(error) {
+				send_response(req, res, response, '/idm/applications/'+req.application.id);
+			});
+		}
+	} else {
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
+	}
+
+}
+
+// GET /idm/applications/:applicationId/reset_jwt_secret -- Reset jwt secret
+exports.reset_jwt_secret = function(req, res, next) {
+	
+	debug("--> reset_jwt_secret");
+
+	var jwt_secret = (req.application.token_type === 'bearer') ? 
+						null : 
+						crypto.randomBytes(16).toString('hex').slice(0,16)
+
+	var response = { message: {text: ' Failed reset jwt.', type: 'warning'} }
+
+	if (req.application.token_type === 'jwt') {
+		
+		models.oauth_client.update(
+			{ 
+			  	jwt_secret: jwt_secret },
+			{
+				fields: ['jwt_secret'],
+				where: { id: req.application.id }
+			}
+		).then(function(reseted) {
+			if (reseted[0] === 1) {
+				response['jwt_secret'] = jwt_secret
+				response.message = {text: ' Reset jwt secret.', type: 'success'}
+			}
+			send_response(req, res, response, '/idm/applications/'+req.application.id);
+		}).catch(function(error) {
+			send_response(req, res, response, '/idm/applications/'+req.application.id);
+		});
+	} else {
+		send_response(req, res, response, '/idm/applications/'+req.application.id);
+	}
 }
 
 // Function to delete an image

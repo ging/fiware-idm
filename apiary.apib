@@ -206,6 +206,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "redirect_uri": "http://localhost/login",
               "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
               "response_type": "code,token",
+              "token_type": "bearer",
               "client_type": null
             },
             {
@@ -217,6 +218,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "redirect_uri": "http://localhost/login",
               "grant_type": "password,authorization_code,implicit",
               "response_type": "code,token",
+              "token_type": "jwt",
               "client_type": null
             }
           ]
@@ -241,7 +243,8 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "authorization_code",
               "implicit",
               "password"
-            ]
+            ],
+            "token_type": "jwt"
           }
         }
 
@@ -269,6 +272,8 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             "redirect_uri": "http://localhost/login",
             "url": "http://localhost",
             "grant_type": "password,authorization_code,implicit",
+            "token_type": "jwt",
+            "jwt_secret": "3f1164da20d50c62",
             "response_type": "code,token"
           }
         }
@@ -308,6 +313,8 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                     "image": "default",
                     "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
                     "response_type": "code,token",
+                    "token_type": "jwt",
+                    "jwt_secret": "3f1164da20d50c62",
                     "client_type": null,
                     "scope": null,
                     "extra": null
@@ -328,6 +335,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                 "name": "new name",
                 "description": "new description",
                 "redirect_uri": "new redirect uri",
+                "token_type": "bearer",
                 "grant_type": [
                     "authorization_code",
                     "password"
@@ -356,6 +364,8 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             "description": "new description",
             "redirect_uri": "new redirect uri",
             "grant_type": "password,authorization_code",
+            "token_type": "bearer",
+            "jwt_secret": null,
             "response_type": "code"
           }
         }

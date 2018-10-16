@@ -10804,46 +10804,61 @@ ul.disabled-list li.active:hover {
   #users-page .table > thead > tr > td, #users-page .table > thead > tr > th {
     vertical-align: baseline;
     padding: 8px; }
-  #users-page #users-page > div > .table > tbody > tr > td > p {
+  #users-page .table > tbody > tr > td > p {
     padding-bottom: 0px; }
   #users-page .table > tbody > tr > td > p {
     overflow: hidden;
     white-space: nowrap; }
-  #users-page #users-page > div > .table > tbody > tr > td > label {
+  #users-page .table > tbody > tr > td > label {
     padding-top: 8px; }
   #users-page .table {
     margin-left: auto;
     margin-right: auto;
     width: 100%; }
-  #users-page #users-page > .panel {
+  #users-page .panel {
     border: 0; }
-    #users-page #users-page > .panel > .panel-heading {
+    #users-page .panel .panel-heading {
       display: flex;
       -webkit-flex-flow: row wrap;
       justify-content: flex-end;
       border-bottom: 0; }
-      #users-page #users-page > .panel > .panel-heading > #entries {
+      #users-page .panel .panel-heading #entries {
         display: flex;
         -webkit-flex-flow: row wrap;
         justify-content: flex-end;
         border-bottom: 0;
         margin-right: auto; }
-        #users-page #users-page > .panel > .panel-heading > #entries > p {
-          padding: 6px; }
-        #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .btn, #users-page #users-page > .panel > .panel-heading > #entries .permissions_list .list-group-item .select-multiple > .bootstrap-select > .ajax-inline-edit, .permissions_list .list-group-item #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page #users-page > .panel > .panel-heading > #entries
+        #users-page .panel .panel-heading #entries p {
+          padding: 6px;
+          margin-left: 10px; }
+        #users-page .panel .panel-heading #entries .select-multiple > .bootstrap-select > .btn, #users-page .panel .panel-heading #entries .permissions_list .list-group-item .select-multiple > .bootstrap-select > .ajax-inline-edit, .permissions_list .list-group-item #users-page .panel .panel-heading #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page .panel .panel-heading #entries
         .role_list .list-group-item .select-multiple > .bootstrap-select > .ajax-inline-edit,
-        .role_list .list-group-item #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page #users-page > .panel > .panel-heading > #entries
+        .role_list .list-group-item #users-page .panel .panel-heading #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page .panel .panel-heading #entries
         .services_list .list-group-item .select-multiple > .bootstrap-select > .ajax-inline-edit,
-        .services_list .list-group-item #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page #users-page > .panel > .panel-heading > #entries .edit_organization_modal .select-multiple > .bootstrap-select > button, .edit_organization_modal #users-page #users-page > .panel > .panel-heading > #entries .select-multiple > .bootstrap-select > button {
+        .services_list .list-group-item #users-page .panel .panel-heading #entries .select-multiple > .bootstrap-select > .ajax-inline-edit, #users-page .panel .panel-heading #entries .edit_organization_modal .select-multiple > .bootstrap-select > button, .edit_organization_modal #users-page .panel .panel-heading #entries .select-multiple > .bootstrap-select > button {
           height: 30px; }
-    #users-page #users-page > .panel > .panel-body {
+      #users-page .panel .panel-heading .filter {
+        width: 25%; }
+        #users-page .panel .panel-heading .filter input {
+          height: 30px; }
+      #users-page .panel .panel-heading .btn-group {
+        margin-left: 8px; }
+    #users-page .panel .panel-body {
       padding: 0; }
-    #users-page #users-page > .panel > .panel-heading > .filter {
-      width: 25%; }
-      #users-page #users-page > .panel > .panel-heading > .filter > input {
-        height: 30px; }
-    #users-page #users-page > .panel > .panel-heading > .btn-group {
-      margin-left: 8px; }
+  #users-page #no_users_found {
+    margin: auto;
+    text-align: center;
+    width: 50%; }
+
+#upper_message {
+  display: none;
+  z-index: 10;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  text-align: center;
+  width: 50%; }
 
 #splash #user_info {
   display: none; }
@@ -11632,6 +11647,13 @@ ul.disabled-list li.active:hover {
       padding: 10px 0 0; }
     #detailApplication > .site-client-roles .modal-content .modal-header .modal-footer {
       margin: 0 0 15px; }
+
+#detailApplication #token_type .select-multiple {
+  margin-left: 10px;
+  margin-right: 10px; }
+
+#detailApplication .jwt_type {
+  border-bottom: 1px solid #D5D5D5; }
 
 #create_application_modal .form-group > .btn-group {
   display: block;

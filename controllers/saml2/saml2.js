@@ -156,7 +156,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 
 		if (credentials) {
 			var organization = {
-				name: credentials.organization_name,
+				name: 'DEMO-SP',
 				url: credentials.organization_url
 			}
 
@@ -179,13 +179,15 @@ exports.search_eidas_credentials = function(req, res, next) {
 
 			// Create service provider
 			var sp_options = {
-				entity_id: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/metadata",
-				private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key.pem").toString(),
-				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert.pem").toString(),
+				entity_id: "http://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/metadata",
+				private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key_of.pem").toString(),
+				metadata_private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key_of_metadata.pem").toString(),
+				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert_of.pem").toString(),
+				metadata_certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert_of_metadata.pem").toString(),
 				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
 				nameid_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
-				provider_name: credentials.organization_nif,
+				provider_name: 'DEMO-SP-CA',
 				auth_context: { comparison: "minimum", AuthnContextClassRef: ["http://eidas.europa.eu/LoA/low"] },
 				force_authn: true,
 				organization: organization,
@@ -213,7 +215,7 @@ exports.create_auth_request = function(req, res, next) {
 
 		var xml = req.sp.create_authn_request_xml(idp, {
 			extensions: {
-				'eidas:SPType': 'private',
+				'eidas:SPType': 'public',
 				'eidas:RequestedAttributes': [
 				/*{'eidas:RequestedAttribute': {
 					'@FriendlyName': 'LegalName',

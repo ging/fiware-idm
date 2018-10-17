@@ -80,13 +80,15 @@ exports.saml2_application_login = function(req, res, next) {
 	req.sp.post_assert(idp, options, function(err, saml_response) {
 		if (err != null) {
 			debug(err)
-			return res.sendStatus(500);
+			return res.status(500).send('Internal Error');
 		}
 
 		// Save name_id and session_index for logout
 		// Note:  In practice these should be saved in the user session, not globally.
 		var name_id = saml_response.user.name_id;
-		var session_index = saml_response.user.session_index;
+
+		// Commented beacuase no session index was returned when testing was performed
+		//var session_index = saml_response.user.session_index;
 
 		var eidas_profile = {}
 
@@ -130,7 +132,7 @@ function create_user(name_id, eidas_profile) {
 		} else {
 
 	        var user = models.user.build({
-	            username: eidas_profile.FirstName,
+	            username: eidas_profile.FirstName + eidas_profile.FamilyName,
 	            eidas_id: name_id,
 	            extra: JSON.stringify({eidas_profile: eidas_profile}),
 	            enabled: true

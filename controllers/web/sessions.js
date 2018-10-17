@@ -9,7 +9,7 @@ exports.login_required = function(req, res, next){
 
     debug("--> login_required");
 
-    if (req.session.user || req.path.includes('/saml2/metadata') || req.path.includes('/saml2/ReturnPage')) {
+    if (req.session.user || req.path.includes('/saml2/metadata') || req.path.includes('/saml2/login')) {
         next();
     } else {
         req.session.errors = [{message: 'sessionExpired'}];
@@ -34,7 +34,7 @@ exports.password_check_date = function(req, res, next) {
 
     debug("--> password_check_date");
 
-    if (req.path.includes('/saml2/metadata') || req.path.includes('/saml2/ReturnPage')) {
+    if (req.path.includes('/saml2/metadata') || req.path.includes('/saml2/login')) {
         next()
     } else {
         var today = new Date((new Date()).getTime())

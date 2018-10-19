@@ -1,16 +1,16 @@
 var models = require('../models/models.js');
 var config = require('../config');
+var external_auth = config.external_auth;
 
 var debug = require('debug')('idm:auth_helper');
 
 // MW to see if user is registered
 exports.authenticate = function(username, password, callback) {
 
-    debug("--> authenticate")
-
+    debug("--> authenticating external user")
     // Search the user
-    models.user.find({
-        attributes: ['id', 'username', 'password', 'enabled', 'email', 'image', 'admin'],
+    models.user_ext.find({
+        attributes: ['id', 'username', 'password', 'enabled'],
         where: {
             username: username
         }
@@ -18,7 +18,9 @@ exports.authenticate = function(username, password, callback) {
         if (user) {
             // Verify password and if user is enabled
             if(user.verifyPassword(password) && user.enabled) {
-                callback(null, user);
+                findLocalUser(user, function(localUser) {
+                    callback(null, localUser);
+                });
             } else { callback(new Error('invalid')); }   
         } else { callback(new Error('user_not_found')); }
     }).catch(function(error){ callback(error) });
@@ -26,5 +28,57 @@ exports.authenticate = function(username, password, callback) {
 
 //Password verification rule
 exports.verifyPassword = function(password) {
+    
+    // TODO: check encrypted pass
     return password === this.password;
+}
+
+function findLocalUser(user, callback) {
+    debug("--> searching local user with id: ", external_auth.id_prefix + user.id);
+    models.user.find({
+        attributes: ['id', 'username', 'salt', 'password', 'enabled', 'email', 'gravatar', 'image', 'admin', 'date_password', 'starters_tour_ended'],
+        where: {
+            id: external_auth.id_prefix + user.id
+        }
+    }).then(function(localUser) {
+        if (localUser) {
+            debug("--> local user already exists", localUser);
+            callback(localUser);
+        } else { 
+            debug("--> local user does not exist, creating it");
+            createLocalUser(user, function (localUser) {
+                debug("--> local user created");
+                callback(localUser);
+            });
+        }
+    }).catch(function(error){ callback(error) });
+}
+
+function createLocalUser (user, callback) {
+    debug("--> creating local user");
+
+    // TODO: get actual values from user (email, display name)
+    // TODO: update user values if changed in external database
+
+    // Build a row and validate it
+    var localUser = models.user.build({
+        id: external_auth.id_prefix + user.id,
+        username: user.username, 
+        email: 'test@demo.com',
+        password: 'none',
+        date_password: new Date((new Date()).getTime()),
+        enabled: true
+    });
+
+    localUser.validate().then(function(err) {
+
+        // Save the row in the database
+        localUser.save().then(function() {
+            callback(localUser);
+        }); 
+    // If validation fails, send an array with all errors found
+    }).catch(function(error){ 
+        debug("--> error creating local user", error);
+        callback(error);
+    });
 }

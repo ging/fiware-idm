@@ -69,6 +69,7 @@ config.database  = {
 config.external_auth = {
     enabled: (process.env.IDM_EX_AUTH_ENABLED || false ),
     authentication_driver: (process.env.IDM_EX_AUTH_DRIVER ||'custom_authentication_driver'),
+    id_prefix: (process.env.IDM_EX_AUTH_ID_PREFIX || 'external_'),
     database: {
         host: (process.env.IDM_EX_AUTH_DB_HOST ||'localhost'),
         database: (process.env.IDM_EX_AUTH_DB_NAME ||'db_name'),

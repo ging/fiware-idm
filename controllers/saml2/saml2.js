@@ -9,7 +9,7 @@ var saml2 = require('../../lib/saml2.js');
 // Create identity provider
 var idp_options = {
   sso_login_url: config.eidas.idp_host,
-  sso_logout_url: "https://"+config.eidas.gateway_host+"/saml2/logout",
+  sso_logout_url: "http://"+config.eidas.gateway_host+"/saml2/logout",
   certificates: []
 };
 var idp = new saml2.IdentityProvider(idp_options);
@@ -97,9 +97,6 @@ exports.saml2_application_login = function(req, res, next) {
 		}
 
 		create_user(name_id, eidas_profile).then(function(user) {
-
-			// TO DO CHECK SIGNATURE IN ASSERTION
-
             req.session.user = {
             	id: user.id,
                 username: user.username,
@@ -153,10 +150,9 @@ exports.search_eidas_credentials = function(req, res, next) {
 	models.eidas_credentials.findOne({
 		where: { oauth_client_id: req.application.id }
 	}).then(function(credentials) {
-
 		if (credentials) {
 			var organization = {
-				name: 'DEMO-SP',
+				name: 'b',
 				url: credentials.organization_url
 			}
 
@@ -180,20 +176,19 @@ exports.search_eidas_credentials = function(req, res, next) {
 			// Create service provider
 			var sp_options = {
 				entity_id: "http://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/metadata",
-				private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key_of.pem").toString(),
-				metadata_private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key_of_metadata.pem").toString(),
-				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert_of.pem").toString(),
-				metadata_certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert_of_metadata.pem").toString(),
-				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
+				private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key.pem").toString(),
+				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert.pem").toString(),
+				assert_endpoint: "http://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
 				nameid_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
-				provider_name: 'DEMO-SP-CA',
+				provider_name: credentials.organization_nif,
 				auth_context: { comparison: "minimum", AuthnContextClassRef: ["http://eidas.europa.eu/LoA/low"] },
 				force_authn: true,
 				organization: organization,
 				contact: contact,
 				valid_until: config.eidas.metadata_expiration
 			};
+
 
 			var sp = new saml2.ServiceProvider(sp_options);
 
@@ -258,8 +253,8 @@ exports.create_auth_request = function(req, res, next) {
 
 		req.saml_auth_request = {
 			xml: xml,
-			postLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
-			redirectLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login"
+			postLocationUrl: "http://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
+			redirectLocationUrl: "http://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login"
 		}
 		next()
 	} else {

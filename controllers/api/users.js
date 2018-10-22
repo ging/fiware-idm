@@ -6,9 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 
-var auth_driver = config.external_auth.enabled ?
-    require('../../helpers/' + config.external_auth.authentication_driver) :
-    require('../../helpers/authentication_driver');
+var external_auth = config.external_auth;
 
 
 var email_list =  config.email_list_type ? 
@@ -16,7 +14,28 @@ var email_list =  config.email_list_type ?
     []
 
 // MW to see if user is registered
-exports.authenticate = auth_driver.authenticate;
+exports.authenticate = external_auth.enabled ?
+    require('../../external_auth/authentication_driver').authenticate :
+    function(username, password, callback) {
+
+    debug("--> authenticate")
+
+    // Search the user
+    models.user.find({
+        attributes: ['id', 'username', 'salt', 'password', 'enabled', 'email', 'gravatar', 'image', 'admin', 'date_password', 'starters_tour_ended'],
+        where: {
+            email: username
+        }
+    }).then(function(user) {
+        if (user) {
+            // Verify password and if user is enabled to use the web
+            if(user.verifyPassword(password) && user.enabled){
+                callback(null, user);
+            } else {
+                callback(new Error('invalid')); }
+        } else { callback(new Error('user_not_found')); }
+    }).catch(function(error){ callback(error) });
+};
 
 // MW to Autoload info if path include userId
 exports.load_user = function(req, res, next, userId) {

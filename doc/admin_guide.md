@@ -135,25 +135,68 @@ Follow the next steps in order to enable the server to listen to HTTPs requests.
 </pre>
 
 ### External Authentication
-You can also configure the Identity Manager to authenticate users through other database.
+You can also configure the Identity Manager to authenticate users through an external database. 
 
- - Copy file named custom_authentication_driver.js.template to custom_authentication_driver.js
-<pre>
-<code>cp helpers/custom_authentication_driver.js.template helpers/custom_authentication_driver.js</code>
-</pre>
+When using this option, after the user correclty authenticates using his/her remote credentials, a local copy of the user is created. For authenticating the user externally Keyrock needs to read a set user attributes from the external database. These attributes are: 
 
-- Edit custom_authentication_driver.js according to your user table schema.
-- Enable use of driver in config.js file and customize database attributes.
+- id: A unique identifier of the user. The local copy of the user will have an identifier with the result of concatenating the configured prefix (*config.external_auth.id_prefix*) and the external id.
+- username: the display name of the user
+- email: the email address is the value used for authenticating the user
+- password: the encrypted password of the user
+- password_salt: if not specified, the value set in *config.external_auth.password_encryption_key* will be used for checking the password encryption.
+
+It is very common that the external database does not have a table with these parameters. In such case you can create a database view for exposing them.
+
+If your external database has the user data separated in two tables named *USERS*  and *ACTORS* with the following structure:
+
+USERS Table
+
+| id | encrypted_password | password_salt | created_at               | last_sign_in_at          | actor_id |
+|----|--------------------|---------------|--------------------------|--------------------------|----------|
+| 1  | g34h432hjk54k2j    | 1234          | 2015-06-10 08:26:02.0113 | 2018-06-10 08:26:02.0113 | 12       |
+| 2  | 2h43h7fdj38302j    | 1234          | 2015-01-10 08:26:02.0113 | 2018-01-10 08:26:02.0113 | 22       |
+| 3  | j328478j328j423    | 1234          | 2015-02-10 08:26:02.0113 | 2018-10-10 08:26:02.0113 | 5        |
+
+ACTORS Table
+
+| id | name          | email           | logo                   |
+|----|---------------|-----------------|------------------------|
+| 12 | Melinda López | melinda@test.es | http://mylogo.es/12344 |
+| 22 | Juanli Jons   | juanli@test.es  | http://mylogo.es/12121 |
+| 5  | Lesha Magnen  | lesha@test.es   | http://mylogo.es/1212  |
+
+You can create a view with the SQL statement
+
+~~~
+CREATE VIEW USER_VIEW AS 
+	SELECT USERS.id, USERS.password_salt, USERS.encrypted_password as password, ACTORS.email, ACTORS.name as username
+    FROM USERS,ACTORS
+    WHERE USERS.actor_id = ACTORS.id;
+~~~
+
+And this will create a view with the structure:
+
+USER_VIEW Table
+
+| id | password_salt | password        | email           | username      |
+|----|---------------|-----------------|-----------------|---------------|
+| 1  | 1234          | g34h432hjk54k2j | melinda@test.es | Melinda López |
+| 2  | 1234          | 2h43h7fdj38302j | juanli@test.es  | Juanli Jons   |
+| 3  | 1234          | j328478j328j423 | lesha@test.es   | Lesha Magnen  |
+
+For enabling this external authentication you have to modify config.js file customizing the database attributes.
 ~~~
 	config.external_auth = {
 	    enabled: true,
-	    authentication_driver: 'custom_authentication_driver',
+	    id_prefix: 'external_',
+			password_encryption_key: 'mykey'
 	    database: {
 	        host: 'localhost',
+	        port: undefined,
 	        database: 'idm',
 	        username: 'root',
 	        password: 'idm',
-	        user_table: 'user',
+	        user_table: 'user_view',
 	        dialect: 'mysql'
 	    }
 	}

@@ -72,12 +72,12 @@ config.external_auth = {
     password_encryption_key: (process.env.IDM_EX_AUTH_PASSWORD_ENCRYPTION_KEY || undefined),
     database: {
         host: (process.env.IDM_EX_AUTH_DB_HOST ||'localhost'),
+        port: (process.env.IDM_EX_AUTH_PORT || undefined),
         database: (process.env.IDM_EX_AUTH_DB_NAME ||'db_name'),
         username: (process.env.IDM_EX_AUTH_DB_USER || 'db_user'),
         password: (process.env.IDM_EX_AUTH_DB_PASS ||'db_pass'),
         user_table: (process.env.IDM_EX_AUTH_DB_USER_TABLE ||'user_view'),
-        dialect: (process.env.IDM_EX_AUTH_DIALECT || 'mysql'),
-        port: (process.env.IDM_EX_AUTH_PORT || undefined)
+        dialect: (process.env.IDM_EX_AUTH_DIALECT || 'mysql')
     }
 }
 

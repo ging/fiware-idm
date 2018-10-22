@@ -186,20 +186,20 @@ And this will create a view with the structure Keyrock needs to authenticate use
 
 For enabling this external authentication you have to modify config.js file customizing the database attributes.
 ~~~
-	config.external_auth = {
-	    enabled: true,
-	    id_prefix: 'external_',
-			password_encryption_key: 'mykey'
-	    database: {
-	        host: 'localhost',
-	        port: undefined,
-	        database: 'idm',
-	        username: 'root',
-	        password: 'idm',
-	        user_table: 'user_view',
-	        dialect: 'mysql'
-	    }
-	}
+config.external_auth = {
+    enabled: true,
+    id_prefix: 'external_',
+    password_encryption_key: undefined
+    database: {
+        host: 'localhost',
+        port: undefined,
+        database: 'idm',
+        username: 'root',
+        password: 'idm',
+        user_table: 'user_view',
+        dialect: 'mysql'
+    }
+}
 ~~~
 
 ### Authorization

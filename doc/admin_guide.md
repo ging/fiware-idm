@@ -137,7 +137,7 @@ Follow the next steps in order to enable the server to listen to HTTPs requests.
 ### External Authentication
 You can also configure the Identity Manager to authenticate users through an external database. 
 
-When using this option, after the user correclty authenticates using his/her remote credentials, a local copy of the user is created. For authenticating the user externally Keyrock needs to read a set user attributes from the external database. These attributes are: 
+When using this option, after the user correclty authenticates using his/her remote credentials, a local copy of the user is created. For authenticating the user externally Keyrock needs to read a set of user attributes from the external database. These attributes are: 
 
 - id: A unique identifier of the user. The local copy of the user will have an identifier with the result of concatenating the configured prefix (*config.external_auth.id_prefix*) and the external id.
 - username: the display name of the user
@@ -149,7 +149,7 @@ It is very common that the external database does not have a table with these pa
 
 If your external database has the user data separated in two tables named *USERS*  and *ACTORS* with the following structure:
 
-USERS Table
+**USERS Table**
 
 | id | encrypted_password | password_salt | created_at               | last_sign_in_at          | actor_id |
 |----|--------------------|---------------|--------------------------|--------------------------|----------|
@@ -157,7 +157,7 @@ USERS Table
 | 2  | 2h43h7fdj38302j    | 1234          | 2015-01-10 08:26:02.0113 | 2018-01-10 08:26:02.0113 | 22       |
 | 3  | j328478j328j423    | 1234          | 2015-02-10 08:26:02.0113 | 2018-10-10 08:26:02.0113 | 5        |
 
-ACTORS Table
+**ACTORS Table**
 
 | id | name          | email           | logo                   |
 |----|---------------|-----------------|------------------------|
@@ -174,9 +174,9 @@ CREATE VIEW USER_VIEW AS
     WHERE USERS.actor_id = ACTORS.id;
 ~~~
 
-And this will create a view with the structure:
+And this will create a view with the structure Keyrock needs to authenticate users:
 
-USER_VIEW Table
+**USER_VIEW Table**
 
 | id | password_salt | password        | email           | username      |
 |----|---------------|-----------------|-----------------|---------------|

@@ -5,6 +5,7 @@ var external_auth = config.external_auth;
 // Vars for encrypting
 var crypto = require('crypto');
 var key = external_auth.password_encryption_key;
+const bcrypt = require('bcrypt');
 
 module.exports = function(sequelize, DataTypes) {
     var User_Ext = sequelize.define(
@@ -33,9 +34,23 @@ module.exports = function(sequelize, DataTypes) {
     );
 
     User_Ext.prototype.verifyPassword = function(password) {
-        var encripted = crypto.createHmac('sha1', (this.password_salt) ? this.password_salt : key).update(password).digest('hex');
-        console.log('checking pass', encripted, this.password);
-        return encripted === this.password;
+        var valid_pass;
+
+        switch (external_auth.password_encryption) {
+            case 'sha1':
+                var encripted = crypto.createHmac('sha1', (this.password_salt) ? this.password_salt : key).update(password).digest('hex');
+                valid_pass = encripted === this.password;
+                break;
+            case 'bcrypt':
+                valid_pass = bcrypt.compareSync(password, this.password);
+                console.log('entrooooooooooooooooo', bcrypt.compareSync(password, this.password));
+                break;
+            default:
+                valid_pass = false;
+
+        }
+        console.log('aaaaaaaaaaaaaaa', external_auth.password_encryption, password, this.password, valid_pass);
+        return valid_pass;
     }
 
     return User_Ext;

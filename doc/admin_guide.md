@@ -189,7 +189,8 @@ For enabling this external authentication you have to modify config.js file cust
 config.external_auth = {
     enabled: true,
     id_prefix: 'external_',
-    password_encryption_key: undefined
+    password_encryption_key: undefined,
+    ecryption: 'bcyrpt',
     database: {
         host: 'localhost',
         port: undefined,
@@ -201,6 +202,8 @@ config.external_auth = {
     }
 }
 ~~~
+
+The way to check password validity can be customized in with parameter *external_auth.encryption*. SHA1 and BCrypt are currently supported.
 
 ### Authorization
 Configure Policy Decision Point (PDP)

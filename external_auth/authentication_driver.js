@@ -61,6 +61,7 @@ function createLocalUser (user, callback) {
         username: user.username,
         email: user.email,
         password: 'none',
+        date_password: new Date((new Date()).getTime()),
         enabled: true
     });
 

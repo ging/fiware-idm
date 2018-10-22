@@ -1,8 +1,10 @@
 var models = require('../models/models.js');
 var config = require('../config');
+var crypto = require('crypto');
 var external_auth = config.external_auth;
+var key = config.external_auth.password_encryption_key;
 
-var debug = require('debug')('idm:auth_helper');
+var debug = require('debug')('idm:external_auth');
 
 // MW to see if user is registered
 exports.authenticate = function(username, password, callback) {
@@ -10,14 +12,14 @@ exports.authenticate = function(username, password, callback) {
     debug("--> authenticating external user")
     // Search the user
     models.user_ext.find({
-        attributes: ['id', 'actor_id', 'encrypted_password', 'password_salt'],
+        attributes: ['id', 'username', 'email', 'password', 'password_salt'],
         where: {
-            actor_id: username
+            email: username
         }
     }).then(function(user) {
-        debug("KIKE: ", user);
+        debug("--> user found", user.username)
         if (user) {
-            // Verify password and if user is enabled
+            // Verify password
             if(user.verifyPassword(password)) {
                 findLocalUser(user, function(localUser) {
                     callback(null, localUser);
@@ -26,15 +28,6 @@ exports.authenticate = function(username, password, callback) {
         } else { callback(new Error('user_not_found')); }
     }).catch(function(error){ callback(error) });
 };
-
-//Password verification rule
-exports.verifyPassword = function(password) {
-    debug("KIKEp: ", password);
-    var encripted = crypto.createHmac('sha1', "2f149adee6f227469df37049eedbb12dba73f1aa2a61a77c9aac5205772bb20765b8c4903285132935bf272f2f1ecdf56edca7f354a6e9910cd85e02f7caae30").update(password).digest('hex');
-    debug("KIKEp: ", encripted);
-    debug("KIKE3: ", this.encrypted_password);
-    return encripted === this.encrypted_password;
-}
 
 function findLocalUser(user, callback) {
     debug("--> searching local user with id: ", external_auth.id_prefix + user.id);
@@ -60,16 +53,14 @@ function findLocalUser(user, callback) {
 function createLocalUser (user, callback) {
     debug("--> creating local user");
 
-    // TODO: get actual values from user (email, display name)
     // TODO: update user values if changed in external database
 
     // Build a row and validate it
     var localUser = models.user.build({
         id: external_auth.id_prefix + user.id,
-        username: user.actor_id,
-        email: 'test@demo.com',
+        username: user.username,
+        email: user.email,
         password: 'none',
-        date_password: new Date((new Date()).getTime()),
         enabled: true
     });
 

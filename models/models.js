@@ -63,7 +63,7 @@ var user = sequelize.import(path.join(__dirname, 'user'));
 
 // Import user table for external auth database if enabled
 if (external_auth.enabled)
-    var user_ext = ext_sequelize.import(path.join(__dirname, external_auth.database.user_table));
+    var user_ext = ext_sequelize.import(path.join(__dirname, '../external_auth/external_user_model'));
 
 // Import user registration profile table
 var user_registration_profile = sequelize.import(path.join(__dirname,'user_registration_profile'));

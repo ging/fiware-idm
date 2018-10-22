@@ -10,27 +10,30 @@ exports.authenticate = function(username, password, callback) {
     debug("--> authenticating external user")
     // Search the user
     models.user_ext.find({
-        attributes: ['id', 'username', 'password', 'enabled'],
+        attributes: ['id', 'actor_id', 'encrypted_password', 'password_salt'],
         where: {
-            username: username
+            actor_id: username
         }
     }).then(function(user) {
+        debug("KIKE: ", user);
         if (user) {
             // Verify password and if user is enabled
-            if(user.verifyPassword(password) && user.enabled) {
+            if(user.verifyPassword(password)) {
                 findLocalUser(user, function(localUser) {
                     callback(null, localUser);
                 });
-            } else { callback(new Error('invalid')); }   
+            } else { callback(new Error('invalid')); }
         } else { callback(new Error('user_not_found')); }
     }).catch(function(error){ callback(error) });
 };
 
 //Password verification rule
 exports.verifyPassword = function(password) {
-    
-    // TODO: check encrypted pass
-    return password === this.password;
+    debug("KIKEp: ", password);
+    var encripted = crypto.createHmac('sha1', "2f149adee6f227469df37049eedbb12dba73f1aa2a61a77c9aac5205772bb20765b8c4903285132935bf272f2f1ecdf56edca7f354a6e9910cd85e02f7caae30").update(password).digest('hex');
+    debug("KIKEp: ", encripted);
+    debug("KIKE3: ", this.encrypted_password);
+    return encripted === this.encrypted_password;
 }
 
 function findLocalUser(user, callback) {
@@ -44,7 +47,7 @@ function findLocalUser(user, callback) {
         if (localUser) {
             debug("--> local user already exists", localUser);
             callback(localUser);
-        } else { 
+        } else {
             debug("--> local user does not exist, creating it");
             createLocalUser(user, function (localUser) {
                 debug("--> local user created");
@@ -63,7 +66,7 @@ function createLocalUser (user, callback) {
     // Build a row and validate it
     var localUser = models.user.build({
         id: external_auth.id_prefix + user.id,
-        username: user.username, 
+        username: user.actor_id,
         email: 'test@demo.com',
         password: 'none',
         date_password: new Date((new Date()).getTime()),
@@ -75,9 +78,9 @@ function createLocalUser (user, callback) {
         // Save the row in the database
         localUser.save().then(function() {
             callback(localUser);
-        }); 
+        });
     // If validation fails, send an array with all errors found
-    }).catch(function(error){ 
+    }).catch(function(error){
         debug("--> error creating local user", error);
         callback(error);
     });

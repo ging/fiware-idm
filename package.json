@@ -31,7 +31,6 @@
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.4",
     "method-override": "^2.3.9",
-    "mmmagic": "^0.4.5",
     "morgan": "~1.8.1",
     "multer": "^1.3.0",
     "mysql2": "^1.4.2",

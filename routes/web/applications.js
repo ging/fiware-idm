@@ -103,6 +103,9 @@ if (config.eidas) {
     var saml2Controller = require('../../controllers/saml2/saml2');
 	router.get('/:applicationId/step/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_new_eidas_crendentials);
 	router.post('/:applicationId/step/eidas',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_create_eidas_crendentials);
+    router.put('/:applicationId/edit/eidas/info',                                web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.update_eidas_info);
+    router.put('/:applicationId/edit/eidas/attributes',                          web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.update_eidas_attributes);
+    router.get('/:applicationId/edit/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.search_eidas_credentials,   saml2Controller.edit_eidas_crendentials);
 	router.get('/:applicationId/saml2/metadata',                         	     saml2Controller.search_eidas_credentials,       saml2Controller.saml2_metadata);
     router.post('/:applicationId/saml2/login',                                   saml2Controller.search_eidas_credentials,       saml2Controller.saml2_application_login);
 }

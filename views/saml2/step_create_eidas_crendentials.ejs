@@ -1,22 +1,3 @@
-<style type="text/css">
-    .eidas {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }
-
-    .eidas_input {
-        width: 48%;
-        justify-content: space-between;
-        margin-bottom: 8px;
-    }
-
-    .eidas_input_company {
-        flex: 0 0 100%;
-        margin-bottom: 8px;   
-    }
-</style>
-
 <div id="content_body">
 
     <div id="create_application_modal" class="static_page">
@@ -28,17 +9,18 @@
                     <div class="step">3</div>
                     <div class="line"></div>
                 </div>
-            </h3><h3 class="step-title">eIDAs Information</h3>
+            </h3><h3 class="step-title">eIDAS Information</h3>
         </div>
 
-        <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/step/eidas" method="POST" enctype="">
+        </div>
+        <form id="eidas_credentials" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/step/eidas" method="POST" enctype="">
             <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
             <div class="modal-body clearfix">
 
                 <fieldset>
 
                 <div class="form-group required eidas">
-                    <label class="control-label required" style="border-bottom: 1px solid #B6B6B6; margin-bottom: 8px;">Support Contact Person</label>
+                    <label class="control-label required">Support Contact Person</label>
                     <div class="eidas_input">
                         <label class="control-label required" for="id_support_contact_person_name">Name</label>
                         <div class="">
@@ -96,7 +78,7 @@
                 </div>
 
                 <div class="form-group required eidas">
-                    <label class="control-label required" style="border-bottom: 1px solid #B6B6B6; margin-bottom: 8px;">Technical Contact Person</label>
+                    <label class="control-label required">Technical Contact Person</label>
                     <div class="eidas_input">
                         <label class="control-label required" for="id_technical_contact_person_name">Name</label>
                         <div class="">
@@ -154,7 +136,7 @@
                 </div>
 
                 <div class="form-group required eidas">
-                    <label class="control-label required" style="border-bottom: 1px solid #B6B6B6; margin-bottom: 8px;">Organization</label>
+                    <label class="control-label required">Organization</label>
                     <div class="eidas_input">
                         <label class="control-label required" for="id_company">Name</label>
                         <div class="">
@@ -187,8 +169,24 @@
                      </div>
                 </div>
 
+                <div class="form-group required eidas">
+                    <label class="control-label required">Service Provider Type</label>
+                    <div class="eidas_input_company">
+                         <div class="">
+                             <div class="select-multiple form-group">
+                                <select id="sp_type" name="eidas[sp_type]" class="selectpicker" data-size="2" data-width="100%" data-dropup-auto="false">
+                                    <option value="caca">public</option>
+                                    <option selected value="private">private</option>
+                                </select>
+                            </div>
+                         </div>
+                         <% if (errors.indexOf("sp_type") != -1) { %>
+                             <span class="help-block alert alert-danger" style="margin-top: 55px">Invalid SP Type.</span>
+                         <% } %>
+                     </div>
+                </div>
+
             </fieldset>
-        </div>
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Next</button>
         </div>

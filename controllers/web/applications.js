@@ -167,7 +167,8 @@ exports.show = function(req, res, next) {
 		res.render('applications/show', { application: req.application, 
 										  user_logged_permissions: req.user_owned_permissions,
 										  pep_proxy: pep_proxy,
-										  iot_sensors: iot_sensors,																	  
+										  iot_sensors: iot_sensors,
+										  eidas_enabled: config.eidas.enabled,																  
 										  errors: [], 
 										  csrfToken: req.csrfToken() });
 	}).catch(function(error) {

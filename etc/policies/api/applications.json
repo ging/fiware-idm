@@ -1,0 +1,67 @@
+{   
+    "method_function": {
+        "GET": {
+            "list": "index",
+            "singular": "info"
+        },
+        "POST": "create",
+        "PATCH": "update",
+        "DELETE": "delete"
+    },
+    "permissions": {
+        "1": "Get and assign all internal application roles",
+        "2": "Manage the application",
+        "3": "Manage roles",
+        "4": "Manage authorizations",
+        "5": "Get and assign all public application roles",
+        "6": "Get and assign only public owned roles"
+    },
+    "actions": {
+        "applications:index": "",
+        "applications:create": "",
+        "applications:info": "1,2,3,5,6",
+        "applications:update": "2",
+        "applications:delete": "2",
+
+        "applications:roles:index": "1,5,6,3",
+        "applications:roles:create": "3",
+        "applications:roles:info": "3",
+        "applications:roles:update": "3",
+        "applications:roles:delete": "3",
+
+        "applications:permissions:index": "3",
+        "applications:permissions:create": "3",
+        "applications:permissions:info": "3",
+        "applications:permissions:update": "3",
+        "applications:permissions:delete": "3",
+
+        "applications:roles:permissions:index": "3",
+        "applications:roles:permissions:create": "3",
+        "applications:roles:permissions:delete": "3",
+
+        "applications:pep_proxies:create": "2",
+        "applications:pep_proxies:info": "2",
+        "applications:pep_proxies:update": "2",
+        "applications:pep_proxies:delete": "2",
+
+        "applications:iot_agents:index": "2",
+        "applications:iot_agents:create": "2",
+        "applications:iot_agents:info": "2",
+        "applications:iot_agents:update": "2",
+        "applications:iot_agents:delete": "2",
+
+        "applications:users:index": "1,5,6",
+        "applications:users:roles:index": "1,5,6",
+        "applications:users:roles:create": "1,5,6",
+        "applications:users:roles:delete": "1,5,6",
+
+        "applications:organizations:index": "1,5,6",
+        "applications:organizations:roles:index": "1,5,6",
+        "applications:organizations:roles:organization_roles:create": "1,5,6",
+        "applications:organizations:roles:organization_roles:delete": "1,5,6",
+
+        "applications:trusted_applications:index": "1,5,6",
+        "applications:trusted_applications:create": "1,5,6",
+        "applications:trusted_applications:delete": "1,5,6"
+    }
+}

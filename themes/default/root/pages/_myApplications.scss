@@ -77,7 +77,43 @@
     margin-top: 25px;
     padding-top: 15px;
   }
+
 }
+
+#eidas_credentials {
+  .eidas {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+  }
+
+  .eidas_input {
+      width: 48%;
+      justify-content: space-between;
+      margin-bottom: 8px;
+  }
+
+  .eidas_input_company {
+      flex: 0 0 100%;
+      margin-bottom: 8px;   
+  }
+
+  .control-label {
+    border-bottom: 1px solid #B6B6B6; 
+    margin-bottom: 8px;
+  }
+
+  .dropdown-menu {
+    position: relative;
+  }
+}
+
+#eidas_attributes {
+  .checkbox {
+    width:100%;
+  }
+}
+
 #create_permission_form{
   .panel-group{
     margin-top: -7px;
@@ -207,6 +243,7 @@
     margin-top: -6px;
   }
 }
+
 .workflow-roles{
   .modal-dialog {
     @extend .modal-lg;

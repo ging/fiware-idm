@@ -1,0 +1,392 @@
+<% var nameErrors = [] %>
+<% if (errors.length) { %>
+    <% for (var i in errors) { %>
+    	<% nameErrors.push(errors[i].message)%>
+    <% } %>
+<% } %>
+<div id="content_body">
+	<div class="panel panel-default ">
+		<div class="panel-body">
+			<div id="" class="edit">
+				<div class="modal-header">
+					<h3>
+						eIDAS Information
+					</h3>
+				</div>
+				<form id="eidas_credentials" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/eidas/info?_method=put" method="POST" enctype="">
+		            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+		            <div class="modal-body clearfix">
+
+		                <fieldset>
+
+			                <div class="form-group required eidas">
+			                    <label class="control-label required">Support Contact Person</label>
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_support_contact_person_name">Name</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_support_contact_person_name" name="eidas[support_contact_person_name]" type="text" value="<%= eidas_credentials.support_contact_person_name %>">
+			                        </div>
+			                        <% if (errors.indexOf("support_contact_person_name") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_support_contact_person_surname">Surname</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_support_contact_person_surname" name="eidas[support_contact_person_surname]" type="text" value="<%= eidas_credentials.support_contact_person_surname %>">
+			                        </div>
+			                        <% if (errors.indexOf("support_contact_person_surname") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_support_contact_person_email">Email</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_support_contact_person_email" name="eidas[support_contact_person_email]" type="text" value="<%= eidas_credentials.support_contact_person_email %>">
+			                        </div>
+			                        <% if (errors.indexOf("support_contact_person_email") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_support_contact_person_number">Telephone Number</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_support_contact_person_number" name="eidas[support_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.support_contact_person_telephone_number %>">
+			                        </div>
+			                        <% if (errors.indexOf("support_contact_person_telephone_number") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input_company">
+			                        <label class="control-label required" for="id_support_contact_person_company">Company</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_support_contact_person_company" name="eidas[support_contact_person_company]" type="text" value="<%= eidas_credentials.support_contact_person_company %>">
+			                        </div>
+			                        <% if (errors.indexOf("support_contact_person_company") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+			                </div>
+
+			                <div class="form-group required eidas">
+			                    <label class="control-label required">Technical Contact Person</label>
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_technical_contact_person_name">Name</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_technical_contact_person_name" name="eidas[technical_contact_person_name]" type="text" value="<%= eidas_credentials.technical_contact_person_name %>">
+			                        </div>
+			                        <% if (errors.indexOf("technical_contact_person_name") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_technical_contact_person_surname">Surname</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_technical_contact_person_surname" name="eidas[technical_contact_person_surname]" type="text" value="<%= eidas_credentials.technical_contact_person_surname %>">
+			                        </div>
+			                        <% if (errors.indexOf("technical_contact_person_surname") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_technical_contact_person_email">Email</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_technical_contact_person_email" name="eidas[technical_contact_person_email]" type="text" value="<%= eidas_credentials.technical_contact_person_email %>">
+			                        </div>
+			                        <% if (errors.indexOf("technical_contact_person_email") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_technical_contact_person_number">Telephone Number</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_technical_contact_person_number" name="eidas[technical_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.technical_contact_person_telephone_number %>">
+			                        </div>
+			                        <% if (errors.indexOf("technical_contact_person_telephone_number") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+
+			                    <div class="eidas_input_company">
+			                        <label class="control-label required" for="id_technical_contact_person_company">Company</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_technical_contact_person_company" name="eidas[technical_contact_person_company]" type="text" value="<%= eidas_credentials.technical_contact_person_company %>">
+			                        </div>
+			                        <% if (errors.indexOf("technical_contact_person_company") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+			                    
+			                </div>
+
+			                <div class="form-group required eidas">
+			                    <label class="control-label required">Organization</label>
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_company">Name</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_company" name="eidas[organization_name]" type="text" value="<%= eidas_credentials.organization_name %>">
+			                        </div>
+			                        <% if (errors.indexOf("organization_name") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+
+
+			                    <div class="eidas_input">
+			                        <label class="control-label required" for="id_company">Url</label>
+			                        <div class="">
+			                            <input class="form-control" id="id_company" name="eidas[organization_url]" type="text" value="<%= eidas_credentials.organization_url %>">
+			                        </div>
+			                        <% if (errors.indexOf("organization_url") != -1) { %>
+			                            <span class="help-block alert alert-danger ">Input required.</span>
+			                        <% } %>
+			                    </div>
+
+			                    <div class="eidas_input_company">
+			                         <label class="control-label required" for="id_company">NIF</label>
+			                         <div class="">
+			                             <input class="form-control" id="id_company" name="eidas[organization_nif]" type="text" value="<%= eidas_credentials.organization_nif %>">
+			                         </div>
+			                         <% if (errors.indexOf("organization_nif") != -1) { %>
+			                             <span class="help-block alert alert-danger ">Input required.</span>
+			                         <% } %>
+			                     </div>
+			                </div>
+
+			                <div class="form-group required eidas">
+			                    <label class="control-label required">Service Provider Type</label>
+			                    <div class="eidas_input_company">
+			                         <div class="">
+			                             <div class="select-multiple form-group">
+			                                <select id="sp_type" name="eidas[sp_type]" class="selectpicker" data-size="2" data-width="100%" data-dropup-auto="false">
+			                                    <option value="caca">public</option>
+			                                    <option selected value="private">private</option>
+			                                </select>
+			                            </div>
+			                         </div>
+			                         <% if (errors.indexOf("sp_type") != -1) { %>
+			                             <span class="help-block alert alert-danger" style="margin-top: 55px">Invalid SP Type.</span>
+			                         <% } %>
+			                     </div>
+			                </div>
+
+			            </fieldset>
+		            </div>
+			        <div class="modal-footer">
+			            <button type="submit" class="btn btn-primary">Update</button>
+			        </div>
+		    	</form>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default ">
+		<div class="panel-body">
+			<div class="edit update-avatar-modal">
+				<div class="modal-header">
+					<h3>
+						eIDAS attributes
+					</h3>
+				</div>
+				<form id="eidas_attributes" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/eidas/attributes?_method=put" method="POST" enctype="">
+		            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+		            <div class="modal-body clearfix">
+		                <fieldset>
+		                	<div id="natural_person" class="extra">
+		                        <h4 class="panel-title">
+		                            <a data-toggle="collapse" href="#collapse_natural_person" aria-expanded="false" aria-controls="collapse_natural_person" class="collapsed">
+		                                Natural Person <i class="fa fa-angle-up"></i>
+		                            </a>
+		                        </h4>
+		                        <dit class="collapse_out">
+			                        <div id="collapse_natural_person" class="form-group no-transition collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+			                        	<div class="checkbox">
+			                                <label><input type="checkbox" name="natural[PersonIdentifier]" value="PersonIdentifier">Person Identifier</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="natural[FamilyName]" value="FamilyName">Family Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="natural[FirstName]" value="FirstName">First Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="natural[DateOfBirth]" value="DateOfBirth">Date of Birth</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="natural[BirthName]" value="BirthName">Birth Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="natural[PlaceOfBirth]" value="PlaceOfBirth">Place Of Birth</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="natural[CurrentAddress]" value="CurrentAddress">Current Address</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="natural[Gender]" value="Gender">Gender</label>
+			                            </div>
+			                        </div>
+			                    </div>
+		                    </div>
+
+		                    <div id="legal_person" class="extra">
+		                        <h4 class="panel-title">
+		                            <a data-toggle="collapse" href="#collapse_legal_person" aria-expanded="false" aria-controls="collapse_legal_person" class="collapsed">
+		                                Legal Person <i class="fa fa-angle-up"></i>
+		                            </a>
+		                        </h4>
+		                        <div class="collapse_out">
+			                        <div id="collapse_legal_person" class="form-group no-transition collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+			                        	<div class="checkbox">
+			                                <label><input type="checkbox" name="legal[LegalPersonIdentifier]" value="LegalPersonIdentifier"> Legal Person Identifier</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[LegalName]" value="LegalName">Legal Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[LegalPersonAddress]" value="LegalPersonAddress">Legal Person Address</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[VATRegistrationNumber]" value="VATRegistrationNumber">VAT Registration Number</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[TaxReference]" value="TaxReference">Tax Reference</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[D-2012-17-EUIdentifier]" value="D-2012-17-EUIdentifier">D-2012-17-EUIdentifier</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[LEI]" value="LEI">LEI</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[EORI]" value="EORI">EORI</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[SEED]" value="SEED">SEED</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="legal[SIC]" value="SIC">SIC</label>
+			                            </div>
+			                        </div>
+			                    </div>
+		                    </div>
+
+		                    <div id="representative_legal_person" class="extra">
+		                        <h4 class="panel-title">
+		                            <a data-toggle="collapse" href="#collapse_representative" aria-expanded="false" aria-controls="collapse_representative" class="collapsed">
+		                                Representative Legal Person <i class="fa fa-angle-up"></i>
+		                            </a>
+		                        </h4>
+
+		                        <dit class="collapse_out">
+			                        <div id="collapse_representative" class="form-group no-transition collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+			                        	<div class="checkbox">
+			                                <label><input type="checkbox" name="representative[PersonIdentifier]" value="PersonIdentifier">Person Identifier</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[FamilyName]" value="FamilyName">Family Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[FirstName]" value="FirstName">First Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[DateOfBirth]" value="DateOfBirth">Date of Birth</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[BirthName]" value="BirthName">Birth Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[PlaceOfBirth]" value="PlaceOfBirth">Place Of Birth</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[CurrentAddress]" value="CurrentAddress">Current Address</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[Gender]" value="Gender">Gender</label>
+			                            </div>
+			                        	<div class="checkbox">
+			                                <label><input type="checkbox" name="representative[LegalPersonIdentifier]" value="LegalPersonIdentifier"> Legal Person Identifier</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[LegalName]" value="LegalName">Legal Name</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[LegalPersonAddress]" value="LegalPersonAddress">Legal Person Address</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[VATRegistrationNumber]" value="VATRegistrationNumber">VAT Registration Number</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[TaxReference]" value="TaxReference">Tax Reference</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[D-2012-17-EUIdentifier]" value="D-2012-17-EUIdentifier">D-2012-17-EUIdentifier</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[LEI]" value="LEI">LEI</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[EORI]" value="EORI">EORI</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[SEED]" value="SEED">SEED</label>
+			                            </div>
+			                            <div class="checkbox">
+			                                <label><input type="checkbox" name="representative[SIC]" value="SIC">SIC</label>
+			                            </div>
+			                        </div>
+		                        </dit>
+		                    </div>
+		                </fieldset>
+		            </div>
+			        <div class="modal-footer">
+			            <button type="submit" class="btn btn-primary">Update</button>
+			        </div>
+		        </form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="messages"></div>
+
+<script type="text/javascript">
+    $('.panel-title a:first-child').mouseover(function(){
+        $(this).children().toggleClass('fa-rotate-180');
+    });
+    $('.panel-title a:first-child').mouseleave(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children().removeClass('fa-rotate-180');
+        } else {
+            $(this).children().addClass('fa-rotate-180');
+        }
+    });
+    $('.panel-title a:first-child').click(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children().addClass('fa-rotate-180');
+        } else {
+            $(this).children().removeClass('fa-rotate-180');
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="popover"]').popover({html:true});
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

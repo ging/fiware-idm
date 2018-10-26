@@ -59,7 +59,7 @@
       </div>
       <button type="submit" class="btn btn-primary pull-right">Sign In</button>
       <% if (saml_request.enabled) { -%>
-        <button id="saml2_eidas_button" type="submit"  class="btn btn-primary pull-right second_submit_button" formaction="/saml2/login?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" >Sign Eidas</button>
+        <button id="saml2_eidas_button" type="submit"  class="btn btn-primary pull-right second_submit_button" formaction="/saml2/login?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" >Sign eIDAS</button>
       <% } -%>
       <div class="actions">
         <a href="/sign_up/">

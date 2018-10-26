@@ -18,7 +18,7 @@ var idp = new saml2.IdentityProvider(idp_options);
 exports.step_new_eidas_crendentials = function(req, res, next) {
 
 	debug("--> step_new_eidas_crendentials");
-	res.render('applications/step_create_eidas_crendentials', { application: req.application, eidas_credentials: [], errors: [], csrfToken: req.csrfToken() });
+	res.render('saml2/step_create_eidas_crendentials', { application: req.application, eidas_credentials: [], errors: [], csrfToken: req.csrfToken() });
 };
 
 // POST /idm/applications/:applicationId/step/eidas -- Create eIDAs credentials
@@ -48,9 +48,45 @@ exports.step_create_eidas_crendentials = function(req, res, next) {
     			nameErrors.push(error.errors[i].message)
     		}
 		}
-		res.render('applications/step_create_eidas_crendentials', {application: req.application, eidas_credentials: eidas_credentials, errors: nameErrors, csrfToken: req.csrfToken()})
+		res.render('applications/step_create_eidas_crendentials', {
+			application: req.application,
+			eidas_credentials: eidas_credentials,
+			errors: nameErrors,
+			csrfToken: req.csrfToken()
+		})
 	})
 };
+
+// GET /idm/applications/:applicationId/edit/eidas -- Render edit eIDAs credentials view
+exports.edit_eidas_crendentials = function(req, res, next) {
+
+	debug("--> edit_eidas_crendentials");
+
+	res.render('saml2/edit_eidas', {
+		application: req.application,
+		eidas_credentials: req.eidas_credentials,
+		errors: [],
+		csrfToken: req.csrfToken()
+	})
+}
+
+// PUT /idm/applications/:applicationId/edit/eidas/info -- Update eIDAS Info
+exports.update_eidas_info = function(req, res, next) {
+
+	debug("--> update_eidas_info");
+
+	debug(req.body)
+}
+
+
+// PUT /idm/applications/:applicationId/edit/eidas/attributes -- Update eIDAS attributes
+exports.update_eidas_attributes = function(req, res, next) {
+
+	debug("--> update_eidas_attributes");
+
+	debug(req.body)
+}
+
 
 // GET /idm/applications/:applicationId/saml2/metadata -- Expose metadata
 exports.saml2_metadata = function(req, res, next) { 
@@ -130,7 +166,6 @@ function create_user(name_id, eidas_profile) {
 		if (user) {
 			return user
 		} else {
-
 	        var user = models.user.build({
 	            username: eidas_profile.FirstName + eidas_profile.FamilyName,
 	            eidas_id: name_id,
@@ -192,10 +227,15 @@ exports.search_eidas_credentials = function(req, res, next) {
 				force_authn: true,
 				organization: organization,
 				contact: contact,
-				valid_until: config.eidas.metadata_expiration
+				valid_until: config.eidas.metadata_expiration,
+				sp_type: credentials.sp_type,
+				attributes_list: credentials.attributes_list
+
 			};
 
 			var sp = new saml2.ServiceProvider(sp_options);
+
+			req.eidas_credentials = credentials
 
 			req.sp = sp
 			next()

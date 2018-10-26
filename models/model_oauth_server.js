@@ -216,8 +216,8 @@ function saveToken(token, client, identity) {
 function generateJwtToken(token, client, identity) {
   
   debug("-------generateJwtToken-------")
-  var user_info = require('../oauth_response/oauth_user_response.json');
-  var iot_info = require('../oauth_response/oauth_iot_response.json');
+  var user_info = require('../templates/oauth_response/oauth_user_response.json');
+  var iot_info = require('../templates/oauth_response/oauth_iot_response.json');
 
   return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
     if (identity) {
@@ -422,7 +422,7 @@ function create_oauth_response(identity, application_id, action, resource, authz
 
   if (type === 'user') {
 
-      var user_info = require('../oauth_response/oauth_user_response.json');
+      var user_info = require('../templates/oauth_response/oauth_user_response.json');
 
       user_info.username = identity.username
       user_info.app_id = application_id
@@ -433,7 +433,7 @@ function create_oauth_response(identity, application_id, action, resource, authz
       return search_user_info(user_info, action, resource, authzforce, req_app)
   } else if (type === 'iot') {
 
-      var iot_info = require('../oauth_response/oauth_iot_response.json');
+      var iot_info = require('../templates/oauth_response/oauth_iot_response.json');
 
       iot_info.app_id = application_id
       iot_info.id = identity.id

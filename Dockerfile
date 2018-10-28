@@ -67,10 +67,10 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Download latest version of the code and install npm dependencies
-RUN git clone https://github.com/ging/fiware-idm.git && \
-    rm -rf doc extras && \
-    cd fiware-idm && \
+# Install FIWARE IdM
+COPY ./ /opt/fiware-idm
+WORKDIR /opt/fiware-idm
+RUN rm -rf node_modules doc extras && \
     npm cache clean -f && \
     npm install --production --silent && \
     rm -rf /root/.npm/cache/*

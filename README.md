@@ -113,7 +113,7 @@ You can test the Identity manager using the default user:
 
 We also provide a Docker image to facilitate you the building of this GE.
 
-- [Here](https://github.com/ging/fiware-idm/tree/master/extras/docker) you will find the Dockerfile and the documentation explaining how to use it.
+- [Here](./README-Docker.md) you will find the Dockerfile and the documentation explaining how to use it.
 - In [Docker Hub](https://hub.docker.com/r/fiware/idm/) you will find the public image.
 
 

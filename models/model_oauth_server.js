@@ -122,7 +122,7 @@ function getIdentity(id, password) {
     }
 
     if (user) {
-      if (user.verifyPassword(user.salt, password)) {
+      if (user.verifyPassword(password)) {
           user.dataValues["type"] = "user"
           return user
       } 

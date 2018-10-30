@@ -1,13 +1,16 @@
 	<% 
   var presentation = 'auth/_presentation';
+  var login = 'auth/_login';
 
   if (site.theme !== 'default') {
     if(fs.existsSync('themes/' + site.theme + '/templates/_presentation.ejs')) 
       presentation = '../themes/' + site.theme + '/templates/_presentation';
+    if(fs.existsSync('themes/' + site.theme + '/templates/_login.ejs')) 
+      login = '../themes/' + site.theme + '/templates/_login';
   }
 %>
 
 <div class="row">
-	<%- include auth/_login %>
+	<%- include(login)%>
 	<%- include(presentation)  %>
 </div>

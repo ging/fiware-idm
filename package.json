@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "async": "^2.6.0",
+    "bcrypt": "^3.0.2",
     "body-parser": "~1.18.2",
     "bootstrap-sass": "3.3.7",
     "cookie-parser": "~1.4.3",
@@ -38,6 +39,7 @@
     "nodemailer": "~4.1.0",
     "nodemailer-smtp-transport": "~2.7.4",
     "oauth2-server": "git+https://github.com/ging/node-oauth2-server",
+    "pg": "^7.5.0",
     "request": "^2.85.0",
     "sequelize": "^4.22.0",
     "sequelize-cli": "^4.0.0",

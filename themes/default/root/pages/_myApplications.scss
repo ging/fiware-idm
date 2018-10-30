@@ -109,8 +109,19 @@
 }
 
 #eidas_attributes {
-  .checkbox {
-    width:100%;
+  .attribute {
+    label {
+      min-height: 18px;
+      vertical-align: text-top;
+      margin-bottom: 0;
+      font-weight: normal;
+      cursor: pointer;
+      width:100%;
+    }
+    input {
+      vertical-align:middle;
+      margin-top: -2px;
+    }
   }
 }
 

@@ -9,7 +9,7 @@ var auth_driver = config.external_auth.enabled ?
     require('../../helpers/authentication_driver');
 
 var email_list =  config.email_list_type ? 
-    fs.readFileSync(path.join(__dirname,"../../email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
+    fs.readFileSync(path.join(__dirname,"../../etc/email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
     []
 
 

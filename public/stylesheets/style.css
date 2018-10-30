@@ -11492,8 +11492,18 @@ ul.disabled-list li.active:hover {
 #eidas_credentials .dropdown-menu {
   position: relative; }
 
-#eidas_attributes .checkbox {
+#eidas_attributes .attribute label {
+  min-height: 18px;
+  vertical-align: text-top;
+  margin-bottom: 0;
+  margin-left: 5px;
+  font-weight: normal;
+  cursor: pointer;
   width: 100%; }
+
+#eidas_attributes .attribute input {
+  vertical-align: middle;
+  margin-top: -2px; }
 
 #create_permission_form .panel-group {
   margin-top: -7px;
@@ -12294,6 +12304,16 @@ div#update_owners_members {
 
 #eidas_attributes .panel-title > a:hover i {
   transition: all 0.5s; }
+
+#eidas_attributes .form-group {
+  margin: 0; }
+
+#eidas_attributes .collapse .content_pep {
+  overflow: hidden;
+  clear: both; }
+
+#eidas_attributes .collapse .content_pep_activenew {
+  background-color: aliceblue; }
 
 #detailOrganization header,
 #detailApplication header,

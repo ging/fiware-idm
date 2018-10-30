@@ -77,7 +77,13 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             defaultValue: null
         }, extra: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            get: function () {
+                return (this.getDataValue('extra')) ? JSON.parse(this.getDataValue('extra')) : {}
+            },
+            set: function (val) {
+                this.setDataValue('extra', JSON.stringify(val))
+            } 
         }, scope: {
             type: DataTypes.STRING(80)
         }

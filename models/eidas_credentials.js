@@ -57,11 +57,11 @@ module.exports = function(sequelize, DataTypes) {
     }, attributes_list: {
       type: DataTypes.TEXT(),
       get: function () {
-          return (this.getDataValue('attributes')) ? this.getDataValue('attributes').split(',') : []
+          return (this.getDataValue('attributes_list')) ? JSON.parse(this.getDataValue('attributes_list')) : {}
       },
       set: function (val) {
-         this.setDataValue('attributes',val.join(','))
-      } 
+         this.setDataValue('attributes_list', JSON.stringify(val))
+      }
     }
   }, {
       tableName: 'eidas_credentials',

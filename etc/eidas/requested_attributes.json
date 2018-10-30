@@ -80,7 +80,7 @@
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
 			"@isRequired": "false"
 		},
-		"D-2012-17-EUIdentifier": {
+		"D201217EUIdentifier": {
 			"@FriendlyName": "D-2012-17-EUIdentifier",
 			"@Name": "http://eidas.europa.eu/attributes/legalperson/D-2012-17-EUIdentifier",
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
@@ -190,7 +190,7 @@
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
 			"@isRequired": "false"
 		},
-		"D-2012-17-EUIdentifier": {
+		"D201217EUIdentifier": {
 			"@FriendlyName": "D-2012-17-EUIdentifier",
 			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/D-2012-17-EUIdentifier",
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",

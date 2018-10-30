@@ -1,9 +1,3 @@
-<% var nameErrors = [] %>
-<% if (errors.length) { %>
-    <% for (var i in errors) { %>
-    	<% nameErrors.push(errors[i].message)%>
-    <% } %>
-<% } %>
 <div id="content_body">
 	<div class="panel panel-default ">
 		<div class="panel-body">
@@ -24,7 +18,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_support_contact_person_name">Name</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_name" name="eidas[support_contact_person_name]" type="text" value="<%= eidas_credentials.support_contact_person_name %>">
+			                            <input class="form-control" id="id_support_contact_person_name" name="eidas_credentials[support_contact_person_name]" type="text" value="<%= eidas_credentials.support_contact_person_name %>">
 			                        </div>
 			                        <% if (errors.indexOf("support_contact_person_name") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -35,7 +29,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_support_contact_person_surname">Surname</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_surname" name="eidas[support_contact_person_surname]" type="text" value="<%= eidas_credentials.support_contact_person_surname %>">
+			                            <input class="form-control" id="id_support_contact_person_surname" name="eidas_credentials[support_contact_person_surname]" type="text" value="<%= eidas_credentials.support_contact_person_surname %>">
 			                        </div>
 			                        <% if (errors.indexOf("support_contact_person_surname") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -46,7 +40,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_support_contact_person_email">Email</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_email" name="eidas[support_contact_person_email]" type="text" value="<%= eidas_credentials.support_contact_person_email %>">
+			                            <input class="form-control" id="id_support_contact_person_email" name="eidas_credentials[support_contact_person_email]" type="text" value="<%= eidas_credentials.support_contact_person_email %>">
 			                        </div>
 			                        <% if (errors.indexOf("support_contact_person_email") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -57,7 +51,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_support_contact_person_number">Telephone Number</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_number" name="eidas[support_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.support_contact_person_telephone_number %>">
+			                            <input class="form-control" id="id_support_contact_person_number" name="eidas_credentials[support_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.support_contact_person_telephone_number %>">
 			                        </div>
 			                        <% if (errors.indexOf("support_contact_person_telephone_number") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -68,7 +62,7 @@
 			                    <div class="eidas_input_company">
 			                        <label class="control-label required" for="id_support_contact_person_company">Company</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_company" name="eidas[support_contact_person_company]" type="text" value="<%= eidas_credentials.support_contact_person_company %>">
+			                            <input class="form-control" id="id_support_contact_person_company" name="eidas_credentials[support_contact_person_company]" type="text" value="<%= eidas_credentials.support_contact_person_company %>">
 			                        </div>
 			                        <% if (errors.indexOf("support_contact_person_company") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -82,7 +76,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_technical_contact_person_name">Name</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_name" name="eidas[technical_contact_person_name]" type="text" value="<%= eidas_credentials.technical_contact_person_name %>">
+			                            <input class="form-control" id="id_technical_contact_person_name" name="eidas_credentials[technical_contact_person_name]" type="text" value="<%= eidas_credentials.technical_contact_person_name %>">
 			                        </div>
 			                        <% if (errors.indexOf("technical_contact_person_name") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -93,7 +87,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_technical_contact_person_surname">Surname</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_surname" name="eidas[technical_contact_person_surname]" type="text" value="<%= eidas_credentials.technical_contact_person_surname %>">
+			                            <input class="form-control" id="id_technical_contact_person_surname" name="eidas_credentials[technical_contact_person_surname]" type="text" value="<%= eidas_credentials.technical_contact_person_surname %>">
 			                        </div>
 			                        <% if (errors.indexOf("technical_contact_person_surname") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -104,7 +98,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_technical_contact_person_email">Email</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_email" name="eidas[technical_contact_person_email]" type="text" value="<%= eidas_credentials.technical_contact_person_email %>">
+			                            <input class="form-control" id="id_technical_contact_person_email" name="eidas_credentials[technical_contact_person_email]" type="text" value="<%= eidas_credentials.technical_contact_person_email %>">
 			                        </div>
 			                        <% if (errors.indexOf("technical_contact_person_email") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -115,7 +109,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_technical_contact_person_number">Telephone Number</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_number" name="eidas[technical_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.technical_contact_person_telephone_number %>">
+			                            <input class="form-control" id="id_technical_contact_person_number" name="eidas_credentials[technical_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.technical_contact_person_telephone_number %>">
 			                        </div>
 			                        <% if (errors.indexOf("technical_contact_person_telephone_number") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -126,7 +120,7 @@
 			                    <div class="eidas_input_company">
 			                        <label class="control-label required" for="id_technical_contact_person_company">Company</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_company" name="eidas[technical_contact_person_company]" type="text" value="<%= eidas_credentials.technical_contact_person_company %>">
+			                            <input class="form-control" id="id_technical_contact_person_company" name="eidas_credentials[technical_contact_person_company]" type="text" value="<%= eidas_credentials.technical_contact_person_company %>">
 			                        </div>
 			                        <% if (errors.indexOf("technical_contact_person_company") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -140,7 +134,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_company">Name</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_company" name="eidas[organization_name]" type="text" value="<%= eidas_credentials.organization_name %>">
+			                            <input class="form-control" id="id_company" name="eidas_credentials[organization_name]" type="text" value="<%= eidas_credentials.organization_name %>">
 			                        </div>
 			                        <% if (errors.indexOf("organization_name") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -151,7 +145,7 @@
 			                    <div class="eidas_input">
 			                        <label class="control-label required" for="id_company">Url</label>
 			                        <div class="">
-			                            <input class="form-control" id="id_company" name="eidas[organization_url]" type="text" value="<%= eidas_credentials.organization_url %>">
+			                            <input class="form-control" id="id_company" name="eidas_credentials[organization_url]" type="text" value="<%= eidas_credentials.organization_url %>">
 			                        </div>
 			                        <% if (errors.indexOf("organization_url") != -1) { %>
 			                            <span class="help-block alert alert-danger ">Input required.</span>
@@ -161,7 +155,7 @@
 			                    <div class="eidas_input_company">
 			                         <label class="control-label required" for="id_company">NIF</label>
 			                         <div class="">
-			                             <input class="form-control" id="id_company" name="eidas[organization_nif]" type="text" value="<%= eidas_credentials.organization_nif %>">
+			                             <input class="form-control" id="id_company" name="eidas_credentials[organization_nif]" type="text" value="<%= eidas_credentials.organization_nif %>">
 			                         </div>
 			                         <% if (errors.indexOf("organization_nif") != -1) { %>
 			                             <span class="help-block alert alert-danger ">Input required.</span>
@@ -174,9 +168,14 @@
 			                    <div class="eidas_input_company">
 			                         <div class="">
 			                             <div class="select-multiple form-group">
-			                                <select id="sp_type" name="eidas[sp_type]" class="selectpicker" data-size="2" data-width="100%" data-dropup-auto="false">
-			                                    <option value="caca">public</option>
-			                                    <option selected value="private">private</option>
+			                                <select id="sp_type" name="eidas_credentials[sp_type]" class="selectpicker" data-size="2" data-width="100%" data-dropup-auto="false">
+			                                	<% if (eidas_credentials.sp_type === 'public') { %>
+			                                		<option selected value="public">public</option>
+			                                    	<option value="private">private</option>
+			                                	<% } else { %>
+			                                		<option value="public">public</option>
+			                                    	<option selected value="private">private</option>
+			                                	<% } %>
 			                                </select>
 			                            </div>
 			                         </div>
@@ -216,28 +215,44 @@
 		                        <div class="collapse_out">
 			                        <div id="collapse_natural_person" class="form-group no-transition collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
 			                        	<div class="attribute" style="display: flex;">
-			                                <label><input type="checkbox" name="natural[PersonIdentifier]" value="PersonIdentifier">Person Identifier</label>
+			                                <label><input disabled checked type="checkbox" name="NaturalPerson[PersonIdentifier]" >Person Identifier</label>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="natural[FamilyName]" value="FamilyName">Family Name</label>
+			                                <label><input disabled checked type="checkbox" name="NaturalPerson[FamilyName]" >Family Name</label>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="natural[FirstName]" value="FirstName">First Name</label>
+			                                <label><input disabled checked type="checkbox" name="NaturalPerson[FirstName]" >First Name</label>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="natural[DateOfBirth]" value="DateOfBirth">Date of Birth</label>
+			                                <label><input disabled checked type="checkbox" name="NaturalPerson[DateOfBirth]" >Date of Birth</label>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="natural[BirthName]" value="BirthName">Birth Name</label>
+			                            	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('BirthName')) { %>
+			                                	<label><input checked type="checkbox" name="NaturalPerson[BirthName]" >Birth Name</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="NaturalPerson[BirthName]" >Birth Name</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="natural[PlaceOfBirth]" value="PlaceOfBirth">Place Of Birth</label>
+			                            	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('PlaceOfBirth')) { %>
+			                                	<label><input checked type="checkbox" name="NaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="NaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="natural[CurrentAddress]" value="CurrentAddress">Current Address</label>
+			                            	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('CurrentAddress')) { %>
+			                                	<label><input checked type="checkbox" name="NaturalPerson[CurrentAddress]" >Current Address</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="NaturalPerson[CurrentAddress]" >Current Address</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="natural[Gender]" value="Gender">Gender</label>
+			                            	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('Gender')) { %>
+			                                	<label><input checked type="checkbox" name="NaturalPerson[Gender]" >Gender</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="NaturalPerson[Gender]" >Gender</label>
+			                                <% } %>
 			                            </div>
 			                        </div>
 			                    </div>
@@ -252,34 +267,74 @@
 		                        <div class="collapse_out">
 			                        <div id="collapse_legal_person" class="form-group no-transition collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
 			                        	<div class="attribute">
-			                                <label><input type="checkbox" name="legal[LegalPersonIdentifier]" value="LegalPersonIdentifier"> Legal Person Identifier</label>
+			                        		<% if (eidas_credentials.attributes_list.LegalPerson.includes('LegalPersonIdentifier')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[LegalPersonIdentifier]" > Legal Person Identifier</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[LegalPersonIdentifier]" > Legal Person Identifier</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[LegalName]" value="LegalName">Legal Name</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('LegalName')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[LegalName]" >Legal Name</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[LegalName]" >Legal Name</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[LegalPersonAddress]" value="LegalPersonAddress">Legal Person Address</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('LegalPersonAddress')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[LegalPersonAddress]" >Legal Person Address</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[LegalPersonAddress]" >Legal Person Address</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[VATRegistrationNumber]" value="VATRegistrationNumber">VAT Registration Number</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('VATRegistrationNumber')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[VATRegistrationNumber]" >VAT Registration Number</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[VATRegistrationNumber]" >VAT Registration Number</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[TaxReference]" value="TaxReference">Tax Reference</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('TaxReference')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[TaxReference]" >Tax Reference</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[TaxReference]" >Tax Reference</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[D-2012-17-EUIdentifier]" value="D-2012-17-EUIdentifier">D-2012-17-EUIdentifier</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('D201217EUIdentifier')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[LEI]" value="LEI">LEI</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('LEI')) { %>
+			                                	<label><input type="checkbox" name="LegalPerson[LEI]" >LEI</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[LEI]" >LEI</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[EORI]" value="EORI">EORI</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('EORI')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[EORI]" >EORI</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[EORI]" >EORI</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[SEED]" value="SEED">SEED</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('SEED')) { %>
+			                                	<label><input checked type="checkbox" name="LegalPerson[SEED]" >SEED</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[SEED]" >SEED</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="legal[SIC]" value="SIC">SIC</label>
+			                            	<% if (eidas_credentials.attributes_list.LegalPerson.includes('SIC')) { %>
+			                                	<label><input type="checkbox" name="LegalPerson[SIC]" >SIC</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="LegalPerson[SIC]" >SIC</label>
+			                                <% } %>
 			                            </div>
 			                        </div>
 			                    </div>
@@ -295,58 +350,130 @@
 		                        <div class="collapse_out">
 			                        <div id="collapse_representative" class="form-group no-transition collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
 			                        	<div class="attribute">
-			                                <label><input type="checkbox" name="representative[PersonIdentifier]" value="PersonIdentifier">Person Identifier</label>
+			                        		<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('PersonIdentifier')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[PersonIdentifier]" >Person Identifier</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[PersonIdentifier]" >Person Identifier</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[FamilyName]" value="FamilyName">Family Name</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('FamilyName')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[FamilyName]" >Family Name</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[FamilyName]" >Family Name</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[FirstName]" value="FirstName">First Name</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('FirstName')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[FirstName]" >First Name</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[FirstName]" >First Name</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[DateOfBirth]" value="DateOfBirth">Date of Birth</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('DateOfBirth')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[DateOfBirth]" >Date of Birth</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[DateOfBirth]" >Date of Birth</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[BirthName]" value="BirthName">Birth Name</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('BirthName')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[BirthName]" >Birth Name</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[BirthName]" >Birth Name</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[PlaceOfBirth]" value="PlaceOfBirth">Place Of Birth</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('PlaceOfBirth')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[CurrentAddress]" value="CurrentAddress">Current Address</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('CurrentAddress')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[CurrentAddress]" >Current Address</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[CurrentAddress]" >Current Address</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[Gender]" value="Gender">Gender</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('Gender')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[Gender]" >Gender</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[Gender]" >Gender</label>
+			                                <% } %>
 			                            </div>
 			                        	<div class="attribute">
-			                                <label><input type="checkbox" name="representative[LegalPersonIdentifier]" value="LegalPersonIdentifier"> Legal Person Identifier</label>
+			                        		<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LegalPersonIdentifier')) { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonIdentifier]" > Legal Person Identifier</label checked>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonIdentifier]" > Legal Person Identifier</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[LegalName]" value="LegalName">Legal Name</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LegalName')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LegalName]" >Legal Name</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalName]" >Legal Name</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[LegalPersonAddress]" value="LegalPersonAddress">Legal Person Address</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LegalPersonAddress')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LegalPersonAddress]" >Legal Person Address</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonAddress]" >Legal Person Address</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[VATRegistrationNumber]" value="VATRegistrationNumber">VAT Registration Number</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('VATRegistrationNumber')) { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[VATRegistrationNumber]" >VAT Registration Number</label checked>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[VATRegistrationNumber]" >VAT Registration Number</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[TaxReference]" value="TaxReference">Tax Reference</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('TaxReference')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[TaxReference]" >Tax Reference</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[TaxReference]" >Tax Reference</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[D-2012-17-EUIdentifier]" value="D-2012-17-EUIdentifier">D-2012-17-EUIdentifier</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('D201217EUIdentifier')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[LEI]" value="LEI">LEI</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LEI')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LEI]" >LEI</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[LEI]" >LEI</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[EORI]" value="EORI">EORI</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('EORI')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[EORI]" >EORI</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[EORI]" >EORI</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[SEED]" value="SEED">SEED</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('SEED')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[SEED]" >SEED</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[SEED]" >SEED</label>
+			                                <% } %>
 			                            </div>
 			                            <div class="attribute">
-			                                <label><input type="checkbox" name="representative[SIC]" value="SIC">SIC</label>
+			                            	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('SIC')) { %>
+			                                	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[SIC]" >SIC</label>
+			                                <% } else { %>
+			                                	<label><input type="checkbox" name="RepresentativeNaturalPerson[SIC]" >SIC</label>
+			                                <% } %>
 			                            </div>
 			                        </div>
 		                        </div>

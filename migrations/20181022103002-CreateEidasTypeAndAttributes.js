@@ -16,10 +16,10 @@ module.exports = {
       queryInterface.addColumn('eidas_credentials', 'attributes_list', {
         type: Sequelize.TEXT(),
         get: function () {
-            return (this.getDataValue('attributes_list')) ? this.getDataValue('attributes_list').split(',') : []
+          return (this.getDataValue('attributes_list')) ? JSON.parse(this.getDataValue('attributes_list')) : {}
         },
         set: function (val) {
-           this.setDataValue('attributes_list',val.join(','))
+          this.setDataValue('attributes_list', JSON.stringify(val))
         } 
       })
     ])

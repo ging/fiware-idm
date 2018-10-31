@@ -28,6 +28,7 @@ check the FIWARE Catalogue entry for
     -   [Docker](#docker)
 -   [Usage](#usage)
 -   [API](#api)
+-   [Tests](#tests)
 -   [Advanced Documentation](#advanced-documentation)
 -   [Changes Introduced in 7.x](#changes-introduced-in-7x)
 -   [Quality Assurance](#quality-assurance)
@@ -162,6 +163,14 @@ add identity management (authentication and authorization) to their applications
 based on FIWARE identity. This is posible thanks to
 [OAuth2](https://oauth.net/2/) protocol. For more information check the
 [OAuth2 API](http://fiware-idm.readthedocs.org/en/latest/api/#def-apiOAuth).
+
+## Tests
+
+For performing a basic end-to-end test, you have to follow the next steps. A detailed description about how to run tests can be found [here](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
+
+1. Verify that the host address of IdM can be reached. By default, web access will show a Login Page.
+2. Acquire a valid username and password and access with those credentials. The resulting web page is the landing page of the IdM KeyRock Portal.
+3. Verify that you can view the list of applications, organizations, etc.
 
 ## Advanced Documentation
 

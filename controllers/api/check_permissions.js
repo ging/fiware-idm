@@ -5,7 +5,7 @@ var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 var debug = require('debug')('idm:api-check_permissions_controller')
 
-var application_policy = require('../../policies/applications.json');
+var application_policy = require('../../etc/policies/api/applications.json');
 
 exports.check_request = function(req, res, next) {
 

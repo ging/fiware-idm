@@ -1,0 +1,6 @@
+{
+	"paths": [
+		"/saml2/metadata",
+		"/saml2/login"
+	]
+}

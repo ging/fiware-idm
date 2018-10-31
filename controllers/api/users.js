@@ -10,7 +10,7 @@ var external_auth = config.external_auth;
 
 
 var email_list =  config.email_list_type ? 
-    fs.readFileSync(path.join(__dirname,"../../email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
+    fs.readFileSync(path.join(__dirname,"../../etc/email_list/"+config.email_list_type+".txt")).toString('utf-8').split("\n") : 
     []
 
 // MW to see if user is registered

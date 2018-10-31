@@ -45,6 +45,23 @@ module.exports = function(sequelize, DataTypes) {
     }, organization_nif: {
        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
        validate: { notEmpty: {msg: "organization_nif"}}
+    }, sp_type: {
+       type: DataTypes.STRING(255),
+       validate: { 
+          isIn: {
+            args: [['public', 'private']], 
+            msg: "sp_type"
+          } 
+       },
+       defaultValue: 'private'
+    }, attributes_list: {
+      type: DataTypes.TEXT(),
+      get: function () {
+          return (this.getDataValue('attributes_list')) ? JSON.parse(this.getDataValue('attributes_list')) : {}
+      },
+      set: function (val) {
+         this.setDataValue('attributes_list', JSON.stringify(val))
+      }
     }
   }, {
       tableName: 'eidas_credentials',

@@ -8,8 +8,8 @@ var csrfProtection = csrf({ cookie: true })
 var web_user_controller = require('../../controllers/web/index').users;
 
 // Routes for users creation
-router.get('/sign_up', 	            csrfProtection,     web_user_controller.new);
-router.post('/sign_up',             csrfProtection,     web_user_controller.create);
+router.get('/sign_up', 	            csrfProtection,   web_user_controller.new);
+router.post('/sign_up',             csrfProtection,   web_user_controller.create);
 router.get('/activate',             csrfProtection,   web_user_controller.activate);
 router.get('/password/request',     csrfProtection,   web_user_controller.password_request);
 router.post('/password/request',    csrfProtection,   web_user_controller.password_send_email);

@@ -11471,6 +11471,39 @@ ul.disabled-list li.active:hover {
   margin-top: 25px;
   padding-top: 15px; }
 
+#eidas_credentials .eidas {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; }
+
+#eidas_credentials .eidas_input {
+  width: 48%;
+  justify-content: space-between;
+  margin-bottom: 8px; }
+
+#eidas_credentials .eidas_input_company {
+  flex: 0 0 100%;
+  margin-bottom: 8px; }
+
+#eidas_credentials .control-label {
+  border-bottom: 1px solid #B6B6B6;
+  margin-bottom: 8px; }
+
+#eidas_credentials .dropdown-menu {
+  position: relative; }
+
+#eidas_attributes .attribute label {
+  min-height: 18px;
+  vertical-align: text-top;
+  margin-bottom: 0;
+  font-weight: normal;
+  cursor: pointer;
+  width: 100%; }
+
+#eidas_attributes .attribute input {
+  vertical-align: middle;
+  margin-top: -2px; }
+
 #create_permission_form .panel-group {
   margin-top: -7px;
   margin-bottom: -13px; }
@@ -12267,6 +12300,19 @@ div#update_owners_members {
 #detailApplication header .name,
 #detailUser header .name {
   color: #5B5B5F; }
+
+#eidas_attributes .panel-title > a:hover i {
+  transition: all 0.5s; }
+
+#eidas_attributes .form-group {
+  margin: 0; }
+
+#eidas_attributes .collapse .content_pep {
+  overflow: hidden;
+  clear: both; }
+
+#eidas_attributes .collapse .content_pep_activenew {
+  background-color: aliceblue; }
 
 #detailOrganization header,
 #detailApplication header,

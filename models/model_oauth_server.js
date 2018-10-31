@@ -30,7 +30,7 @@ function getAccessToken(bearerToken) {
       include: [
         {
           model: user,
-          attributes: ['id', 'username', 'email', 'gravatar'],
+          attributes: ['id', 'username', 'email', 'gravatar', 'extra' , 'eidas_id'],
         },
         {
           model: iot,
@@ -375,7 +375,7 @@ function getRefreshToken(refreshToken) {
       include: [
         {
           model: user,
-          attributes: ['id', 'username', 'email', 'gravatar'],
+          attributes: ['id', 'username', 'email', 'gravatar', 'extra' , 'eidas_id'],
         },
         {
           model: iot,

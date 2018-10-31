@@ -104,7 +104,7 @@ function getIdentity(id, password) {
 
   var search_user = user.findOne({
     where: {email: id},
-    attributes: ['id', 'username', 'gravatar', 'email', 'salt', 'password', 'scope'],
+    attributes: ['id', 'username', 'gravatar', 'email', 'salt', 'password', 'scope', 'eidas_id', 'extra'],
   })
 
   var search_iot = iot.findOne({
@@ -424,11 +424,15 @@ function create_oauth_response(identity, application_id, action, resource, authz
 
       var user_info = require('../templates/oauth_response/oauth_user_response.json');
 
-      user_info.username = identity.username
-      user_info.app_id = application_id
-      user_info.isGravatarEnabled = identity.gravatar
-      user_info.email = identity.email
-      user_info.id = identity.id
+      user_info.username = identity.username;
+      user_info.app_id = application_id;
+      user_info.isGravatarEnabled = identity.gravatar;
+      user_info.email = identity.email;
+      user_info.id = identity.id;
+
+      if (identity.eidas_id) {
+        user_info.eidas_profile = identity.extra.eidas_profile;
+      }
 
       return search_user_info(user_info, action, resource, authzforce, req_app)
   } else if (type === 'iot') {

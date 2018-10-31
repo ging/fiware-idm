@@ -380,6 +380,7 @@ exports.search_eidas_credentials = function(req, res, next) {
 				private_key: fs.readFileSync("certs/applications/"+req.application.id+"-key.pem").toString(),
 				certificate: fs.readFileSync("certs/applications/"+req.application.id+"-cert.pem").toString(),
 				assert_endpoint: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
+				audience: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 				sign_get_request: true,
 				nameid_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
 				provider_name: credentials.organization_nif,

@@ -31,6 +31,7 @@ config.password_encryption = {
 config.oauth2 = {
     authorization_code_lifetime: 5 * 60,            // Five minutes
     access_token_lifetime: 60 * 60,                 // One hour
+    ask_authorization: true,                        // Prompt a message to users to allow the application to read their details
     refresh_token_lifetime: 60 * 60 * 24 * 14       // Two weeks
 }
 

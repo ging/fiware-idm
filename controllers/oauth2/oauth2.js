@@ -240,7 +240,7 @@ function oauth_authorize(req, res) {
 
     req.body.user = req.user
     req.body.user.dataValues.type = 'user'
-    debug(req.body.user)
+
     var request = new Request(req);
     var response = new Response(res);
 
@@ -291,6 +291,32 @@ exports.authenticate_token = function(req, res, next) {
     }
 }
 
+// POST /oauth2/revoke -- Function to revoke a token
+exports.revoke_token = function(req, res, next) {
+
+    debug(' --> revoke_token')
+
+    var options = { }
+
+    var request = new Request({
+        headers: {authorization: req.headers.authorization},
+        method: req.method,
+        query: req.query,
+        body: req.body
+    });
+    var response = new Response(res);
+
+    return oauth.revoke(request, response, options).then(function (revoked) {
+        debug(revoked)
+    }).then(function(response){
+        return res.status(200).json(response)
+    }).catch(function (err) {
+        debug('Error ' + err)
+        // Request is not authorized.
+        return res.status(err.code || 500).json(err.message || err)
+    });
+}
+
 function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
 
     debug(' --> authenticate_bearer')
@@ -305,7 +331,6 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
         query: req.query,
         body: req.body
     });
-
     var response = new Response(res);
 
     oauth.authenticate(request, response, options).then(function (token_info) {

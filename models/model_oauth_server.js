@@ -122,16 +122,16 @@ function getIdentity(id, password) {
     }
 
     if (user) {
-      if (user.verifyPassword(user.salt, password)) {
-          user.dataValues["type"] = "user"
-          return user
+      if (user.verifyPassword(password)) {
+        user.dataValues["type"] = "user"
+        return user
       } 
     }
 
     if (iot) {
       if (iot.verifyPassword(iot.salt, password)) {
-          iot.dataValues["type"] = "iot"
-          return iot
+        iot.dataValues["type"] = "iot"
+        return iot
       } 
     }
 
@@ -153,7 +153,7 @@ function getUser(email, password) {
     })
     .then(function (user) {
       if (user) {
-        if (user.verifyPassword(user.salt, password)) {
+        if (user.verifyPassword(password)) {
           return user.toJSON()
         } 
       }
@@ -223,7 +223,13 @@ function generateJwtToken(token, client, identity) {
     if (identity) {
       response['type'] = identity.type || identity.dataValues.type
     }
-    token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, { expiresIn: config_oauth2.access_token_lifetime });
+    var options = {
+      expiresIn: token.accessTokenExpiresAt
+    }
+    if (token.scope === "permanent") {
+      delete options.expiresIn 
+    }
+    token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, options);
     return storeToken(token, client, identity, true)
   }).catch(function(error) {
     debug("-------generateJwtToken-------", error)
@@ -250,19 +256,19 @@ function storeToken(token, client, identity, jwt) {
   return Promise.all([
       !jwt ? oauth_access_token.create({
         access_token: token.accessToken,
-        expires: token.accessTokenExpiresAt,
+        expires: (token.scope === 'permanent') ? null : token.accessTokenExpiresAt,
         oauth_client_id: client.id,
         user_id: user_id,
         iot_id: iot_id,
-        scope: token.scope
+        scope: (token.scope === 'all') ? null : token.scope
       }) : [],
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
-        expires: token.refreshTokenExpiresAt,
+        expires: (token.scope === 'permanent') ? null : token.refreshTokenExpiresAt,
         oauth_client_id: client.id,
         user_id: user_id,
         iot_id: iot_id,
-        scope: token.scope
+        scope: (token.scope === 'all') ? null : token.scope
       }) : [],
       (user_id) ? user_authorized_application.findOrCreate({ // User has enable application to read their information
         where: { user_id: user_id, oauth_client_id: client.id },
@@ -277,6 +283,11 @@ function storeToken(token, client, identity, jwt) {
       if (user_id || iot_id) {
         token[identity.dataValues.type] = identity.dataValues.type
       }
+
+      if (token.scope === 'all') {
+        delete token.scope
+      }
+
       return _.assign(  // expected to return client and user, but not returning
         {
           client: client,
@@ -665,6 +676,34 @@ function app_authzforce_domain(app_id) {
     })
 }
 
+function validateScope(user, client, scope) {
+
+  debug("-------validateScope-------")
+
+  if (client.scope) {
+    if (scope) {
+      return (client.scope.includes(scope)) ? scope : false
+    }
+  } else {
+    if (scope) {
+      return false
+    }
+  }
+  return 'all'
+}
+
+function verifyScope(token, scope) {
+
+  debug("-------verifyScope-------")
+
+  return token.scope === scope
+
+}
+
+function revokeToken(token, type) {
+  debug("-------revokeToken-------")
+}
+
 module.exports = {
   getAccessToken: getAccessToken,
   getAuthorizationCode: getAuthorizationCode,
@@ -677,6 +716,9 @@ module.exports = {
   revokeToken: revokeToken,
   saveToken: saveToken,
   saveAuthorizationCode: saveAuthorizationCode,
+  validateScope: validateScope,
+  verifyScope: verifyScope,
+  revokeToken: revokeToken,
   create_oauth_response: create_oauth_response,
   user_roles: user_roles,
   user_permissions: user_permissions,

@@ -5,6 +5,7 @@ var user_permissions = require('../../models/model_oauth_server.js').user_permis
 var trusted_applications = require('../../models/model_oauth_server.js').trusted_applications;
 var config_authzforce = require('../../config.js').authorization.authzforce
 var config_eidas = require('../../config.js').eidas
+var config_oauth2 = require('../../config.js').oauth2
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var jsonwebtoken = require('jsonwebtoken');
@@ -163,28 +164,33 @@ function check_user_authorized_application(req, res) {
 
     debug(' --> check_user_authorized_application')
 
-    search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
+    if (config_oauth2.ask_authorization) {
+        search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
+            if (user) {
+                req.user = user
+                oauth_authorize(req, res)
+            } else {
+                if (req.application.redirect_uri !== req.query.redirect_uri) {
+                    res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
+                }
 
-        if (user) {
-            req.user = user
-            oauth_authorize(req, res)
-        } else {
-            if (req.application.redirect_uri !== req.query.redirect_uri) {
-                res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
+                res.render('oauth/authorize', {application: {
+                    name: req.application.name,
+                    response_type: req.query.response_type,
+                    id: req.query.client_id,
+                    redirect_uri: req.query.redirect_uri,
+                    state: req.query.state }
+                });
             }
-
-            res.render('oauth/authorize', {application: {
-                name: req.application.name,
-                response_type: req.query.response_type,
-                id: req.query.client_id,
-                redirect_uri: req.query.redirect_uri,
-                state: req.query.state }
-            });
-        }
-    }).catch(function(error) {
-        req.session.errors = error
-        res.redirect('/')
-    })
+        }).catch(function(error) {
+            debug("Error: ", error)
+            req.session.errors = error
+            res.redirect('/')
+        })
+    } else {
+        req.user = req.session.user
+        oauth_authorize(req, res)
+    }
 }
 
 // Search user that has authorized the application
@@ -230,7 +236,15 @@ exports.enable_app = function(req, res, next){
 
     debug(' --> enable_app')
 
-    oauth_authorize(req, res)
+    return models.user_authorized_application.create({   
+        user_id: req.user.id, 
+        oauth_client_id: req.application.id
+    }).then(function() {
+        oauth_authorize(req, res)
+    }).catch(function(error) {
+       debug("Error: ", error)
+       res.status(err.code || 500).json(err)
+    })
 }
 
 // Generate code or token
@@ -239,7 +253,8 @@ function oauth_authorize(req, res) {
     debug(' --> oauth_authorize')
 
     req.body.user = req.user
-    req.body.user.dataValues.type = 'user'
+    req.body.user["dataValues"] = {}
+    req.body.user.dataValues["type"] = 'user'
 
     var request = new Request(req);
     var response = new Response(res);
@@ -247,6 +262,7 @@ function oauth_authorize(req, res) {
     oauth.authorize(request, response).then(function(success) {
         res.redirect(success)
     }).catch(function(err){
+        debug("Error: ", err)
         res.status(err.code || 500).json(err)
     })
 }

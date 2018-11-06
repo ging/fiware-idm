@@ -1,0 +1,83 @@
+<div class="panel panel-default">
+    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-0" class="panel-heading collapsed">
+        <h4 class="panel-title panel-close">
+            <i class="fa fa-info-circle" aria-hidden="true"></i> About FIWARE Accounts
+        </h4>
+    </a>
+    <div id="collapse-0" class="panel-collapse collapse">
+        <div class="panel-body">
+            <p>FIWARE Accounts. 2015 © <a href="http://www.fiware.org/" target="_blank">FIWARE</a>.</p>
+            <p>The use of FIWARE Lab services is subject to the acceptance of the <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_LAB_Terms_and_Conditions" target="_blank">Terms and Conditions</a>, <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_Privacy_Policy" target="_blank">Privacy Policy</a> and <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Cookies_Policy_FIWARE" target="_blank">Cookies Policy</a>.</p>
+            <p>Visit <a href="http://help.lab.fiware.org/" target="_blank">FIWARE Lab Help &amp; Info</a> if you want to learn more about FIWARE Lab services.</p>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-1" class="panel-heading collapsed">
+        <h4 class="panel-title panel-close">
+            <i class="fa fa-book" aria-hidden="true"></i> Documentation
+        </h4>
+    </a>
+    <div id="collapse-1" class="panel-collapse collapse">
+        <div class="panel-body">
+            <p>If you want to learn more about this Identity Manager and how to use it, take a look at the links below:</p>
+            <ul>
+                <li><a href="http://catalogue.fiware.org/enablers/identity-management-keyrock" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i> The Identity Manager in FIWARE Catalogue</a>
+                </li>
+                <li><a href="http://fiware-idm.readthedocs.io/en/latest/" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i> Complete documentation for installing, administrating and using the Identity Manager in ReadTheDocs</a>
+                </li>
+                <li><a href="http://github.com/ging/fiware-idm" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i> Source code of the project in GitHub</a>
+                </li>
+                <li><a href="https://edu.fiware.org/course/view.php?id=79" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i> The Identity Manager in FIWARE Academy</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-2" class="panel-heading collapsed">
+        <h4 class="panel-title panel-close">
+            <i class="fa fa-graduation-cap" aria-hidden="true"></i> Learning Tours
+        </h4>
+    </a>
+    <div id="collapse-2" class="panel-collapse collapse">
+        <div class="panel-body">
+            <p>Missed one of the tours? Want to take them again? This is the complete list of tours that will guide you from the basics of this Identity Manager to some of the most advanced features.</p>
+            <ul>
+                <li><a href="#" class="launch-tour" data-next-tour="initTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                Basics Tour: get to know the Welcome page.</a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="profileTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                Profile Tour: edit your personal data and set up an avatar.</a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="appsTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                Applications Tour: create your first application.</a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="rolesTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                Roles &amp; Permissions Tour: learn more about roles and permissions inside apps, and how to authorize other users and organizations in them.</a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="orgsTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                Organizations Tour: create your first organization and take a look at its home page.</a></li>
+            </ul>
+            <!-- <script type="text/javascript">
+                $( document ).ready(function() {
+                    $("body").on("click", ".launch-tour", function() {
+                        var tour = $(this).attr('data-next-tour');
+                        $.each(tours, function(i, tour) {
+                            if (tour._getState('current_step')!== null && !tour.ended()) {
+                                tour.end();
+                            }
+                        });
+                        if (tour !== undefined) {
+                            tours[tour].init();
+                            if (tours[tour]._getState('current_step')!== null)
+                                tours[tour].restart();
+                            else
+                                tours[tour].start(true);
+                        }
+                    });
+                });
+            </script> -->
+        </div>
+    </div>
+</div>

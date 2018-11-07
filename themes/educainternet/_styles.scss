@@ -82,23 +82,42 @@ html, body {
 
 	
 	.cred {
-		width: 53%;
+		width: 100%;
 		color: white;
 		align-self: flex-end;
 		text-align: left;
+		display: flex;
 		margin: 0 0 2rem 0;
 		font-size: 1.4rem;
 
+		.cred_img {
+			width: 4.1rem;
+			height: 4.1rem;
+			-webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+			-moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+			box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+
+			img {
+				height: 100%;
+				object-fit: cover;
+				align-content: center;
+			}
+		}
+
+		.cred_content {
+			margin: 0 0 0 1rem;
+			a {
+				color: white;
+				font-weight: 600;
+			}
 	
-		a {
-			color: white;
-			font-weight: 600;
+			a:hover {
+				color: $text;
+	
+			}
 		}
 
-		a:hover {
-			color: $text;
-
-		}
+		
 	}
 }
 
@@ -109,9 +128,6 @@ html, body {
 	.container-fluid.info {
 		width: 55%;
 
-		.cred {
-			width: 70%;
-		}
 	}
 }
 
@@ -122,18 +138,18 @@ html, body {
 	.container-fluid.info {
 		width: 45%;
 
-		.cred {
-			display: none;
-		}
 	
 	}
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
 	.container-fluid.info {
-		width: 35%;
+		width: 50%;
 		
+		.cred {
+			visibility: hidden;
+		}
 	}
 }
 
@@ -149,8 +165,13 @@ html, body {
 			top: 1rem;
 			left: 1rem;
 		}
-	}
 
+		.cred {
+			visibility: hidden;
+			
+		}
+
+	}
 
 }
 
@@ -203,4 +224,83 @@ html, body {
     
     }
    
+}
+
+
+@media (min-height: 1020px) {
+
+	@media (min-width: 765px) {
+		
+		.container-fluid.info {
+			width: 60%;
+
+			.cred {
+				visibility: visible;
+				position: absolute;
+				color: black !important;
+				top: 93%;
+				margin: 0;
+				width: 70%;
+
+				a {
+					color: black !important;
+				}
+			}
+		}
+	}
+	
+}
+
+
+/*------ iPAD Pro landscape------*/
+
+@media (min-height: 1020px) {
+
+	@media (min-width: 1360px) {
+		
+		.container-fluid.info {
+			width: 70%;
+
+			.cred {
+				visibility: visible;
+				position: absolute;
+				color: white !important;
+				top: 93%;
+				margin: 0;
+				width: 70%;
+
+				a {
+					color: white !important;
+				}
+			}
+		}
+	}
+	
+}
+
+
+/*------ iPAD Pro landscape------*/
+
+@media (min-height: 1360px) {
+
+	@media (min-width: 1020px) {
+		
+		.container-fluid.info {
+			width: 70%;
+
+			.cred {
+				visibility: visible;
+				position: absolute;
+				color: white !important;
+				top: 93%;
+				margin: 0;
+				width: 70%;
+
+				a {
+					color: white !important;
+				}
+			}
+		}
+	}
+	
 }

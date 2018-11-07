@@ -167,9 +167,11 @@ function check_user_authorized_application(req, res) {
     if (config_oauth2.ask_authorization) {
         search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
             if (user) {
+		console.log("USER AUTHORIZED APP", user);
                 req.user = user
                 oauth_authorize(req, res)
             } else {
+		console.log("NOT AUTHORIZED: ", user);
                 if (req.application.redirect_uri !== req.query.redirect_uri) {
                     res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
                 }
@@ -188,6 +190,7 @@ function check_user_authorized_application(req, res) {
             res.redirect('/')
         })
     } else {
+	console.log("REQ USER: ", req.session.user);
         req.user = req.session.user
         oauth_authorize(req, res)
     }
@@ -253,7 +256,9 @@ function oauth_authorize(req, res) {
     debug(' --> oauth_authorize')
 
     req.body.user = req.user
-    req.body.user["dataValues"] = {}
+    if(req.body.user.dataValues === undefined) {
+      req.body.user["dataValues"] = {}
+    }
     req.body.user.dataValues["type"] = 'user'
 
     var request = new Request(req);

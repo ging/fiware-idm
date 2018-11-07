@@ -237,10 +237,13 @@ html, body {
 			.cred {
 				visibility: visible;
 				position: absolute;
+				bottom: 2em;
+				left: 50%;
+				transform: translateX(-50%);
 				color: black !important;
 				top: 93%;
 				margin: 0;
-				width: 70%;
+				width: max-content;
 
 				a {
 					color: black !important;

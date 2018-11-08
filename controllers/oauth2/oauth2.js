@@ -9,6 +9,7 @@ var config_oauth2 = require('../../config.js').oauth2
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var jsonwebtoken = require('jsonwebtoken');
+var url = require('url');
 var is_hex = require('is-hex');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
@@ -179,6 +180,7 @@ function check_user_authorized_application(req, res) {
                     response_type: req.query.response_type,
                     id: req.query.client_id,
                     redirect_uri: req.query.redirect_uri,
+                    url: '/enable_app?'+url.parse(req.url).query,
                     state: req.query.state }
                 });
             }
@@ -253,7 +255,9 @@ function oauth_authorize(req, res) {
     debug(' --> oauth_authorize')
 
     req.body.user = req.user
-    req.body.user["dataValues"] = {}
+    if(req.body.user.dataValues === undefined) {
+      req.body.user["dataValues"] = {}
+    }
     req.body.user.dataValues["type"] = 'user'
 
     var request = new Request(req);

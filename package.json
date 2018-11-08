@@ -45,6 +45,7 @@
     "sequelize-cli": "^4.0.0",
     "serve-favicon": "~2.4.2",
     "underscore": "^1.8.3",
+    "url": "^0.11.0",
     "xml-crypto": "^0.10.0",
     "xml-encryption": "^0.11.0",
     "xml2js": "^0.4.0",

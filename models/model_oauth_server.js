@@ -16,6 +16,7 @@ var oauth_client = models.oauth_client;
 var oauth_access_token = models.oauth_access_token;
 var oauth_authorization_code = models.oauth_authorization_code;
 var oauth_refresh_token = models.oauth_refresh_token;
+var user_authorized_application = models.user_authorized_application
 
 
 function getAccessToken(bearerToken) {
@@ -145,6 +146,7 @@ function getIdentity(id, password) {
 function getUser(email, password) {
 
   debug("-------getUser-------")
+
   return user
     .findOne({
       where: {email: email},
@@ -215,6 +217,7 @@ function saveToken(token, client, identity) {
 function generateJwtToken(token, client, identity) {
   
   debug("-------generateJwtToken-------")
+
   var user_info = require('../templates/oauth_response/oauth_user_response.json');
   var iot_info = require('../templates/oauth_response/oauth_iot_response.json');
 
@@ -262,6 +265,13 @@ function storeToken(token, client, identity, jwt) {
         user_id: user_id,
         iot_id: iot_id,
         scope: token.scope
+      }) : [],
+      (user_id && config_oauth2.ask_authorization) ? user_authorized_application.findOrCreate({ // User has enable application to read their information
+        where: { user_id: user_id, oauth_client_id: client.id },
+        defaults: {
+          user_id: user_id,
+          oauth_client_id: client.id
+        }
       }) : []
     ])
     .then(function (resultsArray) {

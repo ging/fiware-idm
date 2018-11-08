@@ -238,15 +238,7 @@ exports.enable_app = function(req, res, next){
 
     debug(' --> enable_app')
 
-    return models.user_authorized_application.create({   
-        user_id: req.user.id, 
-        oauth_client_id: req.application.id
-    }).then(function() {
-        oauth_authorize(req, res)
-    }).catch(function(error) {
-       debug("Error: ", error)
-       res.status(err.code || 500).json(err)
-    })
+    oauth_authorize(req, res)
 }
 
 // Generate code or token

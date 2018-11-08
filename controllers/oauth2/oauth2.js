@@ -9,6 +9,7 @@ var config_oauth2 = require('../../config.js').oauth2
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var jsonwebtoken = require('jsonwebtoken');
+var url = require('url');
 var is_hex = require('is-hex');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
@@ -167,11 +168,9 @@ function check_user_authorized_application(req, res) {
     if (config_oauth2.ask_authorization) {
         search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
             if (user) {
-		console.log("USER AUTHORIZED APP", user);
                 req.user = user
                 oauth_authorize(req, res)
             } else {
-		console.log("NOT AUTHORIZED: ", user);
                 if (req.application.redirect_uri !== req.query.redirect_uri) {
                     res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
                 }
@@ -181,6 +180,7 @@ function check_user_authorized_application(req, res) {
                     response_type: req.query.response_type,
                     id: req.query.client_id,
                     redirect_uri: req.query.redirect_uri,
+                    url: '/enable_app?'+url.parse(req.url).query,
                     state: req.query.state }
                 });
             }
@@ -190,7 +190,6 @@ function check_user_authorized_application(req, res) {
             res.redirect('/')
         })
     } else {
-	console.log("REQ USER: ", req.session.user);
         req.user = req.session.user
         oauth_authorize(req, res)
     }

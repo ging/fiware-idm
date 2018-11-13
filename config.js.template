@@ -96,7 +96,7 @@ config.site = {
     theme: (process.env.IDM_THEME || 'default')
 };
 
-// Config eIDAs Authentication
+// Config eIDAS Authentication
 config.eidas = {
     enabled:       (process.env.IDM_EIDAS_ENABLED || false),
     gateway_host:  (process.env.IDM_EIDAS_GATEWAY_HOST || 'localhost'),

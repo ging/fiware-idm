@@ -15,12 +15,6 @@
                         <span>manage roles</span>
                     </a>
                 <% } -%>
-                <% if (user_logged_permissions.includes('2') && eidas_enabled) { -%>   
-                    <a href="/idm/applications/<%= application.id %>/edit/eidas" class="small">
-                        <i class="fa fa-key"></i>
-                        <span>edit eidas credentials</span>
-                    </a>
-                <% } -%>
             </h4>
             <div class="logo">
                 <img alt="application logo" src="<%= application.image %>">
@@ -138,7 +132,7 @@
                                         <br>
                                         <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/reset_password" class="btn btn-default reset_password">Reset password</a>
                                         <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/delete" class="btn btn-danger delete_pep">
-                                            <i class="fa fa-trash"></i> Delete
+                                            <i class="far fa-trash-alt"></i> Delete
                                         </a>
                                     </div>
                                 </div>
@@ -173,7 +167,7 @@
                                             <br>
                                             <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/reset_password" class="btn btn-default  reset_password">Reset password</a>
                                             <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/delete" class="btn btn-danger delete_iot">
-                                                <i class="fa fa-trash"></i> Delete
+                                                <i class="far fa-trash-alt"></i> Delete
                                             </a>
                                         </div>
                                     </div>
@@ -186,7 +180,7 @@
                 </div>
             </div>
         <% } -%>
-
+        <% if (user_logged_permissions.includes('2')) { -%>
         <div class="panel panel-default datatable" id="trust_apps" data-pagination-url="/filters/applications" data-application_id="<%= application.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title">Trusted Applications</span>
@@ -216,7 +210,7 @@
                 <nav id="trust_apps_pagination_container"></nav>
             </div>
         </div>
-
+        <% } -%>
         <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-application_id="<%= application.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title">Authorized Users</span>
@@ -276,6 +270,43 @@
                 <nav id="auth_organizations_pagination_container"></nav>
             </div>
         </div>
+        <% if (user_logged_permissions.includes('2') && eidas_enabled && eidas_credentials) { -%>
+            <div class="panel panel-default info">
+                <div class="panel-heading">
+                    <span class="title"><i class="far fa-id-card"></i>eIDAS Authentication</span>
+                    <div class="table_actions clearfix">               
+                        <div class="btn-group">
+                            <a href="/idm/applications/<%= application.id %>/edit/eidas" class="small">
+                                <button title="Add" class="btn btn-default btn-sm">
+                                    <i class="fa fa-edit"></i> 
+                                    <span class="action">
+                                        Edit
+                                    </span>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="eidas_org_name">
+                        <h5>Organization name</h5>
+                        <p><%= eidas_credentials.organization_name %></p>
+                    </div>
+                    <div class="eidas_org_nif">
+                        <h5>Organization NIF</h5>
+                        <p><%= eidas_credentials.organization_nif %></p>
+                    </div>
+                    <div class="eidas_sp_type">
+                        <h5>Service Provider Type</h5>
+                        <p><%= eidas_credentials.sp_type %></p>
+                    </div>
+                    <div class="eidas_metadata_url">
+                        <h5>Metadata URL</h5>
+                        <p><a target="_blank" href="/idm/applications/<%= application.id %>/saml2/metadata">https://<%= gateway_host%>/idm/applications/<%= application.id %>/saml2/metadata</a></p>
+                    </div>
+                </div>
+            </div>
+        <% } -%>
 
     </div>
 </div>

@@ -17,7 +17,7 @@
                 <% } -%>
                 <% if (user_logged_permissions.includes('2') && eidas_enabled && eidas_credentials) { -%>   
                     <a href="/idm/applications/<%= application.id %>/edit/eidas" class="small">
-                        <i class="fa fa-key"></i>
+                        <i class="far fa-id-card"></i>
                         <span>manage eIDAS authentication</span>
                     </a>
                 <% } -%>

@@ -39,6 +39,11 @@
     float: left;
     padding-top: 6px;
     font-size: 12px;
+    &.title {
+      i {
+        padding-right: 7px;
+      }
+    }
   }
   .table_actions{
     .filter{

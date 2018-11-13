@@ -15,10 +15,10 @@
                         <span>manage roles</span>
                     </a>
                 <% } -%>
-                <% if (user_logged_permissions.includes('2') && eidas_enabled) { -%>   
+                <% if (user_logged_permissions.includes('2') && eidas_enabled && eidas_credentials) { -%>   
                     <a href="/idm/applications/<%= application.id %>/edit/eidas" class="small">
                         <i class="fa fa-key"></i>
-                        <span>edit eidas credentials</span>
+                        <span>manage eIDAS authentication</span>
                     </a>
                 <% } -%>
             </h4>

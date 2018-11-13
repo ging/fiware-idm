@@ -20,6 +20,7 @@ var web_role_controller = require('../../controllers/web/index').roles;
 var web_perm_controller = require('../../controllers/web/index').permissions;
 var web_peppx_controller = require('../../controllers/web/index').pep_proxies;
 var web_iota_controller = require('../../controllers/web/index').iot_agents;
+var saml2Controller = require('../../controllers/saml2/saml2');
 
 // Autoloads
 router.param('applicationId',   web_app_controller.load_application);
@@ -49,7 +50,11 @@ router.post('/',                                                             csr
 router.get('/:applicationId/authorized_users',                               csrfProtection,     web_app_controller.authorized_users);
 router.get('/:applicationId/authorized_organizations',                       csrfProtection,     web_app_controller.authorized_organizations);
 router.get('/:applicationId/trusted_applications',                           csrfProtection,     web_trusted_apps_controller.get_trusted_applications);
-router.get('/:applicationId', 		                                      	 web_check_perm_controller.owned_permissions,    csrfProtection,	web_app_controller.show);
+if (config.eidas) {
+    router.get('/:applicationId', 		                                     web_check_perm_controller.owned_permissions,    csrfProtection, saml2Controller.search_eidas_credentials,	web_app_controller.show);
+} else {
+    router.get('/:applicationId',                                            web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.show);
+}
 router.get('/:applicationId/step/avatar',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.step_new_avatar);
 router.post('/:applicationId/step/avatar',                                   web_check_perm_controller.owned_permissions,    multer({storage: imageAppUpload}).single('image'), csrfProtection,  web_app_controller.step_create_avatar);
 router.get('/:applicationId/step/roles',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.step_new_roles);
@@ -100,7 +105,6 @@ router.get('/:applicationId/token_type/reset',                              web_
 
 // Routes to handle SAML with eidas
 if (config.eidas) {
-    var saml2Controller = require('../../controllers/saml2/saml2');
 	router.get('/:applicationId/step/eidas',                                     web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_new_eidas_crendentials);
 	router.post('/:applicationId/step/eidas',                                    web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.step_create_eidas_crendentials);
     router.put('/:applicationId/edit/eidas/info',                                web_check_perm_controller.owned_permissions,    csrfProtection,    saml2Controller.search_eidas_credentials,   saml2Controller.update_eidas_info);

@@ -168,7 +168,8 @@ exports.show = function(req, res, next) {
 										  user_logged_permissions: req.user_owned_permissions,
 										  pep_proxy: pep_proxy,
 										  iot_sensors: iot_sensors,
-										  eidas_enabled: config.eidas.enabled,																  
+										  eidas_enabled: config.eidas.enabled,					
+										  eidas_credentials: req.eidas_credentials,									  
 										  errors: [], 
 										  csrfToken: req.csrfToken() });
 	}).catch(function(error) {

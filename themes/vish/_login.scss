@@ -1,45 +1,54 @@
 .login{
-    width: 40%;
+    width: 30%;
     border: none;
-    background-color: red;
-    margin: 0;
-    padding: 25rem 8rem 0 8rem;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    
-    
+    background-color: $form_background;
+    margin: .5% 0 0 0;
+    padding: 3% 6% 3% 6%;
+    font-family: "opensans-regular", Arial, sans-serif;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 8px rgba(34, 34, 34, 0.3);
+
     .modal-header{
         border: none;
         h3 {
             color: $text;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 2.8rem;
-
         }
-        
     }
 
     .form-control {
         height: 34px;
         padding: 6px;
-        box-shadow: none;
-        background-color: $form_background;
-        border-radius: .3rem;
+        box-shadow: 2px 2px 4px #C8DBE7 inset;
+        background-color: lighten(#C8DBE7, 13%);
+        border-radius: .5rem;
         border: 1px solid #A9A9A9;
-
     }
 
-    
     .modal-footer {
         border: none;
+        display: flex;
+        flex-flow: wrap column;
+        margin: 0;
+        padding: 0;
+
+        .checkbox {
+            align-self: flex-start;
+        }
 
         button {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            padding: 1rem 1.5rem 1rem 1.5rem;
+            border-radius: .7rem;
+            height: 4.5rem;
+            width: 10rem;
+            align-self: center;
         }
     
         .actions {
             display: flex;
             flex-wrap: wrap;
-            text-align: center;
             padding: 3rem 0 0 0;
 
             a {
@@ -61,201 +70,4 @@
         font-size: 1.3rem;
     }
     
-}
-    
-
-@media (max-width: 1280px) {
-
-    .login {
-        width: 45%; 
-        padding: 25rem 10rem 0 10rem;
-    }
-
-}
-
-
-@media (max-width: 990px) {
-
-    .login {
-        width: 55%;
-        padding: 22rem 8rem 0 8rem;
-    }
-
-}
-
-
-@media (max-width: 768px) {
-
-    .login {
-        width: 65%;
-        padding: 22rem 8rem 0 8rem;
-
-    }
-
-}
-
-
-@media (max-width: 650px) {
-    .login {
-        width: 100%;
-        padding: 20rem 6rem 0 6rem;
-
-        form {
-            width: 100%;
-            .modal-footer {
-                .actions {
-                    flex-wrap: wrap;
-
-                    a {
-                        margin: .7rem;
-                    }
-                }
-            }
-        }
-    }
-
-    
-    
-}
-
-
-@media (max-width: 400px) {
-
-    .login {
-        width: 100%;
-        padding:  9rem 4rem 0 4rem;
-    }
-
-}
-
-
-@media (max-height:450px) {
-
-    @media (max-width:900px) {
-        
-        .login {
-            width: 100%;
-            padding:  10rem 10rem 0 10rem;
-
-            .modal-header{
-                border: none;
-                h3 {
-                    color: $text;
-                    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                    font-size: 2.3rem;
-                    padding: .2rem 0 .3rem 0;
-                    line-height: 0;
-
-                }
-                
-            }
-
-            .alert-danger {
-                height: 25px;
-                padding: .6rem;
-        
-            }
-
-            .form-control {
-                height: 30px;
-                padding: 6px;
-
-            }
-
-            form {
-                display: flex;
-                flex-wrap: nowrap;
-                width: 100%;
-
-                .modal-body {
-                    width: 60%;
-                }
-                .modal-footer {
-                    width: 40%;
-                    border: none;
-                    padding: 2rem 0 0 1.5rem;
-                    display: flex;
-                    flex-wrap: wrap;
-                    flex-direction: column;
-                    align-content: center;
-                    
-                    .checkbox {
-                        align-self: center;
-                        order: 2;
-                        margin: 1rem 0 0 0;
-                    }
-                    button {
-                        align-self: center;
-                        order: 1;
-                        font-size: 1.5rem;
-                        width: 8rem;
-                    }
-                
-                    .actions {
-                        order: 3;
-                        display: flex;
-                        flex-wrap: wrap;
-                        padding: 1rem 0 0 0;
-
-                        a {
-                            width: 100%;
-                            font-size: 1.2rem;
-                            margin: 0;
-                            border: none;
-                        }
-                    }
-                }    
-            }
-       }
-    }
-}
-
-
-/*------ iPhoneX GalaxyS5 portrait------*/
-
-@media (max-width: 376px) {
-
-    .login {
-        width: 100%;
-        padding:  14rem 4rem 0 4rem;
-    }
-    
-}
-
-@media (max-height: 321px) {
-    .login {
-        padding: 0;
-    }
-}
-
-
-/*------ iPhone5/SE portrait------*/
-@media (max-width: 320px) {
-
-    @media (max-height: 568px) {
-        .login {
-            width: 100%;
-            padding:  7rem 2rem 0 2rem;
-        }
-    
-    }
-   
-}
-
-
-
-/*------ iPhone5/SE landscape------*/
-
-@media (max-height: 321px) {
-
-    @media (max-width: 570px) {
-       
-        .login {
-            width: 100%;
-            padding: 8rem 6rem 0 6rem;
-
-        }
-    
-    }
-   
 }

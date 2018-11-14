@@ -1,25 +1,82 @@
 /****************************** Custom styles rewrite */
 
 html, body {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	background-image: url(../img/background_educa.jpg);
+	font-family: "opensans-regular",Arial,sans-serif;
+	background-image: url(../img/vish_background.png);
 	background-size: cover;
-	background-color: darkgrey;
+	//background-repeat: no-repeat, repeat;
+	background-position: center;
+	background-size: auto 100%;
 	margin: 0 auto;
 
-	
 	.container-fluid.wrap {
 		padding: 0;
 		max-width: 100%;
-		
 	}
 
 }
 
-.container-fluid.info {
-	.row & {
-		height: 100vh;
+.row {
+	display: flex;
+	justify-content: center;
+	margin: 0;
+	width: 100%;
+	height: 100vh;
+
+	.container-fluid.info {
+		width: 100%;
+		display: flex;
+		flex-flow: nowrap column;
+		justify-content: center;
+		align-items: center;
+		margin: 4.5rem 0 0 0;
+		padding: 0;
+
+		.media {
+			height: auto;
+		}
+
+		.logo-header {
+			align-self: center;
+			width: 40%;
+			margin: 0 0 1rem 0;
+			
+			.brand {
+				width: 100%;
+				height: 8rem;
+				background-image: none;
+
+				img {
+					height: 100%;
+					width: 100%;
+					object-fit: contain;
+					-webkit-filter: drop-shadow(3px 2px 3px rgba(34, 34, 34, 0.384));
+					filter: drop-shadow(3px 2px 3px rgba(34, 34, 34, 0.384));
+				}
+			
+			}
+		}
+
+		
+		.cred {
+			width: 40%;
+			color: white;
+			text-align: center;
+			margin: 3rem 0 1rem 0;
+			font-size: 1.4rem;
+
+			a {
+				color: white;
+				font-weight: 600;
+
+				&:hover {
+					color: lighten($brand-primary, 15%);
+				}
+			}
+	
+		}
 	}
+
 }
 
 .alert-danger {
@@ -38,169 +95,4 @@ html, body {
 }
 
 
-.row {
-	display: flex;
-	flex-direction: row-reverse;
-	margin: 0;
-	width: 100%;
 
-}
-	
-
-.container-fluid.info {
-	width: 60%;
-	display: flex;
-	flex-flow: wrap row;
-	justify-content: space-between;
-	margin: 0 0 0 2rem;
-
-	.media {
-		height: auto;
-	}
-
-	.logo-header {
-		width: 100%;
-		padding: 1rem;
-
-		.brand {
-			width: 30%;
-			background-image: none;
-			width: 200px;
-			font-size: 2.5rem;
-			color: $brand-secundary;
-			display: flex;
-
-					
-			.logo_bold {
-				font-weight: bold;
-				color: $brand-primary;
-					
-			}	
-		
-		}
-	}
-
-	
-	.cred {
-		width: 53%;
-		color: white;
-		align-self: flex-end;
-		text-align: left;
-		margin: 0 0 2rem 0;
-		font-size: 1.4rem;
-
-	
-		a {
-			color: white;
-			font-weight: 600;
-		}
-
-		a:hover {
-			color: $text;
-
-		}
-	}
-}
-
-
-
-@media (max-width: 1280px) {
-
-	.container-fluid.info {
-		width: 55%;
-
-		.cred {
-			width: 70%;
-		}
-	}
-}
-
-
-
-@media (max-width: 990px) {
-	
-	.container-fluid.info {
-		width: 45%;
-
-		.cred {
-			display: none;
-		}
-	
-	}
-}
-
-
-@media (max-width: 768px) {
-	.container-fluid.info {
-		width: 35%;
-		
-	}
-}
-
-
-@media (max-width: 650px) {
-	
-	.container-fluid.info {
-		width: 0;
-		padding: 0;
-		margin: 0;
-		.logo-header {
-			position: fixed;
-			top: 1rem;
-			left: 1rem;
-		}
-	}
-
-
-}
-
-
-@media (max-height:450px) {
-
-    @media (max-width:900px) {
-        
-        .container-fluid.info {
-			width: 0;
-			padding: 0;
-			margin: 0;
-			.logo-header {
-				position: fixed;
-				top: 3rem;
-				left: calc(50% - 95px);
-			}
-		}
-	}
-}
-
-
-/*------ GalaxyS5 landscape------*/
-
-@media (max-height: 361px) {
-
-    @media (max-width: 641px) {
-       
-		.container-fluid.info {
-			.logo-header {
-				top: 1rem;
-			}
-		}
-    }
-   
-}
-
-
-/*------ iPhone5/SE landscape------*/
-
-@media (max-height: 321px) {
-
-    @media (max-width: 570px) {
-       
-        .container-fluid.info {
-			.logo-header {
-				top: 1rem;
-			}
-		}
-    
-    }
-   
-}

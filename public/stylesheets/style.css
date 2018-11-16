@@ -2,8 +2,9 @@
 /****************************** Default colors */
 /****************************** Colors */
 /* Colors */
-/****************************** Custom colors */
+/****************************** Custom general styles */
 /****************************** Custom colors rewrite */
+/**************************** MIXINS */
 /****************************** Default styles */
 /****************************** Variables */
 /* Variables */
@@ -12509,14 +12510,16 @@ div#update_owners_members {
 
 /****************************** Custom styles */
 /****************************** Custom styles rewrite */
-html, body {
-  font-family: "opensans-regular",Arial,sans-serif;
+html,
+body {
+  font-family: "opensans-regular", Arial, sans-serif;
   background-image: url(../img/vish_background.png);
   background-size: cover;
   background-position: center;
   background-size: auto 100%;
   margin: 0 auto; }
-  html .container-fluid.wrap, body .container-fluid.wrap {
+  html .container-fluid.wrap,
+  body .container-fluid.wrap {
     padding: 0;
     max-width: 100%; }
 
@@ -12576,7 +12579,8 @@ html, body {
   content: "\f06e"; }
 
 @media (max-width: 1200px) {
-  html, body {
+  html,
+  body {
     background-position: right; }
   .row .container-fluid.info .logo-header .brand {
     height: 9rem; }
@@ -12659,9 +12663,9 @@ html, body {
     top: 38px;
     pointer-events: auto; }
   .login .modal-footer {
-    border: none;
     display: flex;
-    flex-flow: wrap column;
+    flex-flow: column wrap;
+    border: none;
     margin: 0;
     padding: 0; }
     .login .modal-footer .checkbox {

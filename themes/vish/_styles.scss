@@ -1,7 +1,8 @@
 /****************************** Custom styles rewrite */
 
-html, body {
-	font-family: "opensans-regular",Arial,sans-serif;
+html,
+body {
+	font-family: "opensans-regular", Arial, sans-serif;
 	background-image: url(../img/vish_background.png);
 	background-size: cover;
 
@@ -13,7 +14,6 @@ html, body {
 		padding: 0;
 		max-width: 100%;
 	}
-	
 }
 
 .row {
@@ -40,7 +40,7 @@ html, body {
 			align-self: center;
 			width: 40%;
 			margin: 0 0 1rem 0;
-			
+
 			.brand {
 				width: 100%;
 				height: 8rem;
@@ -53,11 +53,11 @@ html, body {
 					-webkit-filter: drop-shadow(3px 2px 3px rgba(34, 34, 34, 0.384));
 					filter: drop-shadow(3px 2px 3px rgba(34, 34, 34, 0.384));
 				}
-			
+
 			}
 		}
 
-		
+
 		.cred {
 			width: 35%;
 			color: white;
@@ -80,7 +80,7 @@ html, body {
 
 .alert-danger {
 	border: .6px solid $alert-danger;
-	background-color: lighten( $alert-danger, 20%);
+	background-color: lighten($alert-danger, 20%);
 	color: darken($alert-danger, 30%);
 	height: 26px;
 	padding: .4rem;
@@ -89,20 +89,22 @@ html, body {
 
 
 .fa-eye:before {
-    content: "\f070";
+	content: "\f070";
 }
 
 .fa-eye-slash:before {
-    content: "\f06e";
+	content: "\f06e";
 }
 
 
 
-@media (max-width: 1200px){
-	html, body {
+@media (max-width: 1200px) {
+
+	html,
+	body {
 		background-position: right;
 	}
-	
+
 	.row {
 		.container-fluid.info {
 
@@ -118,15 +120,15 @@ html, body {
 				text-align: center;
 				margin: 1rem 0 1rem 0;
 				font-size: 1.4rem;
-		
+
 			}
 		}
 	}
 }
 
 
-@media (max-width: 800px){
-	
+@media (max-width: 800px) {
+
 	.row {
 		.container-fluid.info {
 
@@ -135,20 +137,21 @@ html, body {
 					height: 11rem;
 				}
 			}
+
 			.cred {
 				width: 60%;
 				margin: 3rem 0 1rem 0;
 				font-size: 1.4rem;
-		
+
 			}
 		}
-	
+
 	}
 }
 
 
-@media (max-width: 600px){
-	
+@media (max-width: 600px) {
+
 	.row {
 		.container-fluid.info {
 			padding: 0;
@@ -157,30 +160,30 @@ html, body {
 			.logo-header {
 				width: 15rem;
 				margin: 0;
-				
+
 				.brand {
 					width: 100%;
 					height: 6rem;
-					
+
 					img {
 						height: 100%;
 						width: 15rem;
 					}
-				
+
 				}
 			}
 
 			.cred {
 				display: none;
-		
+
 			}
 		}
 	}
 }
 
 
-@media (max-height: 450px){
-	
+@media (max-height: 450px) {
+
 	.row {
 		.container-fluid.info {
 			padding: 0;
@@ -189,11 +192,11 @@ html, body {
 			.logo-header {
 				width: 12rem;
 				margin: 0;
-				
+
 				.brand {
 					width: 100%;
 					height: 5rem;
-					
+
 					img {
 						height: 100%;
 						width: 12rem;
@@ -203,12 +206,12 @@ html, body {
 
 			.cred {
 				display: none;
-		
+
 			}
 		}
 	}
 
-	
+
 }
 
 @media (max-height: 750px) {
@@ -216,7 +219,7 @@ html, body {
 		.container-fluid.info {
 			.cred {
 				display: none;
-		
+
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-.login{
+.login {
     width: 30%;
     border: none;
     background-color: $form_background;
@@ -8,8 +8,9 @@
     border-radius: 1.5rem;
     box-shadow: 0 0 8px rgba(34, 34, 34, 0.3);
 
-    .modal-header{
+    .modal-header {
         border: none;
+
         h3 {
             color: $text;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -33,9 +34,8 @@
     }
 
     .modal-footer {
+        @include flex;
         border: none;
-        display: flex;
-        flex-flow: wrap column;
         margin: 0;
         padding: 0;
 
@@ -52,7 +52,7 @@
             align-self: center;
 
         }
-    
+
         .actions {
             display: flex;
             flex-wrap: wrap;
@@ -83,20 +83,20 @@
     pointer-events: auto;
 }
 
-@media (max-width: 1200px){
-    .login{
+@media (max-width: 1200px) {
+    .login {
         width: 50%;
         border: none;
         background-color: $form_background;
         margin: .5% 0 0 0;
         padding: 6rem 7rem 6rem 7rem;
-    
-        .modal-header{
+
+        .modal-header {
             h3 {
                 font-size: 3.2rem;
             }
         }
-    
+
         .label_01 {
             color: $text;
             font-size: 1.9rem;
@@ -109,20 +109,20 @@
 }
 
 
-@media (max-width: 800px){
-    .login{
+@media (max-width: 800px) {
+    .login {
         width: 60%;
     }
 }
 
-@media (max-width: 600px){
-    .login{
+@media (max-width: 600px) {
+    .login {
         width: 90% !important;
-        padding: 6% 8% 6% 8% ;
+        padding: 6% 8% 6% 8%;
         margin: 0;
         //min-height: 40rem;
 
-        .modal-header{
+        .modal-header {
             h3 {
                 font-size: 2.4rem;
             }
@@ -130,30 +130,31 @@
     }
 }
 
-@media (max-height: 450px){
-    
-    .login{
+@media (max-height: 450px) {
+
+    .login {
         width: 93% !important;
-        padding: 4% 8% 5% 8% ;
+        padding: 4% 8% 5% 8%;
         margin: 0;
-        
+
         .modal-header {
             h3 {
-            font-size: 2.2rem; 
+                font-size: 2.2rem;
             }
         }
 
         form {
             display: flex;
             justify-content: space-between;
-            
+
             .modal-body {
                 width: 50%;
                 margin: 0;
-                
+
                 .label_01 {
                     font-size: 1.5rem;
                 }
+
                 .form-control {
                     height: 30px;
                 }
@@ -206,15 +207,15 @@
 
 @media (max-width: 320px) {
     @media (max-height: 480px) {
-        .login{
+        .login {
             padding: 5% 6% 5% 6%;
-        
-            .modal-header{
+
+            .modal-header {
                 h3 {
                     font-size: 2.4rem;
                 }
             }
-        
+
             .form-control {
                 height: 30px;
                 padding: 5px;
@@ -224,7 +225,7 @@
                 top: 30px;
                 pointer-events: auto;
             }
-        
+
             .modal-footer {
 
                 button {
@@ -233,25 +234,25 @@
                     height: 4rem;
                     width: 9rem;
                 }
-            
+
                 .actions {
                     padding: 1.5rem 0 0 0;
-        
+
                     a {
                         font-size: 1.2rem;
                     }
                 }
             }
-        
+
             .label_01 {
                 color: $text;
                 font-size: 1.2rem;
             }
-        
+
             .lbl_01 {
                 font-size: 1.1rem;
             }
-            
+
         }
     }
 }

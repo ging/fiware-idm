@@ -14,6 +14,7 @@
             color: $text;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 2.8rem;
+            margin: 0;
         }
     }
 
@@ -24,6 +25,11 @@
         background-color: lighten(#C8DBE7, 13%);
         border-radius: .5rem;
         border: 1px solid #A9A9A9;
+    }
+
+    .form-control-feedback {
+        top: 38px;
+        pointer-events: auto;
     }
 
     .modal-footer {
@@ -70,4 +76,186 @@
         font-size: 1.3rem;
     }
     
+}
+
+.form-control-feedback {
+    top: 40px;
+    pointer-events: auto;
+}
+
+@media (max-width: 1200px){
+    .login{
+        width: 50%;
+        border: none;
+        background-color: $form_background;
+        margin: .5% 0 0 0;
+        padding: 6rem 7rem 6rem 7rem;
+    
+        .modal-header{
+            h3 {
+                font-size: 3.2rem;
+            }
+        }
+    
+        .label_01 {
+            color: $text;
+            font-size: 1.9rem;
+        }
+
+        .lbl_01 {
+            font-size: 1.3rem;
+        }
+    }
+}
+
+@media (max-width: 800px){
+    .login{
+        width: 60%;
+    }
+}
+
+@media (max-width: 600px){
+    .login{
+        width: 90% !important;
+        padding: 6% 8% 6% 8% ;
+        margin: 0;
+        //min-height: 40rem;
+
+        .modal-header{
+            h3 {
+                font-size: 2.4rem;
+            }
+        }
+    }
+
+    
+}
+
+@media (max-height: 450px){
+    
+    .login{
+        width: 93% !important;
+        padding: 4% 8% 5% 8% ;
+        margin: 0;
+        
+        .modal-header {
+            h3 {
+            font-size: 2.2rem; 
+            }
+        }
+
+        form {
+            display: flex;
+            justify-content: space-between;
+            
+            .modal-body {
+                width: 50%;
+                margin: 0;
+                
+                .label_01 {
+                    font-size: 1.5rem;
+                }
+                .form-control {
+                    height: 30px;
+                }
+            }
+
+            .modal-footer {
+                display: flex;
+                margin: 0 0 0 3rem;
+                width: 50%;
+
+                .checkbox {
+                    order: 3;
+                    align-self: center;
+                    margin: .6rem 0 0 0;
+                }
+
+                button {
+                    order: 2;
+                    font-size: 1.3rem;
+                    padding: .8rem 1.3rem .8rem 1.3rem;
+                    border-radius: .5rem;
+                    height: 3.5rem;
+                    width: 8rem;
+
+                }
+
+                .actions {
+                    order: 1;
+                    padding: 0;
+                    margin: 0 0 2rem 1.2rem;
+
+                    a {
+                        font-size: 1.3rem;
+                    }
+
+
+                }
+            }
+        }
+
+        .form-control-feedback {
+            top: 33px;
+            pointer-events: auto;
+        }
+    }
+}
+
+
+/*-----iPhone4 -----*/
+
+@media (max-width: 320px) {
+    @media (max-height: 480px) {
+        .login{
+            padding: 5% 6% 5% 6%;
+        
+            .modal-header{
+                h3 {
+                    font-size: 2.4rem;
+                }
+            }
+        
+            .form-control {
+                height: 30px;
+                padding: 5px;
+            }
+
+            .form-control-feedback {
+                top: 30px;
+                pointer-events: auto;
+            }
+        
+            .modal-footer {
+
+                button {
+                    font-size: 1.4rem;
+                    border-radius: .7rem;
+                    height: 4rem;
+                    width: 9rem;
+                }
+            
+                .actions {
+                    padding: 1.5rem 0 0 0;
+        
+                    a {
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+        
+            .label_01 {
+                color: $text;
+                font-size: 1.2rem;
+            }
+        
+            .lbl_01 {
+                font-size: 1.1rem;
+            }
+            
+        }
+
+        
+
+    }
 }

@@ -50,6 +50,7 @@
             height: 4.5rem;
             width: 10rem;
             align-self: center;
+
         }
     
         .actions {
@@ -75,7 +76,6 @@
     .lbl_01 {
         font-size: 1.3rem;
     }
-    
 }
 
 .form-control-feedback {
@@ -108,6 +108,7 @@
     }
 }
 
+
 @media (max-width: 800px){
     .login{
         width: 60%;
@@ -127,8 +128,6 @@
             }
         }
     }
-
-    
 }
 
 @media (max-height: 450px){
@@ -254,8 +253,5 @@
             }
             
         }
-
-        
-
     }
 }

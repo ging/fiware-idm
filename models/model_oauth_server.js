@@ -736,20 +736,17 @@ function app_authzforce_domain(app_id) {
     })
 }
 
-/*function validateScope(user, client, scope) {
+function validateScope(user, client, scope) {
 
   debug("-------validateScope-------")
 
-  if (client.scope) {
-    if (scope) {
-      return (client.scope.includes(scope)) ? scope : false
-    }
+  if (client.scope && scope) {
+    return (client.scope.includes(scope)) ? scope : false;
+  } else if (!client.scope && scope) {
+    return false;
   } else {
-    if (scope) {
-      return false
-    }
+    return true;
   }
-  return 'all'
 }
 
 function verifyScope(token, scope) {
@@ -758,7 +755,7 @@ function verifyScope(token, scope) {
 
   return token.scope === scope
 
-}*/
+}
 
 module.exports = {
   getAccessToken: getAccessToken,
@@ -773,8 +770,8 @@ module.exports = {
   revokeAccessToken: revokeAccessToken,
   saveToken: saveToken,
   saveAuthorizationCode: saveAuthorizationCode,
-  /*validateScope: validateScope,
-  verifyScope: verifyScope,*/
+  validateScope: validateScope,
+  verifyScope: verifyScope,
   create_oauth_response: create_oauth_response,
   user_roles: user_roles,
   user_permissions: user_permissions,

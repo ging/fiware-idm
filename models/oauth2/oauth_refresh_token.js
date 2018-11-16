@@ -9,7 +9,19 @@ module.exports = function (sequelize, DataTypes) {
       unique: true,
     },
     expires: DataTypes.DATE,
-    scope: DataTypes.STRING
+    scope: {
+      type: DataTypes.STRING(2000),
+      get: function () {
+        return (this.getDataValue('scope')) ? this.getDataValue('scope').split(',') : []
+      },
+      set: function (val) {
+        this.setDataValue('scope', (val) ? val.toString() : null)
+      }
+    },
+    valid: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: null
+    }
   }, {
     tableName: 'oauth_refresh_token',
     timestamps: false,

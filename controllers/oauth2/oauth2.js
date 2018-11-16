@@ -310,16 +310,11 @@ exports.revoke_token = function(req, res, next) {
 
     var options = { }
 
-    var request = new Request({
-        headers: {authorization: req.headers.authorization},
-        method: req.method,
-        query: req.query,
-        body: req.body
-    });
+    var request = new Request(req);
     var response = new Response(res);
 
     return oauth.revoke(request, response, options).then(function (revoked) {
-        debug(revoked)
+        debug('Success revoking a token')
     }).then(function(response){
         return res.status(200).json(response)
     }).catch(function (err) {

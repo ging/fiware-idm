@@ -26,7 +26,7 @@ function getAccessToken(bearerToken) {
   return oauth_access_token
     .findOne({
       where: {access_token: bearerToken},
-      attributes: [['access_token', 'accessToken'], ['expires', 'accessTokenExpiresAt'],'scope'],
+      attributes: [['access_token', 'accessToken'], ['expires', 'accessTokenExpiresAt'],'scope', 'valid'],
       include: [
         {
           model: user,
@@ -172,34 +172,85 @@ function revokeAuthorizationCode(code) {
 
   return oauth_authorization_code.findOne({
     where: {
-      authorization_code: code.code
+      authorization_code: code.code,
+      valid: true
     }
   }).then(function (rCode) {
+    if (rCode) {
+      rCode.valid = false
+      rCode.save(); 
+    }
 
-    var expiredCode = code
-    expiredCode.expiresAt = new Date('2015-05-28T06:59:53.000Z')
-    return expiredCode
+    code.valid = false
+    return code
   }).catch(function (err) {
     debug("getUser - Err: ", err)
   });
 }
 
-function revokeToken(token) {
+function revokeRefreshToken(refreshToken, code, client_id) {
+  debug("-------revokeRefreshToken-------");
 
-  debug("-------revokeToken-------")
+  var where_clause = {
+    valid: true
+  }
+
+  if (code) {
+    where_clause['authorization_code'] = code;
+  } else if (refreshToken) {
+    where_clause['refresh_token'] = refreshToken;
+  }
+
+  if (client_id) {
+    where_clause['oauth_client_id'] = client_id
+  }
 
   return oauth_refresh_token.findOne({
-    where: {
-      refresh_token: token.refreshToken
-    }
+    where: where_clause
   }).then(function (rT) {
-    if (rT) rT.destroy();
-
-    var expiredToken = token
-    expiredToken.refreshTokenExpiresAt = new Date('2015-05-28T06:59:53.000Z')
-    return expiredToken
+    if (rT) {
+      rT.valid = false;
+      rT.save();
+      rT.type = 'refresh_token'
+      rT.client = rT.oauth_client_id
+    }
+    return (rT) ? rT : null;
   }).catch(function (err) {
-    debug("revokeToken - Err: ", err)
+    debug("revokeRefreshToken - Err: ", err);
+  });
+}
+
+function revokeAccessToken(accessToken, code, client_id, refresh_token) {
+  debug("-------revokeAccessToken-------");
+  var where_clause = {
+    valid: true
+  }
+
+  if (code) {
+    where_clause['authorization_code'] = code;
+  } else if (accessToken) {
+    where_clause['access_token'] = accessToken;
+  } else if (refresh_token) {
+    where_clause['refresh_token'] = refresh_token;
+  } 
+
+  if (client_id) {
+    where_clause['oauth_client_id'] = client_id
+  }
+
+  return oauth_access_token.findOne({
+    where: where_clause
+  }).then(function (aT) {
+    if (aT) {
+      aT.valid = false;
+      aT.save();
+      aT.type = 'access_token'
+      aT.client = aT.oauth_client_id
+    }
+
+    return (aT) ? aT : null;
+  }).catch(function (err) {
+    debug("revokeRefreshToken - Err: ", err);
   });
 }
 
@@ -208,9 +259,9 @@ function saveToken(token, client, identity) {
   debug("-------saveToken-------")
 
   if (client.token_type === 'bearer') {
-    return storeToken(token, client, identity, false)
+    return storeToken(token, client, identity, false);
   } else {
-    return generateJwtToken(token, client, identity)
+    return generateJwtToken(token, client, identity);
   }
 }
 
@@ -256,21 +307,26 @@ function storeToken(token, client, identity, jwt) {
   }
 
   return Promise.all([
-      !jwt ? oauth_access_token.create({
-        access_token: token.accessToken,
-        expires: (token.scope === 'permanent') ? null : token.accessTokenExpiresAt,
-        oauth_client_id: client.id,
-        user_id: user_id,
-        iot_id: iot_id,
-        scope: (token.scope === 'all') ? null : token.scope
-      }) : [],
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
         expires: (token.scope === 'permanent') ? null : token.refreshTokenExpiresAt,
+        valid: true,
         oauth_client_id: client.id,
         user_id: user_id,
         iot_id: iot_id,
+        authorization_code: (token.authorizationCode) ? token.authorizationCode : null,
         scope: token.scope
+      }) : [],
+      !jwt ? oauth_access_token.create({
+        access_token: token.accessToken,
+        expires: (token.scope === 'permanent') ? null : token.accessTokenExpiresAt,
+        valid: true,
+        oauth_client_id: client.id,
+        user_id: user_id,
+        iot_id: iot_id,
+        refresh_token: (token.refreshToken) ? token.refreshToken : null,
+        authorization_code: (token.authorizationCode) ? token.authorizationCode : null,
+        scope: (token.scope === 'all') ? null : token.scope
       }) : [],
       (user_id && config_oauth2.ask_authorization) ? user_authorized_application.findOrCreate({ // User has enable application to read their information
         where: { user_id: user_id, oauth_client_id: client.id },
@@ -310,7 +366,7 @@ function getAuthorizationCode(code) {
 
   return oauth_authorization_code
     .findOne({
-      attributes: ['oauth_client_id', 'expires', 'user_id', 'scope'],
+      attributes: ['oauth_client_id', 'expires', 'user_id', 'scope', 'valid'],
       where: {authorization_code: code},
       include: [user, oauth_client]
     })
@@ -324,6 +380,7 @@ function getAuthorizationCode(code) {
         client: client,
         expiresAt: authCodeModel.expires,
         redirectUri: client.redirect_uri,
+        valid: authCodeModel.valid,
         user: user,
         scope: authCodeModel.scope,
       };
@@ -342,6 +399,7 @@ function saveAuthorizationCode(code, client, user) {
       oauth_client_id: client.id,
       redirect_uri: client.redirect_uri,
       authorization_code: code.authorizationCode,
+      valid: true,
       user_id: user.id,
       scope: code.scope
     })
@@ -383,7 +441,7 @@ function getRefreshToken(refreshToken) {
 
   return oauth_refresh_token
     .findOne({
-      attributes: ['oauth_client_id', 'user_id', 'expires'],
+      attributes: ['oauth_client_id', 'user_id', 'expires', 'valid'],
       where: {refresh_token: refreshToken},
       include: [
         {
@@ -401,13 +459,13 @@ function getRefreshToken(refreshToken) {
       ]
     })
     .then(function (savedRT) {
-      debug(savedRT)
+
       var tokenTemp = {
         user: savedRT ? savedRT.User : {},
         client: savedRT ? savedRT.OauthClient : {},
-        refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
-        refreshToken: refreshToken,
-        refresh_token: refreshToken,
+        expires: savedRT ? new Date(savedRT.expires) : null,
+        valid: savedRT.valid,
+        token: refreshToken,
         scope: savedRT ? savedRT.scope : ''
       };
       if (savedRT.User) {
@@ -678,7 +736,7 @@ function app_authzforce_domain(app_id) {
     })
 }
 
-function validateScope(user, client, scope) {
+/*function validateScope(user, client, scope) {
 
   debug("-------validateScope-------")
 
@@ -700,11 +758,7 @@ function verifyScope(token, scope) {
 
   return token.scope === scope
 
-}
-
-function revokeToken(token, type) {
-  debug("-------revokeToken-------")
-}
+}*/
 
 module.exports = {
   getAccessToken: getAccessToken,
@@ -715,12 +769,12 @@ module.exports = {
   getIdentity: getIdentity,
   getUserFromClient: getUserFromClient,
   revokeAuthorizationCode: revokeAuthorizationCode,
-  revokeToken: revokeToken,
+  revokeRefreshToken: revokeRefreshToken,
+  revokeAccessToken: revokeAccessToken,
   saveToken: saveToken,
   saveAuthorizationCode: saveAuthorizationCode,
-  validateScope: validateScope,
-  verifyScope: verifyScope,
-  revokeToken: revokeToken,
+  /*validateScope: validateScope,
+  verifyScope: verifyScope,*/
   create_oauth_response: create_oauth_response,
   user_roles: user_roles,
   user_permissions: user_permissions,

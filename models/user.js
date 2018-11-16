@@ -77,15 +77,15 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             defaultValue: null
         }, extra: {
-            type: DataTypes.STRING,
+            type: DataTypes.JSON
+        }, scope: {
+            type: DataTypes.STRING(2000),
             get: function () {
-                return (this.getDataValue('extra')) ? JSON.parse(this.getDataValue('extra')) : {}
+              return (this.getDataValue('scope')) ? this.getDataValue('scope').split(',') : []
             },
             set: function (val) {
-                this.setDataValue('extra', JSON.stringify(val))
-            } 
-        }, scope: {
-            type: DataTypes.STRING(80)
+              this.setDataValue('scope', (val) ? val.toString() : null)
+            }
         }
         }, {
             tableName: 'user',

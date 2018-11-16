@@ -52,7 +52,15 @@ module.exports = function(sequelize, DataTypes) {
 
     },
     client_type: DataTypes.STRING(15),
-    scope: DataTypes.STRING(80),
+    scope: {
+      type: DataTypes.STRING(2000),
+      get: function () {
+        return (this.getDataValue('scope')) ? this.getDataValue('scope').split(',') : []
+      },
+      set: function (val) {
+        this.setDataValue('scope', (val) ? val.toString() : null)
+      }
+    },
     extra: DataTypes.JSON 
   }, {
       tableName: 'oauth_client',

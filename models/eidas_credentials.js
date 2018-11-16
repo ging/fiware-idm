@@ -55,12 +55,15 @@ module.exports = function(sequelize, DataTypes) {
        },
        defaultValue: 'private'
     }, attributes_list: {
-      type: DataTypes.TEXT(),
+      type: DataTypes.JSON(),
       get: function () {
-          return (this.getDataValue('attributes_list')) ? JSON.parse(this.getDataValue('attributes_list')) : {}
-      },
-      set: function (val) {
-         this.setDataValue('attributes_list', JSON.stringify(val))
+          var default_json = {
+            NaturalPerson: ['PersonIdentifier', 'FamilyName', 'FirstName', 'DateOfBirth'],
+            LegalPerson: [],
+            RepresentativeNaturalPerson: []
+          }
+          var attributes_list_keys = (this.getDataValue('attributes_list')) ? Object.keys(this.getDataValue('attributes_list')).length : 0 
+          return (attributes_list_keys > 0) ? this.getDataValue('attributes_list') : default_json
       }
     }
   }, {

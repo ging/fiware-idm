@@ -10,7 +10,15 @@ module.exports = function (sequelize, DataTypes) {
     },
     expires: DataTypes.DATE,
     redirect_uri: DataTypes.STRING(2000),
-    scope: DataTypes.STRING,
+    scope: {
+      type: DataTypes.STRING(2000),
+      get: function () {
+        return (this.getDataValue('scope')) ? this.getDataValue('scope').split(',') : []
+      },
+      set: function (val) {
+        this.setDataValue('scope', (val) ? val.toString() : null)
+      }
+    },
     valid: DataTypes.BOOLEAN,
     extra: DataTypes.JSON
   }, {

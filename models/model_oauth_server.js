@@ -122,14 +122,14 @@ function getIdentity(id, password) {
     }
 
     if (user) {
-      if (user.verifyPassword(user.salt, password)) {
+      if (user.verifyPassword(password)) {
           user.dataValues["type"] = "user"
           return user
       } 
     }
 
     if (iot) {
-      if (iot.verifyPassword(iot.salt, password)) {
+      if (iot.verifyPassword(password)) {
           iot.dataValues["type"] = "iot"
           return iot
       } 
@@ -154,7 +154,7 @@ function getUser(email, password) {
     })
     .then(function (user) {
       if (user) {
-        if (user.verifyPassword(user.salt, password)) {
+        if (user.verifyPassword(password)) {
           return user.toJSON()
         } 
       }

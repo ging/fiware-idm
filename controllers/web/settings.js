@@ -54,7 +54,7 @@ exports.password = function(req, res) {
 	    }).then(function(user) {
 	        if (user) {
 	            // Verify password and if user is enabled to use the web
-	            if(user.verifyPassword(user.salt, req.body.current_password)) {
+	            if(user.verifyPassword(req.body.current_password)) {
 
 	            	models.user.update({ 
 	            		password: req.body.new_password,
@@ -135,7 +135,7 @@ exports.email = function(req, res) {
 			    }).then(function(user) {
 			        if (user) {
 			            // Verify password and if user is enabled to use the web
-			            if(user.verifyPassword(user.salt, req.body.password)) {	      
+			            if(user.verifyPassword(req.body.password)) {	      
 
 			           		var verification_key = Math.random().toString(36).substr(2);
 			                var verification_expires = new Date((new Date()).getTime() + 1000*3600*24)

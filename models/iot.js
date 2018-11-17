@@ -34,8 +34,8 @@ module.exports = function(sequelize, DataTypes) {
       underscored: true
   });
 
-  Iot.prototype.verifyPassword = function(salt, password) {
-    var encripted = crypto.createHmac('sha1', (salt) ? salt : key).update(password).digest('hex');
+  Iot.prototype.verifyPassword = function(password) {
+    var encripted = crypto.createHmac('sha1', this.salt ? this.salt : key).update(password).digest('hex');
     return encripted === this.password;
   }
 

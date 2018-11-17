@@ -95,7 +95,7 @@ module.exports = function(sequelize, DataTypes) {
     );
 
     User.prototype.verifyPassword = function(password) {
-        var encripted = crypto.createHmac('sha1', (this.salt) ? this.salt : key).update(password).digest('hex');
+        var encripted = crypto.createHmac('sha1', this.salt ? this.salt : key).update(password).digest('hex');
         return encripted === this.password;
     }   
         

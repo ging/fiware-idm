@@ -65,7 +65,7 @@ var styles = config.site.theme || 'default';
 app.use(sassMiddleware({
     src: path.join(__dirname, 'themes/' + styles),
     dest: path.join(__dirname, 'public/stylesheets'),
-    debug: true,
+    debug: false,
     // outputStyle: 'compressed',
     outputStyle: 'extended',
     prefix:  '/stylesheets'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>

@@ -41,15 +41,24 @@ module.exports = function(sequelize, DataTypes) {
          this.setDataValue('response_type',val.join(','))
       } 
     },
-    token_type: {
-      type: DataTypes.STRING(15),
-      defaultValue: 'bearer'
-
+    token_types: {
+      type: DataTypes.STRING(2000),
+      defaultValue: 'bearer',
+      get: function () {
+        return (this.getDataValue('token_types')) ? this.getDataValue('token_types').split(',') : ['bearer']
+      },
+      set: function (val) {
+        if (val && val.length > 0) {
+          val.push('bearer');
+        } else {
+          val = ['bearer']
+        }
+        this.setDataValue('token_types', val.toString())
+      }
     },
     jwt_secret: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(2000),
       defaultValue: null
-
     },
     client_type: DataTypes.STRING(15),
     scope: {

@@ -2,9 +2,9 @@
 $(document).ready(function() {
 
 	$("select#select_toke_type").on("changed.bs.select", function() {
-		var token_type = $('select#select_toke_type').val()
-		
-		if (token_type === 'jwt') {
+		var token_types = $('select#select_toke_type').val()
+
+		if (token_types.includes('jwt')) {
 			$('div#jwt_secret').show()
             $('div#token_type').addClass('jwt_type')
 		} else {
@@ -17,12 +17,12 @@ $(document).ready(function() {
             url: window.location.pathname+'/token_type/change',
             type: 'PUT',
             beforeSend: beforeSend($('input:hidden[name=_csrf]').val()),
-            data: { token_type: token_type }
+            data: { token_types: token_types }
         })
 
         put_request.done((result) => {
         	if (result.message.type === 'success') {
-        		if (token_type === 'jwt') {
+        		if (token_types.includes('jwt')) {
                 	$('#secret').html(result.jwt_secret)
         		}
             }

@@ -607,41 +607,35 @@ exports.change_token_type = function(req, res, next) {
 	
 	debug("--> change_token_type");
 
-	var response = { message: {text: ' Failed change token type', type: 'danger'}}
+	var allowed_types = ['jwt', 'permanent'];
+	var token_types = (req.body.token_types) ? req.body.token_types : [];
 
-	if (req.application.token_type !== req.body.token_type) {
-		if (!['jwt', 'bearer'].includes(req.body.token_type)) {
-			// Send response depends on the type of request
+	var response = { message: {text: ' Failed change token type', type: 'danger'}};
+
+	if (token_types.length <= 0 || token_types.every(r=> allowed_types.includes(r))) {
+		var jwt_secret = (token_types.includes('jwt')) ? crypto.randomBytes(16).toString('hex').slice(0,16) : null
+
+		models.oauth_client.update(
+			{ token_types: token_types,
+			  jwt_secret: jwt_secret },
+			{
+				fields: ['token_types', 'jwt_secret'],
+				where: { id: req.application.id }
+			}
+		).then(function(reseted) {
+			if (reseted[0] === 1) {
+				if (req.body.token_type.includes('jwt')) {
+					response['jwt_secret'] = jwt_secret
+				}
+				response.message = {text: ' Change token type.', type: 'success'}
+			}
 			send_response(req, res, response, '/idm/applications/'+req.application.id);
-		} else {
-			var token_type = req.body.token_type
-			var jwt_secret = (token_type === 'bearer') ? 
-								null : 
-								crypto.randomBytes(16).toString('hex').slice(0,16)
-
-			models.oauth_client.update(
-				{ token_type: token_type,
-				  jwt_secret: jwt_secret },
-				{
-					fields: ['token_type', 'jwt_secret'],
-					where: { id: req.application.id }
-				}
-			).then(function(reseted) {
-				if (reseted[0] === 1) {
-					if (req.body.token_type === 'jwt') {
-						response['jwt_secret'] = jwt_secret
-					}
-					response.message = {text: ' Change token type.', type: 'success'}
-				}
-				send_response(req, res, response, '/idm/applications/'+req.application.id);
-			}).catch(function(error) {
-				send_response(req, res, response, '/idm/applications/'+req.application.id);
-			});
-		}
+		}).catch(function(error) {
+			send_response(req, res, response, '/idm/applications/'+req.application.id);
+		});
 	} else {
 		send_response(req, res, response, '/idm/applications/'+req.application.id);
 	}
-
 }
 
 // GET /idm/applications/:applicationId/reset_jwt_secret -- Reset jwt secret
@@ -649,13 +643,11 @@ exports.reset_jwt_secret = function(req, res, next) {
 	
 	debug("--> reset_jwt_secret");
 
-	var jwt_secret = (req.application.token_type === 'bearer') ? 
-						null : 
-						crypto.randomBytes(16).toString('hex').slice(0,16)
+	var jwt_secret = (req.application.token_types.includes('jwt')) ? crypto.randomBytes(16).toString('hex').slice(0,16) : null 
 
 	var response = { message: {text: ' Failed reset jwt.', type: 'warning'} }
 
-	if (req.application.token_type === 'jwt') {
+	if (req.application.token_types.includes('jwt')) {
 		
 		models.oauth_client.update(
 			{ 

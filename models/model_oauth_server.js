@@ -72,7 +72,7 @@ function getClient(clientId, clientSecret) {
 
   const options = {
     where: {id: clientId},
-    attributes: ['id', 'redirect_uri', 'token_type', 'jwt_secret', 'scope', 'grant_type']
+    attributes: ['id', 'redirect_uri', 'token_types', 'jwt_secret', 'scope', 'grant_type']
   };
   if (clientSecret) options.where.secret = clientSecret;
   return oauth_client
@@ -258,10 +258,16 @@ function saveToken(token, client, identity) {
 
   debug("-------saveToken-------")
 
-  if (client.token_type === 'bearer') {
-    return storeToken(token, client, identity, false);
-  } else {
+  if (token.scope.includes('permanent')) {
+    token.accessTokenExpiresAt = null;
+    delete token.refreshToken;
+    delete token.refreshTokenExpiresAt;
+  }
+
+  if (token.scope.includes('jwt')) {
     return generateJwtToken(token, client, identity);
+  } else {
+    return storeToken(token, client, identity, false);
   }
 }
 
@@ -276,12 +282,12 @@ function generateJwtToken(token, client, identity) {
     if (identity) {
       response['type'] = identity.type || identity.dataValues.type
     }
-    var options = {
-      expiresIn: token.accessTokenExpiresAt
+    var options = {}
+
+    if (token.accessTokenExpiresAt) {
+      options['expiresIn'] = config_oauth2.access_token_lifetime
     }
-    if (token.scope === "permanent") {
-      delete options.expiresIn 
-    }
+
     token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, options);
     return storeToken(token, client, identity, true)
   }).catch(function(error) {
@@ -309,7 +315,7 @@ function storeToken(token, client, identity, jwt) {
   return Promise.all([
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
-        expires: (token.scope === 'permanent') ? null : token.refreshTokenExpiresAt,
+        expires: /*(token.scope === 'permanent') ? null : */token.refreshTokenExpiresAt,
         valid: true,
         oauth_client_id: client.id,
         user_id: user_id,
@@ -319,7 +325,7 @@ function storeToken(token, client, identity, jwt) {
       }) : [],
       !jwt ? oauth_access_token.create({
         access_token: token.accessToken,
-        expires: (token.scope === 'permanent') ? null : token.accessTokenExpiresAt,
+        expires: /*(token.scope === 'permanent') ? null : */token.accessTokenExpiresAt,
         valid: true,
         oauth_client_id: client.id,
         user_id: user_id,
@@ -740,12 +746,14 @@ function validateScope(user, client, scope) {
 
   debug("-------validateScope-------")
 
-  if (client.scope && scope) {
-    return (client.scope.includes(scope)) ? scope : false;
-  } else if (!client.scope && scope) {
-    return false;
+  if (scope) {
+    var requested_scopes = scope.split(',');
+    if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
+      return false;
+    }
+    return (requested_scopes.every(r=> client.token_types.includes(r))) ? requested_scopes : false;
   } else {
-    return true;
+    return ['bearer']
   }
 }
 

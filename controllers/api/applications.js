@@ -238,9 +238,9 @@ function check_create_body_request(body) {
 			reject({error: {message: "Missing parameter redirect_uri in body request", code: 400, title: "Bad Request"}})
 		}
 
-		if (body.application.token_type) {
-			if (!['jwt', 'bearer'].includes(body.application.token_type)) {
-				reject({error: {message: "Ivalid token type in body request", code: 400, title: "Bad Request"}})
+		if (body.application.token_types) {
+			if (!body.application.token_types.every(r=> ['jwt', 'permanent'].includes(r))) {
+				reject({error: {message: "Invalid token type in body request", code: 400, title: "Bad Request"}})
 			}
 		}
 
@@ -296,9 +296,9 @@ function check_update_body_request(body) {
 			reject({error: {message: "Cannot set id, secret or response_type", code: 400, title: "Bad Request"}})
 		}
 
-		if (body.application.token_type) {
-			if (!['jwt', 'bearer'].includes(body.application.token_type)) {
-				reject({error: {message: "Ivalid token type in body request", code: 400, title: "Bad Request"}})
+		if (body.application.token_types) {
+			if (!body.application.token_types.every(r=> ['jwt', 'permanent'].includes(r))) {
+				reject({error: {message: "Invalid token type in body request", code: 400, title: "Bad Request"}})
 			}
 		}
 

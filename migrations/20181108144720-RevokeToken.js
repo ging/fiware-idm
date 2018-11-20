@@ -39,7 +39,18 @@ module.exports = {
           table: 'oauth_authorization_code',
           field: 'authorization_code'
         }
-      })
+      }),
+      queryInterface.changeColumn('oauth_client', 'token_type', {
+        type: Sequelize.STRING(2000),
+        defaultValue: 'bearer',
+        get: function () {
+          return (this.getDataValue('token_types')) ? this.getDataValue('token_types').split(',') : []
+        },
+        set: function (val) {
+          this.setDataValue('token_types', (val) ? val.toString() : null)
+        }
+      }),
+      queryInterface.renameColumn('oauth_client', 'token_type', 'token_types')
     ])
   },
 
@@ -48,7 +59,12 @@ module.exports = {
       queryInterface.removeConstraint('oauth_access_token', 'refresh_token'),
       queryInterface.removeColumn('oauth_access_token', 'authorization_code'),
       queryInterface.removeColumn('oauth_refresh_token', 'authorization_code'),
-      queryInterface.removeColumn('oauth_refresh_token', 'valid')
+      queryInterface.removeColumn('oauth_refresh_token', 'valid'),
+      queryInterface.changeColumn('oauth_client', 'token_types', {
+        type: Sequelize.STRING,
+        defaultValue: 'bearer'
+      }),
+      queryInterface.renameColumn('oauth_client', 'token_types', 'token_type')
     ])
   }
 };

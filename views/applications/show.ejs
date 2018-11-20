@@ -76,26 +76,29 @@
                                     <div id="token_type">
                                 <% } -%>
                                     <h6 class="panel-heading">
-                                        Token Type
-                                        <a href="#" class="contextual-help" data-toggle="popover" data-title="Token Type" data-placement="left" data-content="It can be choosen between bearer and json web token." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+                                        Token Types
+                                        <a href="#" class="contextual-help" data-toggle="popover" data-title="Token Type" data-placement="left" data-content="You can choose to create jwt as well as permanent tokens through scope parameter of OAuth2." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
                                     </h6>
-                                    <div class="select-multiple form-group">
-                                        <select id="select_toke_type" class="selectpicker" data-size="5" data-width="100%" data-dropup-auto="false" data-dropdown-align-right="true">
-                                            <% if (application.token_type === 'bearer') { -%>
-                                                <option selected value="bearer">Bearer Token</option>
-                                                <option value="jwt">Json Web Token</option>
-                                            <% } else { -%>
-                                                <option value="bearer">Bearer Token</option>
+                                    <div class="select-multiple">
+                                        <select id="select_toke_type" name="token_types[]" class="selectpicker" data-dropup-auto="false" multiple>
+                                            <% if (application.token_types.includes('jwt')) { %>
                                                 <option selected value="jwt">Json Web Token</option>
-                                            <% } -%>
+                                            <% } else { %>
+                                                <option value="jwt">Json Web Token</option>
+                                            <% } %>
+                                            <% if (application.token_types.includes('permanent')) { %>
+                                                <option selected value="permanent">Permanent</option>
+                                            <% } else { %>
+                                                <option value="permanent">Permanent</option>
+                                            <% } %>
                                         </select>
-                                        <% if (application.token_type === 'jwt') { -%>
+                                        <% if (application.token_types.includes('jwt')) { -%>
                                             <div id="jwt_secret" class="row" style="display: block;">
                                         <% } else { -%>
                                             <div id="jwt_secret" class="row" style="display: none;">
                                         <% } -%>
                                             <div class="col-md-10 sub-panel">
-                                                <h6 class="panel-heading">Secret</h6>
+                                                <h6 class="panel-heading">JWT secret</h6>
                                                 <p id="secret"><%= application.jwt_secret%></p>
                                             </div>
                                             <div class="col-md-2 actions_token_type">

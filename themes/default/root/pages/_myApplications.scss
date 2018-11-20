@@ -80,7 +80,7 @@
 
 }
 
-#eidas_credentials {
+#eidas_credentials, #eidas_attributes {
   .eidas {
       display: flex;
       justify-content: space-between;
@@ -99,8 +99,19 @@
   }
 
   .control-label {
-    border-bottom: 1px solid #B6B6B6; 
-    margin-bottom: 8px;
+    &.group {
+      border-bottom: 1px solid #B6B6B6; 
+      margin-bottom: 8px;
+    }
+  }
+
+  .attribute {
+    color: #5B5B5F;
+    margin-bottom: 4px;
+    font-weight: normal;
+    input {
+      margin-right: 7px;
+    }
   }
 
   .dropdown-menu {

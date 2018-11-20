@@ -123,15 +123,15 @@ function getIdentity(id, password) {
 
     if (user) {
       if (user.verifyPassword(password)) {
-        user.dataValues["type"] = "user"
-        return user
+          user.dataValues["type"] = "user"
+          return user
       } 
     }
 
     if (iot) {
-      if (iot.verifyPassword(iot.salt, password)) {
-        iot.dataValues["type"] = "iot"
-        return iot
+      if (iot.verifyPassword(password)) {
+          iot.dataValues["type"] = "iot"
+          return iot
       } 
     }
 

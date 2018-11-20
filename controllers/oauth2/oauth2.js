@@ -37,7 +37,9 @@ exports.token = function(req,res, next){
         }
         res.json(response.body)
     }).catch(function(err){
-        res.status(500).json(err)
+        debug('Error ' + err)
+        // Request is not authorized.
+        return res.status(err.code || 500).json(err.message || err)
     })
 }
 

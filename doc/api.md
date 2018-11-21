@@ -1,3 +1,4 @@
+
 # API OVERVIEW
 
 + [Idm API](#def-apiIdm)
@@ -7,27 +8,31 @@
     - [OAuth2 Authentication](#def-oauth2Auth)
         - [Authorization Code Grant](#def-codeGrant)
             - [Authorization Request](#def-codeGrantAuthReq)
+            - [Authorization Request For Permanent Token](#def-codeGrantAuthPermReq)
             - [Authorization Response](#def-codeGrantAuthRes)
             - [Access Token Request](#def-codeGrantTokReq)
             - [Access Token Response](#def-codeGrantTokRes)
         - [Implicit Grant](#def-implicitGrant)
             - [Authorization Request](#def-impliGrantAuthReq)
+            - [Authorization Request For Permanent Token](#def-implicitGrantAuthPermReq)
             - [Access Token Response](#def-impliGrantTokRes)
         - [Resource Owner Password Credentials Grant](#def-passwordGrant)
             - [Access Token Request](#def-passGrantTokReq)
+            - [Permanent Access Token Request](#def-passGrantTokPermReq)
             - [Access Token Response](#def-passGrantTokRes)
         - [Client Credentials Grant](#def-credentialsGrant)
             - [Access Token Request](#def-credGrantTokReq)
+            - [Permanent Access Token Request](#def-credGrantTokPermReq) 
             - [Access Token Response](#def-credGrantTokRes)
         - [Refresh Token Grant](#def-refreshToken)
             - [Access Token Request](#def-refreseGrantTokReq)
+            - [Permanent Token Request](#def-refreseGrantTokPermReq)
             - [Access Token Response](#def-refreshGrantTokRes)
         - [Validate Access Tokens](#def-validate-tokens)
             - [Get user information and roles](#def-getUserInfo)
             - [Validate authorization](#def-validate-auth)
-        - [Select OAuth Access Token](#def-select-token)
-            - [Get user information and roles](#def-getUserInfo)
-            - [Validate authorization](#def-validate-auth)
+        - [Revoke Token](#def-revoke-token)
+        - [Select Token Type](#def-select-token)
             - [Access JWT Request](#def-JWTRequest)
             - [Access JWT Response](#def-JWTResponse)
 
@@ -115,6 +120,13 @@ match the `Callback URL` attribute provided to the IdM within the
 application registration. `state` is optional and for internal use of
 you application, if needed.
 
+<a name="def-codeGrantAuthPermReq"></a>
+#### Authorization Request For Permanent Token
+~~~
+GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
+&redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=permanent HTTP/1.1
+Host: idm-portal
+~~~
 <a name="def-codeGrantAuthRes"></a>
 #### Authorization Response
 
@@ -176,6 +188,14 @@ The `redirect_uri` attribute must match the `Callback URL` attribute provided to
 
 `state` is optional and for internal use of you application, if needed.
 
+<a name="def-implicitGrantAuthPermReq"></a>
+#### Authorization Request For Permanent Token
+~~~
+GET /oauth2/authorize?response_type=token&client_id=1&state=xyz
+&redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=permanent HTTP/1.1
+Host: idm-portal
+~~~
+
 <a name="def-impliGrantTokRes"></a>
 #### Access Token Response
 ~~~
@@ -200,6 +220,18 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type=password&username=demo&password=123
 ~~~
+
+<a name="def-passGrantTokPermReq"></a>
+#### Permanent Token Request
+~~~
+POST /oauth2/token HTTP/1.1
+Host: idm-portal
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&username=demo&password=123&scope=permanent
+~~~
+
 <a name="def-passGrantTokRes"></a>
 #### Access Token Response
 See [Authorization Code Grant](#def-codeGrantTokRes)
@@ -219,6 +251,17 @@ Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
+~~~
+
+<a name="def-refreshGrantTokPermReq"></a>
+#### Permanent Token Request
+~~~
+POST /oauth2/token HTTP/1.1
+Host: idm-portal
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA&scope=permanent
 ~~~
 
 <a name="def-refreshGrantTokRes"></a>
@@ -244,6 +287,17 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=client_credentials
 ~~~
 
+<a name="def-credGrantTokPermReq"></a>
+#### Permanent Token Request
+~~~
+POST /oauth2/token HTTP/1.1
+Host: idm-portal
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&scope=permanent
+~~~
+
 <a name="def-credGrantTokRes"></a>
 #### Access Token Response
 
@@ -260,6 +314,21 @@ Once you have created an OAuth2.0 Access Token associated to a user, you can val
 > because of the nature of this grant. You can still use this endpoint
 > to validate the token, but the JSON (if the token is valid) will be
 > empty.
+
+<a name="def-revoke-token"></a>
+### Revoke Token
+In order to revoke a token, the following request should be send:
+~~~
+POST /oauth2/revoke HTTP/1.1
+Host: idm-portal
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW  
+Content-Type: application/x-www-form-urlencoded  
+
+token=2YotnFZFEjr1zCsicMWpAA&token_type_hint=access_token
+~~~
+Either Refresh or Access Token could be revoked. In case of Refresh Token, all Access Token associated to this will be revoked.
+
+token_type_hint is optional and can have the values “access_token" or “refresh_token” depending the type of token you are trying to revoke. These value helps Keyrock to revoke tokens quickly.
 
 <a name="def-getUserInfo"></a>
 ### Get user information and roles
@@ -351,7 +420,7 @@ Example response:
 <a name="#def-select-token"></a>
 ### Select Token Type
 
-Keyrock IdM allows you to choose the type of token to be generated when receiving an OAuth request. It can be choosen between Bearer or [JSON Web Tokens](https://tools.ietf.org/html/rfc7519). The token type could be selected in the interfaces as shown in the following figure:
+Keyrock IdM allows you to choose the type of token to be generated when receiving an OAuth request. By default, the application creates Bearer Tokens but it can be configured to generate [JSON Web Tokens](https://tools.ietf.org/html/rfc7519). It can be also configured to generate permanent tokens (Bearer or JWT) as described in previous sections. These permanent tokens would never expired. These token types options could be selected in the interfaces as shown in the following figure:
 
 <p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_SelectTokenType.png" width="740" align="center"></p>
 <p align="center">Figure 1: Select token type</p>
@@ -364,11 +433,43 @@ JWT is a safe way to represent a set information between two parties. A JWT is c
 
 <a name="def-JWTRequest"></a>
 #### Access Token Request with JWT
-It is not need to configure anything additionally in the oauth request. If JWT is configured in the application, a JWT could be generated through one of the previous explained grant types.
+
+The JWT generation could be done through scope option in the request. 
+- Authorization Code Grant and Implicit Grant should be included in url as a query parameter. For instance in an Authorization Code request:
+~~~
+GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
+&redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=jwt HTTP/1.1
+Host: idm-portal
+~~~
+- In the rest of grants it should be included in the body. For instance in a Resource Owner Password Credentials request:
+~~~
+POST /oauth2/token HTTP/1.1
+Host: idm-portal
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&username=demo&password=123&scope=jwt
+~~~
+In order to generate a permanent JWT, it should be included both permanent and  in the scope of the request.
+
+- For Authorization Code Grant and Implicit Grant:
+~~~
+GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
+&redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=jwt,permanent HTTP/1.1
+Host: idm-portal
+~~~
+- For the rest of grants:
+~~~
+POST /oauth2/token HTTP/1.1
+Host: idm-portal
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&username=demo&password=123&scope=jwt,permanent
+~~~
 
 <a name="def-JWTResponse"></a>
 #### Access Token Response
-
 ~~~
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
@@ -381,3 +482,4 @@ Pragma: no-cache
     "refresh_token":"a581cb04b116e26b175002bc2e05551042fafbda"
 }
 ~~~
+If "permanent" option is included in the request, the refresh token would not be generate.

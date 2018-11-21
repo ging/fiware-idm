@@ -6,6 +6,7 @@ var uuid = require('uuid');
 var csrf = require('csurf')
 var bodyParser = require('body-parser');
 var csrfProtection = csrf({ cookie: true })
+var fs = require('fs');
 
 // Config file
 var config = require('../../config');
@@ -32,6 +33,9 @@ router.param('permissionId',    web_perm_controller.load_permission);
 // Route to save images of applications
 var imageAppUpload = multer.diskStorage({
     destination: function(req, file, callback) {
+        if (!fs.existsSync('public/img/applications/')){
+          fs.mkdirSync('./public/img/applications/');
+        }
         callback(null, './public/img/applications/')
     },
     filename: function(req, file, callback) {

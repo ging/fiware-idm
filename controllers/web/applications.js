@@ -572,6 +572,8 @@ exports.destroy = function(req, res) {
 // Function to check and crop an image and to update the name in the oauth_client table
 function handle_uploaded_images(req, res, redirect_uri) {
 
+	debug("--> handle_uploaded_images");
+
 	// Check the MIME of the file upload
 	var image_path = 'public/img/applications/'+req.file.filename
 	image.check(image_path).then(function(val) {

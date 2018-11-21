@@ -315,7 +315,7 @@ function storeToken(token, client, identity, jwt) {
   return Promise.all([
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
-        expires: /*(token.scope === 'permanent') ? null : */token.refreshTokenExpiresAt,
+        expires: token.refreshTokenExpiresAt,
         valid: true,
         oauth_client_id: client.id,
         user_id: user_id,
@@ -325,7 +325,7 @@ function storeToken(token, client, identity, jwt) {
       }) : [],
       !jwt ? oauth_access_token.create({
         access_token: token.accessToken,
-        expires: /*(token.scope === 'permanent') ? null : */token.accessTokenExpiresAt,
+        expires: token.accessTokenExpiresAt,
         valid: true,
         oauth_client_id: client.id,
         user_id: user_id,

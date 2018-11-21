@@ -31,7 +31,6 @@ exports.token = function(req,res, next){
 	var response = new Response(res);
 
 	oauth.token(request,response).then(function(token) {
-        debug(token.scope)
         if (token.scope.includes('jwt')) {
             response.body.token_type = 'jwt'
             delete response.body.expires_in
@@ -281,12 +280,15 @@ exports.authenticate_token = function(req, res, next) {
         var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
         return res.status(400).json(error)
     }
+
     if (req_app) {
         models.oauth_client.findById(req_app).then(function(application) {
-            if (application && application.token_types.includes('jwt')) {
-                authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret)
-            } else if (application && application.token_types.includes('bearer')) {
-                authenticate_bearer(req, res, action, resource, authzforce, req_app)
+            if (application) {
+                if (application.token_types.includes('jwt')) {
+                    authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret)
+                } else {
+                    authenticate_bearer(req, res, action, resource, authzforce, req_app)
+                }
             } else {
                 var message = {
                     message: 'Unauthorized', 
@@ -305,24 +307,34 @@ exports.authenticate_token = function(req, res, next) {
     }
 }
 
-// POST /oauth2/revoke -- Function to revoke a token
-exports.revoke_token = function(req, res, next) {
+function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_secret) {
 
-    debug(' --> revoke_token')
+    debug(' --> authenticate_jwt')
 
-    var options = { }
+    jsonwebtoken.verify(req.query.access_token, jwt_secret, function(err, decoded) {
+        if (err) {
+            debug('Error ' + err)
+            authenticate_bearer(req, res, action, resource, authzforce, req_app)
+        } else {
+            var identity = {
+                username: decoded.username,
+                gravatar: decoded.isGravatarEnabled,
+                email: decoded.email,
+                id: decoded.id,
+                type: (decoded.type) ? decoded.type : 'app'
+            }
 
-    var request = new Request(req);
-    var response = new Response(res);
+            var application_id = decoded.app_id
 
-    return oauth.revoke(request, response, options).then(function (revoked) {
-        debug('Success revoking a token')
-    }).then(function(response){
-        return res.status(200).json(response)
-    }).catch(function (err) {
-        debug('Error ' + err)
-        // Request is not authorized.
-        return res.status(err.code || 500).json(err.message || err)
+            create_oauth_response(identity, application_id, action, resource, authzforce, req_app).then(function(response) {
+                return res.status(201).json(response)
+            }).catch(function (err) {
+                debug('Error ' + err)
+                // Request is not authorized.
+                return res.status(err.code || 500).json(err.message || err)
+            });
+        }
+
     });
 }
 
@@ -355,37 +367,23 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
     });
 }
 
+// POST /oauth2/revoke -- Function to revoke a token
+exports.revoke_token = function(req, res, next) {
 
-function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_secret) {
+    debug(' --> revoke_token')
 
-    debug(' --> authenticate_jwt')
+    var options = { }
 
-    jsonwebtoken.verify(req.query.access_token, jwt_secret, function(err, decoded) {
-        if (err) {
-            var message = {
-                message: err,
-                code: 401,
-                title: 'Unauthorized'
-            }
-            return res.status(401).json(message)
-        }
+    var request = new Request(req);
+    var response = new Response(res);
 
-        var identity = {
-            username: decoded.username,
-            gravatar: decoded.isGravatarEnabled,
-            email: decoded.email,
-            id: decoded.id,
-            type: (decoded.type) ? decoded.type : 'app'
-        }
-
-        var application_id = decoded.app_id
-
-        create_oauth_response(identity, application_id, action, resource, authzforce, req_app).then(function(response) {
-            return res.status(201).json(response)
-        }).catch(function (err) {
-            debug('Error ' + err)
-            // Request is not authorized.
-            return res.status(err.code || 500).json(err.message || err)
-        });
+    return oauth.revoke(request, response, options).then(function (revoked) {
+        debug('Success revoking a token')
+    }).then(function(response){
+        return res.status(200).json(response)
+    }).catch(function (err) {
+        debug('Error ' + err)
+        // Request is not authorized.
+        return res.status(err.code || 500).json(err.message || err)
     });
 }

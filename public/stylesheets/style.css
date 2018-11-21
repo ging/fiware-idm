@@ -12509,14 +12509,16 @@ div#update_owners_members {
 
 /****************************** Custom styles */
 /****************************** Custom styles rewrite */
-html, body {
-  font-family: "opensans-regular",Arial,sans-serif;
+html,
+body {
+  font-family: "opensans-regular", Arial, sans-serif;
   background-image: url(../img/vish_background.png);
   background-size: cover;
   background-position: center;
   background-size: auto 100%;
   margin: 0 auto; }
-  html .container-fluid.wrap, body .container-fluid.wrap {
+  html .container-fluid.wrap,
+  body .container-fluid.wrap {
     padding: 0;
     max-width: 100%; }
 
@@ -12567,7 +12569,7 @@ html, body {
   background-color: #ff9299;
   color: #920009;
   height: 26px;
-  padding: .4rem; }
+  padding: 0.4rem; }
 
 .fa-eye:before {
   content: "\f070"; }
@@ -12576,7 +12578,8 @@ html, body {
   content: "\f06e"; }
 
 @media (max-width: 1200px) {
-  html, body {
+  html,
+  body {
     background-position: right; }
   .row .container-fluid.info .logo-header .brand {
     height: 9rem; }
@@ -12588,33 +12591,43 @@ html, body {
     font-size: 1.4rem; } }
 
 @media (max-width: 800px) {
-  .row .container-fluid.info .logo-header .brand {
-    height: 11rem; }
-  .row .container-fluid.info .cred {
-    width: 60%;
-    margin: 3rem 0 1rem 0;
-    font-size: 1.4rem; } }
+  html,
+  body {
+    background-size: auto 100%; }
+    html .row .container-fluid.info .logo-header .brand,
+    body .row .container-fluid.info .logo-header .brand {
+      height: 11rem; }
+    html .row .container-fluid.info .cred,
+    body .row .container-fluid.info .cred {
+      width: 60%;
+      margin: 3rem 0 1rem 0;
+      font-size: 1.4rem; } }
 
 @media (max-width: 600px) {
-  .row .container-fluid.info {
-    padding: 0;
-    margin: 0; }
-    .row .container-fluid.info .logo-header {
-      width: 15rem;
-      margin: 0; }
-      .row .container-fluid.info .logo-header .brand {
-        width: 100%;
-        height: 6rem; }
-        .row .container-fluid.info .logo-header .brand img {
-          height: 100%;
-          width: 15rem; }
-    .row .container-fluid.info .cred {
-      display: none; } }
+  body {
+    background-size: auto 140%;
+    background-position: right; }
+    body .row .container-fluid.info {
+      padding: 0;
+      margin: 0;
+      background-color: rgba(5, 80, 131, 0.527); }
+      body .row .container-fluid.info .logo-header {
+        width: 15rem;
+        margin: 0; }
+        body .row .container-fluid.info .logo-header .brand {
+          width: 100%;
+          height: 6rem; }
+          body .row .container-fluid.info .logo-header .brand img {
+            height: 100%;
+            width: 15rem; }
+      body .row .container-fluid.info .cred {
+        display: none; } }
 
 @media (max-height: 450px) {
   .row .container-fluid.info {
     padding: 0;
-    margin: 0; }
+    margin: 0;
+    background-color: rgba(5, 80, 131, 0.527); }
     .row .container-fluid.info .logo-header {
       width: 12rem;
       margin: 0; }
@@ -12623,7 +12636,7 @@ html, body {
         height: 5rem; }
         .row .container-fluid.info .logo-header .brand img {
           height: 100%;
-          width: 12rem; }
+          width: 14rem; }
     .row .container-fluid.info .cred {
       display: none; } }
 
@@ -12636,7 +12649,7 @@ html, body {
   width: 30%;
   border: none;
   background-color: #FFFFFF;
-  margin: .5% 0 0 0;
+  margin: 0.5% 0 0 0;
   padding: 3% 6% 3% 6%;
   font-family: "opensans-regular", Arial, sans-serif;
   border-radius: 1.5rem;
@@ -12651,10 +12664,10 @@ html, body {
   .login .form-control {
     height: 34px;
     padding: 6px;
-    box-shadow: 2px 2px 4px #C8DBE7 inset;
+    box-shadow: 2px 2px 4px #c8dbe7 inset;
     background-color: #f6f9fb;
-    border-radius: .5rem;
-    border: 1px solid #A9A9A9; }
+    border-radius: 0.5rem;
+    border: 1px solid #a9a9a9; }
   .login .form-control-feedback {
     top: 38px;
     pointer-events: auto; }
@@ -12669,7 +12682,7 @@ html, body {
     .login .modal-footer button {
       font-size: 1.6rem;
       padding: 1rem 1.5rem 1rem 1.5rem;
-      border-radius: .7rem;
+      border-radius: 0.7rem;
       height: 4.5rem;
       width: 10rem;
       align-self: center; }
@@ -12682,7 +12695,7 @@ html, body {
         align-self: center;
         font-size: 1.4rem;
         border: none;
-        padding: .5rem 0 0 0; }
+        padding: 0.5rem 0 0 0; }
   .login .label_01 {
     color: #525557;
     font-size: 1.6rem; }
@@ -12698,7 +12711,7 @@ html, body {
     width: 50%;
     border: none;
     background-color: #FFFFFF;
-    margin: .5% 0 0 0;
+    margin: 0.5% 0 0 0;
     padding: 6rem 7rem 6rem 7rem; }
     .login .modal-header h3 {
       font-size: 3.2rem; }
@@ -12714,55 +12727,90 @@ html, body {
 
 @media (max-width: 600px) {
   .login {
-    width: 90% !important;
+    width: 100%;
     padding: 6% 8% 6% 8%;
-    margin: 0; }
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+    color: white; }
     .login .modal-header h3 {
-      font-size: 2.4rem; } }
+      font-size: 2.4rem;
+      color: white; }
+    .login form .modal-body .label_01 {
+      color: white; }
+    .login .modal-footer .actions a {
+      color: white; } }
 
 @media (max-height: 450px) {
   .login {
-    width: 93% !important;
-    padding: 4% 8% 5% 8%;
-    margin: 0; }
+    width: 100%;
+    padding: 1.5% 8% 5% 8%;
+    margin: 0;
+    background-color: transparent;
+    box-shadow: none; }
     .login .modal-header h3 {
-      font-size: 2.2rem; }
+      font-size: 2.4rem;
+      color: white;
+      padding: 0 0 0 1.5rem; }
     .login form {
       display: flex;
-      justify-content: space-between; }
+      justify-content: space-between;
+      flex-flow: wrap;
+      color: white; }
       .login form .modal-body {
-        width: 50%;
-        margin: 0; }
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: space-between; }
+        .login form .modal-body .form-group {
+          width: calc(50% - 2.5rem); }
+        .login form .modal-body .obligatory01 {
+          position: absolute;
+          top: 50px;
+          left: 3vw;
+          width: calc(50% - 3rem); }
+        .login form .modal-body .obligatory02 {
+          position: absolute;
+          top: 50px;
+          left: 43.5vw;
+          width: calc(50% - 3rem); }
         .login form .modal-body .label_01 {
-          font-size: 1.5rem; }
+          font-size: 1.6rem;
+          color: white; }
         .login form .modal-body .form-control {
           height: 30px; }
       .login form .modal-footer {
         display: flex;
-        margin: 0 0 0 3rem;
-        width: 50%; }
+        flex-flow: wrap row;
+        margin: 3rem 0 0 0;
+        width: 100%; }
         .login form .modal-footer .checkbox {
-          order: 3;
-          align-self: center;
-          margin: .6rem 0 0 0; }
+          padding: 0 0 0 2rem;
+          width: 72%;
+          display: flex; }
         .login form .modal-footer button {
-          order: 2;
-          font-size: 1.3rem;
-          padding: .8rem 1.3rem .8rem 1.3rem;
-          border-radius: .5rem;
-          height: 3.5rem;
-          width: 8rem; }
+          font-size: 1.5rem;
+          padding: 0.8rem 1.3rem 0.8rem 1.3rem;
+          border-radius: 0.5rem;
+          height: 3.8rem;
+          width: 13rem; }
         .login form .modal-footer .actions {
-          order: 1;
-          padding: 0;
-          margin: 0 0 2rem 1.2rem; }
+          padding: 0 1rem 0 1rem;
+          margin: 3rem 0 0rem 0;
+          flex-flow: nowrap row;
+          justify-content: space-between;
+          width: 100%; }
           .login form .modal-footer .actions a {
-            font-size: 1.3rem; }
+            font-size: 1.4rem;
+            text-align: left;
+            display: block;
+            width: auto;
+            color: white; }
     .login .form-control-feedback {
       top: 33px;
       pointer-events: auto; } }
 
-/*-----iPhone4 -----*/
+/*-----iPhone4 portrait -----*/
 @media (max-width: 320px) and (max-height: 480px) {
   .login {
     padding: 5% 6% 5% 6%; }
@@ -12776,7 +12824,7 @@ html, body {
       pointer-events: auto; }
     .login .modal-footer button {
       font-size: 1.4rem;
-      border-radius: .7rem;
+      border-radius: 0.7rem;
       height: 4rem;
       width: 9rem; }
     .login .modal-footer .actions {
@@ -12787,4 +12835,31 @@ html, body {
       color: #525557;
       font-size: 1.2rem; }
     .login .lbl_01 {
+      font-size: 1.1rem; } }
+
+/*-----iPhone4 landscape -----*/
+@media (max-width: 480px) and (max-height: 320px) {
+  .login {
+    padding: 1% 6% 4% 6%; }
+    .login form .form-control {
+      height: 30px;
+      padding: 5px; }
+    .login form .modal-body .obligatory01 {
+      left: 4vw; }
+    .login form .modal-body .obligatory02 {
+      left: 46.5vw; }
+    .login form .modal-footer {
+      margin: 2.3rem 0 0 0; }
+      .login form .modal-footer .checkbox {
+        width: 65%; }
+        .login form .modal-footer .checkbox label {
+          margin: 0; }
+      .login form .modal-footer .actions {
+        margin: 1rem 0 0 0; }
+        .login form .modal-footer .actions a {
+          font-size: 1.1rem; }
+    .login form .label_01 {
+      color: #525557;
+      font-size: 1.2rem; }
+    .login form .lbl_01 {
       font-size: 1.1rem; } }

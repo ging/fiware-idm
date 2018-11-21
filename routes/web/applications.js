@@ -104,8 +104,8 @@ router.get('/:applicationId/pep/:pepId/reset_password',                      web
 router.delete('/:applicationId/pep/:pepId/delete',                           web_check_perm_controller.owned_permissions,    csrfProtection,    web_peppx_controller.delete_pep);
 
 // Routes to handle token type
-router.put('/:applicationId/token_type/change',                             web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.change_token_type);
-router.get('/:applicationId/token_type/reset',                              web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.reset_jwt_secret);
+router.put('/:applicationId/token_types/change',                             web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.change_token_type);
+router.get('/:applicationId/token_types/reset',                              web_check_perm_controller.owned_permissions,    csrfProtection,    web_app_controller.reset_jwt_secret);
 
 // Routes to handle SAML with eidas
 if (config.eidas) {

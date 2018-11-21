@@ -31,7 +31,8 @@ exports.token = function(req,res, next){
 	var response = new Response(res);
 
 	oauth.token(request,response).then(function(token) {
-        if (token.client.token_type === 'jwt') {
+        debug(token.scope)
+        if (token.scope.includes('jwt')) {
             response.body.token_type = 'jwt'
             delete response.body.expires_in
         }
@@ -280,12 +281,11 @@ exports.authenticate_token = function(req, res, next) {
         var error = {message: 'Cannot handle 2 authentications levels at the same time', code: 400, title: 'Bad Request'}
         return res.status(400).json(error)
     }
-
     if (req_app) {
         models.oauth_client.findById(req_app).then(function(application) {
-            if (application && application.token_type === 'jwt') {
+            if (application && application.token_types.includes('jwt')) {
                 authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret)
-            } else if (application && application.token_type === 'bearer') {
+            } else if (application && application.token_types.includes('bearer')) {
                 authenticate_bearer(req, res, action, resource, authzforce, req_app)
             } else {
                 var message = {

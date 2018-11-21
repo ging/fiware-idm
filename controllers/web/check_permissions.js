@@ -101,7 +101,7 @@ function check_user_action(application, path, method, permissions) {
 	    		return true;
 	    	}
 	        break;    
-	    case (path.includes('edit') || path.includes('iot') || path.includes('pep') || path.includes('token_type')):
+	    case (path.includes('edit') || path.includes('iot') || path.includes('pep') || path.includes('token_types')):
 	        if (permissions.includes('2')) {
 				return true;
 			}

@@ -14,7 +14,7 @@ $(document).ready(function() {
 
 		// Send put request
         var put_request = $.ajax({
-            url: window.location.pathname+'/token_type/change',
+            url: window.location.pathname+'/token_types/change',
             type: 'PUT',
             beforeSend: beforeSend($('input:hidden[name=_csrf]').val()),
             data: { token_types: token_types }

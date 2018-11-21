@@ -63,7 +63,7 @@ exports.index = function(req, res) {
 							 'redirect_uri', 
 							 'grant_type', 
 							 'response_type',
-							 'token_type',
+							 'token_types',
 							 'jwt_secret', 
 							 'client_type']
 			}]
@@ -114,7 +114,7 @@ exports.create = function(req, res) {
 			application.response_type = ['code', 'token']
 		}
 
-		application.jwt_secret = (req.body.application.token_type === 'bearer') ? null : crypto.randomBytes(16).toString('hex').slice(0,16)
+		application.jwt_secret = (req.body.application.token_types.includes('jwt')) ? crypto.randomBytes(16).toString('hex').slice(0,16) : null 
 
 		var create_application = application.save({fields: ['id', 
 										  'secret', 
@@ -124,7 +124,7 @@ exports.create = function(req, res) {
 									      'redirect_uri', 
 									      'image',
 									      'grant_type',
-									      'token_type',
+									      'token_types',
 									      'jwt_secret',
 									      'response_type'] })
 
@@ -181,8 +181,8 @@ exports.update = function(req, res) {
 		req.application.client_type = (req.body.application.client_type) ? req.body.application.client_type : req.application.client_type
 		req.application.image = 'default'
 
-		req.application.token_type = (req.body.application.token_type) ? req.body.application.token_type : req.application.token_type
-		req.application.jwt_secret = (req.body.application.token_type === 'bearer') ? null : crypto.randomBytes(16).toString('hex').slice(0,16)
+		req.application.token_types = (req.body.application.token_types) ? req.body.application.token_types : req.application.token_types
+		req.application.jwt_secret = (req.body.application.token_types.includes('bearer')) ? crypto.randomBytes(16).toString('hex').slice(0,16) : null 
 
 		if (oauth_type) {
 			req.application.grant_type = oauth_type.grant_type

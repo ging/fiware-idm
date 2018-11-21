@@ -64,7 +64,7 @@
                                     <h6 class="panel-heading">Client Secret</h6>
                                     <p><%= application.secret %></p>
                                 </div>
-                                <% if (application.token_type === 'jwt') { -%>
+                                <% if (application.token_types.includes('jwt')) { -%>
                                     <div id="token_type" class="jwt_type">
                                 <% } else { -%>
                                     <div id="token_type">
@@ -97,7 +97,7 @@
                                             </div>
                                             <div class="col-md-2 actions_token_type">
                                                 <br>
-                                                <a href="/idm/applications/<%= application.id %>/token_type/reset" class="btn btn-default reset_secret">Reset secret</a>
+                                                <a href="/idm/applications/<%= application.id %>/token_types/reset" class="btn btn-default reset_secret">Reset secret</a>
                                             </div>
                                         </div>
                                     </div>
@@ -342,7 +342,7 @@
 <script src="/javascripts/applications/handle_authorize_organizations.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_get_trusted_applications.js" type="text/javascript"></script>
 <script src="/javascripts/applications/handle_add_trusted_applications.js" type="text/javascript"></script>
-<script src="/javascripts/applications/handle_token_type.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_token_types.js" type="text/javascript"></script>
 
 <script type="text/javascript">
     $('.panel-title a:first-child').mouseover(function(){

@@ -628,7 +628,7 @@ exports.change_token_type = function(req, res, next) {
 			}
 		).then(function(reseted) {
 			if (reseted[0] === 1) {
-				if (req.body.token_type.includes('jwt')) {
+				if (req.body.token_types.includes('jwt')) {
 					response['jwt_secret'] = jwt_secret
 				}
 				response.message = {text: ' Change token type.', type: 'success'}

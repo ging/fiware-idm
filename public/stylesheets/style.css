@@ -12580,7 +12580,7 @@ body {
 @media (max-width: 1200px) {
   html,
   body {
-    background-position: right; }
+    background-position: inherit; }
   .row .container-fluid.info .logo-header .brand {
     height: 9rem; }
   .row .container-fluid.info .cred {
@@ -12593,10 +12593,8 @@ body {
 @media (max-width: 800px) {
   html,
   body {
-    background-size: auto 100%; }
-    html .row .container-fluid.info .logo-header .brand,
-    body .row .container-fluid.info .logo-header .brand {
-      height: 11rem; }
+    background-size: auto 100%;
+    background-position: inherit; }
     html .row .container-fluid.info .cred,
     body .row .container-fluid.info .cred {
       width: 60%;

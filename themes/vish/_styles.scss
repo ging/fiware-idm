@@ -93,7 +93,7 @@ body {
 @media (max-width: 1200px) {
   html,
   body {
-    background-position: right;
+    background-position: inherit;
   }
 
   .row {
@@ -119,13 +119,9 @@ body {
   html,
   body {
     background-size: auto 100%;
+    background-position: inherit;
     .row {
       .container-fluid.info {
-        .logo-header {
-          .brand {
-            height: 11rem;
-          }
-        }
         .cred {
           width: 60%;
           margin: 3rem 0 1rem 0;

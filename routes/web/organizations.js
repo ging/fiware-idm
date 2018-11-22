@@ -5,7 +5,8 @@ var path = require('path');
 var uuid = require('uuid');
 var csrf = require('csurf')
 var bodyParser = require('body-parser');
-var csrfProtection = csrf({ cookie: true })
+var csrfProtection = csrf({ cookie: true });
+var fs = require('fs');
 
 // Home web Controller
 var web_org_controller = require('../../controllers/web/index').organizations;
@@ -16,8 +17,11 @@ var web_man_memb_controller = require('../../controllers/web/index').manage_memb
 router.param('organizationId',  web_org_controller.load_organization);
 
 // Route to save images of applications
-var imageOrgUpload = multer.diskStorage({
+var imageOrgUpload = multer.diskStorage({			
     destination: function(req, file, callback) {
+    	if (!fs.existsSync('./public/img/organizations/')){
+		  fs.mkdirSync('./public/img/organizations/');
+		}
         callback(null, './public/img/organizations/')
     },
     filename: function(req, file, callback) {

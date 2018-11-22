@@ -1,6 +1,6 @@
 var path = require('path');
 var database = require('../config').database;
-var external_auth = require('../config').external_auth
+var external_auth = require('../config').external_auth;
 
 // Load ORM Model
 var Sequelize = require('sequelize');
@@ -59,8 +59,11 @@ var eidas_credentials = sequelize.import(path.join(__dirname,'eidas_credentials'
 var trusted_application = sequelize.import(path.join(__dirname,'trusted_application'));
 
 // Import user table
-var user = external_auth.enabled ? 
-  ext_sequelize.import(path.join(__dirname, external_auth.database.user_table)) : sequelize.import(path.join(__dirname, 'user'));
+var user = sequelize.import(path.join(__dirname, 'user'));
+
+// Import user table for external auth database if enabled
+if (external_auth.enabled)
+    var user_ext = ext_sequelize.import(path.join(__dirname, '../external_auth/external_user_model'));
 
 // Import user registration profile table
 var user_registration_profile = sequelize.import(path.join(__dirname,'user_registration_profile'));
@@ -113,6 +116,8 @@ auth_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(user, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(iot, {onDelete: 'cascade'});
+oauth_access_token.belongsTo(oauth_refresh_token, {foreignKey: 'refresh_token', targetKey: 'refresh_token', onDelete: 'cascade'});
+oauth_access_token.belongsTo(oauth_authorization_code, {foreignKey: 'authorization_code', targetKey: 'authorization_code', onDelete: 'cascade'});
 
 // Relation between OAuthClient and authorization codes
 oauth_authorization_code.belongsTo(oauth_client, {onDelete: 'cascade'});
@@ -122,6 +127,7 @@ oauth_authorization_code.belongsTo(user, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(user, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(iot, {onDelete: 'cascade'});
+oauth_refresh_token.belongsTo(oauth_authorization_code, { foreignKey: 'authorization_code', targetKey: 'authorization_code', onDelete: 'cascade'});
 
 // Relation between roles and OAuthClients
 role.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});
@@ -161,6 +167,8 @@ eidas_credentials.belongsTo(oauth_client, { foreignKey: { allowNull: false, uniq
 
 // Export tables
 exports.user = user;
+if (external_auth.enabled) 
+  exports.user_ext = user_ext;
 exports.user_registration_profile = user_registration_profile;
 exports.organization = organization;
 exports.user_organization = user_organization;

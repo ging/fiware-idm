@@ -24,7 +24,8 @@ if (config.eidas.enabled) {
       oauthController.check_user);
 }
 router.post('/authorize', 		oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);
-router.post('/enable_app', 		oauthController.response_type_required,  oauthController.load_user,	oauthController.enable_app);
+router.post('/enable_app',    oauthController.response_type_required,  oauthController.load_application,  oauthController.load_user,  oauthController.enable_app);
+router.post('/revoke',        oauthController.revoke_token);
 
 // catch 404 and forward to error handler
 router.use(function(req, res, next) {

@@ -1,8 +1,5 @@
 // User model
 var config = require('../config.js');
-var auth_driver = config.external_auth.enabled ?
-    require('../helpers/' + config.external_auth.authentication_driver) :
-    require('../helpers/authentication_driver');
 
 // Vars for encrypting
 var crypto = require('crypto');
@@ -80,9 +77,15 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             defaultValue: null
         }, extra: {
-            type: DataTypes.STRING
+            type: DataTypes.JSON
         }, scope: {
-            type: DataTypes.STRING(80)
+            type: DataTypes.STRING(2000),
+            get: function () {
+              return (this.getDataValue('scope')) ? this.getDataValue('scope').split(',') : []
+            },
+            set: function (val) {
+              this.setDataValue('scope', (val) ? val.toString() : null)
+            }
         }
         }, {
             tableName: 'user',
@@ -91,7 +94,10 @@ module.exports = function(sequelize, DataTypes) {
         }
     );
 
-    User.prototype.verifyPassword = auth_driver.verifyPassword;
-
+    User.prototype.verifyPassword = function(password) {
+        var encripted = crypto.createHmac('sha1', (this.salt) ? this.salt : key).update(password).digest('hex');
+        return encripted === this.password;
+    }   
+        
     return User;
 }

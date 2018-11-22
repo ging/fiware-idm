@@ -5,7 +5,8 @@ var path = require('path');
 var uuid = require('uuid');
 var csrf = require('csurf')
 var bodyParser = require('body-parser');
-var csrfProtection = csrf({ cookie: true })
+var csrfProtection = csrf({ cookie: true });
+var fs = require('fs');
 
 // Home web Controller
 var web_user_controller = require('../../controllers/web/index').users;
@@ -17,6 +18,9 @@ router.param('userId',  web_user_controller.load_user);
 // Route to save images of users
 var imageUserUpload = multer.diskStorage({
     destination: function(req, file, callback) {
+    	if (!fs.existsSync('./public/img/users/')){
+		  fs.mkdirSync('./public/img/users/');
+		}
         callback(null, './public/img/users/')
     },
     filename: function(req, file, callback) {

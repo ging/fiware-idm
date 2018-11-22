@@ -77,7 +77,65 @@
     margin-top: 25px;
     padding-top: 15px;
   }
+
 }
+
+#eidas_credentials, #eidas_attributes {
+  .eidas {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+  }
+
+  .eidas_input {
+      width: 48%;
+      justify-content: space-between;
+      margin-bottom: 8px;
+  }
+
+  .eidas_input_company {
+      flex: 0 0 100%;
+      margin-bottom: 8px;   
+  }
+
+  .control-label {
+    &.group {
+      border-bottom: 1px solid #B6B6B6; 
+      margin-bottom: 8px;
+    }
+  }
+
+  .attribute {
+    color: #5B5B5F;
+    margin-bottom: 4px;
+    font-weight: normal;
+    input {
+      margin-right: 7px;
+    }
+  }
+
+  .dropdown-menu {
+    position: relative;
+  }
+}
+
+#eidas_attributes {
+  .attribute {
+    label {
+      min-height: 18px;
+      vertical-align: text-top;
+      margin-bottom: 0;
+      font-weight: normal;
+      cursor: pointer;
+      width:100%;
+    }
+    input {
+      vertical-align:middle;
+      margin-top: -2px;
+    }
+  }
+}
+
 #create_permission_form{
   .panel-group{
     margin-top: -7px;
@@ -207,6 +265,7 @@
     margin-top: -6px;
   }
 }
+
 .workflow-roles{
   .modal-dialog {
     @extend .modal-lg;

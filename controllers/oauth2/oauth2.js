@@ -5,9 +5,11 @@ var user_permissions = require('../../models/model_oauth_server.js').user_permis
 var trusted_applications = require('../../models/model_oauth_server.js').trusted_applications;
 var config_authzforce = require('../../config.js').authorization.authzforce
 var config_eidas = require('../../config.js').eidas
+var config_oauth2 = require('../../config.js').oauth2
 var userController = require('../../controllers/web/users');
 var oauthServer = require('oauth2-server');
 var jsonwebtoken = require('jsonwebtoken');
+var url = require('url');
 var is_hex = require('is-hex');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
@@ -29,13 +31,15 @@ exports.token = function(req,res, next){
 	var response = new Response(res);
 
 	oauth.token(request,response).then(function(token) {
-        if (token.client.token_type === 'jwt') {
+        if (token.scope.includes('jwt')) {
             response.body.token_type = 'jwt'
             delete response.body.expires_in
         }
         res.json(response.body)
     }).catch(function(err){
-        res.status(500).json(err)
+        debug('Error ' + err)
+        // Request is not authorized.
+        return res.status(err.code || 500).json(err.message || err)
     })
 }
 
@@ -163,28 +167,34 @@ function check_user_authorized_application(req, res) {
 
     debug(' --> check_user_authorized_application')
 
-    search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
+    if (config_oauth2.ask_authorization) {
+        search_user_authorized_application(req.session.user.id, req.application.id).then(function(user) {
+            if (user) {
+                req.user = user
+                oauth_authorize(req, res)
+            } else {
+                if (req.application.redirect_uri !== req.query.redirect_uri) {
+                    res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
+                }
 
-        if (user) {
-            req.user = user
-            oauth_authorize(req, res)
-        } else {
-            if (req.application.redirect_uri !== req.query.redirect_uri) {
-                res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
+                res.render('oauth/authorize', {application: {
+                    name: req.application.name,
+                    response_type: req.query.response_type,
+                    id: req.query.client_id,
+                    redirect_uri: req.query.redirect_uri,
+                    url: '/enable_app?'+url.parse(req.url).query,
+                    state: req.query.state }
+                });
             }
-
-            res.render('oauth/authorize', {application: {
-                name: req.application.name,
-                response_type: req.query.response_type,
-                id: req.query.client_id,
-                redirect_uri: req.query.redirect_uri,
-                state: req.query.state }
-            });
-        }
-    }).catch(function(error) {
-        req.session.errors = error
-        res.redirect('/')
-    })
+        }).catch(function(error) {
+            debug("Error: ", error)
+            req.session.errors = error
+            res.redirect('/')
+        })
+    } else {
+        req.user = req.session.user
+        oauth_authorize(req, res)
+    }
 }
 
 // Search user that has authorized the application
@@ -239,14 +249,18 @@ function oauth_authorize(req, res) {
     debug(' --> oauth_authorize')
 
     req.body.user = req.user
-    req.body.user.dataValues.type = 'user'
-    debug(req.body.user)
+    if(req.body.user.dataValues === undefined) {
+      req.body.user["dataValues"] = {}
+    }
+    req.body.user.dataValues["type"] = 'user'
+
     var request = new Request(req);
     var response = new Response(res);
 
     oauth.authorize(request, response).then(function(success) {
         res.redirect(success)
     }).catch(function(err){
+        debug("Error: ", err)
         res.status(err.code || 500).json(err)
     })
 }
@@ -269,10 +283,12 @@ exports.authenticate_token = function(req, res, next) {
 
     if (req_app) {
         models.oauth_client.findById(req_app).then(function(application) {
-            if (application && application.token_type === 'jwt') {
-                authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret)
-            } else if (application && application.token_type === 'bearer') {
-                authenticate_bearer(req, res, action, resource, authzforce, req_app)
+            if (application) {
+                if (application.token_types.includes('jwt')) {
+                    authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret)
+                } else {
+                    authenticate_bearer(req, res, action, resource, authzforce, req_app)
+                }
             } else {
                 var message = {
                     message: 'Unauthorized', 
@@ -291,6 +307,37 @@ exports.authenticate_token = function(req, res, next) {
     }
 }
 
+function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_secret) {
+
+    debug(' --> authenticate_jwt')
+
+    jsonwebtoken.verify(req.query.access_token, jwt_secret, function(err, decoded) {
+        if (err) {
+            debug('Error ' + err)
+            authenticate_bearer(req, res, action, resource, authzforce, req_app)
+        } else {
+            var identity = {
+                username: decoded.username,
+                gravatar: decoded.isGravatarEnabled,
+                email: decoded.email,
+                id: decoded.id,
+                type: (decoded.type) ? decoded.type : 'app'
+            }
+
+            var application_id = decoded.app_id
+
+            create_oauth_response(identity, application_id, action, resource, authzforce, req_app).then(function(response) {
+                return res.status(201).json(response)
+            }).catch(function (err) {
+                debug('Error ' + err)
+                // Request is not authorized.
+                return res.status(err.code || 500).json(err.message || err)
+            });
+        }
+
+    });
+}
+
 function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
 
     debug(' --> authenticate_bearer')
@@ -305,7 +352,6 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
         query: req.query,
         body: req.body
     });
-
     var response = new Response(res);
 
     oauth.authenticate(request, response, options).then(function (token_info) {
@@ -321,37 +367,23 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
     });
 }
 
+// POST /oauth2/revoke -- Function to revoke a token
+exports.revoke_token = function(req, res, next) {
 
-function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_secret) {
+    debug(' --> revoke_token')
 
-    debug(' --> authenticate_jwt')
+    var options = { }
 
-    jsonwebtoken.verify(req.query.access_token, jwt_secret, function(err, decoded) {
-        if (err) {
-            var message = {
-                message: err,
-                code: 401,
-                title: 'Unauthorized'
-            }
-            return res.status(401).json(message)
-        }
+    var request = new Request(req);
+    var response = new Response(res);
 
-        var identity = {
-            username: decoded.username,
-            gravatar: decoded.isGravatarEnabled,
-            email: decoded.email,
-            id: decoded.id,
-            type: (decoded.type) ? decoded.type : 'app'
-        }
-
-        var application_id = decoded.app_id
-
-        create_oauth_response(identity, application_id, action, resource, authzforce, req_app).then(function(response) {
-            return res.status(201).json(response)
-        }).catch(function (err) {
-            debug('Error ' + err)
-            // Request is not authorized.
-            return res.status(err.code || 500).json(err.message || err)
-        });
+    return oauth.revoke(request, response, options).then(function (revoked) {
+        debug('Success revoking a token')
+    }).then(function(response){
+        return res.status(200).json(response)
+    }).catch(function (err) {
+        debug('Error ' + err)
+        // Request is not authorized.
+        return res.status(err.code || 500).json(err.message || err)
     });
 }

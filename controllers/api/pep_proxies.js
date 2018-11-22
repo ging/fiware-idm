@@ -16,7 +16,7 @@ exports.authenticate = function(id, password, callback) {
     }).then(function(pep_proxy) {
         if (pep_proxy) {
             // Verify password 
-            if(pep_proxy.verifyPassword(pep_proxy.salt, password)){
+            if(pep_proxy.verifyPassword(password)){
                 callback(null, pep_proxy);
             } else { callback(new Error('invalid')); }   
         } else { callback(new Error('pep_proxy_not_found')); }

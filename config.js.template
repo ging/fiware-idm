@@ -31,6 +31,7 @@ config.password_encryption = {
 config.oauth2 = {
     authorization_code_lifetime: 5 * 60,            // Five minutes
     access_token_lifetime: 60 * 60,                 // One hour
+    ask_authorization: true,                        // Prompt a message to users to allow the application to read their details
     refresh_token_lifetime: 60 * 60 * 24 * 14       // Two weeks
 }
 
@@ -68,15 +69,17 @@ config.database  = {
 // External user authentication
 config.external_auth = {
     enabled: (process.env.IDM_EX_AUTH_ENABLED || false ),
-    authentication_driver: (process.env.IDM_EX_AUTH_DRIVER ||'custom_authentication_driver'),
+    id_prefix: (process.env.IDM_EX_AUTH_ID_PREFIX || 'external_'),
+    password_encryption: (process.env.IDM_EX_AUTH_PASSWORD_ENCRYPTION || 'sha1'),    // bcrypt and sha1 supported
+    password_encryption_key: (process.env.IDM_EX_AUTH_PASSWORD_ENCRYPTION_KEY || undefined),
     database: {
         host: (process.env.IDM_EX_AUTH_DB_HOST ||'localhost'),
+        port: (process.env.IDM_EX_AUTH_PORT || undefined),
         database: (process.env.IDM_EX_AUTH_DB_NAME ||'db_name'),
         username: (process.env.IDM_EX_AUTH_DB_USER || 'db_user'),
         password: (process.env.IDM_EX_AUTH_DB_PASS ||'db_pass'),
-        user_table: (process.env.IDM_EX_AUTH_DB_USER_TABLE ||'user'),
-        dialect: (process.env.IDM_EX_AUTH_DIALECT || 'mysql'),
-        port: (process.env.IDM_EX_AUTH_PORT || undefined)
+        user_table: (process.env.IDM_EX_AUTH_DB_USER_TABLE ||'user_view'),
+        dialect: (process.env.IDM_EX_AUTH_DIALECT || 'mysql')
     }
 }
 
@@ -93,7 +96,7 @@ config.site = {
     theme: (process.env.IDM_THEME || 'default')
 };
 
-// Config eIDAs Authentication
+// Config eIDAS Authentication
 config.eidas = {
     enabled:       (process.env.IDM_EIDAS_ENABLED || false),
     gateway_host:  (process.env.IDM_EIDAS_GATEWAY_HOST || 'localhost'),

@@ -1,8 +1,10 @@
+
 /****************************** Default colors */
 @import "../default/colors";
 
-/****************************** Custom colors */
-@import "colors";
+/****************************** Custom general styles */
+
+@import "mixins";
 
 /****************************** Default styles */
 @import "../default/styles_call";

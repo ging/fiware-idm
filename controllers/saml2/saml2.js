@@ -19,6 +19,8 @@ var idp_options = {
 };
 var idp = new saml2.IdentityProvider(idp_options);
 
+var sp_states = {};
+
 // GET /idm/applications/:applicationId/step/eidas -- Form to add eIDAs credentials to application
 exports.step_new_eidas_crendentials = function(req, res, next) {
 
@@ -244,7 +246,7 @@ exports.login = function(req, res, next) {
 exports.saml2_application_login = function(req, res, next) { 
 	debug("--> saml2_application_login", req.url)
 
-	var state = get_state(req.url)
+	var state = sp_states['pepe'];
 
 	var path = '/oauth2/authorize?'+
             				'response_type=code' + '&' +
@@ -465,7 +467,7 @@ exports.create_auth_request = function(req, res, next) {
 			})
 		}
 
-		req.sp.assert_endpoint = req.sp.assert_endpoint + '?state=' + get_state(req.url);
+		sp_states['pepe'] = get_state(req.url);
 
 		console.log('ASSERT END', req.sp.assert_endpoint	);
 

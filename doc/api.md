@@ -2,7 +2,7 @@
 # API OVERVIEW
 
 + [Idm API](#def-apiIdm)
-+ [Using the FIWARE LAB instance (OAuth2)](#def-apiOAuth)
++ [OAuth 2.0 API](#def-apiOAuth)
     - [Register your user account](#def-userAccount)
     - [Register your application](#def-registerApplication)
     - [OAuth2 Authentication](#def-oauth2Auth)
@@ -63,7 +63,7 @@ Users can perform these action through the API:
 You can find a full description of how to make API requests in the [Keyrock Apiary](https://keyrock.docs.apiary.io/). The API requests should include an authentication token that can be created as is described [here.](https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication)
 
 <a name="def-apiOAuth"></a>
-# Using the FIWARE LAB instance (OAuth2)
+# OAuth 2.0 API
 
 <a name="def-userAccount"></a>
 ## Register your user account

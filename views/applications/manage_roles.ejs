@@ -49,6 +49,61 @@
             </div>
         </div>
     </div>
+    <div id="create_application_roles">
+        <div class="site-client-roles">
+            <div class="workflow workflow-roles static_page">
+            	<form id="assign_role_permission_form" action="/idm/applications/<%= application.id %>/edit/roles" method="POST">
+            		<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+	                <input type="hidden" id="submit_assignment" name="submit_assignment" value="" />
+	                <div class="modal-dialog">
+	                    <div class="modal-content">
+	                        <div class="modal-header">
+	                            <h3>Manage Data Usage</h3>
+	                        </div>
+	                        <fieldset id="manage_application_roles__update_owners" class="js-tab-pane active tab-pane">
+			                    <section id="role_list" class="role_list">
+			                        <header>
+			                            <h4>Policies</h4>
+			                            <button id="permButton" type="button" data-toggle="modal" data-target="#create_usage_policy" class="btn ajax-modal">
+			                            	<i class="fa fa-plus"></i>
+			                            </button>
+			                        </header>
+			                        <div class="btn-group-vertical roles update_owners_roles" data-toggle="buttons" id="update_owners_roles">
+      						
+																<div id="fcebd605-bd3d-41f0-9fd3-9dc1d3b95b9e" class="btn btn-default role no-editable">
+																    <input type="radio" name="" id="" autocomplete="off" data-update_owners-id="">
+																    <label style="width: 80%; overflow: hidden; text-overflow: ellipsis;">Get AVG</label>
+																    <a href="/idm/applications/ec05188d-5a67-462e-9028-52d75ef4e62d/edit/roles/fcebd605-bd3d-41f0-9fd3-9dc1d3b95b9e/edit" class="ajax-inline-edit">
+															        	<i class="fa fa-edit"></i>
+															        </a>
+															        <a data-toggle="modal" data-target="#delete_role" class="ajax-modal delete">
+															        	<i class="far fa-trash-alt"></i>
+															        </a>
+																</div>
+																<div id="fcebd605-bd3d-41f0-9fd3-9dc1d3b95b9e" class="btn btn-default role no-editable">
+																    <input type="radio" name="" id="" autocomplete="off" data-update_owners-id="">
+																    <label style="width: 80%; overflow: hidden; text-overflow: ellipsis;">My custom policy</label>
+																    <a href="/idm/applications/ec05188d-5a67-462e-9028-52d75ef4e62d/edit/roles/fcebd605-bd3d-41f0-9fd3-9dc1d3b95b9e/edit" class="ajax-inline-edit">
+															        	<i class="fa fa-edit"></i>
+															        </a>
+															        <a data-toggle="modal" data-target="#delete_role" class="ajax-modal delete">
+															        	<i class="far fa-trash-alt"></i>
+															        </a>
+																</div>
+															</div>
+			                      
+												</section>
+			                </fieldset>
+			                <span id="alert_error" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+	                    </div>
+	                </div>
+	                <div class="modal-footer">
+	                	<input class="btn btn-primary pull right" type="submit" value="Save" />
+	                </div>
+	            </form>	
+            </div>
+        </div>
+    </div>
 </div>	
 
 <div class="messages"></div>
@@ -61,6 +116,7 @@
 <%- include _delete_role %>
 <%- include _create_permission %>
 <%- include _delete_permission %>
+<%- include _create_usage_policy %>
 <%- include ../templates/./applications/./_new_role_row %>
 <%- include ../templates/./applications/./_new_permission_row %>
 <%- include ../templates/./applications/./_edit_role %>

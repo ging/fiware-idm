@@ -78,7 +78,7 @@ function getClient(clientId, clientSecret) {
   return oauth_client
     .findOne(options)
     .then(function (client) {
-      if (!client) return new Error("client not found");
+      if (!client) return null;//new Error("client not found");
       
       var clientWithGrants = client
 

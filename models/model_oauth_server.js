@@ -751,6 +751,9 @@ function validateScope(user, client, scope) {
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
       return false;
     }
+    if (requested_scopes.includes('permanent') || requested_scopes.includes('jwt')) {
+      return (requested_scopes.every(r=> client.token_types.includes(r))) ? requested_scopes : false;
+    }
     return requested_scopes;
   } else {
     return ['bearer']

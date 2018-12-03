@@ -2,6 +2,8 @@ var debug = require('debug')('idm:api-applications');
 var models = require('../../models/models.js');
 var uuid = require('uuid');
 var _ = require('lodash');
+var crypto = require('crypto'); 
+
 
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;

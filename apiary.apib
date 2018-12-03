@@ -244,7 +244,10 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "implicit",
               "password"
             ],
-            "token_types": "jwt,permanent"
+            \"token_types\": [
+                \"jwt\",
+                \"permanent\"
+            ]
           }
         }
 
@@ -335,7 +338,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                 "name": "new name",
                 "description": "new description",
                 "redirect_uri": "new redirect uri",
-                "token_types": "permanent",
+                "token_types": ["permanent"]
                 "grant_type": [
                     "authorization_code",
                     "password"

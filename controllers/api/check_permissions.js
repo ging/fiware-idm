@@ -132,17 +132,15 @@ function obtain_defined_policies(url, method, parameters) {
 				method_function = application_policy.method_function[method]['list']
 			}
 		}
-
 		// Replace all request parameter with empty values
 		if (!_.isEmpty(parameters)) {
 			for (i in parameters) {
 				key = key.replace('/'+parameters[i], '')
 			}
 		}
-
 		// Delete "v1" from key and add method and substitute slash with colon
 		key = key.replace(/\//g, ':').substring(4) + ':' + method_function
-
+		
 		// Obtain permission defined from policy
 		var needed_permissions = (application_policy.actions[key]) ? application_policy.actions[key].split(',') : []
 

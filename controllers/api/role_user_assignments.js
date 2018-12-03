@@ -71,11 +71,10 @@ exports.index_user_roles = function(req, res) {
 	})
 }
 
-// PUT /v1/applications/:applicationId/users/:user_id/roles/:role_id -- Add role user assignment
+// POST /v1/applications/:applicationId/users/:user_id/roles/:role_id -- Add role user assignment
 exports.addRole = function(req, res) {
 
 	debug('--> addRole')
-
 	if (req.changeable_role) {
 		var changeable_role_id = req.changeable_role.map(elem => elem.id)
 		if (!changeable_role_id.includes(req.role.id)) {

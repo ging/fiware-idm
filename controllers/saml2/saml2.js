@@ -19,6 +19,8 @@ var idp_options = {
 };
 var idp = new saml2.IdentityProvider(idp_options);
 
+var sp_states = {};
+
 // GET /idm/applications/:applicationId/step/eidas -- Form to add eIDAs credentials to application
 exports.step_new_eidas_crendentials = function(req, res, next) {
 
@@ -237,12 +239,22 @@ exports.login = function(req, res, next) {
 	delete req.body.password
 	delete req.query
 
-  	res.redirect(307, config.eidas.idp_host);
+  res.redirect(307, config.eidas.idp_host);
 }
 
 // POST /idm/applications/:applicationId/saml2/ReturnPage -- Response from eIDAs with user credentials
 exports.saml2_application_login = function(req, res, next) { 
-	debug("--> saml2_application_login")
+	debug("--> saml2_application_login", req.url)
+
+	var state = sp_states['pepe'];
+
+	var path = '/oauth2/authorize?'+
+            				'response_type=code' + '&' +
+            		   		'client_id=' + req.application.id + '&' +
+            		   		'state=' + state + '&' +
+            		   		'redirect_uri=' + req.application.redirect_uri
+
+  console.log('NEW PATH', path);
 
 	var options = {request_body: req.body};
 
@@ -278,7 +290,7 @@ exports.saml2_application_login = function(req, res, next) {
             var path = '/oauth2/authorize?'+
             				'response_type=code' + '&' +
             		   		'client_id=' + req.application.id + '&' +
-            		   		'state=xyz' + '&' +
+            		   		'state=' + state + '&' +
             		   		'redirect_uri=' + req.application.redirect_uri
 
             res.redirect(path)
@@ -407,6 +419,22 @@ exports.search_eidas_credentials = function(req, res, next) {
 	})
 }
 
+var get_state = function(url) {
+
+	console.log('PATH', url.split('?'));
+
+	var params = url.split('?')[1].split('&');
+	var state = '';
+	for (var p in params) {
+		if (params[p].split('=')[0] === 'state') {
+			state = params[p].split('=')[1];
+		}
+	}
+
+	console.log('STATE', state);
+	return state;
+}
+
 // Create auth xml request to be send to the idp
 exports.create_auth_request = function(req, res, next) {
 	if (req.sp) {
@@ -439,6 +467,9 @@ exports.create_auth_request = function(req, res, next) {
 			})
 		}
 
+		sp_states['pepe'] = get_state(req.url);
+
+		console.log('ASSERT END', req.sp.assert_endpoint	);
 
 		var xml = req.sp.create_authn_request_xml(idp, {
 			extensions: extensions
@@ -454,6 +485,8 @@ exports.create_auth_request = function(req, res, next) {
 		next()
 	}
 }
+
+
 
 // Function to generate SAML certifiactes
 function generate_app_certificates(app_id,eidas_credentials)  {

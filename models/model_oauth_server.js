@@ -78,7 +78,7 @@ function getClient(clientId, clientSecret) {
   return oauth_client
     .findOne(options)
     .then(function (client) {
-      if (!client) return new Error("client not found");
+      if (!client) return null;//new Error("client not found");
       
       var clientWithGrants = client
 
@@ -751,7 +751,10 @@ function validateScope(user, client, scope) {
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
       return false;
     }
-    return (requested_scopes.every(r=> client.token_types.includes(r))) ? requested_scopes : false;
+    if (requested_scopes.includes('permanent') || requested_scopes.includes('jwt')) {
+      return (requested_scopes.every(r=> client.token_types.includes(r))) ? requested_scopes : false;
+    }
+    return requested_scopes;
   } else {
     return ['bearer']
   }

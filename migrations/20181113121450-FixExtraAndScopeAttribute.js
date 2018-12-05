@@ -4,10 +4,10 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
       queryInterface.changeColumn('eidas_credentials', 'attributes_list', {
-        type: Sequelize.JSON()
+        type: Sequelize.JSON() + ' USING attributes_list::json'
       }),
       queryInterface.changeColumn('user', 'extra', {
-        type: Sequelize.JSON()
+        type: Sequelize.JSON()  + ' USING extra::json'
       }),
       queryInterface.changeColumn('user', 'scope', {
         type: Sequelize.STRING(2000),

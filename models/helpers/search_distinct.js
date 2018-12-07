@@ -26,13 +26,14 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 	}
 
 	var from = 'FROM ' + table + ''
+  var join='',on='';
 	if (join_table === 'user') {
-//    join_table = '"' + join_table + '"'
-		var join = 'RIGHT JOIN (SELECT * FROM "'+join_table+'" WHERE "username" LIKE :key) AS "'+join_table+'"'
+		join = 'RIGHT JOIN (SELECT * FROM "'+join_table+'" WHERE "username" LIKE :key) AS "'+join_table+'"'
+    on = 'ON '+table+'.'+join_table+'_id="'+join_table+'".id'
 	} else {
-		var join = 'RIGHT JOIN (SELECT * FROM '+join_table+' WHERE name LIKE :key) AS '+join_table+''
+		join = 'RIGHT JOIN (SELECT * FROM '+join_table+' WHERE name LIKE :key) AS '+join_table+''
+    on = 'ON '+table+'.'+join_table+'_id='+join_table+'.id'
 	}
-	var on = 'ON '+table+'.'+join_table+'_id='+join_table+'.id'
 	var where = 'WHERE '+entity_type+'_id=:entity_id'
 	var and = ''
 	if (table==='role_assignment') {
@@ -62,6 +63,6 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 				  and + '\n' +
 				  limit + '\n' +
 				  offset
- 
+
     return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})
 }

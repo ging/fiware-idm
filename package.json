@@ -8,6 +8,7 @@
     "create_db": "sequelize --env database db:create",
     "migrate_db": "sequelize --env database db:migrate",
     "seed_db": "sequelize --env database db:seed:all"
+
   },
   "dependencies": {
     "async": "^2.6.0",

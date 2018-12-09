@@ -62,7 +62,7 @@ module.exports = {
                     type: Sequelize.BOOLEAN,
                     defaultValue: false
                 }, extra: {
-                    type: Sequelize.JSON(), //Sequelize.STRING,
+                    type: Sequelize.STRING,
                     get: function () {
                         return (this.getDataValue('extra')) ? JSON.parse(this.getDataValue('extra')) : {}
                     },

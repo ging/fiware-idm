@@ -14,7 +14,7 @@ module.exports = {
         defaultValue: 'private'
       }),
       queryInterface.addColumn('eidas_credentials', 'attributes_list', {
-        type: Sequelize.JSON(), //Sequelize.TEXT(),
+        type: Sequelize.TEXT(),
         get: function () {
           return (this.getDataValue('attributes_list')) ? JSON.parse(this.getDataValue('attributes_list')) : {}
         },

@@ -13,23 +13,6 @@ var sequelize = new Sequelize(database.database, database.username, database.pas
 }
 );
 
-function setSequence() {
-  console.log('>>>>>>>> setSequence call');
-  return sequelize.query("SELECT setval('public.role_permission_id_seq', 10, true);", {type: Sequelize.QueryTypes.SELECT})
-}
-
-function setSeqPromise() {
-  return new Promise((resolve, reject) => {
-    setSequence().then(function(res) {
-      console.log('setSeqPromise>>>>>>>>>>>>>>>>>> public.role_permission_id_seq set res: ', res);
-      resolve(res)
-    }).catch(function(error) {
-      console.log('setSeqPromise error detected: ', error);
-      reject(error)
-    })
-  })
-}
-
 sequelize
 .authenticate()
 .then(() => {
@@ -38,6 +21,7 @@ sequelize
 })
 .catch(err => {
 
+    // added '3D000' error code for postgres cause not reference in dialect as 'ER_BAD_DB_ERROR'
     if (err.original.code === 'ER_BAD_DB_ERROR' || err.original.code === '3D000') {
         exec('npm run-script create_db', function(error, stdout, stderr){
             if (error) {
@@ -67,31 +51,10 @@ sequelize
                         "This user must be deleted when running on a production instance");
                         console.log( "****************");
                     }
-                    // set sequence or any other needed adaptation of the model or data seed
-                    if (database.dialect === 'postgres') {
-                        console.log('>>>>>>>>>>>>>>>>>> enter set sequence connect database >>>>>>>>>>>>>>>>>>>');
-                        sequelize
-                        .authenticate()
-                        .then(() => {
-                            console.log('Database is connected')
-                            setSeqPromise().then(res => {
-                               console.log('query OK ! res: ', res)
-                               process.exit()
-                            })
-                            .catch(error => {
-                              console.log('setSeqPromise error occured :', error)
-                              process.exit()
-                            })
-                        })
-                        .catch(err => {
-                          console.log('cannot connect to database error:', err)
-                          process.exit()
-                        })
+                    
+                    console.log("Database seeded")
+                    process.exit()
 
-                    } else {
-                      console.log("Database seeded")
-                      process.exit()
-                    }
                 });
             });
         });

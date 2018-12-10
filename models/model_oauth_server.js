@@ -98,7 +98,7 @@ function getClient(clientId, clientSecret) {
 }
 
 
-function getIdentity(id, password) {
+function getIdentity(id, password, oauth_client_id) {
 
   debug("-------getIdentity-------")
 
@@ -106,9 +106,12 @@ function getIdentity(id, password) {
     where: {email: id},
     attributes: ['id', 'username', 'gravatar', 'email', 'salt', 'password', 'scope', 'eidas_id', 'extra'],
   })
-
+  debug(oauth_client_id)
   var search_iot = iot.findOne({
-    where: {id: id},
+    where: {
+      id: id,
+      oauth_client_id: oauth_client_id
+    },
     attributes: ['id', 'password', 'salt'],
   })
 

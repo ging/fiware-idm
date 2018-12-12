@@ -164,11 +164,11 @@
 
 a.home i{@extend .fa-home;}
 a.home_orgs i{@extend .fa-home;}
-a.members i {@extend .fa-group;}
+a.members i {@extend .fa-users;}
 a.applications i{@extend .fa-cube;}
-a.organizations i, li.members i{@extend .fa-group;}
+a.organizations i, li.members i{@extend .fa-users;}
 a.notify i{@extend .fa-comment;}
 a.administrators i{@extend .fa-wrench;}
 a.list_users i{@extend .fa-user;}
-a.user_accounts i{@extend .fa-shield;}
+a.user_accounts i{@extend .fa-shield-alt;}
 a.endpoints_management i{@extend .fa-globe;}

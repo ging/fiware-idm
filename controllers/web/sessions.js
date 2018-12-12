@@ -1,15 +1,17 @@
 var gravatar = require('gravatar');
-var debug = require('debug')('idm:web-session_controller')
+var debug = require('debug')('idm:web-session_controller');
 
 var models = require('../../models/models.js');
 var userController = require('./users');
+
+var escape_paths = require('../../etc/escape_paths/paths.json').paths;
 
 // MW to authorized restricted http accesses
 exports.login_required = function(req, res, next){
 
     debug("--> login_required");
 
-    if (req.session.user || req.path.includes('/saml2/metadata') || req.path.includes('/saml2/login')) {
+    if (req.session.user || check_path(req.path)) {
         next();
     } else {
         req.session.errors = [{message: 'sessionExpired'}];
@@ -34,13 +36,11 @@ exports.password_check_date = function(req, res, next) {
 
     debug("--> password_check_date");
 
-    if (req.path.includes('/saml2/metadata') || req.path.includes('/saml2/login')) {
+    if (check_path(req.path)) {
         next()
     } else {
         var today = new Date((new Date()).getTime())
         var millisecondsPerDay = 24 * 60 * 60 * 1000;
-
-        //var d = new Date("January 6, 2017 11:13:00");
 
         var days_since_change = Math.round((today - req.session.user.change_password)/millisecondsPerDay); 
 
@@ -50,6 +50,20 @@ exports.password_check_date = function(req, res, next) {
         } else {
             next();
         }
+    }
+};
+
+// Check if path is included in the list of paths which not need a user session to be accessed
+function check_path(path) {
+    if (escape_paths.length > 0) {
+        for (var i = 0; i < escape_paths.length; i++) {
+            if (path.includes(escape_paths[i])) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        return true;
     }
 }
 

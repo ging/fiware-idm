@@ -26,11 +26,11 @@ function getAccessToken(bearerToken) {
   return oauth_access_token
     .findOne({
       where: {access_token: bearerToken},
-      attributes: [['access_token', 'accessToken'], ['expires', 'accessTokenExpiresAt'],'scope'],
+      attributes: [['access_token', 'accessToken'], ['expires', 'accessTokenExpiresAt'],'scope', 'valid'],
       include: [
         {
           model: user,
-          attributes: ['id', 'username', 'email', 'gravatar'],
+          attributes: ['id', 'username', 'email', 'gravatar', 'extra' , 'eidas_id'],
         },
         {
           model: iot,
@@ -72,13 +72,13 @@ function getClient(clientId, clientSecret) {
 
   const options = {
     where: {id: clientId},
-    attributes: ['id', 'redirect_uri', 'token_type', 'jwt_secret', 'scope', 'grant_type']
+    attributes: ['id', 'redirect_uri', 'token_types', 'jwt_secret', 'scope', 'grant_type']
   };
   if (clientSecret) options.where.secret = clientSecret;
   return oauth_client
     .findOne(options)
     .then(function (client) {
-      if (!client) return new Error("client not found");
+      if (!client) return null;//new Error("client not found");
       
       var clientWithGrants = client
 
@@ -98,17 +98,20 @@ function getClient(clientId, clientSecret) {
 }
 
 
-function getIdentity(id, password) {
+function getIdentity(id, password, oauth_client_id) {
 
   debug("-------getIdentity-------")
 
   var search_user = user.findOne({
     where: {email: id},
-    attributes: ['id', 'username', 'gravatar', 'email', 'salt', 'password', 'scope'],
+    attributes: ['id', 'username', 'gravatar', 'email', 'salt', 'password', 'scope', 'eidas_id', 'extra'],
   })
-
+  debug(oauth_client_id)
   var search_iot = iot.findOne({
-    where: {id: id},
+    where: {
+      id: id,
+      oauth_client_id: oauth_client_id
+    },
     attributes: ['id', 'password', 'salt'],
   })
 
@@ -122,14 +125,14 @@ function getIdentity(id, password) {
     }
 
     if (user) {
-      if (user.verifyPassword(user.salt, password)) {
+      if (user.verifyPassword(password)) {
           user.dataValues["type"] = "user"
           return user
       } 
     }
 
     if (iot) {
-      if (iot.verifyPassword(iot.salt, password)) {
+      if (iot.verifyPassword(password)) {
           iot.dataValues["type"] = "iot"
           return iot
       } 
@@ -146,6 +149,7 @@ function getIdentity(id, password) {
 function getUser(email, password) {
 
   debug("-------getUser-------")
+
   return user
     .findOne({
       where: {email: email},
@@ -153,7 +157,7 @@ function getUser(email, password) {
     })
     .then(function (user) {
       if (user) {
-        if (user.verifyPassword(user.salt, password)) {
+        if (user.verifyPassword(password)) {
           return user.toJSON()
         } 
       }
@@ -171,34 +175,85 @@ function revokeAuthorizationCode(code) {
 
   return oauth_authorization_code.findOne({
     where: {
-      authorization_code: code.code
+      authorization_code: code.code,
+      valid: true
     }
   }).then(function (rCode) {
+    if (rCode) {
+      rCode.valid = false
+      rCode.save(); 
+    }
 
-    var expiredCode = code
-    expiredCode.expiresAt = new Date('2015-05-28T06:59:53.000Z')
-    return expiredCode
+    code.valid = false
+    return code
   }).catch(function (err) {
     debug("getUser - Err: ", err)
   });
 }
 
-function revokeToken(token) {
+function revokeRefreshToken(refreshToken, code, client_id) {
+  debug("-------revokeRefreshToken-------");
 
-  debug("-------revokeToken-------")
+  var where_clause = {
+    valid: true
+  }
+
+  if (code) {
+    where_clause['authorization_code'] = code;
+  } else if (refreshToken) {
+    where_clause['refresh_token'] = refreshToken;
+  }
+
+  if (client_id) {
+    where_clause['oauth_client_id'] = client_id
+  }
 
   return oauth_refresh_token.findOne({
-    where: {
-      refresh_token: token.refreshToken
-    }
+    where: where_clause
   }).then(function (rT) {
-    if (rT) rT.destroy();
-
-    var expiredToken = token
-    expiredToken.refreshTokenExpiresAt = new Date('2015-05-28T06:59:53.000Z')
-    return expiredToken
+    if (rT) {
+      rT.valid = false;
+      rT.save();
+      rT.type = 'refresh_token'
+      rT.client = rT.oauth_client_id
+    }
+    return (rT) ? rT : null;
   }).catch(function (err) {
-    debug("revokeToken - Err: ", err)
+    debug("revokeRefreshToken - Err: ", err);
+  });
+}
+
+function revokeAccessToken(accessToken, code, client_id, refresh_token) {
+  debug("-------revokeAccessToken-------");
+  var where_clause = {
+    valid: true
+  }
+
+  if (code) {
+    where_clause['authorization_code'] = code;
+  } else if (accessToken) {
+    where_clause['access_token'] = accessToken;
+  } else if (refresh_token) {
+    where_clause['refresh_token'] = refresh_token;
+  } 
+
+  if (client_id) {
+    where_clause['oauth_client_id'] = client_id
+  }
+
+  return oauth_access_token.findOne({
+    where: where_clause
+  }).then(function (aT) {
+    if (aT) {
+      aT.valid = false;
+      aT.save();
+      aT.type = 'access_token'
+      aT.client = aT.oauth_client_id
+    }
+
+    return (aT) ? aT : null;
+  }).catch(function (err) {
+    debug("revokeRefreshToken - Err: ", err);
   });
 }
 
@@ -206,24 +261,37 @@ function saveToken(token, client, identity) {
 
   debug("-------saveToken-------")
 
-  if (client.token_type === 'bearer') {
-    return storeToken(token, client, identity, false)
+  if (token.scope.includes('permanent')) {
+    token.accessTokenExpiresAt = null;
+    delete token.refreshToken;
+    delete token.refreshTokenExpiresAt;
+  }
+
+  if (token.scope.includes('jwt')) {
+    return generateJwtToken(token, client, identity);
   } else {
-    return generateJwtToken(token, client, identity)
+    return storeToken(token, client, identity, false);
   }
 }
 
 function generateJwtToken(token, client, identity) {
   
   debug("-------generateJwtToken-------")
-  var user_info = require('../oauth_response/oauth_user_response.json');
-  var iot_info = require('../oauth_response/oauth_iot_response.json');
+
+  var user_info = require('../templates/oauth_response/oauth_user_response.json');
+  var iot_info = require('../templates/oauth_response/oauth_iot_response.json');
 
   return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null).then(function(response) {
     if (identity) {
       response['type'] = identity.type || identity.dataValues.type
     }
-    token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, { expiresIn: config_oauth2.access_token_lifetime });
+    var options = {}
+
+    if (token.accessTokenExpiresAt) {
+      options['expiresIn'] = config_oauth2.access_token_lifetime
+    }
+
+    token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, options);
     return storeToken(token, client, identity, true)
   }).catch(function(error) {
     debug("-------generateJwtToken-------", error)
@@ -248,23 +316,28 @@ function storeToken(token, client, identity, jwt) {
   }
 
   return Promise.all([
-      !jwt ? oauth_access_token.create({
-        access_token: token.accessToken,
-        expires: token.accessTokenExpiresAt,
-        oauth_client_id: client.id,
-        user_id: user_id,
-        iot_id: iot_id,
-        scope: token.scope
-      }) : [],
       token.refreshToken ? oauth_refresh_token.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
         expires: token.refreshTokenExpiresAt,
+        valid: true,
         oauth_client_id: client.id,
         user_id: user_id,
         iot_id: iot_id,
+        authorization_code: (token.authorizationCode) ? token.authorizationCode : null,
         scope: token.scope
       }) : [],
-      (user_id) ? user_authorized_application.findOrCreate({ // User has enable application to read their information
+      !jwt ? oauth_access_token.create({
+        access_token: token.accessToken,
+        expires: token.accessTokenExpiresAt,
+        valid: true,
+        oauth_client_id: client.id,
+        user_id: user_id,
+        iot_id: iot_id,
+        refresh_token: (token.refreshToken) ? token.refreshToken : null,
+        authorization_code: (token.authorizationCode) ? token.authorizationCode : null,
+        scope: (token.scope === 'all') ? null : token.scope
+      }) : [],
+      (user_id && config_oauth2.ask_authorization) ? user_authorized_application.findOrCreate({ // User has enable application to read their information
         where: { user_id: user_id, oauth_client_id: client.id },
         defaults: {
           user_id: user_id,
@@ -277,6 +350,11 @@ function storeToken(token, client, identity, jwt) {
       if (user_id || iot_id) {
         token[identity.dataValues.type] = identity.dataValues.type
       }
+
+      if (token.scope === 'all') {
+        delete token.scope
+      }
+
       return _.assign(  // expected to return client and user, but not returning
         {
           client: client,
@@ -297,7 +375,7 @@ function getAuthorizationCode(code) {
 
   return oauth_authorization_code
     .findOne({
-      attributes: ['oauth_client_id', 'expires', 'user_id', 'scope'],
+      attributes: ['oauth_client_id', 'expires', 'user_id', 'scope', 'valid'],
       where: {authorization_code: code},
       include: [user, oauth_client]
     })
@@ -311,6 +389,7 @@ function getAuthorizationCode(code) {
         client: client,
         expiresAt: authCodeModel.expires,
         redirectUri: client.redirect_uri,
+        valid: authCodeModel.valid,
         user: user,
         scope: authCodeModel.scope,
       };
@@ -329,6 +408,7 @@ function saveAuthorizationCode(code, client, user) {
       oauth_client_id: client.id,
       redirect_uri: client.redirect_uri,
       authorization_code: code.authorizationCode,
+      valid: true,
       user_id: user.id,
       scope: code.scope
     })
@@ -370,12 +450,12 @@ function getRefreshToken(refreshToken) {
 
   return oauth_refresh_token
     .findOne({
-      attributes: ['oauth_client_id', 'user_id', 'expires'],
+      attributes: ['oauth_client_id', 'user_id', 'expires', 'valid'],
       where: {refresh_token: refreshToken},
       include: [
         {
           model: user,
-          attributes: ['id', 'username', 'email', 'gravatar'],
+          attributes: ['id', 'username', 'email', 'gravatar', 'extra' , 'eidas_id'],
         },
         {
           model: iot,
@@ -388,13 +468,13 @@ function getRefreshToken(refreshToken) {
       ]
     })
     .then(function (savedRT) {
-      debug(savedRT)
+
       var tokenTemp = {
         user: savedRT ? savedRT.User : {},
         client: savedRT ? savedRT.OauthClient : {},
-        refreshTokenExpiresAt: savedRT ? new Date(savedRT.expires) : null,
-        refreshToken: refreshToken,
-        refresh_token: refreshToken,
+        expires: savedRT ? new Date(savedRT.expires) : null,
+        valid: savedRT.valid,
+        token: refreshToken,
         scope: savedRT ? savedRT.scope : ''
       };
       if (savedRT.User) {
@@ -422,18 +502,22 @@ function create_oauth_response(identity, application_id, action, resource, authz
 
   if (type === 'user') {
 
-      var user_info = require('../oauth_response/oauth_user_response.json');
+      var user_info = require('../templates/oauth_response/oauth_user_response.json');
 
-      user_info.username = identity.username
-      user_info.app_id = application_id
-      user_info.isGravatarEnabled = identity.gravatar
-      user_info.email = identity.email
-      user_info.id = identity.id
+      user_info.username = identity.username;
+      user_info.app_id = application_id;
+      user_info.isGravatarEnabled = identity.gravatar;
+      user_info.email = identity.email;
+      user_info.id = identity.id;
+
+      if (identity.eidas_id) {
+        user_info.eidas_profile = identity.extra.eidas_profile;
+      }
 
       return search_user_info(user_info, action, resource, authzforce, req_app)
   } else if (type === 'iot') {
 
-      var iot_info = require('../oauth_response/oauth_iot_response.json');
+      var iot_info = require('../templates/oauth_response/oauth_iot_response.json');
 
       iot_info.app_id = application_id
       iot_info.id = identity.id
@@ -661,6 +745,32 @@ function app_authzforce_domain(app_id) {
     })
 }
 
+function validateScope(user, client, scope) {
+
+  debug("-------validateScope-------")
+
+  if (scope) {
+    var requested_scopes = scope.split(',');
+    if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
+      return false;
+    }
+    if (requested_scopes.includes('permanent') || requested_scopes.includes('jwt')) {
+      return (requested_scopes.every(r=> client.token_types.includes(r))) ? requested_scopes : false;
+    }
+    return requested_scopes;
+  } else {
+    return ['bearer']
+  }
+}
+
+function verifyScope(token, scope) {
+
+  debug("-------verifyScope-------")
+
+  return token.scope === scope
+
+}
+
 module.exports = {
   getAccessToken: getAccessToken,
   getAuthorizationCode: getAuthorizationCode,
@@ -670,12 +780,14 @@ module.exports = {
   getIdentity: getIdentity,
   getUserFromClient: getUserFromClient,
   revokeAuthorizationCode: revokeAuthorizationCode,
-  revokeToken: revokeToken,
+  revokeRefreshToken: revokeRefreshToken,
+  revokeAccessToken: revokeAccessToken,
   saveToken: saveToken,
   saveAuthorizationCode: saveAuthorizationCode,
+  validateScope: validateScope,
+  verifyScope: verifyScope,
   create_oauth_response: create_oauth_response,
   user_roles: user_roles,
   user_permissions: user_permissions,
   trusted_applications: trusted_applications
 }
-

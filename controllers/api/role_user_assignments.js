@@ -71,15 +71,14 @@ exports.index_user_roles = function(req, res) {
 	})
 }
 
-// PUT /v1/applications/:applicationId/users/:user_id/roles/:role_id -- Add role user assignment
+// POST /v1/applications/:applicationId/users/:user_id/roles/:role_id -- Add role user assignment
 exports.addRole = function(req, res) {
 
 	debug('--> addRole')
-
 	if (req.changeable_role) {
 		var changeable_role_id = req.changeable_role.map(elem => elem.id)
 		if (!changeable_role_id.includes(req.role.id)) {
-			res.status(403).json({ error: {message: 'User not allow to perform the action', code: 403, title: 'Forbidden'}})	
+			return res.status(403).json({ error: {message: 'User not allow to perform the action', code: 403, title: 'Forbidden'}})	
 		}
 	}
 	
@@ -90,7 +89,7 @@ exports.addRole = function(req, res) {
 		delete assignment.dataValues.id
 		delete assignment.dataValues.organization_id
 		delete assignment.dataValues.role_organization
-		res.status(201).json({role_user_assignments: assignment});
+		return res.status(201).json({role_user_assignments: assignment});
 	}).catch(function(error) {
 		debug('Error: ' + error)
 		if (!error.error) {
@@ -109,7 +108,7 @@ exports.removeRole = function(req, res) {
 	if (req.changeable_role) {
 		var changeable_role_id = req.changeable_role.map(elem => elem.id)
 		if (!changeable_role_id.includes(req.role.id)) {
-			res.status(403).json({ error: {message: 'User not allow to perform the action', code: 403, title: 'Forbidden'}})	
+			return  res.status(403).json({ error: {message: 'User not allow to perform the action', code: 403, title: 'Forbidden'}})	
 		}
 	}
 
@@ -117,9 +116,9 @@ exports.removeRole = function(req, res) {
 		where: { role_id: req.role.id, user_id: req.user.id, oauth_client_id: req.application.id }
 	}).then(function(deleted) {
 		if (deleted) {
-			res.status(204).json("Assignment destroyed");
+			return res.status(204).json("Assignment destroyed");
 		} else {
-			res.status(404).json({error: {message: "Assignments not found", code: 404, title: "Not Found"}})
+			return res.status(404).json({error: {message: "Assignments not found", code: 404, title: "Not Found"}})
 		} 
 	}).catch(function(error) {
 		debug('Error: ' + error)

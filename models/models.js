@@ -116,6 +116,8 @@ auth_token.belongsTo(pep_proxy, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(user, {onDelete: 'cascade'});
 oauth_access_token.belongsTo(iot, {onDelete: 'cascade'});
+oauth_access_token.belongsTo(oauth_refresh_token, {foreignKey: 'refresh_token', targetKey: 'refresh_token', onDelete: 'cascade'});
+oauth_access_token.belongsTo(oauth_authorization_code, {foreignKey: 'authorization_code', targetKey: 'authorization_code', onDelete: 'cascade'});
 
 // Relation between OAuthClient and authorization codes
 oauth_authorization_code.belongsTo(oauth_client, {onDelete: 'cascade'});
@@ -125,6 +127,7 @@ oauth_authorization_code.belongsTo(user, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(oauth_client, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(user, {onDelete: 'cascade'});
 oauth_refresh_token.belongsTo(iot, {onDelete: 'cascade'});
+oauth_refresh_token.belongsTo(oauth_authorization_code, { foreignKey: 'authorization_code', targetKey: 'authorization_code', onDelete: 'cascade'});
 
 // Relation between roles and OAuthClients
 role.belongsTo(oauth_client, { foreignKey: { allowNull: false }, onDelete: 'cascade'});

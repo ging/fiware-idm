@@ -206,7 +206,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "redirect_uri": "http://localhost/login",
               "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
               "response_type": "code,token",
-              "token_type": "bearer",
+              "token_types": "bearer,jwt,permanent",
               "client_type": null
             },
             {
@@ -218,7 +218,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "redirect_uri": "http://localhost/login",
               "grant_type": "password,authorization_code,implicit",
               "response_type": "code,token",
-              "token_type": "jwt",
+              "token_types": "bearer",
               "client_type": null
             }
           ]
@@ -244,7 +244,10 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "implicit",
               "password"
             ],
-            "token_type": "jwt"
+            "token_types": [
+                "jwt",
+                "permanent"
+            ]
           }
         }
 
@@ -272,7 +275,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             "redirect_uri": "http://localhost/login",
             "url": "http://localhost",
             "grant_type": "password,authorization_code,implicit",
-            "token_type": "jwt",
+            "token_types": "jwt,permanent",
             "jwt_secret": "3f1164da20d50c62",
             "response_type": "code,token"
           }
@@ -313,7 +316,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                     "image": "default",
                     "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
                     "response_type": "code,token",
-                    "token_type": "jwt",
+                    "token_types": "bearer,jwt,permanent",
                     "jwt_secret": "3f1164da20d50c62",
                     "client_type": null,
                     "scope": null,
@@ -335,7 +338,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                 "name": "new name",
                 "description": "new description",
                 "redirect_uri": "new redirect uri",
-                "token_type": "bearer",
+                "token_types": ["permanent"]
                 "grant_type": [
                     "authorization_code",
                     "password"
@@ -364,7 +367,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             "description": "new description",
             "redirect_uri": "new redirect uri",
             "grant_type": "password,authorization_code",
-            "token_type": "bearer",
+            "token_types": "bearer,permanent",
             "jwt_secret": null,
             "response_type": "code"
           }
@@ -1494,7 +1497,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + application_id - Id of the application.
     + role_id - Id of the role.
 
-### Assign a role to a user [PUT]
+### Assign a role to a user [POST]
 + Request (application/json)
     + Headers
         
@@ -1641,7 +1644,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + role_id - Id of the role.
     + organization_role_id - Id of organization role.
 
-### Assign a role to a organization [PUT]
+### Assign a role to a organization [POST]
 + Request (application/json)
     + Headers
         
@@ -1764,7 +1767,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + user_id - Id of the user.
     + organization_role_id - Id of the organization role.
 
-### Create relationship [PUT]        
+### Create relationship [POST]        
 + Request (application/json)
     + Headers
         

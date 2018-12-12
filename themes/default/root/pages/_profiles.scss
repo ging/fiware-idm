@@ -11,6 +11,25 @@
     color: $gray-dark;
   }
 }
+
+#eidas_attributes {
+    .panel-title > a:hover{
+       i{
+          transition: all 0.5s;
+        }
+    }
+    .form-group{ margin: 0;}
+    .collapse{
+        .content_pep{
+          overflow: hidden;
+          clear: both;
+        }
+        .content_pep_activenew{
+          background-color: aliceblue;
+        }
+    }
+}
+
 #detailOrganization,
 #detailApplication,
 #detailUser{

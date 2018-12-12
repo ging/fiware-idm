@@ -6,7 +6,7 @@ $(document).ready(function(){
     // Select permission item from list
     $("#update_owners_permissions").on("click",".list-group-item", function(e){
 
-        if( $(e.target).hasClass('fa-edit') === false && $(e.target).hasClass('fa-trash-o') === false ) {
+        if( $(e.target).hasClass('fa-edit') === false && $(e.target).hasClass('fa-trash-alt') === false ) {
             var role = $("#update_owners_roles").find('div.active').attr('id');
 
             if (!['provider', 'purchaser'].includes(role)) {

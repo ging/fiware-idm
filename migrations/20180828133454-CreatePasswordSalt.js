@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     
-    return [
+    return Promise.all([
       queryInterface.addColumn('user', 'salt', {
         type: Sequelize.STRING
       }),
@@ -59,13 +59,13 @@ module.exports = {
             this.setDataValue('password', encripted);
         }
       })
-    ]
+    ])
 
   },
 
   down: (queryInterface, Sequelize) => {
 
-    return [
+    return Promise.all([
       queryInterface.removeColumn('user', 'salt'),
       queryInterface.changeColumn('user', 'password', {
         type: Sequelize.STRING(40),
@@ -106,7 +106,7 @@ module.exports = {
             this.setDataValue('password', encripted);
         }
       })
-    ]
+    ])
 
   }
 };

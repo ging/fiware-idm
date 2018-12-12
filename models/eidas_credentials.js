@@ -45,6 +45,26 @@ module.exports = function(sequelize, DataTypes) {
     }, organization_nif: {
        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
        validate: { notEmpty: {msg: "organization_nif"}}
+    }, sp_type: {
+       type: DataTypes.STRING(255),
+       validate: { 
+          isIn: {
+            args: [['public', 'private']], 
+            msg: "sp_type"
+          } 
+       },
+       defaultValue: 'private'
+    }, attributes_list: {
+      type: DataTypes.JSON(),
+      get: function () {
+          var default_json = {
+            NaturalPerson: ['PersonIdentifier', 'FamilyName', 'FirstName', 'DateOfBirth'],
+            LegalPerson: [],
+            RepresentativeNaturalPerson: []
+          }
+          var attributes_list_keys = (this.getDataValue('attributes_list')) ? Object.keys(this.getDataValue('attributes_list')).length : 0 
+          return (attributes_list_keys > 0) ? this.getDataValue('attributes_list') : default_json
+      }
     }
   }, {
       tableName: 'eidas_credentials',

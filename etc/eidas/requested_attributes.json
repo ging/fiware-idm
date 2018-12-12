@@ -1,0 +1,224 @@
+{	
+	"NaturalPerson": {
+		"PersonIdentifier": {
+			"@FriendlyName": "PersonIdentifier",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "true"
+		},
+		"FamilyName": {
+			"@FriendlyName": "FamilyName",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "true"
+		},
+		"FirstName": {
+			"@FriendlyName": "FirstName",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "true"
+		},
+		"DateOfBirth": {
+			"@FriendlyName": "DateOfBirth",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/DateOfBirth",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "true"
+		},
+		"BirthName": {
+			"@FriendlyName": "BirthName",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/BirthName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"PlaceOfBirth": {
+			"@FriendlyName": "PlaceOfBirth",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/PlaceOfBirth",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"CurrentAddress": {
+			"@FriendlyName": "CurrentAddress",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/CurrentAddress",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"Gender": {
+			"@FriendlyName": "Gender",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/Gender",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		}
+	},
+	"LegalPerson": {
+		"LegalPersonIdentifier": {
+			"@FriendlyName": "LegalPersonIdentifier",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/LegalPersonIdentifier",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"LegalName": {
+			"@FriendlyName": "LegalName",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/LegalName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"LegalPersonAddress": {
+			"@FriendlyName": "LegalPersonAddress",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/LegalPersonAddress",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"VATRegistrationNumber": {
+			"@FriendlyName": "VATRegistrationNumber",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/VATRegistrationNumber",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"TaxReference": {
+			"@FriendlyName": "TaxReference",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/TaxReference",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"D201217EUIdentifier": {
+			"@FriendlyName": "D-2012-17-EUIdentifier",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/D-2012-17-EUIdentifier",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"LEI": {
+			"@FriendlyName": "LEI",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/LEI",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"EORI": {
+			"@FriendlyName": "EORI",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/EORI",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"SEED": {
+			"@FriendlyName": "SEED",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/SEED",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"SIC": {
+			"@FriendlyName": "SIC",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/SIC",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		}
+	},
+	"RepresentativeNaturalPerson": {
+		"PersonIdentifier": {
+			"@FriendlyName": "PersonIdentifier",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/PersonIdentifier",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"CurrentFamilyName": {
+			"@FriendlyName": "CurrentFamilyName",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/CurrentFamilyName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"CurrentGivenName": {
+			"@FriendlyName": "CurrentGivenName",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/CurrentGivenName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"DateOfBirth": {
+			"@FriendlyName": "DateOfBirth",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/DateOfBirth",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"BirthName": {
+			"@FriendlyName": "BirthName",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/BirthName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"PlaceOfBirth": {
+			"@FriendlyName": "PlaceOfBirth",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/PlaceOfBirth",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"CurrentAddress": {
+			"@FriendlyName": "CurrentAddress",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/CurrentAddress",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"Gender": {
+			"@FriendlyName": "Gender",
+			"@Name": "http://eidas.europa.eu/attributes/naturalperson/representative/Gender",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"LegalPersonIdentifier": {
+			"@FriendlyName": "LegalPersonIdentifier",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/LegalPersonIdentifier",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"LegalName": {
+			"@FriendlyName": "LegalName",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/LegalName",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"LegalPersonAddress": {
+			"@FriendlyName": "LegalPersonAddress",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/LegalPersonAddress",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"VATRegistrationNumber": {
+			"@FriendlyName": "VATRegistrationNumber",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/VATRegistrationNumber",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"TaxReference": {
+			"@FriendlyName": "TaxReference",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/TaxReference",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"D201217EUIdentifier": {
+			"@FriendlyName": "D-2012-17-EUIdentifier",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/D-2012-17-EUIdentifier",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"LEI": {
+			"@FriendlyName": "LEI",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/LEI",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"EORI": {
+			"@FriendlyName": "EORI",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/EORI",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"SEED": {
+			"@FriendlyName": "SEED",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/SEED",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"SIC": {
+			"@FriendlyName": "SIC",
+			"@Name": "http://eidas.europa.eu/attributes/legalperson/representative/SIC",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		}
+	}
+}

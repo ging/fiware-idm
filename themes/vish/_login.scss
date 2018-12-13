@@ -160,7 +160,13 @@
   }
 }
 
-@media (max-height: 560px) {
+@media (max-height: 490px) {
+  .login {
+    padding: 1% 2.2% 3% 2.2%;
+  }
+}
+
+@media (max-height: 460px) {
   .login {
     width: 100%;
     padding: 1.5% 8% 5% 8%;
@@ -292,11 +298,14 @@
       }
 
       .modal-footer {
-        button {
-          font-size: 1.4rem;
-          border-radius: 0.7rem;
-          height: 4rem;
-          width: 9rem;
+
+        .buttons {
+          button {
+            font-size: 1.4rem;
+            border-radius: 0.7rem;
+            height: 4rem;
+            width: 9rem;
+          }
         }
 
         .actions {

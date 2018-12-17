@@ -242,19 +242,9 @@ exports.login = function(req, res, next) {
   res.redirect(307, config.eidas.idp_host);
 }
 
-// POST /idm/applications/:applicationId/saml2/ReturnPage -- Response from eIDAs with user credentials
+// POST /idm/applications/:applicationId/saml2/login -- Response from eIDAs with user credentials
 exports.saml2_application_login = function(req, res, next) { 
 	debug("--> saml2_application_login", req.url)
-
-	var state = sp_states['pepe'];
-
-	var path = '/oauth2/authorize?'+
-            				'response_type=code' + '&' +
-            		   		'client_id=' + req.application.id + '&' +
-            		   		'state=' + state + '&' +
-            		   		'redirect_uri=' + req.application.redirect_uri
-
-  console.log('NEW PATH', path);
 
 	var options = {request_body: req.body};
 
@@ -271,6 +261,9 @@ exports.saml2_application_login = function(req, res, next) {
 		// Commented beacuase no session index was returned when testing was performed
 		//var session_index = saml_response.user.session_index;
 
+		// Response To variable to check state of previous request
+		var response_to = saml_response.response_to
+
 		var eidas_profile = {}
 
 		for (var key in saml_response.user.attributes) {
@@ -286,6 +279,8 @@ exports.saml2_application_login = function(req, res, next) {
                 username: user.username,
                 image: '/img/logos/small/user.png'
             };
+
+            var state = (sp_states[response_to]) ? sp_states[response_to] : 'xyz'
 
             var path = '/oauth2/authorize?'+
             				'response_type=code' + '&' +
@@ -467,16 +462,14 @@ exports.create_auth_request = function(req, res, next) {
 			})
 		}
 
-		sp_states['pepe'] = get_state(req.url);
-
-		console.log('ASSERT END', req.sp.assert_endpoint	);
-
-		var xml = req.sp.create_authn_request_xml(idp, {
+		var auth_request = req.sp.create_authn_request_xml(idp, {
 			extensions: extensions
 		});
 
+		sp_states[auth_request.id] = get_state(req.url);
+
 		req.saml_auth_request = {
-			xml: xml,
+			xml: auth_request.request,
 			postLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login",
 			redirectLocationUrl: "https://"+config.eidas.gateway_host+"/idm/applications/"+req.application.id+"/saml2/login"
 		}

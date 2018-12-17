@@ -13,7 +13,7 @@ var config_attributes_representative = Object.keys(config_attributes.Representat
 
 // Create identity provider
 var idp_options = {
-  sso_login_url: config.eidas.idp_host,
+  sso_login_url: config.eidas.node_host,
   sso_logout_url: "https://"+config.eidas.gateway_host+"/saml2/logout",
   certificates: []
 };
@@ -239,7 +239,7 @@ exports.login = function(req, res, next) {
 	delete req.body.password
 	delete req.query
 
-  res.redirect(307, config.eidas.idp_host);
+  res.redirect(307, config.eidas.node_host);
 }
 
 // POST /idm/applications/:applicationId/saml2/login -- Response from eIDAs with user credentials

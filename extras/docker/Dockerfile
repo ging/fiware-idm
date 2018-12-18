@@ -85,14 +85,6 @@ RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="master"; else RELEASE=$(c
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Download latest version of the code and install npm dependencies
-RUN git clone https://github.com/agaldemas/fiware-idm.git && \
-    rm -rf doc extras && \
-    cd fiware-idm && \
-    npm cache clean -f && \
-    npm install --production --silent && \
-    rm -rf /root/.npm/cache/*
-
 WORKDIR /opt/fiware-idm
 
 RUN rm -rf doc extras  && \

@@ -100,7 +100,7 @@ config.site = {
 config.eidas = {
     enabled:       (process.env.IDM_EIDAS_ENABLED || false),
     gateway_host:  (process.env.IDM_EIDAS_GATEWAY_HOST || 'localhost'),
-    idp_host:      (process.env.IDM_EIDAS_IDP_HOST || 'https://se-eidas.redsara.es/EidasNode/ServiceProvider'),
+    node_host:      (process.env.IDM_EIDAS_NODE_HOST || 'https://se-eidas.redsara.es/EidasNode/ServiceProvider'),
     metadata_expiration: 60 * 60 * 24 * 365 // One year
 }
 

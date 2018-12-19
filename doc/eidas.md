@@ -51,14 +51,14 @@ For configuring IdM to allow users to login with their eID, the connection to a 
 config.eidas = {
 	enabled: true,
 	gateway_host: 'localhost',
-	idp_host: 'https://eidas.node.es/EidasNode',
+	node_host: 'https://eidas.node.es/EidasNode',
 	metadata_expiration: 60 * 60 * 24 * 365 // One year
 }
 ~~~
 
 - enabled: set to *true* enables the connection to the eIDAS node.
 - gateway_host: indicates the DNS of the IdM service.
-- idp_host: indicates the endpoint where the eIDAS node server is running.
+- node_host: indicates the endpoint where the eIDAS node server is running.
 - metadata_expiration: expiration time for the service certificates.
 
 

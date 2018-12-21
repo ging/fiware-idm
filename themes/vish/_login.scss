@@ -1,5 +1,5 @@
 .login {
-  width: 30%;
+  width: 35%;
   border: none;
   background-color: $form_background;
   margin: 0.5% 0 0 0;
@@ -44,12 +44,25 @@
     }
 
     button {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       padding: 1rem 1.5rem 1rem 1.5rem;
       border-radius: 0.7rem;
       height: 4.5rem;
-      width: 10rem;
+      width: calc(40% - 1rem);
+      min-width: 10rem;
       align-self: center;
+    }
+
+    .btn-secondary {
+      font-size: 1.5rem;
+      width: calc(60% - 1rem);
+      min-width: 15rem;
+      background-color: $btn-secondary;
+      color: white;
+
+      &:hover {
+        background-color: darken($btn-secondary, 10%);
+      }
     }
 
     .actions {
@@ -84,7 +97,7 @@
 
 @media (max-width: 1200px) {
   .login {
-    width: 50%;
+    width: 60%;
     border: none;
     background-color: $form_background;
     margin: 0.5% 0 0 0;
@@ -109,7 +122,7 @@
 
 @media (max-width: 800px) {
   .login {
-    width: 60%;
+    width: 70%;
   }
 }
 
@@ -147,7 +160,13 @@
   }
 }
 
-@media (max-height: 450px) {
+@media (max-height: 490px) {
+  .login {
+    padding: 1% 2.2% 3% 2.2%;
+  }
+}
+
+@media (max-height: 460px) {
   .login {
     width: 100%;
     padding: 1.5% 8% 5% 8%;
@@ -205,21 +224,29 @@
       .modal-footer {
         display: flex;
         flex-flow: wrap row;
-        margin: 3rem 0 0 0;
+        margin: 2.7rem 0 0 0;
         width: 100%;
 
         .checkbox {
           padding: 0 0 0 2rem;
-          width: 72%;
+          width: 37%;
           display: flex;
         }
 
-        button {
-          font-size: 1.5rem;
-          padding: 0.8rem 1.3rem 0.8rem 1.3rem;
-          border-radius: 0.5rem;
-          height: 3.8rem;
-          width: 13rem;
+        .buttons {
+          width: 60%;
+          padding: 0 0 0 0;
+          button {
+            font-size: 1.5rem;
+            padding: 0.8rem 1.3rem 0.8rem 1.3rem;
+            border-radius: 0.5rem;
+            height: 3.8rem;
+            width: 25%;
+          }
+          .btn-secondary {
+            width: 50%;
+            margin: 0 0 0 12%;
+          }
         }
 
         .actions {
@@ -271,11 +298,14 @@
       }
 
       .modal-footer {
-        button {
-          font-size: 1.4rem;
-          border-radius: 0.7rem;
-          height: 4rem;
-          width: 9rem;
+
+        .buttons {
+          button {
+            font-size: 1.4rem;
+            border-radius: 0.7rem;
+            height: 4rem;
+            width: 9rem;
+          }
         }
 
         .actions {
@@ -298,7 +328,6 @@
     }
   }
 }
-
 
 /*-----iPhone4 landscape -----*/
 @media (max-width: 480px) {
@@ -323,9 +352,22 @@
         .modal-footer {
           margin: 2.3rem 0 0 0;
           .checkbox {
-            width: 65%;
+            width: 26%;
             label {
               margin: 0;
+            }
+          }
+
+          .buttons {
+            width: 70%;
+
+            button {
+              font-size: 1.4rem;
+              height: 3.5rem;
+            }
+
+            .btn-secondary {
+              font-size: 1.2rem;
             }
           }
           .actions {

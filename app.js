@@ -12,6 +12,7 @@ var partials = require('express-partials');
 var sassMiddleware = require('node-sass-middleware');
 var forceSsl = require('express-force-ssl');
 var clc = require('cli-color');
+var i18n = require("i18n-express");
 
 // Obtain secret from config file
 var config = require ('./config.js');

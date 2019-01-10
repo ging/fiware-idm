@@ -55,6 +55,17 @@
 </div>
 <% } %>
 
+<div>
+  Choose your language:
+  <ul>
+    <li><a class="<%=(lang=="es_ana"?"active":"")%>" href="/?clang=es_ana">es_ana</a></li>
+    <li><a class="<%=(lang=="en_ana"?"active":"")%>" href="/?clang=en_ana">en_ana</a></li>
+    <li><a class="<%=(lang=="es_alex"?"active":"")%>" href="/?clang=es_alex">es_alex</a></li>
+    <li><a class="<%=(lang=="en_alex"?"active":"")%>" href="/?clang=en_alex">en_alex</a></li>
+  </ul> 
+</div>
+<p><%=translation.WELCOME_MSG%></p>
+
 <%- include(footer) %>
 
 </body> 

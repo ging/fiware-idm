@@ -75,9 +75,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
 
+app.use(i18n({
+  translationsPath: path.join(__dirname, 'etc/translations'), // <--- use here. Specify translations files path.
+  siteLangs: ["en_ana","es_ana", "en_alex", "es_alex"],
+  textsVarName: 'translation'
+}));
+
+
 // Helpers dinamicos:
 app.use(function(req, res, next) {
-
+  console.log("--------------------------")
+  console.log(res.locals.translation)
+  console.log("--------------------------")
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
   // init req.session.redir

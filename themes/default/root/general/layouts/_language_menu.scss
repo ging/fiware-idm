@@ -8,10 +8,11 @@
   justify-content: center;
   align-items: center;
   .selected_option {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
     margin: 0;
     span {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       cursor: pointer;
       transition: (opacity 250ms cubic-bezier(0.4, 0, 0.2, 1));
       &:hover {
@@ -21,7 +22,7 @@
   }
   .lang_options {
     width: 100%;
-    font-size: 2rem;
+    font-size: 1.5rem;
     padding-left: 0;
     text-align: left;
     li {

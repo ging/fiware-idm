@@ -1,0 +1,13 @@
+{
+  "header": {
+    "profile": " Perfil",
+    "settings": " Ajustes",
+    "help_about": " Ayuda & About",
+    "sign_out": " Desconectarse"
+  },
+  "footer": {
+    "cred_date": "2018 ©",
+    "author": "GING DIT",
+    "university": " - Universidad Politénica de Madrid (UPM)"
+  }
+}

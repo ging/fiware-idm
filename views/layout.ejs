@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#E6E6E6"/>
-  <meta charset="utf-8"><title><%= site.title %></title>
+  <meta name="theme-color" content="#E6E6E6" />
+  <meta charset="utf-8">
+  <title>
+    <%= site.title %>
+  </title>
   <script src="/javascripts/jquery-3.2.1.min.js"></script>
   <script src="/javascripts/bootstrap.min.js"></script>
   <script src="/javascripts/jquery.Jcrop.min.js"></script>
@@ -17,56 +21,84 @@
   <link rel='stylesheet' href='/stylesheets/bootstrap-select.min.css' />
 
   <script src="/javascripts/tour.js"></script>
-  
-</head> 
+
+</head>
 
 <body>
 
-<% 
+  <%
   var header = '_header';
   var footer = '_footer';
 
   if (site.theme !== 'default') {
-    if(fs.existsSync('themes/' + site.theme + '/templates/_header.ejs')) 
+    if(fs.existsSync('themes/' + site.theme + '/templates/_header.ejs'))
       header = '../themes/' + site.theme + '/templates/_header';
-    if(fs.existsSync('themes/' + site.theme + '/templates/_footer.ejs')) 
+    if(fs.existsSync('themes/' + site.theme + '/templates/_footer.ejs'))
       footer = '../themes/' + site.theme + '/templates/_footer';
   }
 %>
 
-<%- include(header) %>
+  <%- include(header) %>
 
-<div id="container" class="container-fluid wrap">
+  <div id="container" class="container-fluid wrap">
 
-  <%- include _navigation %>
+    <%- include _navigation %>
 
-  <%- body %>
+    <%- body %>
 
-</div>
-
-<div id="backdrop" style="display: none;" class="modal-backdrop  in"></div>
-
-<% if (message.text) { %>
-<div class="messages">
-  <div class="alert alert-<%=message.type%> alert-dismissable fade in">
-    <a class="close" data-dismiss="alert" href="#">×</a>
-    <p><strong><%=message.type%>: </strong><%=message.text%></p>
   </div>
-</div>
-<% } %>
 
-<div>
-  Choose your language:
-  <ul>
-    <li><a class="<%=(lang=="es_ana"?"active":"")%>" href="/?clang=es_ana">es_ana</a></li>
-    <li><a class="<%=(lang=="en_ana"?"active":"")%>" href="/?clang=en_ana">en_ana</a></li>
-    <li><a class="<%=(lang=="es_alex"?"active":"")%>" href="/?clang=es_alex">es_alex</a></li>
-    <li><a class="<%=(lang=="en_alex"?"active":"")%>" href="/?clang=en_alex">en_alex</a></li>
-  </ul> 
-</div>
-<p><%=translation.WELCOME_MSG%></p>
+  <div id="backdrop" style="display: none;" class="modal-backdrop  in"></div>
 
-<%- include(footer) %>
+  <% if (message.text) { %>
+  <div class="messages">
+    <div class="alert alert-<%=message.type%> alert-dismissable fade in">
+      <a class="close" data-dismiss="alert" href="#">×</a>
+      <p><strong><%=message.type%>: </strong><%=message.text%></p>
+    </div>
+  </div>
+  <% } %>
 
-</body> 
+  <%- include(footer) %>
+
+
+  <div class="language_menu">
+    <p class="selected_option"><%=lang%> <span class="fa fa-arrow-alt-circle-up" id="lang_trigger"></span></p>
+    <ul class="lang_options" id="lang_content">
+      <li><a class="lang_es <%=(lang=="es" ? "active" : "")%>" href="/?clang=es">es</a></li>
+      <li><a class="lang_en <%=(lang=="en" ? "active" : "")%>" href="/?clang=en">en</a></li>
+    </ul>
+  </div>
+
+  <script>
+    const accordion = (trigger, content) => {
+      content.style.position = 'absolute';
+      content.style.bottom = '0';
+      content.style.paddingBottom = '.5em';
+      content.style.maxHeight = '0px';
+      content.style.overflow = 'hidden';
+      content.style.opacity = '0';
+      content.style.transform = 'translateY(-2em)';
+      trigger.style.transition = 'all 750ms cubic-bezier(0.4, 0, 0.2, 1)';
+      content.style.transition = 'all 750ms cubic-bezier(0.4, 0, 0.2, 1)';
+      trigger.addEventListener("click", function() {
+        if (!content.style.maxHeight || content.style.maxHeight === "0px") {
+          trigger.style.transform = 'rotate(180deg)';
+          content.style.opacity = '1';
+          content.style.maxHeight = content.scrollHeight + 25 + "px";
+        } else {
+          trigger.style.transform = 'rotate(0deg)';
+          content.style.maxHeight = "0px";
+          content.style.opacity = '0';
+        }
+      });
+    };
+
+    const lang_trigger = document.getElementById('lang_trigger');
+    const lang_content = document.getElementById('lang_content');
+    accordion(lang_trigger, lang_content);
+  </script>
+
+</body>
+
 </html>

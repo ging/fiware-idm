@@ -25,23 +25,23 @@
             <ul id="editor_list" class="dropdown-menu multi-level dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
               <li>
                 <a href="/idm/users/<%= session.user.id %>">
-                  <i class="fa fa-user"></i> Profile
+                  <i class="fa fa-user"></i><%=translation.header.profile%>
                 </a>
               </li>
               <li>
                 <a href="/idm/settings">
-                  <i class="fa fa-cog"></i> Settings
+                  <i class="fa fa-cog"></i><%=translation.header.settings%>
                 </a>
               </li>
               <li class="divider"></li>
               <li>
                 <a href="/idm/help_about">
-                  <i class="fa fa-question-circle"></i> Help &amp; About
+                  <i class="fa fa-question-circle"></i><%=translation.header.help_about%>
                 </a>
               </li>
               <li>
                 <a href="/auth/logout?_method=DELETE" onclick="">
-                  <i class="fa fa-sign-out-alt"></i>Sign Out
+                  <i class="fa fa-sign-out-alt"></i><%=translation.header.sign_out%>
                 </a>
               </li>
             </ul>

@@ -1,0 +1,13 @@
+{
+  "header": {
+    "profile": " Profile",
+    "settings": " Settings",
+    "help_about": " Help & About",
+    "sign_out": " Sign Out"
+  },
+  "footer": {
+    "cred_date": "2018 ©",
+    "author": "GING DIT",
+    "university": " - Technical University of Madrid (UPM)"
+  }
+}

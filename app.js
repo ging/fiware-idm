@@ -77,7 +77,7 @@ app.use(methodOverride('_method'));
 
 app.use(i18n({
   translationsPath: path.join(__dirname, 'etc/translations'), // <--- use here. Specify translations files path.
-  siteLangs: ['en','es'],
+  siteLangs: ['en', 'es'],
   textsVarName: 'translation',
   browserEnable: true,
   defaultLang: 'en'

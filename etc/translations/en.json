@@ -34,5 +34,101 @@
     "notify": "Notify",
     "administrators": "Administrators",
     "users": "Users"
+  },
+  "admin": {
+    "notify": {
+      "notify": "Notify",
+      "notify_all_input": "Notify all users",
+      "notify_organization_input": "Notify an organization",
+      "notify_user_by_id_input": "Notify users by user ID",
+      "organization_id": "Organization ID",
+      "user_id_csv_format": "User IDs in CSV format",
+      "subject": "Subject",
+      "body": "Body",
+      "dear_user": "Dear user",
+      "send_btn": "Send",
+      "organization_no_users_message": "Organization don't have users",
+      "organization_not_found_message": "Organization not found",
+      "write_user_ids_message": "Need to write some user ids",
+      "users_not_found_message": "Users not found",
+      "field_required_message": "This field is required."
+    },
+    "administrators": {
+      "administrators": "Administrators",
+      "authorized_administrators": "Authorized Administrators",
+      "authorize": "Authorize",
+      "no_admins_message": "There are no admins",
+      "authorize_pop_up": {
+        "title": "Manage Administrators",
+        "all_users": "All Users",
+        "filter_input": "filter",
+        "cancel_btn": "Cancel",
+        "save_btn": "Save",
+        "no_admins_message": "There are no admins",
+        "no_users_message": "No users found.",
+        "use_filter_message": "Use the filter (type at least two characters).",
+        "no_role_assigned_message": "Some users don't have any role assigned. If you save now they won't be authorized in the application",
+        "invalid_char_message": "Invalid characters",
+        "user_new_admin_message": "User authorized as admin"
+      }
+    },
+    "users": {
+      "users": "Users",
+      "username": "Nombre de usuario",
+      "show": "Show",
+      "entries": "entries",
+      "create_user_btn": "Create user",
+      "delete_user_btn": "Delete user",
+      "enable_col_table": "Enable",
+      "actions_col_table": "Actions",
+      "no_users_message": "No users found.",
+      "create_pop_up": {
+        "title": "Create user",
+        "password_not_match": "The two password fields didn't match.",
+        "email_used": "Email is already used.",
+        "email_invalid": "Email is invalid.",
+        "username": "Nombre de usuario",
+        "password": "Password",
+        "password_again": "Password (again)",
+        "description": "Description",
+        "website": "Website",
+        "send_user_email_input": "Send an email to the user",
+        "send_user_email_popover": "This will send an email to the user including the assigned password.",
+        "enable": "Enable",
+        "field_required_message": "This field is required.",
+        "create_btn": "Create"
+      },
+      "delete_pop_up": {
+        "title": "Delete user",
+        "message_1": "You are going to delete these users: ",
+        "message_2": "Are you sure? Deleting users implies the deletion of all their resources. This action is permanent.",
+        "confirm_input": "Confirm",
+        "cancel_btn": "Cancel"
+      },
+      "edit_pop_up": {
+        "title": "Edit user",
+        "email_used": "Email is already used.",
+        "email_invalid": "Email is invalid.",
+        "username": "Nombre de usuario",
+        "description": "Description",
+        "website": "Website",
+        "field_required_message": "This field is required.",
+        "save_btn": "Save"
+      },
+      "reset_pass_pop_up": {
+        "title": "Change password",
+        "password_not_match": "The two password fields didn't match.",
+        "password": "Password",
+        "password_again": "Password (again)",
+        "field_required_message": "This field is required.",
+        "save_btn": "Save"
+      }
+    }
+  },
+  "application": {
+
+  },
+  "templates": {
+
   }
 }

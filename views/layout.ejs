@@ -57,6 +57,7 @@
       <p><strong><%=message.type%>: </strong><%=message.text%></p>
     </div>
   </div>
+
   <% } %>
 
   <%- include(footer) %>
@@ -65,8 +66,8 @@
   <div class="language_menu">
     <p class="selected_option"><%=lang%> <span class="fa fa-arrow-alt-circle-up" id="lang_trigger"></span></p>
     <ul class="lang_options" id="lang_content">
-      <li><a class="lang_es <%=(lang=="es" ? "active" : "")%>" href="/?clang=es">es</a></li>
-      <li><a class="lang_en <%=(lang=="en" ? "active" : "")%>" href="/?clang=en">en</a></li>
+      <li><a class="lang_es <%=(lang=="es" ? "active" : "")%>" href="/language?clang=es">es</a></li>
+      <li><a class="lang_en <%=(lang=="en" ? "active" : "")%>" href="/language?clang=en">en</a></li>
     </ul>
   </div>
 

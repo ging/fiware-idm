@@ -6,7 +6,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <a href="#" class="close" data-dismiss="modal">×</a>
-                    <h3>Manage Administrators</h3>
+                    <h3><%=translation.admin.administrators.authorize_pop_up.title%></h3>                    
                 </div>
                 <div class="modal-body clearfix">
                     <div class="tab-content">
@@ -15,9 +15,9 @@
                             <div class="membership update_owners_users_membership dropdown_fix add-members" data-show-roles="True">
                                 <div class="all-users">
                                     <header>
-                                        <h4>All users</h4>
+                                        <h4><%=translation.admin.administrators.authorize_pop_up.all_users%></h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" name="" id="available_update_owners_users" class="filter update_owners_users_server_filter form-control input-sm" placeholder="filter" data-url="/filters/users">
+                                            <input type="text" name="" id="available_update_owners_users" class="filter update_owners_users_server_filter form-control input-sm" placeholder="<%=translation.admin.administrators.authorize_pop_up.filter_input%>" data-url="/filters/users">
                                         </div>
                                         <div id="spinner_update_owners_users" class="filtering-spinner-inline" style="display: none;">
                                             <i class="fa fa-circle-o-notch fa-spin"></i>
@@ -27,19 +27,19 @@
                                         <ul id="available_members" class="available_members available_update_owners_users list-group">
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="no_available_update_owners_users" style="display: none;">
-                                            <li>No users found.</li>
+                                            <li><%=translation.admin.administrators.authorize_pop_up.no_users_message%></li>
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="perform_filter_available_update_owners_users" style="display: block;">
-                                            <li>Use the filter (type at least two characters).</li>
+                                            <li><%=translation.admin.administrators.authorize_pop_up.use_filter_message%></li>
                                         </ul>
                                     </div>
-                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
+                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.admin.administrators.authorize_pop_up.invalid_char_message%></span>
                                 </div>
                                 <div class="members-list">
                                     <header>
-                                        <h4>Administrators</h4>
+                                        <h4><%=translation.admin.administrators.authorized_administrators%></h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" name="" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="filter">
+                                            <input type="text" name="" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="<%=translation.admin.administrators.authorize_pop_up.filter_input%>">
                                         </div>
                                     </header>
                                     <div class="pre-scrollable filterable update_owners_users_client_filterable" id="update_owners_users_members_scroll" >
@@ -48,20 +48,20 @@
                                         </ul>
 
                                         <ul class="no_results list-group alert alert-info" id="no_update_owners_users_members" style="display: none;">
-                                            <li>No users.</li>
+                                            <li><%=translation.admin.administrators.authorize_pop_up.no_admins_message%></li>
                                         </ul>                                
                                     </div>
-                                    <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
-                                    <div class="alert alert-warning no_roles_warning" style="display: none;">Some users don't have any role assigned. If you save now they won't be authorized in the application</div>
+                                    <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'><%=translation.admin.administrators.authorize_pop_up.invalid_char_message%></span>
+                                    <div class="alert alert-warning no_roles_warning" style="display: none;"><%=translation.admin.administrators.authorize_pop_up.no_role_assigned_message%></div>
                                 </div>
                             </div>
                         </fieldset>
-                        <span id="info_added_user" style="display: none;" class='help-block alert alert-info'>User authorized as admin</span>
+                        <span id="info_added_user" style="display: none;" class='help-block alert alert-info'><%=translation.admin.administrators.authorize_pop_up.user_new_admin_message%></span>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="Save">
-                    <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+                    <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="<%=translation.admin.administrators.authorize_pop_up.save_btn%>">
+                    <button type="button" class="btn btn-default cancel" data-dismiss="modal"><%=translation.admin.administrators.authorize_pop_up.cancel_btn%></button>
                 </div>
             </div>
         </div>

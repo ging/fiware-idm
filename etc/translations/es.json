@@ -9,5 +9,30 @@
     "cred_date": "2018 ©",
     "author": "GING DIT",
     "university": " - Universidad Politénica de Madrid (UPM)"
+  },
+  "help_about_items": {
+    "documentation": " Documentación",
+    "learn": "Si quieres aprender más acerca de este Gestor de Identidad y cómo usarlo, echa un vistazo a los links acontinuación:",
+    "catalogue": " Catálogo de FIWARE",
+    "installing": " Documentación completa para la instalación, administración y uso del Gestor de Identidad en ReadTheDocs",
+    "source": " Código fuente del proyecto en GitHub",
+    "academy": " Academia de FIWARE",
+    "tours": " Tours de aprendizaje",
+    "missed_tours": "¿Te has perdido alguno de los tours? ¿Quieres hacerlos de nuevo? Aquí puedes ver la lista completa de tours que te guiarán de las características básicas a las más avanzadas.",
+    "basic_tour": " Tour básico: empieza a conocer la página de bienvenida.",
+    "profile_tour": " Tour de perfil: edita tus datos personales y elige un avatar.",
+    "app_tour": " Tour de aplicaciones: crea tu primera aplicación.",
+    "roles_tour": " Tour de roles y permisos: aprende más acerca de roles y permisos dentro de las apps y cómo autorizar a otros usuarios y organizaciones en ellas.",
+    "organizations_tour": " Tour de organizaciones: crea tu primera organización y echa un vistazo a su página principal."
+  },
+  "navigation": {
+    "main_menu": "Menu principal",
+    "idm": "IdM",
+    "home": "Home",
+    "organizations": "Organizacines",
+    "applications": "Aplicaciones",
+    "notify": "Notificar",
+    "administrators": "Administradores",
+    "users": "Usuarios"
   }
 }

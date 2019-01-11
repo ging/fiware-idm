@@ -35,6 +35,56 @@
     "administrators": "Administradores",
     "users": "Usuarios"
   },
+  "help_about": {
+    "ha_title": "Ayuda y Acerca de"
+  },
+  "users": {
+    "delete_avatar": {
+      "delete_image": "Borrar imagen",
+      "confirmation_msg": "¿Estás seguro de que quieres borrar esta imagen?",
+      "upload_msg": "Puedes subirla de nuevo cuando quieras.",
+      "confirm_btn": "Confirmar",
+      "cancel_btn": "Cancelar"
+    },
+    "edit_user": {
+      "personal_information": "Información Personal",
+      "username": "Nombre de usuario",
+      "input_required": "Este campo es obligatorio.",
+      "description_title": "Acerca de mi",
+      "website_title": "Website",
+      "update_btn": "Actualizar usuario ",
+      "personal_avatar": "Avatar Personal",
+      "use_image_btn": "Usar esta imagen ",
+      "delete_image_btn": "Borrar esta imagen ",
+      "use_gravatar_btn": "Usar Gravatar ",
+      "edit_gravatar_btn": "Editar en Gravatar",
+      "gravatar_link": "Somos compatibles con Gravatar. Crea tu perfil ",
+      "gravatar_link2": "¡aquí!",
+      "update_img": "Subir una imagen",
+      "select_img": " Selecciona la parte de la imagen que quieras para usar de avatar.",
+      "crop_btn": "Recortar y usar",
+      "cancel_btn": "Cancelar"
+    },
+    "show_user": {
+      "placeholder_input": "Filtro",
+      "edit_btn": "editar",
+      "description_label": "Descripción",
+      "no_description": "Descripción no disponible",
+      "website_label": "Website",
+      "organizations_title": "Organizaciones",
+      "no_member_warning": "No eres miembro ni propietario de ninguna organización.",
+      "applications_title": "Aplicaciones",
+      "no_authorized_warning": "No tienes autorización en ninguna aplicación."
+    }
+  },
+  "settings": {
+    "delete_user": {
+      "title": "Cancelar cuenta",
+      "content": "¿Estás seguro? Cancelar tu cuenta implica la pérdida de todos tus recursos. Esta acción es irreversible.",
+      "confirm_btn": "Confirmar",
+      "cancel_btn": "Cancelar"
+    }
+  },
   "admin": {
     "notify": {
       "notify": "Notificar",
@@ -72,7 +122,7 @@
         "user_new_admin_message": "User authorized as admin"
       }
     },
-    "users": {
+    "userss": {
       "users": "Users",
       "username": "Nombre de usuario",
       "show": "Show",

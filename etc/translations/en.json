@@ -35,6 +35,72 @@
     "administrators": "Administrators",
     "users": "Users"
   },
+  "help_about": {
+    "ha_title": "Help & About"
+  },
+  "users": {
+    "delete_avatar": {
+      "delete_image": "Delete uploaded image",
+      "confirmation_msg": "Are you sure you want to delete this image?",
+      "upload_msg": "You can upload it again whenever you want.",
+      "confirm_btn": "Confirm",
+      "cancel_btn": "Cancel"
+    },
+    "edit_user": {
+      "personal_information": "Personal Information",
+      "username": "Username",
+      "input_required": "This input is required.",
+      "description_title": "About Me",
+      "website_title": "Website",
+      "update_btn": "Update User ",
+      "personal_avatar": "Personal Avatar",
+      "use_image_btn": "Use this image ",
+      "delete_image_btn": "Delete this image ",
+      "use_gravatar_btn": "Use Gravatar ",
+      "edit_gravatar_btn": "Edit at Gravatar",
+      "gravatar_link": "We're compatible with Gravatar. Create your profile ",
+      "gravatar_link2": "here!",
+      "update_img": "Upload an image",
+      "select_img": "Select the part of the image you want to use as avatar.",
+      "crop_btn": "Crop and use",
+      "cancel_btn": "Cancel"
+    },
+    "new_user": {
+      "registration": "Registration",
+      "pass_error": "The two password fields didn't match",
+      "email_error": "Email is already used",
+      "email_error2": "Email is invalid",
+      "username": "Username",
+      "required_field": "This is a required field",
+      "email": "E-mail",
+      "have_gravatar": "I have Gravatar and want to use it for my avatar.",
+      "password": "Password",
+      "password2": "Password (again)",
+      "captcha": "Captcha",
+      "signup": "Sign Up",
+      "forgot_pass": "Forgot password",
+      "confirmation": "Confirmation not recieved?"
+    },
+    "show_user": {
+      "placeholder_input": "Filter",
+      "edit_btn": "edit",
+      "description_label": "Description",
+      "no_description": "No description available",
+      "website_label": "Website",
+      "organizations_title": "Organizations",
+      "no_member_warning": "You are not member or owner of any organizations.",
+      "applications_title": "Applications",
+      "no_authorized_warning": "You are not authorized in any application."
+    }
+  },
+  "settings": {
+    "delete_user": {
+      "title": "Cancel account",
+      "content": "Are you sure? Cancelling your account implies the deletion of all your resources. This action is permanent.",
+      "confirm_btn": "Confirm",
+      "cancel_btn": "Cancel"
+    }
+  },
   "admin": {
     "notify": {
       "notify": "Notify",
@@ -72,7 +138,7 @@
         "user_new_admin_message": "User authorized as admin"
       }
     },
-    "users": {
+    "userss": {
       "users": "Users",
       "username": "Nombre de usuario",
       "show": "Show",

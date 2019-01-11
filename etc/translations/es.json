@@ -78,11 +78,51 @@
     }
   },
   "settings": {
+    "settings": {
+      "title": "Ajustes",
+      "panel_title01": "Cambiar tu contraseña",
+      "label01": "Contraseña actual",
+      "label02": "Nueva contraseña",
+      "label03": "Confirmar nueva contraseña",
+      "panel_title02": "Cambiar tu email",
+      "label04": "Email",
+      "label05": "Email actual",
+      "panel_title03": "Autentificación en dos pasos",
+      "content01": "Tienes esta opción ",
+      "content01_1": "desabilitada.",
+      "content02": "Recomendamos la activación de esta opción, ofrece un mayor nivel de seguridad a tu cuenta.",
+      "content03": "Si quieres darle una oportunidad a la autentificación en dos pasos, necesitas facilitar una pregunta de seguridad, solo en caso de que pierdas el acceso a tu aplicación de autentificación.",
+      "label06": "Pregunta de seguridad",
+      "label07": "Respuesta de seguridad",
+      "panel_title04": "Cancelar cuenta",
+      "content04": "¿Descontento? ",
+      "content04_link": "Canelar mi cuenta"
+    },
     "delete_user": {
       "title": "Cancelar cuenta",
       "content": "¿Estás seguro? Cancelar tu cuenta implica la pérdida de todos tus recursos. Esta acción es irreversible.",
       "confirm_btn": "Confirmar",
       "cancel_btn": "Cancelar"
+    },
+    "change_email": {
+      "title": "Cambiar Email",
+      "required_field": "Este campo es obligatorio.",
+      "label01": "Email",
+      "label02": "Email actual",
+      "change_btn": "Cambiar"
+    },
+    "change_pass": {
+      "title": "Cambiar contraseña",
+      "required_field": "Este campo es obligatorio.",
+      "pass_alert": "Las contraseñas no coinciden.",
+      "label01": "Contraseña actual",
+      "label02": "Nueva contraseña",
+      "label03": "Confirmar nueva contraseña"
+    },
+    "warn_change_pass": {
+      "title": "Cambiar contraseña",
+      "content": "Llevas un año sin cambiar tu contraseña. Por razones de seguridad y para continuar usando este portal, por favor cámbiala.",
+      "continue_btn": "Continuar"
     }
   },
   "admin": {

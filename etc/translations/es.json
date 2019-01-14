@@ -56,9 +56,36 @@
     "presentation": {
       "title": "Gestor de Identidad",
       "subtitle01": "Bienvenido al Gestor de Identidades de FIWARE, desarrollado por la UPM.",
-      "subtitle02": "Puedes personalizar esta página de login, como también!!!!!!!You can customize this login page as well as any other style/layout in this web service. Check customization documentation to learn how to do it!",
+      "subtitle02": "Puedes personalizar esta página de login, como también cualquier otro estilo de la aplicación. ¡Revisa la documentación acerca de la personalización de estilos para aprender cómo hacerlo!.",
       "signup_btn": "Registrarte",
       "docs_btn": "Ir a la documentación"
+    },
+    "confirmation": {
+      "title": "Reenviar instrucciones de confirmación",
+      "label01": "Email",
+      "required_field": "Este campo es obligatorio",
+      "resend_btn": "Reenviar instrucciones de confirmación",
+      "link01": "Registrarse",
+      "link02": "Olvidé mi contraseña"
+    },
+    "pass_request": {
+      "title": "¿Olvidaste tu contraseña?",
+      "content": "Escribe el email asociado a tu cuenta y, en unos minutos, recibirás un email con las instrucciones para resetearla.",
+      "label": "Email",
+      "required_field": "Este campo es obligatorio.",
+      "send_btn": "Enviar",
+      "link01": "Registrarse",
+      "link02": "¿No has recibido las instruccions de confirmación?"
+    },
+    "pass_reset": {
+      "title": "Cambiar contraseña",
+      "alert": "Los campos de contraseña no coinciden.",
+      "required_field": "Este campo es obligatorio.",
+      "label01": "Contraseña",
+      "label02": "Contraseña (otra vez)",
+      "change_btn": "Cambiar contraseña",
+      "link01": "Registrarse",
+      "link02": "¿No has recibido las instruccions de confirmación?"
     }
   },
   "settings": {

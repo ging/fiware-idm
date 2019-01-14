@@ -226,9 +226,8 @@
       "alert01": "There are no admins",
       "alert02": "No users found.",
       "alert03": "Use the filter (type at least two characters).",
-      "alert04": "Some users don't have any role assigned. If you save now they won't be authorized in the application",
-      "alert05": "Invalid characters",
-      "alert06": "User authorized as admin"
+      "alert04": "Invalid characters",
+      "alert05": "User authorized as admin"
     },
     "users": {
       "title": "Users",

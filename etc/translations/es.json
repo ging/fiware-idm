@@ -52,6 +52,13 @@
       "link01": "Registrarme",
       "link02": "He olvidado mi contraseña",
       "link03": "¿No has recibido email de confirmación?"
+    },
+    "presentation": {
+      "title": "Gestor de Identidad",
+      "subtitle01": "Bienvenido al Gestor de Identidades de FIWARE, desarrollado por la UPM.",
+      "subtitle02": "Puedes personalizar esta página de login, como también!!!!!!!You can customize this login page as well as any other style/layout in this web service. Check customization documentation to learn how to do it!",
+      "signup_btn": "Registrarte",
+      "docs_btn": "Ir a la documentación"
     }
   },
   "settings": {

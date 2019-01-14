@@ -397,7 +397,7 @@
 
 
 
-//ÑAPING
+//LOGIN PAGE ÑAPPING
 .login, .presentation {
   width: 49%;
   margin: 0;
@@ -421,7 +421,8 @@
   }
 }
 
-@media (max-width: 692px){
+@media (max-width: 792px){
+
   .login, .presentation {
     width: 90%;
     margin: 0 auto;
@@ -434,9 +435,9 @@
   }
 }
 
-@media (max-width: 420px){
+@media (max-width: 500px){
 
   .presentation .media footer {
-    margin-top: 7em;
+    margin-top: 5.5em;
   }
 }

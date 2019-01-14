@@ -26,7 +26,7 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("name") != -1) { %>
-								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
 							<div class="form-group required">
 								<label class="control-label  required" for="id_description"><%=translation.applications.edit.label02%></label>
@@ -36,12 +36,12 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("description") != -1) { %>
-								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
 							<div class="form-group required">
 								<label class="control-label  required" for="id_url">
 									<%=translation.applications.edit.label03%> 
-									<a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application URL" data-content="For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock." data-original-title="" title="">
+									<a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover01_title%>" data-content="<%=translation.applications.edit.popover01_body%>" data-original-title="" title="">
 										<i class="fa fa-question-circle"></i>
 									</a>
 								</label>
@@ -50,21 +50,21 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("url") != -1) { %>
-								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
 							<div class="form-group required">
-								<label class="control-label  required" for="id_callbackurl"><%=translation.applications.edit.label04%><a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover01_title%>" data-content="<%=translation.applications.edit.popover01_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
+								<label class="control-label  required" for="id_callbackurl"><%=translation.applications.edit.label04%><a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover02_title%>" data-content="<%=translation.applications.edit.popover02_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
 								<div class=" ">
 									<input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= application.redirect_uri %>" >
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("redirectUri") != -1) { %>
-								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
 							<div class="form-group required">
 					          <label class="control-label  required" for="id_grant_type">
 					            <%=translation.applications.edit.label05%>
-					            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover02_title%>" data-content="<%=translation.applications.edit.popover02_body%>" data-original-title="" title="">
+					            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover03_title%>" data-content="<%=translation.applications.edit.popover03_body%>" data-original-title="" title="">
 					              <i class="fa fa-question-circle"></i>
 					            </a>
 					          </label>

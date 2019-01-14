@@ -4,7 +4,7 @@
             <h3>
                 <div class="page-header">
                     <h2>
-                        <%=translation.admin.notify.notify%>
+                        <%=translation.admin.notify.title%>
                     </h2>
                 </div>
             </h3>
@@ -14,66 +14,66 @@
             <div class="modal-body clearfix">
                 <fieldset>
                     <div class="form-group required">
-                        <label class="control-label  required" for="id_notify"><%=translation.admin.notify.notify%></label>
+                        <label class="control-label  required" for="id_notify"><%=translation.admin.notify.label01%></label>
                         <div class=" ">
                             <select class="form-control" id="id_notify" name="notify">
                                 <% if (errors.option === 'all-users') { -%>
-                                    <option value="all_users" selected><%=translation.admin.notify.notify_all_input%></option>
-                                    <option value="organization"><%=translation.admin.notify.notify_organization_input%></option>
-                                    <option value="users_by_id"><%=translation.admin.notify.notify_user_by_id_input%></option>
+                                    <option value="all_users" selected><%=translation.admin.notify.option01%></option>
+                                    <option value="organization"><%=translation.admin.notify.option02%></option>
+                                    <option value="users_by_id"><%=translation.admin.notify.option03%></option>
                                 <% } else if (errors.option === 'organization') { -%>
-                                    <option value="all_users"><%=translation.admin.notify.notify_all_input%></option>
-                                    <option value="organization" selected><%=translation.admin.notify.notify_organization_input%></option>
-                                    <option value="users_by_id"><%=translation.admin.notify.notify_user_by_id_input%></option>
+                                    <option value="all_users"><%=translation.admin.notify.option01%></option>
+                                    <option value="organization" selected><%=translation.admin.notify.option02%></option>
+                                    <option value="users_by_id"><%=translation.admin.notify.option03%></option>
                                 <% } else if (errors.option === 'users_by_id') { -%>
-                                    <option value="all_users"><%=translation.admin.notify.notify_all_input%></option>
-                                    <option value="organization"><%=translation.admin.notify.notify_organization_input%></option>
-                                    <option value="users_by_id" selected><%=translation.admin.notify.notify_user_by_id_input%></option>
+                                    <option value="all_users"><%=translation.admin.notify.option01%></option>
+                                    <option value="organization"><%=translation.admin.notify.option02%></option>
+                                    <option value="users_by_id" selected><%=translation.admin.notify.option03%></option>
                                 <% } else { -%>
-                                    <option value="all_users"><%=translation.admin.notify.notify_all_input%></option>
-                                    <option value="organization"><%=translation.admin.notify.notify_organization_input%></option>
-                                    <option value="users_by_id"><%=translation.admin.notify.notify_user_by_id_input%></option>
+                                    <option value="all_users"><%=translation.admin.notify.option01%></option>
+                                    <option value="organization"><%=translation.admin.notify.option02%></option>
+                                    <option value="users_by_id"><%=translation.admin.notify.option03%></option>
                                 <% } -%>
                             </select>
                         </div>
                     </div>
                     <div class="form-group " style="display: none;">
-                        <label class="control-label" for="id_organization"><%=translation.admin.notify.organization_id%></label>
+                        <label class="control-label" for="id_organization"><%=translation.admin.notify.label02%></label>
                         <div class="">
                             <input class="form-control" id="id_organization" name="organization" type="text">
                         </div>
                         <% if (errors.not_users_organization) { -%>
-                            <span class="help-block alert alert-danger "><%=translation.admin.notify.organization_no_users_message%></span>
+                            <span class="help-block alert alert-danger "><%=translation.admin.notify.alert01%></span>
                         <% } -%>
                         <% if (errors.not_organization) { -%>
-                            <span class="help-block alert alert-danger "><%=translation.admin.notify.organization_not_found_message%></span>
+                            <span class="help-block alert alert-danger "><%=translation.admin.notify.alert02%></span>
                         <% } -%>
                     </div>
                     <div class="form-group " style="display: none;">
-                        <label class="control-label  " for="id_user_ids"><%=translation.admin.notify.user_id_csv_format%></label>
+                        <label class="control-label  " for="id_user_ids"><%=translation.admin.notify.label03%></label>
                         <div class=" ">
                             <input class="form-control" id="id_user_ids" maxlength="50000" name="user_ids" value="<%= users %>">
                         </div>
                         <% if (errors.not_users) { -%>
-                            <span class="help-block alert alert-danger "><%=translation.admin.notify.write_user_ids_message%></span>
+                            <span class="help-block alert alert-danger "><%=translation.admin.notify.alert03%></span>
                         <% } -%>
                         <% if (errors.users_not_found) { -%>
-                            <span class="help-block alert alert-danger "><%=translation.admin.notify.users_not_found_message%>: <b><%= errors.users_not_found%></b></span> 
+                            <span class="help-block alert alert-danger "><%=translation.admin.notify.alert04%>: <b><%= errors.users_not_found%></b></span> 
                         <% } -%>
                     </div>
                     <div class="form-group required">
-                        <label class="control-label  required" for="id_subject"><%=translation.admin.notify.subject%></label>
+                        <label class="control-label  required" for="id_subject"><%=translation.admin.notify.label04%></label>
                         <div class=" ">
                             <input class="form-control" id="id_subject" maxlength="50" name="subject" type="text" value="<%= subject%>">
                         </div>
                         <% if (errors.subject) { -%>
-                            <span class="help-block alert alert-danger "><%=translation.admin.notify.field_required_message%></span>                   
+                            <span class="help-block alert alert-danger "><%=translation.admin.notify.required_field%></span>                   
                         <% } -%>
                     </div>
                     <div class="form-group required">
-                        <label class="control-label  required" for="id_body"><%=translation.admin.notify.body%></label>
+                        <label class="control-label  required" for="id_body"><%=translation.admin.notify.label05%></label>
                         <textarea class="form-control" cols="40" hidden="true" id="id_body" name="body" rows="10" style="overflow: hidden; word-wrap: break-word; height: 194px; display: none;">
-                                &lt;span style="display: block;"&gt;<%=translation.admin.notify.dear_user%>,&lt;/span&gt;&lt;br/&gt;
+                                &lt;span style="display: block;"&gt;<%=translation.admin.notify.email_message%>,&lt;/span&gt;&lt;br/&gt;
                         </textarea>
                         <iframe id="id_body_iframe" src="/summernote/editor.html" frameborder="0" class="form-control" cols="40" rows="10" width="720" height="480" style="height: 480px;"></iframe>
                     </div>

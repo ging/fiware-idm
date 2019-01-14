@@ -15,9 +15,9 @@
                             <div class="handle_trusted_app">
                                 <div class="all-applications">
                                     <header>
-                                        <h4><%=translation.applications.add_trusted_application.subtitle_1%></h4>
+                                        <h4><%=translation.applications.add_trusted_application.subtitle01%></h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" id="filter_available_applications" class="form-control input-sm" placeholder="<%=translation.applications.add_trusted_application.filter_input%>" data-url="/idm/applications/available">
+                                            <input type="text" id="filter_available_applications" class="form-control input-sm" placeholder="<%=translation.applications.add_trusted_application.placeholder_input%>" data-url="/idm/applications/available">
                                         </div>
                                         <div id="spinner_available_applications" class="filtering-spinner-inline" style="display: none;">
                                             <i class="fa fa-circle-o-notch fa-spin"></i>
@@ -27,33 +27,33 @@
                                         <ul id="available_applications" class="list-group">
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="no_available_applications" style="display: none;">
-                                            <li><%=translation.applications.add_trusted_application.no_apps_message%></li>
+                                            <li><%=translation.applications.add_trusted_application.alert01%></li>
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="perform_filter_available_applications" style="display: block;">
-                                            <li><%=translation.applications.add_trusted_application.use_filter_message%></li>
+                                            <li><%=translation.applications.add_trusted_application.alert03%></li>
                                         </ul>
                                     </div>
-                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.add_trusted_application.invalid_char_message%></span>
+                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.add_trusted_application.alert04%></span>
                                 </div>
                                 <div class="trusted-applications">
                                     <header>
-                                        <h4><%=translation.applications.add_trusted_application.subtitle_2%></h4>
+                                        <h4><%=translation.applications.add_trusted_application.subtitle02%></h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" id="filter_trusted_applications" class="form-control input-sm" placeholder="<%=translation.applications.add_trusted_application.filter_input%>">
+                                            <input type="text" id="filter_trusted_applications" class="form-control input-sm" placeholder="<%=translation.applications.add_trusted_application.placeholder_input%>">
                                         </div>
                                     </header>
                                     <div class="pre-scrollable filterable">
                                         <ul id="trusted_applications_list" class="list-group">
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="no_trusted_applications" style="display: none;">
-                                            <li><%=translation.applications.add_trusted_application.no_trusted_message%></li>
+                                            <li><%=translation.applications.add_trusted_application.alert02%></li>
                                         </ul>                                
                                     </div>
-                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.add_trusted_application.invalid_char_message%></span>
+                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.add_trusted_application.alert04%></span>
                                 </div>
                             </div>
                         </fieldset>    
-                        <span id="info_added_app" style="display: none;" class='help-block alert alert-info'><%=translation.applications.add_trusted_application.new_trusted_message%></span>
+                        <span id="info_added_app" style="display: none;" class='help-block alert alert-info'><%=translation.applications.add_trusted_application.alert05%></span>
                     </div>
                 </div>
                 <div class="modal-footer">

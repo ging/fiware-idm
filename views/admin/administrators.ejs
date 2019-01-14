@@ -1,13 +1,13 @@
 <div id="content_body">
     <div class="page-header">
         <h2>
-            <%=translation.admin.administrators.administrators%>
+            <%=translation.admin.administrators.title%>
         </h2>
     </div>
     <div id="administrators-page">
         <div class="panel panel-default datatable" id="auth_admins" data-pagination-url="/filters/users" data-application_id="idm_admin_app" data-pagination-pages="">
             <div class="panel-heading">
-                <span class="title"><%=translation.admin.administrators.authorized_administrators%></span>
+                <span class="title"><%=translation.admin.administrators.panel_title%></span>
                 <div class="table_actions clearfix">
                     <div class="filter table_search client">
                         <input class="form-control" value="" type="text" name="members__filter__q" placeholder="Filter">
@@ -17,7 +17,7 @@
                         <button title="Authorize" class="btn btn-default btn-sm ajax-modal" id="members__action_manage_administrators" data-toggle="modal" data-target="#authorize_user">
                             <i class="fa fa-key"></i> 
                             <span class="action">
-                                <%=translation.admin.administrators.authorize%>
+                                <%=translation.admin.administrators.authorize_btn%>
                             </span>
                         </button>
                     </div>
@@ -25,7 +25,7 @@
             </div>
             <div class="panel-body datatable-content">
                 <div class="list-group" id="admins_content">
-                    <p class="alert alert-info empty" style="display: none;"><%=translation.admin.administrators.no_admins_message%></p>
+                    <p class="alert alert-info empty" style="display: none;"><%=translation.admin.administrators.alert%></p>
                 </div>
             </div>
             <div class="panel-footer">

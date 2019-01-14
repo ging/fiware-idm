@@ -9,28 +9,28 @@
 			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype="">
 				<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 				<div class="modal-body clearfix">
-					<span id="xml_with_action_and_resource_not_allow" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.advanced_cannot_message%></span>
+					<span id="xml_with_action_and_resource_not_allow" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.alert01%></span>
 					<% if (authorization_level === 'advanced') { -%>
-						<span id="define_rule" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.define_rule_advanced_message%></span>
+						<span id="define_rule" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.alert02%></span>
 					<% } else { -%>
-						<span id="define_rule" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.define_rule_message%></span>
+						<span id="define_rule" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.alert03%></span>
 					<% } -%>
 					<fieldset>
 						<input id="id_application_id" name="application_id" type="hidden" value="">
 						<div class="form-group required">
-							<label class="control-label  required" for="id_name"><%=translation.applications.create_permission.name_label%></label>
+							<label class="control-label  required" for="id_name"><%=translation.applications.create_permission.label01%></label>
 							<div class=" ">
 								<input class="form-control" id="id_name" maxlength="255" name="name" type="text">
 							</div>
 						</div>
-						<span id="error_empty_name" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.field_required_message%></span>
+						<span id="error_empty_name" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.required_field%></span>
 						<div class="form-group required">
-							<label class="control-label  required" for="id_description"><%=translation.applications.create_permission.description_label%></label>
+							<label class="control-label  required" for="id_description"><%=translation.applications.create_permission.label02%></label>
 							<div class=" ">
 								<input class="form-control" id="id_description" name="description" type="text">
 							</div>
 						</div>
-						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.field_required_message%></span>
+						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.required_field%></span>
 						<div class="panel-group" id="accordion">
 							<% if (authorization_level === 'advanced') { -%>
 								<div class="panel">
@@ -40,20 +40,20 @@
 								<div class="panel-headding">  
 									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-verb-resource" class="panel-heading collapsed">
 										<h4 class="panel-title panel-close">
-											<%=translation.applications.create_permission.subtitle_1%>
+											<%=translation.applications.create_permission.subtitle01%>
 										</h4>
 									</a>
 								</div>
 								<div id="collapse-verb-resource" class="panel-collapse collapsed in">
 									<div class="panel-body">
 										<div class="form-group ">
-											<label class="control-label  " for="id_action"><%=translation.applications.create_permission.action_label%></label>
+											<label class="control-label  " for="id_action"><%=translation.applications.create_permission.label03%></label>
 											<div class=" ">
 												<input class="form-control" id="id_action" maxlength="255" name="action" type="text">
 											</div>
 										</div>
 										<div class="form-group ">
-											<label class="control-label  " for="id_resource"><%=translation.applications.create_permission.resource_label%></label>
+											<label class="control-label  " for="id_resource"><%=translation.applications.create_permission.label04%></label>
 											<div class=" ">
 												<input class="form-control" id="id_resource" maxlength="255" name="resource" type="text">
 											</div>
@@ -66,14 +66,14 @@
 									<div class="panel-headding">
 										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-xacml" class="panel-heading collapsed">
 											<h4 class="panel-title panel-close">
-												<%=translation.applications.create_permission.subtitle_2%>
+												<%=translation.applications.create_permission.subtitle02%>
 											</h4>
 										</a>
 									</div>
 									<div id="collapse-xacml" class="panel-collapse collapse">
 										<div class="panel-body">
 											<div class="form-group ">
-												<label class="control-label  " for="id_xml">U<%=translation.applications.create_permission.xacml_label%></label>
+												<label class="control-label  " for="id_xml">U<%=translation.applications.create_permission.label05%></label>
 												<div class=" ">
 													<textarea class="form-control" cols="40" id="id_xml" name="xml" rows="10"></textarea>
 												</div>

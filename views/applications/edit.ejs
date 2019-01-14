@@ -10,41 +10,37 @@
 			<div id="" class="edit">
 				<div class="modal-header">
 					<h3>
-						Application Information
+						<%=translation.applications.edit.panel_title01%>
 					</h3>
 				</div>
 				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/info?_method=put" method="POST" enctype="">
 					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 					<div class="modal-body clearfix">
-
 						<fieldset>
 							<input id="id_appID" name="appID" type="hidden">
 							<input id="id_redirect_to" name="redirect_to" type="hidden" value="create">
-
 							<div class="form-group required">
-								<label class="control-label  required" for="id_name">Name</label>
+								<label class="control-label  required" for="id_name"><%=translation.applications.edit.label01%></label>
 								<div class=" ">
 									<input class="form-control" id="id_name" name="application[name]" type="text" value="<%= application.name %>">
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("name") != -1) { %>
-								<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
 							<% } %>
-
 							<div class="form-group required">
-								<label class="control-label  required" for="id_description">Description</label>
+								<label class="control-label  required" for="id_description"><%=translation.applications.edit.label02%></label>
 								<div class=" ">
 									<textarea class="form-control" cols="40" id="id_description" name="application[description]" value="<%= application.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"><%= application.description %>
 									</textarea>
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("description") != -1) { %>
-								<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
 							<% } %>
-
 							<div class="form-group required">
 								<label class="control-label  required" for="id_url">
-									URL 
+									<%=translation.applications.edit.label03%> 
 									<a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application URL" data-content="For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock." data-original-title="" title="">
 										<i class="fa fa-question-circle"></i>
 									</a>
@@ -54,23 +50,21 @@
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("url") != -1) { %>
-								<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
 							<% } %>
-
 							<div class="form-group required">
-								<label class="control-label  required" for="id_callbackurl">Callback URL <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="Application Callback URL" data-content="The user agent will be redirected to this URL when OAuth flow is finished." data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
+								<label class="control-label  required" for="id_callbackurl"><%=translation.applications.edit.label04%><a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover01_title%>" data-content="<%=translation.applications.edit.popover01_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
 								<div class=" ">
 									<input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= application.redirect_uri %>" >
 								</div>
 							</div>
 							<% if (nameErrors.indexOf("redirectUri") != -1) { %>
-								<span class="help-block alert alert-danger ">This field is required.</span>
+								<span class="help-block alert alert-danger "><%=translation.applications.edit.field_required_message%></span>
 							<% } %>
-
 							<div class="form-group required">
 					          <label class="control-label  required" for="id_grant_type">
-					            Grant Type
-					            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="OAuth Grant Types" data-content="Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information" data-original-title="" title="">
+					            <%=translation.applications.edit.label05%>
+					            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover02_title%>" data-content="<%=translation.applications.edit.popover02_body%>" data-original-title="" title="">
 					              <i class="fa fa-question-circle"></i>
 					            </a>
 					          </label>
@@ -81,25 +75,21 @@
 					            	<% } else { %>
 					            		<option value="authorization_code">Authorization Code</option>
 					            	<% } %>
-
 					            	<% if (application.grant_type.includes('implicit')) { %>
 										<option selected value="implicit">Implicit</option>
 					            	<% } else { %>
 					            		<option value="implicit">Implicit</option>
 					            	<% } %>
-
 					            	<% if (application.grant_type.includes('password')) { %>
 										<option selected value="password">Resource Owner Password</option>
 					            	<% } else { %>
 					            		<option value="password">Resource Owner Password</option>
 					            	<% } %>
-
 					            	<% if (application.grant_type.includes('client_credentials')) { %>
 										<option selected value="client_credentials">Client Credentials</option>
 					            	<% } else { %>
 					            		<option value="client_credentials">Client Credentials</option>
 					            	<% } %>
-
 					            	<% if (application.grant_type.includes('refresh_token')) { %>
 										<option selected value="refresh_token">Refresh Token</option>
 					            	<% } else { %>
@@ -108,11 +98,10 @@
 					            </select>
 					          </div>
 					        </div>
-
 						</fieldset>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Save</button>
+						<button type="submit" class="btn btn-primary"><%=translation.applications.edit.save_btn%></button>
 					</div>
 				</form>
 			</div>
@@ -123,7 +112,7 @@
 			<div id="" class="edit update-avatar-modal">
 				<div class="modal-header">
 					<h3>
-						Application Avatar
+						<%=translation.applications.edit.panel_title02%>
 					</h3>
 				</div>
 				<form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/avatar?_method=put" method="POST" enctype="multipart/form-data">
@@ -137,16 +126,16 @@
 								</div>
 								<div class="profile_actions">
 									<% if (application.image != "/img/logos/original/app.png") { -%>
-										<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/">Delete this image</button>
+										<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/"><%=translation.applications.edit.delete_image_btn%></button>
 									<% } else { -%>
-										<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/" disabled="disabled">Delete this image</button>
+										<button id="delete_image_button" class="btn btn-primary always-enabled ajax-modal" href="/idm/applications/<%= application.id %>/edit/delete_image/" disabled="disabled"><%=translation.applications.edit.delete_image_btn%></button>
 									<% } -%>
 								</div>
 							</div>
 						</div>
 						<div>
 							<fieldset>
-								<h6>Upload an image</h6> 
+								<h6><%=translation.applications.edit.content01%></h6> 
 								<input id="id_x" name="x" type="hidden">
 								<input id="id_y" name="y" type="hidden">
 								<input id="id_w" name="w" type="hidden">
@@ -164,9 +153,9 @@
 								<img id="avatar-update" src="/img/logos/original/app.png">
 							</div>
 							<div class="col-md-2 update_actions" style="display:none;">
-								<h6>Select the part of the image you want to use as avatar.</h6>
-								<button id="crop-and-use-button" class="btn btn-primary always-enabled" name="crop_and_use" type="submit">Crop and use</button>
-								<a href="#" class="btn btn-default always-enabled" id="cancel-crop-button">Cancel</a>
+								<h6><%=translation.applications.edit.content02%></h6>
+								<button id="crop-and-use-button" class="btn btn-primary always-enabled" name="crop_and_use" type="submit"><%=translation.applications.edit.crop_btn%></button>
+								<a href="#" class="btn btn-default always-enabled" id="cancel-crop-button"><%=translation.applications.edit.cancel_btn%></a>
 							</div>
 						</div>
 					</div>
@@ -179,17 +168,13 @@
 	<div class="panel panel-default cancel_account">
 		<div class="panel-body">
 			<div id="cancel-application-modal" class="edit">
-				<div class="modal-header">
-					<h3>
-						Cancel
-					</h3>
-				</div>
+				<div class="modal-header"></div>
 				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>?_method=delete" method="POST">
 					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
 					<div class="modal-body clearfix">
 						<a class="panel-title" data-toggle="collapse" data-parent="#accordion" href="#destroy_application">
 							<h3>
-								Remove Application
+								<%=translation.applications.edit.panel_title03%>
 							</h3>
 						</a>
 						<div>
@@ -200,9 +185,9 @@
 					</div>
 					<div class="modal-footer">
 						<div id="destroy_application" class="panel-collapse collapse">
-							<span>This will remove the application and all its data</span>
+							<span><%=translation.applications.edit.content03%></span>
 							<button type="submit" class="btn btn-danger">
-								Delete Application
+								<%=translation.applications.edit.delete_app_btn%>
 							</button>
 						</div>
 					</div>
@@ -211,15 +196,10 @@
 		</div>
 	</div>
 </div>
-
 <div class="messages"></div>
-
 <%- include _delete_avatar %>
-
 <%- include ../templates/./other/./_info_message %>
-
 <script src="/javascripts/applications/handle_edit_application.js" type="text/javascript"></script>
-
 <script type="text/javascript">
     $(function () {
       $('[data-toggle="popover"]').popover({html:true});

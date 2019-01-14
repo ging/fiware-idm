@@ -38,6 +38,70 @@
   "help_about": {
     "ha_title": "Help & About"
   },
+  "auth": {
+    "login": {
+      "title": "Log In",
+      "alert01": "Session expired",
+      "alert02": "Password changed. Please log in again to continue.",
+      "alert03": "Invalid user name or password.",
+      "label01": "Email",
+      "label02": "Password",
+      "required_field": "This is a required field.",
+      "checkbox": "remember me",
+      "loginin_btn": "Log In",
+      "link01": "Sign up",
+      "link02": "Forgot password",
+      "link03": "Confirmation not recieved?"
+    }
+  },
+  "settings": {
+    "settings": {
+      "title": "Settings",
+      "panel_title01": "Change your password",
+      "label01": "Current password",
+      "label02": "New password",
+      "label03": "Confirm new password",
+      "panel_title02": "Change your email",
+      "label04": "Email",
+      "label05": "Current email",
+      "panel_title03": "Manage two-factor authentication",
+      "content01": "You have this option ",
+      "content01_1": "disabled.",
+      "content02": "We highly recommend you enable it, since it provides a higher level of security to access your account.",
+      "content03": "If you want to give two factor authentication a try, you need to provide a security question, just in case you happen to lose access to your authentication app.",
+      "label06": "Security question",
+      "label07": "Security answer",
+      "panel_title04": "Cancel account",
+      "content04": "Unhappy? ",
+      "content04_link": "Cancel my account"
+    },
+    "delete_user": {
+      "title": "Cancel account",
+      "content": "Are you sure? Cancelling your account implies the deletion of all your resources. This action is permanent.",
+      "confirm_btn": "Confirm",
+      "cancel_btn": "Cancel"
+    },
+    "change_email": {
+      "title": "Change Email",
+      "required_field": "This field is required.",
+      "label01": "Email",
+      "label02": "Current email",
+      "change_btn": "Change"
+    },
+    "change_pass": {
+      "title": "Change Password",
+      "required_field": "This field is required.",
+      "pass_alert": "New password and confirm password not match.",
+      "label01": "Current password",
+      "label02": "New password",
+      "label03": "Confirm new password"
+    },
+    "warn_change_pass": {
+      "title": "Change password",
+      "content": "It's been a year since you changed the password. For security reasons and to continue using this portal, please change it.",
+      "continue_btn": "Continue"
+    }
+  },
   "users": {
     "delete_avatar": {
       "delete_image": "Delete uploaded image",
@@ -91,54 +155,6 @@
       "no_member_warning": "You are not member or owner of any organizations.",
       "applications_title": "Applications",
       "no_authorized_warning": "You are not authorized in any application."
-    }
-  },
-  "settings": {
-    "settings": {
-      "title": "Settings",
-      "panel_title01": "Change your password",
-      "label01": "Current password",
-      "label02": "New password",
-      "label03": "Confirm new password",
-      "panel_title02": "Change your email",
-      "label04": "Email",
-      "label05": "Current email",
-      "panel_title03": "Manage two-factor authentication",
-      "content01": "You have this option ",
-      "content01_1": "disabled.",
-      "content02": "We highly recommend you enable it, since it provides a higher level of security to access your account.",
-      "content03": "If you want to give two factor authentication a try, you need to provide a security question, just in case you happen to lose access to your authentication app.",
-      "label06": "Security question",
-      "label07": "Security answer",
-      "panel_title04": "Cancel account",
-      "content04": "Unhappy? ",
-      "content04_link": "Cancel my account"
-    },
-    "delete_user": {
-      "title": "Cancel account",
-      "content": "Are you sure? Cancelling your account implies the deletion of all your resources. This action is permanent.",
-      "confirm_btn": "Confirm",
-      "cancel_btn": "Cancel"
-    },
-    "change_email": {
-      "title": "Change Email",
-      "required_field": "This field is required.",
-      "label01": "Email",
-      "label02": "Current email",
-      "change_btn": "Change"
-    },
-    "change_pass": {
-      "title": "Change Password",
-      "required_field": "This field is required.",
-      "pass_alert": "New password and confirm password not match.",
-      "label01": "Current password",
-      "label02": "New password",
-      "label03": "Confirm new password"
-    },
-    "warn_change_pass": {
-      "title": "Change password",
-      "content": "It's been a year since you changed the password. For security reasons and to continue using this portal, please change it.",
-      "continue_btn": "Continue"
     }
   },
   "admin": {

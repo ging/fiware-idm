@@ -38,43 +38,20 @@
   "help_about": {
     "ha_title": "Ayuda y Acerca de"
   },
-  "users": {
-    "delete_avatar": {
-      "delete_image": "Borrar imagen",
-      "confirmation_msg": "¿Estás seguro de que quieres borrar esta imagen?",
-      "upload_msg": "Puedes subirla de nuevo cuando quieras.",
-      "confirm_btn": "Confirmar",
-      "cancel_btn": "Cancelar"
-    },
-    "edit_user": {
-      "personal_information": "Información Personal",
-      "username": "Nombre de usuario",
-      "input_required": "Este campo es obligatorio.",
-      "description_title": "Acerca de mi",
-      "website_title": "Website",
-      "update_btn": "Actualizar usuario ",
-      "personal_avatar": "Avatar Personal",
-      "use_image_btn": "Usar esta imagen ",
-      "delete_image_btn": "Borrar esta imagen ",
-      "use_gravatar_btn": "Usar Gravatar ",
-      "edit_gravatar_btn": "Editar en Gravatar",
-      "gravatar_link": "Somos compatibles con Gravatar. Crea tu perfil ",
-      "gravatar_link2": "¡aquí!",
-      "update_img": "Subir una imagen",
-      "select_img": " Selecciona la parte de la imagen que quieras para usar de avatar.",
-      "crop_btn": "Recortar y usar",
-      "cancel_btn": "Cancelar"
-    },
-    "show_user": {
-      "placeholder_input": "Filtro",
-      "edit_btn": "editar",
-      "description_label": "Descripción",
-      "no_description": "Descripción no disponible",
-      "website_label": "Website",
-      "organizations_title": "Organizaciones",
-      "no_member_warning": "No eres miembro ni propietario de ninguna organización.",
-      "applications_title": "Aplicaciones",
-      "no_authorized_warning": "No tienes autorización en ninguna aplicación."
+  "auth": {
+    "login": {
+      "title": "Acceder",
+      "alert01": "Sesión expirada",
+      "alert02": "Contraseña cambiada. Por favor accede de nuevo para continuar.",
+      "alert03": "Nombre de usuario o contraseña inválidas",
+      "label01": "Email",
+      "label02": "Contraseña",
+      "required_field": "Este campo es obligatorio.",
+      "checkbox": "recuérdame",
+      "loginin_btn": "Acceder",
+      "link01": "Registrarme",
+      "link02": "He olvidado mi contraseña",
+      "link03": "¿No has recibido email de confirmación?"
     }
   },
   "settings": {
@@ -125,6 +102,61 @@
       "continue_btn": "Continuar"
     }
   },
+  "users": {
+    "delete_avatar": {
+      "delete_image": "Borrar imagen",
+      "confirmation_msg": "¿Estás seguro de que quieres borrar esta imagen?",
+      "upload_msg": "Puedes subirla de nuevo cuando quieras.",
+      "confirm_btn": "Confirmar",
+      "cancel_btn": "Cancelar"
+    },
+    "edit_user": {
+      "personal_information": "Información Personal",
+      "username": "Nombre de usuario",
+      "input_required": "Este campo es obligatorio.",
+      "description_title": "Acerca de mi",
+      "website_title": "Website",
+      "update_btn": "Actualizar usuario ",
+      "personal_avatar": "Avatar Personal",
+      "use_image_btn": "Usar esta imagen ",
+      "delete_image_btn": "Borrar esta imagen ",
+      "use_gravatar_btn": "Usar Gravatar ",
+      "edit_gravatar_btn": "Editar en Gravatar",
+      "gravatar_link": "Somos compatibles con Gravatar. Crea tu perfil ",
+      "gravatar_link2": "¡aquí!",
+      "update_img": "Subir una imagen",
+      "select_img": " Selecciona la parte de la imagen que quieras para usar de avatar.",
+      "crop_btn": "Recortar y usar",
+      "cancel_btn": "Cancelar"
+    },
+    "new_user": {
+      "registration": "Registro",
+      "pass_error": "Los campos de contraseña no coinciden",
+      "email_error": "El email ya está en uso",
+      "email_error2": "El email no es válido",
+      "username": "Nombre de usuaruio",
+      "required_field": "Este campo es obligatorio",
+      "email": "Email",
+      "have_gravatar": "Tengo Gravatar y quiero usarlo para mi imagen de perfil.",
+      "password": "Contraseña",
+      "password2": "Contraseña (otra vez)",
+      "captcha": "Captcha",
+      "signup": "Registrarse",
+      "forgot_pass": "He olvidado mi contraseña",
+      "confirmation": "¿No has recibido email de confirmación?"
+    },
+    "show_user": {
+      "placeholder_input": "Filtro",
+      "edit_btn": "editar",
+      "description_label": "Descripción",
+      "no_description": "Descripción no disponible",
+      "website_label": "Website",
+      "organizations_title": "Organizaciones",
+      "no_member_warning": "No eres miembro ni propietario de ninguna organización.",
+      "applications_title": "Aplicaciones",
+      "no_authorized_warning": "No tienes autorización en ninguna aplicación."
+    }
+  },
   "admin": {
     "notify": {
       "notify": "Notificar",
@@ -162,7 +194,7 @@
         "user_new_admin_message": "User authorized as admin"
       }
     },
-    "userss": {
+    "users": {
       "users": "Users",
       "username": "Nombre de usuario",
       "show": "Show",

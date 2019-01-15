@@ -3,20 +3,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <a href="#" class="close" data-dismiss="modal">×</a>
-                <h3>Delete user</h3>
+                <h3><h3><%=translation.admin.delete_user.title%></h3></h3>
             </div>
             <form id="delete_user_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/admins/list_users/users" method="POST" enctype="">
                 <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                 <div class="modal-body clearfix">
                     <div class="right">
-                        <p>You are going to delete these users: </p>
+                        <p><%=translation.admin.delete_user.content01%></p>
                         <ul id="list_users"></ul>
-                        <p>Are you sure? Deleting users implies the deletion of all their resources. This action is permanent.</p>
+                        <p><%=translation.admin.delete_user.content02%></p>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Confirm">
-                    <button data-dismiss="modal" class="btn btn-default secondary cancel">Cancel</button>
+                    <input type="submit" class="btn btn-primary" value="<%=translation.admin.delete_user.confirm_input%>">
+                    <button data-dismiss="modal" class="btn btn-default secondary cancel"><%=translation.admin.delete_user.cancel_btn%></button>
                 </div>
             </form>
         </div>

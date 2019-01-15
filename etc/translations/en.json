@@ -206,14 +206,14 @@
     },
     "change_email": {
       "title": "Change Email",
-      "required_field": "This field is required.",
+      "required_field": "This is a required field.",
       "label01": "Email",
       "label02": "Current email",
       "change_btn": "Change"
     },
     "change_pass": {
       "title": "Change Password",
-      "required_field": "This field is required.",
+      "required_field": "This is a required field.",
       "pass_alert": "New password and confirm password not match.",
       "label01": "Current password",
       "label02": "New password",
@@ -282,98 +282,463 @@
   },
   "admin": {
     "notify": {
-      "notify": "Notify",
-      "notify_all_input": "Notify all users",
-      "notify_organization_input": "Notify an organization",
-      "notify_user_by_id_input": "Notify users by user ID",
-      "organization_id": "Organization ID",
-      "user_id_csv_format": "User IDs in CSV format",
-      "subject": "Subject",
-      "body": "Body",
-      "dear_user": "Dear user",
-      "send_btn": "Send",
-      "organization_no_users_message": "Organization don't have users",
-      "organization_not_found_message": "Organization not found",
-      "write_user_ids_message": "Need to write some user ids",
-      "users_not_found_message": "Users not found",
-      "field_required_message": "This field is required."
+      "title": "Notify",
+      "label01": "Notify",
+      "label02": "Organization ID",
+      "label03": "User IDs in CSV format",
+      "label04": "Subject",
+      "label05": "Body",
+      "option01": "Notify all users",
+      "option02": "Notify an organization",
+      "option03": "Notify users by user ID",
+      "email_message": "Dear user",
+      "alert01": "Organization don't have users",
+      "alert02": "Organization not found",
+      "alert03": "Need to write some user ids",
+      "alert04": "Users not found",
+      "required_field": "This is a required field.",
+      "send_btn": "Send"
     },
     "administrators": {
-      "administrators": "Administrators",
-      "authorized_administrators": "Authorized Administrators",
-      "authorize": "Authorize",
-      "no_admins_message": "There are no admins",
-      "authorize_pop_up": {
-        "title": "Manage Administrators",
-        "all_users": "All Users",
-        "filter_input": "filter",
-        "cancel_btn": "Cancel",
-        "save_btn": "Save",
-        "no_admins_message": "There are no admins",
-        "no_users_message": "No users found.",
-        "use_filter_message": "Use the filter (type at least two characters).",
-        "no_role_assigned_message": "Some users don't have any role assigned. If you save now they won't be authorized in the application",
-        "invalid_char_message": "Invalid characters",
-        "user_new_admin_message": "User authorized as admin"
-      }
+      "title": "Administrators",
+      "panel_title": "Authorized Administrators",
+      "authorize_btn": "Authorize",
+      "alert01": "There are no admins"
     },
-    "userss": {
-      "users": "Users",
-      "username": "Nombre de usuario",
-      "show": "Show",
-      "entries": "entries",
+    "authorize_administrators": {
+      "title": "Manage Administrators",
+      "subtitle01": "All Users",
+      "subtitle02": "Authorized Administrators",
+      "placeholder_input": "Filter",
+      "cancel_btn": "Cancel",
+      "save_btn": "Save",
+      "alert01": "There are no admins",
+      "alert02": "No users found.",
+      "alert03": "Use the filter (type at least two characters).",
+      "alert04": "Invalid characters",
+      "alert05": "User authorized as admin"
+    },
+    "users": {
+      "title": "Users",
+      "content01": "Show",
+      "content02": "entries",
       "create_user_btn": "Create user",
       "delete_user_btn": "Delete user",
+      "username_col_table": "Username",
       "enable_col_table": "Enable",
       "actions_col_table": "Actions",
-      "no_users_message": "No users found.",
-      "create_pop_up": {
-        "title": "Create user",
-        "password_not_match": "The two password fields didn't match.",
-        "email_used": "Email is already used.",
-        "email_invalid": "Email is invalid.",
-        "username": "Nombre de usuario",
-        "password": "Password",
-        "password_again": "Password (again)",
-        "description": "Description",
-        "website": "Website",
-        "send_user_email_input": "Send an email to the user",
-        "send_user_email_popover": "This will send an email to the user including the assigned password.",
-        "enable": "Enable",
-        "field_required_message": "This field is required.",
-        "create_btn": "Create"
+      "alert01": "No users found."
+    },
+    "create_user": {
+      "title": "Create user",
+      "alert01": "The two password fields didn't match.",
+      "alert02": "Email is already used.",
+      "alert03": "Email is invalid.",
+      "label01": "Username",
+      "label02": "Email",
+      "label03": "Password",
+      "label04": "Password (again)",
+      "label05": "Description",
+      "label06": "Website",
+      "label07": "Send an email to the user",
+      "label08": "Enable",
+      "popover_title": "Send Email",
+      "popover_body": "This will send an email to the user including the assigned password.",
+      "required_field": "This is a required field.",
+      "create_btn": "Create"
+    },
+    "delete_user": {
+      "title": "Delete user",
+      "content01": "You are going to delete these users: ",
+      "content02": "Are you sure? Deleting users implies the deletion of all their resources. This action is permanent.",
+      "confirm_input": "Confirm",
+      "cancel_btn": "Cancel"
+    },
+    "edit_user": {
+      "title": "Edit user",
+      "alert01": "Email is already used.",
+      "alert02": "Email is invalid.",
+      "label01": "Username",
+      "label02": "Email",
+      "label03": "Description",
+      "label04": "Website",
+      "required_field": "This is a required field.",
+      "save_btn": "Save"
+    },
+    "reset_password": {
+      "title": "Change password",
+      "alert01": "The two password fields didn't match.",
+      "label01": "Password",
+      "label02": "Password (again)",
+      "required_field": "This is a required field.",
+      "save_btn": "Save"
+    }
+  },
+  "applications": {
+    "add_trusted_application": {
+      "title": "Manage trusted applications",
+      "subtitle01": "Applications",
+      "subtitle02": "Trusted applications",
+      "placeholder_input": "filter",
+      "cancel_btn": "Cancel",
+      "save_btn": "Save",
+      "alert01": "No applications found.",
+      "alert02": "No trusted applications.",
+      "alert03": "Use the filter (type at least two characters).",
+      "alert04": "Invalid characters",
+      "alert05": "Trusted application added"
+    },
+    "authorize_organization": {
+      "title": "Authorize organizations in your application",
+      "subtitle01": "All organizations",
+      "subtitle02": "Authorized Organizations",
+      "placeholder_input": "filter",
+      "cancel_btn": "Cancel",
+      "save_btn": "Save",
+      "alert01": "No organizations found.",
+      "alert02": "There are no organizations.",
+      "alert03": "Use the filter (type at least two characters).",
+      "alert04": "Some organizations don't have any role assigned. If you save now they won't be authorized in the application",
+      "alert05": "Invalid characters",
+      "alert06": "Organization added",
+      "popover_title": "Role assignment",
+      "popover_body": "You can assign differents roles to members or owners of an organization"
+    },
+    "authorize_user": {
+      "title": "Authorize users in your application",
+      "subtitle01": "All users",
+      "subtitle02": "Authorized users",
+      "placeholder_input": "filter",
+      "cancel_btn": "Cancel",
+      "save_btn": "Save",
+      "alert01": "No users found.",
+      "alert02": "There are no users.",
+      "alert03": "Use the filter (type at least two characters).",
+      "alert04": "Some users don't have any role assigned. If you save now they won't be authorized in the application",
+      "alert05": "Invalid characters",
+      "alert06": "User added"
+    },
+    "create_permission": {
+      "title": "Create permission",
+      "subtitle01": "HTTP Verb and Resource Rule",
+      "subtitle02": "Advanced XACML Rule",
+      "save_btn": "Save",
+      "alert01": "If you use the advanced rule you cannot set also action and resource.",
+      "alert02": "You need to define both action and resource or an advanced XACML Rule.",
+      "alert03": "You need to define both action and resource",
+      "label01": "Permission Name",
+      "label02": "Description",
+      "label03": "HTTP action",
+      "label04": "Resource",
+      "label05": "Use XACML to define a more complex authorization policy.",
+      "required_field": "This is a required field."
+    },
+    "create_role": {
+      "title": "Create role",
+      "label01": "Role Name",
+      "required_field": "This is a required field.",
+      "save_input": "Save"
+    },
+    "delete_avatar": {
+      "title": "Delete uploaded image",
+      "content01": "Are you sure you want to delete this image?",
+      "content02": "You can upload it again whenever you want.",
+      "confirm_btn": "Confirm",
+      "cancel_btn": "Cancel"
+    },
+    "delete_permission": {
+      "title": "Delete permission",
+      "content01": "This will permanently delete the permission from the application and can't be undone. Are you sure you want to continue?",
+      "confirm_btn": "Confirm",
+      "cancel_btn": "Cancel"
+    },
+    "delete_role": {
+      "title": "Delete role",
+      "content01": "This will permanently delete the role from the application and can't be undone. Are you sure you want to continue?",
+      "confirm_btn": "Confirm",
+      "cancel_btn": "Cancel"
+    },
+    "edit": {
+      "panel_title01": "Application information",
+      "panel_title02": "Application avatar",
+      "panel_title03": "Remove application",
+      "content01": "Upload an image",
+      "content02": "Select the part of the image you want to use as avatar.",
+      "content03": "This will remove the application and all its data",
+      "label01": "Name",
+      "label02": "Description",
+      "label03": "Url",
+      "label04": "Callback Url",
+      "label05": "Grant Type",
+      "required_field": "This is a required field.",
+      "save_btn": "Save",
+      "crop_btn": "Crop and use",
+      "cancel_btn": "Cancel",
+      "delete_image_btn": "Delete this image",
+      "delete_app_btn": "Delete application",
+      "popover01_body": "For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock.",
+      "popover01_title": "Application URL",
+      "popover02_body": "The user agent will be redirected to this URL when OAuth flow is finished.",
+      "popover02_title": "Application Callback URL",
+      "popover03_body": "Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information",
+      "popover03_title": "OAuth Grant Types"
+    },
+    "index": {
+      "title": "Applications",
+      "register_btn": "Register",
+      "providing_li": "Providing",
+      "purchasing_li": "Purchasing",
+      "authorized_li": "Authorized",
+      "no_organizations_option": "No organizations",
+      "content01": "You are not provider of any application.",
+      "content02": "You are not puchaser of any application.",
+      "content03": "You are not authorized in any application."
+    },
+    "manage_roles": {
+      "title": "Manage Roles",
+      "subtitle01": "Roles",
+      "subtitle02": "Permissions",
+      "content01": "Select a role to see and manage its permissions",
+      "required_field": "This is a required field.",
+      "save_btn": "Save"
+    },
+    "new": {
+      "title": "Application Information",
+      "label01": "Name",
+      "label02": "Description",
+      "label03": "Url",
+      "label04": "Callback Url",
+      "label05": "Grant Type",
+      "label06": "Provider",
+      "label07": "eIDAS Authentication",
+      "required_field": "This is a required field.",
+      "popover01_body": "For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock.",
+      "popover01_title": "Application URL",
+      "popover02_body": "The user agent will be redirected to this URL when OAuth flow is finished.",
+      "popover02_title": "Application Callback URL",
+      "popover03_body": "Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information",
+      "popover03_title": "OAuth Grant Types",
+      "popover04_body": "Select who is going be the provider of the application: yourself or one of the organizations in which you are owner.",
+      "popover04_title": "Owner application",
+      "popover05_body": "Select if you also want to use eIDAS as authentication endpoint.",
+      "popover05_title": "Authentication Endpoint",
+      "next_btn": "Next"
+    },
+    "show": {
+      "edit_span": "edit",
+      "manage_roles": "manage roles",
+      "label01": "Description",
+      "label02": "Url",
+      "label03": "Callback Url",
+      "label04": "Application Id",
+      "label05": "Pep Proxy Username",
+      "label06": "Id of Sensor",
+      "label07": "Organization name",
+      "label08": "Organization NIF",
+      "label09": "Service Provider Type",
+      "label10": "Metadata URL",
+      "panel_title01": "OAuth2 Credentials",
+      "panel_title02": "PEP Proxy",
+      "panel_title03": "IoT Sensors",
+      "panel_title04": "Trusted applications",
+      "panel_title05": "Authorized users",
+      "panel_title06": "Authorized organizations",
+      "panel_title07": "eIDAS Authentication",
+      "panel_subtitle01": "Client ID",
+      "panel_subtitle02": "Client Secret",
+      "panel_subtitle03": "Token types",
+      "permanent_option": "Permanent",
+      "popover01_body": "You will be asked for these credentials in the OAuth2 library you use for your application",
+      "popover01_title": "OAuth2 Credentials",
+      "popover02_body": "You can choose to create jwt as well as permanent tokens through scope parameter of OAuth2.",
+      "popover02_title": "Token Types",
+      "popover03_body": "A PEP Proxy, along with an Authorization PDP, will let you add authentication and authorization security to your application. This way, you will be able also to manage specific permissions and policies to your resources, allowing different access levels to your users.",
+      "popover03_title": "PEP Proxy",
+      "popover04_body": "If your application is related to IoT, sensors need to be registered here for them to be authenticated.",
+      "popover04_title": "IoT Sensors",
+      "register_pep_btn": "Register a new PEP Proxy",
+      "reset_pep_btn": "Reset password",
+      "delete_pep_btn": "Delete",
+      "register_iot_btn": "Register a new IoT Sensor",
+      "reset_iot_btn": "Reset password",
+      "delete_iot_btn": "Delete",
+      "placeholder_input": "filter",
+      "add_trusted_btn": "Add",
+      "authorize_btn": "Authorize",
+      "edit_btn": "Edit",
+      "content01": "This application does not have any trusted application.",
+      "content02": "No users found.",
+      "content03": "This application does not have any authorized organizations."
+    },
+    "step_create_avatar": {
+      "title": "Application Avatar",
+      "content01": "Select the part of the image you want to use as avatar.",
+      "next_btn": "Next"
+    },
+    "step_create_roles": {
+      "title": "Manage Roles",
+      "subtitle01": "Roles",
+      "subtitle02": "Permissions",
+      "content01": "Select a role to see and manage its permissions",
+      "required_field": "This is a required field.",
+      "finish_btn": "Finish"
+    }
+  },
+  "templates": {
+    "admin": {
+      "user_row": {
+        "edit_option": "Edit",
+        "reset_option": "Change password"
+      }
+    },
+    "applications": {
+      "iot_row": {
+        "label01": "Id of Sensor",
+        "label02": "Password of Sensor",
+        "reset_iot_btn": "Reset password",
+        "delete_iot_btn": "Delete"
       },
-      "delete_pop_up": {
-        "title": "Delete user",
-        "message_1": "You are going to delete these users: ",
-        "message_2": "Are you sure? Deleting users implies the deletion of all their resources. This action is permanent.",
-        "confirm_input": "Confirm",
-        "cancel_btn": "Cancel"
+      "pep_proxy_row": {
+        "label01": "Pep Proxy Username",
+        "label02": "Pep Proxy Password",
+        "reset_pep_btn": "Reset password",
+        "delete_pep_btn": "Delete"
+      }
+    },
+    "email": {
+      "base_email": {
+        "content01": "Technical University of Madrid (UPM)"
       },
-      "edit_pop_up": {
-        "title": "Edit user",
-        "email_used": "Email is already used.",
-        "email_invalid": "Email is invalid.",
-        "username": "Nombre de usuario",
-        "description": "Description",
-        "website": "Website",
-        "field_required_message": "This field is required.",
-        "save_btn": "Save"
+      "activate": {
+        "content01": "Hello",
+        "content02": "Welcome to Keyrock! By clicking on the link 'I accept' below, you state that you have read and accepted the our Terms and Conditions and the creation of your account will be confirmed:",
+        "content03": "I accept"
       },
-      "reset_pass_pop_up": {
-        "title": "Change password",
-        "password_not_match": "The two password fields didn't match.",
-        "password": "Password",
-        "password_again": "Password (again)",
-        "field_required_message": "This field is required.",
-        "save_btn": "Save"
+      "change_email": {
+        "content01": "Hello",
+        "content02": "You have requested to change your email account to this one. Follow the link to finish the process.",
+        "content03": "Verify account"
+      },
+      "forgot_password": {
+        "content01": "Hello",
+        "content02": "Someone has requested a link to change your password. You can do this through the link below.",
+        "content03": "Change my password",
+        "content04": "If you didn't request this, please ignore this email.",
+        "content05": "Your password won't change until you access the link above and create a new one."
+      },
+      "user_info": {
+        "content01": "Welcome to Keyrock! An account has been created on keyrock with the following credentials: ",
+        "content02": "Email:",
+        "content03": "Password:",
+        "content04": "Username:",
+        "content05": "You can sign in here: "
+      }
+    },
+    "organizations": {
+      "assign_role_organization_row" :{
+        "li01": "Owner",
+        "li02": "Member"
+      }
+    }, 
+    "users": {
+      "org_role_user_row" :{
+        "li01": "Owner",
+        "li02": "Member"
       }
     }
   },
-  "application": {
-
+  "oauth": {
+    "login": {
+      "title": "Log In",
+      "alert01": "Session expired",
+      "alert02": "Invalid username or password.",
+      "label01": "Email",
+      "label02": "Password",
+      "required_field": "This is a required field.",
+      "checkbox": "remember me",
+      "loginin_btn": "Log In",
+      "link01": "Sign up",
+      "link02": "Forgot password",
+      "link03": "Confirmation not recieved?"
+    },
+    "authorize": {
+      "title": "Authorize",
+      "content01": "The application",
+      "content02": "Email:",
+      "content03": "Read your public information.",
+      "deny_btn": "Deny",
+      "authorize_btn": "Authorize"
+    }
   },
-  "templates": {
-
+  "saml2": {
+    "label01": "Support Contact Person",
+    "label02": "Name",
+    "label03": "Surname",
+    "label04": "Email",
+    "label05": "Telephone Number",
+    "label06": "Company",
+    "label07": "Technical Contact Person",
+    "label08": "Name",
+    "label09": "Surname",
+    "label10": "Email",
+    "label11": "Telephone Number",
+    "label12": "Company",
+    "label13": "Organization",
+    "label14": "Name",
+    "label15": "Url",
+    "label16": "NIF",
+    "label17": "Service Provider Type",
+    "private_option": "private",
+    "public_option": "public",
+    "required_field": "This is a required field.",
+    "alert01": "Invalid SP Type",
+    "edit_eidas": {
+      "title01": "eIDAS Authentication Details",
+      "title02": "eIDAS Requested Attributes",
+      "subtitle01": "Natural Person",
+      "subtitle02": "Legal Person",
+      "subtitle03": "Representative Legal Person",
+      "natural_label01": "Person Identifier",
+      "natural_label02": "Family Name",
+      "natural_label03": "First Name",
+      "natural_label04": "Date of Birth",
+      "natural_label05": "Birth Name",
+      "natural_label06": "Place Of Birth",
+      "natural_label07": "Current Address",
+      "natural_label08": "Gender",
+      "legal_label01": "Legal Person Identifier",
+      "legal_label02": "Legal Name",
+      "legal_label03": "Legal Person Address",
+      "legal_label04": "VAT Registration Number",
+      "legal_label05": "Tax Reference",
+      "legal_label06": "D-2012-17-EUIdentifier",
+      "legal_label07": "LEI",
+      "legal_label08": "EORI",
+      "legal_label09": "SEED",
+      "legal_label10": "SIC",
+      "representative_label01": "Person Identifier",
+      "representative_label02": "Family Name",
+      "representative_label03": "First Name",
+      "representative_label04": "Date of Birth",
+      "representative_label05": "Birth Name",
+      "representative_label06": "Place Of Birth",
+      "representative_label07": "Current Address",
+      "representative_label08": "Gender",
+      "representative_label09": "Legal Person Identifier",
+      "representative_label10": "Legal Name",
+      "representative_label11": "Legal Person Address",
+      "representative_label12": "VAT Registration Number",
+      "representative_label13": "Tax Reference",
+      "representative_label14": "D-2012-17-EUIdentifier",
+      "representative_label15": "LEI",
+      "representative_label16": "EORI",
+      "representative_label17": "SEED",
+      "representative_label18": "SIC",
+      "update_btn": "Update"
+    },
+    "step_create_eidas_credentials": {
+      "title": "eIDAS Authentication Details", 
+      "next_btn": "Next"
+    }
   }
 }

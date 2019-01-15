@@ -8,12 +8,12 @@
 	                <div class="modal-dialog">
 	                    <div class="modal-content">
 	                        <div class="modal-header">
-	                            <h3>Manage Roles</h3>
+	                            <h3><%=translation.applications.manage_roles.title%></h3>
 	                        </div>
 	                        <fieldset id="manage_application_roles__update_owners" class="js-tab-pane active tab-pane">
 			                    <section id="role_list" class="role_list">
 			                        <header>
-			                            <h4>Roles</h4>
+			                            <h4><%=translation.applications.manage_roles.subtitle01%></h4>
 			                            <button id="roleButton" type="button" data-toggle="modal" data-target="#create_role" class="btn ajax-modal">
 			                                <i class="fa fa-plus"></i>
 			                            </button>
@@ -24,13 +24,13 @@
 								</section>
 								<section id="permissions_list" class="permissions_list">
 			                        <header>
-			                            <h4>Permissions</h4>
+			                            <h4><%=translation.applications.manage_roles.subtitle02%></h4>
 			                            <button id="permButton" type="button" data-toggle="modal" data-target="#create_permission" class="btn ajax-modal">
 			                            	<i class="fa fa-plus"></i>
 			                            </button>
 			                        </header>
 			                        <div class="alert alert-info" id="update_owners_info_message">
-	                                    Select a role to see and manage its permissions
+	                                    <%=translation.applications.manage_roles.content01%>
 	                                </div> 
 	                                <div class="" id="update_owners_permissions" style="display: none;">
 	                                	<ul id="list_permissions" class="permissions update_owners_permissions list-group">
@@ -39,11 +39,11 @@
 	                                </div>
 			                    </section>
 			                </fieldset>
-			                <span id="alert_error" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+			                <span id="alert_error" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.manage_roles.required_field%></span>
 	                    </div>
 	                </div>
 	                <div class="modal-footer">
-	                	<input class="btn btn-primary pull right" type="submit" value="Save" />
+	                	<input class="btn btn-primary pull right" type="submit" value="<%=translation.applications.manage_roles.save_btn%>" />
 	                </div>
 	            </form>	
             </div>

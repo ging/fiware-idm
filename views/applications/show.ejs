@@ -6,13 +6,13 @@
                 <% if (user_logged_permissions.includes('2')) { -%>   
                     <a href="/idm/applications/<%= application.id %>/edit/" class="small">
                         <i class="fa fa-edit"></i>
-                        <span>edit</span>
+                        <span><%=translation.applications.show.edit_span%></span>
                     </a>
                 <% } -%>
                 <% if (user_logged_permissions.includes('3')) { -%>
                     <a href="/idm/applications/<%= application.id %>/edit/roles/" class="small">
                         <i class="fa fa-cogs"></i>
-                        <span>manage roles</span>
+                        <span><%=translation.applications.show.manage_roles%></span>
                     </a>
                 <% } -%>
             </h4>
@@ -24,7 +24,7 @@
             <div class="panel-body">
                 <div class="description">
                     <h5>
-                        Description
+                        <%=translation.applications.show.label01%>
                     </h5>
                     <div class="info expander">
                         <p>
@@ -39,29 +39,29 @@
                     </div>
                 </div>
                 <div class="url">
-                    <h5>URL</h5>
+                    <h5><%=translation.applications.show.label02%></h5>
                     <p><%= application.url %></p>
                 </div>
                 <div class="callback_url">
-                    <h5>Callback URL</h5>
+                    <h5><%=translation.applications.show.label03%></h5>
                     <p><%= application.redirect_uri %></p>
                 </div>
                 <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
                     <div class="extra">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_oauth2_credentials" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
-                                OAuth2 Credentials <i class="fa fa-angle-up"></i>
+                                <%=translation.applications.show.panel_title01%> <i class="fa fa-angle-up"></i>
                             </a>
-                            <a href="#" class="contextual-help" data-toggle="popover" data-title="OAuth2 Credentials" data-placement="left" data-content="You will be asked for these credentials in the OAuth2 library you use for your application" data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+                            <a href="#" class="contextual-help" data-toggle="popover" data-title="<%=translation.applications.show.popover01_title%>" data-placement="left" data-content="<%=translation.applications.show.popover01_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
                         </h4>
                         <div class="collapse_out">
                             <div id="collapse_oauth2_credentials" class="form-group collapse" role="tabpanel">
                                 <div>
-                                    <h6 class="panel-heading">Client ID</h6>
+                                    <h6 class="panel-heading"><%=translation.applications.show.panel_subtitle01%></h6>
                                     <p><%= application.id %></p>
                                 </div>
                                 <div>
-                                    <h6 class="panel-heading">Client Secret</h6>
+                                    <h6 class="panel-heading"><%=translation.applications.show.panel_subtitle02%></h6>
                                     <p><%= application.secret %></p>
                                 </div>
                                 <% if (application.token_types.includes('jwt')) { -%>
@@ -70,8 +70,8 @@
                                     <div id="token_type">
                                 <% } -%>
                                     <h6 class="panel-heading">
-                                        Token Types
-                                        <a href="#" class="contextual-help" data-toggle="popover" data-title="Token Type" data-placement="left" data-content="You can choose to create jwt as well as permanent tokens through scope parameter of OAuth2." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+                                        <%=translation.applications.show.panel_subtitle03%>
+                                        <a href="#" class="contextual-help" data-toggle="popover" data-title="<%=translation.applications.show.popover02_title%>" data-placement="left" data-content="<%=translation.applications.show.popover02_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
                                     </h6>
                                     <div class="select-multiple">
                                         <select id="select_toke_type" name="token_types[]" class="selectpicker" data-dropup-auto="false" multiple>
@@ -81,9 +81,9 @@
                                                 <option value="jwt">Json Web Token</option>
                                             <% } %>
                                             <% if (application.token_types.includes('permanent')) { %>
-                                                <option selected value="permanent">Permanent</option>
+                                                <option selected value="permanent"><%=translation.applications.show.permanent_option%></option>
                                             <% } else { %>
-                                                <option value="permanent">Permanent</option>
+                                                <option value="permanent"><%=translation.applications.show.permanent_option%></option>
                                             <% } %>
                                         </select>
                                         <% if (application.token_types.includes('jwt')) { -%>
@@ -114,34 +114,34 @@
                     <div class="extra">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_pep_proxy" aria-expanded="true" aria-controls="collapse_pep_proxy" class="collapsed">
-                                PEP Proxy <i class="fa fa-angle-up"></i>
+                                <%=translation.applications.show.panel_title02%> <i class="fa fa-angle-up"></i>
                             </a>
-                            <a href="#" class="contextual-help" data-toggle="popover" data-title="PEP Proxy" data-placement="left" data-content="A PEP Proxy, along with an Authorization PDP, will let you add authentication and authorization security to your application. This way, you will be able also to manage specific permissions and policies to your resources, allowing different access levels to your users." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+                            <a href="#" class="contextual-help" data-toggle="popover" data-title="<%=translation.applications.show.popover03_title%>" data-placement="left" data-content="<%=translation.applications.show.popover03_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
                         </h4>
                         <div id="collapse_pep_proxy" class="form-group collapse " role="tabpanel">
                             <% if (pep_proxy) { -%>
                                 <div class="row content_pep">
                                     <div class="col-md-8 user_pep">
-                                        <h6 class="panel-heading">Application Id</h6>
+                                        <h6 class="panel-heading"><%=translation.applications.show.label04%></h6>
                                         <p><%= application.id%></p>
                                     </div>
                                 </div>
                                 <div class="row content_pep">
                                     <div class="col-md-8 user_pep">
-                                        <h6 class="panel-heading">Pep Proxy Username</h6>
+                                        <h6 class="panel-heading"><%=translation.applications.show.label05%></h6>
                                         <p><%= pep_proxy.id%></p>
                                     </div>
                                     <div class="col-md-4 actions_pep">
                                         <br>
-                                        <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/reset_password" class="btn btn-default reset_password">Reset password</a>
+                                        <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/reset_password" class="btn btn-default reset_password"><%=translation.applications.show.reset_pep_btn%></a>
                                         <a href="/idm/applications/<%= application.id %>/pep/<%= pep_proxy.id%>/delete" class="btn btn-danger delete_pep">
-                                            <i class="far fa-trash-alt"></i> Delete
+                                            <i class="far fa-trash-alt"></i> <%=translation.applications.show.delete_pep_btn%>
                                         </a>
                                     </div>
                                 </div>
                             <% } else { -%>
                                 <h6 class="panel-heading"></h6>
-                                <a id="register_pep" href="/idm/applications/<%= application.id %>/pep/register/" class="btn btn-default">Register a new PEP Proxy</a>            
+                                <a id="register_pep" href="/idm/applications/<%= application.id %>/pep/register/" class="btn btn-default"><%=translation.applications.show.register_pep_btn%></a>            
                             <% } -%>
                         </div>
                     </div>
@@ -154,30 +154,30 @@
                     <div class="extra">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_iot_sensors" aria-expanded="true" aria-controls="collapse_iot_sensors" class="collapsed">
-                                IoT Sensors <i class="fa fa-angle-up"></i>
+                                <%=translation.applications.show.panel_title03%> <i class="fa fa-angle-up"></i>
                             </a>
-                            <a href="#" class="contextual-help" data-toggle="popover" data-title="IoT Sensors" data-placement="left" data-content="If your application is related to IoT, sensors need to be registered here for them to be authenticated." data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+                            <a href="#" class="contextual-help" data-toggle="popover" data-title="<%=translation.applications.show.popover04_title%>" data-placement="left" data-content="<%=translation.applications.show.popover04_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
                         </h4>
                         <div id="collapse_iot_sensors" class="form-group collapse  no-transition" role="tabpanel">
                             <% if (iot_sensors.length > 0) { -%>
                                 <% for (var i = 0; i < iot_sensors.length; i++) { -%>
                                     <div class="row content_iot">
                                         <div class="col-md-8 user_iot">
-                                            <h6 class="panel-heading">Id of Sensor <%= i+1%></h6>
+                                            <h6 class="panel-heading"><%=translation.applications.show.label06%> <%= i+1%></h6>
                                             <p><%= iot_sensors[i].id%></p>
                                         </div>
                                         <div class="col-md-4 actions_iot">
                                             <br>
-                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/reset_password" class="btn btn-default  reset_password">Reset password</a>
+                                            <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/reset_password" class="btn btn-default  reset_password"><%=translation.applications.show.reset_pep_btn%></a>
                                             <a href="/idm/applications/<%= application.id %>/iot/<%= iot_sensors[i].id%>/delete" class="btn btn-danger delete_iot">
-                                                <i class="far fa-trash-alt"></i> Delete
+                                                <i class="far fa-trash-alt"></i> <%=translation.applications.show.delete_iot_btn%>
                                             </a>
                                         </div>
                                     </div>
                                 <% } -%>
                             <% } -%>
                             <h6 class="panel-heading"></h6>
-                            <a id="register_iot" href="/idm/applications/<%= application.id %>/iot/register/" class="btn btn-default">Register a new IoT Sensor</a>
+                            <a id="register_iot" href="/idm/applications/<%= application.id %>/iot/register/" class="btn btn-default"><%=translation.applications.show.register_iot_btn%></a>
                         </div>
                     </div>
                 </div>
@@ -186,10 +186,10 @@
         <% if (user_logged_permissions.includes('2')) { -%>
         <div class="panel panel-default datatable" id="trust_apps" data-pagination-url="/filters/applications" data-application_id="<%= application.id %>" data-pagination-pages="">
             <div class="panel-heading">
-                <span class="title">Trusted Applications</span>
+                <span class="title"><%=translation.applications.show.panel_title04%></span>
                 <div class="table_actions clearfix">
                     <div class="filter table_search client">
-                        <input class="form-control" value="" type="text" name="trust_apps__filter__q" placeholder="Filter">
+                        <input class="form-control" value="" type="text" name="trust_apps__filter__q" placeholder="<%=translation.applications.show.placeholder_input%>">
                     </div>
                     <div id="spinner_trust_apps" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>                    
                     <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
@@ -197,7 +197,7 @@
                             <button title="Add" class="btn btn-default btn-sm ajax-modal" data-toggle="modal" data-target="#add_trusted_app" id="add_trusted_app_button">
                                 <i class="fa fa-plus"></i> 
                                 <span class="action">
-                                    Add
+                                    <%=translation.applications.show.add_trusted_btn%>
                                 </span>
                             </button>
                         </div>
@@ -206,7 +206,7 @@
             </div>
             <div class="panel-body datatable-content">
                 <div id="trust_apps_content" class="list-group">
-                    <p class="alert alert-info empty" style="display: none;">This application does not have any trusted application.</p>
+                    <p class="alert alert-info empty" style="display: none;"><%=translation.applications.show.content01%></p>
                 </div>
             </div>
             <div class="panel-footer">
@@ -216,10 +216,10 @@
         <% } -%>
         <div class="panel panel-default datatable" id="auth_users" data-pagination-url="/filters/users" data-application_id="<%= application.id %>" data-pagination-pages="">
             <div class="panel-heading">
-                <span class="title">Authorized Users</span>
+                <span class="title"><%=translation.applications.show.panel_title05%></span>
                 <div class="table_actions clearfix">
                     <div class="filter table_search client">
-                        <input class="form-control" value="" type="text" name="auth_users__filter__q" placeholder="Filter">
+                        <input class="form-control" value="" type="text" name="auth_users__filter__q" placeholder="<%=translation.applications.show.placeholder_input%>">
                     </div>
                     <div id="spinner_auth_users" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>                    
                     <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
@@ -227,7 +227,7 @@
                             <button title="Authorize" class="btn btn-default btn-sm ajax-modal" data-toggle="modal" data-target="#authorize_user" id="auth_users_action_manage_application_users">
                                 <i class="fa fa-key"></i> 
                                 <span class="action">
-                                    Authorize
+                                    <%=translation.applications.show.authorize_btn%>
                                 </span>
                             </button>
                         </div>
@@ -236,7 +236,7 @@
             </div>
             <div class="panel-body datatable-content">
                 <div id="auth_users_content" class="list-group">
-                    <p class="alert alert-info empty" style="display: none;">No users found.</p>
+                    <p class="alert alert-info empty" style="display: none;"><%=translation.applications.show.content02%></p>
                 </div>
             </div>
             <div class="panel-footer">
@@ -246,10 +246,10 @@
 
         <div class="panel panel-default datatable" id="auth_organizations" data-pagination-url="/filters/organizations" data-application_id="<%= application.id %>" data-pagination-pages="">
             <div class="panel-heading">
-                <span class="title">Authorized Organizations</span>
+                <span class="title"><%=translation.applications.show.panel_title06%></span>
                 <div class="table_actions clearfix">
                     <div class="filter table_search client">
-                        <input class="form-control" value="" type="text" name="organizations__filter__q" placeholder="Filter">
+                        <input class="form-control" value="" type="text" name="organizations__filter__q" placeholder="<%=translation.applications.show.placeholder_input%>">
                     </div>
                     <div id="spinner_organizations" class="filtering-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
                     <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
@@ -257,7 +257,7 @@
                             <button title="Authorize" data-toggle="modal" data-target="#authorize_organization" class="btn btn-default btn-sm ajax-modal" id="auth_organizations_action_manage_application_organizations">
                                 <i class="fa fa-key"></i> 
                                 <span class="action">
-                                    Authorize
+                                    <%=translation.applications.show.authorize_btn%>
                                 </span>
                             </button>
                         </div>
@@ -266,7 +266,7 @@
             </div>
             <div class="panel-body datatable-content">
                 <div id="auth_organizations_content" class="list-group">
-                    <p class="alert alert-info empty" style="display: none;">This application does not have any authorized organizations.</p>                    
+                    <p class="alert alert-info empty" style="display: none;"><%=translation.applications.show.content03%></p>                    
                 </div>
             </div>
             <div class="panel-footer">
@@ -276,14 +276,14 @@
         <% if (user_logged_permissions.includes('2') && eidas_enabled && eidas_credentials) { -%>
             <div class="panel panel-default info">
                 <div class="panel-heading">
-                    <span class="title"><i class="far fa-id-card"></i>eIDAS Authentication</span>
+                    <span class="title"><i class="far fa-id-card"></i><%=translation.applications.show.panel_title07%></span>
                     <div class="table_actions clearfix">               
                         <div class="btn-group">
                             <a href="/idm/applications/<%= application.id %>/edit/eidas" class="small">
                                 <button title="Add" class="btn btn-default btn-sm">
                                     <i class="fa fa-edit"></i> 
                                     <span class="action">
-                                        Edit
+                                        <%=translation.applications.show.edit_btn%>
                                     </span>
                                 </button>
                             </a>
@@ -292,19 +292,19 @@
                 </div>
                 <div class="panel-body">
                     <div class="eidas_org_name">
-                        <h5>Organization name</h5>
+                        <h5><%=translation.applications.show.label07%></h5>
                         <p><%= eidas_credentials.organization_name %></p>
                     </div>
                     <div class="eidas_org_nif">
-                        <h5>Organization NIF</h5>
+                        <h5><%=translation.applications.show.label08%></h5>
                         <p><%= eidas_credentials.organization_nif %></p>
                     </div>
                     <div class="eidas_sp_type">
-                        <h5>Service Provider Type</h5>
+                        <h5><%=translation.applications.show.label09%></h5>
                         <p><%= eidas_credentials.sp_type %></p>
                     </div>
                     <div class="eidas_metadata_url">
-                        <h5>Metadata URL</h5>
+                        <h5><%=translation.applications.show.label10%></h5>
                         <p><a target="_blank" href="/idm/applications/<%= application.id %>/saml2/metadata">https://<%= gateway_host%>/idm/applications/<%= application.id %>/saml2/metadata</a></p>
                     </div>
                 </div>

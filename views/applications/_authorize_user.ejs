@@ -14,9 +14,9 @@
                         <div class="membership update_owners_users_membership dropdown_fix add-members" data-show-roles="True">
                             <div class="all-users">
                                 <header>
-                                    <h4><%=translation.applications.authorize_user.subtitle_1%></h4>
+                                    <h4><%=translation.applications.authorize_user.subtitle01%></h4>
                                     <div class="form-group has-feedback">
-                                        <input type="text" name="" id="available_update_owners_users" class="filter update_owners_users_server_filter form-control input-sm" placeholder="<%=translation.applications.authorize_user.filter_input%>" data-url="/filters/users">
+                                        <input type="text" name="" id="available_update_owners_users" class="filter update_owners_users_server_filter form-control input-sm" placeholder="<%=translation.applications.authorize_user.placeholder_input%>" data-url="/filters/users">
                                     </div>
                                     <div id="spinner_update_owners_users" class="filtering-spinner-inline" style="display: none;">
                                         <i class="fa fa-circle-o-notch fa-spin"></i>
@@ -26,19 +26,19 @@
                                     <ul id="available_members" class="available_members available_update_owners_users list-group">
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="no_available_update_owners_users" style="display: none;">
-                                        <li><%=translation.applications.authorize_user.no_users_message%></li>
+                                        <li><%=translation.applications.authorize_user.alert01%></li>
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="perform_filter_available_update_owners_users" style="display: block;">
-                                        <li><%=translation.applications.authorize_user.use_filter_message%></li>
+                                        <li><%=translation.applications.authorize_user.alert03%></li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_user.invalid_char_message%></span>
+                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_user.alert05%></span>
                             </div>
                             <div class="members-list">
                                 <header>
-                                    <h4><%=translation.applications.authorize_user.subtitle_2%></h4>
+                                    <h4><%=translation.applications.authorize_user.subtitle02%></h4>
                                     <div class="form-group has-feedback">
-                                        <input type="text" name="" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="<%=translation.applications.authorize_user.filter_input%>">
+                                        <input type="text" name="" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="<%=translation.applications.authorize_user.placeholder_input%>">
                                     </div>
                                 </header>
                                 <div class="pre-scrollable filterable update_owners_users_client_filterable" id="update_owners_users_members_scroll" >
@@ -47,16 +47,16 @@
                                     </ul>
 
                                     <ul class="no_results list-group alert alert-info" id="no_update_owners_users_members" style="display: none;">
-                                        <li><%=translation.applications.authorize_user.no_users_auth_message%></li>
+                                        <li><%=translation.applications.authorize_user.alert02%></li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_user.invalid_char_message%></span>
+                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_user.alert05%></span>
                                 
-                                <div class="alert alert-warning no_roles_warning" style="display: none;"><%=translation.applications.authorize_user.no_role_assigned_message%></div>
+                                <div class="alert alert-warning no_roles_warning" style="display: none;"><%=translation.applications.authorize_user.alert04%></div>
                             </div>
                         </div>
                     </fieldset>
-                    <span id="info_added_user" style="display: none;" class='help-block alert alert-info'><%=translation.applications.authorize_user.user_added_message%></span>
+                    <span id="info_added_user" style="display: none;" class='help-block alert alert-info'><%=translation.applications.authorize_user.alert06%></span>
                 </div>
             </div>
             <div class="modal-footer">

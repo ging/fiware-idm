@@ -8,158 +8,158 @@
                     <div class="step">3</div>
                     <div class="line"></div>
                 </div>
-            </h3><h3 class="step-title">eIDAS Authentication Details</h3>
+            </h3><h3 class="step-title"><%=translation.saml2.step_create_eidas_credentials.title%></h3>
         </div>
         <form id="eidas_credentials" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/step/eidas" method="POST" enctype="">
             <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
             <div class="modal-body clearfix">
                 <fieldset>
                     <div class="form-group required eidas">
-                        <label class="control-label required">Support Contact Person</label>
+                        <label class="control-label required"><%=translation.saml2.label01%></label>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_support_contact_person_name">Name</label>
+                            <label class="control-label required" for="id_support_contact_person_name"><%=translation.saml2.label02%></label>
                             <div class="">
                                 <input class="form-control" id="id_support_contact_person_name" name="eidas_credentials[support_contact_person_name]" type="text" value="<%= eidas_credentials.support_contact_person_name %>">
                             </div>
                             <% if (errors.indexOf("support_contact_person_name") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_support_contact_person_surname">Surname</label>
+                            <label class="control-label required" for="id_support_contact_person_surname"><%=translation.saml2.label03%></label>
                             <div class="">
                                 <input class="form-control" id="id_support_contact_person_surname" name="eidas_credentials[support_contact_person_surname]" type="text" value="<%= eidas_credentials.support_contact_person_surname %>">
                             </div>
                             <% if (errors.indexOf("support_contact_person_surname") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_support_contact_person_email">Email</label>
+                            <label class="control-label required" for="id_support_contact_person_email"><%=translation.saml2.label04%></label>
                             <div class="">
                                 <input class="form-control" id="id_support_contact_person_email" name="eidas_credentials[support_contact_person_email]" type="text" value="<%= eidas_credentials.support_contact_person_email %>">
                             </div>
                             <% if (errors.indexOf("support_contact_person_email") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_support_contact_person_number">Telephone Number</label>
+                            <label class="control-label required" for="id_support_contact_person_number"><%=translation.saml2.label05%></label>
                             <div class="">
                                 <input class="form-control" id="id_support_contact_person_number" name="eidas_credentials[support_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.support_contact_person_telephone_number %>">
                             </div>
                             <% if (errors.indexOf("support_contact_person_telephone_number") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input_company">
-                            <label class="control-label required" for="id_support_contact_person_company">Company</label>
+                            <label class="control-label required" for="id_support_contact_person_company"><%=translation.saml2.label06%></label>
                             <div class="">
                                 <input class="form-control" id="id_support_contact_person_company" name="eidas_credentials[support_contact_person_company]" type="text" value="<%= eidas_credentials.support_contact_person_company %>">
                             </div>
                             <% if (errors.indexOf("support_contact_person_company") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                     </div>
                     <div class="form-group required eidas">
-                        <label class="control-label required">Technical Contact Person</label>
+                        <label class="control-label required"><%=translation.saml2.label07%></label>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_technical_contact_person_name">Name</label>
+                            <label class="control-label required" for="id_technical_contact_person_name"><%=translation.saml2.label08%></label>
                             <div class="">
                                 <input class="form-control" id="id_technical_contact_person_name" name="eidas_credentials[technical_contact_person_name]" type="text" value="<%= eidas_credentials.technical_contact_person_name %>">
                             </div>
                             <% if (errors.indexOf("technical_contact_person_name") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_technical_contact_person_surname">Surname</label>
+                            <label class="control-label required" for="id_technical_contact_person_surname"><%=translation.saml2.label09%></label>
                             <div class="">
                                 <input class="form-control" id="id_technical_contact_person_surname" name="eidas_credentials[technical_contact_person_surname]" type="text" value="<%= eidas_credentials.technical_contact_person_surname %>">
                             </div>
                             <% if (errors.indexOf("technical_contact_person_surname") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_technical_contact_person_email">Email</label>
+                            <label class="control-label required" for="id_technical_contact_person_email"><%=translation.saml2.label10%></label>
                             <div class="">
                                 <input class="form-control" id="id_technical_contact_person_email" name="eidas_credentials[technical_contact_person_email]" type="text" value="<%= eidas_credentials.technical_contact_person_email %>">
                             </div>
                             <% if (errors.indexOf("technical_contact_person_email") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_technical_contact_person_number">Telephone Number</label>
+                            <label class="control-label required" for="id_technical_contact_person_number"><%=translation.saml2.label11%></label>
                             <div class="">
                                 <input class="form-control" id="id_technical_contact_person_number" name="eidas_credentials[technical_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.technical_contact_person_telephone_number %>">
                             </div>
                             <% if (errors.indexOf("technical_contact_person_telephone_number") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>                    
                         <div class="eidas_input_company">
-                            <label class="control-label required" for="id_technical_contact_person_company">Company</label>
+                            <label class="control-label required" for="id_technical_contact_person_company"><%=translation.saml2.label12%></label>
                             <div class="">
                                 <input class="form-control" id="id_technical_contact_person_company" name="eidas_credentials[technical_contact_person_company]" type="text" value="<%= eidas_credentials.technical_contact_person_company %>">
                             </div>
                             <% if (errors.indexOf("technical_contact_person_company") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>    
                     </div>
                     <div class="form-group required eidas">
-                        <label class="control-label required">Organization</label>
+                        <label class="control-label required"><%=translation.saml2.label13%></label>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_company">Name</label>
+                            <label class="control-label required" for="id_company"><%=translation.saml2.label14%></label>
                             <div class="">
                                 <input class="form-control" id="id_company" name="eidas_credentials[organization_name]" type="text" value="<%= eidas_credentials.organization_name %>">
                             </div>
                             <% if (errors.indexOf("organization_name") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input">
-                            <label class="control-label required" for="id_company">Url</label>
+                            <label class="control-label required" for="id_company"><%=translation.saml2.label15%></label>
                             <div class="">
                                 <input class="form-control" id="id_company" name="eidas_credentials[organization_url]" type="text" value="<%= eidas_credentials.organization_url %>">
                             </div>
                             <% if (errors.indexOf("organization_url") != -1) { %>
-                                <span class="help-block alert alert-danger ">Input required.</span>
+                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                             <% } %>
                         </div>
                         <div class="eidas_input_company">
-                             <label class="control-label required" for="id_company">NIF</label>
+                             <label class="control-label required" for="id_company"><%=translation.saml2.label16%></label>
                              <div class="">
                                  <input class="form-control" id="id_company" name="eidas_credentials[organization_nif]" type="text" value="<%= eidas_credentials.organization_nif %>">
                              </div>
                              <% if (errors.indexOf("organization_nif") != -1) { %>
-                                 <span class="help-block alert alert-danger ">Input required.</span>
+                                 <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
                              <% } %>
                          </div>
                     </div>
                     <div class="form-group required eidas">
-                        <label class="control-label required">Service Provider Type</label>
+                        <label class="control-label required"><%=translation.saml2.label17%></label>
                         <div class="eidas_input_company">
                              <div class="">
                                  <div class="select-multiple form-group">
                                     <select id="sp_type" name="eidas_credentials[sp_type]" class="selectpicker" data-size="2" data-width="100%" data-dropup-auto="false">
-                                        <option value="public">public</option>
-                                        <option selected value="private">private</option>
+                                        <option value="public"><%=translation.saml2.public_option%></option>
+                                        <option selected value="private"><%=translation.saml2.private_option%></option>
                                     </select>
                                 </div>
                              </div>
                              <% if (errors.indexOf("sp_type") != -1) { %>
-                                 <span class="help-block alert alert-danger" style="margin-top: 55px">Invalid SP Type.</span>
+                                 <span class="help-block alert alert-danger" style="margin-top: 55px"><%=translation.saml2.alert01%></span>
                              <% } %>
                          </div>
                     </div>
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Next</button>
+                <button type="submit" class="btn btn-primary"><%=translation.saml2.step_create_eidas_credentials.next_btn%></button>
             </div>
         </form>
     </div>

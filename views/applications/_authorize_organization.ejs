@@ -14,9 +14,9 @@
                         <div class="membership update_owners_users_membership dropdown_fix add-members" data-show-roles="True">
                             <div class="all-users">
                                 <header>
-                                    <h4><%=translation.applications.authorize_organization.subtitle_1%></h4>
+                                    <h4><%=translation.applications.authorize_organization.subtitle01%></h4>
                                     <div class="form-group has-feedback">
-                                        <input type="text" name="" id="available_update_organizations" class="filter update_owners_users_server_filter form-control input-sm" placeholder="<%=translation.applications.authorize_organization.filter_input%>" data-url="/filters/users">
+                                        <input type="text" name="" id="available_update_organizations" class="filter update_owners_users_server_filter form-control input-sm" placeholder="<%=translation.applications.authorize_organization.placeholder_input%>" data-url="/filters/users">
                                     </div>
                                     <div id="spinner_update_owners_organizations" class="filtering-spinner-inline" style="display: none;">
                                         <i class="fa fa-circle-o-notch fa-spin"></i>
@@ -26,22 +26,22 @@
                                     <ul id="available_organizations" class="available_organizations available_update_owners_users list-group">
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="no_available_update_organizations" style="display: none;">
-                                        <li><%=translation.applications.authorize_organization.no_orgs_message%></li>
+                                        <li><%=translation.applications.authorize_organization.alert01%></li>
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="perform_filter_available_update_organizations" style="display: block;">
-                                        <li><%=translation.applications.authorize_organization.use_filter_message%></li>
+                                        <li><%=translation.applications.authorize_organization.alert03%></li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_organization.invalid_char_message%></span>
+                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_organization.alert05%></span>
                             </div>
                             <div class="members-list">
                                 <header>
                                     <h4>
-                                        <%=translation.applications.authorize_organization.subtitle_2%>
-                                        <a data-target="#" class="contextual-help" style="float: none;" data-toggle="popover" data-title="<%=translation.applications.authorize_organization.popover_title%>" data-placement="right" data-content="<%=translation.applications.authorize_organization.popover%>" data-original-title="" title="" ><i class="fa fa-question-circle"></i></a>
+                                        <%=translation.applications.authorize_organization.subtitle02%>
+                                        <a data-target="#" class="contextual-help" style="float: none;" data-toggle="popover" data-title="<%=translation.applications.authorize_organization.popover_title%>" data-placement="right" data-content="<%=translation.applications.authorize_organization.popover_body%>" data-original-title="" title="" ><i class="fa fa-question-circle"></i></a>
                                     </h4>  
                                     <div class="form-group has-feedback">
-                                        <input type="text" name="" id="update_authorized_organizations" class="filter update_owners_users_client_filter form-control input-sm" placeholder="<%=translation.applications.authorize_organization.filter_input%>">
+                                        <input type="text" name="" id="update_authorized_organizations" class="filter update_owners_users_client_filter form-control input-sm" placeholder="<%=translation.applications.authorize_organization.placeholder_input%>">
                                     </div>
                                 </header>
                                 <div class="pre-scrollable filterable update_owners_users_client_filterable" id="update_organizations_scroll" >
@@ -50,16 +50,16 @@
                                     </ul>
 
                                     <ul class="no_results list-group alert alert-info" id="no_update_organizations" style="display: none;">
-                                        <li><%=translation.applications.authorize_organization.no_orgs_auth_message%></li>
+                                        <li><%=translation.applications.authorize_organization.alert02%></li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_organization.invalid_char_message%></span>
+                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_organization.alert05%></span>
                                 
-                                <div class="alert alert-warning no_roles_warning" style="display: none;"><%=translation.applications.authorize_organization.no_role_assigned_message%></div>
+                                <div class="alert alert-warning no_roles_warning" style="display: none;"><%=translation.applications.authorize_organization.alert04%></div>
                             </div>
                         </div>
                     </fieldset>
-                    <span id="info_added_organization" style="display: none;" class='help-block alert alert-info'><%=translation.applications.authorize_organization.org_added_message%></span>
+                    <span id="info_added_organization" style="display: none;" class='help-block alert alert-info'><%=translation.applications.authorize_organization.alert06%></span>
                 </div>
             </div>
             <div class="modal-footer">

@@ -149,7 +149,7 @@
     "menu_title01": "Menu principal",
     "menu_title02": "IdM",
     "menu_item01": "Home",
-    "menu_item02": "Organizacines",
+    "menu_item02": "Organizaciones",
     "menu_item03": "Aplicaciones",
     "menu_item04": "Notificar",
     "menu_item05": "Administradores",
@@ -241,7 +241,7 @@
       "exit_btn": "Salir"
     },
     "manage_members": {
-      "title": "Gestiona los niembros de tu organización",
+      "title": "Gestiona los miembros de tu organización",
       "header_title": "Todos los usuarios",
       "no_users": "No hay ningún usuario",
       "filter_use": "Usa el filtro (escribe al menos dos carácteres).",
@@ -605,7 +605,7 @@
     "index": {
       "title": "Aplicaciones",
       "register_btn": "Registrar",
-      "providing_li": "Provider",
+      "providing_li": "Providing",
       "purchasing_li": "Purchasing",
       "authorized_li": "Autorizado",
       "no_organizations_option": "No hay organizaciones",
@@ -658,7 +658,7 @@
       "label10": "URL de los metadatos",
       "panel_title01": "Credenciales OAuth2",
       "panel_title02": "PEP Proxy",
-      "panel_title03": "Snsores IoT",
+      "panel_title03": "Sensores IoT",
       "panel_title04": "Aplicacions de confianza",
       "panel_title05": "Usuarios autorizados",
       "panel_title06": "Organizaciones autorizadas",
@@ -780,6 +780,7 @@
       "required_field": "Este campo es obligatorio.",
       "checkbox": "Recuérdame",
       "loginin_btn": "Acceder",
+      "eidas_loginin_btn": "Acceder con eIDAS",
       "link01": "Registrarme",
       "link02": "he olvidado mi contraseña",
       "link03": "¿No has recibido email de confirmación?"

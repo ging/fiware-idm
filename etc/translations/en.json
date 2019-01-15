@@ -780,6 +780,7 @@
       "required_field": "This is a required field.",
       "checkbox": "remember me",
       "loginin_btn": "Log In",
+      "eidas_loginin_btn": "Sign eIDAS",
       "link01": "Sign up",
       "link02": "Forgot password",
       "link03": "Confirmation not recieved?"

@@ -1,7 +1,7 @@
 <div id="authorize_user" class="modal fade" style="top: 0px;" role="dialog" aria-hidden="false">
     <form id="submit_managed_members_form" class="" action="/idm/organizations/<%= organization.id %>/edit/members" method="POST">
         <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
-        <div class="modal-dialog">
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button id="esc_auth_member" class="close" data-dismiss="modal">&times;</button>

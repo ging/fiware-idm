@@ -4,7 +4,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<a id="esc_perm_creation" class="close" data-dismiss="modal">×</a>
-				</h3><%=translation.applications.create_permission.title%></h3>
+				<h3><%=translation.applications.create_permission.title%></h3>
 			</div>
 			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype="">
 				<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
@@ -73,7 +73,7 @@
 									<div id="collapse-xacml" class="panel-collapse collapse">
 										<div class="panel-body">
 											<div class="form-group ">
-												<label class="control-label  " for="id_xml">U<%=translation.applications.create_permission.label05%></label>
+												<label class="control-label  " for="id_xml"><%=translation.applications.create_permission.label05%></label>
 												<div class=" ">
 													<textarea class="form-control" cols="40" id="id_xml" name="xml" rows="10"></textarea>
 												</div>

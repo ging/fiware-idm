@@ -103,10 +103,10 @@ exports.create = function(req, res, next) {
                         link: config.host
                     };
 
-                    var subject = 'Keyrock user account';
+                    var translation = req.app.locals.translation;
 
                     // Send an email message to the user
-                    email.send('user_info', subject, user.email, mail_data)
+                    email.send('user_info', '', user.email, mail_data, translation)
                 }
 
                 res.send({ 

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -19,6 +20,11 @@
   <link rel='stylesheet' href='/stylesheets/bootstrap-tour.min.css' />
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel='stylesheet' href='/stylesheets/bootstrap-select.min.css' />
+
+  <script>
+    var navigation = <%- JSON.stringify(translation.generic.navigation) %>
+    var tours = <%- JSON.stringify(translation.generic.tours) %>
+  </script>
 
   <script src="/javascripts/tour.js"></script>
 

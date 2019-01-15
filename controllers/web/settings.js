@@ -160,10 +160,10 @@ exports.email = function(req, res) {
 			                        link: link
 			                    };
 
-			                    var subject = 'Account email change requested';
+			                    var translation = req.app.locals.translation;
 
 			                    // Send an email message to the user
-			                    email.send('change_email', subject, req.body.email, mail_data)
+			                    email.send('change_email', '', req.body.email, mail_data, translation)
 
 			                    res.locals.message = { text: `An emails has been sent to verify your account.
 				            								  Follow the provided link to change your email`,

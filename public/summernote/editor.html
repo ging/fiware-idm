@@ -13,17 +13,19 @@
 	  	<!-- include summernote css/js-->
 		<link rel="stylesheet" href="/stylesheets/summernote/summernote.css">
 		<script src="/javascripts/summernote.js"></script>
+		<script src="/lang/summernote-es-ES.js"></script>
+		<script src="/lang/summernote-es.js"></script>
 	</head> 
 	<body>
-		<div id="summernote">Dear user,</div>
+		<div id="summernote">Dear user, </div>
 
 		<script type="text/javascript">
             $(document).ready(function(){
-
                 $('#summernote').summernote({
                 	height: 430,
                 	minHeight: 0,
                 	maxHeight: 430,
+                	lang: navigator.language || navigator.userLanguage,
                     toolbar: [                      
                         ['para', ['style']],
                         ['style', ['bold', 'italic', 'underline', 'clear']],

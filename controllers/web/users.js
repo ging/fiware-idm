@@ -513,10 +513,10 @@ exports.create = function(req, res, next) {
                             link: link
                         };
 
-                        var subject = 'Welcome to Keyrock';
-
+                        var translation = req.app.locals.translation;
+                        
                         // Send an email message to the user
-                        email.send('activate', subject, user.email, mail_data)
+                        email.send('activate', '', user.email, mail_data, translation)
 
                         res.locals.message = {text: 'Account created succesfully, check your email for the confirmation link.', type: 'success'};
                         res.render('index', { errors: [], csrfToken: req.csrfToken() });
@@ -639,21 +639,20 @@ exports.password_send_email = function(req, res, callback) {
                         link: link
                     };
 
-                    var subject = 'Reset password instructions';
-
+                    var translation = req.app.locals.translation;
                     // Send an email message to the user
-                    email.send('forgot_password', subject, user.email, mail_data)
+                    email.send('forgot_password', '', user.email, mail_data, translation);
 
                     req.session.message = {text: 'Reset password instructions send to ' + user.email, type: 'success'};
                     res.redirect('/auth/login');
                 }).catch(function(error) {
-                    debug('  -> error' + error)
-                    res.redirect('/')
+                    debug('  -> error' + error);
+                    res.redirect('/');
                 })                
             }
         }).catch(function(error) {
-            debug('  -> error' + error)
-            res.redirect('/')
+            debug('  -> error' + error);
+            res.redirect('/');
         })
     }
 }
@@ -772,10 +771,10 @@ exports.resend_confirmation = function(req, res, next) {
                             link: link
                         };
 
-                        var subject = 'Welcome to Keyrock';
+                        var translation = req.app.locals.translation;
 
                         // Send an email message to the user
-                        email.send('activate', subject, user.email, mail_data)
+                        email.send('activate', '', user.email, mail_data, translation)
 
                         req.session.message = {text: 'Resend confirmation instructions email to ' + user.email, type: 'success'};
                         res.redirect('/auth/login');

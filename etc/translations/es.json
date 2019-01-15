@@ -1,9 +1,9 @@
 {
   "header": {
-    "profile": " Perfil",
-    "settings": " Ajustes",
-    "help_about": " Ayuda & About",
-    "sign_out": " Desconectarse"
+    "menu_item01": " Perfil",
+    "menu_item02": " Ajustes",
+    "menu_item03": " Ayuda & About",
+    "menu_item04": " Desconectarse"
   },
   "footer": {
     "cred_date": "2018 ©",
@@ -11,32 +11,32 @@
     "university": " - Universidad Politénica de Madrid (UPM)"
   },
   "help_about_items": {
-    "documentation": " Documentación",
-    "learn": "Si quieres aprender más acerca de este Gestor de Identidad y cómo usarlo, echa un vistazo a los links acontinuación:",
-    "catalogue": " Catálogo de FIWARE",
-    "installing": " Documentación completa para la instalación, administración y uso del Gestor de Identidad en ReadTheDocs",
-    "source": " Código fuente del proyecto en GitHub",
-    "academy": " Academia de FIWARE",
-    "tours": " Tours de aprendizaje",
-    "missed_tours": "¿Te has perdido alguno de los tours? ¿Quieres hacerlos de nuevo? Aquí puedes ver la lista completa de tours que te guiarán de las características básicas a las más avanzadas.",
-    "basic_tour": " Tour básico: empieza a conocer la página de bienvenida.",
-    "profile_tour": " Tour de perfil: edita tus datos personales y elige un avatar.",
-    "app_tour": " Tour de aplicaciones: crea tu primera aplicación.",
-    "roles_tour": " Tour de roles y permisos: aprende más acerca de roles y permisos dentro de las apps y cómo autorizar a otros usuarios y organizaciones en ellas.",
-    "organizations_tour": " Tour de organizaciones: crea tu primera organización y echa un vistazo a su página principal."
+    "title01": " Documentación",
+    "content01": "Si quieres aprender más acerca de este Gestor de Identidad y cómo usarlo, echa un vistazo a los links acontinuación:",
+    "item01": " Catálogo de FIWARE",
+    "item02": " Documentación completa para la instalación, administración y uso del Gestor de Identidad en ReadTheDocs",
+    "item03": " Código fuente del proyecto en GitHub",
+    "item04": " Academia de FIWARE",
+    "title02": " Tours de aprendizaje",
+    "content02": "¿Te has perdido alguno de los tours? ¿Quieres hacerlos de nuevo? Aquí puedes ver la lista completa de tours que te guiarán de las características básicas a las más avanzadas.",
+    "tour01": " Tour básico: empieza a conocer la página de bienvenida.",
+    "tour02": " Tour de perfil: edita tus datos personales y elige un avatar.",
+    "tour03": " Tour de aplicaciones: crea tu primera aplicación.",
+    "tour04": " Tour de roles y permisos: aprende más acerca de roles y permisos dentro de las apps y cómo autorizar a otros usuarios y organizaciones en ellas.",
+    "tour05": " Tour de organizaciones: crea tu primera organización y echa un vistazo a su página principal."
   },
   "navigation": {
-    "main_menu": "Menu principal",
-    "idm": "IdM",
-    "home": "Home",
-    "organizations": "Organizacines",
-    "applications": "Aplicaciones",
-    "notify": "Notificar",
-    "administrators": "Administradores",
-    "users": "Usuarios"
+    "menu_title01": "Menu principal",
+    "menu_title02": "IdM",
+    "menu_item01": "Home",
+    "menu_item02": "Organizacines",
+    "menu_item03": "Aplicaciones",
+    "menu_item04": "Notificar",
+    "menu_item05": "Administradores",
+    "menu_item06": "Usuarios"
   },
   "help_about": {
-    "ha_title": "Ayuda y Acerca de"
+    "title": "Ayuda y Acerca de"
   },
   "auth": {
     "login": {
@@ -86,6 +86,95 @@
       "change_btn": "Cambiar contraseña",
       "link01": "Registrarse",
       "link02": "¿No has recibido las instruccions de confirmación?"
+    }
+  },
+  "home": {
+    "change_pass": {
+      "title": "Cambiar contraseña",
+      "content01": "Llevas un año sin cambiar la contraseña",
+      "content02": "Para continuar usando este portal, por favor cámbiala.",
+      "continue_btn": "Continuar"
+    },
+    "index": {
+      "page_header": "Home",
+      "title": "Aplicaciones",
+      "link01": "Registrarse",
+      "alert01": "No estás autorizado en ninguna aplicación.",
+      "link02": "Ver todas",
+      "panel_heading": "Organizaciones",
+      "link03": "Crear",
+      "alert02": "No tienes ninguna organización.",
+      "link04": "Ver todas"
+    }
+  },
+  "organizations": {
+    "delete_avatar": {
+      "title": "Borrar imagen subida",
+      "content01": "¿Estás seguro de que quieres borrar esta imagen?",
+      "content02": "Puedes volver a subirla cuando quieras.",
+      "confirm_btn": "Confirmar",
+      "cancel_btn": "Cancelar"
+    },
+    "exit_org": {
+      "title": "Salir de la organización",
+      "content": "¿Estas seguro de que quieres salir de la organización?",
+      "exit_btn": "Salir"
+    },
+    "manage_members": {
+      "title": "Gestiona los niembros de tu organización",
+      "header_title": "Todos los usuarios",
+      "no_users": "No hay ningún usuario",
+      "filter_use": "Usa el filtro (escribe al menos dos carácteres).",
+      "alert01": "Carácteres no válidos",
+      "member_list_title": "Miembros de la organización",
+      "alert02": "Algunos miembros no tienen rol asignado. Si guardas ahora no estarán autorizados en la organización.",
+      "alert03": "Miembro añadido",
+      "save_btn": "Guardar",
+      "cancel_btn": "Cancelar"
+    },
+    "edit": {
+      "title01": "Información de la organización",
+      "required_field": "Este campo es obligatorio",
+      "label01": "Nombre",
+      "label02": "Descripción",
+      "label03": "Website",
+      "update_btn": "Actualizar organización ",
+      "title02": "Avatar de la organización",
+      "delete_btn": "Borrar esta imagen",
+      "label04": "Actualizar esta imagen",
+      "content01": "Selecciona la parte de la imagen que quieres usar como avatar.",
+      "crop_btn": "Cortar y utilizar",
+      "cancel_btn": "Cancelar",
+      "title03": "Cancelar",
+      "content02": "Borrar organización",
+      "content03": "Esta acción borrará la organización y todos sus datos",
+      "delete_org_btn": "Borrar organización "
+    },
+    "index": {
+      "title": "Organizaciones",
+      "create_btn": "Crear",
+      "tab01": "Propietario",
+      "tab02": "Miembro",
+      "alert01": "No eres propietario de ninguna organización.",
+      "alert02": "No eres miembro de ninguna organización."
+    },
+    "create": {
+      "title": "Crear Organización",
+      "label01": "Nombre",
+      "required_field": "Este campo es obligatorio.",
+      "label02": "Descripción",
+      "create_btn": "Crear Organización"
+    },
+    "show": {
+      "edit_btn": "editar",
+      "exit_btn": "salir",
+      "label01": "Descripción",
+      "label02": "Website",
+      "panel_title01": "Miembros",
+      "manage_btn": "Gestionar",
+      "no_members": "Ningún miembros encontrado.",
+      "panel_title02": "Aplicaciones Autorizadas",
+      "no_apps": "Ninguna aplicación encontrada."
     }
   },
   "settings": {
@@ -138,57 +227,57 @@
   },
   "users": {
     "delete_avatar": {
-      "delete_image": "Borrar imagen",
-      "confirmation_msg": "¿Estás seguro de que quieres borrar esta imagen?",
-      "upload_msg": "Puedes subirla de nuevo cuando quieras.",
+      "title": "Borrar imagen",
+      "content01": "¿Estás seguro de que quieres borrar esta imagen?",
+      "content02": "Puedes subirla de nuevo cuando quieras.",
       "confirm_btn": "Confirmar",
       "cancel_btn": "Cancelar"
     },
     "edit_user": {
-      "personal_information": "Información Personal",
-      "username": "Nombre de usuario",
-      "input_required": "Este campo es obligatorio.",
-      "description_title": "Acerca de mi",
-      "website_title": "Website",
+      "title01": "Información Personal",
+      "label01": "Nombre de usuario",
+      "required_field": "Este campo es obligatorio.",
+      "label02": "Acerca de mi",
+      "label03": "Website",
       "update_btn": "Actualizar usuario ",
-      "personal_avatar": "Avatar Personal",
+      "title02": "Avatar Personal",
       "use_image_btn": "Usar esta imagen ",
       "delete_image_btn": "Borrar esta imagen ",
       "use_gravatar_btn": "Usar Gravatar ",
       "edit_gravatar_btn": "Editar en Gravatar",
-      "gravatar_link": "Somos compatibles con Gravatar. Crea tu perfil ",
-      "gravatar_link2": "¡aquí!",
-      "update_img": "Subir una imagen",
-      "select_img": " Selecciona la parte de la imagen que quieras para usar de avatar.",
+      "link01": "Somos compatibles con Gravatar. Crea tu perfil ",
+      "link02": "¡aquí!",
+      "label04": "Subir una imagen",
+      "label05": " Selecciona la parte de la imagen que quieras para usar de avatar.",
       "crop_btn": "Recortar y usar",
       "cancel_btn": "Cancelar"
     },
     "new_user": {
-      "registration": "Registro",
-      "pass_error": "Los campos de contraseña no coinciden",
-      "email_error": "El email ya está en uso",
-      "email_error2": "El email no es válido",
-      "username": "Nombre de usuaruio",
+      "title": "Registro",
+      "alert01": "Los campos de contraseña no coinciden",
+      "alert02": "El email ya está en uso",
+      "alert03": "El email no es válido",
+      "label01": "Nombre de usuaruio",
       "required_field": "Este campo es obligatorio",
-      "email": "Email",
-      "have_gravatar": "Tengo Gravatar y quiero usarlo para mi imagen de perfil.",
-      "password": "Contraseña",
-      "password2": "Contraseña (otra vez)",
-      "captcha": "Captcha",
-      "signup": "Registrarse",
-      "forgot_pass": "He olvidado mi contraseña",
-      "confirmation": "¿No has recibido email de confirmación?"
+      "label02": "Email",
+      "content01": "Tengo Gravatar y quiero usarlo para mi imagen de perfil.",
+      "label03": "Contraseña",
+      "label04": "Contraseña (otra vez)",
+      "label05": "Captcha",
+      "signup_btn": "Registrarse",
+      "link01": "He olvidado mi contraseña",
+      "link02": "¿No has recibido email de confirmación?"
     },
     "show_user": {
       "placeholder_input": "Filtro",
       "edit_btn": "editar",
-      "description_label": "Descripción",
+      "title01": "Descripción",
       "no_description": "Descripción no disponible",
-      "website_label": "Website",
-      "organizations_title": "Organizaciones",
-      "no_member_warning": "No eres miembro ni propietario de ninguna organización.",
-      "applications_title": "Aplicaciones",
-      "no_authorized_warning": "No tienes autorización en ninguna aplicación."
+      "title02": "Website",
+      "title03": "Organizaciones",
+      "alert01": "No eres miembro ni propietario de ninguna organización.",
+      "title04": "Aplicaciones",
+      "alert02": "No tienes autorización en ninguna aplicación."
     }
   },
   "admin": {

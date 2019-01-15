@@ -1,11 +1,11 @@
-	<% 
+	<%
   var presentation = 'auth/_presentation';
   var login = 'auth/_login';
 
   if (site.theme !== 'default') {
-    if(fs.existsSync('themes/' + site.theme + '/templates/_presentation.ejs')) 
+    if(fs.existsSync('themes/' + site.theme + '/templates/_presentation.ejs'))
       presentation = '../themes/' + site.theme + '/templates/_presentation';
-    if(fs.existsSync('themes/' + site.theme + '/templates/_login.ejs')) 
+    if(fs.existsSync('themes/' + site.theme + '/templates/_login.ejs'))
       login = '../themes/' + site.theme + '/templates/_login';
   }
 %>

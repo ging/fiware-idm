@@ -15,7 +15,7 @@
             <div class="panel-body">
                 <div class="description">
                     <h5>
-                        <%=translation.users.show_user.description_label%>
+                        <%=translation.users.show_user.title01%>
                     </h5>
                     <div class="info expander">
                         <% if (user.description) { -%>
@@ -36,7 +36,7 @@
                 <% if (user.website) { -%>
                     <div class="contact_us">
                         <h5>
-                            <%=translation.users.show_user.website_label%>
+                            <%=translation.users.show_user.title02%>
                         </h5>
                         <div class="info">
                             <p><%= user.website %></p>
@@ -47,7 +47,7 @@
         </div>
         <div class="panel panel-default datatable" id="auth_organizations" data-pagination-url="/filters/organizations" data-user_id="<%= user.id %>" data-pagination-pages="">
             <div class="panel-heading">
-                <span class="title"><%=translation.users.show_user.organizations_title%></span>
+                <span class="title"><%=translation.users.show_user.title03%></span>
                 <div class="table_actions clearfix">
                     <div class="filter table_search client">
                         <input class="form-control" value="" type="text" name="organizations__filter__q" placeholder="<%=translation.users.show_user.placeholder_input%>">
@@ -59,7 +59,7 @@
             </div>
             <div class="panel-body datatable-content">
                 <div class="list-group" id="auth_organizations_content">
-                    <p class="alert alert-info empty" style="display: none;"><%=translation.users.show_user.no_member_warning%></p>
+                    <p class="alert alert-info empty" style="display: none;"><%=translation.users.show_user.alert01%></p>
                 </div>
             </div>
             <div class="panel-footer">
@@ -68,7 +68,7 @@
         </div>
         <div class="panel panel-default datatable" id="auth_applications" data-pagination-url="/filters/applications" data-user_id="<%= user.id %>" data-pagination-pages="">
             <div class="panel-heading">
-                <span class="title"><%=translation.users.show_user.applications_title%></span>
+                <span class="title"><%=translation.users.show_user.title04%></span>
                 <div class="table_actions clearfix">
                     <div class="filter table_search client">
                         <input class="form-control" value="" type="text" name="applications__filter__q" placeholder="<%=translation.users.show_user.placeholder_input%>">
@@ -80,7 +80,7 @@
             </div>
             <div class="panel-body datatable-content">
                 <div class="list-group" id="auth_applications_content">
-                    <p class="alert alert-info empty" style="display: none;"><%=translation.users.show_user.no_authorized_warning%></p>
+                    <p class="alert alert-info empty" style="display: none;"><%=translation.users.show_user.alert02%></p>
                 </div>
             </div>
 

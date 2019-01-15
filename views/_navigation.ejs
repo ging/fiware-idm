@@ -1,18 +1,18 @@
 <%if(session.user) {%>
   <nav class="sidebar">
     <h5>
-      <span class="hidden-xs hidden-sm"><%=translation.navigation.main_menu%></span>
-      <span class="visible-sm"><%=translation.navigation.idm%></span>
+      <span class="hidden-xs hidden-sm"><%=translation.navigation.menu_title01%></span>
+      <span class="visible-sm"><%=translation.navigation.menu_title02%></span>
     </h5>
       <ul>
         <a href="/idm" class="home">
-          <h4 tabindex="1"><i class="fa"></i><span><%=translation.navigation.home%></span></h4>
+          <h4 tabindex="1"><i class="fa"></i><span><%=translation.navigation.menu_item01%></span></h4>
         </a>
         <a href="/idm/organizations" class="organizations">
-          <h4 tabindex="2"><i class="fa"></i><span><%=translation.navigation.organizations%></span></h4>
+          <h4 tabindex="2"><i class="fa"></i><span><%=translation.navigation.menu_item02%></span></h4>
         </a>
         <a href="/idm/applications" class="applications">
-          <h4 tabindex="3"><i class="fa"></i><span><%=translation.navigation.applications%></span></h4>
+          <h4 tabindex="3"><i class="fa"></i><span><%=translation.navigation.menu_item03%></span></h4>
         </a>
         <%if(session.user.admin) {%>
           <h5>
@@ -21,13 +21,13 @@
           </h5>
           <ul>
             <a href="/idm/admins/notify" class="notify">
-              <h4 tabindex="1"><i class="fa"></i><span><%=translation.navigation.notify%></span></h4>
+              <h4 tabindex="1"><i class="fa"></i><span><%=translation.navigation.menu_item04%></span></h4>
             </a>
             <a href="/idm/admins/administrators" class="administrators">
-              <h4 tabindex="2"><i class="fa"></i><span><%=translation.navigation.administrators%></span></h4>
+              <h4 tabindex="2"><i class="fa"></i><span><%=translation.navigation.menu_item05%></span></h4>
             </a>
             <a href="/idm/admins/list_users" class="list_users">
-              <h4 tabindex="3"><i class="fa"></i><span><%=translation.navigation.users%></span></h4>
+              <h4 tabindex="3"><i class="fa"></i><span><%=translation.navigation.menu_item06%></span></h4>
             </a>
           </ul>
         <%}%>

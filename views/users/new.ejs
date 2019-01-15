@@ -2,7 +2,7 @@
 	<%- include ../auth/_presentation %>
 	<div id="" class="registration ">
 		<div class="modal-header">
-			<h3><%=translation.users.new_user.registration%></h3>
+			<h3><%=translation.users.new_user.title%></h3>
 		</div>
 		<form id="register_user_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/sign_up/" method="POST" enctype="">
 		<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
@@ -14,16 +14,16 @@
 			        <% } %>
 			    <% } %>
 			    <% if (nameErrors.indexOf("passwordDifferent") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.pass_error%></span>
+			        <span class="help-block alert alert-danger "><%=translation.users.new_user.alert01%></span>
 			    <% } %>
 			    <% if (nameErrors.indexOf("emailUsed") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.email_error%></span>
+			        <span class="help-block alert alert-danger "><%=translation.users.new_user.alert02%></span>
 			    <% } %>
 			    <% if (nameErrors.indexOf("emailInvalid") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.email_error2%></span>
+			        <span class="help-block alert alert-danger "><%=translation.users.new_user.alert03%></span>
 			    <% } %>
 				<div class="form-group ">
-					<label class="control-label" for="id_username"><%=translation.users.new_user.username%></label>
+					<label class="control-label" for="id_username"><%=translation.users.new_user.label01%></label>
 					<div class=" ">
 						<input class="form-control" id="id_username" maxlength="30" name="username" type="text" value="<%= userInfo.username %>"/>
 					</div>
@@ -32,7 +32,7 @@
 			        <span class="help-block alert alert-danger "><%=translation.users.new_user.required_field%></span>
 			    <% } %>
 				<div class="form-group ">
-					<label class="control-label" for="id_email"><%=translation.users.new_user.email%></label>
+					<label class="control-label" for="id_email"><%=translation.users.new_user.label02%></label>
 					<div class=" ">
 						<input class="form-control" id="id_email" name="email" type="email" value="<%= userInfo.email %>"/>
 					</div>
@@ -45,14 +45,14 @@
 						<div class="checkbox">
 							<label>
 								<input id="id_use_gravatar" name="use_gravatar" type="checkbox" />
-								<span><%=translation.users.new_user.have_gravatar%></span>
+								<span><%=translation.users.new_user.content01%></span>
 							</label>
 						</div>
 					</div>
 				</div>
 				<div class="form-group has-feedback">
 					<label class="control-label" for="id_password1">
-						<%=translation.users.new_user.password%>
+						<%=translation.users.new_user.label03%>
 						<!-- <a href="" class="hard_pwd" data-toggle="tooltip" data-placement="top" title="">hard</a> -->
 					</label>
 					<div class=" ">
@@ -64,7 +64,7 @@
 			        <span class="help-block alert alert-danger "><%=translation.users.new_user.required_field%></span>
 			    <% } %>
 				<div class="form-group has-feedback">
-					<label class="control-label" for="id_password2"><%=translation.users.new_user.password2%></label>
+					<label class="control-label" for="id_password2"><%=translation.users.new_user.label04%></label>
 					<div class=" ">
 						<input class="form-control" id="id_password2" name="password2" type="password" />
 						<span class="form-control-feedback fa fa-eye"></span>
@@ -74,7 +74,7 @@
 			        <span class="help-block alert alert-danger "><%=translation.users.new_user.required_field%></span>
 			    <% } %>
 				<div class="form-group ">
-					<label class="control-label" for="id_captcha"><%=translation.users.new_user.captcha%></label>
+					<label class="control-label" for="id_captcha"><%=translation.users.new_user.label05%></label>
 					<!-- <div class="g-recaptcha" data-size="normal" data-sitekey="6LcgXvwSAAAAAES48096Gr2KKc6cjWlVWtIcDZvz"></div>
 					<noscript>
 						<div style="width: 302px; height: 352px;">
@@ -96,20 +96,20 @@
 							</div>
 						</div>
 					</noscript> -->
-				</div> 
+				</div>
 				<script src="https://www.google.com/recaptcha/api.js?hl=en-GB" async defer></script>
 			</div>
 			<div class="modal-footer">
 				<label class="conditions checkbox-inline">
 					<input type="checkbox" id="inlineCheckbox1" required="required" title="You need to accept the Terms and Conditions to create your account" value="option1"> I accept FIWARE Lab <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_LAB_Terms_and_Conditions" target="a_blank">Terms and Conditions</a>
 				</label>
-				<button type="submit" class="btn btn-primary pull-right"><%=translation.users.new_user.signup%></button>
+				<button type="submit" class="btn btn-primary pull-right"><%=translation.users.new_user.signup_btn%></button>
 				<div class="actions">
 					<a href="/password/request/">
-						<%=translation.users.new_user.forgot_pass%>
+						<%=translation.users.new_user.link01%>
 					</a>
 					<a href="/confirmation/">
-						<%=translation.users.new_user.confirmation%>
+						<%=translation.users.new_user.link02%>
 					</a>
 			</div>
 			</div>
@@ -122,7 +122,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		
+
 		$('#id_password1').bind("keyup input",function(e) {
 			var input = $('#id_password1')
 			var value_input = $('#id_password1').val()

@@ -708,9 +708,9 @@ function user_permissions(roles_id, app_id, action, resource) {
             return models.permission.findAll({
                 where: { id: permissions.map(elem => elem.permission_id),
                          oauth_client_id: app_id,
-                         action: action,
-                         resource: resource }
-            })
+                         action: action }
+            }).then(permissions =>
+                permissions.filter(permission => resource.startsWith(permission.dataValues.resource)))
         } else {
             return []
         }

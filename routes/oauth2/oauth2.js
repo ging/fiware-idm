@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var csrf = require('csurf');
 var config = require('../../config');
+
+var csrfProtection = csrf({ cookie: true })
 
 // OUATH2 Controller
 var oauthController = require('../../controllers/oauth2/oauth2');
@@ -11,20 +14,22 @@ var saml2Controller = require('../../controllers/saml2/saml2');
 //router.get('/authenticate',    	oauthController.authenticate_token);
 router.post('/token',       	oauthController.token);
 if (config.eidas.enabled) {
-	router.get('/authorize', 		
+	router.get('/authorize',
+      csrfProtection, 		
       oauthController.response_type_required,  
       oauthController.load_application, 
       saml2Controller.search_eidas_credentials, 
       saml2Controller.create_auth_request, 
       oauthController.check_user);
 } else {
-	router.get('/authorize', 		
+	router.get('/authorize',
+      csrfProtection, 		
       oauthController.response_type_required,  
       oauthController.load_application, 	
       oauthController.check_user);
 }
-router.post('/authorize', 		oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);
-router.post('/enable_app',    oauthController.response_type_required,  oauthController.load_application,  oauthController.load_user,  oauthController.enable_app);
+router.post('/authorize', 		csrfProtection, oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);
+router.post('/enable_app',    csrfProtection, oauthController.response_type_required,  oauthController.load_application,  oauthController.load_user,  oauthController.enable_app);
 router.post('/revoke',        oauthController.revoke_token);
 
 // catch 404 and forward to error handler

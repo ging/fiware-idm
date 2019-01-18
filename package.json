@@ -8,7 +8,10 @@
     "debug": "sudo DEBUG=idm:*,oauth2-server:*  nodemon --ignore 'public/' --ignore 'views/' start",
     "create_db": "./node_modules/.bin/sequelize --env database db:create",
     "migrate_db": "./node_modules/.bin/sequelize --env database db:migrate",
-    "seed_db": "./node_modules/.bin/sequelize --env database db:seed:all"
+    "seed_db": "./node_modules/.bin/sequelize --env database db:seed:all",
+    "create_migration": "./node_modules/.bin/sequelize migration:generate --name",
+    "undo_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo",
+    "undo_all_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo:all"
   },
   "dependencies": {
     "async": "^2.6.0",

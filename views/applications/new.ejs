@@ -46,6 +46,9 @@
                     <% if (errors.indexOf("url") != -1) { %>
                     <span class="help-block alert alert-danger "><%=translation.applications.new.required_field%></span>
                     <% } %>
+                    <% if (errors.indexOf("urlUsed") != -1) { %>
+                    <span class="help-block alert alert-danger "><%=translation.applications.new.alert01%></span>
+                    <% } %>
                     <div class="form-group required">
                         <label class="control-label  required" for="id_callbackurl"><%=translation.applications.new.label04%> <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.new.popover02_title%>" data-content="<%=translation.applications.new.popover02_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
                         <div class=" ">
@@ -56,9 +59,15 @@
                     <span class="help-block alert alert-danger "><%=translation.applications.new.required_field%></span>
                     <% } %>
                     <div class="form-group required">
+                        <label class="control-label  required" for="id_signout_callbackurl"><%=translation.applications.new.label05%><a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.new.popover03_title%>" data-content="<%=translation.applications.new.popover03_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
+                        <div class=" ">
+                            <input class="form-control" id="id_signout_callbackurl" name="application[redirect_sign_out_uri]" type="text" value="<%= application.redirect_sign_out_uri %>" >
+                        </div>
+                    </div>
+                    <div class="form-group required">
                         <label class="control-label  required" for="id_grant_type">
-                            <%=translation.applications.new.label05%>
-                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.new.popover03_title%>" data-content="<%=translation.applications.new.popover03_body%>" data-original-title="" title="">
+                            <%=translation.applications.new.label06%>
+                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.new.popover04_title%>" data-content="<%=translation.applications.new.popover04_body%>" data-original-title="" title="">
                                 <i class="fa fa-question-circle"></i>
                             </a>
                         </label>
@@ -74,8 +83,8 @@
                     </div>
                     <div class="form-group required">
                         <label class="control-label  required" for="id_provider">
-                            <%=translation.applications.new.label06%>
-                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.new.popover04_title%>" data-content="<%=translation.applications.new.popover04_body%>" data-original-title="" title="">
+                            <%=translation.applications.new.label07%>
+                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.new.popover05_title%>" data-content="<%=translation.applications.new.popover05_body%>" data-original-title="" title="">
                                 <i class="fa fa-question-circle"></i>
                             </a>
                         </label>
@@ -101,7 +110,7 @@
                                     <i class="fa fa-question-circle"></i>
                                 </a>
                                 <div class="checkbox">
-                                    <label><input type="checkbox" name="eidas" value="eidas"><%=translation.applications.new.label07%>
+                                    <label><input type="checkbox" name="eidas" value="eidas"><%=translation.applications.new.label08%>
                                     </label>
                                 </div>
                             </label>

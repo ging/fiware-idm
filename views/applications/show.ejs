@@ -46,6 +46,12 @@
                     <h5><%=translation.applications.show.label03%></h5>
                     <p><%= application.redirect_uri %></p>
                 </div>
+                <% if (application.redirect_sign_out_uri) { -%>
+                    <div class="sign_out_callback_url">
+                        <h5>Sign-out Callback Url</h5>
+                        <p><%= application.redirect_sign_out_uri %></p>
+                    </div>
+                <% } -%>
                 <% if (user_logged_permissions.some(r=> ['1', '5', '6'].includes(r))) { -%>
                     <div class="extra">
                         <h4 class="panel-title">

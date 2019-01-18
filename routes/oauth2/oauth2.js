@@ -12,10 +12,10 @@ var saml2Controller = require('../../controllers/saml2/saml2');
 router.post('/token',       	oauthController.token);
 if (config.eidas.enabled) {
 	router.get('/authorize', 		
-      oauthController.response_type_required,  
-      oauthController.load_application, 
-      saml2Controller.search_eidas_credentials, 
-      saml2Controller.create_auth_request, 
+      oauthController.response_type_required,
+      oauthController.load_application,
+      saml2Controller.search_eidas_credentials,
+      saml2Controller.create_auth_request,
       oauthController.check_user);
 } else {
 	router.get('/authorize', 		

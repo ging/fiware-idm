@@ -1,9 +1,3 @@
-<% var nameErrors = [] %>
-<% if (errors.length) { %>
-    <% for (var i in errors) { %>
-    	<% nameErrors.push(errors[i].message)%>
-    <% } %>
-<% } %>
 <div id="content_body">
 	<div class="panel panel-default ">
 		<div class="panel-body">
@@ -25,7 +19,7 @@
 									<input class="form-control" id="id_name" name="application[name]" type="text" value="<%= application.name %>">
 								</div>
 							</div>
-							<% if (nameErrors.indexOf("name") != -1) { %>
+							<% if (errors.indexOf("name") != -1) { %>
 								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
 							<div class="form-group required">
@@ -35,7 +29,7 @@
 									</textarea>
 								</div>
 							</div>
-							<% if (nameErrors.indexOf("description") != -1) { %>
+							<% if (errors.indexOf("description") != -1) { %>
 								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
 							<div class="form-group required">
@@ -49,51 +43,60 @@
 									<input class="form-control" id="id_url" name="application[url]" type="text" value="<%= application.url %>">
 								</div>
 							</div>
-							<% if (nameErrors.indexOf("url") != -1) { %>
+							<% if (errors.indexOf("url") != -1) { %>
 								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
+							<% if (errors.indexOf("urlUsed") != -1) { %>
+		                    <span class="help-block alert alert-danger "><%=translation.applications.edit.alert01%></span>
+		                    <% } %>
 							<div class="form-group required">
 								<label class="control-label  required" for="id_callbackurl"><%=translation.applications.edit.label04%><a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover02_title%>" data-content="<%=translation.applications.edit.popover02_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
 								<div class=" ">
 									<input class="form-control" id="id_callbackurl" name="application[redirect_uri]" type="text" value="<%= application.redirect_uri %>" >
 								</div>
 							</div>
-							<% if (nameErrors.indexOf("redirectUri") != -1) { %>
+							<% if (errors.indexOf("redirectUri") != -1) { %>
 								<span class="help-block alert alert-danger "><%=translation.applications.edit.required_field%></span>
 							<% } %>
 							<div class="form-group required">
+		                        <label class="control-label  required" for="id_signout_callbackurl"><%=translation.applications.edit.label05%><a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover03_title%>" data-content="<%=translation.applications.edit.popover03_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a></label>
+		                        <div class=" ">
+		                            <input class="form-control" id="id_signout_callbackurl" name="application[redirect_sign_out_uri]" type="text" value="<%= application.redirect_sign_out_uri %>" >
+		                        </div>
+		                    </div>
+							<div class="form-group required">
 					          <label class="control-label  required" for="id_grant_type">
-					            <%=translation.applications.edit.label05%>
-					            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover03_title%>" data-content="<%=translation.applications.edit.popover03_body%>" data-original-title="" title="">
+					            <%=translation.applications.edit.label06%>
+					            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover04_title%>" data-content="<%=translation.applications.edit.popover04_body%>" data-original-title="" title="">
 					              <i class="fa fa-question-circle"></i>
 					            </a>
 					          </label>
 					          <div class="select-multiple">
-					            <select name="grant_type[]" class="selectpicker" data-dropup-auto="false" multiple>
+					            <select name="application[grant_type]" class="selectpicker" data-dropup-auto="false" multiple>
 					            	<% if (application.grant_type.includes('authorization_code')) { %>
-										<option selected value="authorization_code">Authorization Code</option>
+										<option selected name="[authorization_code]" value="authorization_code">Authorization Code</option>
 					            	<% } else { %>
-					            		<option value="authorization_code">Authorization Code</option>
+					            		<option value="authorization_code" name="[authorization_code]">Authorization Code</option>
 					            	<% } %>
 					            	<% if (application.grant_type.includes('implicit')) { %>
-										<option selected value="implicit">Implicit</option>
+										<option selected name="[implicit]" value="implicit">Implicit</option>
 					            	<% } else { %>
-					            		<option value="implicit">Implicit</option>
+					            		<option value="implicit" name="[implicit]">Implicit</option>
 					            	<% } %>
 					            	<% if (application.grant_type.includes('password')) { %>
-										<option selected value="password">Resource Owner Password</option>
+										<option selected value="password" name="[password]">Resource Owner Password</option>
 					            	<% } else { %>
-					            		<option value="password">Resource Owner Password</option>
+					            		<option value="password" name="[password]">Resource Owner Password</option>
 					            	<% } %>
 					            	<% if (application.grant_type.includes('client_credentials')) { %>
-										<option selected value="client_credentials">Client Credentials</option>
+										<option selected value="client_credentials" name="[client_credentials]">Client Credentials</option>
 					            	<% } else { %>
-					            		<option value="client_credentials">Client Credentials</option>
+					            		<option value="client_credentials" name="[client_credentials]">Client Credentials</option>
 					            	<% } %>
 					            	<% if (application.grant_type.includes('refresh_token')) { %>
-										<option selected value="refresh_token">Refresh Token</option>
+										<option selected value="refresh_token" name="[refresh_token]">Refresh Token</option>
 					            	<% } else { %>
-					            		<option value="refresh_token">Refresh Token</option>
+					            		<option value="refresh_token" name="[refresh_token]">Refresh Token</option>
 					            	<% } %>
 					            </select>
 					          </div>

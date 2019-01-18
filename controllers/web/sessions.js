@@ -4,6 +4,9 @@ var debug = require('debug')('idm:web-session_controller');
 var models = require('../../models/models.js');
 var userController = require('./users');
 
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 var escape_paths = require('../../etc/escape_paths/paths.json').paths;
 
 // MW to authorized restricted http accesses
@@ -148,5 +151,45 @@ exports.destroy = function(req, res) {
     debug("--> destroy");
 
     delete req.session.user;
-    res.redirect('/'); 
+    res.redirect('/');
+};
+
+// DELETE /auth/external_logout -- Delete Session from an external call
+exports.external_destroy = function(req, res) {
+
+    debug("--> external_destroy");
+
+    var oauth_client_id = req.query.client_id;
+    var url = req.hostname;
+
+    debug(url)
+
+    models.oauth_client.findOne({
+        where: { [Op.or]: [
+            {id: oauth_client_id}, 
+            {url: url}
+        ]},
+        attributes: ['url', 'redirect_sign_out_uri']
+    }).then(function(application) {
+        if (application) {
+            // If users have signed in through an OAuth Application, delete session.
+            // If they have signed in through IdM Keyrock endpoint, just redirect to sign out endpoint.
+            if (req.session.user) {
+                if (req.session.user.oauth_sign_in) {
+                    delete req.session.user;
+                }
+            }
+
+            if (application.redirect_sign_out_uri) {
+                res.redirect(application.redirect_sign_out_uri)
+            } else {
+                res.redirect(application.url)
+            }
+        } else {
+            res.status(401).json('Not allowed to perform logout or bad configured')
+        }
+    }).catch(function(error) {
+        debug('Error: ' + error)
+        res.status(500).json("Internal Server Error")
+    })
 };

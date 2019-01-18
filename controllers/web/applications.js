@@ -317,12 +317,13 @@ exports.create = function(req, res, next) {
 		var validate = application.validate()
 		var save = validate.then(function() {
 			application.description.trim()
-			return application.save({fields: [ 'id', 
-										'name', 
-										'description', 
-										'url', 
-										'redirect_uri', 
-										'secret', 
+			return application.save({fields: [ 'id',
+										'name',
+										'description',
+										'url',
+										'redirect_uri',
+										'redirect_sign_out_uri',
+										'secret',
 										'image',
 										'grant_type',
 										'response_type'] })
@@ -402,7 +403,7 @@ exports.create = function(req, res, next) {
 						attributes: ['id', 'name']
 					}]
 				}).then(function(organizations) {
-					res.render('applications/new', {application: application, organizations: organizations, eidas_enabled: config.eidas.enabled, errors: nameErrors, csrfToken: req.csrfToken()})		
+					res.render('applications/new', {application: application, organizations: organizations, eidas_enabled: config.eidas.enabled, errors: nameErrors, csrfToken: req.csrfToken()})
 				}).catch(function(error) { next(error); });
 			}
 		})
@@ -471,48 +472,59 @@ exports.update_info = function(req, res) {
 	// If body has parameters id or secret don't update the application
 	if (req.body.application.id || req.body.application.secret) {
 		res.locals.message = {text: ' Application edit failed.', type: 'danger'};
-		res.redirect('/idm/applications/'+req.application.id)
+		res.redirect('/idm/applications/'+req.application.id);
 	} else {
+
+		if (config.oauth2.unique_url) {
+			if (req.application.url === req.body.application.url) {
+				delete req.body.application.url;
+			}
+		}
 
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client table
 		req.body.application["id"] = req.application.id;
 		var application = models.oauth_client.build(req.body.application);
-		application.grant_type = (req.body.grant_type) ? req.body.grant_type : [''] 
+		application.grant_type = (req.body.application.grant_type) ? req.body.application.grant_type : ['']
 
 		var response_type = []
 		if (application.grant_type.includes('authorization_code')) {
-			response_type.push('code')
+			response_type.push('code');
 		}
 
 		if (application.grant_type.includes('implicit')) {
-			response_type.push('token')
+			response_type.push('token');
 		}
 
-		application.validate().then(function(err) {
-			models.oauth_client.update(
-				{ name: req.body.application.name,
-				  description: req.body.application.description.trim(),
-				  url: req.body.application.url,
-				  redirect_uri: req.body.application.redirect_uri,
-				  grant_type: req.body.grant_type,
-				  response_type: response_type },
-				{
-					fields: ['name','description','url','redirect_uri', 'grant_type', 'response_type'],
+		application.validate().then(function(application) {
+			return models.oauth_client.update(
+				{ 
+					name: req.body.application.name,
+				  	description: req.body.application.description.trim(),
+				  	url: req.body.application.url,
+				  	redirect_uri: req.body.application.redirect_uri,
+				  	redirect_sign_out_uri: req.body.application.redirect_sign_out_uri,
+				  	grant_type: req.body.application.grant_type,
+				  	response_type: response_type 
+				}, {
+					fields: ['name','description','url','redirect_uri', 'redirect_sign_out_uri', 'grant_type', 'response_type'],
 					where: {id: req.application.id}
 				}
-			).then(function() {
-				// Send message of success of updating the application
-				req.session.message = {text: ' Application updated successfully.', type: 'success'};
-				res.redirect('/idm/applications/'+req.application.id);
-			}).catch(function(error){
-				res.locals.message = {text: ' Unable to update application',type: 'danger'}
-			 	res.render('applications/edit', { application: application, errors: [], csrfToken: req.csrfToken()});
-			});
+			)
+		}).then(function() {
+			// Send message of success of updating the application
+			req.session.message = {text: ' Application updated successfully.', type: 'success'};
+			res.redirect('/idm/applications/'+req.application.id);
 		}).catch(function(error){
-			// Send message of warning of updating the application
-			res.locals.message = {text: ' Application update failed.', type: 'warning'};
-			req.body.application['image'] = req.application.image
-		 	res.render('applications/edit', { application: req.body.application, errors: error.errors, csrfToken: req.csrfToken()});
+			debug("Error: " + error);
+			var nameErrors = [];
+			if (error.errors.length) {
+        		for (var i in error.errors) {
+        			nameErrors.push(error.errors[i].message);
+        		}
+  			}
+			res.locals.message = {text: ' Unable to update application',type: 'danger'};
+			req.body.application['image'] = req.application.image;
+		 	res.render('applications/edit', { application: req.body.application, errors: nameErrors, csrfToken: req.csrfToken()});
 		});
 	}
 };

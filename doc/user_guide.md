@@ -30,7 +30,7 @@ This document describes the user and programming guide for Identity Management c
 <a name="def-logging"></a>
 ### Logging in
 
-Go to "Sign in" if you heave previously created an account, otherwise "Sign up" to create a new account:
+Go to "Sign in" if you have previously created an account, otherwise "Sign up" to create a new account:
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_login.png)
 <p align="center">Figure 1: IdM Log in page</p>
@@ -125,6 +125,7 @@ You can also perform several actions:
  - Register an Iot Agent.
  - Authorize users.
  - Authorize organizations.
+ - Authorize trusted applications
 
 <a name="def-register-pep-and-iot"></a>
 #### Register Pep Proxy and Iot Agents

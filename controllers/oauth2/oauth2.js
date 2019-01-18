@@ -98,7 +98,8 @@ exports.check_user = function(req, res, next) {
                 redirect_uri: req.query.redirect_uri,
                 image: ((req.application.image == 'default') ? '/img/logos/original/app.png' : ('/img/applications/'+req.application.image)) 
             },
-            errors: []
+            errors: [],
+            csrfToken: req.csrfToken()
         }
 
         render_values["saml_request"] = {
@@ -176,14 +177,16 @@ function check_user_authorized_application(req, res) {
                 if (req.application.redirect_uri !== req.query.redirect_uri) {
                     res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
                 }
-
-                res.render('oauth/authorize', {application: {
-                    name: req.application.name,
-                    response_type: req.query.response_type,
-                    id: req.query.client_id,
-                    redirect_uri: req.query.redirect_uri,
-                    url: '/enable_app?'+url.parse(req.url).query,
-                    state: req.query.state }
+                res.render('oauth/authorize', {
+                    application: {
+                        name: req.application.name,
+                        response_type: req.query.response_type,
+                        id: req.query.client_id,
+                        redirect_uri: req.query.redirect_uri,
+                        url: '/enable_app?'+url.parse(req.url).query,
+                        state: req.query.state 
+                    }, 
+                    csrfToken: req.csrfToken()
                 });
             }
         }).catch(function(error) {

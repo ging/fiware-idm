@@ -1,5 +1,5 @@
 var express = require('express');
-var csrf = require('csurf')
+var csrf = require('csurf');
 var bodyParser = require('body-parser');
 
 var router = express.Router();

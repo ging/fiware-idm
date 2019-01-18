@@ -52,7 +52,7 @@ exports.response_type_required = function(req, res, next) {
         next();
     } else {
         var text = 'Invalid response_type'
-        req.session.message = {text: text, type: 'warning'};
+        req.session.message = {text: text, type: 'danger'};
         res.redirect('/auth/login');
     }
 }
@@ -72,7 +72,7 @@ exports.load_application = function(req, res, next) {
         } else {
             var text = 'Application with id = ' + req.query.client_id + ' doesn`t exist'
             req.session.message = {text: text, type: 'warning'};
-            res.redirect('/');
+            res.redirect('/auth/login');
         }
     }).catch(function(error) {
         next(error)
@@ -87,9 +87,13 @@ exports.check_user = function(req, res, next) {
     if (req.session.user) {
         check_user_authorized_application(req, res)
     } else {
+        // Check if there are errors to be rendered
+        debug(req.session.errors)
+        var errors = req.session.errors || [];
+
         var render_values = {
             application: {
-                url: req.url,
+                url: '/oauth2' + req.url,
                 name: req.application.name,
                 description: req.application.description,
                 response_type: req.query.response_type,
@@ -98,7 +102,7 @@ exports.check_user = function(req, res, next) {
                 redirect_uri: req.query.redirect_uri,
                 image: ((req.application.image == 'default') ? '/img/logos/original/app.png' : ('/img/applications/'+req.application.image)) 
             },
-            errors: [],
+            errors: errors,
             csrfToken: req.csrfToken()
         }
 
@@ -137,9 +141,9 @@ exports.authenticate_user = function(req, res, next){
         // If not, authenticate and search if user is authorized in the application
         if (req.body.email && req.body.password) {
             userController.authenticate(req.body.email, req.body.password, function(error, user) {
-                if (error) {  // If error, send message to /auth/login
-                    req.session.errors = [{message: error.message}];
-                    res.redirect("/auth/login");        
+                if (error) {  // If error, send message to the icoming path
+                    req.session.errors = [(error.message) ? error.message : ''];
+                    res.redirect('/oauth2' + req.url);        
                     return;
                 }
 
@@ -151,14 +155,22 @@ exports.authenticate_user = function(req, res, next){
                 } else if (user.image !== 'default') {
                     image = '/img/users/' + user.image
                 }
-                req.session.user = {id:user.id, username:user.username, email: user.email, image: image};
+                req.session.user = {id:user.id, username:user.username, email: user.email, image: image, oauth_sign_in: true};
 
                 check_user_authorized_application(req, res)
 
             });
         } else {
-            req.session.errors = errors;
-            res.redirect("/auth/login");
+            // Redirect to the same OAuth2 service login endpoint
+            var nameErrors = []
+            if (errors.length) {
+                for (var i in errors) {
+                    console.log(errors[i].message)
+                    nameErrors.push(errors[i].message)
+                }
+            }
+            req.session.errors = nameErrors;
+            res.redirect('/oauth2' + req.url);
         }
     }
 }
@@ -177,15 +189,13 @@ function check_user_authorized_application(req, res) {
                 if (req.application.redirect_uri !== req.query.redirect_uri) {
                     res.locals.message = {text: 'Mismatching redirect uri', type: 'warning'}  
                 }
-                res.render('oauth/authorize', {
-                    application: {
-                        name: req.application.name,
-                        response_type: req.query.response_type,
-                        id: req.query.client_id,
-                        redirect_uri: req.query.redirect_uri,
-                        url: '/enable_app?'+url.parse(req.url).query,
-                        state: req.query.state 
-                    }, 
+                res.render('oauth/authorize', {application: {
+                    name: req.application.name,
+                    response_type: req.query.response_type,
+                    id: req.query.client_id,
+                    redirect_uri: req.query.redirect_uri,
+                    url: '/oauth2/enable_app?'+url.parse(req.url).query,
+                    state: req.query.state },
                     csrfToken: req.csrfToken()
                 });
             }

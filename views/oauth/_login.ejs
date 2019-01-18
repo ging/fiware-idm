@@ -1,41 +1,36 @@
 <div class="login">
   <div class="modal-header">
-    <h3>Log In</h3>
+    <h3><%=translation.oauth.login.title%></h3>
   </div>
-  <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/oauth2<%= application.url %>" method="POST" enctype="">
+  <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="<%= application.url %>" method="POST" enctype="">
+    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
     <div class="modal-body clearfix">
-      <% var nameErrors = [] %>
-      <% if (errors.length) { %>
-          <% for (var i in errors) { %>
-            <% nameErrors.push(errors[i].message)%>
-          <% } %>
+      <% if (errors.indexOf("sessionExpired") != -1) { %>
+        <span class="help-block alert alert-warning"><p><%=translation.oauth.login.alert01%></p></span>
       <% } %>
-      <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
-        <span class="help-block alert alert-warning"><p>Session expired</p></span>
-      <% } %>
-      <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+      <% if (errors.indexOf("user_not_found") != -1 || errors.indexOf("invalid") != -1) { %>
         <div class="alert alert-message alert-danger">
-          <ul class="errorlist"><li>Invalid user name or password.</li></ul>
+          <ul class="errorlist"><li><%=translation.oauth.login.alert02%></li></ul>
         </div>
       <% } %>
       <div class="form-group ">
-        <label class="control-label" for="id_username">Email</label>
+        <label class="control-label" for="id_username"><%=translation.oauth.login.label01%></label>
         <div class=" ">
           <input autofocus="autofocus" class="form-control" id="id_email" name="email" type="text" />  
         </div>
       </div>
-      <% if (nameErrors.indexOf("email") != -1) { %>
-        <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+      <% if (errors.indexOf("email") != -1) { %>
+        <span class="help-block alert alert-danger "><%=translation.oauth.login.required_field%></span>
       <% } %>
       <div class="form-group has-feedback">
-          <label class="control-label" for="id_password">Password</label>
+          <label class="control-label" for="id_password"><%=translation.oauth.login.label02%></label>
           <div class=" ">
               <input class="form-control" id="id_password" name="password" type="password" /> 
               <span class="form-control-feedback fa fa-eye"></span>  
           </div> 
       </div>
-      <% if (nameErrors.indexOf("password") != -1) { %>
-        <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+      <% if (errors.indexOf("password") != -1) { %>
+        <span class="help-block alert alert-danger "><%=translation.oauth.login.required_field%></span>
       <% } %>
 
     <% if (saml_request.enabled) { -%>
@@ -53,23 +48,23 @@
         <label>
           <input type="checkbox"> 
           <span class="lbl padding-0">
-            remember me
+            <%=translation.oauth.login.checkbox%>
           </span>
         </label>
       </div>
-      <button type="submit" class="btn btn-primary pull-right">Sign In</button>
+      <button type="submit" class="btn btn-primary pull-right"><%=translation.oauth.login.loginin_btn%></button>
       <% if (saml_request.enabled) { -%>
-        <button id="saml2_eidas_button" type="submit"  class="btn btn-primary pull-right second_submit_button" formaction="/saml2/login?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" >Sign eIDAS</button>
+        <button id="saml2_eidas_button" type="submit"  class="btn btn-primary pull-right second_submit_button" formaction="/saml2/login?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>" ><%=translation.oauth.login.eidas_loginin_btn%></button>
       <% } -%>
       <div class="actions">
         <a href="/sign_up/">
-          Sign up
+          <%=translation.oauth.login.link01%>
         </a>
         <a href="/password/request/">
-          Forgot password
+          <%=translation.oauth.login.link02%>
         </a>
         <a href="/confirmation/">
-          Confirmation not recieved?
+          <%=translation.oauth.login.link03%>
         </a>
       </div>
     </div>

@@ -5,7 +5,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button id="esc_auth_org" class="close" data-dismiss="modal">&times;</button>
-                    <h3>Authorize organizations in your application</h3>
+                    <h3><%=translation.applications.authorize_organization.title%></h3>
                 </div>
                 <div class="modal-body clearfix">
                     <div class="tab-content">
@@ -14,9 +14,9 @@
                         <div class="membership update_owners_users_membership dropdown_fix add-members" data-show-roles="True">
                             <div class="all-users">
                                 <header>
-                                    <h4>All organizations</h4>
+                                    <h4><%=translation.applications.authorize_organization.subtitle01%></h4>
                                     <div class="form-group has-feedback">
-                                        <input type="text" name="" id="available_update_organizations" class="filter update_owners_users_server_filter form-control input-sm" placeholder="filter" data-url="/filters/users">
+                                        <input type="text" name="" id="available_update_organizations" class="filter update_owners_users_server_filter form-control input-sm" placeholder="<%=translation.applications.authorize_organization.placeholder_input%>" data-url="/filters/users">
                                     </div>
                                     <div id="spinner_update_owners_organizations" class="filtering-spinner-inline" style="display: none;">
                                         <i class="fa fa-circle-o-notch fa-spin"></i>
@@ -26,22 +26,22 @@
                                     <ul id="available_organizations" class="available_organizations available_update_owners_users list-group">
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="no_available_update_organizations" style="display: none;">
-                                        <li>No organizations found.</li>
+                                        <li><%=translation.applications.authorize_organization.alert01%></li>
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="perform_filter_available_update_organizations" style="display: block;">
-                                        <li>Use the filter (type at least two characters).</li>
+                                        <li><%=translation.applications.authorize_organization.alert03%></li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
+                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_organization.alert05%></span>
                             </div>
                             <div class="members-list">
                                 <header>
                                     <h4>
-                                        Authorized Organizations
-                                        <a data-target="#" class="contextual-help" style="float: none;" data-toggle="popover" data-title="Role assignment" data-placement="right" data-content="You can assign differents roles to members or owners of an organization" data-original-title="" title="" ><i class="fa fa-question-circle"></i></a>
+                                        <%=translation.applications.authorize_organization.subtitle02%>
+                                        <a data-target="#" class="contextual-help" style="float: none;" data-toggle="popover" data-title="<%=translation.applications.authorize_organization.popover_title%>" data-placement="right" data-content="<%=translation.applications.authorize_organization.popover_body%>" data-original-title="" title="" ><i class="fa fa-question-circle"></i></a>
                                     </h4>  
                                     <div class="form-group has-feedback">
-                                        <input type="text" name="" id="update_authorized_organizations" class="filter update_owners_users_client_filter form-control input-sm" placeholder="filter">
+                                        <input type="text" name="" id="update_authorized_organizations" class="filter update_owners_users_client_filter form-control input-sm" placeholder="<%=translation.applications.authorize_organization.placeholder_input%>">
                                     </div>
                                 </header>
                                 <div class="pre-scrollable filterable update_owners_users_client_filterable" id="update_organizations_scroll" >
@@ -50,21 +50,21 @@
                                     </ul>
 
                                     <ul class="no_results list-group alert alert-info" id="no_update_organizations" style="display: none;">
-                                        <li>No organizations.</li>
+                                        <li><%=translation.applications.authorize_organization.alert02%></li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
+                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.authorize_organization.alert05%></span>
                                 
-                                <div class="alert alert-warning no_roles_warning" style="display: none;">Some organizations don't have any role assigned. If you save now they won't be authorized in the application</div>
+                                <div class="alert alert-warning no_roles_warning" style="display: none;"><%=translation.applications.authorize_organization.alert04%></div>
                             </div>
                         </div>
                     </fieldset>
-                    <span id="info_added_organization" style="display: none;" class='help-block alert alert-info'>Organization added</span>
+                    <span id="info_added_organization" style="display: none;" class='help-block alert alert-info'><%=translation.applications.authorize_organization.alert06%></span>
                 </div>
             </div>
             <div class="modal-footer">
-                <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="Save">
-                <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+                <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="<%=translation.applications.authorize_organization.save_btn%>">
+                <button type="button" class="btn btn-default cancel" data-dismiss="modal"><%=translation.applications.authorize_organization.cancel_btn%></button>
             </div>
         </div>
     </div>

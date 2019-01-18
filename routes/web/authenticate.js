@@ -11,5 +11,7 @@ var web_session_controller = require('../../controllers/web/index').sessions;
 router.get('/login',	   csrfProtection,     web_session_controller.new);
 router.post('/login',      csrfProtection,     web_session_controller.create);
 router.delete('/logout',   web_session_controller.destroy);
+router.delete('/external_logout',   web_session_controller.external_destroy);
+
 
 module.exports = router;

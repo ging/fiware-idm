@@ -45,32 +45,6 @@ $(document).ready(function() {
         typingTimerMembers = setTimeout(function() {available_users(input, 'table_row_available_user_template', 'available_members')}, doneTypingInterval);
     });
 
-    // Filter admninistrators
-    $("#members").find('.form-control').bind("keyup input",function(e) {
-        input = $(this);
-        filter = $(this).val().toUpperCase();
-        ul = $("#members").find(".datatable-content");
-        li = ul.children("div");
-
-        for (i = 0; i < li.length; i++) {
-            span = li[i].querySelectorAll("div.name")[0];
-            if (span.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                li[i].style.display = "";
-            } else {
-                li[i].style.display = "none";
-            }
-        }
-
-        if($("#authorize_user").find("#authorized_users").children(':visible').length == 0) {
-            $("#no_update_owners_users_members").show() 
-        } else {
-            $("#no_update_owners_users_members").hide() 
-        }
-
-        $("#alert_error_search_authorized").hide("close")     
-      
-    });
-
     // Filter authorized members
     $("#authorize_user").find('#update_owners_users_members').bind("keyup input",function(e) {
         input = $(this);
@@ -86,8 +60,13 @@ $(document).ready(function() {
                 li[i].style.display = "none";
             }
         }
-  
-        $("#alert_error_search_authorized").hide("close") 
+
+        $("#alert_error_search_authorized").hide("close")
+        if($("#authorize_user").find("#authorized_users").children(':visible').length == 0) {
+            $("#no_update_owners_users_members").show() 
+        } else {
+            $("#no_update_owners_users_members").hide() 
+        }
     });
 
     function htmlEntities(str) {

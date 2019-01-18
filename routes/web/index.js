@@ -28,6 +28,11 @@ router.get('/', csrfProtection, function(req, res, next) {
   }
 });
 
+router.get('/language', function(req, res, next) {
+  var callback_url = req.header('Referer') || '/idm';
+  res.redirect(callback_url);
+})
+
 // Routes when user is logged
 //  - Create sessions for users
 router.use('/auth',  require('./authenticate'))

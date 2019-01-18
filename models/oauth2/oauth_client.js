@@ -1,5 +1,6 @@
-// BD to store all applicationes with their feautures
+var config_oauth2 = require('../../config.js').oauth2
 
+// BD to store all applicationes with their feautures
 module.exports = function(sequelize, DataTypes) {
   var OAuthClient = sequelize.define('OauthClient', {
     id: {
@@ -17,10 +18,29 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: DataTypes.UUIDV4
     }, url: {
       type: DataTypes.STRING(2000)  + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-      validate: { notEmpty: {msg: "url"}}
+      validate: { 
+        notEmpty: {msg: "url"},
+        isUnique: function (value, next) {
+          if (config_oauth2.unique_url) {
+              var self = this;
+              OAuthClient.find({where: {url: value}}).then(function (oauth_client) {
+                if (oauth_client && self.id !== oauth_client.id) {
+                    return next('urlUsed');
+                }
+                return next();
+              }).catch(function (err) {
+                  return next(err);
+              });
+          } else {
+            return next();
+          }
+        }
+      }
     }, redirect_uri: {
       type: DataTypes.STRING(2000)  + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
       validate: { notEmpty: {msg: "redirectUri"}}
+    },redirect_sign_out_uri: {
+      type: DataTypes.STRING(2000)  + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
     }, image: {
       type: DataTypes.STRING,
       defaultValue: 'default'

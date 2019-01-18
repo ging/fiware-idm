@@ -4,7 +4,7 @@
     </div>
     <div class="page-header">
         <h2>
-            Users
+            <%=translation.admin.users.title%>
         </h2>
     </div>
     <div id="users-page">
@@ -12,7 +12,7 @@
             <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
             <div class="panel-heading">
                 <div id="entries">
-                    <p>Show</p>
+                    <p><%=translation.admin.users.content01%></p>
                     <div class="select-multiple form-group">
                         <select id="select_entries" class="selectpicker" data-size="5" data-width="100%" data-dropup-auto="false" data-dropdown-align-right="true">
                             <option class="" value="15">15</option>
@@ -21,19 +21,19 @@
                             <option class="" value="50">50</option>
                         </select>
                     </div>
-                    <p>entries</p>
+                    <p><%=translation.admin.users.content02%></p>
                 </div>
                 <div class="filter table_search client">
                     <input id="filter_user" class="form-control" value="" type="text" name="list_users__filter__q" placeholder="Filter">
                 </div>
                 <div class="btn-group"> 
                     <button title="Create user" data-toggle="modal" data-target="#create_user_modal" class="btn btn-default btn-sm ajax-modal">
-                        Create user
+                        <%=translation.admin.users.create_user_btn%>
                     </button>
                 </div>
                 <div class="btn-group"> 
                     <button id="delete_user" title="Delete user" class="btn btn-default btn-sm ajax-modal">
-                        Delete user
+                        <%=translation.admin.users.delete_user_btn%>
                     </button>
                 </div>
             </div>
@@ -49,10 +49,10 @@
                                 </th>
                                 <th style="width: 5%;"></th>
                                 <th style="width: 35%;">Id</th>
-                                <th style="width: 20%;">Username</th>
+                                <th style="width: 20%;"><%=translation.admin.users.username_col_table%></th>
                                 <th style="width: 20%;">Email</th>
-                                <th style="width: 5%;">Enable</th>
-                                <th style="width: 10%;">Actions</th>
+                                <th style="width: 5%;"><%=translation.admin.users.enable_col_table%></th>
+                                <th style="width: 10%;"><%=translation.admin.users.actions_col_table%></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div style="display: none;" class="alert alert-info" id="no_users_found">
-                No users found.
+                <%=translation.admin.users.alert01%>
             </div>
             <div class="panel-footer">
                 <nav id="users_pagination_container"></nav>

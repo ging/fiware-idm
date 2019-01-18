@@ -394,3 +394,50 @@
     }
   }
 }
+
+
+
+//LOGIN PAGE ÑAPPING
+.login, .presentation {
+  width: 49%;
+  margin: 0;
+}
+
+@media (max-width: 1200px){
+  .login, .presentation {
+    width: 45%;
+  }
+  .login {
+    margin-right: 2em;
+  }
+  .presentation {
+    margin-left: 2em;
+  }
+}
+
+@media (max-width: 800px){
+  .presentation .media footer {
+    margin-top: 6em;
+  }
+}
+
+@media (max-width: 792px){
+
+  .login, .presentation {
+    width: 90%;
+    margin: 0 auto;
+  }
+  .presentation .media {
+    margin-top: 2em;
+  }
+  .presentation .media footer {
+    margin-top: 8em;
+  }
+}
+
+@media (max-width: 500px){
+
+  .presentation .media footer {
+    margin-top: 5.5em;
+  }
+}

@@ -15,17 +15,17 @@ var saml2Controller = require('../../controllers/saml2/saml2');
 router.post('/token',       	oauthController.token);
 if (config.eidas.enabled) {
 	router.get('/authorize',
-      csrfProtection, 		
-      oauthController.response_type_required,  
-      oauthController.load_application, 
-      saml2Controller.search_eidas_credentials, 
-      saml2Controller.create_auth_request, 
+      csrfProtection,
+      oauthController.response_type_required,
+      oauthController.load_application,
+      saml2Controller.search_eidas_credentials,
+      saml2Controller.create_auth_request,
       oauthController.check_user);
 } else {
 	router.get('/authorize',
-      csrfProtection, 		
-      oauthController.response_type_required,  
-      oauthController.load_application, 	
+      csrfProtection,
+      oauthController.response_type_required,
+      oauthController.load_application,
       oauthController.check_user);
 }
 router.post('/authorize', 		csrfProtection, oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);

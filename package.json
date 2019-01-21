@@ -92,7 +92,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "jshint --fix",
+      "jshint",
       "prettier --parser flow --single-quote --trailing-comma es5 --write",
       "git add"
     ]

@@ -9,15 +9,15 @@ branches:
   only:
     - master
 
-services:
-  - docker
+service:
+  - mysql
 
 install:
  - npm install
 
 before_install:
- - docker pull mysql:5.7
- - docker run -d -l mysql -p 3306:3306 -v $(pwd)/test/mysql-data:/docker-entrypoint-initdb.d/:ro -e MYSQL_ROOT_PASSWORD=test mysql:5.7
+ - mysql -e 'CREATE DATABASE IF NOT EXISTS idm;' 
+ - mysql -u root --default-character-set=utf8 idm < test/mysql-data/backup.sql
 
 # before_script:
  # - npm run lint

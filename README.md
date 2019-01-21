@@ -7,6 +7,7 @@
 <br>
 [![Documentation](https://img.shields.io/readthedocs/fiware-idm.svg)](https://fiware-idm.readthedocs.io/en/latest/)
 [![Build Status](https://travis-ci.org/ging/fiware-idm.svg?branch=master)](https://travis-ci.org/ging/fiware-idm)
+[![Coverage Status](https://coveralls.io/repos/github/ging/fiware-idm/badge.svg?branch=master)](https://coveralls.io/github/ging/fiware-idm?branch=master)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/keyrock.svg)
 
 Keyrock is the FIWARE component responsible for Identity Management. Using
@@ -20,7 +21,7 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
-| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/idm/)| 
+| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/idm/)|
 |---|---|---|
 
 

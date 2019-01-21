@@ -17,7 +17,6 @@
   "node": true,
   "expr": true,
   "unused": "vars",
-  "esversion": 6,
   "globals": {
     "describe":true,
     "it": true,
@@ -26,6 +25,7 @@
     "after": true,
     "beforeEach": true,
     "afterEach": true,
-    "mock": true
+    "mock": true,
+    "sinon": true
   }
 }

@@ -16,7 +16,6 @@ install:
  - npm install
 
 before_install:
- - mysql -e 'CREATE DATABASE IF NOT EXISTS idm;' 
  - mysql -u root --default-character-set=utf8 idm < test/mysql-data/backup.sql
 
 # before_script:

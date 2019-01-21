@@ -19,7 +19,7 @@
 -- Table structure for table `SequelizeMeta`
 --
 
-CREATE DATABASE idm;
+-- CREATE DATABASE idm;
 USE idm
 
 DROP TABLE IF EXISTS `SequelizeMeta`;

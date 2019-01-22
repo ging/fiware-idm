@@ -20,9 +20,9 @@ var user_authorized_application = models.user_authorized_application
 
 
 function getAccessToken(bearerToken) {
-  
+
   debug("-------getAccesToken-------")
-  
+
   return oauth_access_token
     .findOne({
       where: {access_token: bearerToken},
@@ -55,7 +55,7 @@ function getAccessToken(bearerToken) {
       }
 
       delete token.OauthClient
-      delete token.User 
+      delete token.User
       delete token.Iot
 
       //token.scope = token.scope
@@ -67,7 +67,7 @@ function getAccessToken(bearerToken) {
 }
 
 function getClient(clientId, clientSecret) {
-  
+
   debug("-------getClient-------")
 
   const options = {
@@ -79,7 +79,7 @@ function getClient(clientId, clientSecret) {
     .findOne(options)
     .then(function (client) {
       if (!client) return null;//new Error("client not found");
-      
+
       var clientWithGrants = client
 
       clientWithGrants.grants = clientWithGrants.grant_type
@@ -90,7 +90,7 @@ function getClient(clientId, clientSecret) {
 
       delete clientWithGrants.grant_type
       delete clientWithGrants.redirect_uri
-      
+
       return clientWithGrants
     }).catch(function (err) {
       debug("getClient - Err: ", err)
@@ -128,14 +128,14 @@ function getIdentity(id, password, oauth_client_id) {
       if (user.verifyPassword(password)) {
           user.dataValues["type"] = "user"
           return user
-      } 
+      }
     }
 
     if (iot) {
       if (iot.verifyPassword(password)) {
           iot.dataValues["type"] = "iot"
           return iot
-      } 
+      }
     }
 
     return false
@@ -159,7 +159,7 @@ function getUser(email, password) {
       if (user) {
         if (user.verifyPassword(password)) {
           return user.toJSON()
-        } 
+        }
       }
       return false
     })
@@ -181,7 +181,7 @@ function revokeAuthorizationCode(code) {
   }).then(function (rCode) {
     if (rCode) {
       rCode.valid = false
-      rCode.save(); 
+      rCode.save();
     }
 
     code.valid = false
@@ -235,7 +235,7 @@ function revokeAccessToken(accessToken, code, client_id, refresh_token) {
     where_clause['access_token'] = accessToken;
   } else if (refresh_token) {
     where_clause['refresh_token'] = refresh_token;
-  } 
+  }
 
   if (client_id) {
     where_clause['oauth_client_id'] = client_id
@@ -275,7 +275,7 @@ function saveToken(token, client, identity) {
 }
 
 function generateJwtToken(token, client, identity) {
-  
+
   debug("-------generateJwtToken-------")
 
   var user_info = require('../templates/oauth_response/oauth_user_response.json');
@@ -302,7 +302,7 @@ function storeToken(token, client, identity, jwt) {
 
   debug("-------storeToken-------")
 
-  var user_id = null 
+  var user_id = null
   var iot_id = null
 
   if (identity) {
@@ -619,12 +619,12 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
 function user_roles(user_id, app_id) {
 
   debug("-------user_roles-------")
-  
+
   var promise_array = []
 
   // Search organizations in wich user is member or owner
   promise_array.push(
-      models.user_organization.findAll({ 
+      models.user_organization.findAll({
           where: { user_id: user_id },
           include: [{
               model: models.organization,
@@ -635,7 +635,7 @@ function user_roles(user_id, app_id) {
 
   // Search roles for user or the organization to which the user belongs
   promise_array.push(
-      promise_array[0].then(function(organizations) { 
+      promise_array[0].then(function(organizations) {
           var search_role_organizations = []
           if (organizations.length > 0) {
 
@@ -644,7 +644,7 @@ function user_roles(user_id, app_id) {
               }
           }
           return models.role_assignment.findAll({
-              where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: user_id}], 
+              where: { [Op.or]: [{ [Op.or]: search_role_organizations}, {user_id: user_id}],
                        oauth_client_id: app_id,
                        role_id: { [Op.notIn]: ['provider', 'purchaser']} },
               include: [{
@@ -673,7 +673,7 @@ function user_roles(user_id, app_id) {
           user_app_info.all.push(role.id)
 
           if (role_assignment[i].Organization) {
-              
+
               var organization = role_assignment[i].Organization.dataValues
               var index = user_app_info.organizations.map(function(e) { return e.id; }).indexOf(organization.id);
 
@@ -707,10 +707,12 @@ function user_permissions(roles_id, app_id, action, resource) {
         if (permissions.length > 0) {
             return models.permission.findAll({
                 where: { id: permissions.map(elem => elem.permission_id),
-                         oauth_client_id: app_id,
-                         action: action,
-                         resource: resource }
+                    oauth_client_id: app_id,
+                    action: action,
+                }
             })
+                .then(permissions =>
+                    permissions.filter(permission => resource.startsWith(permission.dataValues.resource)))
         } else {
             return []
         }

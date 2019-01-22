@@ -10,7 +10,7 @@ module.exports = {
             autoIncrement: true
           },
           oauth_client_id: {
-              type: Sequelize.UUID,
+              type: Sequelize.STRING(36), // Sequelize.UUID,
               onDelete: 'CASCADE',
               references: {
                   model: 'oauth_client',
@@ -18,7 +18,7 @@ module.exports = {
               }
           },
           trusted_oauth_client_id: {
-              type: Sequelize.UUID,
+              type: Sequelize.STRING(36), // Sequelize.UUID,
               onDelete: 'CASCADE',
               references: {
                   model: 'oauth_client',

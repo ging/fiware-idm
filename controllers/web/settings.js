@@ -44,7 +44,7 @@ exports.password = function(req, res) {
 
     // If there are erros render the view with them. If not check password of user
 	if (errors.length > 0) {
-		res.render('settings/password', {errors: errors, warn_change_password: false, csrfToken: req.csrfToken()})
+		res.render('settings/change_password', {errors: errors, warn_change_password: false, csrfToken: req.csrfToken()})
 	} else {
 		// Search the user through the email
 	    models.user.find({
@@ -72,7 +72,7 @@ exports.password = function(req, res) {
 	            	})
 	            } else { 
 	            	res.locals.message = { text: 'Unable to change password. Unauthorized', type: 'danger'}
-	            	res.render('settings/password', {errors: errors, warn_change_password: false, csrfToken: req.csrfToken()})
+	            	res.render('settings/change_password', {errors: errors, warn_change_password: false, csrfToken: req.csrfToken()})
 	        	}   
 	        } else { callback(new Error('invalid')); }
 	    }).catch(function(error){ debug(error)/*callback(error)*/ });
@@ -91,12 +91,12 @@ exports.email = function(req, res) {
 
         if (config.email_list_type === 'whitelist' && !email_list.includes(req.body.email.split('\@')[1])) {
             res.locals.message = {text: ' Email change failed.', type: 'danger'};
-            return res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+            return res.render('settings/change_email', {errors: errors, csrfToken: req.csrfToken()})
         }
 
         if (config.email_list_type === 'blacklist' && email_list.includes(req.body.email.split('\@')[1])) {
             res.locals.message = {text: ' Email change failed.', type: 'danger'};
-            return res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+            return res.render('settings/change_email', {errors: errors, csrfToken: req.csrfToken()})
         }
     } 
 
@@ -112,20 +112,20 @@ exports.email = function(req, res) {
 
     // If there are erros render the view with them. If not check password of user
 	if (errors.length > 0) {
-		res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+		res.render('settings/change_email', {errors: errors, csrfToken: req.csrfToken()})
 	} else {
 
 		// If is the actual email send a message of error to the user
 		if (req.session.user.email === req.body.email) {
 			res.locals.message = { text: ' It is your actual email.', type: 'warning'}
-			res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+			res.render('settings/change_email', {errors: errors, csrfToken: req.csrfToken()})
 		}
 		models.user.findOne({
 			where: { email: req.body.email}
 		}).then(function(user) {
 			if (user)  {
 				res.locals.message = { text: ' Email already used.', type: 'danger'}
-				res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+				res.render('settings/change_email', {errors: errors, csrfToken: req.csrfToken()})
 			} else {
 				// Search the user through the email
 			    models.user.find({
@@ -175,7 +175,7 @@ exports.email = function(req, res) {
 			                })		               
 			            } else { 
 			            	res.locals.message = { text: 'Invalid password', type: 'danger'}
-			            	res.render('settings/email', {errors: errors, csrfToken: req.csrfToken()})
+			            	res.render('settings/change_email', {errors: errors, csrfToken: req.csrfToken()})
 			        	}   
 			        } else { 
 			        	callback(new Error('invalid'));

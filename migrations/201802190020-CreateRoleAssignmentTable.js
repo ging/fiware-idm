@@ -13,7 +13,7 @@ module.exports = {
                     type: Sequelize.STRING
                 },
                 oauth_client_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',
@@ -21,7 +21,7 @@ module.exports = {
                     }
                 },
                 role_id: {
-                    type: Sequelize.STRING(36),
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'role',
@@ -29,7 +29,7 @@ module.exports = {
                     }
                 },
                 organization_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'organization',
@@ -37,7 +37,7 @@ module.exports = {
                     }
                 },
                 user_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'user',

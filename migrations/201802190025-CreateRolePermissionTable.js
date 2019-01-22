@@ -10,7 +10,7 @@ module.exports = {
                     autoIncrement: true
                 },
                 role_id: {
-                    type: Sequelize.STRING(36),
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'role',
@@ -18,7 +18,7 @@ module.exports = {
                     }
                 },
                 permission_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'permission',

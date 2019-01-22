@@ -1,14 +1,13 @@
 'use strict';
 
-// console.log('in 20181113121450-FixExtraAndScopeAttribute.js');
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
       queryInterface.changeColumn('eidas_credentials', 'attributes_list', {
-        type: Sequelize.JSON() + ((queryInterface.sequelize.options.dialect == 'postgres') ? ' USING attributes_list::json' : '')
+        type: Sequelize.JSON()
       }),
       queryInterface.changeColumn('user', 'extra', {
-        type: Sequelize.JSON()  + ((queryInterface.sequelize.options.dialect == 'postgres') ? ' USING extra::json' : '')
+        type: Sequelize.JSON()
       }),
       queryInterface.changeColumn('user', 'scope', {
         type: Sequelize.STRING(2000),

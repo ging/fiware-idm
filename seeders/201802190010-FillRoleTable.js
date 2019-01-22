@@ -5,15 +5,15 @@ module.exports = {
 
       return queryInterface.bulkInsert('role', [
           {
-            id: 'provider',
-            is_internal: true,
-            name: 'Provider',
+            id: 'provider', 
+            is_internal: 1, 
+            name: 'Provider', 
             oauth_client_id: 'idm_admin_app'
           },
           {
-            id: 'purchaser',
-            is_internal: true,
-            name: 'Purchaser',
+            id: 'purchaser', 
+            is_internal: 1, 
+            name: 'Purchaser', 
             oauth_client_id: 'idm_admin_app'
           }
         ]);

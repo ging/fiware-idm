@@ -19,7 +19,7 @@ module.exports = {
                   }
                 },
                 oauth_client_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',

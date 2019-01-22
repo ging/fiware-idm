@@ -13,7 +13,7 @@ module.exports = {
                 expires: Sequelize.DATE,
                 valid: Sequelize.BOOLEAN,
                 user_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'user',

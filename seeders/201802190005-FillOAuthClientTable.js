@@ -6,12 +6,12 @@ module.exports = {
       return queryInterface.bulkInsert('oauth_client', [
           {
             id: 'idm_admin_app', 
-            name: 'idm',
-            description: 'idm',
-            url: '',
-            redirect_uri: '',
-            grant_type: '',
-            response_type: '',
+            name: 'idm', 
+            description: 'idm', 
+            url: '', 
+            redirect_uri: '', 
+            grant_type: '', 
+            response_type: '', 
             image: 'default'
           }
         ]);

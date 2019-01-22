@@ -5,31 +5,30 @@ module.exports = {
         return queryInterface.createTable('permission',
             {
                 id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
-                    //defaultValue: Sequelize.UUIDV4,
-                    unique: true,
+                    type: Sequelize.UUID,
+                    defaultValue: Sequelize.UUIDV4,
                     primaryKey: true
                 }, name: {
-                    type: Sequelize.STRING(255), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                    validate: {
+                    type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                    validate: { 
                         notEmpty: {msg: "error_empty_name"}
                     }
                 }, description: {
-                    type: Sequelize.TEXT(), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                    validate: {
+                    type: Sequelize.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                    validate: { 
                         notEmpty: {msg: "error_empty_description"}
                     }
                 }, is_internal: {
                     type: Sequelize.BOOLEAN,
-                    defaultValue: false
+                    defaultValue: 0
                 }, action: {
-                    type: Sequelize.STRING(255) // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+                    type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, resource: {
-                    type: Sequelize.STRING(255) // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+                    type: Sequelize.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, xml: {
-                    type: Sequelize.TEXT() // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+                    type: Sequelize.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
                 }, oauth_client_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'oauth_client',

@@ -5,22 +5,21 @@ module.exports = {
         return queryInterface.createTable('role',
             {
                 id: {
-                    type: Sequelize.STRING(36),
-                    // defaultValue: Sequelize.UUIDV4,
-                    unique: true,
+                    type: Sequelize.UUID,
+                    defaultValue: Sequelize.UUIDV4,
                     primaryKey: true
                 }, name: {
-                    type: Sequelize.STRING(64), // + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-                    validate: {
+                    type: Sequelize.STRING(64) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+                    validate: { 
                         notEmpty: {msg: "error_empty_name"}
                     }
                 }, is_internal: {
                     type: Sequelize.BOOLEAN,
-                    defaultValue: false
+                    defaultValue: 0
                 }, oauth_client_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
-                    references: {
+                    references: {   
                         model: 'oauth_client',
                         key: 'id'
                     }

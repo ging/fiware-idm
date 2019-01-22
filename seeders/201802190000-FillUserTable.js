@@ -17,8 +17,8 @@ module.exports = {
             password: crypto.createHmac('sha1', salt).update( (process.env.IDM_ADMIN_PASS ||'1234')).digest('hex'),
             salt: salt,
             date_password: new Date((new Date()).getTime()),
-            enabled: true,
-            admin: true
+            enabled: 1, 
+            admin: 1
           }
         ]);
   },

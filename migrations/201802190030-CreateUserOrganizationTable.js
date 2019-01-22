@@ -13,7 +13,7 @@ module.exports = {
                     type: Sequelize.STRING(10)
                 },
                 user_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'user',
@@ -21,7 +21,7 @@ module.exports = {
                     }
                 },
                 organization_id: {
-                    type: Sequelize.STRING(36), //Sequelize.UUID,
+                    type: Sequelize.UUID,
                     onDelete: 'CASCADE',
                     references: {
                         model: 'organization',

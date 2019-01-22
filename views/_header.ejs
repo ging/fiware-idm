@@ -14,9 +14,7 @@
     <div class="collapse navbar-collapse" id="header-navbar-collapse">
       <div id="user_info" class="col-md-pull-3 nav navbar-nav navbar-right">
         <div id="profile_editor_switcher" class="dropdown switcher_bar" tabindex="1">
-
           <%if(session.user){%>
-
             <a class="dropdown-toggle" data-toggle="dropdown" href="">
               <img alt="User" src="<%= session.user.image %>">
               <%= session.user.username %>

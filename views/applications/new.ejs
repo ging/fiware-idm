@@ -11,7 +11,7 @@
             </h3><h3 class="step-title"><%=translation.applications.new.title%></h3>
         </div>
         <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications" method="POST" enctype="">
-            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <div class="modal-body clearfix">
                 <fieldset>
                     <div class="form-group required">

@@ -7,7 +7,7 @@
                 <h3><%=translation.settings.delete_user.title%></h3>
             </div>
             <form id="cancel_account_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/settings/cancel?_method=delete" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
                     <div class="left">
                         <fieldset>

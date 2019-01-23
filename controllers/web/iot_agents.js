@@ -3,16 +3,16 @@ const uuid = require('uuid');
 
 const debug = require('debug')('idm:web-iot_controller');
 
-// Autoload info if path include iotId
-exports.load_iot = function(req, res, next, iotId) {
+// Autoload info if path include iot_id
+exports.load_iot = function(req, res, next, iot_id) {
   debug('--> load_iot');
 
   // Add id of pep proxy in request
-  req.iot = { id: iotId };
+  req.iot = { id: iot_id };
   next();
 };
 
-// GET /idm/applications/:applicationId/iot/register -- Register IoT sensor
+// GET /idm/applications/:application_id/iot/register -- Register IoT sensor
 exports.register_iot = function(req, res) {
   debug('--> register_iot');
 
@@ -59,7 +59,7 @@ exports.register_iot = function(req, res) {
     });
 };
 
-// DELETE /idm/applications/:applicationId/iot/:iotId/delete -- Delete Pep Proxy
+// DELETE /idm/applications/:application_id/iot/:iot_id/delete -- Delete Pep Proxy
 exports.delete_iot = function(req, res) {
   debug('--> delete_iot');
 
@@ -109,7 +109,7 @@ exports.delete_iot = function(req, res) {
     });
 };
 
-// GET /idm/applications/:applicationId/iot/:iotId/reset_password -- Change password to Iot Sensor
+// GET /idm/applications/:application_id/iot/:iot_id/reset_password -- Change password to Iot Sensor
 exports.reset_password_iot = function(req, res) {
   debug('--> reset_password_iot');
 

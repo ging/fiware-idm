@@ -2,7 +2,7 @@ const models = require('../../models/models.js');
 
 const debug = require('debug')('idm:web-trusted_apps_controller');
 
-// GET /idm/applications/:applicationId/get_trusted_applications -- Send authorizes users of an application
+// GET /idm/applications/:application_id/get_trusted_applications -- Send authorizes users of an application
 exports.get_trusted_applications = function(req, res) {
   debug('--> get_trusted_applications');
 
@@ -36,16 +36,20 @@ exports.get_trusted_applications = function(req, res) {
     });
 };
 
-// GET /idm/applications/:applicationId/set_trusted_applications -- Send authorizes users of an application
+// GET /idm/applications/:application_id/set_trusted_applications -- Send authorizes users of an application
 exports.set_trusted_applications = function(req, res) {
   debug('--> set_trusted_applications');
 
   let array_id_trusted = JSON.parse(req.body.submit_trusted);
 
   // Remove possible duplicates and null values
-  array_id_trusted = array_id_trusted.filter(function(item, index, inputArray) {
+  array_id_trusted = array_id_trusted.filter(function(
+    item,
+    index,
+    input_array
+  ) {
     return (
-      item && item !== req.application.id && inputArray.indexOf(item) === index
+      item && item !== req.application.id && input_array.indexOf(item) === index
     );
   });
 

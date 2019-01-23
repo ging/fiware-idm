@@ -95,7 +95,7 @@ exports.index = function(req, res) {
         organizations: values[1],
         change_password: req.session.user.change_password,
         errors: [],
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     })
     .catch(function(error) {
@@ -105,7 +105,7 @@ exports.index = function(req, res) {
         organizations: [],
         change_password: req.session.user.change_password,
         errors: [],
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     });
 };
@@ -114,5 +114,5 @@ exports.index = function(req, res) {
 exports.help_about = function(req, res) {
   debug('--> help_about');
 
-  res.render('help_about', { csrfToken: req.csrfToken() });
+  res.render('help_about', { csrf_token: req.csrfToken() });
 };

@@ -2,7 +2,7 @@ const gravatar = require('gravatar');
 const debug = require('debug')('idm:web-session_controller');
 
 const models = require('../../models/models.js');
-const userController = require('./users');
+const user_controller = require('./users');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -40,10 +40,10 @@ exports.password_check_date = function(req, res, next) {
     next();
   } else {
     const today = new Date(new Date().getTime());
-    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    const milli_seconds_per_day = 24 * 60 * 60 * 1000;
 
     const days_since_change = Math.round(
-      (today - req.session.user.change_password) / millisecondsPerDay
+      (today - req.session.user.change_password) / milli_seconds_per_day
     );
 
     if (days_since_change > 365) {
@@ -78,7 +78,7 @@ exports.new = function(req, res) {
     res.locals.message = req.session.message;
     delete req.session.message;
   }
-  res.render('index', { errors, csrfToken: req.csrfToken() });
+  res.render('index', { errors, csrf_token: req.csrfToken() });
 };
 
 // POST /auth/login -- Create Session
@@ -97,7 +97,7 @@ exports.create = function(req, res) {
   if (req.body.email && req.body.password) {
     // Authenticate user using user controller function
 
-    userController.authenticate(req.body.email, req.body.password, function(
+    user_controller.authenticate(req.body.email, req.body.password, function(
       error,
       user
     ) {
@@ -150,7 +150,7 @@ exports.update_password = function(req, res) {
   res.render('settings/password', {
     errors: [],
     warn_change_password: true,
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 

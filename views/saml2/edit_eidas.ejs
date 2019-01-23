@@ -8,7 +8,7 @@
 					</h3>
 				</div>
 				<form id="eidas_credentials" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/eidas/info?_method=put" method="POST" enctype="">
-		            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+		            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 		            <div class="modal-body clearfix">
 		                <fieldset>
 			                <div class="form-group required eidas">
@@ -178,7 +178,7 @@
 					</h3>
 				</div>
 				<form id="eidas_attributes" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/eidas/attributes?_method=put" method="POST" enctype="">
-		            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+		            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 		            <div class="modal-body clearfix">
 		                <fieldset class="row">
 		                	<div id="natural_person" class="extra col-md-4">

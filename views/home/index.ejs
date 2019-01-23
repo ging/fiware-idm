@@ -83,7 +83,7 @@
 						url: "/idm/users/<%= session.user.id %>/tour_ended",
 						data: "Tour ended",
 						dataType: 'html',
-						beforeSend: beforeSend("<%= csrfToken %>")
+						beforeSend: beforeSend("<%= csrf_token %>")
 					});
 				};
 

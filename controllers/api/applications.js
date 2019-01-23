@@ -1,5 +1,6 @@
 const debug = require('debug')('idm:api-applications');
 const models = require('../../models/models.js');
+const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 const _ = require('lodash');
 const crypto = require('crypto');
@@ -9,20 +10,18 @@ const Op = Sequelize.Op;
 
 const api_check_perm_controller = require('./check_permissions');
 
-// MW to Autoload info if path include applicationId
-exports.load_application = function(req, res, next, applicationId) {
+// MW to Autoload info if path include application_id
+exports.load_application = function(req, res, next, application_id) {
   debug('--> load_application');
 
-  if (applicationId === 'idm_admin_app') {
-    res
-      .status(403)
-      .json({
-        error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
-      });
+  if (application_id === 'idm_admin_app') {
+    res.status(403).json({
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+    });
   } else {
-    // Search application whose id is applicationId
+    // Search application whose id is application_id
     models.oauth_client
-      .findById(applicationId)
+      .findById(application_id)
       .then(function(application) {
         // If application exists, set image from file system
         if (application) {
@@ -221,7 +220,7 @@ exports.create = function(req, res) {
     });
 };
 
-// GET /v1/applications/:applicationId -- Get info about application
+// GET /v1/applications/:application_id -- Get info about application
 exports.info = function(req, res) {
   debug('--> info');
 
@@ -238,7 +237,7 @@ exports.info = function(req, res) {
   res.status(200).json({ application });
 };
 
-// PATCH /v1/applications/:applicationId -- Edit application
+// PATCH /v1/applications/:application_id -- Edit application
 exports.update = function(req, res) {
   debug('--> update');
 
@@ -291,7 +290,7 @@ exports.update = function(req, res) {
       return req.application.save();
     })
     .then(function(application) {
-      const difference = diffObject(
+      const difference = diff_object(
         application_previous_values,
         application.dataValues
       );
@@ -320,7 +319,7 @@ exports.update = function(req, res) {
     });
 };
 
-// DELETE /v1/applications/:applicationId -- Delete application
+// DELETE /v1/applications/:application_id -- Delete application
 exports.delete = function(req, res) {
   debug('--> delete');
 
@@ -329,7 +328,7 @@ exports.delete = function(req, res) {
     .then(function() {
       res
         .status(204)
-        .json('Appication ' + req.params.applicationId + ' destroyed');
+        .json('Appication ' + req.params.application_id + ' destroyed');
     })
     .catch(function(error) {
       debug('Error: ' + error);
@@ -533,14 +532,4 @@ function check_update_body_request(body) {
       resolve();
     }
   });
-}
-
-// Compare objects with symmetrical keys
-function diffObject(a, b) {
-  return Object.keys(a).reduce(function(map, k) {
-    if (a[k] !== b[k]) {
-      map[k] = b[k];
-    }
-    return map;
-  }, {});
 }

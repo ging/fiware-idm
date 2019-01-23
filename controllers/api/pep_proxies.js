@@ -34,7 +34,7 @@ exports.authenticate = function(id, password, callback) {
 exports.search_pep_proxy = function(req, res, next) {
   debug('--> load_pep_proxy');
 
-  // Search application whose id is applicationId
+  // Search application whose id is application_id
   models.pep_proxy
     .findOne({
       where: { oauth_client_id: req.application.id },
@@ -59,7 +59,7 @@ exports.search_pep_proxy = function(req, res, next) {
     });
 };
 
-// GET /v1/:applicationId/pep_proxies -- Send index of pep_proxies
+// GET /v1/:application_id/pep_proxies -- Send index of pep_proxies
 exports.info = function(req, res) {
   debug('--> info');
 
@@ -68,19 +68,17 @@ exports.info = function(req, res) {
     delete req.pep_proxy.dataValues.salt;
     res.status(200).json({ pep_proxy: req.pep_proxy });
   } else {
-    res
-      .status(404)
-      .json({
-        error: {
-          message: 'Pep Proxy not found',
-          code: 404,
-          title: 'Not Found',
-        },
-      });
+    res.status(404).json({
+      error: {
+        message: 'Pep Proxy not found',
+        code: 404,
+        title: 'Not Found',
+      },
+    });
   }
 };
 
-// POST /v1/:applicationId/pep_proxies -- Cretate pep_proxy
+// POST /v1/:application_id/pep_proxies -- Cretate pep_proxy
 exports.create = function(req, res) {
   debug('--> create');
 
@@ -127,7 +125,7 @@ exports.create = function(req, res) {
   }
 };
 
-// PATCH /v1/:applicationId/pep_proxies -- Reset password pep_proxy
+// PATCH /v1/:application_id/pep_proxies -- Reset password pep_proxy
 exports.update = function(req, res) {
   debug('--> update');
 
@@ -157,19 +155,17 @@ exports.update = function(req, res) {
         res.status(error.error.code).json(error);
       });
   } else {
-    res
-      .status(404)
-      .json({
-        error: {
-          message: 'Pep Proxy not found',
-          code: 404,
-          title: 'Not Found',
-        },
-      });
+    res.status(404).json({
+      error: {
+        message: 'Pep Proxy not found',
+        code: 404,
+        title: 'Not Found',
+      },
+    });
   }
 };
 
-// DELETE /v1/:applicationId/pep_proxies -- Delete pep_proxy
+// DELETE /v1/:application_id/pep_proxies -- Delete pep_proxy
 exports.delete = function(req, res) {
   debug('--> delete');
 
@@ -193,14 +189,12 @@ exports.delete = function(req, res) {
         res.status(error.error.code).json(error);
       });
   } else {
-    res
-      .status(404)
-      .json({
-        error: {
-          message: 'Pep Proxy not found',
-          code: 404,
-          title: 'Not Found',
-        },
-      });
+    res.status(404).json({
+      error: {
+        message: 'Pep Proxy not found',
+        code: 404,
+        title: 'Not Found',
+      },
+    });
   }
 };

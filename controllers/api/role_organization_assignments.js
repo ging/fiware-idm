@@ -4,7 +4,7 @@ const models = require('../../models/models.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-// GET /v1/applications/:applicationId/organizations -- Send index of role user assignment
+// GET /v1/applications/:application_id/organizations -- Send index of role user assignment
 exports.index_organizations = function(req, res) {
   debug('--> index');
 
@@ -21,15 +21,13 @@ exports.index_organizations = function(req, res) {
       if (assignments.length > 0) {
         res.status(200).json({ role_organization_assignments: assignments });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Assignments not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Assignments not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -47,7 +45,7 @@ exports.index_organizations = function(req, res) {
     });
 };
 
-// GET /v1/applications/:applicationId/organizations/:organization_id/roles -- Send index of role user assignment
+// GET /v1/applications/:application_id/organizations/:organization_id/roles -- Send index of role user assignment
 exports.index_organization_roles = function(req, res) {
   debug('--> info');
 
@@ -72,15 +70,13 @@ exports.index_organization_roles = function(req, res) {
       if (rows.length > 0) {
         res.status(200).json({ role_organization_assignments: rows });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Assignments not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Assignments not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -98,22 +94,20 @@ exports.index_organization_roles = function(req, res) {
     });
 };
 
-// PUT /v1/applications/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/organizationRoleId -- Add role organization assignment
+// PUT /v1/applications/:application_id/organizations/:organization_id/roles/:roleId/organization_roles/organizationRoleId -- Add role organization assignment
 exports.addRole = function(req, res) {
   debug('--> addRole');
 
   if (req.changeable_role) {
     const changeable_role_id = req.changeable_role.map(elem => elem.id);
     if (!changeable_role_id.includes(req.role.id)) {
-      return res
-        .status(403)
-        .json({
-          error: {
-            message: 'User not allow to perform the action',
-            code: 403,
-            title: 'Forbidden',
-          },
-        });
+      return res.status(403).json({
+        error: {
+          message: 'User not allow to perform the action',
+          code: 403,
+          title: 'Forbidden',
+        },
+      });
     }
   }
 
@@ -154,22 +148,20 @@ exports.addRole = function(req, res) {
     });
 };
 
-// DELETE /v1/applications/:applicationId/organizations/:organizationId/roles/:roleId/organization_roles/organizationRoleId -- Remove role organization assignment
+// DELETE /v1/applications/:application_id/organizations/:organization_id/roles/:roleId/organization_roles/organizationRoleId -- Remove role organization assignment
 exports.removeRole = function(req, res) {
   debug('--> removeRole');
 
   if (req.changeable_role) {
     const changeable_role_id = req.changeable_role.map(elem => elem.id);
     if (!changeable_role_id.includes(req.role.id)) {
-      return res
-        .status(403)
-        .json({
-          error: {
-            message: 'User not allow to perform the action',
-            code: 403,
-            title: 'Forbidden',
-          },
-        });
+      return res.status(403).json({
+        error: {
+          message: 'User not allow to perform the action',
+          code: 403,
+          title: 'Forbidden',
+        },
+      });
     }
   }
 
@@ -186,15 +178,13 @@ exports.removeRole = function(req, res) {
       if (deleted) {
         return res.status(204).json('Assignment destroyed');
       }
-      return res
-        .status(404)
-        .json({
-          error: {
-            message: 'Assignments not found',
-            code: 404,
-            title: 'Not Found',
-          },
-        });
+      return res.status(404).json({
+        error: {
+          message: 'Assignments not found',
+          code: 404,
+          title: 'Not Found',
+        },
+      });
     })
     .catch(function(error) {
       debug('Error: ' + error);

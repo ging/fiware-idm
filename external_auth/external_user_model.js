@@ -7,6 +7,8 @@ const crypto = require('crypto');
 const key = external_auth.password_encryption_key;
 const bcrypt = require('bcrypt');
 
+/* eslint-disable snakecase/snakecase */
+
 module.exports = function(sequelize, DataTypes) {
   const User_Ext = sequelize.define(
     'User_Ext',

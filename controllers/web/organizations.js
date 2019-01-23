@@ -5,16 +5,16 @@ const fs = require('fs');
 
 const image = require('../../lib/image.js');
 
-// Autoload info if path include organizationId
-exports.load_organization = function(req, res, next, organizationId) {
+// Autoload info if path include organization_id
+exports.load_organization = function(req, res, next, organization_id) {
   debug('--> load_organization');
 
   if (req.path === '/idm/organizations/available') {
     next();
   } else {
-    // Search application whose id is applicationId
+    // Search application whose id is application_id
     models.organization
-      .findById(organizationId)
+      .findById(organization_id)
       .then(function(organization) {
         // If application exists, set image from file system
         if (organization) {
@@ -135,7 +135,7 @@ exports.index = function(req, res) {
           delete req.session.message;
         }
         res.render('organizations/index', {
-          csrfToken: req.csrfToken(),
+          csrf_token: req.csrfToken(),
           organizations,
         });
       }
@@ -209,7 +209,7 @@ exports.new = function(req, res) {
   res.render('organizations/new', {
     organization: {},
     errors: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
@@ -249,10 +249,10 @@ exports.create = function(req, res) {
       })
       .catch(function(error) {
         debug('Error: ', error);
-        const nameErrors = [];
+        const name_errors = [];
         if (error.errors.length) {
           for (const i in error.errors) {
-            nameErrors.push(error.errors[i].message);
+            name_errors.push(error.errors[i].message);
           }
         }
         res.locals.message = {
@@ -261,14 +261,14 @@ exports.create = function(req, res) {
         };
         res.render('organizations/new', {
           organization,
-          errors: nameErrors,
-          csrfToken: req.csrfToken(),
+          errors: name_errors,
+          csrf_token: req.csrfToken(),
         });
       });
   }
 };
 
-// GET /idm/organizations/:organizationId -- Show info about an organization
+// GET /idm/organizations/:organization_id -- Show info about an organization
 exports.show = function(req, res) {
   debug('--> show');
 
@@ -289,7 +289,7 @@ exports.show = function(req, res) {
         organization: req.organization,
         roles,
         errors: [],
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     })
     .catch(function(error) {
@@ -302,7 +302,7 @@ exports.show = function(req, res) {
     });
 };
 
-// GET /idm/organizations/:organizationId/members -- Send members of an organization
+// GET /idm/organizations/:organization_id/members -- Send members of an organization
 exports.get_members = function(req, res) {
   debug('--> get_members');
 
@@ -357,7 +357,7 @@ exports.get_members = function(req, res) {
     });
 };
 
-// GET /idm/organizations/:organizationId/applications -- Send members of an organization
+// GET /idm/organizations/:organization_id/applications -- Send members of an organization
 exports.get_applications = function(req, res) {
   debug('--> get_applications');
 
@@ -406,18 +406,18 @@ exports.get_applications = function(req, res) {
     });
 };
 
-// GET /idm/organizations/:organizationId/edit -- Show form to edit an organization
+// GET /idm/organizations/:organization_id/edit -- Show form to edit an organization
 exports.edit = function(req, res) {
   debug('--> edit');
 
   res.render('organizations/edit', {
     organization: req.organization,
     error: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
-// PUT /idm/organizations/:organizationId/edit/info -- Edit info of organization
+// PUT /idm/organizations/:organization_id/edit/info -- Edit info of organization
 exports.update_info = function(req, res) {
   debug('--> update_info');
 
@@ -467,12 +467,12 @@ exports.update_info = function(req, res) {
       res.render('organizations/edit', {
         organization: req.body.organization,
         error,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     });
 };
 
-// PUT /idm/organizations/:organizationId/edit/avatar -- Edit avatar of organization
+// PUT /idm/organizations/:organization_id/edit/avatar -- Edit avatar of organization
 exports.update_avatar = function(req, res) {
   debug('--> update_avatar');
 
@@ -490,7 +490,7 @@ exports.update_avatar = function(req, res) {
   }
 };
 
-// DELETE /idm/organizations/:organizationId/edit/delete_avatar -- Delete avatar of organization
+// DELETE /idm/organizations/:organization_id/edit/delete_avatar -- Delete avatar of organization
 exports.delete_avatar = function(req, res) {
   debug('--> delete_avatar');
 
@@ -523,7 +523,7 @@ exports.delete_avatar = function(req, res) {
     });
 };
 
-// DELETE /idm/organizations/:organizationId -- Delete an organization
+// DELETE /idm/organizations/:organization_id -- Delete an organization
 exports.destroy = function(req, res) {
   debug('--> destroy');
 
@@ -553,7 +553,7 @@ exports.destroy = function(req, res) {
     });
 };
 
-// DELETE /idm/organizations/:organizationId/remove -- Handle users request to exit from the organization
+// DELETE /idm/organizations/:organization_id/remove -- Handle users request to exit from the organization
 exports.remove = function(req, res) {
   debug('--> remove');
 

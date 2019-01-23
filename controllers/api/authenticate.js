@@ -3,23 +3,21 @@ const uuid = require('uuid');
 const config = require('../../config');
 const debug = require('debug')('idm:api-authenticate');
 
-const userApiController = require('../../controllers/api/users.js');
-const pepProxyApiController = require('../../controllers/api/pep_proxies.js');
+const user_api_controller = require('../../controllers/api/users.js');
+const pep_proxy_api_controller = require('../../controllers/api/pep_proxies.js');
 
 // Middleware to see if the token correspond to user
 const is_user = function(req, res, next) {
   if (req.token_owner._modelOptions.tableName === 'user') {
     next();
   } else {
-    res
-      .status(403)
-      .json({
-        error: {
-          message: 'User not allow to perform the action',
-          code: 403,
-          title: 'Forbidden',
-        },
-      });
+    res.status(403).json({
+      error: {
+        message: 'User not allow to perform the action',
+        code: 403,
+        title: 'Forbidden',
+      },
+    });
   }
 };
 
@@ -105,7 +103,7 @@ const delete_token = function(req, res) {
     .then(function() {
       res
         .status(204)
-        .json('Appication ' + req.params.applicationId + ' destroyed');
+        .json('Appication ' + req.params.application_id + ' destroyed');
     })
     .catch(function(error) {
       debug('Error: ' + error);
@@ -364,15 +362,13 @@ const create_token = function(req, res) {
         })
         .catch(function(error) {
           debug('Error: ', error);
-          res
-            .status(500)
-            .json({
-              error: {
-                message: 'Internal error',
-                code: 500,
-                title: 'Internal error',
-              },
-            });
+          res.status(500).json({
+            error: {
+              message: 'Internal error',
+              code: 500,
+              title: 'Internal error',
+            },
+          });
         });
     })
     .catch(function(error) {
@@ -472,7 +468,7 @@ function search_identity(name, password) {
 // Authenticate user
 function authenticate_user(email, password) {
   return new Promise(function(resolve, reject) {
-    userApiController.authenticate(email, password, function(error, user) {
+    user_api_controller.authenticate(email, password, function(error, user) {
       if (error) {
         if (error.message === 'invalid') {
           reject({
@@ -501,7 +497,7 @@ function authenticate_user(email, password) {
 // Authenticate pep proxy
 function authenticate_pep_proxy(id, password) {
   return new Promise(function(resolve, reject) {
-    pepProxyApiController.authenticate(id, password, function(
+    pep_proxy_api_controller.authenticate(id, password, function(
       error,
       pep_proxy
     ) {

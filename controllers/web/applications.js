@@ -10,20 +10,20 @@ const gravatar = require('gravatar');
 const image = require('../../lib/image.js');
 const crypto = require('crypto');
 
-// Autoload info if path include applicationId
-exports.load_application = function(req, res, next, applicationId) {
+// Autoload info if path include application_id
+exports.load_application = function(req, res, next, application_id) {
   debug('--> load_application');
 
-  if (applicationId === 'idm_admin_app') {
+  if (application_id === 'idm_admin_app') {
     // Reponse with message
     const response = { text: ' Application doesn`t exist.', type: 'danger' };
 
     // Send response depends on the type of request
     send_response(req, res, response, '/idm/applications');
   } else {
-    // Search application whose id is applicationId
+    // Search application whose id is application_id
     models.oauth_client
-      .findById(applicationId)
+      .findById(application_id)
       .then(function(application) {
         // If application exists, set image from file system
         if (application) {
@@ -74,14 +74,14 @@ exports.index = function(req, res) {
     .then(function(organizations) {
       res.render('applications/index', {
         organizations,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     })
     .catch(function(error) {
       debug('Error: ' + error);
       res.render('applications/index', {
         organizations: [],
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     });
 };
@@ -171,7 +171,7 @@ exports.filter_organization = function(req, res) {
     });
 };
 
-// GET /idm/applications/:applicationId -- Show info about an application
+// GET /idm/applications/:application_id -- Show info about an application
 exports.show = function(req, res) {
   debug('--> show');
 
@@ -207,7 +207,7 @@ exports.show = function(req, res) {
         eidas_credentials: req.eidas_credentials,
         gateway_host: config.eidas.gateway_host,
         errors: [],
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     })
     .catch(function(error) {
@@ -220,7 +220,7 @@ exports.show = function(req, res) {
     });
 };
 
-// GET /idm/applications/:applicationId/authorize_users -- Send authorizes users of an application
+// GET /idm/applications/:application_id/authorize_users -- Send authorizes users of an application
 exports.authorized_users = function(req, res) {
   debug('--> authorized_users');
 
@@ -274,7 +274,7 @@ exports.authorized_users = function(req, res) {
     });
 };
 
-// GET /idm/applications/:applicationId/authorize_organizations -- Send authorizes organizations of an application
+// GET /idm/applications/:application_id/authorize_organizations -- Send authorizes organizations of an application
 exports.authorized_organizations = function(req, res) {
   debug('--> authorized_organizations');
 
@@ -343,7 +343,7 @@ exports.new = function(req, res, next) {
         organizations,
         errors: [],
         eidas_enabled: config.eidas.enabled,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     })
     .catch(function(error) {
@@ -493,10 +493,10 @@ exports.create = function(req, res, next) {
             res.redirect('/idm/applications');
           });
       } else {
-        const nameErrors = [];
+        const name_errors = [];
         if (error.errors.length) {
           for (const i in error.errors) {
-            nameErrors.push(error.errors[i].message);
+            name_errors.push(error.errors[i].message);
           }
         }
         models.user_organization
@@ -514,8 +514,8 @@ exports.create = function(req, res, next) {
               application,
               organizations,
               eidas_enabled: config.eidas.enabled,
-              errors: nameErrors,
-              csrfToken: req.csrfToken(),
+              errors: name_errors,
+              csrf_token: req.csrfToken(),
             });
           })
           .catch(function(error) {
@@ -525,18 +525,18 @@ exports.create = function(req, res, next) {
     });
 };
 
-// GET /idm/applications/:applicationId/step/avatar -- Form to create avatar when creating an application
+// GET /idm/applications/:application_id/step/avatar -- Form to create avatar when creating an application
 exports.step_new_avatar = function(req, res) {
   debug('--> step_new_avatar');
 
   res.render('applications/step_create_avatar', {
     application: req.application,
     errors: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
-// POST /idm/applications/:applicationId/step/avatar -- Create Avatar when creating an application
+// POST /idm/applications/:application_id/step/avatar -- Create Avatar when creating an application
 exports.step_create_avatar = function(req, res) {
   debug('--> step_create_avatar');
 
@@ -554,29 +554,29 @@ exports.step_create_avatar = function(req, res) {
   }
 };
 
-// GET /idm/applications/:applicationId/step/roles -- Form to assign roles when creating an application
+// GET /idm/applications/:application_id/step/roles -- Form to assign roles when creating an application
 exports.step_new_roles = function(req, res) {
   debug('--> step_new_roles');
 
   res.render('applications/step_create_roles', {
     application: req.application,
     authorization_level: config.authorization.level,
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
-// GET /idm/applications/:applicationId/edit -- View to edit application
+// GET /idm/applications/:application_id/edit -- View to edit application
 exports.edit = function(req, res) {
   debug('--> edit');
 
   res.render('applications/edit', {
     application: req.application,
     errors: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
-// PUT /idm/applications/:applicationId/edit/avatar -- Update application avatar
+// PUT /idm/applications/:application_id/edit/avatar -- Update application avatar
 exports.update_avatar = function(req, res) {
   debug('--> update_avatar');
 
@@ -590,7 +590,7 @@ exports.update_avatar = function(req, res) {
   }
 };
 
-// PUT /idm/applications/:applicationId/edit/info -- Update application information
+// PUT /idm/applications/:application_id/edit/info -- Update application information
 exports.update_info = function(req, res) {
   debug('--> update_info');
 
@@ -658,10 +658,10 @@ exports.update_info = function(req, res) {
       })
       .catch(function(error) {
         debug('Error: ' + error);
-        const nameErrors = [];
+        const name_errors = [];
         if (error.errors.length) {
           for (const i in error.errors) {
-            nameErrors.push(error.errors[i].message);
+            name_errors.push(error.errors[i].message);
           }
         }
         res.locals.message = {
@@ -671,14 +671,14 @@ exports.update_info = function(req, res) {
         req.body.application.image = req.application.image;
         res.render('applications/edit', {
           application: req.body.application,
-          errors: nameErrors,
-          csrfToken: req.csrfToken(),
+          errors: name_errors,
+          csrf_token: req.csrfToken(),
         });
       });
   }
 };
 
-// DELETE /idm/applications/:applicationId/edit/delete_avatar -- Delete avatar
+// DELETE /idm/applications/:application_id/edit/delete_avatar -- Delete avatar
 exports.delete_avatar = function(req, res) {
   debug('--> delete_avatar');
 
@@ -711,7 +711,7 @@ exports.delete_avatar = function(req, res) {
     });
 };
 
-// DELETE /idm/applications/:applicationId -- Delete application
+// DELETE /idm/applications/:application_id -- Delete application
 exports.destroy = function(req, res) {
   debug('--> destroy');
 
@@ -806,7 +806,7 @@ function handle_uploaded_images(req, res, redirect_uri) {
     });
 }
 
-// PUT /idm/applications/:applicationId/change_token_type -- Select token between bearer and jwt
+// PUT /idm/applications/:application_id/change_token_type -- Select token between bearer and jwt
 exports.change_token_type = function(req, res) {
   debug('--> change_token_type');
 
@@ -872,7 +872,7 @@ exports.change_token_type = function(req, res) {
   }
 };
 
-// GET /idm/applications/:applicationId/reset_jwt_secret -- Reset jwt secret
+// GET /idm/applications/:application_id/reset_jwt_secret -- Reset jwt secret
 exports.reset_jwt_secret = function(req, res) {
   debug('--> reset_jwt_secret');
 

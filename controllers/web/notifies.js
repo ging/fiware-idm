@@ -11,7 +11,7 @@ exports.show_notify = function(req, res) {
     errors: {},
     users: [],
     subject: '',
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
@@ -47,7 +47,7 @@ exports.send_message = function(req, res) {
         errors: {},
         users: [],
         subject: '',
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
   }
 };
@@ -62,7 +62,7 @@ function send_message_all_users(req, res, errors) {
       errors,
       users: [],
       subject: '',
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   } else {
     // Get all enabled users
@@ -108,7 +108,7 @@ function send_message_organization(req, res, errors) {
             errors,
             users: req.body.user_ids,
             subject: req.body.subject,
-            csrfToken: req.csrfToken(),
+            csrf_token: req.csrfToken(),
           });
         } else {
           // Map array of users to get emails and join all these emails into a string
@@ -136,7 +136,7 @@ function send_message_organization(req, res, errors) {
       errors,
       users: req.body.user_ids,
       subject: req.body.subject,
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   }
 }
@@ -172,7 +172,7 @@ function send_message_users_by_id(req, res, errors) {
             errors,
             users: req.body.user_ids,
             subject: req.body.subject,
-            csrfToken: req.csrfToken(),
+            csrf_token: req.csrfToken(),
           });
         } else {
           // Map array of users to get emails and join all these emails into a string
@@ -200,7 +200,7 @@ function send_message_users_by_id(req, res, errors) {
       errors,
       users: req.body.user_ids,
       subject: req.body.subject,
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   }
 }

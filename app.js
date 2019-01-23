@@ -43,7 +43,9 @@ const up_date = new Date();
 // Set routes for version
 app.use('/version', function(req, res) {
   const version = require('./version.json');
-  version.keyrock.uptime = require('./lib/time').msToTime(new Date() - up_date);
+  version.keyrock.uptime = require('./lib/time').ms_to_time(
+    new Date() - up_date
+  );
   version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
   res.send(version);
 });

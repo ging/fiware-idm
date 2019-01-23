@@ -3,13 +3,13 @@ const models = require('../../models/models.js');
 const uuid = require('uuid');
 
 // MW to Autoload info if path include iotId
-exports.load_iota = function(req, res, next, iotAgentId) {
+exports.load_iota = function(req, res, next, iot_agent_id) {
   debug('--> load_iot');
 
-  // Search application whose id is applicationId
+  // Search application whose id is application_id
   models.iot
     .findOne({
-      where: { id: iotAgentId, oauth_client_id: req.application.id },
+      where: { id: iot_agent_id, oauth_client_id: req.application.id },
       attributes: ['id', 'password', 'oauth_client_id', 'salt'],
     })
     .then(function(iot) {
@@ -17,15 +17,13 @@ exports.load_iota = function(req, res, next, iotAgentId) {
         req.iot = iot;
         next();
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Iot Agent not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Iot Agent not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -43,7 +41,7 @@ exports.load_iota = function(req, res, next, iotAgentId) {
     });
 };
 
-// GET /v1/:applicationId/iot_agents -- Send index of iot_agents
+// GET /v1/:application_id/iot_agents -- Send index of iot_agents
 exports.index = function(req, res) {
   debug('--> index');
 
@@ -56,15 +54,13 @@ exports.index = function(req, res) {
       if (iots.length > 0) {
         res.status(200).json({ iots });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Iot agents not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Iot agents not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -82,7 +78,7 @@ exports.index = function(req, res) {
     });
 };
 
-// POST /v1/:applicationId/iot_agents -- Create iot_agent
+// POST /v1/:application_id/iot_agents -- Create iot_agent
 exports.create = function(req, res) {
   debug('--> create');
 
@@ -118,7 +114,7 @@ exports.create = function(req, res) {
     });
 };
 
-// GET /v1/:applicationId/iot_agents/:iot_agentId -- Get info about iot_agent
+// GET /v1/:application_id/iot_agents/:iot_agentId -- Get info about iot_agent
 exports.info = function(req, res) {
   debug('--> info');
 
@@ -127,7 +123,7 @@ exports.info = function(req, res) {
   res.status(200).json({ iot: req.iot });
 };
 
-// PATCH /v1/:applicationId/iot_agents/:iot_agentId -- Reset iot_agent password
+// PATCH /v1/:application_id/iot_agents/:iot_agentId -- Reset iot_agent password
 exports.update = function(req, res) {
   debug('--> update');
 
@@ -157,7 +153,7 @@ exports.update = function(req, res) {
     });
 };
 
-// DELETE /v1/:applicationId/iot_agents/:iot_agentId -- Delete iot_agent
+// DELETE /v1/:application_id/iot_agents/:iot_agentId -- Delete iot_agent
 exports.delete = function(req, res) {
   debug('--> delete');
 

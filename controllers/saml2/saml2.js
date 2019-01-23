@@ -23,18 +23,18 @@ const idp = new saml2.IdentityProvider(idp_options);
 
 const sp_states = {};
 
-// GET /idm/applications/:applicationId/step/eidas -- Form to add eIDAs credentials to application
+// GET /idm/applications/:application_id/step/eidas -- Form to add eIDAs credentials to application
 exports.step_new_eidas_crendentials = function(req, res) {
   debug('--> step_new_eidas_crendentials');
   res.render('saml2/step_create_eidas_crendentials', {
     application: req.application,
     eidas_credentials: [],
     errors: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
-// POST /idm/applications/:applicationId/step/eidas -- Create eIDAs credentials
+// POST /idm/applications/:application_id/step/eidas -- Create eIDAs credentials
 exports.step_create_eidas_crendentials = function(req, res) {
   debug('--> step_create_eidas_crendentials');
 
@@ -46,13 +46,14 @@ exports.step_create_eidas_crendentials = function(req, res) {
 
   eidas_credentials.attributes_list = {
     NaturalPerson: [
+      // eslint-disable-line snakecase/snakecase
       'PersonIdentifier',
       'FamilyName',
       'FirstName',
       'DateOfBirth',
     ],
-    LegalPerson: [],
-    RepresentativeNaturalPerson: [],
+    LegalPerson: [], // eslint-disable-line snakecase/snakecase
+    RepresentativeNaturalPerson: [], // eslint-disable-line snakecase/snakecase
   };
 
   return eidas_credentials
@@ -69,11 +70,11 @@ exports.step_create_eidas_crendentials = function(req, res) {
       );
     })
     .catch(function(error) {
-      const nameErrors = [];
+      const name_errors = [];
 
       if (error.errors && error.errors.length) {
         for (const i in error.errors) {
-          nameErrors.push(error.errors[i].message);
+          name_errors.push(error.errors[i].message);
         }
       }
 
@@ -85,13 +86,13 @@ exports.step_create_eidas_crendentials = function(req, res) {
       return res.render('saml2/step_create_eidas_crendentials', {
         application: req.application,
         eidas_credentials,
-        errors: nameErrors,
-        csrfToken: req.csrfToken(),
+        errors: name_errors,
+        csrf_token: req.csrfToken(),
       });
     });
 };
 
-// GET /idm/applications/:applicationId/edit/eidas -- Render edit eIDAs credentials view
+// GET /idm/applications/:application_id/edit/eidas -- Render edit eIDAs credentials view
 exports.edit_eidas_crendentials = function(req, res) {
   debug('--> edit_eidas_crendentials');
 
@@ -99,11 +100,11 @@ exports.edit_eidas_crendentials = function(req, res) {
     application: req.application,
     eidas_credentials: req.eidas_credentials,
     errors: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
-// PUT /idm/applications/:applicationId/edit/eidas/info -- Update eIDAS Info
+// PUT /idm/applications/:application_id/edit/eidas/info -- Update eIDAS Info
 exports.update_eidas_info = function(req, res) {
   debug('--> update_eidas_info');
 
@@ -181,34 +182,35 @@ exports.update_eidas_info = function(req, res) {
       req.body.eidas_credentials.attributes_list =
         req.eidas_credentials.attributes_list;
 
-      const nameErrors = [];
+      const name_errors = [];
       if (error.errors && error.errors.length) {
         for (const i in error.errors) {
-          nameErrors.push(error.errors[i].message);
+          name_errors.push(error.errors[i].message);
         }
       }
       res.render('saml2/edit_eidas', {
         application: req.application,
         eidas_credentials: req.body.eidas_credentials,
-        errors: nameErrors,
-        csrfToken: req.csrfToken(),
+        errors: name_errors,
+        csrf_token: req.csrfToken(),
       });
     });
 };
 
-// PUT /idm/applications/:applicationId/edit/eidas/attributes -- Update eIDAS attributes
+// PUT /idm/applications/:application_id/edit/eidas/attributes -- Update eIDAS attributes
 exports.update_eidas_attributes = function(req, res) {
   debug('--> update_eidas_attributes');
 
   const attributes_list = {
     NaturalPerson: [
+      // eslint-disable-line snakecase/snakecase
       'PersonIdentifier',
       'FamilyName',
       'FirstName',
       'DateOfBirth',
     ],
-    LegalPerson: [],
-    RepresentativeNaturalPerson: [],
+    LegalPerson: [], // eslint-disable-line snakecase/snakecase
+    RepresentativeNaturalPerson: [], // eslint-disable-line snakecase/snakecase
   };
 
   if (req.body.NaturalPerson) {
@@ -280,7 +282,7 @@ exports.update_eidas_attributes = function(req, res) {
     });
 };
 
-// GET /idm/applications/:applicationId/saml2/metadata -- Expose metadata
+// GET /idm/applications/:application_id/saml2/metadata -- Expose metadata
 exports.saml2_metadata = function(req, res) {
   debug('--> saml2_metadata');
 
@@ -299,7 +301,7 @@ exports.login = function(req, res) {
   res.redirect(307, config.eidas.node_host);
 };
 
-// POST /idm/applications/:applicationId/saml2/login -- Response from eIDAs with user credentials
+// POST /idm/applications/:application_id/saml2/login -- Response from eIDAs with user credentials
 exports.saml2_application_login = function(req, res) {
   debug('--> saml2_application_login', req.url);
 
@@ -486,7 +488,7 @@ exports.search_eidas_credentials = function(req, res, next) {
           provider_name: credentials.organization_nif,
           auth_context: {
             comparison: 'minimum',
-            AuthnContextClassRef: ['http://eidas.europa.eu/LoA/low'],
+            AuthnContextClassRef: ['http://eidas.europa.eu/LoA/low'], // eslint-disable-line snakecase/snakecase
           },
           force_authn: true,
           organization,
@@ -567,12 +569,14 @@ exports.create_auth_request = function(req, res, next) {
 
     req.saml_auth_request = {
       xml: auth_request.request,
+      // eslint-disable-line snakecase/snakecase
       postLocationUrl:
         'https://' +
         config.eidas.gateway_host +
         '/idm/applications/' +
         req.application.id +
         '/saml2/login',
+      // eslint-disable-line snakecase/snakecase
       redirectLocationUrl:
         'https://' +
         config.eidas.gateway_host +

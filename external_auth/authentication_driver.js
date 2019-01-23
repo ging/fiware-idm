@@ -20,8 +20,8 @@ exports.authenticate = function(username, password, callback) {
       if (user) {
         // Verify password
         if (user.verifyPassword(password)) {
-          findLocalUser(user, function(localUser) {
-            callback(null, localUser);
+          find_local_user(user, function(local_user) {
+            callback(null, local_user);
           });
         } else {
           callback(new Error('invalid'));
@@ -35,7 +35,7 @@ exports.authenticate = function(username, password, callback) {
     });
 };
 
-function findLocalUser(user, callback) {
+function find_local_user(user, callback) {
   debug(
     '--> searching local user with id: ',
     external_auth.id_prefix + user.id
@@ -59,15 +59,15 @@ function findLocalUser(user, callback) {
         id: external_auth.id_prefix + user.id,
       },
     })
-    .then(function(localUser) {
-      if (localUser) {
-        debug('--> local user already exists', localUser);
-        callback(localUser);
+    .then(function(local_user) {
+      if (local_user) {
+        debug('--> local user already exists', local_user);
+        callback(local_user);
       } else {
         debug('--> local user does not exist, creating it');
-        createLocalUser(user, function(localUser) {
+        create_local_user(user, function(local_user) {
           debug('--> local user created');
-          callback(localUser);
+          callback(local_user);
         });
       }
     })
@@ -76,13 +76,13 @@ function findLocalUser(user, callback) {
     });
 }
 
-function createLocalUser(user, callback) {
+function create_local_user(user, callback) {
   debug('--> creating local user');
 
   // TODO: update user values if changed in external database
 
   // Build a row and validate it
-  const localUser = models.user.build({
+  const local_user = models.user.build({
     id: external_auth.id_prefix + user.id,
     username: user.username,
     email: user.email,
@@ -91,12 +91,12 @@ function createLocalUser(user, callback) {
     enabled: true,
   });
 
-  localUser
+  local_user
     .validate()
     .then(function() {
       // Save the row in the database
-      localUser.save().then(function() {
-        callback(localUser);
+      local_user.save().then(function() {
+        callback(local_user);
       });
       // If validation fails, send an array with all errors found
     })

@@ -7,7 +7,7 @@
 				<h3><%=translation.applications.create_permission.title%></h3>
 			</div>
 			<form id="create_permission_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype="">
-				<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+				<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 				<div class="modal-body clearfix">
 					<span id="xml_with_action_and_resource_not_allow" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.alert01%></span>
 					<% if (authorization_level === 'advanced') { -%>

@@ -1,29 +1,28 @@
 const debug = require('debug')('idm:api-organizations');
+const diff_object = require('../../lib/object_functions.js').diff_object;
 const models = require('../../models/models.js');
 const uuid = require('uuid');
 
-// MW to Autoload info if path include organizationId
-exports.load_organization = function(req, res, next, organizationId) {
+// MW to Autoload info if path include organization_id
+exports.load_organization = function(req, res, next, organization_id) {
   debug('--> load_organization');
 
-  // Search organization whose id is organizationId
+  // Search organization whose id is organization_id
   models.organization
-    .findById(organizationId)
+    .findById(organization_id)
     .then(function(organization) {
       // If organization exists, set image from file system
       if (organization) {
         req.organization = organization;
         next();
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Organization not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Organization not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -42,22 +41,25 @@ exports.load_organization = function(req, res, next, organizationId) {
 };
 
 // MW to check role organization
-exports.load_organization_role = function(req, res, next, organizationRoleId) {
+exports.load_organization_role = function(
+  req,
+  res,
+  next,
+  organization_role_id
+) {
   debug('--> load_organization_role');
 
-  if (organizationRoleId === 'owner' || organizationRoleId === 'member') {
-    req.role_organization = organizationRoleId;
+  if (organization_role_id === 'owner' || organization_role_id === 'member') {
+    req.role_organization = organization_role_id;
     next();
   } else {
-    res
-      .status(404)
-      .json({
-        error: {
-          message: 'Organization role not found',
-          code: 404,
-          title: 'Not Found',
-        },
-      });
+    res.status(404).json({
+      error: {
+        message: 'Organization role not found',
+        code: 404,
+        title: 'Not Found',
+      },
+    });
   }
 };
 
@@ -77,15 +79,13 @@ exports.owned_permissions = function(req, res, next) {
       if (row) {
         next();
       } else {
-        res
-          .status(403)
-          .json({
-            error: {
-              message: 'User not allow to perform the action',
-              code: 403,
-              title: 'Forbidden',
-            },
-          });
+        res.status(403).json({
+          error: {
+            message: 'User not allow to perform the action',
+            code: 403,
+            title: 'Forbidden',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -123,15 +123,13 @@ exports.index = function(req, res) {
       if (organizations.length > 0) {
         res.status(200).json({ organizations });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Organizations not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Organizations not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -198,14 +196,14 @@ exports.create = function(req, res) {
     });
 };
 
-// GET /v1/organizations/:organizationId -- Get info about organization
+// GET /v1/organizations/:organization_id -- Get info about organization
 exports.info = function(req, res) {
   debug('--> info');
 
   res.status(200).json({ organization: req.organization });
 };
 
-// PUT /v1/organizations/:organizationId -- Edit organization
+// PUT /v1/organizations/:organization_id -- Edit organization
 exports.update = function(req, res) {
   debug('--> update');
 
@@ -231,7 +229,7 @@ exports.update = function(req, res) {
       return req.organization.save();
     })
     .then(function(organization) {
-      const difference = diffObject(
+      const difference = diff_object(
         organization_previous_values,
         organization.dataValues
       );
@@ -260,7 +258,7 @@ exports.update = function(req, res) {
     });
 };
 
-// DELETE /v1/organizations/:organizationId -- Delete organization
+// DELETE /v1/organizations/:organization_id -- Delete organization
 exports.delete = function(req, res) {
   debug('--> delete');
 
@@ -269,7 +267,7 @@ exports.delete = function(req, res) {
     .then(function() {
       res
         .status(204)
-        .json('Organization ' + req.params.organizationId + ' destroyed');
+        .json('Organization ' + req.params.organization_id + ' destroyed');
     })
     .catch(function(error) {
       debug('Error: ' + error);
@@ -338,14 +336,4 @@ function check_update_body_request(body) {
       resolve();
     }
   });
-}
-
-// Compare objects with symmetrical keys
-function diffObject(a, b) {
-  return Object.keys(a).reduce(function(map, k) {
-    if (a[k] !== b[k]) {
-      map[k] = b[k];
-    }
-    return map;
-  }, {});
 }

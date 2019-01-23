@@ -1,11 +1,12 @@
 const models = require('../../models/models.js');
-
+const array_contains_array = require('../../lib/object_functions.js')
+  .array_contains_array;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const debug = require('debug')('idm:web-authorize_user_org_controller');
 
-// GET /idm/applications/:applicationId/edit/organizations -- Search organizations authorized
+// GET /idm/applications/:application_id/edit/organizations -- Search organizations authorized
 exports.get_organizations = function(req, res, next) {
   debug('--> get_organizations');
 
@@ -149,7 +150,7 @@ exports.available_organizations = function(req, res) {
   }
 };
 
-// POST /idm/applications/:applicationId/edit/organizations -- Authorize organizations in an application
+// POST /idm/applications/:application_id/edit/organizations -- Authorize organizations in an application
 exports.authorize_organizations = function(req, res) {
   debug('--> authorize_organizations');
 
@@ -210,7 +211,7 @@ exports.authorize_organizations = function(req, res) {
       }
 
       if (
-        arrayContainsArray(
+        array_contains_array(
           ids_changeable_roles_by_user,
           ids_roles_to_be_changed
         )
@@ -269,13 +270,3 @@ exports.authorize_organizations = function(req, res) {
     res.redirect('/idm/applications/' + req.application.id);
   }
 };
-
-// Function to see if an array contains all elments of the other
-function arrayContainsArray(superset, subset) {
-  if (subset.length === 0) {
-    return false;
-  }
-  return subset.every(function(value) {
-    return superset.indexOf(value) >= 0;
-  });
-}

@@ -7,19 +7,18 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 // Middleware to load oauth2 token info
-exports.load_oauth = function(req, res, next, oauthTokenId) {
-  if (!oauthTokenId) {
-    res
-      .status(400)
-      .json({
-        error: {
-          message: 'Expecting to find Oauth Token in url',
-          code: 400,
-          title: 'Bad Request',
-        },
-      });
+exports.load_oauth = function(req, res, next, oauth_token_id) {
+  if (!oauth_token_id) {
+    res.status(400).json({
+      error: {
+        message: 'Expecting to find Oauth Token in url',
+        code: 400,
+        title: 'Bad Request',
+      },
+    });
   } else {
-    const subject_token = decodeURIComponent(oauthTokenId);
+    // eslint-disable-next-line snakecase/snakecase
+    const subject_token = decodeURIComponent(oauth_token_id);
 
     // Search info of oauth token and include pep proxy
     search_oauth2_token(subject_token)
@@ -46,15 +45,13 @@ exports.load_oauth = function(req, res, next, oauthTokenId) {
 // Middlware to check request
 exports.check_request = function(req, res, next) {
   if (!req.headers['x-auth-token']) {
-    res
-      .status(400)
-      .json({
-        error: {
-          message: 'Expecting to find X-Auth-token in requests',
-          code: 400,
-          title: 'Bad Request',
-        },
-      });
+    res.status(400).json({
+      error: {
+        message: 'Expecting to find X-Auth-token in requests',
+        code: 400,
+        title: 'Bad Request',
+      },
+    });
   } else {
     const auth_token = req.headers['x-auth-token'];
 
@@ -91,10 +88,10 @@ exports.info_token = function(req, res) {
     // ... search for roles of iots
     const iot_info = {
       organizations: [],
-      displayName: '',
+      displayName: '', //eslint-disable-line snakecase/snakecase
       roles: [],
       app_id,
-      isGravatarEnabled: false,
+      isGravatarEnabled: false, //eslint-disable-line snakecase/snakecase
       email: '',
       id: req.oauth2_token_owner.iot,
       app_azf_domain: '',
@@ -123,10 +120,10 @@ exports.info_token = function(req, res) {
   } else {
     const user_info = {
       organizations: [],
-      displayName: '',
+      displayName: '', //eslint-disable-line snakecase/snakecase
       roles: [],
       app_id,
-      isGravatarEnabled: false,
+      isGravatarEnabled: false, //eslint-disable-line snakecase/snakecase
       email: '',
       id: '',
       app_azf_domain: '',
@@ -298,10 +295,10 @@ function search_user_info(user, app_id) {
     }
     const user_info = {
       organizations: [],
-      displayName: user.username,
+      displayName: user.username, //eslint-disable-line snakecase/snakecase
       roles: [],
       app_id,
-      isGravatarEnabled: user.gravatar,
+      isGravatarEnabled: user.gravatar, //eslint-disable-line snakecase/snakecase
       email: user.email,
       id: user.id,
       app_azf_domain: config_authzforce && values[2] ? values[2].az_domain : '',

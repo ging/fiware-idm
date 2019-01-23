@@ -66,11 +66,11 @@ exports.add_members = function(req, res) {
     new_assign.push(possible_members[i].user_id);
   }
 
-  const isDuplicate = new_assign.some(function(item, idx) {
+  const is_duplicate = new_assign.some(function(item, idx) {
     return new_assign.indexOf(item) !== idx;
   });
 
-  if (isDuplicate) {
+  if (is_duplicate) {
     debug('Duplicate user in post request ');
     req.session.message = { text: ' Modified members error.', type: 'danger' };
     res.redirect('/idm/organizations/' + req.organization.id);

@@ -1,7 +1,7 @@
 const debug = require('debug')('idm:api-user_organization_assignments');
 const models = require('../../models/models.js');
 
-// GET /v1/organizations/:organizationId/users -- Send index of user organizations assignments
+// GET /v1/organizations/:organization_id/users -- Send index of user organizations assignments
 exports.index = function(req, res) {
   debug('--> index');
 
@@ -14,15 +14,13 @@ exports.index = function(req, res) {
       if (assignments.length > 0) {
         res.status(200).json({ organization_users: assignments });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Assignments not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Assignments not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -40,7 +38,7 @@ exports.index = function(req, res) {
     });
 };
 
-// GET /v1/organizations/:organizationId/users/:userId/organization_roles -- Send index of user organizations assignments
+// GET /v1/organizations/:organization_id/users/:user_id/organization_roles -- Send index of user organizations assignments
 exports.info = function(req, res) {
   debug('--> info');
 
@@ -53,15 +51,13 @@ exports.info = function(req, res) {
       if (assignment) {
         res.status(200).json({ organization_user: assignment });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Assignment not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Assignment not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -79,7 +75,7 @@ exports.info = function(req, res) {
     });
 };
 
-// PUT /v1/organizations/:organizationId/users/:userId/:organizationRoleId -- Set user organization assignment
+// PUT /v1/organizations/:organization_id/users/:user_id/:organization_role_id -- Set user organization assignment
 exports.addRole = function(req, res) {
   debug('--> setRole');
 
@@ -136,15 +132,13 @@ exports.removeRole = function(req, res) {
       if (deleted) {
         res.status(204).json('Assignment destroyed');
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Assignments not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Assignments not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {

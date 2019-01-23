@@ -3,7 +3,7 @@
         <div class="site-client-roles">
             <div class="workflow workflow-roles static_page">
             	<form id="manage_iot_agents_form" action="/idm/applications/<%= application.id %>/iot_agents" method="POST">
-            		<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+            		<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 	                <input type="hidden" id="submit_iot_agents" name="submit_iot_agents" value="" />
 	                <div class="modal-dialog">
 	                    <div class="modal-content">

@@ -1,10 +1,8 @@
-
 // CSRF functions for AJAX POST requests
-var beforeSend = function(csrftoken) {
-
-	$.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': csrftoken
-        }
-    });
+var before_send = function(csrf_token) {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': csrf_token,
+    },
+  });
 };

@@ -7,7 +7,7 @@
                 </h3><h4 class="modal-title"><%=translation.organizations.exit_org.title%></h4>
             </div>
             <form id="remove_org" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/organizations/<%= organization.id %>/remove?_method=delete" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
                     <p><%=translation.organizations.exit_org.content%></p>
                     <fieldset>

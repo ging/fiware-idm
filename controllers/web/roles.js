@@ -9,27 +9,27 @@ const Op = Sequelize.Op;
 
 const debug = require('debug')('idm:web-role_controller');
 
-// Autoload info if path include roleId
-exports.load_role = function(req, res, next, roleId) {
+// Autoload info if path include role_id
+exports.load_role = function(req, res, next, role_id) {
   debug('--> load_role');
 
   // Add id of pep proxy in request
-  req.role = { id: roleId };
+  req.role = { id: role_id };
   next();
 };
 
-// GET /idm/applications/:applicationId/edit/roles -- Show roles and permissions
+// GET /idm/applications/:application_id/edit/roles -- Show roles and permissions
 exports.manage_roles_view = function(req, res) {
   debug('--> manage_roles_view');
 
   res.render('applications/manage_roles', {
     application: req.application,
     authorization_level: config_authorization.level,
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
-// GET /idm/applications/:applicationId/edit/roles/assignments -- Show roles and permissions
+// GET /idm/applications/:application_id/edit/roles/assignments -- Show roles and permissions
 exports.manage_roles = function(req, res) {
   debug('--> manage_roles');
 
@@ -87,7 +87,7 @@ exports.manage_roles = function(req, res) {
     });
 };
 
-// POST /idm/applications/:applicationId/edit/roles/create -- Create new role
+// POST /idm/applications/:application_id/edit/roles/create -- Create new role
 exports.create_role = function(req, res) {
   debug('--> create_role');
 
@@ -124,7 +124,7 @@ exports.create_role = function(req, res) {
   }
 };
 
-// PUT /idm/applications/:applicationId/edit/roles/:roleId/edit -- Edit a role
+// PUT /idm/applications/:application_id/edit/roles/:role_id/edit -- Edit a role
 exports.edit_role = function(req, res) {
   debug('--> edit_role');
 
@@ -175,7 +175,7 @@ exports.edit_role = function(req, res) {
   }
 };
 
-// DELETE /idm/applications/:applicationId/edit/roles/:roleId/delete -- Delete a role
+// DELETE /idm/applications/:application_id/edit/roles/:role_id/delete -- Delete a role
 exports.delete_role = function(req, res) {
   debug('--> delete_role');
 
@@ -211,7 +211,7 @@ exports.delete_role = function(req, res) {
   }
 };
 
-// POST /idm/applications/:applicationId/edit/roles -- Assing permissions to roles
+// POST /idm/applications/:application_id/edit/roles -- Assing permissions to roles
 exports.role_permissions_assign = function(req, res) {
   debug('--> role_permission_assign');
 

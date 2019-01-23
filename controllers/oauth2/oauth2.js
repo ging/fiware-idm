@@ -3,8 +3,8 @@ const create_oauth_response = require('../../models/model_oauth_server.js')
   .create_oauth_response;
 const config_eidas = require('../../config.js').eidas;
 const config_oauth2 = require('../../config.js').oauth2;
-const userController = require('../../controllers/web/users');
-const OauthServer = require('oauth2-server');
+const user_controller = require('../../controllers/web/users');
+const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
 const gravatar = require('gravatar');
 const jsonwebtoken = require('jsonwebtoken');
 const url = require('url');
@@ -116,7 +116,7 @@ exports.check_user = function(req, res) {
             : '/img/applications/' + req.application.image,
       },
       errors,
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     };
 
     render_values.saml_request = {
@@ -155,7 +155,7 @@ exports.authenticate_user = function(req, res) {
 
     // If not, authenticate and search if user is authorized in the application
     if (req.body.email && req.body.password) {
-      userController.authenticate(req.body.email, req.body.password, function(
+      user_controller.authenticate(req.body.email, req.body.password, function(
         error,
         user
       ) {
@@ -190,13 +190,13 @@ exports.authenticate_user = function(req, res) {
       });
     } else {
       // Redirect to the same OAuth2 service login endpoint
-      const nameErrors = [];
+      const name_errors = [];
       if (errors.length) {
         for (const i in errors) {
-          nameErrors.push(errors[i].message);
+          name_errors.push(errors[i].message);
         }
       }
-      req.session.errors = nameErrors;
+      req.session.errors = name_errors;
       res.redirect('/oauth2' + req.url);
     }
   }
@@ -228,7 +228,7 @@ function check_user_authorized_application(req, res) {
               url: '/oauth2/enable_app?' + url.parse(req.url).query,
               state: req.query.state,
             },
-            csrfToken: req.csrfToken(),
+            csrf_token: req.csrfToken(),
           });
         }
       })
@@ -437,7 +437,7 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
   debug(' --> authenticate_bearer');
 
   const options = {
-    allowBearerTokensInQueryString: true,
+    allowBearerTokensInQueryString: true, // eslint-disable-line snakecase/snakecase
   };
 
   const request = new Request({

@@ -3,16 +3,16 @@ const uuid = require('uuid');
 
 const debug = require('debug')('idm:web-pep_proxy_controller');
 
-// Autoload info if path include pepId
-exports.load_pep = function(req, res, next, pepId) {
+// Autoload info if path include pep_id
+exports.load_pep = function(req, res, next, pep_id) {
   debug('--> load_pep');
 
   // Add id of pep proxy in request
-  req.pep = { id: pepId };
+  req.pep = { id: pep_id };
   next();
 };
 
-// GET /idm/applications/:applicationId/pep/register -- Register Pep Proxy
+// GET /idm/applications/:application_id/pep/register -- Register Pep Proxy
 exports.register_pep = function(req, res) {
   debug('--> register_pep');
 
@@ -78,7 +78,7 @@ exports.register_pep = function(req, res) {
     });
 };
 
-// DELETE /idm/applications/:applicationId/pep/:pepId/delete -- Delete Pep Proxy
+// DELETE /idm/applications/:application_id/pep/:pep_id/delete -- Delete Pep Proxy
 exports.delete_pep = function(req, res) {
   debug('--> delete_pep');
 
@@ -127,7 +127,7 @@ exports.delete_pep = function(req, res) {
     });
 };
 
-// GET /idm/applications/:applicationId/pep/:pepId/reset_password -- Change password to Pep Proxy
+// GET /idm/applications/:application_id/pep/:pep_id/reset_password -- Change password to Pep Proxy
 exports.reset_password_pep = function(req, res) {
   debug('--> reset_password_pep');
 

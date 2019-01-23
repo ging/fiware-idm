@@ -6,7 +6,7 @@
                 <h3><%=translation.admin.edit_user.title%></h3>
             </div>
             <form id="edit_user_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
                     <div class="left">
                         <fieldset>

@@ -23,7 +23,7 @@ const email = require('../../lib/email.js');
 exports.show = function(req, res) {
   debug('--> list_users');
 
-  res.render('admin/users', { csrfToken: req.csrfToken(), errors: [] });
+  res.render('admin/users', { csrf_token: req.csrfToken(), errors: [] });
 };
 
 // GET /idm/admins/list_users/users -- Send users

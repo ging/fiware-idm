@@ -1,5 +1,6 @@
 const debug = require('debug')('idm:api-users');
 const models = require('../../models/models.js');
+const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 const config = require('../../config');
 const fs = require('fs');
@@ -63,13 +64,13 @@ exports.authenticate = external_auth.enabled
         });
     };
 
-// MW to Autoload info if path include userId
-exports.load_user = function(req, res, next, userId) {
+// MW to Autoload info if path include user_id
+exports.load_user = function(req, res, next, user_id) {
   debug('--> load_user');
 
   models.user
     .findOne({
-      where: { id: userId },
+      where: { id: user_id },
       attributes: [
         'id',
         'username',
@@ -88,11 +89,9 @@ exports.load_user = function(req, res, next, userId) {
         req.user = user;
         next();
       } else {
-        res
-          .status(404)
-          .json({
-            error: { message: 'User not found', code: 404, title: 'Not Found' },
-          });
+        res.status(404).json({
+          error: { message: 'User not found', code: 404, title: 'Not Found' },
+        });
       }
     })
     .catch(function(error) {
@@ -115,15 +114,13 @@ exports.check_admin = function(req, res, next) {
   if (req.token_owner.admin) {
     next();
   } else {
-    res
-      .status(403)
-      .json({
-        error: {
-          message: 'User not authorized to perform action',
-          code: 403,
-          title: 'Forbidden',
-        },
-      });
+    res.status(403).json({
+      error: {
+        message: 'User not authorized to perform action',
+        code: 403,
+        title: 'Forbidden',
+      },
+    });
   }
 };
 
@@ -132,15 +129,13 @@ exports.check_user = function(req, res, next) {
   if (req.token_owner.id === req.user.id || req.token_owner.admin) {
     next();
   } else {
-    res
-      .status(403)
-      .json({
-        error: {
-          message: 'User not authorized to perform action',
-          code: 403,
-          title: 'Forbidden',
-        },
-      });
+    res.status(403).json({
+      error: {
+        message: 'User not authorized to perform action',
+        code: 403,
+        title: 'Forbidden',
+      },
+    });
   }
 };
 
@@ -173,15 +168,13 @@ exports.index = function(req, res) {
         });
         res.status(200).json({ users });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Users not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Users not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -268,7 +261,7 @@ exports.create = function(req, res) {
     });
 };
 
-// GET /v1/users/:userId -- Get info about user
+// GET /v1/users/:user_id -- Get info about user
 exports.info = function(req, res) {
   debug('--> info');
   const user = req.user;
@@ -279,7 +272,7 @@ exports.info = function(req, res) {
   res.status(200).json({ user });
 };
 
-// PUT /v1/users/:userId -- Edit user
+// PUT /v1/users/:user_id -- Edit user
 exports.update = function(req, res) {
   debug('--> update');
 
@@ -315,7 +308,7 @@ exports.update = function(req, res) {
       return req.user.save();
     })
     .then(function() {
-      const difference = diffObject(user_previous_values, req.user.dataValues);
+      const difference = diff_object(user_previous_values, req.user.dataValues);
       const response =
         Object.keys(difference).length > 0
           ? { values_updated: difference }
@@ -361,7 +354,7 @@ exports.update = function(req, res) {
     });
 };
 
-// DELETE /v1/users/:userId -- Delete user
+// DELETE /v1/users/:user_id -- Delete user
 exports.delete = function(req, res) {
   debug('--> delete');
 
@@ -518,14 +511,4 @@ function check_update_body_request(body) {
       resolve();
     }
   });
-}
-
-// Compare objects with symmetrical keys
-function diffObject(a, b) {
-  return Object.keys(a).reduce(function(map, k) {
-    if (a[k] !== b[k]) {
-      map[k] = b[k];
-    }
-    return map;
-  }, {});
 }

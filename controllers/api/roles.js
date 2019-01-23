@@ -1,21 +1,22 @@
 const debug = require('debug')('idm:api-roles');
 const models = require('../../models/models.js');
+const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 
 const Sequelize = require('sequelize');
 const _ = require('lodash');
 const Op = Sequelize.Op;
 
-// MW to Autoload info if path include roleId
-exports.load_role = function(req, res, next, roleId) {
+// MW to Autoload info if path include role_id
+exports.load_role = function(req, res, next, role_id) {
   debug('--> load_role');
-  let where = { id: roleId, oauth_client_id: req.application.id };
+  let where = { id: role_id, oauth_client_id: req.application.id };
 
-  if (roleId === 'provider' || roleId === 'purchaser') {
-    where = { id: roleId, is_internal: true };
+  if (role_id === 'provider' || role_id === 'purchaser') {
+    where = { id: role_id, is_internal: true };
   }
 
-  // Search role whose id is roleId
+  // Search role whose id is role_id
   models.role
     .findOne({
       where,
@@ -26,11 +27,9 @@ exports.load_role = function(req, res, next, roleId) {
         req.role = role;
         next();
       } else {
-        res
-          .status(404)
-          .json({
-            error: { message: 'Role not found', code: 404, title: 'Not Found' },
-          });
+        res.status(404).json({
+          error: { message: 'Role not found', code: 404, title: 'Not Found' },
+        });
       }
     })
     .catch(function(error) {
@@ -48,7 +47,7 @@ exports.load_role = function(req, res, next, roleId) {
     });
 };
 
-// GET /v1/:applicationId/roles' -- Send index of roles
+// GET /v1/:application_id/roles' -- Send index of roles
 exports.index = function(req, res) {
   debug('--> index');
 
@@ -106,15 +105,13 @@ exports.index = function(req, res) {
         });
         res.status(200).json({ roles });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Roles not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Roles not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -132,7 +129,7 @@ exports.index = function(req, res) {
     });
 };
 
-// POST /v1/:applicationId/roles' -- Create role
+// POST /v1/:application_id/roles' -- Create role
 exports.create = function(req, res) {
   debug('--> create');
 
@@ -168,7 +165,7 @@ exports.create = function(req, res) {
     });
 };
 
-// GET /v1/:applicationId/roles/:roleId -- Get info about role
+// GET /v1/:application_id/roles/:role_id -- Get info about role
 exports.info = function(req, res) {
   debug('--> info');
   const role = req.role;
@@ -179,16 +176,14 @@ exports.info = function(req, res) {
   res.status(200).json({ role });
 };
 
-// PATCH /v1/:applicationId/roles/:roleId -- Edit role
+// PATCH /v1/:application_id/roles/:role_id -- Edit role
 exports.update = function(req, res) {
   debug('--> update');
 
   if (req.role.id === 'provider' || req.role.id === 'purchaser') {
-    res
-      .status(403)
-      .json({
-        error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
-      });
+    res.status(403).json({
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+    });
   } else {
     let role_previous_values = null;
 
@@ -201,7 +196,7 @@ exports.update = function(req, res) {
         return req.role.save();
       })
       .then(function(role) {
-        const difference = diffObject(role_previous_values, role.dataValues);
+        const difference = diff_object(role_previous_values, role.dataValues);
         const response =
           Object.keys(difference).length > 0
             ? { values_updated: difference }
@@ -228,21 +223,19 @@ exports.update = function(req, res) {
   }
 };
 
-// DELETE /v1/:applicationId/roles/:roleId -- Delete role
+// DELETE /v1/:application_id/roles/:role_id -- Delete role
 exports.delete = function(req, res) {
   debug('--> delete');
 
   if (req.role.id === 'provider' || req.role.id === 'purchaser') {
-    res
-      .status(403)
-      .json({
-        error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
-      });
+    res.status(403).json({
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+    });
   } else {
     req.role
       .destroy()
       .then(function() {
-        res.status(204).json('Role ' + req.params.roleId + ' destroyed');
+        res.status(204).json('Role ' + req.params.role_id + ' destroyed');
       })
       .catch(function(error) {
         debug('Error: ' + error);
@@ -387,14 +380,4 @@ function check_update_body_request(body) {
 
     resolve();
   });
-}
-
-// Compare objects with symmetrical keys
-function diffObject(a, b) {
-  return Object.keys(a).reduce(function(map, k) {
-    if (a[k] !== b[k]) {
-      map[k] = b[k];
-    }
-    return map;
-  }, {});
 }

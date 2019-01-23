@@ -6,7 +6,7 @@
                 <h3><h3><%=translation.admin.delete_user.title%></h3></h3>
             </div>
             <form id="delete_user_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/admins/list_users/users" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
                     <div class="right">
                         <p><%=translation.admin.delete_user.content01%></p>

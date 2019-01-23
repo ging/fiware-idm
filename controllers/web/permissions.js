@@ -3,16 +3,16 @@ const config_authzforce = require('../../config.js').authorization;
 
 const debug = require('debug')('idm:web-permission_controller');
 
-// Autoload info if path include permissionId
-exports.load_permission = function(req, res, next, permissionId) {
+// Autoload info if path include permission_id
+exports.load_permission = function(req, res, next, permission_id) {
   debug('--> load_permission');
 
   // Add id of pep proxy in request
-  req.permission = { id: permissionId };
+  req.permission = { id: permission_id };
   next();
 };
 
-// POST /idm/applications/:applicationId/edit/permissions/create -- Create new permission
+// POST /idm/applications/:application_id/edit/permissions/create -- Create new permission
 exports.create_permission = function(req, res) {
   debug('--> create_permission');
 
@@ -92,7 +92,7 @@ exports.create_permission = function(req, res) {
   }
 };
 
-// GET /idm/applications/:applicationId/edit/permissions/:permissionId -- Get a permission
+// GET /idm/applications/:application_id/edit/permissions/:permission_id -- Get a permission
 exports.get_permission = function(req, res) {
   debug('--> get_permission');
 
@@ -119,7 +119,7 @@ exports.get_permission = function(req, res) {
   }
 };
 
-// PUT /idm/applications/:applicationId/edit/permissions/:permissionId/edit -- Edit a permission
+// PUT /idm/applications/:application_id/edit/permissions/:permission_id/edit -- Edit a permission
 exports.edit_permission = function(req, res) {
   debug('--> edit_permission');
 
@@ -206,7 +206,7 @@ exports.edit_permission = function(req, res) {
   }
 };
 
-// DELETE /idm/applications/:applicationId/edit/permissions/:permissionId/delete -- Delete a permission
+// DELETE /idm/applications/:application_id/edit/permissions/:permission_id/delete -- Delete a permission
 exports.delete_permission = function(req, res) {
   debug('--> delete_permission');
 

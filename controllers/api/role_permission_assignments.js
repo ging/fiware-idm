@@ -4,7 +4,7 @@ const models = require('../../models/models.js');
 const authzforce_controller = require('./authzforces');
 const config_authzforce = require('../../config.js').authorization;
 
-// GET /v1/applications/:applicationId/roles/:role_id/permissions -- Send index of role permissions assignments
+// GET /v1/applications/:application_id/roles/:role_id/permissions -- Send index of role permissions assignments
 exports.index = function(req, res) {
   debug('--> index');
 
@@ -29,21 +29,17 @@ exports.index = function(req, res) {
     })
     .then(function(rows) {
       if (rows.length > 0) {
-        res
-          .status(200)
-          .json({
-            role_permission_assignments: rows.map(elem => elem.Permission),
-          });
+        res.status(200).json({
+          role_permission_assignments: rows.map(elem => elem.Permission),
+        });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'Assignments not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'Assignments not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -61,16 +57,14 @@ exports.index = function(req, res) {
     });
 };
 
-// PUT /v1/applications/:applicationId/roles/:role_id/permissions/:permission_id -- Edit role permission assignment
+// PUT /v1/applications/:application_id/roles/:role_id/permissions/:permission_id -- Edit role permission assignment
 exports.create = function(req, res) {
   debug('--> create');
 
   if (req.role.id === 'provider' || req.role.id === 'purchaser') {
-    res
-      .status(403)
-      .json({
-        error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
-      });
+    res.status(403).json({
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+    });
   } else {
     models.role_permission
       .findOrCreate({
@@ -89,12 +83,10 @@ exports.create = function(req, res) {
                     role_permission_assignment
                   )
                   .then(function(result) {
-                    res
-                      .status(201)
-                      .json({
-                        role_permission_assignments: assignment,
-                        authzforce: result,
-                      });
+                    res.status(201).json({
+                      role_permission_assignments: assignment,
+                      authzforce: result,
+                    });
                   })
                   .catch(function(error) {
                     Promise.reject(error);
@@ -130,16 +122,14 @@ exports.create = function(req, res) {
   }
 };
 
-// DELETE /v1/applications/:applicationId/roles/:role_id/permissions/:permission_id -- Remove role permission assignment
+// DELETE /v1/applications/:application_id/roles/:role_id/permissions/:permission_id -- Remove role permission assignment
 exports.delete = function(req, res) {
   debug('--> delete');
 
   if (req.role.id === 'provider' || req.role.id === 'purchaser') {
-    res
-      .status(403)
-      .json({
-        error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
-      });
+    res.status(403).json({
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+    });
   } else {
     models.role_permission
       .destroy({
@@ -170,15 +160,13 @@ exports.delete = function(req, res) {
           return res.status(204).json('Assignment destroyed');
         }
 
-        return res
-          .status(404)
-          .json({
-            error: {
-              message: 'Assignments not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        return res.status(404).json({
+          error: {
+            message: 'Assignments not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       })
       .catch(function(error) {
         debug('Error: ', error);

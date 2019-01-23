@@ -36,16 +36,16 @@ exports.owned_permissions = function(req, res, next) {
 };
 
 // MW to load info about a user
-exports.load_user = function(req, res, next, userId) {
+exports.load_user = function(req, res, next, user_id) {
   debug('--> load_user');
 
   if (req.path === '/idm/users/available') {
     next();
   } else {
-    // Search user whose id is userId
+    // Search user whose id is user_id
     models.user
       .findOne({
-        where: { id: userId },
+        where: { id: user_id },
         attributes: [
           'id',
           'username',
@@ -76,7 +76,7 @@ exports.load_user = function(req, res, next, userId) {
   }
 };
 
-// GET /idm/users/:userId -- Show info about a user
+// GET /idm/users/:user_id -- Show info about a user
 exports.show = function(req, res, next) {
   debug('--> show');
 
@@ -141,7 +141,7 @@ exports.show = function(req, res, next) {
       res.render('users/show', {
         user: req.user,
         applications,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     })
     .catch(function(error) {
@@ -149,7 +149,7 @@ exports.show = function(req, res, next) {
     });
 };
 
-// GET /idm/users/:userId/get_applications -- Send applications in where user is authorized
+// GET /idm/users/:user_id/get_applications -- Send applications in where user is authorized
 exports.get_applications = function(req, res) {
   debug('--> get_applications');
 
@@ -247,7 +247,7 @@ exports.get_organizations = function(req, res) {
     });
 };
 
-// GET /idm/users/:userId/edit -- Render a form to edit user profile
+// GET /idm/users/:user_id/edit -- Render a form to edit user profile
 exports.edit = function(req, res) {
   debug('--> edit');
 
@@ -285,7 +285,7 @@ exports.edit = function(req, res) {
         res.render('users/edit', {
           user: req.user,
           error: [],
-          csrfToken: req.csrfToken(),
+          csrf_token: req.csrfToken(),
         });
       })
       .on('error', function(e) {
@@ -293,7 +293,7 @@ exports.edit = function(req, res) {
         res.render('users/edit', {
           user: req.user,
           error: [],
-          csrfToken: req.csrfToken(),
+          csrf_token: req.csrfToken(),
         });
       });
   } else {
@@ -305,12 +305,12 @@ exports.edit = function(req, res) {
     res.render('users/edit', {
       user: req.user,
       error: [],
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   }
 };
 
-// PUT /idm/users/:userId/edit/info -- Update user info
+// PUT /idm/users/:user_id/edit/info -- Update user info
 exports.update_info = function(req, res) {
   debug('--> update_info');
 
@@ -373,12 +373,12 @@ exports.update_info = function(req, res) {
       res.render('users/edit', {
         user: req.body.user,
         error,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     });
 };
 
-// PUT /idm/users/:userId/edit/avatar -- Update user avatar
+// PUT /idm/users/:user_id/edit/avatar -- Update user avatar
 exports.update_avatar = function(req, res) {
   debug('--> update_avatar');
 
@@ -393,7 +393,7 @@ exports.update_avatar = function(req, res) {
   }
 };
 
-// DELETE /idm/users/:userId/edit/delete_avatar -- Delete user avatar
+// DELETE /idm/users/:user_id/edit/delete_avatar -- Delete user avatar
 exports.delete_avatar = function(req, res) {
   debug('--> delete_avatar');
 
@@ -443,7 +443,7 @@ exports.delete_avatar = function(req, res) {
     });
 };
 
-// PUT /idm/users/:userId/edit/avatar/set -- Use avatar as profile image
+// PUT /idm/users/:user_id/edit/avatar/set -- Use avatar as profile image
 exports.set_avatar = function(req, res) {
   debug('--> set_avatar');
 
@@ -471,12 +471,12 @@ exports.set_avatar = function(req, res) {
       res.render('users/edit', {
         user: req.user,
         error,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     });
 };
 
-// PUT /idm/users/:userId/edit/gravatar -- Use gravatar as profile image
+// PUT /idm/users/:user_id/edit/gravatar -- Use gravatar as profile image
 exports.set_gravatar = function(req, res) {
   debug('--> set_gravatar');
 
@@ -505,7 +505,7 @@ exports.set_gravatar = function(req, res) {
       res.render('users/edit', {
         user: req.user,
         error,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     });
 };
@@ -558,9 +558,9 @@ exports.new = function(req, res) {
   debug('--> new');
 
   res.render('users/new', {
-    userInfo: {},
+    user_info: {},
     errors: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
@@ -575,9 +575,9 @@ exports.create = function(req, res) {
     ) {
       res.locals.message = { text: ' User creation failed.', type: 'danger' };
       return res.render('users/new', {
-        userInfo: {},
+        user_info: {},
         errors: [],
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     }
 
@@ -587,9 +587,9 @@ exports.create = function(req, res) {
     ) {
       res.locals.message = { text: ' User creation failed.', type: 'danger' };
       return res.render('users/new', {
-        userInfo: {},
+        user_info: {},
         errors: [],
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     }
   }
@@ -598,9 +598,9 @@ exports.create = function(req, res) {
   if (req.body.id) {
     res.locals.message = { text: ' User creation failed.', type: 'danger' };
     return res.render('users/new', {
-      userInfo: {},
+      user_info: {},
       errors: [],
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   }
   // Array of errors to send to the view
@@ -714,7 +714,7 @@ exports.create = function(req, res) {
                   'Account created succesfully, check your email for the confirmation link.',
                 type: 'success',
               };
-              res.render('index', { errors: [], csrfToken: req.csrfToken() });
+              res.render('index', { errors: [], csrf_token: req.csrfToken() });
             });
         });
       }
@@ -726,9 +726,9 @@ exports.create = function(req, res) {
         errors = errors.concat(error.errors);
       }
       res.render('users/new', {
-        userInfo: user,
+        user_info: user,
         errors,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     });
 };
@@ -755,7 +755,7 @@ exports.activate = function(req, res, next) {
             text: 'User already activated',
             type: 'warning',
           };
-          res.render('index', { errors: [], csrfToken: req.csrfToken() });
+          res.render('index', { errors: [], csrf_token: req.csrfToken() });
         } else if (
           user_registration_profile.activation_key === req.query.activation_key
         ) {
@@ -767,7 +767,7 @@ exports.activate = function(req, res, next) {
               text: 'Error activating user',
               type: 'danger',
             };
-            res.render('index', { errors: [], csrfToken: req.csrfToken() });
+            res.render('index', { errors: [], csrf_token: req.csrfToken() });
           } else {
             user.enabled = true;
             user.save().then(function() {
@@ -775,7 +775,7 @@ exports.activate = function(req, res, next) {
                 text: 'User activated. login using your credentials.',
                 type: 'success',
               };
-              res.render('index', { errors: [], csrfToken: req.csrfToken() });
+              res.render('index', { errors: [], csrf_token: req.csrfToken() });
             });
           }
         } else {
@@ -783,11 +783,11 @@ exports.activate = function(req, res, next) {
             text: 'Error activating user',
             type: 'danger',
           };
-          res.render('index', { errors: [], csrfToken: req.csrfToken() });
+          res.render('index', { errors: [], csrf_token: req.csrfToken() });
         }
       } else {
         res.locals.message = { text: 'Error activating user', type: 'danger' };
-        res.render('index', { errors: [], csrfToken: req.csrfToken() });
+        res.render('index', { errors: [], csrf_token: req.csrfToken() });
       }
     })
     .catch(function(error) {
@@ -801,7 +801,7 @@ exports.password_request = function(req, res) {
 
   res.render('auth/password_request', {
     error: '',
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
@@ -812,7 +812,7 @@ exports.password_send_email = function(req, res) {
   if (!req.body.email) {
     res.render('auth/password_request', {
       error: 'empty_field',
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   } else {
     models.user
@@ -828,7 +828,7 @@ exports.password_send_email = function(req, res) {
           };
           res.render('auth/password_request', {
             error: '',
-            csrfToken: req.csrfToken(),
+            csrf_token: req.csrfToken(),
           });
         } else if (!user.enabled) {
           res.locals.message = {
@@ -839,7 +839,7 @@ exports.password_send_email = function(req, res) {
           };
           res.render('auth/password_request', {
             error: '',
-            csrfToken: req.csrfToken(),
+            csrf_token: req.csrfToken(),
           });
         } else {
           const reset_key = Math.random()
@@ -916,7 +916,7 @@ exports.new_password = function(req, res) {
     key: req.query.reset_key,
     email: req.query.email,
     errors: [],
-    csrfToken: req.csrfToken(),
+    csrf_token: req.csrfToken(),
   });
 };
 
@@ -961,13 +961,13 @@ exports.change_password = function(req, res) {
               text: 'Error reseting user password',
               type: 'danger',
             };
-            res.render('index', { errors: [], csrfToken: req.csrfToken() });
+            res.render('index', { errors: [], csrf_token: req.csrfToken() });
           } else if (errors.length > 0) {
             res.render('auth/password_reset', {
               key: req.query.reset_key,
               email: req.query.email,
               errors,
-              csrfToken: req.csrfToken(),
+              csrf_token: req.csrfToken(),
             });
           } else {
             user.password = req.body.password1;
@@ -991,14 +991,14 @@ exports.change_password = function(req, res) {
             text: 'Error reseting user password',
             type: 'danger',
           };
-          res.render('index', { errors: [], csrfToken: req.csrfToken() });
+          res.render('index', { errors: [], csrf_token: req.csrfToken() });
         }
       } else {
         res.locals.message = {
           text: 'Error reseting user password',
           type: 'danger',
         };
-        res.render('index', { errors: [], csrfToken: req.csrfToken() });
+        res.render('index', { errors: [], csrf_token: req.csrfToken() });
       }
     })
     .catch(function(error) {
@@ -1010,7 +1010,7 @@ exports.change_password = function(req, res) {
 exports.confirmation = function(req, res) {
   debug('--> confirmation');
 
-  res.render('auth/confirmation', { error: '', csrfToken: req.csrfToken() });
+  res.render('auth/confirmation', { error: '', csrf_token: req.csrfToken() });
 };
 
 // POST /confirmation -- Send a new message of activation to the user
@@ -1020,7 +1020,7 @@ exports.resend_confirmation = function(req, res) {
   if (!req.body.email) {
     res.render('auth/confirmation', {
       error: 'empty_field',
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   } else {
     models.user
@@ -1036,7 +1036,7 @@ exports.resend_confirmation = function(req, res) {
             };
             res.render('auth/confirmation', {
               error: '',
-              csrfToken: req.csrfToken(),
+              csrf_token: req.csrfToken(),
             });
           } else {
             const activation_key = Math.random()
@@ -1097,7 +1097,7 @@ exports.resend_confirmation = function(req, res) {
           };
           res.render('auth/confirmation', {
             error: '',
-            csrfToken: req.csrfToken(),
+            csrf_token: req.csrfToken(),
           });
         }
       })

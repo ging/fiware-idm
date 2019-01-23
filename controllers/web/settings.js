@@ -21,7 +21,7 @@ const email_list = config.email_list_type
 exports.settings = function(req, res) {
   debug('--> settings');
 
-  res.render('settings/settings', { csrfToken: req.csrfToken() });
+  res.render('settings/settings', { csrf_token: req.csrfToken() });
 };
 
 // POST /idm/settings/password -- Change password
@@ -55,7 +55,7 @@ exports.password = function(req, res) {
     res.render('settings/change_password', {
       errors,
       warn_change_password: false,
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   } else {
     // Search the user through the email
@@ -97,7 +97,7 @@ exports.password = function(req, res) {
             res.render('settings/change_password', {
               errors,
               warn_change_password: false,
-              csrfToken: req.csrfToken(),
+              csrf_token: req.csrfToken(),
             });
           }
         } else {
@@ -124,7 +124,7 @@ exports.email = function(req, res) {
       res.locals.message = { text: ' Email change failed.', type: 'danger' };
       return res.render('settings/change_email', {
         errors,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     }
 
@@ -135,7 +135,7 @@ exports.email = function(req, res) {
       res.locals.message = { text: ' Email change failed.', type: 'danger' };
       return res.render('settings/change_email', {
         errors,
-        csrfToken: req.csrfToken(),
+        csrf_token: req.csrfToken(),
       });
     }
   }
@@ -154,14 +154,17 @@ exports.email = function(req, res) {
   if (errors.length > 0) {
     return res.render('settings/change_email', {
       errors,
-      csrfToken: req.csrfToken(),
+      csrf_token: req.csrfToken(),
     });
   }
 
   // If is the actual email send a message of error to the user
   if (req.session.user.email === req.body.email) {
     res.locals.message = { text: ' It is your actual email.', type: 'warning' };
-    res.render('settings/change_email', { errors, csrfToken: req.csrfToken() });
+    res.render('settings/change_email', {
+      errors,
+      csrf_token: req.csrfToken(),
+    });
   }
   return models.user
     .findOne({
@@ -172,7 +175,7 @@ exports.email = function(req, res) {
         res.locals.message = { text: ' Email already used.', type: 'danger' };
         res.render('settings/change_email', {
           errors,
-          csrfToken: req.csrfToken(),
+          csrf_token: req.csrfToken(),
         });
       } else {
         // Search the user through the email
@@ -240,7 +243,7 @@ exports.email = function(req, res) {
                       type: 'success',
                     };
                     res.render('settings/settings', {
-                      csrfToken: req.csrfToken(),
+                      csrf_token: req.csrfToken(),
                     });
                   })
                   .catch(function(error) {
@@ -254,7 +257,7 @@ exports.email = function(req, res) {
                 };
                 res.render('settings/change_email', {
                   errors,
-                  csrfToken: req.csrfToken(),
+                  csrf_token: req.csrfToken(),
                 });
               }
             } else {
@@ -301,7 +304,7 @@ exports.email_verify = function(req, res) {
               text: 'Error changing email address',
               type: 'danger',
             };
-            res.render('index', { errors: [], csrfToken: req.csrfToken() });
+            res.render('index', { errors: [], csrf_token: req.csrfToken() });
           } else {
             models.user
               .update(
@@ -319,7 +322,9 @@ exports.email_verify = function(req, res) {
                   text: ' Email successfully changed',
                   type: 'success',
                 };
-                res.render('settings/settings', { csrfToken: req.csrfToken() });
+                res.render('settings/settings', {
+                  csrf_token: req.csrfToken(),
+                });
               })
               .catch(function(error) {
                 debug('  -> error ' + error);

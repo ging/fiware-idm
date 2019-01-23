@@ -1,5 +1,6 @@
 const debug = require('debug')('idm:api-permissions');
 const models = require('../../models/models.js');
+const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 
 const config_authzforce = require('../../config.js').authorization;
@@ -7,17 +8,17 @@ const config_authzforce = require('../../config.js').authorization;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-// MW to Autoload info if path include permissionId
-exports.load_permission = function(req, res, next, permissionId) {
+// MW to Autoload info if path include permission_id
+exports.load_permission = function(req, res, next, permission_id) {
   debug('--> load_permission');
 
-  let where = { id: permissionId, oauth_client_id: req.application.id };
+  let where = { id: permission_id, oauth_client_id: req.application.id };
 
-  if (['1', '2', '3', '4', '5', '6'].includes(permissionId)) {
-    where = { id: permissionId, is_internal: true };
+  if (['1', '2', '3', '4', '5', '6'].includes(permission_id)) {
+    where = { id: permission_id, is_internal: true };
   }
 
-  // Search permission whose id is permissionId
+  // Search permission whose id is permission_id
   models.permission
     .findOne({
       where,
@@ -28,15 +29,13 @@ exports.load_permission = function(req, res, next, permissionId) {
         req.permission = permission;
         next();
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'permission not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'permission not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -54,7 +53,7 @@ exports.load_permission = function(req, res, next, permissionId) {
     });
 };
 
-// GET /v1/:applicationId/permissions -- Send index of permissions
+// GET /v1/:application_id/permissions -- Send index of permissions
 exports.index = function(req, res) {
   debug('--> index');
 
@@ -74,15 +73,13 @@ exports.index = function(req, res) {
       if (permissions.length > 0) {
         res.status(200).json({ permissions });
       } else {
-        res
-          .status(404)
-          .json({
-            error: {
-              message: 'permissions not found',
-              code: 404,
-              title: 'Not Found',
-            },
-          });
+        res.status(404).json({
+          error: {
+            message: 'permissions not found',
+            code: 404,
+            title: 'Not Found',
+          },
+        });
       }
     })
     .catch(function(error) {
@@ -100,7 +97,7 @@ exports.index = function(req, res) {
     });
 };
 
-// POST /v1/:applicationId/permissions -- Create permission
+// POST /v1/:application_id/permissions -- Create permission
 exports.create = function(req, res) {
   debug('--> create');
 
@@ -142,23 +139,21 @@ exports.create = function(req, res) {
     });
 };
 
-// GET /v1/:applicationId/permissions/:permissionId -- Get info about permission
+// GET /v1/:application_id/permissions/:permission_id -- Get info about permission
 exports.info = function(req, res) {
   debug('--> info');
 
   res.status(200).json({ permission: req.permission });
 };
 
-// PATCH /v1/:applicationId/permissions/:permissionId -- Edit permission
+// PATCH /v1/:application_id/permissions/:permission_id -- Edit permission
 exports.update = function(req, res) {
   debug('--> update');
 
   if (['1', '2', '3', '4', '5', '6'].includes(req.permission.id)) {
-    res
-      .status(403)
-      .json({
-        error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
-      });
+    res.status(403).json({
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+    });
   } else {
     let permission_previous_values = null;
 
@@ -188,7 +183,7 @@ exports.update = function(req, res) {
         return req.permission.save();
       })
       .then(function(permission) {
-        const difference = diffObject(
+        const difference = diff_object(
           permission_previous_values,
           permission.dataValues
         );
@@ -218,23 +213,21 @@ exports.update = function(req, res) {
   }
 };
 
-// DELETE /v1/:applicationId/permissions/:permissionId -- Delete permission
+// DELETE /v1/:application_id/permissions/:permission_id -- Delete permission
 exports.delete = function(req, res) {
   debug('--> delete');
 
   if (['1', '2', '3', '4', '5', '6'].includes(req.permission.id)) {
-    res
-      .status(403)
-      .json({
-        error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
-      });
+    res.status(403).json({
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+    });
   } else {
     req.permission
       .destroy()
       .then(function() {
         res
           .status(204)
-          .json('Permission ' + req.params.permissionId + ' destroyed');
+          .json('Permission ' + req.params.permission_id + ' destroyed');
       })
       .catch(function(error) {
         debug('Error: ' + error);
@@ -389,14 +382,4 @@ function check_update_body_request(body) {
 
     resolve();
   });
-}
-
-// Compare objects with symmetrical keys
-function diffObject(a, b) {
-  return Object.keys(a).reduce(function(map, k) {
-    if (a[k] !== b[k]) {
-      map[k] = b[k];
-    }
-    return map;
-  }, {});
 }

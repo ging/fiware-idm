@@ -13,9 +13,9 @@ exports.info = function(req, res) {
     .then(function(values) {
       const response = {
         information: {
-          totalUsers: values[0],
-          totalOrganizations: values[1],
-          totalApplications: values[2],
+          total_users: values[0],
+          total_organizations: values[1],
+          total_applications: values[2],
         },
       };
 

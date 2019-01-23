@@ -72,7 +72,7 @@ exports.index_administrators = function(req, res) {
     delete req.session.message;
   }
 
-  res.render('admin/administrators', { csrfToken: req.csrfToken() });
+  res.render('admin/administrators', { csrf_token: req.csrfToken() });
 };
 
 // PUT /idm/admins/administrators --  Give admin role to specified users

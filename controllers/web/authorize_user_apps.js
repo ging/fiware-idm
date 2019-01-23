@@ -1,12 +1,14 @@
 const models = require('../../models/models.js');
 const gravatar = require('gravatar');
+const array_contains_array = require('../../lib/object_functions.js')
+  .array_contains_array;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const debug = require('debug')('idm:web-authorize_user_app_controller');
 
-// GET /idm/applications/:applicationId/edit/users -- Search users authorized
+// GET /idm/applications/:application_id/edit/users -- Search users authorized
 exports.get_users = function(req, res, next) {
   debug('--> get_users');
 
@@ -111,7 +113,7 @@ exports.get_users = function(req, res, next) {
   }
 };
 
-// GET /idm/applications/:applicationId/users/available -- Search users to authorize in an application
+// GET /idm/applications/:application_id/users/available -- Search users to authorize in an application
 exports.available_users = function(req, res) {
   debug('--> available_users');
 
@@ -154,7 +156,7 @@ exports.available_users = function(req, res) {
   }
 };
 
-// POST /idm/applications/:applicationId/edit/users -- Authorize users in an application
+// POST /idm/applications/:application_id/edit/users -- Authorize users in an application
 exports.authorize_users = function(req, res) {
   debug('--> authorize_users');
 
@@ -211,7 +213,7 @@ exports.authorize_users = function(req, res) {
       }
 
       if (
-        arrayContainsArray(
+        array_contains_array(
           ids_changeable_roles_by_user,
           ids_roles_to_be_changed
         )
@@ -270,13 +272,3 @@ exports.authorize_users = function(req, res) {
     res.redirect('/idm/applications/' + req.application.id);
   }
 };
-
-// Function to see if an array contains all elments of the other
-function arrayContainsArray(superset, subset) {
-  if (subset.length === 0) {
-    return false;
-  }
-  return subset.every(function(value) {
-    return superset.indexOf(value) >= 0;
-  });
-}

@@ -14,7 +14,7 @@
             <div id="collapse-0" class="panel-collapse collapse change_password" style="height: 0px;">
                 <div class="panel-body">
                     <form accept-charset="UTF-8" action="/idm/settings/password/" method="post" class="ng-pristine ng-valid">
-                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                         <fieldset>
                             <legend></legend>
                             <div class="form-group required has-feedback">
@@ -50,7 +50,7 @@
             <div id="collapse-1" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
                     <form accept-charset="UTF-8" action="/idm/settings/email/" method="post" class="ng-pristine ng-valid">
-                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                         <fieldset>
                             <legend></legend>
                             <div class="form-group required">
@@ -80,7 +80,7 @@
             <div id="collapse-2" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
                     <form accept-charset="UTF-8" action="/idm/settings/twofactor/" id="two_factor_form" method="post" class="ng-pristine ng-valid">
-                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                         <p><%=translation.settings.settings.content01%><b><%=translation.settings.settings.content01_1%></b></p>
                         <p><%=translation.settings.settings.content02%></p>
                         <p><%=translation.settings.settings.content03%></p>

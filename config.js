@@ -1,4 +1,4 @@
-var config = {};
+const config = {};
 
 config.port = process.env.IDM_PORT || 3005;
 config.host = process.env.IDM_HOST || 'http://localhost:' + config.port;
@@ -53,15 +53,11 @@ config.authorization = {
   },
 };
 
-var database_host = process.env.DATABASE_HOST
-  ? process.env.DATABASE_HOST
-  : 'localhost';
-
 // Database info
 config.database = {
   host: process.env.DATABASE_HOST || 'localhost',
-  password: process.env.IDM_DB_PASS || 'secret',
-  username: process.env.IDM_DB_USER || 'idm',
+  password: process.env.IDM_DB_PASS || 'idm',
+  username: process.env.IDM_DB_USER || 'root',
   database: process.env.IDM_DB_NAME || 'idm',
   dialect: process.env.IDM_DIALECT || 'mysql',
   port: process.env.IDM_DB_PORT || undefined,
@@ -97,7 +93,7 @@ config.site = {
 
 // Config eIDAs Authentication
 config.eidas = {
-  enabled: process.env.IDM_EIDAS_ENABLED || false,
+  enabled: process.env.IDM_EIDAS_ENABLED || true,
   gateway_host: process.env.IDM_EIDAS_GATEWAY_HOST || 'localhost',
   idp_host:
     process.env.IDM_EIDAS_IDP_HOST ||
@@ -109,12 +105,12 @@ if (
   config.session.secret === 'nodejs_idm' ||
   config.password_encryption.key === 'nodejs_idm'
 ) {
-  console.log('****************');
-  console.log(
-    'WARNING: The current encryption keys match the defaults found in the plaintext ' +
-      'template file - please update for a production instance'
-  );
-  console.log('****************');
+  //eslint-disable-next-line no-console
+  console.log(`
+  ****************
+  WARNING: The current encryption keys match the defaults found in the plaintext
+           template file - please update for a production instance'
+  ****************`);
 }
 
 module.exports = config;

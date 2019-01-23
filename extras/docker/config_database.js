@@ -1,63 +1,70 @@
-var database = require('../../config').database;
-var exec = require('child_process').exec;
+const database = require('../../config').database;
+const exec = require('child_process').exec;
+
+const debug = require('debug')('idm:config_database');
 
 // Load ORM Model
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-var sequelize = new Sequelize(database.database, database.username, database.password, 
-{ 
+const sequelize = new Sequelize(
+  database.database,
+  database.username,
+  database.password,
+  {
     host: database.host,
     dialect: database.dialect,
-    port: (database.port !== 'default') ? database.port : undefined
-}      
+    port: database.port !== 'default' ? database.port : undefined,
+  }
 );
 
 sequelize
-.authenticate()
-.then(() => {
-    console.log('Database is already created')
-    process.exit()
-})
-.catch(err => {
-
+  .authenticate()
+  .then(() => {
+    debug('Database is already created');
+    process.exit();
+  })
+  .catch(err => {
     if (err.original.code === 'ER_BAD_DB_ERROR') {
-        exec('npm run-script create_db', function(error, stdout, stderr){ 
+      exec('npm run-script create_db', function(error) {
+        if (error) {
+          debug('Unable to create database: ', error);
+          process.exit();
+        }
+
+        debug('Database created');
+
+        exec('npm run-script migrate_db', function(error) {
+          if (error) {
+            debug('Unable to migrate database: ', error);
+            process.exit();
+          }
+
+          debug('Database migrated');
+
+          exec('npm run-script seed_db', function(error) {
             if (error) {
-                console.log("Unable to create database: ", err);
-                process.exit()
+              debug('Unable to seed database: ', error);
             }
+            if (
+              process.env.IDM_ADMIN_PASS === undefined ||
+              process.env.IDM_ADMIN_USER === undefined ||
+              process.env.IDM_ADMIN_EMAIL === undefined ||
+              process.env.IDM_ADMIN_PASS === undefined
+            ) {
+              debug(`****************
+                            WARNING: Seeding database with an admin user using default credentials. 
+                            This user must be deleted when running on a production instance");
+                        ****************`);
+            }
+            debug('Database seeded');
 
-            console.log("Database created")
-
-            exec('npm run-script migrate_db', function(error, stdout, stderr){ 
-                if (error) {
-                    console.log("Unable to migrate database: ", err);
-                    process.exit()
-                }
-
-                console.log("Database migrated")
-
-                exec('npm run-script seed_db', function(error, stdout, stderr){ 
-                    if (error) {
-                        console.log("Unable to seed database: ", err);
-
-                    }
-                    if (process.env.IDM_ADMIN_PASS === undefined || process.env.IDM_ADMIN_USER === undefined || 
-                       process.env.IDM_ADMIN_EMAIL === undefined || process.env.IDM_ADMIN_PASS === undefined) {
-                        console.log( "****************");
-                        console.log( "WARNING: Seeding database with an admin user using default credentials." + 
-                        "This user must be deleted when running on a production instance");
-                        console.log( "****************");
-                    }
-                    console.log("Database seeded")
-
-                    process.exit()
-                });
-            });
+            process.exit();
+          });
         });
+      });
     } else {
-        console.log("Unable to connect to the database: ", err);
-        process.exit()
+      debug('Unable to connect to the database: ', err);
+      process.exit();
     }
-})
+  });

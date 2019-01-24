@@ -23,39 +23,39 @@ In order to run the IdM Keyrock follow these steps:
    following code and:
 
 ```yml
-		version: "2"
-		networks:
-		  idm_network:
-		    driver: bridge
-		    ipam:
-		     config:
-		       - subnet: 172.18.1.0/24
-		         gateway: 172.18.1.1
-		volumes:
-		  vol-mysql:
-		services:
-		  mysql:
-		    image: mysql/mysql-server:5.7.21
-		    ports:
-		      - "3306:3306"
-		    networks:
-		      idm_network:
-		        ipv4_address: 172.18.1.5
-		    volumes:
-		      - vol-mysql:/var/lib/mysql
-		    environment:
-		      - MYSQL_ROOT_PASSWORD=idm
-		      - MYSQL_ROOT_HOST=172.18.1.6
-		  fiware-idm:
-		    image: fiware/idm
-		    ports:
-		      - "3000:3000"
-		      - "443:443"
-		    networks:
-		      idm_network:
-		        ipv4_address: 172.18.1.6
-		    environment:
-		      - DATABASE_HOST=mysql
+version: "2"
+networks:
+    idm_network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.18.1.0/24
+                  gateway: 172.18.1.1
+volumes:
+    ? vol-mysql
+services:
+    mysql:
+        image: mysql/mysql-server:5.7.21
+        ports:
+            - "3306:3306"
+        networks:
+            idm_network:
+                ipv4_address: 172.18.1.5
+        volumes:
+            - vol-mysql:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=idm
+            - MYSQL_ROOT_HOST=172.18.1.6
+    fiware-idm:
+        image: fiware/idm
+        ports:
+            - "3000:3000"
+            - "443:443"
+        networks:
+            idm_network:
+                ipv4_address: 172.18.1.6
+        environment:
+            - DATABASE_HOST=mysql
 ```
 
 The different params mean:
@@ -120,16 +120,16 @@ will find a template of the file. To copy the file to the container edit
 `docker-compose.yml` and share the file through a volume:
 
 ```yml
-		fiware-idm:
-		    image: fiware/idm
-		    ports:
-		      - "3000:3000"
-		      - "443:443"
-		    networks:
-		      idm_network:
-		        ipv4_address: 172.18.1.6
-		    environment:
-		      - DATABASE_HOST=mysql
-		    volumes:
-			  - path_to_file:/opt/fiware-idm/config.js
+fiware-idm:
+    image: fiware/idm
+    ports:
+      - "3000:3000"
+      - "443:443"
+    networks:
+      idm_network:
+        ipv4_address: 172.18.1.6
+    environment:
+      - DATABASE_HOST=mysql
+    volumes:
+	  - path_to_file:/opt/fiware-idm/config.js
 ```

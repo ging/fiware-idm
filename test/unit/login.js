@@ -10,20 +10,16 @@ process.env.IDM_DB_USER = 'root';
 
 // const keyrock = require('../../bin/www');
 const config = require('../../config.js');
-// const nock = require('nock');
 const should = require('should');
 const request = require('request');
 const utils = require('../utils');
-// let mockedClientServer;
-
-// let contextBrokerMock;
 
 describe('Log-In: ', function() {
   describe('When Logging in with a valid username and password', function() {
     const good_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile('./test/oauthRequests/goodLogin.json'),
+      json: utils.readExampleFile('./test/auth_requests/goodLogin.json'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -42,7 +38,7 @@ describe('Log-In: ', function() {
     const bad_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile('./test/oauthRequests/badLogin.json'),
+      json: utils.readExampleFile('./test/auth_requests/badLogin.json'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -62,7 +58,7 @@ describe('Log-In: ', function() {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
       json: utils.readExampleFile(
-        './test/oauthRequests/wrongPasswordLogin.json'
+        './test/auth_requests/wrongPasswordLogin.json'
       ),
       headers: {
         'Content-Type': 'application/json',

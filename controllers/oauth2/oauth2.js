@@ -33,7 +33,7 @@ exports.token = function(req, res) {
         response.body.token_type = 'jwt';
         delete response.body.expires_in;
       }
-      res.json(response.body);
+      res.status(200).json(response.body);
     })
     .catch(function(error) {
       debug('Error ', error);

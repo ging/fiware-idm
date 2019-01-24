@@ -45,8 +45,8 @@ exports.step_create_eidas_crendentials = function(req, res) {
   eidas_credentials.oauth_client_id = req.application.id;
 
   eidas_credentials.attributes_list = {
+    // eslint-disable-next-line snakecase/snakecase
     NaturalPerson: [
-      // eslint-disable-line snakecase/snakecase
       'PersonIdentifier',
       'FamilyName',
       'FirstName',
@@ -202,8 +202,8 @@ exports.update_eidas_attributes = function(req, res) {
   debug('--> update_eidas_attributes');
 
   const attributes_list = {
+    // eslint-disable-next-line snakecase/snakecase
     NaturalPerson: [
-      // eslint-disable-line snakecase/snakecase
       'PersonIdentifier',
       'FamilyName',
       'FirstName',
@@ -488,7 +488,8 @@ exports.search_eidas_credentials = function(req, res, next) {
           provider_name: credentials.organization_nif,
           auth_context: {
             comparison: 'minimum',
-            AuthnContextClassRef: ['http://eidas.europa.eu/LoA/low'], // eslint-disable-line snakecase/snakecase
+            // eslint-disable-next-line snakecase/snakecase
+            AuthnContextClassRef: ['http://eidas.europa.eu/LoA/low'],
           },
           force_authn: true,
           organization,
@@ -569,14 +570,14 @@ exports.create_auth_request = function(req, res, next) {
 
     req.saml_auth_request = {
       xml: auth_request.request,
-      // eslint-disable-line snakecase/snakecase
+      // eslint-disable-next-line snakecase/snakecase
       postLocationUrl:
         'https://' +
         config.eidas.gateway_host +
         '/idm/applications/' +
         req.application.id +
         '/saml2/login',
-      // eslint-disable-line snakecase/snakecase
+      // eslint-disable-next-line snakecase/snakecase
       redirectLocationUrl:
         'https://' +
         config.eidas.gateway_host +

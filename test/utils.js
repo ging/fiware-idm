@@ -1,15 +1,13 @@
-'use strict';
+const fs = require('fs');
 
-var fs = require('fs');
-
+/* eslint-disable snakecase/snakecase */
 function readExampleFile(name, raw) {
-  var text = fs.readFileSync(name, 'UTF8');
+  const text = fs.readFileSync(name, 'UTF8');
 
   if (raw) {
     return text;
-  } else {
-    return JSON.parse(text);
   }
+  return JSON.parse(text);
 }
 
 function delay(ms) {

@@ -1,12 +1,13 @@
-var path = require('path');
-var database = require('../config').database;
-var external_auth = require('../config').external_auth;
+const path = require('path');
+const database = require('../config').database;
+const external_auth = require('../config').external_auth;
+const debug = require('debug')('idm:models');
 
 // Load ORM Model
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-var sequelize = new Sequelize(
+const sequelize = new Sequelize(
   database.database,
   database.username,
   database.password,
@@ -20,14 +21,17 @@ var sequelize = new Sequelize(
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully');
+    debug('Connection has been established successfully');
   })
   .catch(err => {
-    console.log('Unable to connect to the database: ', err);
+    debug('Unable to connect to the database: ', err);
   });
 
+let user_ext;
+let ext_sequelize;
+
 if (external_auth.enabled) {
-  var ext_sequelize = new Sequelize(
+  ext_sequelize = new Sequelize(
     external_auth.database.database,
     external_auth.database.username,
     external_auth.database.password,
@@ -44,88 +48,93 @@ if (external_auth.enabled) {
   ext_sequelize
     .authenticate()
     .then(() => {
-      console.log('Connection has been established successfully');
+      debug('Connection has been established successfully');
     })
     .catch(err => {
-      console.log('Unable to connect to the database: ', err);
+      debug('Unable to connect to the database: ', err);
     });
 }
 
 // Import Oauth2 tables
-var oauth_client = sequelize.import(
+const oauth_client = sequelize.import(
   path.join(__dirname, 'oauth2/oauth_client')
 );
-var oauth_authorization_code = sequelize.import(
+const oauth_authorization_code = sequelize.import(
   path.join(__dirname, 'oauth2/oauth_authorization_code')
 );
-var oauth_access_token = sequelize.import(
+const oauth_access_token = sequelize.import(
   path.join(__dirname, 'oauth2/oauth_access_token')
 );
-var oauth_refresh_token = sequelize.import(
+const oauth_refresh_token = sequelize.import(
   path.join(__dirname, 'oauth2/oauth_refresh_token')
 );
-var scope = sequelize.import(path.join(__dirname, 'oauth2/oauth_scope'));
+const scope = sequelize.import(path.join(__dirname, 'oauth2/oauth_scope'));
 
 // Import Eidas Credentials
-var eidas_credentials = sequelize.import(
+const eidas_credentials = sequelize.import(
   path.join(__dirname, 'eidas_credentials')
 );
 
 // Import Trusted Applications table
-var trusted_application = sequelize.import(
+const trusted_application = sequelize.import(
   path.join(__dirname, 'trusted_application')
 );
 
 // Import user table
-var user = sequelize.import(path.join(__dirname, 'user'));
+const user = sequelize.import(path.join(__dirname, 'user'));
 
 // Import user table for external auth database if enabled
-if (external_auth.enabled)
-  var user_ext = ext_sequelize.import(
+if (external_auth.enabled) {
+  user_ext = ext_sequelize.import(
     path.join(__dirname, '../external_auth/external_user_model')
   );
+}
 
 // Import user registration profile table
-var user_registration_profile = sequelize.import(
+const user_registration_profile = sequelize.import(
   path.join(__dirname, 'user_registration_profile')
 );
 
 // Import user authorized application table
-var user_authorized_application = sequelize.import(
+const user_authorized_application = sequelize.import(
   path.join(__dirname, 'user_authorized_application')
 );
 
 // Import organization table
-var organization = sequelize.import(path.join(__dirname, 'organization'));
+const organization = sequelize.import(path.join(__dirname, 'organization'));
 
 // Import role table
-var role = sequelize.import(path.join(__dirname, 'role'));
+const role = sequelize.import(path.join(__dirname, 'role'));
 
 // Import permission table
-var permission = sequelize.import(path.join(__dirname, 'permission'));
+const permission = sequelize.import(path.join(__dirname, 'permission'));
 
 // Import a table which will contains the ids of users, roles and oauth clients
-var role_assignment = sequelize.import(path.join(__dirname, 'role_assignment'));
+const role_assignment = sequelize.import(
+  path.join(__dirname, 'role_assignment')
+);
 
 // Import a table which will contains the ids of roles and permissions
-var role_permission = sequelize.import(path.join(__dirname, 'role_permission'));
+const role_permission = sequelize.import(
+  path.join(__dirname, 'role_permission')
+);
 
 // Import a table which will contains the ids of users and organizations and the role of the user in the organization
-var user_organization = sequelize.import(
+const user_organization = sequelize.import(
   path.join(__dirname, 'user_organization')
 );
 
 // Import sensor table
-var iot = sequelize.import(path.join(__dirname, 'iot'));
+const iot = sequelize.import(path.join(__dirname, 'iot'));
 
 // Import pep proxy table
-var pep_proxy = sequelize.import(path.join(__dirname, 'pep_proxy'));
+const pep_proxy = sequelize.import(path.join(__dirname, 'pep_proxy'));
 
 // Import authzforce table
-var authzforce = sequelize.import(path.join(__dirname, 'authzforce'));
+const authzforce = sequelize.import(path.join(__dirname, 'authzforce'));
 
 // Import auth token table
-var auth_token = sequelize.import(path.join(__dirname, 'auth_token'));
+const auth_token = sequelize.import(path.join(__dirname, 'auth_token'));
 
 // Relation between oauth_client and trusted applications
 trusted_application.belongsTo(oauth_client, { onDelete: 'cascade' });
@@ -261,7 +270,9 @@ eidas_credentials.belongsTo(oauth_client, {
 
 // Export tables
 exports.user = user;
-if (external_auth.enabled) exports.user_ext = user_ext;
+if (external_auth.enabled) {
+  exports.user_ext = user_ext;
+}
 exports.user_registration_profile = user_registration_profile;
 exports.organization = organization;
 exports.user_organization = user_organization;
@@ -283,11 +294,11 @@ exports.eidas_credentials = eidas_credentials;
 exports.trusted_application = trusted_application;
 
 // Export helpers
-var search_identity = require('./helpers/search_identity');
-var search_distinct = require('./helpers/search_distinct');
+const search_identity = require('./helpers/search_identity');
+const search_distinct = require('./helpers/search_distinct');
 
 exports.helpers = {
   search_pep_or_user: search_identity.search_pep_or_user,
   search_iot_or_user: search_identity.search_iot_or_user,
-  search_distinct: search_distinct,
+  search_distinct,
 };

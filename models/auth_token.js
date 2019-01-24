@@ -1,7 +1,7 @@
 // BD to store all Auth Tokens
 
 module.exports = function(sequelize, DataTypes) {
-  var AuthToken = sequelize.define(
+  const AuthToken = sequelize.define(
     'AuthToken',
     {
       access_token: {

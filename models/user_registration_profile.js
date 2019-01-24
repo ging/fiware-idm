@@ -1,7 +1,7 @@
 // User Registration Profile model
 
 module.exports = function(sequelize, DataTypes) {
-  var User_Registration_Profile = sequelize.define(
+  const User_Registration_Profile = sequelize.define(
     'User_Registration_Profile',
     {
       id: {

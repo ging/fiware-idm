@@ -14,17 +14,20 @@ const request = require('request');
 */
 
 describe('Attribute alias', function() {
+  // eslint-disable-next-line snakecase/snakecase
   beforeEach(function(done) {
     // Set up
     done();
   });
 
+  // eslint-disable-next-line snakecase/snakecase
   afterEach(function(done) {
     // Clean Up
     done();
   });
 
   describe('When a new multiple measure arrives with a timestamp in an attribute alias', function() {
+    // eslint-disable-next-line snakecase/snakecase
     beforeEach(function() {
       // Set Up
     });

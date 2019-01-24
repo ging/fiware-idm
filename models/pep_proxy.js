@@ -1,13 +1,13 @@
 // Table to store pep proxy information
 
-var config = require('../config.js').password_encryption;
+const config = require('../config.js').password_encryption;
 
 // Vars for encrypting
-var crypto = require('crypto');
-var key = config.key;
+const crypto = require('crypto');
+const key = config.key;
 
 module.exports = function(sequelize, DataTypes) {
-  var PepProxy = sequelize.define(
+  const PepProxy = sequelize.define(
     'PepProxy',
     {
       id: {
@@ -16,13 +16,13 @@ module.exports = function(sequelize, DataTypes) {
       },
       password: {
         type: DataTypes.STRING(40),
-        set: function(password) {
-          var salt = crypto
+        set(password) {
+          const salt = crypto
             .randomBytes(16)
             .toString('hex')
             .slice(0, 16);
 
-          var encripted = crypto
+          let encripted = crypto
             .createHmac('sha1', salt)
             .update(password)
             .digest('hex');
@@ -46,7 +46,7 @@ module.exports = function(sequelize, DataTypes) {
   );
 
   PepProxy.prototype.verifyPassword = function(password) {
-    var encripted = crypto
+    const encripted = crypto
       .createHmac('sha1', this.salt ? this.salt : key)
       .update(password)
       .digest('hex');

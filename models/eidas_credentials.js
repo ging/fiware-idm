@@ -1,7 +1,7 @@
 // BD to store all eidas credentials of an application
 
 module.exports = function(sequelize, DataTypes) {
-  var EidasCredentials = sequelize.define(
+  const EidasCredentials = sequelize.define(
     'EidasCredentials',
     {
       id: {
@@ -90,8 +90,8 @@ module.exports = function(sequelize, DataTypes) {
       },
       attributes_list: {
         type: DataTypes.JSON(),
-        get: function() {
-          var default_json = {
+        get() {
+          const default_json = {
             NaturalPerson: [
               'PersonIdentifier',
               'FamilyName',
@@ -101,7 +101,7 @@ module.exports = function(sequelize, DataTypes) {
             LegalPerson: [],
             RepresentativeNaturalPerson: [],
           };
-          var attributes_list_keys = this.getDataValue('attributes_list')
+          const attributes_list_keys = this.getDataValue('attributes_list')
             ? Object.keys(this.getDataValue('attributes_list')).length
             : 0;
           return attributes_list_keys > 0

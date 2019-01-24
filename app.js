@@ -2,13 +2,13 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
+const cookie_parser = require('cookie-parser');
+const body_parser = require('body-parser');
+const method_override = require('method-override');
 const session = require('cookie-session');
 const partials = require('express-partials');
-const sassMiddleware = require('node-sass-middleware');
-const forceSsl = require('express-force-ssl');
+const sass_middleware = require('node-sass-middleware');
+const force_ssl = require('express-force-ssl');
 const clc = require('cli-color');
 const i18n = require('i18n-express');
 const debug = require('debug')('idm:app');
@@ -35,8 +35,8 @@ app.use(logger('dev'));
 app.disable('x-powered-by');
 
 // Parse request
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(body_parser.json());
+app.use(body_parser.urlencoded());
 
 const up_date = new Date();
 
@@ -54,38 +54,37 @@ app.use('/version', function(req, res) {
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(partials());
 
-app.use(cookieParser(config.session.secret));
+app.use(cookie_parser(config.session.secret));
 app.use(
   session({
     secret: config.session.secret,
     name: 'session',
     secure: config.https.enabled,
-    maxAge: config.session.expires,
+    maxAge: config.session.expires, // eslint-disable-line snakecase/snakecase
   })
 );
 
 const styles = config.site.theme || 'default';
 // Middleware to convert sass files to css
 app.use(
-  sassMiddleware({
+  sass_middleware({
     src: path.join(__dirname, 'themes/' + styles),
     dest: path.join(__dirname, 'public/stylesheets'),
     debug: true,
-    //outputStyle: 'compressed',
-    outputStyle: 'extended',
+    outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
     prefix: '/stylesheets', // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
   })
 );
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(methodOverride('_method'));
+app.use(method_override('_method'));
 
 app.use(
   i18n({
-    translationsPath: path.join(__dirname, 'etc/translations'), // <--- use here. Specify translations files path.
-    siteLangs: ['en', 'es'],
-    textsVarName: 'translation',
-    browserEnable: true,
-    defaultLang: 'en',
+    translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
+    siteLangs: ['en', 'es'], // eslint-disable-line snakecase/snakecase
+    textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
+    browserEnable: true, // eslint-disable-line snakecase/snakecase
+    defaultLang: 'en', // eslint-disable-line snakecase/snakecase
   })
 );
 
@@ -116,29 +115,29 @@ app.use(function(req, res, next) {
 // Force HTTPS connection to web server
 if (config.https.enabled) {
   app.set('forceSSLOptions', {
-    enable301Redirects: true,
-    trustXFPHeader: false,
-    httpsPort: config.https.port,
-    sslRequiredMessage: 'SSL Required.',
+    enable301Redirects: true, // eslint-disable-line snakecase/snakecase
+    trustXFPHeader: false, // eslint-disable-line snakecase/snakecase
+    httpsPort: config.https.port, // eslint-disable-line snakecase/snakecase
+    sslRequiredMessage: 'SSL Required.', // eslint-disable-line snakecase/snakecase
   });
 
   // Set routes for api
-  app.use('/v1', forceSsl, api);
-  app.use('/v3', forceSsl, api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API
+  app.use('/v1', force_ssl, api);
+  app.use('/v3', force_ssl, api); // REDIRECT OLD KEYSTONE REQUESTS TO THE SAME API
 
   // Set routes for oauth2
-  app.use('/oauth2', forceSsl, oauth2);
+  app.use('/oauth2', force_ssl, oauth2);
   app.get(
     '/user',
-    forceSsl,
+    force_ssl,
     require('./controllers/oauth2/oauth2').authenticate_token
   );
 
   // Set routes for saml2
-  app.use('/saml2', forceSsl, saml2);
+  app.use('/saml2', force_ssl, saml2);
 
   // Set routes for GUI
-  app.use('/', forceSsl, index);
+  app.use('/', force_ssl, index);
 } else {
   // Set routes for api
   app.use('/v1', api);

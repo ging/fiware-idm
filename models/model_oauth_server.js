@@ -1,22 +1,25 @@
 // Model to create Oauth2 server
-var models = require('./models.js');
-var oauth2 = require('../config').oauth2;
-var _ = require('lodash');
-var jsonwebtoken = require('jsonwebtoken');
-var debug = require('debug')('idm:oauth2-model_oauth_server');
-var config_authzforce = require('./../config.js').authorization.authzforce;
-var config_oauth2 = require('./../config.js').oauth2;
-var Sequelize = require('sequelize');
+const models = require('./models.js');
+const oauth2 = require('../config').oauth2;
+const _ = require('lodash');
+const jsonwebtoken = require('jsonwebtoken');
+const debug = require('debug')('idm:oauth2-model_oauth_server');
+const config_authzforce = require('./../config.js').authorization.authzforce;
+const config_oauth2 = require('./../config.js').oauth2;
+const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-var user = models.user;
-var iot = models.iot;
-var role_assignment = models.role_assignment;
-var oauth_client = models.oauth_client;
-var oauth_access_token = models.oauth_access_token;
-var oauth_authorization_code = models.oauth_authorization_code;
-var oauth_refresh_token = models.oauth_refresh_token;
-var user_authorized_application = models.user_authorized_application;
+const user = models.user;
+const iot = models.iot;
+const role_assignment = models.role_assignment;
+const oauth_client = models.oauth_client;
+const oauth_access_token = models.oauth_access_token;
+const oauth_authorization_code = models.oauth_authorization_code;
+const oauth_refresh_token = models.oauth_refresh_token;
+const user_authorized_application = models.user_authorized_application;
+
+const user_info = require('../templates/oauth_response/oauth_user_response.json');
+const iot_info = require('../templates/oauth_response/oauth_iot_response.json');
 
 function getAccessToken(bearerToken) {
   debug('-------getAccesToken-------');
@@ -53,15 +56,17 @@ function getAccessToken(bearerToken) {
       ],
     })
     .then(function(accessToken) {
-      if (!accessToken) return false;
-      var token = accessToken.toJSON();
+      if (!accessToken) {
+        return false;
+      }
+      const token = accessToken.toJSON();
       token.oauth_client = accessToken.OauthClient;
       if (accessToken.User) {
         token.user = accessToken.User;
-        token.user.dataValues['type'] = 'user';
+        token.user.dataValues.type = 'user';
       } else if (accessToken.Iot) {
         token.user = accessToken.Iot;
-        token.user.dataValues['type'] = 'iot';
+        token.user.dataValues.type = 'iot';
       }
 
       delete token.OauthClient;
@@ -90,13 +95,17 @@ function getClient(clientId, clientSecret) {
       'grant_type',
     ],
   };
-  if (clientSecret) options.where.secret = clientSecret;
+  if (clientSecret) {
+    options.where.secret = clientSecret;
+  }
   return oauth_client
     .findOne(options)
     .then(function(client) {
-      if (!client) return null; //new Error("client not found");
+      if (!client) {
+        return null;
+      } //new Error("client not found");
 
-      var clientWithGrants = client;
+      const clientWithGrants = client;
 
       clientWithGrants.grants = clientWithGrants.grant_type;
       clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
@@ -118,7 +127,7 @@ function getClient(clientId, clientSecret) {
 function getIdentity(id, password, oauth_client_id) {
   debug('-------getIdentity-------');
 
-  var search_user = user.findOne({
+  const search_user = user.findOne({
     where: { email: id },
     attributes: [
       'id',
@@ -133,18 +142,18 @@ function getIdentity(id, password, oauth_client_id) {
     ],
   });
   debug(oauth_client_id);
-  var search_iot = iot.findOne({
+  const search_iot = iot.findOne({
     where: {
-      id: id,
-      oauth_client_id: oauth_client_id,
+      id,
+      oauth_client_id,
     },
     attributes: ['id', 'password', 'salt'],
   });
 
   return Promise.all([search_user, search_iot])
     .then(function(values) {
-      var user = values[0];
-      var iot = values[1];
+      const user = values[0];
+      const iot = values[1];
 
       if ((user && iot) || (!user && !iot)) {
         return false;
@@ -152,14 +161,14 @@ function getIdentity(id, password, oauth_client_id) {
 
       if (user) {
         if (user.verifyPassword(password)) {
-          user.dataValues['type'] = 'user';
+          user.dataValues.type = 'user';
           return user;
         }
       }
 
       if (iot) {
         if (iot.verifyPassword(password)) {
-          iot.dataValues['type'] = 'iot';
+          iot.dataValues.type = 'iot';
           return iot;
         }
       }
@@ -176,7 +185,7 @@ function getUser(email, password) {
 
   return user
     .findOne({
-      where: { email: email },
+      where: { email },
       attributes: ['id', 'username', 'password', 'scope'],
     })
     .then(function(user) {
@@ -219,18 +228,18 @@ function revokeAuthorizationCode(code) {
 function revokeRefreshToken(refreshToken, code, client_id) {
   debug('-------revokeRefreshToken-------');
 
-  var where_clause = {
+  const where_clause = {
     valid: true,
   };
 
   if (code) {
-    where_clause['authorization_code'] = code;
+    where_clause.authorization_code = code;
   } else if (refreshToken) {
-    where_clause['refresh_token'] = refreshToken;
+    where_clause.refresh_token = refreshToken;
   }
 
   if (client_id) {
-    where_clause['oauth_client_id'] = client_id;
+    where_clause.oauth_client_id = client_id;
   }
 
   return oauth_refresh_token
@@ -253,20 +262,20 @@ function revokeRefreshToken(refreshToken, code, client_id) {
 
 function revokeAccessToken(accessToken, code, client_id, refresh_token) {
   debug('-------revokeAccessToken-------');
-  var where_clause = {
+  const where_clause = {
     valid: true,
   };
 
   if (code) {
-    where_clause['authorization_code'] = code;
+    where_clause.authorization_code = code;
   } else if (accessToken) {
-    where_clause['access_token'] = accessToken;
+    where_clause.access_token = accessToken;
   } else if (refresh_token) {
-    where_clause['refresh_token'] = refresh_token;
+    where_clause.refresh_token = refresh_token;
   }
 
   if (client_id) {
-    where_clause['oauth_client_id'] = client_id;
+    where_clause.oauth_client_id = client_id;
   }
 
   return oauth_access_token
@@ -299,16 +308,12 @@ function saveToken(token, client, identity) {
 
   if (token.scope.includes('jwt')) {
     return generateJwtToken(token, client, identity);
-  } else {
-    return storeToken(token, client, identity, false);
   }
+  return storeToken(token, client, identity, false);
 }
 
 function generateJwtToken(token, client, identity) {
   debug('-------generateJwtToken-------');
-
-  var user_info = require('../templates/oauth_response/oauth_user_response.json');
-  var iot_info = require('../templates/oauth_response/oauth_iot_response.json');
 
   return create_oauth_response(
     identity,
@@ -320,12 +325,12 @@ function generateJwtToken(token, client, identity) {
   )
     .then(function(response) {
       if (identity) {
-        response['type'] = identity.type || identity.dataValues.type;
+        response.type = identity.type || identity.dataValues.type;
       }
-      var options = {};
+      const options = {};
 
       if (token.accessTokenExpiresAt) {
-        options['expiresIn'] = config_oauth2.access_token_lifetime;
+        options.expiresIn = config_oauth2.access_token_lifetime;
       }
 
       token.accessToken = jsonwebtoken.sign(
@@ -343,8 +348,8 @@ function generateJwtToken(token, client, identity) {
 function storeToken(token, client, identity, jwt) {
   debug('-------storeToken-------');
 
-  var user_id = null;
-  var iot_id = null;
+  let user_id = null;
+  let iot_id = null;
 
   if (identity) {
     if (identity.dataValues.type === 'user') {
@@ -364,8 +369,8 @@ function storeToken(token, client, identity, jwt) {
           expires: token.refreshTokenExpiresAt,
           valid: true,
           oauth_client_id: client.id,
-          user_id: user_id,
-          iot_id: iot_id,
+          user_id,
+          iot_id,
           authorization_code: token.authorizationCode
             ? token.authorizationCode
             : null,
@@ -378,8 +383,8 @@ function storeToken(token, client, identity, jwt) {
           expires: token.accessTokenExpiresAt,
           valid: true,
           oauth_client_id: client.id,
-          user_id: user_id,
-          iot_id: iot_id,
+          user_id,
+          iot_id,
           refresh_token: token.refreshToken ? token.refreshToken : null,
           authorization_code: token.authorizationCode
             ? token.authorizationCode
@@ -390,15 +395,15 @@ function storeToken(token, client, identity, jwt) {
     user_id && config_oauth2.ask_authorization
       ? user_authorized_application.findOrCreate({
           // User has enable application to read their information
-          where: { user_id: user_id, oauth_client_id: client.id },
+          where: { user_id, oauth_client_id: client.id },
           defaults: {
-            user_id: user_id,
+            user_id,
             oauth_client_id: client.id,
           },
         })
       : [],
   ])
-    .then(function(resultsArray) {
+    .then(function() {
       if (user_id || iot_id) {
         token[identity.dataValues.type] = identity.dataValues.type;
       }
@@ -410,7 +415,7 @@ function storeToken(token, client, identity, jwt) {
       return _.assign(
         // expected to return client and user, but not returning
         {
-          client: client,
+          client,
           access_token: token.accessToken, // proxy
           refresh_token: token.refreshToken, // proxy
         },
@@ -432,19 +437,22 @@ function getAuthorizationCode(code) {
       include: [user, oauth_client],
     })
     .then(function(authCodeModel) {
-      if (!authCodeModel) return false;
-      var client = authCodeModel.OauthClient;
-      var user = authCodeModel.User;
-      user.dataValues['type'] = 'user';
-      return (reCode = {
-        code: code,
-        client: client,
+      if (!authCodeModel) {
+        return false;
+      }
+      const client = authCodeModel.OauthClient;
+      const user = authCodeModel.User;
+      user.dataValues.type = 'user';
+      const reCode = {
+        code,
+        client,
         expiresAt: authCodeModel.expires,
         redirectUri: client.redirect_uri,
         valid: authCodeModel.valid,
-        user: user,
+        user,
         scope: authCodeModel.scope,
-      });
+      };
+      return reCode;
     })
     .catch(function(err) {
       debug('getAuthorizationCode - Err: ', err);
@@ -476,7 +484,7 @@ function saveAuthorizationCode(code, client, user) {
 function getUserFromClient(client) {
   debug('-------getUserFromClient-------');
 
-  var options = {
+  const options = {
     where: { oauth_client_id: client.id },
     include: [user],
   };
@@ -485,8 +493,12 @@ function getUserFromClient(client) {
   return role_assignment
     .findOne(options)
     .then(function(role_assignment) {
-      if (!role_assignment) return false;
-      if (!role_assignment.User) return false;
+      if (!role_assignment) {
+        return false;
+      }
+      if (!role_assignment.User) {
+        return false;
+      }
       return role_assignment.User.toJSON();
     })
     .catch(function(err) {
@@ -497,7 +509,9 @@ function getUserFromClient(client) {
 function getRefreshToken(refreshToken) {
   debug('-------getRefreshToken-------');
 
-  if (!refreshToken || refreshToken === 'undefined') return false;
+  if (!refreshToken || refreshToken === 'undefined') {
+    return false;
+  }
 
   return oauth_refresh_token
     .findOne({
@@ -526,7 +540,7 @@ function getRefreshToken(refreshToken) {
       ],
     })
     .then(function(savedRT) {
-      var tokenTemp = {
+      const tokenTemp = {
         user: savedRT ? savedRT.User : {},
         client: savedRT ? savedRT.OauthClient : {},
         expires: savedRT ? new Date(savedRT.expires) : null,
@@ -535,9 +549,9 @@ function getRefreshToken(refreshToken) {
         scope: savedRT ? savedRT.scope : '',
       };
       if (savedRT.User) {
-        tokenTemp.user.dataValues['type'] = 'user';
+        tokenTemp.user.dataValues.type = 'user';
       } else if (savedRT.Iot) {
-        tokenTemp.user.dataValues['type'] = 'iot';
+        tokenTemp.user.dataValues.type = 'iot';
       }
 
       return tokenTemp;
@@ -557,14 +571,12 @@ function create_oauth_response(
 ) {
   debug('-------create_oauth_response-------');
 
-  var type;
+  let type;
   if (identity) {
     type = identity.type || identity.dataValues.type;
   }
 
   if (type === 'user') {
-    var user_info = require('../templates/oauth_response/oauth_user_response.json');
-
     user_info.username = identity.username;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
@@ -577,33 +589,26 @@ function create_oauth_response(
 
     return search_user_info(user_info, action, resource, authzforce, req_app);
   } else if (type === 'iot') {
-    var iot_info = require('../templates/oauth_response/oauth_iot_response.json');
-
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 
     return search_iot_info(iot_info);
-  } else {
-    return search_app_info(application_id);
   }
+  return search_app_info(application_id);
 }
 
 function search_app_info(application_id) {
   debug('-------search_app_info-------');
 
-  return new Promise(function(resolve, reject) {
-    resolve({
-      app_id: application_id,
-    });
+  return Promise.resolve({
+    app_id: application_id,
   });
 }
 
 function search_iot_info(iot_info) {
   debug('-------search_iot_info-------');
 
-  return new Promise(function(resolve, reject) {
-    resolve(iot_info);
-  });
+  return Promise.resolve(iot_info);
 }
 
 // Check if user has enabled the application to read their details
@@ -611,32 +616,32 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
   debug('-------search_user_info-------');
 
   return new Promise(function(resolve, reject) {
-    var promise_array = [];
+    const promise_array = [];
 
     // Insert search trusted applications promise
-    var search_trusted_apps = trusted_applications(req_app);
+    const search_trusted_apps = trusted_applications(req_app);
     promise_array.push(search_trusted_apps);
 
     // Insert search search roles promise
-    var search_roles = user_roles(user_info.id, user_info.app_id);
+    const search_roles = user_roles(user_info.id, user_info.app_id);
     promise_array.push(search_roles);
 
     // Insert search permissions promise to generate decison
     if (action && resource) {
-      var search_permissions = search_roles.then(function(roles) {
+      const search_permissions = search_roles.then(function(roles) {
         return user_permissions(roles.all, user_info.app_id, action, resource);
       });
       promise_array.push(search_permissions);
     } else if (config_authzforce.enabled && authzforce) {
       // Search authzforce if level 3 of security is enabled
-      var search_authzforce = app_authzforce_domain(user_info.app_id);
+      const search_authzforce = app_authzforce_domain(user_info.app_id);
       promise_array.push(search_authzforce);
     }
 
     Promise.all(promise_array)
       .then(function(values) {
-        var trusted_apps = values[0];
-        var roles = values[1];
+        const trusted_apps = values[0];
+        const roles = values[1];
 
         if (req_app) {
           if (req_app !== user_info.app_id) {
@@ -657,7 +662,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
             user_info.authorization_decision = 'Deny';
           }
         } else if (config_authzforce.enabled && authzforce) {
-          var authzforce_domain = values[2];
+          const authzforce_domain = values[2];
           if (authzforce_domain) {
             user_info.app_azf_domain = authzforce_domain.az_domain;
           }
@@ -670,6 +675,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
         resolve(user_info);
       })
       .catch(function(error) {
+        debug('Error: ', error);
         reject({
           message: 'Internal error',
           code: 500,
@@ -683,12 +689,12 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
 function user_roles(user_id, app_id) {
   debug('-------user_roles-------');
 
-  var promise_array = [];
+  const promise_array = [];
 
   // Search organizations in wich user is member or owner
   promise_array.push(
     models.user_organization.findAll({
-      where: { user_id: user_id },
+      where: { user_id },
       include: [
         {
           model: models.organization,
@@ -701,9 +707,9 @@ function user_roles(user_id, app_id) {
   // Search roles for user or the organization to which the user belongs
   promise_array.push(
     promise_array[0].then(function(organizations) {
-      var search_role_organizations = [];
+      const search_role_organizations = [];
       if (organizations.length > 0) {
-        for (var i = 0; i < organizations.length; i++) {
+        for (let i = 0; i < organizations.length; i++) {
           search_role_organizations.push({
             organization_id: organizations[i].organization_id,
             role_organization: organizations[i].role,
@@ -712,10 +718,7 @@ function user_roles(user_id, app_id) {
       }
       return models.role_assignment.findAll({
         where: {
-          [Op.or]: [
-            { [Op.or]: search_role_organizations },
-            { user_id: user_id },
-          ],
+          [Op.or]: [{ [Op.or]: search_role_organizations }, { user_id }],
           oauth_client_id: app_id,
           role_id: { [Op.notIn]: ['provider', 'purchaser'] },
         },
@@ -739,25 +742,25 @@ function user_roles(user_id, app_id) {
 
   return Promise.all(promise_array)
     .then(function(values) {
-      var role_assignment = values[1];
+      const role_assignment = values[1];
 
-      var user_app_info = { user: [], organizations: [], all: [] };
+      const user_app_info = { user: [], organizations: [], all: [] };
 
-      for (i = 0; i < role_assignment.length; i++) {
-        var role = role_assignment[i].Role.dataValues;
+      for (let i = 0; i < role_assignment.length; i++) {
+        const role = role_assignment[i].Role.dataValues;
 
         user_app_info.all.push(role.id);
 
         if (role_assignment[i].Organization) {
-          var organization = role_assignment[i].Organization.dataValues;
-          var index = user_app_info.organizations
+          const organization = role_assignment[i].Organization.dataValues;
+          const index = user_app_info.organizations
             .map(function(e) {
               return e.id;
             })
             .indexOf(organization.id);
 
           if (index < 0) {
-            organization['roles'] = [role];
+            organization.roles = [role];
             user_app_info.organizations.push(organization);
           } else {
             user_app_info.organizations[index].roles.push(role);
@@ -771,6 +774,7 @@ function user_roles(user_id, app_id) {
       return Promise.resolve(user_app_info);
     })
     .catch(function(error) {
+      debug('Error: ', error);
       return Promise.reject({
         message: 'Internal error',
         code: 500,
@@ -794,13 +798,12 @@ function user_permissions(roles_id, app_id, action, resource) {
           where: {
             id: permissions.map(elem => elem.permission_id),
             oauth_client_id: app_id,
-            action: action,
-            resource: resource,
+            action,
+            resource,
           },
         });
-      } else {
-        return [];
       }
+      return [];
     });
 }
 
@@ -816,9 +819,8 @@ function trusted_applications(app_id) {
     .then(function(trusted_apps) {
       if (trusted_apps.length > 0) {
         return trusted_apps.map(id => id.trusted_oauth_client_id);
-      } else {
-        return [];
       }
+      return [];
     });
 }
 
@@ -836,7 +838,7 @@ function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
   if (scope) {
-    var requested_scopes = scope.split(',');
+    const requested_scopes = scope.split(',');
     if (
       requested_scopes.includes('bearer') &&
       requested_scopes.includes('jwt')
@@ -852,9 +854,8 @@ function validateScope(user, client, scope) {
         : false;
     }
     return requested_scopes;
-  } else {
-    return ['bearer'];
   }
+  return ['bearer'];
 }
 
 function verifyScope(token, scope) {
@@ -864,22 +865,22 @@ function verifyScope(token, scope) {
 }
 
 module.exports = {
-  getAccessToken: getAccessToken,
-  getAuthorizationCode: getAuthorizationCode,
-  getClient: getClient,
-  getRefreshToken: getRefreshToken,
-  getUser: getUser,
-  getIdentity: getIdentity,
-  getUserFromClient: getUserFromClient,
-  revokeAuthorizationCode: revokeAuthorizationCode,
-  revokeRefreshToken: revokeRefreshToken,
-  revokeAccessToken: revokeAccessToken,
-  saveToken: saveToken,
-  saveAuthorizationCode: saveAuthorizationCode,
-  validateScope: validateScope,
-  verifyScope: verifyScope,
-  create_oauth_response: create_oauth_response,
-  user_roles: user_roles,
-  user_permissions: user_permissions,
-  trusted_applications: trusted_applications,
+  getAccessToken,
+  getAuthorizationCode,
+  getClient,
+  getRefreshToken,
+  getUser,
+  getIdentity,
+  getUserFromClient,
+  revokeAuthorizationCode,
+  revokeRefreshToken,
+  revokeAccessToken,
+  saveToken,
+  saveAuthorizationCode,
+  validateScope,
+  verifyScope,
+  create_oauth_response,
+  user_roles,
+  user_permissions,
+  trusted_applications,
 };

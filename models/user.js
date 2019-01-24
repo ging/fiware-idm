@@ -1,12 +1,12 @@
 // User model
-var config = require('../config.js');
+const config = require('../config.js');
 
 // Vars for encrypting
-var crypto = require('crypto');
-var key = config.password_encryption.key;
+const crypto = require('crypto');
+const key = config.password_encryption.key;
 
 module.exports = function(sequelize, DataTypes) {
-  var User = sequelize.define(
+  const User = sequelize.define(
     'User',
     {
       id: {
@@ -41,8 +41,8 @@ module.exports = function(sequelize, DataTypes) {
         validate: {
           notEmpty: { msg: 'email' },
           isEmail: { msg: 'emailInvalid' },
-          isUnique: function(value, next) {
-            var self = this;
+          isUnique(value, next) {
+            const self = this;
             User.find({ where: { email: value } })
               .then(function(user) {
                 if (user && self.id !== user.id) {
@@ -62,13 +62,13 @@ module.exports = function(sequelize, DataTypes) {
       password: {
         type: DataTypes.STRING(40),
         validate: { notEmpty: { msg: 'password1' } },
-        set: function(password) {
-          var salt = crypto
+        set(password) {
+          const salt = crypto
             .randomBytes(16)
             .toString('hex')
             .slice(0, 16);
 
-          var encripted = crypto
+          let encripted = crypto
             .createHmac('sha1', salt)
             .update(password)
             .digest('hex');
@@ -104,12 +104,12 @@ module.exports = function(sequelize, DataTypes) {
       },
       scope: {
         type: DataTypes.STRING(2000),
-        get: function() {
+        get() {
           return this.getDataValue('scope')
             ? this.getDataValue('scope').split(',')
             : [];
         },
-        set: function(val) {
+        set(val) {
           this.setDataValue('scope', val ? val.toString() : null);
         },
       },
@@ -122,7 +122,7 @@ module.exports = function(sequelize, DataTypes) {
   );
 
   User.prototype.verifyPassword = function(password) {
-    var encripted = crypto
+    const encripted = crypto
       .createHmac('sha1', this.salt ? this.salt : key)
       .update(password)
       .digest('hex');

@@ -23,8 +23,8 @@ before_install:
  - sudo mysql_upgrade -u root -ptest
  - sudo service mysql restart
 
-# before_script:
- # - npm run lint
+before_script:
+ - npm run lint
 
 after_script: 
   - npm run test:coveralls

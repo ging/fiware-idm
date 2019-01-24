@@ -4,6 +4,7 @@ public/img/users
 public/img/organizations
 public/stylesheets/style.css
 npm-debug.log
-config.js
+coverage/
 certs/
 helpers/custom_authentication_driver.js
+.eslintcache

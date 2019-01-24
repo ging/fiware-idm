@@ -16,7 +16,7 @@ Keyrock (in conjunction with other security components such as
 OAuth2-based authentication and authorization security to your services and
 applications.
 
-The roadmap of this FIWARE GE is described [here](https://github.com/ging/fiware-idm/master/roadmap.md)
+The roadmap of this FIWARE GE is described [here](https://github.com/ging/fiware-idm/blob/master/roadmap.md)
 
 This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for

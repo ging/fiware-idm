@@ -18,7 +18,7 @@
     "lint": "eslint . --cache",
     "lint:text": "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",
     "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js *.js",
-    "prettier:text": "prettier 'README.md' '**/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
+    "prettier:text": "prettier '*.md' '**/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
     "test:coverage": "istanbul cover _mocha -- --recursive 'test/**/*.js' --reporter spec --exit",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
@@ -88,7 +88,7 @@
     "textlint": "^11.0.1",
     "textlint-rule-common-misspellings": "^1.0.1",
     "textlint-rule-no-dead-link": "^4.4.1",
-    "textlint-rule-terminology": "^1.1.29",
+    "textlint-rule-terminology": "^1.1.30",
     "textlint-rule-write-good": "^1.6.2",
     "timekeeper": "0.0.5"
   },

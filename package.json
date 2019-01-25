@@ -5,9 +5,20 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./bin/www",
-    "create_db": "sequelize --env database db:create",
-    "migrate_db": "sequelize --env database db:migrate",
-    "seed_db": "sequelize --env database db:seed:all"
+    "debug": "sudo DEBUG=idm:*,oauth2-server:*  nodemon --ignore 'public/' --ignore 'views/' start",
+    "create_db": "./node_modules/.bin/sequelize --env database db:create",
+    "migrate_db": "./node_modules/.bin/sequelize --env database db:migrate",
+    "seed_db": "./node_modules/.bin/sequelize --env database db:seed:all",
+    "create_migration": "./node_modules/.bin/sequelize migration:generate --name",
+    "undo_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo",
+    "undo_all_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo:all",
+    "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
+    "test": "mocha --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
+    "test:watch": "npm run test -- -w ./lib",
+    "lint": "eslint . --cache",
+    "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js *.js",
+    "test:coverage": "istanbul cover _mocha -- --recursive 'test/**/*.js' --reporter spec --exit",
+    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -19,30 +30,32 @@
     "csurf": "^1.9.0",
     "debug": "~2.6.3",
     "ejs": "~2.5.7",
-    "express": "~4.15.2",
+    "express": "^4.16.4",
     "express-force-ssl": "^0.3.2",
     "express-partials": "^0.3.0",
     "express-session": "^1.15.6",
     "gravatar": "^1.6.0",
     "http": "0.0.0",
     "https": "^1.0.0",
+    "i18n-express": "^1.1.3",
     "is-hex": "^1.1.3",
-    "jimp": "^0.2.28",
+    "jimp": "^0.6.0",
     "jsonwebtoken": "^8.3.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.11",
     "method-override": "^2.3.9",
     "mime-types": "^2.1.21",
-    "morgan": "~1.8.1",
+    "morgan": "^1.9.1",
     "multer": "^1.3.0",
     "mysql2": "^1.4.2",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.11.0",
     "node-sass-middleware": "~0.11.0",
     "nodemailer": "~4.1.0",
     "nodemailer-smtp-transport": "~2.7.4",
+    "nodemon": "^1.18.9",
     "oauth2-server": "git+https://github.com/ging/node-oauth2-server#3.0.4",
     "pg": "^7.5.0",
     "request": "^2.85.0",
-    "sequelize": "^4.41.0",
+    "sequelize": "^4.22.0",
     "sequelize-cli": "^4.0.0",
     "serve-favicon": "~2.4.2",
     "underscore": "^1.8.3",
@@ -53,20 +66,34 @@
     "xmlbuilder": "~2.2.0",
     "xmldom": "^0.1.0"
   },
-  "description": "[![License badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Documentation badge](https://img.shields.io/badge/docs-stable-brightgreen.svg?style=flat)](http://fiware-idm.readthedocs.org/en/stable/) [![Docker badge](https://img.shields.io/docker/pulls/fiware/idm.svg)](https://hub.docker.com/r/fiware/idm/) [![Support badge]( https://img.shields.io/badge/support-sof-yellowgreen.svg)](http://stackoverflow.com/questions/tagged/fiware)",
-  "main": "app.js",
-  "directories": {
-    "doc": "doc",
-    "lib": "lib"
+  "devDependencies": {
+    "coveralls": "^3.0.2",
+    "chai": "3.5.0",
+    "closure-linter-wrapper": "1.0.1",
+    "eslint": "^5.6.0",
+    "eslint-config-tamia": "^6.0.1",
+    "eslint-plugin-prettier": "^3.0.0",
+    "jshint": "~2.9.6",
+    "husky": "^1.1.0",
+    "istanbul": "1.0.0-alpha.2",
+    "lint-staged": "^7.3.0",
+    "mocha": "^2.5.3",
+    "nock": "9.0.14",
+    "prettier": "^1.14.2",
+    "should": "8.4.0",
+    "sinon": "1.17.4",
+    "sinon-chai": "2.8.0",
+    "timekeeper": "0.0.5"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ging/fiware-idm.git"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
-  "author": "",
-  "bugs": {
-    "url": "https://github.com/ging/fiware-idm/issues"
-  },
-  "homepage": "https://github.com/ging/fiware-idm#readme",
-  "devDependencies": {}
+  "lint-staged": {
+    "*.js": [
+      "prettier --parser flow --single-quote --trailing-comma es5 --write",
+      "git add"
+    ]
+  }
 }

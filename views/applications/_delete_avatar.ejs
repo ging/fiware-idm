@@ -1,10 +1,10 @@
 <!-- Form to delete the avatar of an application -->
 <div id="delete_avatar" class="modal in" style="top: 0px; display: none;" aria-hidden="false">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content">            
             <div class="modal-header">
                 <a class="close" data-dismiss="modal">×</a>
-                <h3>Delete uploaded image</h3>
+                <h3><%=translation.applications.delete_avatar.title%></h3>
             </div>
             <form id="delete_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/applications/<%= application.id %>/edit/delete_avatar/" method="POST" enctype="">
                 <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
@@ -14,13 +14,13 @@
                         </fieldset>
                     </div>
                     <div class="right">
-                        <p>Are you sure you want to delete this image?</p>
-                        <p>You can upload it again whenever you want.</p>
+                        <p><%=translation.applications.delete_avatar.content01%></p>
+                        <p><%=translation.applications.delete_avatar.content02%></p>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Confirm</button>
-                    <a class="btn btn-default secondary cancel">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><%=translation.applications.delete_avatar.confirm_btn%></button>
+                    <a class="btn btn-default secondary cancel"><%=translation.applications.delete_avatar.cancel_btn%></a>
                 </div>
             </form>
         </div>

@@ -63,6 +63,7 @@ exports.index = function(req, res) {
 							 'image',
 							 'url', 
 							 'redirect_uri', 
+							 'redirect_sign_out_uri',
 							 'grant_type', 
 							 'response_type',
 							 'token_types',
@@ -119,11 +120,12 @@ exports.create = function(req, res) {
 		application.jwt_secret = (req.body.application.token_types.includes('jwt')) ? crypto.randomBytes(16).toString('hex').slice(0,16) : null 
 
 		var create_application = application.save({fields: ['id', 
-										  'secret', 
-										  'name', 
-									      'description', 
-									      'url', 
-									      'redirect_uri', 
+										  'secret',
+										  'name',
+									      'description',
+									      'url',
+									      'redirect_uri',
+									      'redirect_sign_out_uri',
 									      'image',
 									      'grant_type',
 									      'token_types',
@@ -180,6 +182,7 @@ exports.update = function(req, res) {
 		req.application.description = (req.body.application.description) ? req.body.application.description : req.application.description
 		req.application.url = (req.body.application.url) ? req.body.application.url : req.application.url
 		req.application.redirect_uri = (req.body.application.redirect_uri) ? req.body.application.redirect_uri : req.application.redirect_uri
+		req.application.redirect_sign_out_uri = (req.body.application.redirect_sign_out_uri) ? req.body.application.redirect_sign_out_uri : req.application.redirect_sign_out_uri
 		req.application.client_type = (req.body.application.client_type) ? req.body.application.client_type : req.application.client_type
 		req.application.image = 'default'
 

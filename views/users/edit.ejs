@@ -4,7 +4,7 @@
             <div id="" class="edit">
                 <div class="modal-header">
                     <h3>
-                        Personal Information
+                        <%=translation.users.edit_user.title01%>
                     </h3>
                 </div>
                 <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/info?_method=put" method="POST" enctype="">
@@ -14,7 +14,7 @@
                             <fieldset>
                                 <input id="id_userID" name="userID" type="hidden" value="">
                                 <div class="form-group required">
-                                    <label class="control-label  required" for="id_username">Username</label>
+                                    <label class="control-label  required" for="id_username"><%=translation.users.edit_user.label01%></label>
                                     <div class="">
                                         <input class="form-control" id="id_username" maxlength="64" name="user[username]" type="text" value="<%= user.username %>">
                                     </div>
@@ -22,12 +22,12 @@
                                 <% if (error) { %>
                                     <% if (error.errors) { %>
                                         <% if (error.errors[0].message === "username") { -%>
-                                            <span class="help-block alert alert-danger ">This input is required.</span>
-                                        <% } -%>                                        
+                                            <span class="help-block alert alert-danger "><%=translation.users.edit_user.required_field%></span>
+                                        <% } -%>
                                     <% } %>
                                 <% } %>
                                 <div class="form-group">
-                                    <label class="control-label" for="id_description">About Me</label>
+                                    <label class="control-label" for="id_description"><%=translation.users.edit_user.label02%></label>
                                     <div class="">
                                         <textarea class="form-control" cols="40" id="id_description" name="user[description]" value="" rows="4" style="overflow: hidden; word-wrap: break-word; height: 150px;"><%= user.description %>
                                         </textarea>
@@ -35,7 +35,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="id_website">Website</label>
+                                    <label class="control-label" for="id_website"><%=translation.users.edit_user.label03%></label>
                                     <div class="">
                                         <input class="form-control" id="id_website" name="user[website]" type="url" value="<%= user.website %>">
                                     </div>
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Update User </button>
+                        <button type="submit" class="btn btn-primary"><%=translation.users.edit_user.update_btn%></button>
                     </div>
                 </form>
             </div>
@@ -55,7 +55,7 @@
             <div id="" class="edit update-avatar-modal">
                 <div class="modal-header">
                     <h3>
-                        Personal Avatar
+                        <%=translation.users.edit_user.title02%>
                     </h3>
                 </div>
                 <div class="modal-body clearfix">
@@ -69,17 +69,17 @@
                                     <form id="use_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar?_method=put" method="POST" enctype="">
                                         <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                                             <% if (user.gravatar) { -%>
-                                                <button class="btn btn-primary always-enabled avatar-button" name="use_uploaded_image" type="submit" id="use_avatar">Use this image</button>
+                                                <button class="btn btn-primary always-enabled avatar-button" name="use_uploaded_image" type="submit" id="use_avatar"><%=translation.users.edit_user.use_image_btn%></button>
                                             <% } else { -%>
-                                                <button class="btn btn-primary always-enabled avatar-button" disabled="disabled" name="use_uploaded_image" type="submit">Use this image</button>    
+                                                <button class="btn btn-primary always-enabled avatar-button" disabled="disabled" name="use_uploaded_image" type="submit"><%=translation.users.edit_user.use_image_btn%></button>
                                             <% } -%>
                                     </form>
                                     <form id="delete_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar?_method=delete" method="POST" enctype="">
                                         <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                                             <% if (user.image != "/img/logos/original/user.png") { -%>
-                                                <button type="button" class="btn btn-primary always-enabled ajax-modal" data-toggle="modal" data-target="#delete_avatar">Delete this image</button>
+                                                <button type="button" class="btn btn-primary always-enabled ajax-modal" data-toggle="modal" data-target="#delete_avatar"><%=translation.users.edit_user.delete_image_btn%></button>
                                             <% } else { -%>
-                                                <button type="button" class="btn btn-primary always-enabled ajax-modal" disabled="disabled">Delete this image</button>
+                                                <button type="button" class="btn btn-primary always-enabled ajax-modal" disabled="disabled"><%=translation.users.edit_user.delete_image_btn%></button>
                                             <% } -%>
                                     </form>
                             </div>
@@ -93,18 +93,18 @@
                                     </div>
                                     <div class="profile_actions">
                                         <% if (user.gravatar) { -%>
-                                            <button class="btn btn-primary always-enabled avatar-button" id="use_gravatar" name="use_gravatar" type="submit" disabled="disabled">Use Gravatar</button> 
+                                            <button class="btn btn-primary always-enabled avatar-button" id="use_gravatar" name="use_gravatar" type="submit" disabled="disabled"><%=translation.users.edit_user.use_gravatar_btn%></button>
                                         <% } else { -%>
-                                            <button class="btn btn-primary always-enabled avatar-button" id="use_gravatar" name="use_gravatar" type="submit">Use Gravatar</button>
+                                            <button class="btn btn-primary always-enabled avatar-button" id="use_gravatar" name="use_gravatar" type="submit"><%=translation.users.edit_user.use_gravatar_btn%></button>
                                         <% } -%>
                                         <div class="clear_right"></div>
-                                        <a class="btn btn-primary always-enabled" href="https://en.gravatar.com/emails/" target="_blank">Edit at Gravatar</a>
-                                    </div>                                    
+                                        <a class="btn btn-primary always-enabled" href="https://en.gravatar.com/emails/" target="_blank"><%=translation.users.edit_user.edit_gravatar_btn%></a>
+                                    </div>
                                 <% } else { -%>
                                     <div class="profile_img">
                                         <img id="gravatar-preview" src="/img/gravatar.png" width="100" height="100" alt="gravatar default">
                                     </div>
-                                    <p class="profile_txt">We're compatible with Gravatar. Create your profile <a href="https://en.gravatar.com/" target="_blank">here</a>!</p>
+                                    <p class="profile_txt"><%=translation.users.edit_user.link01%><a href='https://en.gravatar.com/' target='_blank'><%=translation.users.edit_user.link02%></a></p>
                                 <% } -%>
                             </form>
                         </div>
@@ -113,7 +113,7 @@
                         <form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar" method="POST" enctype="multipart/form-data">
                             <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
                                 <fieldset>
-                                    <h6>Upload an image</h6> 
+                                    <h6><%=translation.users.edit_user.label04%></h6>
                                     <input id="id_x" name="x" type="hidden">
                                     <input id="id_y" name="y" type="hidden">
                                     <input id="id_w" name="w" type="hidden">
@@ -131,9 +131,9 @@
                                     <img id="avatar-update" src="/img/logos/original/app.png">
                                 </div>
                                 <div class="col-md-2 update_actions" style="display:none;">
-                                    <h6>Select the part of the image you want to use as avatar.</h6>
-                                    <button id="crop-and-use-button" class="btn btn-primary always-enabled" name="crop_and_use" type="submit">Crop and use</button>
-                                    <a href="#" class="btn btn-default always-enabled" id="cancel-crop-button">Cancel</a>
+                                    <h6><%=translation.users.edit_user.label05%></h6>
+                                    <button id="crop-and-use-button" class="btn btn-primary always-enabled" name="crop_and_use" type="submit"><%=translation.users.edit_user.crop_btn%></button>
+                                    <a href="#" class="btn btn-default always-enabled" id="cancel-crop-button"><%=translation.users.edit_user.cancel_btn%></a>
                                 </div>
                             </div>
                         </form>

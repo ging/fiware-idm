@@ -14,15 +14,15 @@ MAINTAINER FIWARE Identity Manager Team. DIT-UPM
 
 WORKDIR /opt
 
-ENV IDM_HOST "http://localhost:3000" \
-    IDM_PORT "3000" \
-    IDM_PDP_LEVEL "basic" \
-    DATABASE_HOST "localhost" \
-    IDM_DB_NAME "idm" \
-    IDM_DIALECT "mysql" \
-    IDM_EMAIL_HOST "localhost" \
-    IDM_EMAIL_PORT "25" \
-    IDM_EMAIL_ADDRESS "noreply@localhost"
+ENV IDM_HOST="http://localhost:3000" \
+    IDM_PORT="3000" \
+    IDM_PDP_LEVEL="basic" \
+    DATABASE_HOST="localhost" \
+    IDM_DB_NAME="idm" \
+    IDM_DIALECT="mysql" \
+    IDM_EMAIL_HOST="localhost" \
+    IDM_EMAIL_PORT="25" \
+    IDM_EMAIL_ADDRESS="noreply@localhost"
 
 # IMPORTANT: For a Production Environment Use Docker Secrets to define
 #  these values and add _FILE to the name of the variable.

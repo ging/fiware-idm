@@ -14,7 +14,7 @@ config.https = {
 };
 
 // Config email list type to use domain filtering
-config.email_list_type = null   // whitelist or blacklist 
+config.email_list_type = null   // whitelist or blacklist
 
 // Secret for user sessions in web
 config.session = {
@@ -32,7 +32,10 @@ config.oauth2 = {
     authorization_code_lifetime: 5 * 60,            // Five minutes
     access_token_lifetime: 60 * 60,                 // One hour
     ask_authorization: true,                        // Prompt a message to users to allow the application to read their details
-    refresh_token_lifetime: 60 * 60 * 24 * 14       // Two weeks
+    refresh_token_lifetime: 60 * 60 * 24 * 14,      // Two weeks
+    unique_url: false                               // This parameter allows to verify that an application with the same url 
+                                                    // does not exist when creating or editing it. If there are already applications 
+                                                    // with the same URL, they should be changed manually
 }
 
 // Config api parameters

@@ -1,16 +1,22 @@
-	<% 
-  var presentation = 'auth/_presentation';
+<% 
   var login = 'auth/_login';
+  var presentation = 'auth/_presentation';;
 
   if (site.theme !== 'default') {
-    if(fs.existsSync('themes/' + site.theme + '/templates/_presentation.ejs')) 
-      presentation = '../themes/' + site.theme + '/templates/_presentation';
-    if(fs.existsSync('themes/' + site.theme + '/templates/_login.ejs')) 
+    if(fs.existsSync('themes/' + site.theme + '/templates/_login.ejs')) {
       login = '../themes/' + site.theme + '/templates/_login';
+    }
+    if(fs.existsSync('themes/' + site.theme + '/templates/_presentation.ejs')) {
+      presentation = '../themes/' + site.theme + '/templates/_presentation';
+    }
   }
 %>
 
 <div class="row">
-	<%- include(login)%>
-	<%- include(presentation)  %>
+  <% if (login) {%>
+    <%- include(login)%>
+  <% } %>
+  <% if (presentation) {%>
+    <%- include(presentation)%>
+  <% } %>
 </div>

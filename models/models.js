@@ -17,7 +17,7 @@ var sequelize = new Sequelize(database.database, database.username, database.pas
 sequelize
   .authenticate()
   .then(() => {
-    console.log("Connection has been established seccessfully");
+    console.log("Connection has been established successfully");
   })
   .catch(err => {
     console.log("Unable to connect to the database: ", err);
@@ -38,7 +38,7 @@ if (external_auth.enabled) {
   ext_sequelize
     .authenticate()
     .then(() => {
-      console.log("Connection has been established seccessfully");
+      console.log("Connection has been established successfully");
     })
     .catch(err => {
       console.log("Unable to connect to the database: ", err);

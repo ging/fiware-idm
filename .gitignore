@@ -1,5 +1,7 @@
 node_modules/
 public/stylesheets/style.css
 npm-debug.log
+coverage/
 certs/
 helpers/custom_authentication_driver.js
+.eslintcache

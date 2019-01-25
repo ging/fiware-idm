@@ -1,5 +1,5 @@
 var express = require('express');
-var csrf = require('csurf')
+var csrf = require('csurf');
 var bodyParser = require('body-parser');
 
 var router = express.Router();
@@ -27,6 +27,11 @@ router.get('/', csrfProtection, function(req, res, next) {
   	res.render('index', { errors: [], csrfToken: req.csrfToken() });
   }
 });
+
+router.get('/language', function(req, res, next) {
+  var callback_url = req.header('Referer') || '/idm';
+  res.redirect(callback_url);
+})
 
 // Routes when user is logged
 //  - Create sessions for users

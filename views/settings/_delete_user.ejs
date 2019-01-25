@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <a href="#" class="close" data-dismiss="modal">×</a>
-                <h3>Cancel account</h3>
+                <h3><%=translation.settings.delete_user.title%></h3>
             </div>
             <form id="cancel_account_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/settings/cancel?_method=delete" method="POST" enctype="">
                 <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
@@ -14,12 +14,12 @@
                         </fieldset>
                     </div>
                     <div class="right">
-                        <p>Are you sure? Cancelling your account implies the deletion of all your resources. This action is permanent.</p>
+                        <p><%=translation.settings.delete_user.content%></p>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Confirm">
-                    <button data-dismiss="modal" class="btn btn-default secondary cancel">Cancel</button>
+                    <input type="submit" class="btn btn-primary" value="<%=translation.settings.delete_user.confirm_btn%>">
+                    <button data-dismiss="modal" class="btn btn-default secondary cancel"><%=translation.settings.delete_user.cancel_btn%></button>
                 </div>
             </form>
         </div>

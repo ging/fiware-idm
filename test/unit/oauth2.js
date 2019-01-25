@@ -14,17 +14,15 @@ const should = require('should');
 const request = require('request');
 const utils = require('../utils');
 
-describe('OAuth Token Request: ', function() {
-  describe('Client Credentials: When requesting with valid client id and secret', function() {
-    const client_credentials_valid = utils.readExampleFile(
-      './test/oauth_requests/client_credentials_valid.json'
-    );
+const oauth = utils.readExampleFile('./test/templates/oauth2.json');
 
+describe('OAuth Token Request: ', function() {
+  describe('1) Client Credentials: When requesting with valid client id and secret', function() {
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: client_credentials_valid.body,
-      headers: client_credentials_valid.headers,
+      body: oauth.requests.client_credentials_valid.body,
+      headers: oauth.headers,
     };
 
     it('should return a 200 OK', function(done) {
@@ -39,16 +37,12 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Client Credentials: When requesting with an invalid client id or secret', function() {
-    const client_credentials_invalid = utils.readExampleFile(
-      './test/oauth_requests/client_credentials_invalid.json'
-    );
-
+  describe('2) Client Credentials: When requesting with an invalid client id or secret', function() {
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: client_credentials_invalid.body,
-      headers: client_credentials_invalid.headers,
+      body: oauth.requests.client_credentials_invalid.body,
+      headers: oauth.fake_headers,
     };
 
     it('should return a 400 Invalid client', function(done) {
@@ -60,16 +54,12 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Resource Owner Password Credentials: When requesting with a valid username and password', function() {
-    const password_credentials_valid = utils.readExampleFile(
-      './test/oauth_requests/password_credentials_valid.json'
-    );
-
+  describe('3) Resource Owner Password Credentials: When requesting with a valid username and password', function() {
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: password_credentials_valid.body,
-      headers: password_credentials_valid.headers,
+      body: oauth.requests.password_credentials_valid.body,
+      headers: oauth.headers,
     };
 
     it('should return a 200 OK', function(done) {
@@ -81,16 +71,12 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Resource Owner Password Credentials: When requesting with an invalid username and password', function() {
-    const password_credentials_invalid = utils.readExampleFile(
-      './test/oauth_requests/password_credentials_invalid.json'
-    );
-
+  describe('4) Resource Owner Password Credentials: When requesting with an invalid username and password', function() {
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: password_credentials_invalid.body,
-      headers: password_credentials_invalid.headers,
+      body: oauth.requests.password_credentials_invalid.body,
+      headers: oauth.headers,
     };
 
     it('should return a 400 Invalid grant', function(done) {
@@ -104,14 +90,13 @@ describe('OAuth Token Request: ', function() {
 
   /*
   // This only works one time, because once an authorization code is used is no longer valid		
-  describe('Authorization Code Credentials: When requesting with a valid code', function() {
-  	const authorization_code_credentials_valid = utils.readExampleFile('./test/oauth_requests/authorization_code_credentials_valid.json');
+  describe('5) Authorization Code Credentials: When requesting with a valid code', function() {
 
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: authorization_code_credentials_valid.body,
-      headers: authorization_code_credentials_valid.headers,
+      body: oauth.requests.authorization_code_credentials_valid.body,
+      headers: oauth.headers
     };
 
     it('should return a 200 OK', function(done) {
@@ -126,16 +111,12 @@ describe('OAuth Token Request: ', function() {
     });
   });*/
 
-  describe('Authorization Code Credentials: When requesting with an invalid code', function() {
-    const authorization_code_credentials_invalid = utils.readExampleFile(
-      './test/oauth_requests/authorization_code_credentials_invalid.json'
-    );
-
+  describe('6) Authorization Code Credentials: When requesting with an invalid code', function() {
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: authorization_code_credentials_invalid.body,
-      headers: authorization_code_credentials_invalid.headers,
+      body: oauth.requests.authorization_code_credentials_invalid.body,
+      headers: oauth.headers,
     };
 
     it('should return a 400 Invalid grant', function(done) {
@@ -147,16 +128,12 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Authorization Code Credentials: When requesting with an expired code', function() {
-    const authorization_code_credentials_expired = utils.readExampleFile(
-      './test/oauth_requests/authorization_code_credentials_expired.json'
-    );
-
+  describe('7) Authorization Code Credentials: When requesting with an expired code', function() {
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: authorization_code_credentials_expired.body,
-      headers: authorization_code_credentials_expired.headers,
+      body: oauth.requests.authorization_code_credentials_expired.body,
+      headers: oauth.headers,
     };
 
     it('should return a 400 Invalid grant', function(done) {
@@ -170,14 +147,13 @@ describe('OAuth Token Request: ', function() {
 
   /*
   // This only works one time, because once refresh token is used is no longer valid
-  describe('Refresh Token Credentials: When requesting with a valid refresh token', function() {
-  	const refresh_token_valid = utils.readExampleFile('./test/oauth_requests/refresh_token_valid.json');
+  describe('8) Refresh Token Credentials: When requesting with a valid refresh token', function() {
 
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: refresh_token_valid.body,
-      headers: refresh_token_valid.headers,
+      body: oauth.requests.refresh_token_valid.body,
+      headers: oauth.headers
     };
 
     it('should return a 200 OK', function(done) {
@@ -192,16 +168,12 @@ describe('OAuth Token Request: ', function() {
     });
   });*/
 
-  describe('Refresh Token Credentials: When requesting with an invalid refresh token', function() {
-    const refresh_token_invalid = utils.readExampleFile(
-      './test/oauth_requests/refresh_token_invalid.json'
-    );
-
+  describe('9) Refresh Token Credentials: When requesting with an invalid refresh token', function() {
     const good_token_request = {
       url: config.host + '/oauth2/token',
       method: 'POST',
-      body: refresh_token_invalid.body,
-      headers: refresh_token_invalid.headers,
+      body: oauth.requests.refresh_token_invalid.body,
+      headers: oauth.headers,
     };
 
     it('should return a 400 Invalid grant', function(done) {
@@ -213,16 +185,12 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Revoke Token: When requesting with a valid access token', function() {
-    const revoke_token_valid = utils.readExampleFile(
-      './test/oauth_requests/revoke_token_valid.json'
-    );
-
+  describe('10) Revoke Token: When requesting with a valid access token', function() {
     const good_token_request = {
       url: config.host + '/oauth2/revoke',
       method: 'POST',
-      body: revoke_token_valid.body,
-      headers: revoke_token_valid.headers,
+      body: oauth.requests.revoke_token_valid.body,
+      headers: oauth.headers,
     };
 
     it('should return a 200 OK (it is revoked if valid and if not is ignored)', function(done) {
@@ -234,16 +202,12 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Revoke Token: When requesting with a invalid access token', function() {
-    const revoke_token_invalid = utils.readExampleFile(
-      './test/oauth_requests/revoke_token_invalid.json'
-    );
-
+  describe('11) Revoke Token: When requesting with a invalid access token', function() {
     const good_token_request = {
       url: config.host + '/oauth2/revoke',
       method: 'POST',
-      body: revoke_token_invalid.body,
-      headers: revoke_token_invalid.headers,
+      body: oauth.requests.revoke_token_invalid.body,
+      headers: oauth.headers,
     };
 
     it('should return a 200 even if is invalid token', function(done) {
@@ -255,13 +219,9 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Validate a Token: When requesting with a valid access token', function() {
-    const validate_token_valid = utils.readExampleFile(
-      './test/oauth_requests/validate_token_valid.json'
-    );
-
+  describe('12) Validate a Token: When requesting with a valid access token', function() {
     const good_token_request = {
-      url: config.host + '/user' + validate_token_valid.query,
+      url: config.host + '/user' + oauth.requests.validate_token_valid.query,
       method: 'GET',
     };
 
@@ -277,13 +237,9 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Validate a Token: When requesting with a expired access token', function() {
-    const validate_token_expired = utils.readExampleFile(
-      './test/oauth_requests/validate_token_expired.json'
-    );
-
+  describe('13) Validate a Token: When requesting with a expired access token', function() {
     const good_token_request = {
-      url: config.host + '/user' + validate_token_expired.query,
+      url: config.host + '/user' + oauth.requests.validate_token_expired.query,
       method: 'GET',
     };
 
@@ -296,13 +252,9 @@ describe('OAuth Token Request: ', function() {
     });
   });
 
-  describe('Validate a Token: When requesting with an invalid access token', function() {
-    const validate_token_invalid = utils.readExampleFile(
-      './test/oauth_requests/validate_token_invalid.json'
-    );
-
+  describe('14) Validate a Token: When requesting with an invalid access token', function() {
     const good_token_request = {
-      url: config.host + '/user' + validate_token_invalid.query,
+      url: config.host + '/user' + oauth.requests.validate_token_invalid.query,
       method: 'GET',
     };
 

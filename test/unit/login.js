@@ -14,12 +14,14 @@ const should = require('should');
 const request = require('request');
 const utils = require('../utils');
 
+const login = utils.readExampleFile('./test/templates/login.json');
+
 describe('Log-In: ', function() {
-  describe('When Logging in with a valid username and password', function() {
+  describe('1) When Logging in with a valid username and password', function() {
     const good_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile('./test/auth_requests/goodLogin.json'),
+      json: login.good_login,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -34,11 +36,11 @@ describe('Log-In: ', function() {
     });
   });
 
-  describe('When Logging in with an invalid username and password', function() {
+  describe('2) When Logging in with an invalid username and password', function() {
     const bad_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile('./test/auth_requests/badLogin.json'),
+      json: login.bad_login,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -53,13 +55,11 @@ describe('Log-In: ', function() {
     });
   });
 
-  describe('When Logging in with an real username and bad password', function() {
+  describe('3) When Logging in with an real username and bad password', function() {
     const wrong_password_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile(
-        './test/auth_requests/wrongPasswordLogin.json'
-      ),
+      json: login.wrong_password_login,
       headers: {
         'Content-Type': 'application/json',
       },

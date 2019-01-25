@@ -1,0 +1,39 @@
+{
+	"create": {
+		"valid_app_body": {
+			"application": {
+		    	"name": "Test_application 1",
+		    	"description": "description",
+		    	"redirect_uri": "http://localhost/login",
+		    	"url": "http://localhost",
+		    	"grant_type": [
+			      	"authorization_code",
+			      	"implicit",
+			      	"password"
+		    	],
+		    	"token_types": [
+			      	"jwt",
+			      	"permanent"
+		    	]
+			}
+		}
+	},
+	"read": {
+		"application_id": "tutorial-dckr-site-0000-xpresswebapp"		
+	},
+	"update": {
+		"application_id": "tutorial-dckr-site-0000-xpresswebapp",
+		"valid_app_body": {
+			"application": {
+		        "name": "new name",
+		        "description": "new description",
+		        "redirect_uri": "new redirect uri",
+		        "token_types": ["permanent"]
+		        "grant_type": [
+		            "authorization_code",
+		            "password"
+		        ]
+		    }
+		}
+	}
+}

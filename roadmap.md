@@ -26,6 +26,10 @@ and incorporated in the next release of the product planned for February 2019:
 
 - Sign out endpoint: for signing out user's sessions from OAuth 2.0 clients.
 
+- Unit tests: to be run in CI
+
+- PostgreSQL compatibility: for supporting this technology as an alternative of MySQL.
+
 ## Medium term
 
 The following list of features are planned to be addressed in the medium term,

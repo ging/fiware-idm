@@ -18,7 +18,7 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for April 2019:
+and incorporated in the next release of the product planned for February 2019:
 
 - CORS Support: for being able to send HTTP requests from Web applications to Keyrock's REST API.
 
@@ -26,15 +26,15 @@ and incorporated in the next release of the product planned for April 2019:
 
 - Sign out endpoint: for signing out user's sessions from OAuth 2.0 clients.
 
-- Improvements in AZF integration: general improvements for better supporting new Keyrock's features
-
-- OpenID Connect: support to this standard as an extension of the current OAuth 2.0 implementation.
-
 ## Medium term
 
 The following list of features are planned to be addressed in the medium term,
 typically within the subsequent release(s) generated in the next 9 months
 after next planned release:
+
+- Improvements in AZF integration: general improvements for better supporting new Keyrock's features
+
+- OpenID Connect: support to this standard as an extension of the current OAuth 2.0 implementation.
 
 - UMA integration: support for improvements that UMA provides with respect to the current OAuth 2.0 based authorization mechanism.
 

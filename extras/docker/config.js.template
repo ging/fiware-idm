@@ -67,7 +67,7 @@ config.database  = {
     username: (process.env.IDM_DB_USER || 'root'),
     database: (process.env.IDM_DB_NAME || 'idm'),
     dialect:  (process.env.IDM_DIALECT || 'mysql'),
-    port:     (process.env.IDM_DB_PORT || undefined)
+    port:     (process.env.IDM_DB_PORT || undefined),
     define: { charset: 'utf8', dialectOptions: { collate: 'utf8_general_ci' }},
   };
   if (config.database.dialect != 'mysql') {

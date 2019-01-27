@@ -65,13 +65,14 @@ config.database = {
   database: process.env.IDM_DB_NAME || 'idm',
   dialect: process.env.IDM_DIALECT || 'mysql',
   port: process.env.IDM_DB_PORT || undefined,
-  define: { charset: 'utf8', dialectOptions: { collate: 'utf8_general_ci' }},
+  //define: { charset: 'utf8mb4', dialectOptions: { collate: 'utf8mb4_unicode_ci' }},
+  define: { charset: 'latin1', dialectOptions: { collate: 'latin1_bin' }},
 };
 if (config.database.dialect != 'mysql') {
   console.log('>>>>>>>>>>>>>>> remove options define: charset/collate')
   config.database.define = {};
 } else {
-  console.log('>>>>>>>>>>>>>>> keep mysql options define: : ', config.database.define.toString())
+  console.log('>>>>>>>>>>>>>>> keep mysql options define: : ', config.database.define);
 };
 
 // External user authentication

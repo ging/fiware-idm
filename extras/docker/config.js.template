@@ -73,6 +73,8 @@ config.database  = {
   if (config.database.dialect != 'mysql') {
     console.log('>>>>>>>>>>>>>>> remove options define: charset/collate')
     config.database.define = {};
+  } else {
+    console.log('>>>>>>>>>>>>>>> mysql options define: : ', onfig.database.define.toString())    
   };
 // External user authentication
 config.external_auth = {

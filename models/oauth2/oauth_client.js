@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     }, name: {
-      type: DataTypes.STRING(255) + ((sequelize.options.dialect === 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
+      type: DataTypes.STRING(255) + ((sequelize.options.dialect === 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
       validate: { notEmpty: {msg: "name"}}
     }, description: {
       type: DataTypes.TEXT() + ((sequelize.options.dialect === 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),

@@ -38,7 +38,6 @@ file_env 'IDM_EX_AUTH_DB_USER'
 file_env 'IDM_EX_AUTH_DB_PASS'
 file_env 'DATABASE_HOST'
 
-env
 
 if [[ $IDM_SESSION_SECRET ==  "nodejs_idm" ]] || [[ IDM_ENCRYPTION_KEY == "nodejs_idm'" ]]; then
 	echo "***********************************************"

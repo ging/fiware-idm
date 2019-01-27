@@ -65,7 +65,13 @@ config.database = {
   database: process.env.IDM_DB_NAME || 'idm',
   dialect: process.env.IDM_DIALECT || 'mysql',
   port: process.env.IDM_DB_PORT || undefined,
+  define: { charset: 'utf8', dialectOptions: { collate: 'utf8_general_ci' }},
 };
+if (config.database.dialect != 'mysql') {
+  console.log('>>>>>>>>>>>>>>> remove options define: charset/collate')
+  config.database.define = {};
+};
+
 // External user authentication
 config.external_auth = {
   enabled: process.env.IDM_EX_AUTH_ENABLED || false,
@@ -81,6 +87,7 @@ config.external_auth = {
     port: process.env.IDM_EX_AUTH_PORT || undefined,
   },
 };
+
 
 // Email configuration
 config.mail = {

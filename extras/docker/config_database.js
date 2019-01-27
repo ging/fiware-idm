@@ -9,6 +9,7 @@ var sequelize = new Sequelize(database.database, database.username, database.pas
 {
     host: database.host,
     dialect: database.dialect,
+    define: database.define,
     port: (database.port !== 'default') ? database.port : undefined
 }
 );
@@ -51,7 +52,7 @@ sequelize
                         "This user must be deleted when running on a production instance");
                         console.log( "****************");
                     }
-                    
+
                     console.log("Database seeded")
                     process.exit()
 

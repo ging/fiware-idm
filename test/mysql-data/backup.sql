@@ -621,7 +621,7 @@ CREATE TABLE `user` (
   `website` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `image` varchar(255) DEFAULT 'default',
   `gravatar` tinyint(1) DEFAULT '0',
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `password` varchar(40) DEFAULT NULL,
   `salt` varchar(40) DEFAULT NULL,
   `date_password` datetime DEFAULT NULL,

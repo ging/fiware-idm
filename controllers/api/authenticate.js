@@ -259,7 +259,7 @@ var create_token = function(req, res, next) {
 		debug('Error: ' + error)
 		// If an actual 401 has been raised, use the existing message.
 		// But always return a 401 - Unauthorized error to the user.
-		// This avoid information leakage. 
+		// This avoid information leakage.
 		if (!error.error || error.error.code !== 401){
 			error = { error: {message: 'Invalid email or password', code: 401, title: 'Unauthorized'}}
 		}
@@ -300,7 +300,6 @@ function search_identity(name, password) {
 	return new Promise(function(resolve, reject) {
 
 		models.helpers.search_pep_or_user(name).then(function(identity) {
-			console.log("authenticate.js search_pep_or_user(name).then(function(identity) identity: ", identity);
 			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {

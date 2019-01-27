@@ -621,7 +621,7 @@ CREATE TABLE `user` (
   `website` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `image` varchar(255) DEFAULT 'default',
   `gravatar` tinyint(1) DEFAULT '0',
-  `email` varchar(255) DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `password` varchar(40) DEFAULT NULL,
   `salt` varchar(40) DEFAULT NULL,
   `date_password` datetime DEFAULT NULL,
@@ -737,7 +737,7 @@ CREATE TABLE `user_registration_profile` (
   `reset_expires` datetime DEFAULT NULL,
   `verification_key` varchar(255) DEFAULT NULL,
   `verification_expires` datetime DEFAULT NULL,
-  `user_email` varchar(255) DEFAULT NULL,
+  `user_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_email` (`user_email`),
   CONSTRAINT `user_registration_profile_ibfk_1` FOREIGN KEY (`user_email`) REFERENCES `user` (`email`) ON DELETE CASCADE ON UPDATE CASCADE

@@ -22,7 +22,7 @@ exports.search_pep_or_user = function(id) {
                  + "SELECT id, 'pep_proxy' as Source FROM pep_proxy WHERE id=:id;"
 
     if (sequelize.getDialect() === 'mysql') {
-         query = query.replace('"','`')
+      query = query.replace(/"/gi,'`')
     }
     console.log('search_pep_or_user >>>>>>>>>>>>>>>>>>>>query:\n', query)
 
@@ -36,7 +36,7 @@ exports.search_iot_or_user = function(id) {
                  + "SELECT id, 'iot' as Source FROM iot WHERE id=:id;"
 
     if (sequelize.getDialect() === 'mysql') {
-         query = query.replace('"','`')
+      query = query.replace(/"/gi,'`')
     }
     console.log('search_iot_or_user >>>>>>>>>>>>>>>>>>>>query:\n', query)
     return sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT})

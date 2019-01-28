@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         primaryKey: true
     }, name: {
-        type: DataTypes.STRING(64) + ((sequelize.options.dialect === 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+        type: DataTypes.STRING(64) + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
         validate: {
             notEmpty: {msg: "error_empty_name"}
         }

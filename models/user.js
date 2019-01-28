@@ -13,12 +13,12 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         }, username: {
-            type: DataTypes.STRING(64) + ((sequelize.options.dialect === 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+            type: DataTypes.STRING(64) + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
             validate: { notEmpty: {msg: "username"}}
         }, description: {
-            type: DataTypes.TEXT()  + ((sequelize.options.dialect === 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
+            type: DataTypes.TEXT()  + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
         }, website: {
-            type: DataTypes.STRING(2000)  + ((sequelize.options.dialect === 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
+            type: DataTypes.STRING(2000)  + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
         }, image: {
             type: DataTypes.STRING,
             defaultValue: 'default'

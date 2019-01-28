@@ -7,13 +7,13 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         }, name: {
-            type: DataTypes.STRING(64) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+            type: DataTypes.STRING(64) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
             validate: { notEmpty: {msg: "name"}}
         }, description: {
-            type: DataTypes.TEXT() + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+            type: DataTypes.TEXT() + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
             validate: { notEmpty: {msg: "description"}}
         }, website: {
-            type: DataTypes.STRING(2000)  + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
+            type: DataTypes.STRING(2000)  + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
         }, image: {
             type: DataTypes.STRING,
             defaultValue: 'default'

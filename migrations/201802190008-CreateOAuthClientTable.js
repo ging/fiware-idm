@@ -10,19 +10,19 @@ module.exports = {
                   //defaultValue: Sequelize.UUIDV4,
                   primaryKey: true
                 }, name: {
-                  type: Sequelize.STRING(255) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+                  type: Sequelize.STRING(255) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
                   validate: { notEmpty: {msg: "name"}}
                 }, description: {
-                  type: Sequelize.TEXT() + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+                  type: Sequelize.TEXT() + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
                   validate: { notEmpty: {msg: "description"}}
                 }, secret: {
                   type: Sequelize.UUID,
                   defaultValue: Sequelize.UUIDV4
                 }, url: {
-                  type: Sequelize.STRING(2000) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+                  type: Sequelize.STRING(2000) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
                   validate: { notEmpty: {msg: "url"}}
                 }, redirect_uri: {
-                  type: Sequelize.STRING(2000) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+                  type: Sequelize.STRING(2000) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
                   validate: { notEmpty: {msg: "redirectUri"}}
                 }, image: {
                   type: Sequelize.STRING,

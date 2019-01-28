@@ -31,7 +31,7 @@ exports.search_pep_or_user = function(id) {
 
 // Helper to find info about iot or user
 exports.search_iot_or_user = function(id) {
-    var query = "SELECT email, 'user' as Source FROM \"user\" WHERE email=:id
+    var query = "SELECT email, 'user' as Source FROM \"user\" WHERE email=:id"
                  + " UNION ALL "
                  + "SELECT id, 'iot' as Source FROM iot WHERE id=:id;"
 

@@ -8,16 +8,16 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     }, name: {
-      type: DataTypes.STRING(255) + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+      type: DataTypes.STRING(255) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
       validate: { notEmpty: {msg: "name"}}
     }, description: {
-      type: DataTypes.TEXT() + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+      type: DataTypes.TEXT() + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
       validate: { notEmpty: {msg: "description"}}
     }, secret: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     }, url: {
-      type: DataTypes.STRING(2000) + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+      type: DataTypes.STRING(2000) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
       validate: {
         notEmpty: {msg: "url"},
         isUnique: function (value, next) {
@@ -37,10 +37,10 @@ module.exports = function(sequelize, DataTypes) {
         }
       }
     }, redirect_uri: {
-      type: DataTypes.STRING(2000) + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+      type: DataTypes.STRING(2000) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
       validate: { notEmpty: {msg: "redirectUri"}}
     },redirect_sign_out_uri: {
-      type: DataTypes.STRING(2000) + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+      type: DataTypes.STRING(2000) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
     }, image: {
       type: DataTypes.STRING,
       defaultValue: 'default'

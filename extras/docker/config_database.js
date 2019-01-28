@@ -22,7 +22,7 @@ sequelize
 })
 .catch(err => {
 
-    // added '3D000' error code for postgres cause not reference in dialect as 'ER_BAD_DB_ERROR'
+    // added '3D000' error code for postgres cause not referenced in dialect as 'ER_BAD_DB_ERROR'
     if (err.original.code === 'ER_BAD_DB_ERROR' || err.original.code === '3D000') {
         exec('npm run-script create_db', function(error, stdout, stderr){
             if (error) {

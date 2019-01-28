@@ -10,7 +10,7 @@ module.exports = {
                     unique: true,
                     primaryKey: true
                 }, name: {
-                    type: Sequelize.STRING(64) + ((sequelize.options.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+                    type: Sequelize.STRING(64) + ((sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
                     validate: {
                         notEmpty: {msg: "error_empty_name"}
                     }

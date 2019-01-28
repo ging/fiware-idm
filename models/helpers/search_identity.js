@@ -19,6 +19,9 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
 exports.search_pep_or_user = function(id) {
     var query = "SELECT email, 'user' as source FROM \"user\" WHERE email=:id"
     + " UNION ALL SELECT id, 'pep_proxy' as source FROM pep_proxy WHERE id=:id;"
+    if (sequelize.getDialect() == 'mysql') {
+        query = query.replace('"','')
+    }
 
     return sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT})
 }
@@ -27,6 +30,9 @@ exports.search_pep_or_user = function(id) {
 exports.search_iot_or_user = function(id) {
     var query = "SELECT email, 'user' as source FROM \"user\" WHERE email=:id"
     + " UNION ALL SELECT id, 'iot' as source FROM iot WHERE id=:id;"
+    if (sequelize.getDialect() == 'mysql') {
+        query = query.replace('"','')
+    }
 
     return sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT})
 }

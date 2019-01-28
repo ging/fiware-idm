@@ -64,6 +64,8 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 				  and + '\n' +
 				  limit + '\n' +
 				  offset
-
+    if (sequelize.getDialect() == 'mysql') {
+        query = query.replace('"','')
+    }
     return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})
 }

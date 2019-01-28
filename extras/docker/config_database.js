@@ -9,7 +9,7 @@ var sequelize = new Sequelize(database.database, database.username, database.pas
 {
     host: database.host,
     dialect: database.dialect,
-    define: database.define,
+    //define: database.define,
     port: (database.port !== 'default') ? database.port : undefined
 }
 );

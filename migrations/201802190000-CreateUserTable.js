@@ -10,12 +10,12 @@ module.exports = {
                     unique: true
                     //defaultValue: Sequelize.UUIDV4
                 }, username: {
-                    type: Sequelize.STRING(64) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+                    type: Sequelize.STRING(64) + ((queryInterface.sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
                     validate: { notEmpty: {msg: "username"}}
                 }, description: {
-                    type: Sequelize.TEXT() + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
+                    type: Sequelize.TEXT() + ((queryInterface.sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
                 }, website: {
-                    type: Sequelize.STRING(2000) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
+                    type: Sequelize.STRING(2000) + ((queryInterface.sequelize.dialect == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
                 }, image: {
                     type: Sequelize.STRING,
                     defaultValue: 'default'

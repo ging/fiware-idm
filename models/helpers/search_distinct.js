@@ -8,9 +8,7 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize(config.database, config.username, config.password,
   {
     host: config.host,
-    dialect: config.dialect,
-    define: config.define,
-    port: (config.port !== 'default') ? config.port : undefined
+    dialect: config.dialect
   }
 );
 
@@ -27,18 +25,16 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 	}
 
 	var from = 'FROM ' + table + ''
-  var join='',on='';
 	if (join_table === 'user') {
-		join = 'RIGHT JOIN (SELECT * FROM "'+join_table+'" WHERE "username" LIKE :key) AS "'+join_table+'"'
-    on = 'ON '+table+'.'+join_table+'_id="'+join_table+'".id'
+		var join = 'RIGHT JOIN (SELECT * FROM "'+join_table+'" WHERE username LIKE :key) AS "'+join_table+'"'
 	} else {
-		join = 'RIGHT JOIN (SELECT * FROM '+join_table+' WHERE name LIKE :key) AS '+join_table+''
-    on = 'ON '+table+'.'+join_table+'_id='+join_table+'.id'
+		var join = 'RIGHT JOIN (SELECT * FROM '+join_table+' WHERE name LIKE :key) AS '+join_table+''
 	}
+	var on = 'ON '+table+'.'+join_table+'_id="'+join_table+'".id'
 	var where = 'WHERE '+entity_type+'_id=:entity_id'
 	var and = ''
 	if (table==='role_assignment') {
-		if (['user', 'organization', '"user"'].includes(join_table) && !role) {
+		if (['user', 'organization'].includes(join_table) && !role) {
 			and = 'AND '+join_table+'_id IS NOT NULL'
 		} else if (join_table === 'oauth_client' && role !== undefined) {
 			if (role === 'other')  {
@@ -64,8 +60,7 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 				  and + '\n' +
 				  limit + '\n' +
 				  offset
-    if (sequelize.getDialect() == 'mysql') {
-        query = query.replace('"','')
-    }
+
+
     return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})
 }

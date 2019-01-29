@@ -215,7 +215,6 @@ var create_token = function(req, res, next) {
 
 		return Promise.all(methods)
 				.then(function(values) {
-
 					if (methods.length === 2) {
 						if (values[0].id !== values[1].id) {
 							return Promise.reject({ error: {message: 'Token not correspond to user', code: 401, title: 'Unauthorized'}})
@@ -225,7 +224,6 @@ var create_token = function(req, res, next) {
 				}).catch(function(error) { return Promise.reject(error) })
 
 	}).then(function(authenticated) {
-
 		var token_id = uuid.v4()
 		var expires = new Date((new Date()).getTime() + 1000*config.api.token_lifetime)
 		var row = {access_token: token_id, expires: expires, valid: true}
@@ -236,7 +234,7 @@ var create_token = function(req, res, next) {
 		}
 
 		models.auth_token.create(row).then(function(auth_row) {
-			var response_body = {
+		var response_body = {
 				token: {
 					methods: response_methods,
 					expires_at: expires

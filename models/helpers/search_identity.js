@@ -1,3 +1,4 @@
+var debug = require('debug')('idm:search_identity')
 var config = require('../../config.js').database
 
 
@@ -14,15 +15,14 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
   }
 );
 
-
 // Helper to find info about pep proxy or user
 exports.search_pep_or_user = function(id) {
-    var query = "SELECT email, 'user' as Source FROM \`user\` WHERE email=:id"
+    var query = "SELECT email, 'user' as source FROM \"user\" WHERE email=:id"
                  + " UNION ALL "
-                 + "SELECT id, 'pep_proxy' as Source FROM pep_proxy WHERE id=:id;"
+                 + "SELECT id, 'pep_proxy' as source FROM pep_proxy WHERE id=:id;"
 
-    if (sequelize.getDialect() === 'postgres') {
-      query = query.replace(/\`/gi,'"')
+    if (sequelize.getDialect() === 'mysql') {
+      query = query.replace(/\"/gi,'')
     }
 
     return sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT})
@@ -30,12 +30,12 @@ exports.search_pep_or_user = function(id) {
 
 // Helper to find info about iot or user
 exports.search_iot_or_user = function(id) {
-    var query = "SELECT email, 'user' as Source FROM \`user\` WHERE email=:id"
+    var query = "SELECT email, 'user' as source FROM \"user\" WHERE email=:id"
                  + " UNION ALL "
-                 + "SELECT id, 'iot' as Source FROM iot WHERE id=:id;"
+                 + "SELECT id, 'iot' as source FROM iot WHERE id=:id;"
 
-    if (sequelize.getDialect() === 'postgres') {
-      query = query.replace(/\`/gi,'"')
+    if (sequelize.getDialect() === 'mysql') {
+      query = query.replace(/\"/gi,'')
     }
 
     return sequelize.query(query, {replacements: {id: id}, type: Sequelize.QueryTypes.SELECT})

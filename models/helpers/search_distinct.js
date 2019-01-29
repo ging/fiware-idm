@@ -1,3 +1,4 @@
+var debug = require('debug')('idm:search_distinct')
 var config = require('../../config.js').database
 
 
@@ -8,7 +9,9 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize(config.database, config.username, config.password,
   {
     host: config.host,
-    dialect: config.dialect
+    dialect: config.dialect,
+    define: config.define,
+    port: (config.port !== 'default') ? config.port : undefined
   }
 );
 
@@ -17,7 +20,7 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
 module.exports = function(table, join_table, entity_id, entity_type, key, offset_value, count_rows, role) {
 	var select = 'SELECT DISTINCT '+table+'.'+join_table+'_id,'
 	if (join_table === 'user') {
-		select = select + '`user`.id, `user`.username, `user`.image, `user`.gravatar, `user`.email'
+		select = select + '\`user\`.id, \`user\`.username, \`user\`.image, \`user\`.gravatar, \`user\`.email'
 	} else if (join_table === 'organization') {
 		select = select + 'organization.id, organization.name, organization.image, organization.description'
 	} else if (join_table === 'oauth_client') {
@@ -26,11 +29,11 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
 
 	var from = 'FROM ' + table + ''
 	if (join_table === 'user') {
-		var join = 'RIGHT JOIN (SELECT * FROM `'+join_table+'` WHERE username LIKE :key) AS `'+join_table+'`'
+		var join = 'RIGHT JOIN (SELECT * FROM \`'+join_table+'\` WHERE username LIKE :key) AS \`'+join_table+'\`'
 	} else {
 		var join = 'RIGHT JOIN (SELECT * FROM '+join_table+' WHERE name LIKE :key) AS '+join_table+''
 	}
-	var on = 'ON '+table+'.'+join_table+'_id=`'+join_table+'`.id'
+	var on = 'ON '+table+'.'+join_table+'_id=\`'+join_table+'\`.id'
 	var where = 'WHERE '+entity_type+'_id=:entity_id'
 	var and = ''
 	if (table==='role_assignment') {
@@ -65,5 +68,5 @@ module.exports = function(table, join_table, entity_id, entity_type, key, offset
     query = query.replace(/\`/gi,'"')
   }
 
-    return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})
+  return sequelize.query(query, {replacements: {entity_id: entity_id, key: key, offset: offset_value, role: role}, type: Sequelize.QueryTypes.SELECT})
 }

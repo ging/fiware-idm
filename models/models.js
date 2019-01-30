@@ -1,6 +1,7 @@
 const path = require('path');
 const database = require('../config').database;
 const external_auth = require('../config').external_auth;
+const logs = require('../config.js').debug;
 const debug = require('debug')('idm:models');
 
 // Load ORM Model
@@ -14,6 +15,7 @@ const sequelize = new Sequelize(
   {
     host: database.host,
     dialect: database.dialect,
+    logging: logs,
     port: database.port !== 'default' ? database.port : undefined,
   }
 );

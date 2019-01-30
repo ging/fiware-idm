@@ -5,6 +5,9 @@
 *
 */
 
+// Load database configuration before
+require('../../config/config_database');
+
 // const keyrock = require('../../bin/www');
 const config = require('../../../config.js');
 const should = require('should');
@@ -15,6 +18,7 @@ const login = utils.readExampleFile('./test/templates/login.json').good_login;
 const applications = utils.readExampleFile(
   './test/templates/api/applications.json'
 );
+
 let token;
 
 describe('API - Applications: ', function() {
@@ -76,10 +80,30 @@ describe('API - Applications: ', function() {
   });
 
   describe('3) When reading application info', function() {
-    it('should return a 201 OK', function(done) {
+    let application_id;
+
+    // eslint-disable-next-line snakecase/snakecase
+    beforeEach(function(done) {
+      const create_application = {
+        url: config.host + '/v1/applications',
+        method: 'POST',
+        body: JSON.stringify(applications.read.create),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(create_application, function(error, response, body) {
+        const json = JSON.parse(body);
+        application_id = json.application.id;
+        done();
+      });
+    });
+
+    it('should return a 200 OK', function(done) {
       const read_application = {
-        url:
-          config.host + '/v1/applications/' + applications.read.application_id,
+        url: config.host + '/v1/applications/' + application_id,
         method: 'GET',
         headers: {
           'X-Auth-token': token,
@@ -96,13 +120,16 @@ describe('API - Applications: ', function() {
     });
   });
 
-  describe('4) When creating an application', function() {
-    it('should return a 201 OK', function(done) {
+  describe('4) When updating an application', function() {
+    let application_id;
+    let application_name;
+
+    // eslint-disable-next-line snakecase/snakecase
+    beforeEach(function(done) {
       const create_application = {
-        url:
-          config.host + '/v1/applications' + applications.update.application_id,
-        method: 'PATCH',
-        body: JSON.stringify(applications.update.valid_app_body),
+        url: config.host + '/v1/applications',
+        method: 'POST',
+        body: JSON.stringify(applications.update.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
@@ -110,10 +137,70 @@ describe('API - Applications: ', function() {
       };
 
       request(create_application, function(error, response, body) {
+        const json = JSON.parse(body);
+        application_id = json.application.id;
+        application_name = json.application.name;
+        done();
+      });
+    });
+
+    it('should return a 200 OK', function(done) {
+      const update_application = {
+        url: config.host + '/v1/applications/' + application_id,
+        method: 'PATCH',
+        body: JSON.stringify(applications.update.new_values),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(update_application, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('application');
-        response.statusCode.should.equal(201);
+        should(json).have.property('values_updated');
+        const response_name = json.values_updated.name;
+        should.notEqual(application_name, response_name);
+        response.statusCode.should.equal(200);
+        done();
+      });
+    });
+  });
+
+  describe('4) When deleting an application', function() {
+    let application_id;
+
+    // eslint-disable-next-line snakecase/snakecase
+    beforeEach(function(done) {
+      const create_application = {
+        url: config.host + '/v1/applications',
+        method: 'POST',
+        body: JSON.stringify(applications.delete.create),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(create_application, function(error, response, body) {
+        const json = JSON.parse(body);
+        application_id = json.application.id;
+        done();
+      });
+    });
+
+    it('should return a 204 OK', function(done) {
+      const delete_application = {
+        url: config.host + '/v1/applications/' + application_id,
+        method: 'DELETE',
+        headers: {
+          'X-Auth-token': token,
+        },
+      };
+
+      request(delete_application, function(error, response) {
+        should.not.exist(error);
+        response.statusCode.should.equal(204);
         done();
       });
     });

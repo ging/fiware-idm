@@ -29,7 +29,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Set logs in development
-app.use(logger('dev'));
+if (config.debug) {
+  app.use(logger('dev'));
+}
 
 // Disabled header
 app.disable('x-powered-by');
@@ -70,7 +72,7 @@ app.use(
   sass_middleware({
     src: path.join(__dirname, 'themes/' + styles),
     dest: path.join(__dirname, 'public/stylesheets'),
-    debug: true,
+    debug: config.debug,
     outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
     prefix: '/stylesheets', // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
   })

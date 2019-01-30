@@ -226,7 +226,7 @@ exports.create = function(req, res) {
     .then(function(user) {
       const user_response = user.dataValues;
       delete user_response.password;
-      res.status(201).json({ user_response });
+      res.status(201).json({ user: user_response });
     })
     .catch(function(error) {
       debug('Error: ' + error);

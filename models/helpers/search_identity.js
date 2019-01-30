@@ -1,4 +1,5 @@
 const config = require('../../config.js').database;
+const logs = require('../../config.js').debug;
 
 // Load ORM Model
 const Sequelize = require('sequelize');
@@ -10,6 +11,7 @@ const sequelize = new Sequelize(
   config.password,
   {
     host: config.host,
+    logging: logs,
     dialect: config.dialect,
   }
 );

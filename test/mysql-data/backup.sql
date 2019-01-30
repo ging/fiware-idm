@@ -19,8 +19,8 @@
 -- Table structure for table `SequelizeMeta`
 --
 
-CREATE DATABASE idm;
-USE idm
+-- CREATE DATABASE IF NOT EXISTS idm_test;
+USE idm_test;
 
 DROP TABLE IF EXISTS `SequelizeMeta`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

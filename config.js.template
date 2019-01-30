@@ -1,12 +1,17 @@
 const config = {};
 
+function to_boolean(env, default_value){
+    return (env !== undefined) ? (env.toLowerCase() === 'true') : default_value;
+}
+
 config.port = (process.env.IDM_PORT || 3000 );
 config.host = (process.env.IDM_HOST || 'http://localhost:' + config.port);
 
+config.debug = true;
 
 // HTTPS enable
 config.https = {
-    enabled: (process.env.IDM_HTTPS_ENABLED || false),
+    enabled: to_boolean(process.env.IDM_HTTPS_ENABLED, false),
     cert_file: 'certs/idm-2018-cert.pem',
     key_file: 'certs/idm-2018-key.pem',
     ca_certs: [],
@@ -52,7 +57,7 @@ config.api = {
 config.authorization = {
     level: (process.env.IDM_PDP_LEVEL || 'basic'),     // basic|advanced 
     authzforce: {
-        enabled: (process.env.IDM_AUTHZFORCE_ENABLED || false),
+        enabled: to_boolean(process.env.IDM_AUTHZFORCE_ENABLED, false),
         host: (process.env.IDM_AUTHZFORCE_HOST || 'localhost'),
         port: (process.env.IDM_AUTHZFORCE_PORT||  8080),
     } 
@@ -99,7 +104,7 @@ config.site = {
 
 // Config eIDAS Authentication
 config.eidas = {
-    enabled:       (process.env.IDM_EIDAS_ENABLED || false),
+    enabled:       to_boolean(process.env.IDM_EIDAS_ENABLED, false),
     gateway_host:  (process.env.IDM_EIDAS_GATEWAY_HOST || 'localhost'),
     node_host:      (process.env.IDM_EIDAS_NODE_HOST || 'https://se-eidas.redsara.es/EidasNode/ServiceProvider'),
     metadata_expiration: 60 * 60 * 24 * 365 // One year
@@ -117,4 +122,3 @@ if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  ==
 
 
 module.exports = config;
-

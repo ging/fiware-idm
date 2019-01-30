@@ -104,7 +104,6 @@ function getClient(clientId, clientSecret) {
       if (!client) {
         return null;
       } //new Error("client not found");
-
       const clientWithGrants = client;
 
       clientWithGrants.grants = clientWithGrants.grant_type;

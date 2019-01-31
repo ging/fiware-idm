@@ -1,4 +1,4 @@
-// User model 
+// User model
 var config = require('../config.js');
 
 // Vars for encrypting
@@ -7,18 +7,18 @@ var key = config.password_encryption.key;
 
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define(
-        'User', 
+        'User',
         { id: {
             type: DataTypes.UUID,
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         }, username: {
-            type: DataTypes.STRING(64) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+            type: DataTypes.STRING(64) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
             validate: { notEmpty: {msg: "username"}}
         }, description: {
-            type: DataTypes.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+            type: DataTypes.TEXT()  + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
         }, website: {
-            type: DataTypes.STRING(2000) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+            type: DataTypes.STRING(2000)  + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
         }, image: {
             type: DataTypes.STRING,
             defaultValue: 'default'
@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
         }, email: {
             type: DataTypes.STRING,
             unique: true,
-            validate: { 
+            validate: {
                 notEmpty: {msg: "email"},
                 isEmail: {msg: "emailInvalid"},
                 isUnique: function (value, next) {
@@ -91,13 +91,13 @@ module.exports = function(sequelize, DataTypes) {
             tableName: 'user',
             timestamps: false,
             underscored: true
-        } 
+        }
     );
 
     User.prototype.verifyPassword = function(password) {
         var encripted = crypto.createHmac('sha1', (this.salt) ? this.salt : key).update(password).digest('hex');
         return encripted === this.password;
-    }   
-        
+    }
+
     return User;
 }

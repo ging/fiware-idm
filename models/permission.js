@@ -8,24 +8,24 @@ module.exports = function(sequelize, DataTypes) {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     }, name: {
-        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-        validate: { 
+        type: DataTypes.STRING(255) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+        validate: {
             notEmpty: {msg: "error_empty_name"}
         }
     }, description: {
-        type: DataTypes.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
-        validate: { 
+        type: DataTypes.TEXT() + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
+        validate: {
             notEmpty: {msg: "error_empty_description"}
         }
     }, is_internal: {
         type: DataTypes.BOOLEAN,
-        defaultValue: 0
+        defaultValue: false
     }, action: {
-        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+        type: DataTypes.STRING(255)  + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
     }, resource: {
-        type: DataTypes.STRING(255) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+        type: DataTypes.STRING(255)  + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
     }, xml: {
-        type: DataTypes.TEXT() + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+        type: DataTypes.TEXT()  + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':'')
     }
     }, {
         tableName: 'permission',

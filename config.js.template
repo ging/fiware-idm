@@ -33,8 +33,8 @@ config.oauth2 = {
     access_token_lifetime: 60 * 60,                 // One hour
     ask_authorization: true,                        // Prompt a message to users to allow the application to read their details
     refresh_token_lifetime: 60 * 60 * 24 * 14,      // Two weeks
-    unique_url: false                               // This parameter allows to verify that an application with the same url 
-                                                    // does not exist when creating or editing it. If there are already applications 
+    unique_url: false                               // This parameter allows to verify that an application with the same url
+                                                    // does not exist when creating or editing it. If there are already applications
                                                     // with the same URL, they should be changed manually
 }
 
@@ -45,30 +45,31 @@ config.api = {
 
 // Configure Policy Decision Point (PDP)
 //  - IdM can perform basic policy checks (HTTP verb + path)
-//  - AuthZForce can perform basic policy checks as well as advanced 
+//  - AuthZForce can perform basic policy checks as well as advanced
 // If authorization level is advanced you can create rules, HTTP verb+resource and XACML advanced. In addition
 // you need to have an instance of authzforce deployed to perform advanced authorization request from a Pep Proxy.
 // If authorization level is basic, only HTTP verb+resource rules can be created
 config.authorization = {
-    level: (process.env.IDM_PDP_LEVEL || 'basic'),     // basic|advanced 
+    level: (process.env.IDM_PDP_LEVEL || 'basic'),     // basic|advanced
     authzforce: {
         enabled: (process.env.IDM_AUTHZFORCE_ENABLED || false),
         host: (process.env.IDM_AUTHZFORCE_HOST || 'localhost'),
         port: (process.env.IDM_AUTHZFORCE_PORT||  8080),
-    } 
+    }
 }
 
 var database_host = (process.env.DATABASE_HOST) ? process.env.DATABASE_HOST : 'localhost'
 
 // Database info
 config.database  = {
-    host:     (process.env.DATABASE_HOST || 'localhost'),      
+    host:     (process.env.DATABASE_HOST || 'localhost'),
     password: (process.env.IDM_DB_PASS || 'idm'),
     username: (process.env.IDM_DB_USER || 'root'),
     database: (process.env.IDM_DB_NAME || 'idm'),
     dialect:  (process.env.IDM_DIALECT || 'mysql'),
     port:     (process.env.IDM_DB_PORT || undefined)
-};
+  };
+
 // External user authentication
 config.external_auth = {
     enabled: (process.env.IDM_EX_AUTH_ENABLED || false ),
@@ -110,11 +111,10 @@ config.eidas = {
 
 if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  === 'nodejs_idm'){
     console.log( "****************");
-    console.log( "WARNING: The current encryption keys match the defaults found in the plaintext " + 
+    console.log( "WARNING: The current encryption keys match the defaults found in the plaintext " +
         "template file - please update for a production instance");
     console.log( "****************");
 }
 
 
 module.exports = config;
-

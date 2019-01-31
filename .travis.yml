@@ -17,7 +17,7 @@ install:
  - npm install
 
 before_install:
- - mysql -e 'CREATE DATABASE IF NOT EXISTS idm;' 
+ - mysql -e 'CREATE DATABASE IF NOT EXISTS idm CHARSET utf8;' 
  - mysql -u root --default-character-set=utf8 idm < test/mysql-data/backup.sql
  - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
  - sudo mysql_upgrade -u root -ptest
@@ -26,6 +26,5 @@ before_install:
 # before_script:
  # - npm run lint
 
-after_script: 
+after_script:
   - npm run test:coveralls
-

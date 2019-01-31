@@ -70,7 +70,7 @@ CREATE TABLE `auth_token` (
 
 LOCK TABLES `auth_token` WRITE;
 /*!40000 ALTER TABLE `auth_token` DISABLE KEYS */;
-INSERT INTO `auth_token` VALUES 
+INSERT INTO `auth_token` VALUES
 ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','2016-07-30 12:04:45',1,'aaaaaaaa-good-0000-0000-000000000000',NULL),
 ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','2016-07-30 12:38:13',1,'bbbbbbbb-good-0000-0000-000000000000',NULL),
 ('cccccccc-cccc-cccc-cccc-cccccccccccc','2016-07-31 09:36:13',1,'cccccccc-good-0000-0000-000000000000',NULL),
@@ -102,7 +102,7 @@ CREATE TABLE `authzforce` (
 
 LOCK TABLES `authzforce` WRITE;
 /*!40000 ALTER TABLE `authzforce` DISABLE KEYS */;
-INSERT INTO `authzforce` VALUES 
+INSERT INTO `authzforce` VALUES
 ('NYP5CukQEei0BgJCrBIBDA','d72f7c1c-b250-431a-82c5-c3afe65a96e8',1,'tutorial-dckr-site-0000-xpresswebapp');
 /*!40000 ALTER TABLE `authzforce` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -209,7 +209,7 @@ CREATE TABLE `oauth_access_token` (
 
 LOCK TABLES `oauth_access_token` WRITE;
 /*!40000 ALTER TABLE `oauth_access_token` DISABLE KEYS */;
-INSERT INTO `oauth_access_token` VALUES 
+INSERT INTO `oauth_access_token` VALUES
 ('15682667caa4bb5ac15056fee3836b2980288bf2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','admin',NULL,NULL),
 ('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','alice',NULL,NULL),
 ('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','bob',NULL,NULL),
@@ -288,7 +288,7 @@ CREATE TABLE `oauth_client` (
 
 LOCK TABLES `oauth_client` WRITE;
 /*!40000 ALTER TABLE `oauth_client` DISABLE KEYS */;
-INSERT INTO `oauth_client` VALUES 
+INSERT INTO `oauth_client` VALUES
 ('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial',
   'FIWARE Application protected by OAuth2 and Keyrock','tutorial-dckr-site-0000-clientsecret',
   'http://localhost:3000','http://localhost:3000/login','default',
@@ -386,7 +386,7 @@ CREATE TABLE `organization` (
 
 LOCK TABLES `organization` WRITE;
 /*!40000 ALTER TABLE `organization` DISABLE KEYS */;
-INSERT INTO `organization` VALUES 
+INSERT INTO `organization` VALUES
 ('security-team-0000-0000-000000000000','Security','Security Group for Store Detectives',NULL,'default'),
 ('managers-team-0000-0000-000000000000','Management','Management Group for Store Managers',NULL,'default');
 /*!40000 ALTER TABLE `organization` ENABLE KEYS */;
@@ -447,7 +447,7 @@ CREATE TABLE `permission` (
 
 LOCK TABLES `permission` WRITE;
 /*!40000 ALTER TABLE `permission` DISABLE KEYS */;
-INSERT INTO `permission` VALUES 
+INSERT INTO `permission` VALUES
 ('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
 ('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
 ('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app'),('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
@@ -484,7 +484,7 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES 
+INSERT INTO `role` VALUES
 ('security-role-0000-0000-000000000000','Security Team',0,'tutorial-dckr-site-0000-xpresswebapp'),
 ('managers-role-0000-0000-000000000000','Management',0,'tutorial-dckr-site-0000-xpresswebapp'),
 ('provider','Provider',1,'idm_admin_app'),('purchaser','Purchaser',1,'idm_admin_app');
@@ -523,7 +523,7 @@ CREATE TABLE `role_assignment` (
 
 LOCK TABLES `role_assignment` WRITE;
 /*!40000 ALTER TABLE `role_assignment` DISABLE KEYS */;
-INSERT INTO `role_assignment` VALUES 
+INSERT INTO `role_assignment` VALUES
 (1,NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','provider',NULL,'96154659-cb3b-4d2d-afef-18d6aec0518e'),
 (2,'member','8ca60ce9-32f9-42d6-a013-a19b3af0c13d','provider','74f5299e-3247-468c-affb-957cda03f0c4',NULL),
 (3,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'admin'),
@@ -563,7 +563,7 @@ CREATE TABLE `role_permission` (
 
 LOCK TABLES `role_permission` WRITE;
 /*!40000 ALTER TABLE `role_permission` DISABLE KEYS */;
-INSERT INTO `role_permission` VALUES 
+INSERT INTO `role_permission` VALUES
 (1,'provider','1'),(2,'provider','2'),(3,'provider','3'),(4,'provider','4'),(5,'provider','5'),(6,'provider','6'),
 (7,'purchaser','5'),
 (8,'security-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
@@ -642,7 +642,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES 
+INSERT INTO `user` VALUES
 ('aaaaaaaa-good-0000-0000-000000000000','alice', 'Alice is the admin',NULL,'default',0,'alice-the-admin@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL),
 ('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager',NULL,'default',0,'bob-the-manager@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
 ('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
@@ -710,7 +710,7 @@ CREATE TABLE `user_organization` (
 
 LOCK TABLES `user_organization` WRITE;
 /*!40000 ALTER TABLE `user_organization` DISABLE KEYS */;
-INSERT INTO `user_organization` VALUES 
+INSERT INTO `user_organization` VALUES
 (2,'owner', 'aaaaaaaa-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
 (3,'owner', 'aaaaaaaa-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
 (4,'owner', 'bbbbbbbb-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),

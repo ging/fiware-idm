@@ -6,12 +6,13 @@ var external_auth = require('../config').external_auth;
 var Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-var sequelize = new Sequelize(database.database, database.username, database.password, 
-  { 
+var sequelize = new Sequelize(database.database, database.username, database.password,
+  {
     host: database.host,
     dialect: database.dialect,
+    define: database.define,
     port: (database.port !== 'default') ? database.port : undefined
-  }      
+  }
 );
 
 sequelize
@@ -26,13 +27,13 @@ sequelize
 if (external_auth.enabled) {
   var ext_sequelize = new Sequelize(
     external_auth.database.database,
-    external_auth.database.username, 
-    external_auth.database.password, 
-    { 
+    external_auth.database.username,
+    external_auth.database.password,
+    {
       host: external_auth.database.host,
       dialect: external_auth.database.dialect,
       port: (external_auth.database.port !== 'default') ? external_auth.database.port : undefined
-    }      
+    }
   );
 
   ext_sequelize
@@ -167,7 +168,7 @@ eidas_credentials.belongsTo(oauth_client, { foreignKey: { allowNull: false, uniq
 
 // Export tables
 exports.user = user;
-if (external_auth.enabled) 
+if (external_auth.enabled)
   exports.user_ext = user_ext;
 exports.user_registration_profile = user_registration_profile;
 exports.organization = organization;

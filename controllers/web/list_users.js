@@ -1,5 +1,7 @@
 var models = require('../../models/models.js');
 var config = require('../../config.js');
+var fs = require('fs');
+var path = require('path');
 var debug = require('debug')('idm:web-list_users_controller')
 
 var email_list =  config.email_list_type ? 

@@ -11,7 +11,7 @@ const config = require('../../config');
 // eslint-disable-next-line no-undef
 before('Create and populate database', function(done) {
   // Mocha default timeout for tests is 2000 and to create database is needed more
-  this.timeout(5000);
+  this.timeout(10000);
 
   return new Promise(function(resolve, reject) {
     const create_database =

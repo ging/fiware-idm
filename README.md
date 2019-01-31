@@ -66,7 +66,7 @@ Keyrock provides both a GUI and an API interface.
 
 ### Software requirements
 
-This GE is based on a javascript environment and SQL databases. In order to run
+This GE is based on a JavaScript environment and SQL databases. In order to run
 the identity manager the following requirements must be installed:
 
 -   node.js
@@ -107,7 +107,7 @@ config.database = {
 };
 ```
 
-5.  To configure the server to listen HTTPs requests, generate certificates
+5.  To configure the server to listen HTTPS requests, generate certificates
     OpenSSL and configure config.js:
 
 ```console
@@ -132,7 +132,7 @@ npm run-script seed_db
 ```
 
 7.  Start server with admin rights (server listens in 3000 port by default or in
-    443 if HTTPs is enabled).
+    443 if HTTPS is enabled).
 
 ```console
 sudo npm start
@@ -171,10 +171,14 @@ based on FIWARE identity. This is posible thanks to
 
 ## Tests
 
-For performing a basic end-to-end test, you have to follow the next steps. A detailed description about how to run tests can be found [here](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
+For performing a basic end-to-end test, you have to follow the next steps. A
+detailed description about how to run tests can be found
+[here](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
 
-1. Verify that the host address of IdM can be reached. By default, web access will show a Login Page.
-2. Acquire a valid username and password and access with those credentials. The resulting web page is the landing page of the IdM KeyRock Portal.
+1. Verify that the host address of IdM can be reached. By default, web access
+   will show a Login Page.
+2. Acquire a valid username and password and access with those credentials. The
+   resulting web page is the landing page of the IdM KeyRock Portal.
 3. Verify that you can view the list of applications, organizations, etc.
 
 ## Advanced Documentation

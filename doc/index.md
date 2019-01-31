@@ -1,13 +1,7 @@
 # Identity Manager - Keyrock
 
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
-[![License: MIT](https://img.shields.io/github/license/ging/fiware-idm.svg)](https://opensource.org/licenses/MIT)
-[![Docker badge](https://img.shields.io/docker/pulls/fiware/idm.svg)](https://hub.docker.com/r/fiware/idm/)
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/search?q=%5Bfiware%5D+keyrock)
-<br>
-[![Documentation](https://img.shields.io/readthedocs/fiware-idm.svg)](https://fiware-idm.readthedocs.io/en/latest/)
-[![Build Status](https://travis-ci.org/ging/fiware-idm.svg?branch=master)](https://travis-ci.org/ging/fiware-idm)
-![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/keyrock.svg)
 
 Keyrock is the FIWARE component responsible for Identity Management. Using
 Keyrock (in conjunction with other security components such as
@@ -19,22 +13,6 @@ applications.
 This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
-
-## Content
-
--   [Background](#background)
-    -   [Software requirements](#software-requirements)
--   [Install](#install)
-    -   [Docker](#docker)
--   [Usage](#usage)
--   [API](#api)
--   [Tests](#tests)
--   [Advanced Documentation](#advanced-documentation)
--   [Changes Introduced in 7.x](#changes-introduced-in-7x)
--   [Quality Assurance](#quality-assurance)
--   [License](#license)
-
----
 
 ## Background
 
@@ -61,7 +39,7 @@ Keyrock provides both a GUI and an API interface.
 
 ### Software requirements
 
-This GE is based on a javascript environment and SQL databases. In order to run
+This GE is based on a JavaScript environment and SQL databases. In order to run
 the identity manager the following requirements must be installed:
 
 -   node.js
@@ -102,7 +80,7 @@ config.database = {
 };
 ```
 
-5.  To configure the server to listen HTTPs requests, generate certificates
+5.  To configure the server to listen HTTPS requests, generate certificates
     OpenSSL and configure config.js:
 
 ```console
@@ -127,7 +105,7 @@ npm run-script seed_db
 ```
 
 7.  Start server with admin rights (server listens in 3000 port by default or in
-    443 if HTTPs is enabled).
+    443 if HTTPS is enabled).
 
 ```console
 sudo npm start
@@ -164,21 +142,6 @@ based on FIWARE identity. This is posible thanks to
 [OAuth2](https://oauth.net/2/) protocol. For more information check the
 [OAuth2 API](http://fiware-idm.readthedocs.org/en/latest/api/#def-apiOAuth).
 
-## Tests
-
-For performing a basic end-to-end test, you have to follow the next steps. A detailed description about how to run tests can be found [here](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
-
-1. Verify that the host address of IdM can be reached. By default, web access will show a Login Page.
-2. Acquire a valid username and password and access with those credentials. The resulting web page is the landing page of the IdM KeyRock Portal.
-3. Verify that you can view the list of applications, organizations, etc.
-
-## Advanced Documentation
-
--   [How to run tests](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
--   [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/)
--   [Installation & Administration Guide](http://fiware-idm.readthedocs.org/en/latest/admin_guide/)
--   [Connecting IdM to a eIDAS node](http://fiware-idm.readthedocs.org/en/latest/eidas/)
-
 ## Changes Introduced in 7.x
 
 They biggest change introduced in 7.x is that the identity manager no longer
@@ -192,30 +155,3 @@ in Node JS. Another remarkable changes have been made:
 3.  Now users don't need to switch session in order to create an application
     that will belong to an organization.
 4.  Permissions of an application can be edited or deleted.
-
-## Quality Assurance
-
-This project is part of [FIWARE](https://fiware.org/) and has been rated as
-follows:
-
--   **Version Tested:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Version&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.version&colorB=blue)
--   **Documentation:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Completeness&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.docCompleteness&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Usability&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.docSoundness&colorB=blue)
--   **Responsiveness:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Time%20to%20Respond&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.timeToCharge&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Time%20to%20Fix&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.timeToFix&colorB=blue)
--   **FIWARE Testing:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Tests%20Passed&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.failureRate&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Scalability&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.scalability&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Performance&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.performance&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Stability&url=https://fiware.github.io/catalogue/json/keyrock.json&query=$.stability&colorB=blue)
-
----
-
-## License
-
-Keyrock is licensed under the [MIT](LICENSE) License.
-
-© 2018 Universidad Politécnica de Madrid.

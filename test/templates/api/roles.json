@@ -1,0 +1,52 @@
+{
+	"before": {
+		"application": {
+	    	"name": "Test_application roles",
+	    	"description": "description for roles",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	},
+	"create": {
+		"valid_role_body": {
+			"role": {
+		    	"name": "Test role 1"
+			}
+		}
+	},
+	"read": {
+		"create": {
+			"role": {
+		    	"name": "Test role 2"
+			}
+		}
+	},
+	"update": {
+		"create": {
+			"role": {
+		    	"name": "Test role 3"
+			}
+		},
+		"new_values": {
+			"role": {
+		    	"name": "new name of role 3"
+			}
+		}
+	},
+	"delete": {
+		"create": {
+			"role": {
+		    	"name": "Test role 4"
+			}
+		}
+	}
+}

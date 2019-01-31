@@ -9,7 +9,10 @@ const exec = require('child_process').exec;
 const config = require('../../config');
 
 // eslint-disable-next-line no-undef
-before('Create and populate database', function() {
+before('Create and populate database', function(done) {
+  // Mocha default timeout for tests is 2000 and to create database is needed more
+  this.timeout(5000);
+
   return new Promise(function(resolve, reject) {
     const create_database =
       'mysql -u ' +
@@ -35,6 +38,7 @@ before('Create and populate database', function() {
           } else {
             // Run Keyrock
             require('../../bin/www');
+            done();
             resolve('created');
           }
         });
@@ -44,7 +48,7 @@ before('Create and populate database', function() {
 });
 
 // eslint-disable-next-line no-undef
-after('Delete database', function() {
+after('Delete database', function(done) {
   return new Promise(function(resolve, reject) {
     const load_data =
       'mysql -u ' +
@@ -58,6 +62,7 @@ after('Delete database', function() {
         reject('Unable to load database: ', error);
       } else {
         resolve('deleted');
+        done();
       }
     });
   });

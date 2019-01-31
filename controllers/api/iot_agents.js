@@ -52,7 +52,7 @@ exports.index = function(req, res) {
     })
     .then(function(iots) {
       if (iots.length > 0) {
-        res.status(200).json({ iots });
+        res.status(200).json({ iot_agents: iots });
       } else {
         res.status(404).json({
           error: {
@@ -97,7 +97,7 @@ exports.create = function(req, res) {
       fields: ['id', 'password', 'salt', 'oauth_client_id'],
     })
     .then(function() {
-      res.status(201).json({ iot: { id, password } });
+      res.status(201).json({ iot_agent: { id, password } });
     })
     .catch(function(error) {
       debug('Error: ' + error);
@@ -120,7 +120,7 @@ exports.info = function(req, res) {
 
   delete req.iot.dataValues.password;
   delete req.iot.dataValues.salt;
-  res.status(200).json({ iot: req.iot });
+  res.status(200).json({ iot_agent: req.iot });
 };
 
 // PATCH /v1/:application_id/iot_agents/:iot_agentId -- Reset iot_agent password

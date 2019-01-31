@@ -119,6 +119,7 @@ if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  ==
     WARNING: The current encryption keys match the defaults found in the plaintext
              template file - please update for a production instance'
     ****************`);
+    
 }
 
 

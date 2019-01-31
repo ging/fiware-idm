@@ -1,4 +1,4 @@
-// User model 
+// User model
 var config = require('../config.js');
 var external_auth = config.external_auth;
 
@@ -9,13 +9,13 @@ const bcrypt = require('bcrypt');
 
 module.exports = function(sequelize, DataTypes) {
     var User_Ext = sequelize.define(
-        'User_Ext', 
+        'User_Ext',
         { id: {
             type: DataTypes.UUID,
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         }, username: {
-            type: DataTypes.STRING(64) + ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci',
+            type: DataTypes.STRING(64) + ((sequelize.getDialect() == 'mysql')?' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci':''),
             validate: { notEmpty: {msg: "username"}}
         }, email: {
             type: DataTypes.STRING,
@@ -30,7 +30,7 @@ module.exports = function(sequelize, DataTypes) {
             tableName: external_auth.database.user_table,
             timestamps: false,
             underscored: true
-        } 
+        }
     );
 
     User_Ext.prototype.verifyPassword = function(password) {

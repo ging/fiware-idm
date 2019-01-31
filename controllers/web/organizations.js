@@ -11,7 +11,7 @@ var config = require('../../config').database;
 exports.load_organization = function(req, res, next, organizationId) {
 
 	debug("--> load_organization");
-	
+
 	if(req.path === '/idm/organizations/available') {
 		next()
 	} else {
@@ -40,7 +40,7 @@ exports.load_organization = function(req, res, next, organizationId) {
 
 // Check if user is owner of the organization
 exports.owned_permissions = function(req, res, next) {
-	
+
 	debug("--> owned_permissions");
 
 	models.user_organization.findOne({
@@ -79,13 +79,13 @@ exports.index = function(req, res) {
 		}],
 		limit: 5
 	}).then(function(result) {
-		
+
 		var user_organizations = result.rows;
 
 		var organizations = [];
-		
+
 		if (user_organizations.length > 0) {
-			
+
 			user_organizations.forEach(function(organization) {
 				if (organizations.length == 0 || !organizations.some(elem => (elem.id == organization.Organization.id))) {
 					if (organization.Organization.image == 'default') {
@@ -94,7 +94,7 @@ exports.index = function(req, res) {
 						organization.Organization.image = '/img/organizations/'+organization.Organization.image
 					}
 					organizations.push(organization.Organization)
-				} 
+				}
 			});
 		}
 
@@ -107,7 +107,7 @@ exports.index = function(req, res) {
 			}
 			res.render('organizations/index', {csrfToken: req.csrfToken(), organizations: organizations})
 		}
-		
+
 	}).catch(function(error) {
 		debug('Error searching organizations ' + error)
 		var message = {text: ' Unable to search organizations',type: 'danger'}
@@ -135,7 +135,7 @@ exports.filter = function(req, res) {
 		var organizations = []
 		// If user has organizations, set image from file system and obtain info from each organization
 		if (user_organizations.length > 0) {
-			
+
 			user_organizations.forEach(function(org) {
 				if (organizations.length == 0 || !organizations.some(elem => (elem.id == org.Organization.id))) {
 					if (org.Organization.image == 'default') {
@@ -144,12 +144,12 @@ exports.filter = function(req, res) {
 						org.Organization.image = '/img/organizations/'+org.Organization.image
 					}
 					organizations.push(org.Organization)
-				} 
+				}
 			});
 		}
 
 		res.send({organizations: organizations})
-	}).catch(function(error) { 
+	}).catch(function(error) {
 		debug('Error searching organizations ' + error)
 		var message = {text: ' Unable to search organizations',type: 'danger'}
 		send_response(req, res, message, '/idm')
@@ -177,14 +177,14 @@ exports.create = function(req, res) {
 		// Build a row and validate if input values are correct (not empty) before saving values in oauth_client
 		var organization = models.organization.build(req.body.organization);
 		organization.validate().then(function(err) {
-			organization.save({fields: [ 'id', 
-										'name', 
+			organization.save({fields: [ 'id',
+										'name',
 										'description']
 			}).then(function(){
 				// Assign owner role to the user in the organizations
-        		models.user_organization.create({ 
-        			organization_id: organization.id, 
-        			role: 'owner', 
+        		models.user_organization.create({
+        			organization_id: organization.id,
+        			role: 'owner',
         			user_id: req.session.user.id
         		}).then(function(newAssociation) {
 					res.redirect('/idm/organizations/'+organization.id)
@@ -192,7 +192,7 @@ exports.create = function(req, res) {
 			}).catch(function(error){
 				res.locals.message = {text: ' Unable to create organization',type: 'danger'}
 			 	res.render('organizations/new', { organization: organization, errors: [], csrfToken: req.csrfToken()});
-			});	
+			});
 
 		// Render the view once again, sending the error found when validating
 		}).catch(function(error){
@@ -202,7 +202,7 @@ exports.create = function(req, res) {
         			nameErrors.push(error.errors[i].message)
         		}
   			}
-		 	res.render('organizations/new', { organization: organization, errors: nameErrors, csrfToken: req.csrfToken()}); 
+		 	res.render('organizations/new', { organization: organization, errors: nameErrors, csrfToken: req.csrfToken()});
 		});
 	}
 };
@@ -251,7 +251,7 @@ exports.get_members = function(req, res, next) {
 		var users = []
 		// If user has organizations, set image from file system and obtain info from each organization
 		if (users_organization.length > 0) {
-			
+
 			users_organization.forEach(function(user) {
 				if (users.length == 0 || !users.some(elem => (elem.id == user.User.id))) {
 					if (user.User.gravatar) {
@@ -262,7 +262,7 @@ exports.get_members = function(req, res, next) {
 						user.User.image = '/img/users/'+user.User.image
 					}
 					users.push(user.User)
-				} 
+				}
 			});
 		}
 
@@ -282,12 +282,12 @@ exports.get_applications = function(req, res, next) {
 	var key = (req.query.key) ? "%"+req.query.key+"%" : "%%"
 	var offset = (req.query.page) ? (req.query.page - 1)*5 : 0
 
-	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url, 
+	var query = `SELECT DISTINCT role_assignment.oauth_client_id, oauth_client.name, oauth_client.image, oauth_client.url,
 				(SELECT COUNT(DISTINCT oauth_client_id) FROM role_assignment RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
 				ON role_assignment.oauth_client_id=oauth_client.id WHERE organization_id=:organization_id) AS count
-				FROM role_assignment 
+				FROM role_assignment
 				RIGHT JOIN (SELECT * FROM oauth_client WHERE name LIKE :key) AS oauth_client
-				ON role_assignment.oauth_client_id=oauth_client.id 
+				ON role_assignment.oauth_client_id=oauth_client.id
 				WHERE organization_id=:organization_id
 				LIMIT 5
 				OFFSET :offset`
@@ -300,7 +300,7 @@ exports.get_applications = function(req, res, next) {
 
 		// If user has organizations, set image from file system and obtain info from each organization
 		if (applications_authorized.length > 0) {
-			
+
 			count = applications_authorized[0].count
 
 			applications_authorized.forEach(function(app) {
@@ -315,8 +315,8 @@ exports.get_applications = function(req, res, next) {
 		res.send({applications: applications, applications_number: count})
 	}).catch(function(error) {
     	debug('Error get appliications authorized: ' + error)
-		var message = {text: ' Unable to find applications',type: 'danger'}
-		send_response(req, res, message, '/idm')
+			var message = {text: ' Unable to find applications',type: 'danger'}
+			send_response(req, res, message, '/idm')
     });
 }
 
@@ -331,7 +331,7 @@ exports.edit = function(req, res, next) {
 
 // PUT /idm/organizations/:organizationId/edit/info -- Edit info of organization
 exports.update_info = function(req, res, next) {
-	
+
 	debug("--> update_info")
 
     // Build a row and validate if input values are correct (not empty) before saving values in user table
@@ -360,7 +360,7 @@ exports.update_info = function(req, res, next) {
             req.session.message = {text: ' Fail update organization.', type: 'danger'};
             res.redirect('/idm/organizations/'+req.organization.id);
         })
-    }).catch(function(error){ 
+    }).catch(function(error){
         // Send message of warning of updating organization
         res.locals.message = {text: ' organization update failed.', type: 'warning'};
         req.body.organization['image'] = req.organization.image
@@ -381,13 +381,13 @@ exports.update_avatar = function(req, res, next) {
   	} else {
   		req.session.message = {text: ' fail updating image.', type: 'warning'};
 		res.redirect('/idm/organizations/'+req.organization.id);
-  	} 
+  	}
 }
 
 
 // DELETE /idm/organizations/:organizationId/edit/delete_avatar -- Delete avatar of organization
 exports.delete_avatar = function(req, res, next) {
-	
+
 	debug("--> delete_avatar");
 
 	var image_path = 'public' + req.organization.image
@@ -416,7 +416,7 @@ exports.delete_avatar = function(req, res, next) {
 
 // DELETE /idm/organizations/:organizationId -- Delete an organization
 exports.destroy = function(req, res, next) {
-	
+
 	debug("--> destroy");
 
 	// Destroy application with specific id
@@ -441,7 +441,7 @@ exports.destroy = function(req, res, next) {
 
 // DELETE /idm/organizations/:organizationId/remove -- Handle users request to exit from the organization
 exports.remove = function(req, res, next) {
-	
+
 	debug("--> remove");
 
 	// Destroy application with specific id
@@ -473,7 +473,7 @@ function handle_uploaded_images(req, res, redirect_uri) {
 			{
 				fields: ['image'],
 				where: {id: req.organization.id}
-			}) 
+			})
 	}).then(function(updated) {
 		var old_image = 'public'+req.organization.image
 		if (updated[0] === 1) {
@@ -498,7 +498,7 @@ function handle_uploaded_images(req, res, redirect_uri) {
 function delete_image(req, res, image_path, success, redirect_uri, message) {
 	image.destroy(image_path).then(function(val) {
 		req.session.message = {text: message, type: (success) ? 'success' : 'danger' };
-		res.redirect((success) ? redirect_uri :'/idm/organizations/'+req.organization.id); 
+		res.redirect((success) ? redirect_uri :'/idm/organizations/'+req.organization.id);
 	}).catch(function(error) {
 		req.session.message = {text: ' Error saving image.', type: 'danger'};
 		res.redirect('/idm/organizations/'+req.organization.id);
@@ -511,7 +511,7 @@ function send_response(req, res, response, url) {
 		res.send(response);
 	} else {
 		if (response.message) {
-			req.session.message = response.message	
+			req.session.message = response.message
 		} else {
 			req.session.message = response;
 		}

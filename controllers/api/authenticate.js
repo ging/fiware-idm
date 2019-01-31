@@ -215,7 +215,6 @@ var create_token = function(req, res, next) {
 
 		return Promise.all(methods)
 				.then(function(values) {
-
 					if (methods.length === 2) {
 						if (values[0].id !== values[1].id) {
 							return Promise.reject({ error: {message: 'Token not correspond to user', code: 401, title: 'Unauthorized'}})
@@ -225,7 +224,6 @@ var create_token = function(req, res, next) {
 				}).catch(function(error) { return Promise.reject(error) })
 
 	}).then(function(authenticated) {
-
 		var token_id = uuid.v4()
 		var expires = new Date((new Date()).getTime() + 1000*config.api.token_lifetime)
 		var row = {access_token: token_id, expires: expires, valid: true}
@@ -236,11 +234,11 @@ var create_token = function(req, res, next) {
 		}
 
 		models.auth_token.create(row).then(function(auth_row) {
-			var response_body = { 
-				token: { 
-					methods: response_methods, 
+		var response_body = {
+				token: {
+					methods: response_methods,
 					expires_at: expires
-				}, 
+				},
 				idm_authorization_config: {
 					level: config.authorization.level,
 					authzforce: config.authorization.authzforce.enabled
@@ -259,7 +257,7 @@ var create_token = function(req, res, next) {
 		debug('Error: ' + error)
 		// If an actual 401 has been raised, use the existing message.
 		// But always return a 401 - Unauthorized error to the user.
-		// This avoid information leakage. 
+		// This avoid information leakage.
 		if (!error.error || error.error.code !== 401){
 			error = { error: {message: 'Invalid email or password', code: 401, title: 'Unauthorized'}}
 		}
@@ -294,21 +292,20 @@ function check_create_token_request(req) {
 }
 
 
-// Function to check password method parameter for identity
+//  Function to check password method parameter for identity
 function search_identity(name, password) {
 
 	return new Promise(function(resolve, reject) {
 
 		models.helpers.search_pep_or_user(name).then(function(identity) {
-
 			if (identity.length <= 0) {
 				reject({ error: {message: 'User not found', code: 404, title: 'Not Found'}})
 			} else {
-				if (identity[0].Source === 'user') {
+				if (identity[0].source === 'user') {
 					authenticate_user(name, password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })
-				} else if (identity[0].Source === 'pep_proxy') {
+				} else if (identity[0].source === 'pep_proxy') {
 					authenticate_pep_proxy(name, password)
 						.then(function(values) { resolve(values) })
 						.catch(function(error) { reject(error) })
@@ -332,9 +329,9 @@ function authenticate_user(email, password) {
 				} else {
 					reject({ error: {message: 'Internal error', code: 500, title: 'Internal error'}})
 				}
-	        } else {
+	    } else {
 				resolve(user)
-	        }
+	    }
 		});
 	})
 

@@ -9,7 +9,7 @@
     </div>
     <div id="users-page">
         <div class="panel panel-default datatable" id="auth_admins" data-pagination-url="/filters/users" data-application_id="idm_admin_app" data-pagination-pages="">
-            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <div class="panel-heading">
                 <div id="entries">
                     <p><%=translation.admin.users.content01%></p>

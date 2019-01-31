@@ -1,195 +1,204 @@
-var gravatar = require('gravatar');
-var debug = require('debug')('idm:web-session_controller');
+const gravatar = require('gravatar');
+const debug = require('debug')('idm:web-session_controller');
 
-var models = require('../../models/models.js');
-var userController = require('./users');
+const models = require('../../models/models.js');
+const user_controller = require('./users');
 
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-var escape_paths = require('../../etc/escape_paths/paths.json').paths;
+const escape_paths = require('../../etc/escape_paths/paths.json').paths;
 
 // MW to authorized restricted http accesses
-exports.login_required = function(req, res, next){
+exports.login_required = function(req, res, next) {
+  debug('--> login_required');
 
-    debug("--> login_required");
-
-    if (req.session.user || check_path(req.path)) {
-        next();
-    } else {
-        req.session.errors = [{message: 'sessionExpired'}];
-        res.redirect('/auth/login');
-    }
+  if (req.session.user || check_path(req.path)) {
+    next();
+  } else {
+    req.session.errors = [{ message: 'sessionExpired' }];
+    res.redirect('/auth/login');
+  }
 };
 
 // MW to perform actions forgot password and re send confirmation of registration
-exports.login_not_required = function(req, res, next){
+exports.login_not_required = function(req, res, next) {
+  debug('--> login_required');
 
-    debug("--> login_required");
-
-    if (req.session.user) {
-        res.redirect('/');
-    } else {
-        next();
-    }
+  if (req.session.user) {
+    res.redirect('/');
+  } else {
+    next();
+  }
 };
 
 // MW to see if user needs to change password
 exports.password_check_date = function(req, res, next) {
+  debug('--> password_check_date');
 
-    debug("--> password_check_date");
+  if (check_path(req.path)) {
+    next();
+  } else {
+    const today = new Date(new Date().getTime());
+    const milli_seconds_per_day = 24 * 60 * 60 * 1000;
 
-    if (check_path(req.path)) {
-        next()
+    const days_since_change = Math.round(
+      (today - req.session.user.change_password) / milli_seconds_per_day
+    );
+
+    if (days_since_change > 365) {
+      req.session.change_password = true;
+      res.redirect('/update_password');
     } else {
-        var today = new Date((new Date()).getTime())
-        var millisecondsPerDay = 24 * 60 * 60 * 1000;
-
-        var days_since_change = Math.round((today - req.session.user.change_password)/millisecondsPerDay); 
-
-        if (days_since_change > 365) {
-            req.session.change_password = true
-            res.redirect('/update_password')          
-        } else {
-            next();
-        }
+      next();
     }
+  }
 };
 
 // Check if path is included in the list of paths which not need a user session to be accessed
 function check_path(path) {
-    if (escape_paths.length > 0) {
-        for (var i = 0; i < escape_paths.length; i++) {
-            if (path.includes(escape_paths[i])) {
-                return true;
-            }
-        }
-        return false;
-    } else {
+  if (escape_paths.length > 0) {
+    for (let i = 0; i < escape_paths.length; i++) {
+      if (path.includes(escape_paths[i])) {
         return true;
+      }
     }
+    return false;
+  }
+  return true;
 }
 
 // GET /auth/login -- Form for login
 exports.new = function(req, res) {
+  debug('--> new');
 
-    debug("--> new");
-
-    var errors = req.session.errors || {};
-    delete req.session.errors;
-    if (req.session.message) {
-        res.locals.message = req.session.message;
-        delete req.session.message
-    }
-    res.render('index', {errors: errors, csrfToken: req.csrfToken()});
+  const errors = req.session.errors || {};
+  delete req.session.errors;
+  if (req.session.message) {
+    res.locals.message = req.session.message;
+    delete req.session.message;
+  }
+  res.render('index', { errors, csrf_token: req.csrfToken() });
 };
 
 // POST /auth/login -- Create Session
-exports.create = function(req, res, next) {
+exports.create = function(req, res) {
+  debug('--> create');
 
-    debug("--> create");
+  // If inputs email or password are empty create an array of errors
+  const errors = [];
+  if (!req.body.email) {
+    errors.push({ message: 'email' });
+  }
+  if (!req.body.password) {
+    errors.push({ message: 'password' });
+  }
 
-    // If inputs email or password are empty create an array of errors
-    errors = []
-    if (!req.body.email) {
-        errors.push({message: 'email'});
-    }
-    if (!req.body.password) {
-        errors.push({message: 'password'});
-    }
+  if (req.body.email && req.body.password) {
+    // Authenticate user using user controller function
 
-        if (req.body.email && req.body.password) {
-            // Authenticate user using user controller function
-            
-            userController.authenticate(req.body.email, req.body.password, function(error, user) {
+    user_controller.authenticate(req.body.email, req.body.password, function(
+      error,
+      user
+    ) {
+      if (error) {
+        // If error exists send a message to /auth/login
+        req.session.errors = [{ message: error.message }];
+        res.redirect('/auth/login');
+        return;
+      }
 
-                if (error) {  // If error exists send a message to /auth/login
-                    req.session.errors = [{message: error.message}];
-                    res.redirect("/auth/login");        
-                    return;
-                }
+      // Create req.session.user and save id and username
+      // The session is defined by the existence of: req.session.user
+      let image = '/img/logos/small/user.png';
+      if (user.gravatar) {
+        image = gravatar.url(
+          user.email,
+          { s: 25, r: 'g', d: 'mm' },
+          { protocol: 'https' }
+        );
+      } else if (user.image !== 'default') {
+        image = '/img/users/' + user.image;
+      }
 
-                // Create req.session.user and save id and username
-                // The session is defined by the existence of: req.session.user
-                var image = '/img/logos/small/user.png'
-                if (user.gravatar) {
-                    image = gravatar.url(user.email, {s:25, r:'g', d: 'mm'}, {protocol: 'https'});
-                } else if (user.image !== 'default') {
-                    image = '/img/users/' + user.image
-                }
+      // Create session
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        image,
+        change_password: user.date_password,
+        starters_tour_ended: user.starters_tour_ended,
+      };
 
-                // Create session
-                req.session.user = {id:user.id, 
-                                    username:user.username, 
-                                    email: user.email, 
-                                    image: image, 
-                                    change_password: user.date_password, 
-                                    starters_tour_ended: user.starters_tour_ended};
+      // If user is admin add parameter to session
+      if (user.admin) {
+        req.session.user.admin = user.admin;
+      }
 
-                // If user is admin add parameter to session
-                if (user.admin) {
-                    req.session.user.admin = user.admin
-                }
-
-                res.redirect('/idm');
-            });
-        } else { // If error exists send a message to /auth/login
-            req.session.errors = errors;
-            res.redirect("/auth/login");  
-        }
-    
+      res.redirect('/idm');
+    });
+  } else {
+    // If error exists send a message to /auth/login
+    req.session.errors = errors;
+    res.redirect('/auth/login');
+  }
 };
 
 // GET /update_password -- Render settings/password view with a warn to indicate user to change password
 exports.update_password = function(req, res) {
-    res.render('settings/password', {errors: [], warn_change_password: true, csrfToken: req.csrfToken()})
-}
+  res.render('settings/password', {
+    errors: [],
+    warn_change_password: true,
+    csrf_token: req.csrfToken(),
+  });
+};
 
 // DELETE /auth/logout -- Delete Session
 exports.destroy = function(req, res) {
+  debug('--> destroy');
 
-    debug("--> destroy");
-
-    delete req.session.user;
-    res.redirect('/');
+  delete req.session.user;
+  res.redirect('/');
 };
 
 // DELETE /auth/external_logout -- Delete Session from an external call
 exports.external_destroy = function(req, res) {
+  debug('--> external_destroy');
 
-    debug("--> external_destroy");
+  const oauth_client_id = req.query.client_id;
+  const url = req.hostname;
 
-    var oauth_client_id = req.query.client_id;
-    var url = req.hostname;
+  debug(url);
 
-    debug(url)
-
-    models.oauth_client.findOne({
-        where: { [Op.or]: [
-            {id: oauth_client_id}, 
-            {url: url}
-        ]},
-        attributes: ['url', 'redirect_sign_out_uri']
-    }).then(function(application) {
-        if (application) {
-            // If users have signed in through an OAuth Application, delete session.
-            // If they have signed in through IdM Keyrock endpoint, just redirect to sign out endpoint.
-            if (req.session.user) {
-                if (req.session.user.oauth_sign_in) {
-                    delete req.session.user;
-                }
-            }
-
-            if (application.redirect_sign_out_uri) {
-                res.redirect(application.redirect_sign_out_uri)
-            } else {
-                res.redirect(application.url)
-            }
-        } else {
-            res.status(401).json('Not allowed to perform logout or bad configured')
-        }
-    }).catch(function(error) {
-        debug('Error: ' + error)
-        res.status(500).json("Internal Server Error")
+  models.oauth_client
+    .findOne({
+      where: {
+        [Op.or]: [{ id: oauth_client_id }, { url }],
+      },
+      attributes: ['url', 'redirect_sign_out_uri'],
     })
+    .then(function(application) {
+      if (application) {
+        // If users have signed in through an OAuth Application, delete session.
+        // If they have signed in through IdM Keyrock endpoint, just redirect to sign out endpoint.
+        if (req.session.user) {
+          if (req.session.user.oauth_sign_in) {
+            delete req.session.user;
+          }
+        }
+
+        if (application.redirect_sign_out_uri) {
+          res.redirect(application.redirect_sign_out_uri);
+        } else {
+          res.redirect(application.url);
+        }
+      } else {
+        res.status(401).json('Not allowed to perform logout or bad configured');
+      }
+    })
+    .catch(function(error) {
+      debug('Error: ' + error);
+      res.status(500).json('Internal Server Error');
+    });
 };

@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
@@ -8,27 +6,29 @@ module.exports = {
         validate: {
           notIn: {
             args: [['public', 'private']],
-            msg: "sp_type"
-          }
+            msg: 'sp_type',
+          },
         },
-        defaultValue: 'private'
+        defaultValue: 'private',
       }),
       queryInterface.addColumn('eidas_credentials', 'attributes_list', {
         type: Sequelize.TEXT(),
-        get: function () {
-          return (this.getDataValue('attributes_list')) ? JSON.parse(this.getDataValue('attributes_list')) : {}
+        get() {
+          return this.getDataValue('attributes_list')
+            ? JSON.parse(this.getDataValue('attributes_list'))
+            : {};
         },
-        set: function (val) {
-          this.setDataValue('attributes_list', JSON.stringify(val))
-        }
-      })
-    ])
+        set(val) {
+          this.setDataValue('attributes_list', JSON.stringify(val));
+        },
+      }),
+    ]);
   },
 
   down: (queryInterface, Sequelize) => {
     return Promise.all([
       queryInterface.removeColumn('eidas_credentials', 'sp_type'),
-      queryInterface.removeColumn('eidas_credentials', 'attributes_list')
-    ])
-  }
+      queryInterface.removeColumn('eidas_credentials', 'attributes_list'),
+    ]);
+  },
 };

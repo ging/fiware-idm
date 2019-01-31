@@ -19,8 +19,8 @@
 -- Table structure for table `SequelizeMeta`
 --
 
--- CREATE DATABASE idm;
-USE idm
+-- CREATE DATABASE IF NOT EXISTS idm_test;
+USE idm_test;
 
 DROP TABLE IF EXISTS `SequelizeMeta`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -217,7 +217,9 @@ INSERT INTO `oauth_access_token` VALUES
 ('d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d1d1d1d1-dddd-dddd-dddd-d1d1d1d1d1d1','detective1',NULL,NULL),
 ('d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d2d2d2d2-dddd-dddd-dddd-d2d2d2d2d2d2','detective2',NULL,NULL),
 ('m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m1m1m1m1-mmmm-mmmm-mmmm-m1m1m1m1m1m1','manager1',NULL,NULL),
-('m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m2m2m2m2-mmmm-mmmm-mmmm-m2m2m2m2m2m2','manager2',NULL,NULL);
+('m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m2m2m2m2-mmmm-mmmm-mmmm-m2m2m2m2m2m2','manager2',NULL,NULL),
+('m3m3m3m3m3m3m3m3m3m3m3m3m3m3m3m3m3m3m3m3','2216-07-30 12:14:21','bearer','r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3',1,NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,NULL),
+('m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4','2216-07-30 12:14:21','bearer','r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4',1,NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,NULL);
 
 /*!40000 ALTER TABLE `oauth_access_token` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -253,6 +255,10 @@ CREATE TABLE `oauth_authorization_code` (
 
 LOCK TABLES `oauth_authorization_code` WRITE;
 /*!40000 ALTER TABLE `oauth_authorization_code` DISABLE KEYS */;
+INSERT INTO `oauth_authorization_code` VALUES 
+('15682667caa4bb5ac15056fee3836b2980288bf2','2016-07-30 12:14:21',NULL,NULL,1,NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000'),
+('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2200-07-30 12:14:21',NULL,NULL,1,NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000');
+
 /*!40000 ALTER TABLE `oauth_authorization_code` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -270,6 +276,7 @@ CREATE TABLE `oauth_client` (
   `secret` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `url` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `redirect_uri` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `redirect_sign_out_uri` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `image` varchar(255) DEFAULT 'default',
   `grant_type` varchar(255) DEFAULT NULL,
   `response_type` varchar(255) DEFAULT NULL,
@@ -291,11 +298,11 @@ LOCK TABLES `oauth_client` WRITE;
 INSERT INTO `oauth_client` VALUES
 ('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial',
   'FIWARE Application protected by OAuth2 and Keyrock','tutorial-dckr-site-0000-clientsecret',
-  'http://localhost:3000','http://localhost:3000/login','default',
+  'http://localhost:3000','http://localhost:3000/login',NULL,'default',
   'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL),
 ('tutorial-lcal-host-0000-xpresswebapp','localhost App',
   'Localhost Callback protected by OAuth2 and Keyrock','tutorial-lcal-host-0000-clientsecret',
-  'http://localhost:3000','http://localhost:3000/login','default',
+  'http://localhost:3000','http://localhost:3000/login',NULL,'default',
   'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL);
 
 /*!40000 ALTER TABLE `oauth_client` ENABLE KEYS */;
@@ -334,7 +341,10 @@ CREATE TABLE `oauth_refresh_token` (
 
 LOCK TABLES `oauth_refresh_token` WRITE;
 /*!40000 ALTER TABLE `oauth_refresh_token` DISABLE KEYS */;
-INSERT INTO `oauth_refresh_token` VALUES ('4eb1f99f80f37c81a8ef85d92eae836919887e1e','2018-08-13 11:14:21',NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','admin',NULL,NULL,NULL);
+INSERT INTO `oauth_refresh_token` VALUES 
+('4eb1f99f80f37c81a8ef85d92eae836919887e1e','2018-08-13 11:14:21',NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,1,NULL),
+('r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3','2218-08-13 11:14:21',NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,1,NULL),
+('r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4','2218-08-13 11:14:21',NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,1,NULL);
 /*!40000 ALTER TABLE `oauth_refresh_token` ENABLE KEYS */;
 UNLOCK TABLES;
 

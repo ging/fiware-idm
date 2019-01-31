@@ -5,33 +5,33 @@
  *
  */
 
-'use strict';
+// Load database configuration before
+require('../config/config_database');
 
 process.env.IDM_DB_PASS = 'test';
 process.env.IDM_DB_USER = 'root';
 
-var keyrock = require('../../bin/www'),
-  config = require('../../config.js'),
-  nock = require('nock'),
-  should = require('should'),
-  request = require('request'),
-  utils = require('../utils'),
-  mockedClientServer,
-  contextBrokerMock;
+// const keyrock = require('../../bin/www');
+const config = require('../../config.js');
+const should = require('should');
+const request = require('request');
+const utils = require('../utils');
+
+const login = utils.readExampleFile('./test/templates/login.json');
 
 describe('Log-In: ', function() {
-  describe('When Logging in with a valid username and password', function() {
-    var goodLogin = {
+  describe('1) When Logging in with a valid username and password', function() {
+    const good_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile('./test/oauthRequests/goodLogin.json'),
+      json: login.good_login,
       headers: {
         'Content-Type': 'application/json',
       },
     };
 
     it('should return a 201 OK', function(done) {
-      request(goodLogin, function(error, response, body) {
+      request(good_login, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(201);
         done();
@@ -39,18 +39,18 @@ describe('Log-In: ', function() {
     });
   });
 
-  describe('When Logging in with an invalid username and password', function() {
-    var badLogin = {
+  describe('2) When Logging in with an invalid username and password', function() {
+    const bad_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile('./test/oauthRequests/badLogin.json'),
+      json: login.bad_login,
       headers: {
         'Content-Type': 'application/json',
       },
     };
 
     it('should return a 401 OK', function(done) {
-      request(badLogin, function(error, response, body) {
+      request(bad_login, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(401);
         done();
@@ -58,20 +58,18 @@ describe('Log-In: ', function() {
     });
   });
 
-  describe('When Logging in with an real username and bad password', function() {
-    var wrongPasswordLogin = {
+  describe('3) When Logging in with an real username and bad password', function() {
+    const wrong_password_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
-      json: utils.readExampleFile(
-        './test/oauthRequests/wrongPasswordLogin.json'
-      ),
+      json: login.wrong_password_login,
       headers: {
         'Content-Type': 'application/json',
       },
     };
 
     it('should return a 401 OK', function(done) {
-      request(wrongPasswordLogin, function(error, response, body) {
+      request(wrong_password_login, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(401);
         done();

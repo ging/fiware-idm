@@ -8,7 +8,7 @@
                     </h3>
                 </div>
                 <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/info?_method=put" method="POST" enctype="">
-                    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                    <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                     <div class="modal-body clearfix">
                         <div>
                             <fieldset>
@@ -67,7 +67,7 @@
                             <div class="profile_actions">
                                 <div class="clear_right"></div>
                                     <form id="use_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar?_method=put" method="POST" enctype="">
-                                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                                             <% if (user.gravatar) { -%>
                                                 <button class="btn btn-primary always-enabled avatar-button" name="use_uploaded_image" type="submit" id="use_avatar"><%=translation.users.edit_user.use_image_btn%></button>
                                             <% } else { -%>
@@ -75,7 +75,7 @@
                                             <% } -%>
                                     </form>
                                     <form id="delete_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar?_method=delete" method="POST" enctype="">
-                                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                                             <% if (user.image != "/img/logos/original/user.png") { -%>
                                                 <button type="button" class="btn btn-primary always-enabled ajax-modal" data-toggle="modal" data-target="#delete_avatar"><%=translation.users.edit_user.delete_image_btn%></button>
                                             <% } else { -%>
@@ -86,7 +86,7 @@
                         </div>
                         <div class="avatar_col col-xs-12 col-md-6">
                             <form id="use_gravatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/gravatar?_method=put" method="POST" enctype="">
-                                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                                 <% if (user.image_gravatar) { -%>
                                     <div class="profile_img">
                                         <img id="gravatar-preview" src="<%= user.image_gravatar%>" alt="your gravatar">
@@ -111,7 +111,7 @@
                     </div>
                     <div>
                         <form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/users/<%= user.id %>/edit/avatar" method="POST" enctype="multipart/form-data">
-                            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                                 <fieldset>
                                     <h6><%=translation.users.edit_user.label04%></h6>
                                     <input id="id_x" name="x" type="hidden">

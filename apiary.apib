@@ -1200,7 +1200,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     
     + Body
         {
-          "iots": [
+          "iot_agents": [
             {
               "id": "iot_sensor_47886fa2-883e-4550-bb56-0138ae9862b7"
             },
@@ -1234,14 +1234,14 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + Body
     
         {
-          "iot": {
+          "iot_agent": {
             "id": "iot_sensor_47886fa2-883e-4550-bb56-0138ae9862b7",
             "password": "iot_sensor_14569214-60d7-44d1-856c-ec8d8967aba2"
           }
         }
 
 
-## Iot Agent [/v1/applications/{application_id}/permissions/{iot_agent_id}]
+## Iot Agent [/v1/applications/{application_id}/iot_agents/{iot_agent_id}]
 
 + Parameters
     + application_id - Id of the application.
@@ -1268,7 +1268,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + Body
 
         {
-          "iot": {
+          "iot_agent": {
             "id": "iot_sensor_47886fa2-883e-4550-bb56-0138ae9862b7",
             "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
           }

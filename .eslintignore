@@ -1,7 +1,12 @@
 # Ignore errors in front-end and tools for now.
 public/**/*.js
+# Ignore directories that are directly related with database
 seeders/**/*.js
 migrations/*.js
+models/**/*.js
+# Ignore lib/saml2 for now because is an external library generated with coffe script
+# that needs to be checked deeply before
+lib/saml2.js
 
  # editorconfig.org
 root = true

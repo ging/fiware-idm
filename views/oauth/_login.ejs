@@ -3,7 +3,7 @@
     <h3><%=translation.oauth.login.title%></h3>
   </div>
   <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="<%= application.url %>" method="POST" enctype="">
-    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+    <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
     <div class="modal-body clearfix">
       <% if (errors.indexOf("sessionExpired") != -1) { %>
         <span class="help-block alert alert-warning"><p><%=translation.oauth.login.alert01%></p></span>

@@ -8,7 +8,7 @@
 					</h3>
 				</div>
 				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/info?_method=put" method="POST" enctype="">
-					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+					<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 					<div class="modal-body clearfix">
 						<fieldset>
 							<input id="id_appID" name="appID" type="hidden">
@@ -119,7 +119,7 @@
 					</h3>
 				</div>
 				<form id="create_avatar_form" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/avatar?_method=put" method="POST" enctype="multipart/form-data">
-					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+					<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 					<input id="submit_avatar" type="hidden" name="" value="">
 					<div class="modal-body clearfix">
 						<div class="row">
@@ -173,7 +173,7 @@
 			<div id="cancel-application-modal" class="edit">
 				<div class="modal-header"></div>
 				<form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>?_method=delete" method="POST">
-					<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+					<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 					<div class="modal-body clearfix">
 						<a class="panel-title" data-toggle="collapse" data-parent="#accordion" href="#destroy_application">
 							<h3>

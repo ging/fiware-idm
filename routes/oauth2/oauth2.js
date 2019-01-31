@@ -1,46 +1,63 @@
-var express = require('express');
-var router = express.Router();
-var csrf = require('csurf');
-var config = require('../../config');
+const express = require('express');
+const router = express.Router();
+const csrf = require('csurf');
+const config = require('../../config');
 
-var csrfProtection = csrf({ cookie: true })
+const csrf_protection = csrf({ cookie: true });
 
 // OUATH2 Controller
-var oauthController = require('../../controllers/oauth2/oauth2');
+const oauth_controller = require('../../controllers/oauth2/oauth2');
 // SAML2 Controller
-var saml2Controller = require('../../controllers/saml2/saml2');
+const saml2_controller = require('../../controllers/saml2/saml2');
 
 // Routes for Oauth2
-//router.get('/authenticate',    	oauthController.authenticate_token);
-router.post('/token',       	oauthController.token);
+//router.get('/authenticate',    	oauth_controller.authenticate_token);
+router.post('/token', oauth_controller.token);
 if (config.eidas.enabled) {
-	router.get('/authorize',
-      csrfProtection,
-      oauthController.response_type_required,
-      oauthController.load_application,
-      saml2Controller.search_eidas_credentials,
-      saml2Controller.create_auth_request,
-      oauthController.check_user);
+  router.get(
+    '/authorize',
+    csrf_protection,
+    oauth_controller.response_type_required,
+    oauth_controller.load_application,
+    saml2_controller.search_eidas_credentials,
+    saml2_controller.create_auth_request,
+    oauth_controller.check_user
+  );
 } else {
-	router.get('/authorize',
-      csrfProtection,
-      oauthController.response_type_required,
-      oauthController.load_application,
-      oauthController.check_user);
+  router.get(
+    '/authorize',
+    csrf_protection,
+    oauth_controller.response_type_required,
+    oauth_controller.load_application,
+    oauth_controller.check_user
+  );
 }
-router.post('/authorize', 		csrfProtection, oauthController.response_type_required,  oauthController.load_application,	oauthController.authenticate_user);
-router.post('/enable_app',    csrfProtection, oauthController.response_type_required,  oauthController.load_application,  oauthController.load_user,  oauthController.enable_app);
-router.post('/revoke',        oauthController.revoke_token);
+router.post(
+  '/authorize',
+  csrf_protection,
+  oauth_controller.response_type_required,
+  oauth_controller.load_application,
+  oauth_controller.authenticate_user
+);
+router.post(
+  '/enable_app',
+  csrf_protection,
+  oauth_controller.response_type_required,
+  oauth_controller.load_application,
+  oauth_controller.load_user,
+  oauth_controller.enable_app
+);
+router.post('/revoke', oauth_controller.revoke_token);
 
 // catch 404 and forward to error handler
 router.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 // Error handler
-router.use(function(err, req, res, next) {
+router.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 

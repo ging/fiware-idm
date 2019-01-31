@@ -1,0 +1,70 @@
+{
+	"create": {
+		"application": {
+	    	"name": "Test_application pep_poxies 1",
+	    	"description": "description for pep_poxies 1",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	},
+	"read": {
+		"application": {
+	    	"name": "Test_application pep_poxies 2",
+	    	"description": "description for pep_poxies 2",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	},
+	"update": {
+		"application": {
+	    	"name": "Test_application pep_poxies 3",
+	    	"description": "description for pep_poxies 3",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	},
+	"delete": {
+		"application": {
+	    	"name": "Test_application pep_poxies 3",
+	    	"description": "description for pep_poxies 3",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	}
+}

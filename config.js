@@ -1,6 +1,6 @@
-var config = {};
+const config = {};
 
-config.port = process.env.IDM_PORT || 3005;
+config.port = process.env.IDM_PORT || 3000;
 config.host = process.env.IDM_HOST || 'http://localhost:' + config.port;
 
 // HTTPS enable
@@ -53,27 +53,23 @@ config.authorization = {
   },
 };
 
-var database_host = process.env.DATABASE_HOST
-  ? process.env.DATABASE_HOST
-  : 'localhost';
-
 // Database info
 config.database = {
   host: process.env.DATABASE_HOST || 'localhost',
-  password: process.env.IDM_DB_PASS || 'secret',
-  username: process.env.IDM_DB_USER || 'idm',
+  password: process.env.IDM_DB_PASS || 'idm',
+  username: process.env.IDM_DB_USER || 'root',
   database: process.env.IDM_DB_NAME || 'idm',
   dialect: process.env.IDM_DIALECT || 'mysql',
   port: process.env.IDM_DB_PORT || undefined,
   //define: { charset: 'utf8mb4', dialectOptions: { collate: 'utf8mb4_unicode_ci' }},
   //define: { charset: 'latin1', dialectOptions: { collate: 'latin1_bin' }},
 };
-if (config.database.dialect != 'mysql') {
-  console.log('>>>>>>>>>>>>>>> remove options define: charset/collate')
-  config.database.define = {};
-} else {
-  console.log('>>>>>>>>>>>>>>> keep mysql options define: : ', config.database.define);
-};
+// if (config.database.dialect != 'mysql') {
+//   console.log('>>>>>>>>>>>>>>> remove options define: charset/collate')
+//   config.database.define = {};
+// } else {
+//   console.log('>>>>>>>>>>>>>>> keep mysql options define: : ', config.database.define);
+// };
 
 // External user authentication
 config.external_auth = {
@@ -90,7 +86,6 @@ config.external_auth = {
     port: process.env.IDM_EX_AUTH_PORT || undefined,
   },
 };
-
 
 // Email configuration
 config.mail = {
@@ -119,12 +114,12 @@ if (
   config.session.secret === 'nodejs_idm' ||
   config.password_encryption.key === 'nodejs_idm'
 ) {
-  console.log('****************');
-  console.log(
-    'WARNING: The current encryption keys match the defaults found in the plaintext ' +
-      'template file - please update for a production instance'
-  );
-  console.log('****************');
+  //eslint-disable-next-line no-console
+  console.log(`
+    ****************
+    WARNING: The current encryption keys match the defaults found in the plaintext
+             template file - please update for a production instance'
+    ****************`);
 }
 
 module.exports = config;

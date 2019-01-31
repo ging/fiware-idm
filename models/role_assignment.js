@@ -3,17 +3,20 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
     'Role_Assignment',
-    { 
-    id: {
+    {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
-    },role_organization: {
-        type: DataTypes.STRING
+        autoIncrement: true,
+      },
+      role_organization: {
+        type: DataTypes.STRING,
+      },
+    },
+    {
+      tableName: 'role_assignment',
+      timestamps: false,
+      underscored: true,
     }
-    }, {
-	    tableName: 'role_assignment',
-	    timestamps: false,
-	    underscored: true,
-  	});
-}
+  );
+};

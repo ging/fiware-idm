@@ -1,7 +1,7 @@
 <!-- Form to authorize user to be admin -->
 <div id="add_trusted_app" class="modal fade" style="top: 0px;" role="dialog" aria-hidden="false">
     <form id="trusted_applications_form" action="/idm/applications/<%= application.id%>/edit/trusted_applications" method="POST">
-        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

@@ -601,7 +601,7 @@
       "popover01_title": "Application URL",
       "popover02_body": "The user agent will be redirected to this URL when OAuth flow is finished.",
       "popover02_title": "Application Callback URL",
-      "popover03_body": "IdM Keyrock will redirect to this endpoint if the user agent has sign in through OAuth and it is need to delete also de user session in Keyrock. If you don't configure this parameter, the user agent will be redirected to the endpoint specified before in url.",
+      "popover03_body": "IdM Keyrock will redirect to this endpoint if the user agent has signed in through OAuth and it is needed to delete also de user session in Keyrock. If you don't configure this parameter, the user agent will be redirected to the endpoint specified before in url field.",
       "popover03_title": "Application Sign Out Callback",
       "popover04_body": "Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information",
       "popover04_title": "OAuth Grant Types"
@@ -641,7 +641,7 @@
       "popover01_title": "Application URL",
       "popover02_body": "The user agent will be redirected to this URL when OAuth flow is finished.",
       "popover02_title": "Application Callback URL",
-      "popover03_body": "IdM Keyrock will redirect to this endpoint if the user agent has sign in through OAuth and it is need to delete also de user session in Keyrock. If you don't configure this parameter, the user agent will be redirected to the endpoint specified before in url.",
+      "popover03_body": "IdM Keyrock will redirect to this endpoint if the user agent has signed in through OAuth and it is needed to delete also de user session in Keyrock. If you don't configure this parameter, the user agent will be redirected to the endpoint specified before in url field.",
       "popover03_title": "Application Sign Out Callback",
       "popover04_body": "Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information.",
       "popover04_title": "OAuth Grant Types",

@@ -49,7 +49,7 @@ app.use('/version', function(req, res) {
     new Date() - up_date
   );
   version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
-  res.send(version);
+  res.status(200).send(version);
 });
 
 // uncomment after placing your favicon in /public

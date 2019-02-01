@@ -92,21 +92,21 @@ module.exports = function(
 
   let query =
     select +
-    'n' +
+    '\n' +
     count +
-    (count_rows ? 'n' : '') +
+    (count_rows ? '\n' : '') +
     from +
-    'n' +
+    '\n' +
     join +
-    'n' +
+    '\n' +
     on +
-    'n' +
+    '\n' +
     where +
-    'n' +
+    '\n' +
     and +
-    'n' +
+    '\n' +
     limit +
-    'n' +
+    '\n' +
     offset;
 
   if (sequelize.getDialect() === 'postgres') {

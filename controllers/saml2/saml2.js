@@ -389,15 +389,10 @@ function create_user(name_id, new_eidas_profile) {
 
         const user_extra = user.extra;
         Object.assign(user_extra.eidas_profile, new_attributes);
-        return models.user.update(
-          {
-            extra: user_extra,
-          },
-          {
-            fields: ['extra'],
-            where: { id: user.id },
-          }
-        );
+        user.extra = user_extra;
+        return user.save({
+          fields: ['extra'],
+        });
       }
 
       return models.user
@@ -411,6 +406,7 @@ function create_user(name_id, new_eidas_profile) {
         .save();
     })
     .then(function(user) {
+      debug(user);
       return user;
     })
     .catch(function(error) {

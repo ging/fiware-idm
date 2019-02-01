@@ -4,6 +4,7 @@ public/**/*.js
 seeders/**/*.js
 migrations/*.js
 models/**/*.js
+models/helpers/search_distinct.js
 # Ignore lib/saml2 for now because is an external library generated with coffe script
 # that needs to be checked deeply before
 lib/saml2.js

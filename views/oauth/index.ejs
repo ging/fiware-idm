@@ -1,23 +1,22 @@
 <% 
   var login;
   var presentation;
-
   if (site.theme !== 'default') {
     if(fs.existsSync('themes/' + site.theme + '/templates/_oauth_login.ejs')) {
-    	login = '../../themes/' + site.theme + '/templates/_oauth_login';
+      login = '../../themes/' + site.theme + '/templates/_oauth_login';
     }
     if(fs.existsSync('themes/' + site.theme + '/templates/_oauth_presentation.ejs')) {
-    	presentation = '../../themes/' + site.theme + '/templates/_oauth_presentation';
+      presentation = '../../themes/' + site.theme + '/templates/_oauth_presentation';
     }
   } else {
-  	login = '_login';
-  	presentation = '_presentation';
+    login = '_login';
+    presentation = '_presentation';
   }
 %>
 
 <div class=alternative_login>
-	<div class="row">
-		<%- include(login)%>
-		<%- include(presentation)%>
-	</div>
+  <div class="row">
+    <%- include(login)%>
+    <%- include(presentation)%>
+  </div>
 </div>

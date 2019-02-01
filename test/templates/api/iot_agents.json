@@ -1,0 +1,19 @@
+{
+	"before": {
+		"application": {
+	    	"name": "Test_application iot agents",
+	    	"description": "description for iot agents",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	}
+}

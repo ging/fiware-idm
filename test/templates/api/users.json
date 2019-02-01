@@ -1,0 +1,44 @@
+{
+	"create": {
+		"valid_user_body": {
+			"user": {
+		    	"username": "user_test1",
+		    	"email": "user_test1@test.com",
+		    	"password": "test"
+			}
+		}
+	},
+	"read": {
+		"create": {
+			"user": {
+		    	"username": "user_test2",
+		    	"email": "test2@test.com",
+		    	"password": "test"
+			}
+		}
+	},
+	"update": {
+		"create": {
+			"user": {
+		    	"username": "user_test3",
+		    	"email": "test3@test.com",
+		    	"password": "test"
+		    }
+		},
+		"new_values": {
+			"user": {
+				"username": "new_username_test3",
+	    		"password": "new_password"
+			}
+		}
+	},
+	"delete": {
+		"create": {
+			"user": {
+		    	"username": "user_test4",
+		    	"email": "test4@test.com",
+		    	"password": "test"
+			}
+		}
+	}
+}

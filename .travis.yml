@@ -1,3 +1,29 @@
 language: node_js
+sudo: required
+dist: xenial
+
 node_js:
-  - "8"
+ - "8"
+ - "10"
+
+branches:
+  only:
+    - master
+
+services:
+  - mysql
+
+install:
+ - npm install
+
+before_install:
+ - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+ - sudo mysql_upgrade -u root -ptest
+ - sudo service mysql restart
+ - cp test/config_test.js.template config.js
+
+before_script:
+ - npm run lint
+
+after_script:
+  - npm run test:coveralls

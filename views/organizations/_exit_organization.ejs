@@ -4,18 +4,18 @@
             <div class="modal-header">
                 <a href="#" class="close" data-dismiss="modal">×</a>
                 <h3>
-                </h3><h4 class="modal-title">Remove from organization</h4> 
+                </h3><h4 class="modal-title"><%=translation.organizations.exit_org.title%></h4>
             </div>
             <form id="remove_org" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/organizations/<%= organization.id %>/remove?_method=delete" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
-                    <p>Are you sure you want to exit this organization?</p>
+                    <p><%=translation.organizations.exit_org.content%></p>
                     <fieldset>
                         <input id="id_orgID" name="orgID" type="hidden" value="<%= organization.id %>">
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <input class="btn btn-danger pull-right " type="submit" value="Remove">
+                    <input class="btn btn-danger pull-right " type="submit" value="<%=translation.organizations.exit_org.exit_btn%>">
                 </div>
             </form>
         </div>

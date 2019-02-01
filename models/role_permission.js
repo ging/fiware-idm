@@ -4,15 +4,16 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
     'Role_Permission',
     {
-    	id: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
-      }
-    }, {
+        autoIncrement: true,
+      },
+    },
+    {
       tableName: 'role_permission',
       timestamps: false,
       underscored: true,
-    } 
+    }
   );
-}
+};

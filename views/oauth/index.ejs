@@ -1,6 +1,6 @@
 <% 
-  var login;
-  var presentation;
+  var login = '_login';
+  var presentation = '_presentation';
   if (site.theme !== 'default') {
     if(fs.existsSync('themes/' + site.theme + '/templates/_oauth_login.ejs')) {
       login = '../../themes/' + site.theme + '/templates/_oauth_login';
@@ -8,9 +8,6 @@
     if(fs.existsSync('themes/' + site.theme + '/templates/_oauth_presentation.ejs')) {
       presentation = '../../themes/' + site.theme + '/templates/_oauth_presentation';
     }
-  } else {
-    login = '_login';
-    presentation = '_presentation';
   }
 %>
 

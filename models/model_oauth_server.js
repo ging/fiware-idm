@@ -18,9 +18,6 @@ const oauth_authorization_code = models.oauth_authorization_code;
 const oauth_refresh_token = models.oauth_refresh_token;
 const user_authorized_application = models.user_authorized_application;
 
-const user_info = require('../templates/oauth_response/oauth_user_response.json');
-const iot_info = require('../templates/oauth_response/oauth_iot_response.json');
-
 function getAccessToken(bearerToken) {
   debug('-------getAccesToken-------');
 
@@ -576,6 +573,7 @@ function create_oauth_response(
   }
 
   if (type === 'user') {
+    const user_info = require('../templates/oauth_response/oauth_user_response.json');
     user_info.username = identity.username;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
@@ -588,6 +586,7 @@ function create_oauth_response(
 
     return search_user_info(user_info, action, resource, authzforce, req_app);
   } else if (type === 'iot') {
+    const iot_info = require('../templates/oauth_response/oauth_iot_response.json');
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 

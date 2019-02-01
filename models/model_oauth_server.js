@@ -586,7 +586,6 @@ function create_oauth_response(
       user_info.eidas_profile = identity.extra.eidas_profile;
     }
 
-<<<<<<< HEAD
       var user_info = require('../templates/oauth_response/oauth_user_response.json');
 
       //original code: user_info.username = identity.username;

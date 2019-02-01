@@ -18,9 +18,6 @@ const oauth_authorization_code = models.oauth_authorization_code;
 const oauth_refresh_token = models.oauth_refresh_token;
 const user_authorized_application = models.user_authorized_application;
 
-const user_info = require('../templates/oauth_response/oauth_user_response.json');
-const iot_info = require('../templates/oauth_response/oauth_iot_response.json');
-
 function getAccessToken(bearerToken) {
   debug('-------getAccesToken-------');
 
@@ -576,9 +573,19 @@ function create_oauth_response(
   }
 
   if (type === 'user') {
+    const user_info = require('../templates/oauth_response/oauth_user_response.json');
     user_info.username = identity.username;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
+    //original code: user_info.username = identity.username;
+    //CHANGE ONLY FOR VISH CASE
+    user_info.username = identity.username.split(" ")[0];
+    user_info.surname = identity.username.split(" ")[1]===undefined ? " ":identity.username.split(" ")[1];
+    user_info.app_id = application_id;	      user_info.app_id = application_id;
+    user_info.isGravatarEnabled = identity.gravatar;	      user_info.isGravatarEnabled = identity.gravatar;
+    if(!identity.email){
+      identity.email = user_info.username + "@idm.vishub.org";
+    }
     user_info.email = identity.email;
     user_info.id = identity.id;
 
@@ -586,26 +593,9 @@ function create_oauth_response(
       user_info.eidas_profile = identity.extra.eidas_profile;
     }
 
-      var user_info = require('../templates/oauth_response/oauth_user_response.json');
-
-      //original code: user_info.username = identity.username;
-      //CHANGE ONLY FOR VISH CASE
-      user_info.username = identity.username.split(" ")[0];
-      user_info.surname = identity.username.split(" ")[1]===undefined ? " ":identity.username.split(" ")[1];
-      user_info.app_id = application_id;
-      user_info.isGravatarEnabled = identity.gravatar;
-      if(!identity.email){
-        identity.email = user_info.username + "@idm.vishub.org";
-      }
-      user_info.email = identity.email;
-      user_info.id = identity.id;
-
-      if (identity.eidas_id) {
-        user_info.eidas_profile = identity.extra.eidas_profile;
-      }
-
     return search_user_info(user_info, action, resource, authzforce, req_app);
   } else if (type === 'iot') {
+    const iot_info = require('../templates/oauth_response/oauth_iot_response.json');
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 

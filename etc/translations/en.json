@@ -305,8 +305,8 @@
       "label02": "New password",
       "label03": "Confirm new password",
       "panel_title02": "Change your email",
-      "label04": "Email",
-      "label05": "Current email",
+      "label04": "New Email",
+      "label05": "Current password",
       "panel_title03": "Manage two-factor authentication",
       "content01": "You have this option ",
       "content01_1": "disabled.",
@@ -796,7 +796,7 @@
     "authorize": {
       "title": "Authorize",
       "content01": "The application",
-      "content02": "Email:",
+      "content02": "will be able to:",
       "content03": "Read your public information.",
       "deny_btn": "Deny",
       "authorize_btn": "Authorize"

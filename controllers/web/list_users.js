@@ -225,10 +225,12 @@ exports.change_password = function(req, res) {
   // Array of errors to send to the view
   let errors = [];
 
+  const date_password = new Date(new Date().getTime());
+
   // Build a row and validate it
   const user = models.user.build({
     password: req.body.password1,
-    date_password: new Date(new Date().getTime()),
+    date_password,
   });
 
   // If password(again) is empty push an error into the array
@@ -247,9 +249,10 @@ exports.change_password = function(req, res) {
         return models.user.update(
           {
             password: req.body.password1,
+            date_password,
           },
           {
-            fields: ['password'],
+            fields: ['password', 'date_password'],
             where: { id: req.user.id },
           }
         );

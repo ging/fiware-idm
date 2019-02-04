@@ -147,7 +147,7 @@ exports.create = function(req, res) {
 
 // GET /update_password -- Render settings/password view with a warn to indicate user to change password
 exports.update_password = function(req, res) {
-  res.render('settings/password', {
+  res.render('settings/change_password', {
     errors: [],
     warn_change_password: true,
     csrf_token: req.csrfToken(),

@@ -13,7 +13,7 @@
             <h3>Accede</h3>
         </div>
 
-        <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/oauth2<%= application.url %>" method="POST"
+        <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="<%= application.url %>" method="POST"
             enctype="">
             <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <div class="modal-body clearfix">

@@ -23,7 +23,7 @@ exports.login_required = function(req, res, next) {
 
 // MW to perform actions forgot password and re send confirmation of registration
 exports.login_not_required = function(req, res, next) {
-  debug('--> login_required');
+  debug('--> login_not_required');
 
   if (req.session.user) {
     res.redirect('/');
@@ -139,6 +139,7 @@ exports.create = function(req, res) {
       res.redirect('/idm');
     });
   } else {
+    debug(errors);
     // If error exists send a message to /auth/login
     req.session.errors = errors;
     res.redirect('/auth/login');

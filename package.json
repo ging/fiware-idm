@@ -14,6 +14,7 @@
     "undo_all_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo:all",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "test": "mocha --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
+    "test:single": "mocha",
     "test:watch": "npm run test -- -w ./lib",
     "lint": "eslint . --cache",
     "lint:text": "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",

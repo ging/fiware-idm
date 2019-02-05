@@ -2,7 +2,7 @@ const models = require('../../models/models.js');
 const debug = require('debug')('idm:web-manage_members_controller');
 const gravatar = require('gravatar');
 
-// GET /idm/organizations/:organizationId/edit/users -- Send all members of organization
+// GET /idm/organizations/:organization_id/edit/users -- Send all members of organization
 exports.get_members = function(req, res, next) {
   debug('--> get_members');
 
@@ -53,7 +53,7 @@ exports.get_members = function(req, res, next) {
   }
 };
 
-// POST /idm/organizations/:organizationId/edit/users -- Add members to the organization
+// POST /idm/organizations/:organization_id/edit/users -- Add members to the organization
 exports.add_members = function(req, res) {
   debug('--> add_members');
 

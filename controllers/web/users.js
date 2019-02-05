@@ -198,7 +198,7 @@ exports.get_applications = function(req, res) {
     });
 };
 
-// GET /idm/organizations/:organizationId/get_organizations -- Send organizations to which user belongs
+// GET /idm/organizations/:organization_id/get_organizations -- Send organizations to which user belongs
 exports.get_organizations = function(req, res) {
   debug('--> get_organizations');
 

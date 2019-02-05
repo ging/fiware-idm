@@ -94,7 +94,7 @@ exports.index_organization_roles = function(req, res) {
     });
 };
 
-// PUT /v1/applications/:application_id/organizations/:organization_id/roles/:roleId/organization_roles/organizationRoleId -- Add role organization assignment
+// PUT /v1/applications/:application_id/organizations/:organization_id/roles/:role_id/organization_roles/organization_role_id -- Add role organization assignment
 exports.addRole = function(req, res) {
   debug('--> addRole');
 
@@ -148,7 +148,7 @@ exports.addRole = function(req, res) {
     });
 };
 
-// DELETE /v1/applications/:application_id/organizations/:organization_id/roles/:roleId/organization_roles/organizationRoleId -- Remove role organization assignment
+// DELETE /v1/applications/:application_id/organizations/:organization_id/roles/:role_id/organization_roles/organization_role_id -- Remove role organization assignment
 exports.removeRole = function(req, res) {
   debug('--> removeRole');
 

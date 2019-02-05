@@ -6,16 +6,16 @@
  */
 
 // Load database configuration before
-require('../config/config_database');
+require('../../config/config_database');
 
 process.env.IDM_DB_PASS = 'test';
 process.env.IDM_DB_USER = 'root';
 
 // const keyrock = require('../../bin/www');
-const config = require('../../config.js');
+const config = require('../../../config.js');
 const should = require('should');
 const request = require('request');
-const utils = require('../utils');
+const utils = require('../../utils');
 
 const login = utils.readExampleFile('./test/templates/login.json');
 
@@ -72,6 +72,43 @@ describe('Log-In: ', function() {
       request(wrong_password_login, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(401);
+        done();
+      });
+    });
+  });
+
+  describe('4) Deleting a token', function() {
+    let token;
+
+    // eslint-disable-next-line snakecase/snakecase
+    beforeEach(function(done) {
+      const good_login = {
+        url: config.host + '/v1/auth/tokens',
+        method: 'POST',
+        json: login.good_login,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      request(good_login, function(error, response) {
+        token = response.headers['x-subject-token'];
+        done();
+      });
+    });
+
+    it('should return a 204 OK', function(done) {
+      const list_iot_agents = {
+        url: config.host + '/v1/auth/tokens',
+        method: 'DELETE',
+        headers: {
+          'X-Auth-token': token,
+          'X-Subject-token': token,
+        },
+      };
+      request(list_iot_agents, function(error, response) {
+        should.not.exist(error);
+        response.statusCode.should.equal(204);
         done();
       });
     });

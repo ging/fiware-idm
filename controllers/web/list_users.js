@@ -159,7 +159,7 @@ exports.create = function(req, res) {
     });
 };
 
-// PUT /idm/admins/list_users/users/:userId/user_info -- Edit user info
+// PUT /idm/admins/list_users/users/:user_id/user_info -- Edit user info
 exports.edit_info = function(req, res) {
   debug('--> edit_info');
 
@@ -218,7 +218,7 @@ exports.edit_info = function(req, res) {
     });
 };
 
-// PUT /idm/admins/list_users/users/:userId/change_password -- Change password of user
+// PUT /idm/admins/list_users/users/:user_id/change_password -- Change password of user
 exports.change_password = function(req, res) {
   debug('--> change_password');
 
@@ -270,7 +270,7 @@ exports.change_password = function(req, res) {
     });
 };
 
-// PUT /idm/admins/list_users/users/:userId/enable -- Enable user
+// PUT /idm/admins/list_users/users/:user_id/enable -- Enable user
 exports.enable = function(req, res) {
   debug('--> enable');
 

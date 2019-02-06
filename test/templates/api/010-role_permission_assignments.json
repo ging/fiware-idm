@@ -1,0 +1,33 @@
+{
+	"before": {
+		"application": {
+	    	"name": "Test_application for role permission assignment",
+	    	"description": "Role assignment description",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	},
+	"add": {
+		"role_body": {
+			"role": {
+		    	"name": "role 1"
+			}
+		},
+		"permission_body": {
+			"permission": {
+				"name": "permission 1",
+				"action": "GET",
+				"resource": "login"
+			}
+		}
+	}
+}

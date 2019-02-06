@@ -13,12 +13,14 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const admin_login = utils.readExampleFile('./test/templates/login.json')
-  .good_admin_login;
-const user_login = utils.readExampleFile('./test/templates/login.json')
-  .good_login;
+const authenticate = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+);
 
-describe('API - Service provider: ', function() {
+const admin_login = authenticate.good_admin_login;
+const user_login = authenticate.good_login;
+
+describe('API - 1 - Service provider: ', function() {
   describe('1) When requesting services providers with a token of an admin user', function() {
     let valid_token;
 

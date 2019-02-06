@@ -14,16 +14,16 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile('./test/templates/login.json')
-  .good_admin_login;
-const trusted_applications = utils.readExampleFile(
-  './test/templates/api/truested_applications.json'
+const login = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+).good_admin_login;
+const pep_proxies = utils.readExampleFile(
+  './test/templates/api/006-pep_proxies.json'
 );
 
 let token;
-let application_id;
 
-describe('API - Trusted applications: ', function() {
+describe('API - 6 - Pep Proxy: ', function() {
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -40,83 +40,59 @@ describe('API - Trusted applications: ', function() {
     });
   });
 
-  // eslint-disable-next-line no-undef
-  before(function(done) {
-    const create_application = {
-      url: config.host + '/v1/applications',
-      method: 'POST',
-      body: JSON.stringify(trusted_applications.before),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-token': token,
-      },
-    };
-
-    request(create_application, function(error, response, body) {
-      const json = JSON.parse(body);
-      application_id = json.application.id;
-      done();
-    });
-  });
-
-  describe('1) When adding a trusted application', function() {
-    let trusted_application_id;
+  describe('1) When creating a Pep Proxy', function() {
+    let application_id;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_trusted_application = {
+      const create_application = {
         url: config.host + '/v1/applications',
         method: 'POST',
-        body: JSON.stringify(trusted_applications.update),
+        body: JSON.stringify(pep_proxies.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_trusted_application, function(error, response, body) {
+      request(create_application, function(error, response, body) {
         const json = JSON.parse(body);
-        trusted_application_id = json.application.id;
+        application_id = json.application.id;
         done();
       });
     });
 
     it('should return a 201 OK', function(done) {
-      const add_trusted_application = {
+      const create_pep_proxy = {
         url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/trusted_applications/' +
-          trusted_application_id,
-        method: 'PUT',
+          config.host + '/v1/applications/' + application_id + '/pep_proxies',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(add_trusted_application, function(error, response, body) {
+      request(create_pep_proxy, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('oauth_client_id');
-        should(json).have.property('trusted_oauth_client_id');
+        should(json).have.property('pep_proxy');
         response.statusCode.should.equal(201);
         done();
       });
     });
   });
 
-  describe('2) When requesting list trusted applications', function() {
-    let trusted_application_id_1;
-    let trusted_application_id_2;
+  describe('2) When reading Pep Proxy info', function() {
+    let application_id;
 
+    // Create application
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
       const create_application = {
         url: config.host + '/v1/applications',
         method: 'POST',
-        body: JSON.stringify(trusted_applications.list.applications[0]),
+        body: JSON.stringify(pep_proxies.read),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
@@ -125,103 +101,59 @@ describe('API - Trusted applications: ', function() {
 
       request(create_application, function(error, response, body) {
         const json = JSON.parse(body);
-        trusted_application_id_1 = json.application.id;
+        application_id = json.application.id;
         done();
       });
     });
 
+    // Create pep proxy
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_pep_proxy = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/pep_proxies',
         method: 'POST',
-        body: JSON.stringify(trusted_applications.list.applications[1]),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
-        const json = JSON.parse(body);
-        trusted_application_id_2 = json.application.id;
-        done();
-      });
-    });
-
-    // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
-      const add_trusted_application = {
-        url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/trusted_applications/' +
-          trusted_application_id_1,
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
-      };
-
-      request(add_trusted_application, function() {
-        done();
-      });
-    });
-
-    // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
-      const add_trusted_application = {
-        url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/trusted_applications/' +
-          trusted_application_id_2,
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
-      };
-
-      request(add_trusted_application, function() {
+      request(create_pep_proxy, function() {
         done();
       });
     });
 
     it('should return a 200 OK', function(done) {
-      const list_trusted_applications = {
+      const read_pep_proxy = {
         url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/trusted_applications',
+          config.host + '/v1/applications/' + application_id + '/pep_proxies',
         method: 'GET',
         headers: {
           'X-Auth-token': token,
         },
       };
-      request(list_trusted_applications, function(error, response, body) {
+
+      request(read_pep_proxy, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('trusted_applications');
+        should(json).have.property('pep_proxy');
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('3) When removing a trusted application', function() {
-    let trusted_application_id;
+  describe('3) When updating a Pep Proxy', function() {
+    let application_id;
 
+    // Create application
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
       const create_application = {
         url: config.host + '/v1/applications',
         method: 'POST',
-        body: JSON.stringify(trusted_applications.list.applications[0]),
+        body: JSON.stringify(pep_proxies.update),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
@@ -230,46 +162,102 @@ describe('API - Trusted applications: ', function() {
 
       request(create_application, function(error, response, body) {
         const json = JSON.parse(body);
-        trusted_application_id = json.application.id;
+        application_id = json.application.id;
         done();
       });
     });
 
+    // Create pep proxy
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const add_trusted_application = {
+      const create_pep_proxy = {
         url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/trusted_applications/' +
-          trusted_application_id,
-        method: 'PUT',
+          config.host + '/v1/applications/' + application_id + '/pep_proxies',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(add_trusted_application, function() {
+      request(create_pep_proxy, function() {
         done();
       });
     });
 
-    it('should return a 201 OK', function(done) {
-      const delete_trusted_application = {
+    it('should return a 200 OK', function(done) {
+      const update_pep_proxy = {
         url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/trusted_applications/' +
-          trusted_application_id,
+          config.host + '/v1/applications/' + application_id + '/pep_proxies',
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(update_pep_proxy, function(error, response, body) {
+        should.not.exist(error);
+        const json = JSON.parse(body);
+        should(json).have.property('new_password');
+        response.statusCode.should.equal(200);
+        done();
+      });
+    });
+  });
+
+  describe('4) When deleting a Pep Proxy', function() {
+    let application_id;
+    // Create application
+    // eslint-disable-next-line snakecase/snakecase
+    beforeEach(function(done) {
+      const create_application = {
+        url: config.host + '/v1/applications',
+        method: 'POST',
+        body: JSON.stringify(pep_proxies.delete),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(create_application, function(error, response, body) {
+        const json = JSON.parse(body);
+        application_id = json.application.id;
+        done();
+      });
+    });
+
+    // Create pep proxy
+    // eslint-disable-next-line snakecase/snakecase
+    beforeEach(function(done) {
+      const create_pep_proxy = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/pep_proxies',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(create_pep_proxy, function() {
+        done();
+      });
+    });
+
+    it('should return a 204 OK', function(done) {
+      const delete_pep_proxy = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/pep_proxies',
         method: 'DELETE',
         headers: {
           'X-Auth-token': token,
         },
       };
-      request(delete_trusted_application, function(error, response) {
+
+      request(delete_pep_proxy, function(error, response) {
+        should.not.exist(error);
         response.statusCode.should.equal(204);
         done();
       });

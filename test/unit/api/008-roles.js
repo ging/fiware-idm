@@ -14,14 +14,15 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile('./test/templates/login.json').good_login;
-const applications = utils.readExampleFile(
-  './test/templates/api/applications.json'
-);
+const login = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+).good_admin_login;
+const roles = utils.readExampleFile('./test/templates/api/008-roles.json');
 
 let token;
+let application_id;
 
-describe('API - Applications: ', function() {
+describe('API - 8 - Roles: ', function() {
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -38,167 +39,201 @@ describe('API - Applications: ', function() {
     });
   });
 
-  describe('1) When requesting list of applications', function() {
+  // eslint-disable-next-line no-undef
+  before(function(done) {
+    const create_application = {
+      url: config.host + '/v1/applications',
+      method: 'POST',
+      body: JSON.stringify(roles.before),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token,
+      },
+    };
+
+    request(create_application, function(error, response, body) {
+      const json = JSON.parse(body);
+      application_id = json.application.id;
+      done();
+    });
+  });
+
+  describe('1) When requesting list of roles', function() {
     it('should return a 200 OK', function(done) {
-      const list_applications = {
-        url: config.host + '/v1/applications',
+      const list_roles = {
+        url: config.host + '/v1/applications/' + application_id + '/roles',
         method: 'GET',
         headers: {
           'X-Auth-token': token,
         },
       };
-      request(list_applications, function(error, response, body) {
+      request(list_roles, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('applications');
+        should(json).have.property('roles');
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('2) When creating an application', function() {
+  describe('2) When creating a role', function() {
     it('should return a 201 OK', function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_role = {
+        url: config.host + '/v1/applications/' + application_id + '/roles',
         method: 'POST',
-        body: JSON.stringify(applications.create.valid_app_body),
+        body: JSON.stringify(roles.create.valid_role_body),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_role, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('application');
+        should(json).have.property('role');
         response.statusCode.should.equal(201);
         done();
       });
     });
   });
 
-  describe('3) When reading application info', function() {
-    let application_id;
+  describe('3) When reading role info', function() {
+    let role_id;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_role = {
+        url: config.host + '/v1/applications/' + application_id + '/roles',
         method: 'POST',
-        body: JSON.stringify(applications.read.create),
+        body: JSON.stringify(roles.read.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_role, function(error, response, body) {
         const json = JSON.parse(body);
-        application_id = json.application.id;
+        role_id = json.role.id;
         done();
       });
     });
 
     it('should return a 200 OK', function(done) {
-      const read_application = {
-        url: config.host + '/v1/applications/' + application_id,
+      const read_role = {
+        url:
+          config.host +
+          '/v1/applications/' +
+          application_id +
+          '/roles/' +
+          role_id,
         method: 'GET',
         headers: {
           'X-Auth-token': token,
         },
       };
 
-      request(read_application, function(error, response, body) {
+      request(read_role, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('application');
+        should(json).have.property('role');
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('4) When updating an application', function() {
-    let application_id;
-    let application_name;
+  describe('4) When updating a role', function() {
+    let role_id;
+    let role_name;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_role = {
+        url: config.host + '/v1/applications/' + application_id + '/roles',
         method: 'POST',
-        body: JSON.stringify(applications.update.create),
+        body: JSON.stringify(roles.update.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_role, function(error, response, body) {
         const json = JSON.parse(body);
-        application_id = json.application.id;
-        application_name = json.application.name;
+        role_id = json.role.id;
+        role_name = json.role.name;
         done();
       });
     });
 
     it('should return a 200 OK', function(done) {
-      const update_application = {
-        url: config.host + '/v1/applications/' + application_id,
+      const update_role = {
+        url:
+          config.host +
+          '/v1/applications/' +
+          application_id +
+          '/roles/' +
+          role_id,
         method: 'PATCH',
-        body: JSON.stringify(applications.update.new_values),
+        body: JSON.stringify(roles.update.new_values),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(update_application, function(error, response, body) {
+      request(update_role, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('values_updated');
         const response_name = json.values_updated.name;
-        should.notEqual(application_name, response_name);
+        should.notEqual(role_name, response_name);
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('4) When deleting an application', function() {
-    let application_id;
+  describe('4) When deleting a role', function() {
+    let role_id;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_role = {
+        url: config.host + '/v1/applications/' + application_id + '/roles',
         method: 'POST',
-        body: JSON.stringify(applications.delete.create),
+        body: JSON.stringify(roles.delete.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_role, function(error, response, body) {
         const json = JSON.parse(body);
-        application_id = json.application.id;
+        role_id = json.role.id;
         done();
       });
     });
 
     it('should return a 204 OK', function(done) {
-      const delete_application = {
-        url: config.host + '/v1/applications/' + application_id,
+      const delete_role = {
+        url:
+          config.host +
+          '/v1/applications/' +
+          application_id +
+          '/roles/' +
+          role_id,
         method: 'DELETE',
         headers: {
           'X-Auth-token': token,
         },
       };
 
-      request(delete_application, function(error, response) {
+      request(delete_role, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(204);
         done();

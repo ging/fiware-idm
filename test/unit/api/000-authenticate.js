@@ -17,9 +17,11 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile('./test/templates/login.json');
+const login = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+);
 
-describe('Log-In: ', function() {
+describe('API - 0 - Authenticate: ', function() {
   describe('1) When Logging in with a valid username and password', function() {
     const good_login = {
       url: config.host + '/v1/auth/tokens',

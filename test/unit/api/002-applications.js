@@ -51,9 +51,9 @@ describe('API - 2 - Applications: ', function() {
       };
       request(list_applications, function(error, response, body) {
         should.not.exist(error);
+        response.statusCode.should.equal(200);
         const json = JSON.parse(body);
         should(json).have.property('applications');
-        response.statusCode.should.equal(200);
         done();
       });
     });
@@ -73,9 +73,9 @@ describe('API - 2 - Applications: ', function() {
 
       request(create_application, function(error, response, body) {
         should.not.exist(error);
+        response.statusCode.should.equal(201);
         const json = JSON.parse(body);
         should(json).have.property('application');
-        response.statusCode.should.equal(201);
         done();
       });
     });
@@ -114,9 +114,9 @@ describe('API - 2 - Applications: ', function() {
 
       request(read_application, function(error, response, body) {
         should.not.exist(error);
+        response.statusCode.should.equal(200);
         const json = JSON.parse(body);
         should(json).have.property('application');
-        response.statusCode.should.equal(200);
         done();
       });
     });
@@ -159,11 +159,11 @@ describe('API - 2 - Applications: ', function() {
 
       request(update_application, function(error, response, body) {
         should.not.exist(error);
+        response.statusCode.should.equal(200);
         const json = JSON.parse(body);
         should(json).have.property('values_updated');
         const response_name = json.values_updated.name;
         should.notEqual(application_name, response_name);
-        response.statusCode.should.equal(200);
         done();
       });
     });
@@ -203,6 +203,28 @@ describe('API - 2 - Applications: ', function() {
       request(delete_application, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(204);
+        done();
+      });
+    });
+  });
+
+  describe('6) When creating an application with token type not configure', function() {
+    it('should return a 201 OK', function(done) {
+      const create_application = {
+        url: config.host + '/v1/applications',
+        method: 'POST',
+        body: JSON.stringify(applications.create.app_token_type),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(create_application, function(error, response, body) {
+        should.not.exist(error);
+        response.statusCode.should.equal(201);
+        const json = JSON.parse(body);
+        should(json).have.property('application');
         done();
       });
     });

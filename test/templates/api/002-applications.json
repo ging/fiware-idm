@@ -16,6 +16,19 @@
 			      	"permanent"
 		    	]
 			}
+		},
+		"app_token_type": {
+			"application": {
+		    	"name": "Test_application 1",
+		    	"description": "description1",
+		    	"redirect_uri": "http://localhost/login1",
+		    	"url": "http://localhost1",
+		    	"grant_type": [
+			      	"authorization_code",
+			      	"implicit",
+			      	"password"
+		    	]
+			}
 		}
 	},
 	"read": {

@@ -165,12 +165,16 @@ exports.create = function(req, res) {
         application.response_type = ['code', 'token'];
       }
 
-      application.jwt_secret = req.body.application.token_types.includes('jwt')
-        ? crypto
-            .randomBytes(16)
-            .toString('hex')
-            .slice(0, 16)
-        : null;
+      if (req.body.application.token_types) {
+        application.jwt_secret = req.body.application.token_types.includes(
+          'jwt'
+        )
+          ? crypto
+              .randomBytes(16)
+              .toString('hex')
+              .slice(0, 16)
+          : null;
+      }
 
       const create_application = application.save({
         fields: [
@@ -273,14 +277,17 @@ exports.update = function(req, res) {
       req.application.token_types = req.body.application.token_types
         ? req.body.application.token_types
         : req.application.token_types;
-      req.application.jwt_secret = req.body.application.token_types.includes(
-        'bearer'
-      )
-        ? crypto
-            .randomBytes(16)
-            .toString('hex')
-            .slice(0, 16)
-        : null;
+
+      if (req.body.application.token_types) {
+        req.application.jwt_secret = req.body.application.token_types.includes(
+          'jwt'
+        )
+          ? crypto
+              .randomBytes(16)
+              .toString('hex')
+              .slice(0, 16)
+          : null;
+      }
 
       if (oauth_type) {
         req.application.grant_type = oauth_type.grant_type;
@@ -347,6 +354,7 @@ exports.delete = function(req, res) {
 
 // Check body in create request
 function check_create_body_request(body) {
+  debug('--> check_create_body_request');
   return new Promise(function(resolve, reject) {
     if (!body.application) {
       reject({
@@ -380,6 +388,7 @@ function check_create_body_request(body) {
 
     if (body.application.token_types) {
       if (
+        !Array.isArray(body.application.token_types) ||
         !body.application.token_types.every(r =>
           ['jwt', 'permanent'].includes(r)
         )
@@ -397,6 +406,15 @@ function check_create_body_request(body) {
     const oauth_types = { grant_type: [], response_type: [] };
 
     if (body.application.grant_type) {
+      if (!Array.isArray(body.application.grant_type)) {
+        reject({
+          error: {
+            message: 'Invalid Grant Type',
+            code: 400,
+            title: 'Bad Request',
+          },
+        });
+      }
       if (body.application.grant_type.includes('client_credentials')) {
         oauth_types.grant_type.push('client_credentials');
       }
@@ -432,6 +450,8 @@ function check_create_body_request(body) {
 
 // Check body in update request
 function check_update_body_request(body) {
+  debug('--> check_update_body_request');
+
   return new Promise(function(resolve, reject) {
     if (!body.application) {
       reject({
@@ -482,6 +502,7 @@ function check_update_body_request(body) {
 
     if (body.application.token_types) {
       if (
+        !Array.isArray(body.application.token_types) ||
         !body.application.token_types.every(r =>
           ['jwt', 'permanent'].includes(r)
         )
@@ -498,6 +519,16 @@ function check_update_body_request(body) {
 
     if (body.application.grant_type) {
       const oauth_types = { grant_type: [], response_type: [] };
+
+      if (!Array.isArray(body.application.grant_type)) {
+        reject({
+          error: {
+            message: 'Invalid Grant Type',
+            code: 400,
+            title: 'Bad Request',
+          },
+        });
+      }
 
       if (body.application.grant_type.includes('client_credentials')) {
         oauth_types.grant_type.push('client_credentials');

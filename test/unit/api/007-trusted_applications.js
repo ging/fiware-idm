@@ -25,6 +25,7 @@ let token;
 let application_id;
 
 describe('API - 7 - Trusted applications: ', function() {
+  // CREATE TOKEN WITH PROVIDER CREDENTIALS
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -41,6 +42,7 @@ describe('API - 7 - Trusted applications: ', function() {
     });
   });
 
+  // CREATE APPLICATION
   // eslint-disable-next-line no-undef
   before(function(done) {
     const create_application = {

@@ -24,6 +24,7 @@ const applications = utils.readExampleFile(
 let token;
 
 describe('API - 2 - Applications: ', function() {
+  // CREATE A VALID TOKEN
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {

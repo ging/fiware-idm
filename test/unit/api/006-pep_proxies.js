@@ -24,6 +24,7 @@ const pep_proxies = utils.readExampleFile(
 let token;
 
 describe('API - 6 - Pep Proxy: ', function() {
+  // CREATE TOKEN WITH PROVIDER CREDENTIALS
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {

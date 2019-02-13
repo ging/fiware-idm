@@ -24,6 +24,7 @@ describe('API - 1 - Service provider: ', function() {
   describe('1) When requesting services providers with a token of an admin user', function() {
     let valid_token;
 
+    // CREATE AN VALID TOKEN
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
       const good_admin_login = {
@@ -60,6 +61,7 @@ describe('API - 1 - Service provider: ', function() {
   describe('2) When requesting services providers with a token of an non-admin user', function() {
     let invalid_token;
 
+    // CREATE AN INVALID TOKEN
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
       const good_user_login = {
@@ -75,6 +77,7 @@ describe('API - 1 - Service provider: ', function() {
         done();
       });
     });
+
     it('should return a 403 Forbidden', function(done) {
       const list_users = {
         url: config.host + '/v1/service_providers/configs',

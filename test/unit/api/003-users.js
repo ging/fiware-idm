@@ -27,6 +27,7 @@ let valid_token;
 let invalid_token;
 
 describe('API - 3 - Users: ', function() {
+  // CREATE A VALID ADMIN TOKEN
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_admin_login = {
@@ -43,6 +44,7 @@ describe('API - 3 - Users: ', function() {
     });
   });
 
+  // CREATE A VALID USER TOKEN
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_user_login = {

@@ -30,6 +30,7 @@ let unauhtorized_token;
 let application_id;
 
 describe('API - 10 - Role permission assignment: ', function() {
+  // CREATE TOKEN WITH PROVIDER CREDENTIALS
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -46,6 +47,7 @@ describe('API - 10 - Role permission assignment: ', function() {
     });
   });
 
+  // CREATE NOT AUTHORIZED TOKEN IN APPLICATION
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -62,6 +64,7 @@ describe('API - 10 - Role permission assignment: ', function() {
     });
   });
 
+  // CREATE APPLICATION
   // eslint-disable-next-line no-undef
   before(function(done) {
     const create_application = {

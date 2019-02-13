@@ -25,6 +25,7 @@ let token;
 let application_id;
 
 describe('API - 5 - iot_agents: ', function() {
+  // CREATE TOKEN WITH PROVIDER CREDENTIALS
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -41,6 +42,7 @@ describe('API - 5 - iot_agents: ', function() {
     });
   });
 
+  // CREATE APPLICATION
   // eslint-disable-next-line no-undef
   before(function(done) {
     const create_application = {

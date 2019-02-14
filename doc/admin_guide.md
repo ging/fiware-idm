@@ -1,31 +1,10 @@
-# Installation and Administration Guide
-
--   [Introduction](#introduction)
-    -   [Requirements](#requirements)
--   [System Installation](#system-installation) -
-    [Enable HTTPS](#enable-https) -
-    [External Authentication](#external-authentication) -
-    [Authorization](#authorization) - [Email](#email) -
-    [Configure Themes](#configure-themes) - [Admin Panel](#admin-panel)
--   [System Administration](#system-administration)
--   [Sanity Check Procedures](#sanity-check-procedures)
-    -   [End-to-end testing](#end-to-end-testing)
-    -   [List of Running Processes](#list-of-running-processes)
-    -   [Network interfaces Up & Open](#network-interfaces-up--open)
-    -   [Databases](#databases)
--   [Diagnosis Procedures](#diagnosis-procedures)
-    -   [Resource availability](#resource-availability)
-    -   [Remote Service Access](#remote-service-access)
-    -   [Resource consumption](#resource-consumption)
-    -   [I/O flows](#io-flows)
-
-## Introduction
+# Introduction
 
 Welcome to the Installation and Administration Guide for the Identity
 Management - KeyRock Generic Enabler. This section will cover how to install,
 configure and administrate a working instance of KeyRock.
 
-### Requirements
+## Requirements
 
 In order to execute Keyrock, it is needed to have previously installed the
 following software:
@@ -35,7 +14,7 @@ following software:
     Node.js .
 -   [MySQL](https://www.mysql.com/)
 
-## System Installation
+# System Installation
 
 The following steps need to be performed to get Keyrock up and running:
 
@@ -129,7 +108,7 @@ forever start bin/www
 forever status
 ```
 
-### Enable HTTPS
+## Enable HTTPS
 
 Follow the next steps in order to enable the server to listen to HTTPS requests.
 
@@ -156,7 +135,7 @@ config.https = {
 sudo npm start
 ```
 
-### External Authentication
+## External Authentication
 
 You can also configure the Identity Manager to authenticate users through an
 external database.
@@ -242,7 +221,7 @@ config.external_auth = {
 The way to check password validity can be customized in with parameter
 _external_auth.encryption_. SHA1 and BCrypt are currently supported.
 
-### Authorization
+## Authorization
 
 Configure Policy Decision Point (PDP)
 
@@ -267,7 +246,7 @@ config.authorization = {
 };
 ```
 
-### Email
+## Email
 
 You can configure the IdM to send emails to users. Follow this
 [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04)
@@ -282,10 +261,11 @@ config.mail = {
 };
 ```
 
-### Configure themes
+## Configure themes
 
 You can customize the appearance of the web portal. By default there are two
 themes: default and fiwarelab.
+
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_default_view.png)
 
 <p align="center">Figure 1: IdM default view</p>
@@ -354,6 +334,7 @@ config.site = {
 ```
 
 Run the Identity manager and you will see the new appearance:
+
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_customize_view.png)
 
 <p align="center">Figure 3: IdM custom view</p>
@@ -391,7 +372,7 @@ mkdir themes/example/templates
 cd themes/example/templates && touch _footer.ejs _header.ejs _presentation.ejs _help_about_items.ejs
 ```
 
-### Admin Panel
+## Admin Panel
 
 Keyrock provides an interface in which administrators could easliy manage the
 users accounts. Actions as create, edit, delete, enable users as well as reset
@@ -399,7 +380,7 @@ passwords of them could be performed through this functionality.
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_admin_panel.png)
 
-## System Administration
+# System Administration
 
 To manage the mysql database you can access the console running the following
 command and introducing the mysql password:
@@ -408,14 +389,14 @@ command and introducing the mysql password:
 mysql -u [mysql_host] -u [username] -p
 ```
 
-## Sanity Check Procedures
+# Sanity Check Procedures
 
 The Sanity Check Procedures are the steps that a System Administrator will take
 to verify that an installation is ready to be tested. This is therefore a
 preliminary set of tests to ensure that obvious or basic malfunctioning is fixed
 before proceeding to unit tests, integration tests and user validation.
 
-### End-to-end testing
+## End-to-end testing
 
 1. Verify that the host address of IdM can be reached. By default, web access
    will show a Login Page.
@@ -423,7 +404,7 @@ before proceeding to unit tests, integration tests and user validation.
    resulting web page is the landing page of the IdM KeyRock Portal.
 3. Verify that you can view the list of applications, organizations, etc.
 
-### List of Running Processes
+## List of Running Processes
 
 -   If you used forever, to know the status of the process you can run the next
     command:
@@ -432,12 +413,12 @@ before proceeding to unit tests, integration tests and user validation.
  forever status
 ```
 
-### Network interfaces Up & Open
+## Network interfaces Up & Open
 
 -   If your run the server being HTTPS enabled the TCP port 443 should be
     accessible to the web browsers in order to load the IdM Portal.
 
-### Databases
+## Databases
 
 If you have correctly populated the database when installing the GE, the
 connection with it is up and running.
@@ -448,7 +429,7 @@ The databases and tables needed are:
 
 <p align="center">Figure 4: IdM databases table</p>
 
-## Diagnosis Procedures
+# Diagnosis Procedures
 
 The Diagnosis Procedures are the first steps that a System Administrator will
 take to locate the source of an error in a GE. Once the nature of the error is
@@ -456,20 +437,20 @@ identified with these tests, the system admin will very often have to resort to
 more concrete and specific testing to pinpoint the exact point of error and a
 possible solution. Such specific testing is out of the scope of this section.
 
-### Resource availability
+## Resource availability
 
 -   Verify that 2.5MB of disk space is left using the UNIX command 'df'
 
-### Remote Service Access
+## Remote Service Access
 
 Please make sure port 443 is accessible.
 
-### Resource consumption
+## Resource consumption
 
 Typical memory consumption is 100MB and it consumes almost the 1% of a CPU core
 of 2GHz, but it depends on user demand.
 
-### I/O flows
+## I/O flows
 
 Clients access the KeyRock Interface through the client’s Web Browser. This is
 simple HTTP traffic. It makes requests to the local database.

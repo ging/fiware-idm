@@ -201,6 +201,15 @@ in Node JS. Another remarkable changes have been made:
 3.  Now users don't need to switch session in order to create an application
     that will belong to an organization.
 4.  Permissions of an application can be edited or deleted.
+5.  IdM could play the role of gateway between services and eDIAS Node in order
+    to allow users authentication with their national eID.
+6.  OAuth Refresh Token Supported.
+7.  Configurable OAuth token types (Permanent tokens and Json Web Tokens).
+8.  OAuth Revoke Token endpoint enable.
+9.  Internazionalization od UI (Spanish and English supported).
+10. User Admin Panel.
+11. Trusted application for OAuth token validation.
+12. IdM could play the role as PDP for basic authorization.
 
 ## Quality Assurance
 

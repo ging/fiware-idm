@@ -107,6 +107,7 @@
     ],
     "*.md": [
       "prettier --tab-width 4 --print-width 80 --write --prose-wrap always",
+      "textlint --fix",
       "git add"
     ]
   }

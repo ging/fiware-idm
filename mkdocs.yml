@@ -10,8 +10,8 @@ extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://fiware.o
 pages:
   - 'Home': index.md
   - 'Getting Started': getting_started.md
-  - 'Users and Programmers Guide': user_guide.md
-  - 'Installation and Administration Guide': admin_guide.md
-  - 'API Overview': api.md
+  - 'Users/Programmers Guide': user_guide.md
+  - 'Installation/Administration Guide': admin_guide.md
+  - 'IdM API': api.md
   - 'Connecting to IdM with OAuth2.0': oauth.md
   - 'Connecting IdM to a eIDAS Node': eidas.md

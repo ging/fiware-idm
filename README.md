@@ -195,7 +195,7 @@ depends on Openstack components Keystone and Horizon. Now is fully implemented
 in Node JS. Another remarkable changes have been made:
 
 1.  A driver has been implemented in order to make authentication against
-    another database different from the default one.+
+    another database different from the default one.
 2.  The appearance of the web portal can be easily modified though configurable
     themes.
 3.  Now users don't need to switch session in order to create an application

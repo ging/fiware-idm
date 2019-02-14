@@ -4,17 +4,19 @@ Welcome to the Installation and Administration Guide for the Identity
 Management - KeyRock Generic Enabler. This section will cover how to install,
 configure and administrate a working instance of KeyRock.
 
+# System Installation
+
 ## Requirements
 
 In order to execute Keyrock, it is needed to have previously installed the
 following software:
 
--   [Node.js](http://nodejs.org/download/).
--   [Node Packaged Modules](https://npmjs.org/). It is usually included within
-    Node.js .
--   [MySQL](https://www.mysql.com/)
+-   [Node.js](http://nodejs.org/download).
+-   [Node Packaged Modules](https://npmjs.org). It is usually included within
+    Node.js.
+-   [MySQL](https://www.mysql.com).
 
-# System Installation
+## Host Installation
 
 The following steps need to be performed to get Keyrock up and running:
 
@@ -107,6 +109,10 @@ forever start bin/www
 ```bash
 forever status
 ```
+
+# Configuration
+
+TBD. Brief description of all possible configurations
 
 ## Enable HTTPS
 
@@ -425,9 +431,31 @@ connection with it is up and running.
 
 The databases and tables needed are:
 
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_database_table.png)
+**Tables**
 
-<p align="center">Figure 4: IdM databases table</p>
+| table_names                 | table_rows |
+| --------------------------- | ---------- |
+| SequelizeMeta               | 30         |
+| auth_token                  | 4          |
+| authzforce                  | 0          |
+| eidas_credentials           | 0          |
+| IoT                         | 2          |
+| oauth_access_token          | 9          |
+| oauth_authorization_code    | 0          |
+| oauth_client                | 3          |
+| oauth_refresh_token         | 8          |
+| oauth_scope                 | 0          |
+| organization                | 0          |
+| pep_proxy                   | 1          |
+| permission                  | 6          |
+| role                        | 2          |
+| role_assignment             | 6          |
+| role_permission             | 7          |
+| trusted_application         | 0          |
+| user                        | 3          |
+| user_authorized_application | 1          |
+| user_organization           | 0          |
+| user_registration_profile   | 0          |
 
 # Diagnosis Procedures
 

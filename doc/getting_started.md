@@ -1,89 +1,179 @@
 # Quick Start Guide
 
-## Software requirements
+Welcome to IdM Keyrock start guide. In this guide you will learn the basics in
+which is based Keyrock: generate an OAuth token to enable authentication and
+authorization to services.
 
-This GE is based on a JavaScript environment and SQL databases. In order to run
-the identity manager the following requirements must be installed:
+First of all, you need to deploy a Keyrock instance. The easiest way to install
+Keyrock is using Docker and Docker Compose. Create docker-compose.yml file and
+copy the following content to it:
 
--   node.js
--   npm
--   mysql-server (^5.7)
--   build-essential
+```yaml
+version: "2"
 
-## Install
+networks:
+    idm_network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.18.1.0/24
+                  gateway: 172.18.1.1
 
-1.  Clone Proxy repository:
+volumes:
+    vol-mysql:
 
-```console
-git clone https://github.com/ging/fiware-idm.git
+services:
+    mysql:
+        image: mysql/mysql-server:5.7.21
+        ports:
+            - "3306:3306"
+        networks:
+            idm_network:
+                ipv4_address: 172.18.1.5
+        volumes:
+            - vol-mysql:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=idm
+            - MYSQL_ROOT_HOST=172.18.1.6
+
+    fiware-idm:
+        image: fiware/idm
+        ports:
+            - "3000:3000"
+            - "443:443"
+        networks:
+            idm_network:
+                ipv4_address: 172.18.1.6
+        environment:
+            - DATABASE_HOST=mysql
 ```
 
-2.  Install the dependencies:
+Afterwards, navigate to the directory in which you have created the
+docker-compose.yml file and run:
 
-```console
-cd fiware-idm/
-npm install
+```bash
+docker-compose.yml
 ```
 
-3.  Duplicate config.template in config.js:
+This will deploy two Docker containers: one for IdM Keyrock and another one for
+the database instance (in this case is MySQL). The database is seeded with a
+default user whose credentials are:
 
-```console
-cp config.js.template config.js
+-   Email:admin@test.com
+-   Password: 1234
+
+In order to create an OAuth Token we first need to register an application on
+Keyrock. We can do it by using the UI (previous
+[log in](https://fiware-idm.readthedocs.io/en/latest/user_guide/#logging-in)
+with user credentials) as described in
+[register application](https://fiware-idm.readthedocs.io/en/latest/user_guide/#register-an-application)
+or we can create through the API(in this guide we will user curl functionality
+but in the
+[https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication](apiary)
+you can find how to perform this authentication with other programming
+languages):
+
+1. Generate an API token:
+    1. Request using default user credentials.
+
+```bash
+curl --include \
+     --request POST \
+     --header "Content-Type: application/json" \
+     --data-binary "{
+  \"name\": \"admin@test.com\",
+  \"password\": \"1234\"
+}" \
+'http://localhost:3000/v1/auth/tokens'
 ```
 
-4.  Configure data base access credentials:
+    2. Obtain API token from X-Subject-Header in response (in this case is 04c5b070-4292-4b3f-911b-36a103f3ac3f):
 
-```javascript
-config.database = {
-    host: "localhost", // default: 'localhost'
-    password: "idm", // default: 'idm'
-    username: "root", // default: 'root'
-    database: "idm", // default: 'idm'
-    dialect: "mysql" // default: 'mysql'
-};
+```bash
+Content-Type:application/json,application/json; charset=utf-8
+X-Subject-Token:04c5b070-4292-4b3f-911b-36a103f3ac3f
+Content-Length:74
+ETag:W/"4a-jYFzvNRMQcIZ2P+p5EfmbN+VHcw"
+Date:Mon, 19 Mar 2018 15:05:35 GMT
+Connection:keep-alive
 ```
 
-5.  To configure the server to listen HTTPS requests, generate certificates
-    OpenSSL and configure config.js:
+2. Create an application using API token previously created:
+    1. Request (check that redirect_uri is http://localhost/login):
 
-```console
-./generate_openssl_keys.sh
+```bash
+curl --include \
+     --request POST \
+     --header "Content-Type: application/json" \
+     --header "X-Auth-token: <API-TOKEN>" \
+     --data-binary "{
+  \"application\": {
+    \"name\": \"Test_application 1\",
+    \"description\": \"description\",
+    \"redirect_uri\": \"http://localhost/login\",
+    \"url\": \"http://localhost\",
+    \"grant_type\": [
+      \"authorization_code\",
+      \"implicit\",
+      \"password\"
+    ],
+    \"token_types\": [
+        \"jwt\",
+        \"permanent\"
+    ]
+  }
+}" \
+'http://localhost:3000/v1/applications'
 ```
 
-```javascript
-config.https = {
-    enabled: true, //default: 'false'
-    cert_file: "certs/idm-2018-cert.pem",
-    key_file: "certs/idm-2018-key.pem",
-    port: 443
-};
+    2. Example response with application info. In your case there will be different id and secret parameters. Save this parameters in a file because they will be needed in order to obtain an OAuth token.
+
+```bash
+{
+  "application": {
+    "id": "fd7fe349-f7da-4c27-b404-74da17641025",
+    "secret": "9dc463cf-8318-4f65-bc02-778424fdfd77",
+    "image": "default",
+    "name": "Test_application 1",
+    "description": "description",
+    "redirect_uri": "http://localhost/login",
+    "url": "http://localhost",
+    "grant_type": "password,authorization_code,implicit",
+    "token_types": "jwt,permanent",
+    "jwt_secret": "3f1164da20d50c62",
+    "response_type": "code,token"
+  }
+}
 ```
 
-6.  Create database, run migrations and seeders:
+Now we have everything ready for creating an OAuth Token. In this case we are
+going to use the Resource Owner Password credentials flow to generate the token.
+You have to create two environment variables (ID and SECRET) with your own
+values obtained in the previous step (application.ID and application.secret).
 
-```console
-npm run-script create_db
-npm run-script migrate_db
-npm run-script seed_db
+```bash
+ID=fd7fe349-f7da-4c27-b404-74da17641025
+SECRET=9dc463cf-8318-4f65-bc02-778424fdfd77
+curl -X POST -H "Authorization: Basic $(echo -n $ID:$SECRET | base64 -w 0)"   --header "Content-Type: application/x-www-form-urlencoded" -d "grant_type=password&username=admin@test.com&password=1234" http://localhost:3000/oauth2/token
+
 ```
 
-7.  Start server with admin rights (server listens in 3000 port by default or in
-    443 if HTTPS is enabled).
+In the body of the response we can found the OAuth Token in "access_token"
+parameter:
 
-```console
-sudo npm start
+```bash
+{"access_token":"cd8c8e41ab0db220315ed54f173087d281a4c686","token_type":"Bearer","expires_in":3599,"refresh_token":"8b96bc9dfbc8f1c0bd53e18720b6feb5b47de661","scope":["bearer"]}
 ```
 
-You can test the Identity manager using the default user:
+Last, you can retrieve information about the user who has generated the token
+by:
 
--   Email: `admin@test.com`
--   Password: `1234`
+```bash
+curl "http://localhost:3000/user?access_token=cd8c8e41ab0db220315ed54f173087d281a4c686"
+```
 
-### Docker Installation
+And Keyrock will send:
 
-We also provide a Docker image to facilitate you the building of this GE.
-
--   [Here](https://github.com/ging/fiware-idm/tree/master/extras/docker) you
-    will find the Dockerfile and the documentation explaining how to use it.
--   In [Docker Hub](https://hub.docker.com/r/fiware/idm/) you will find the
-    public image.
+```bash
+{"organizations":[],"displayName":"","roles":[{"id":"4cc0c6d2-8d11-497f-b679-7ffe052a5a69","name":"cacascasc"}],"app_id":"497419b7-4802-4981-bc05-e18d7b1c837a","trusted_apps":[],"isGravatarEnabled":false,"email":"admin@test.com","id":"admin","authorization_decision":"","app_azf_domain":"","eidas_profile":{},"username":"admin"}
+```

@@ -187,6 +187,8 @@
     "no-dead-link": {
        "ignoreRedirects": true,
        "ignore": [
+          "http://mylogo.es/*",
+          "http://idm-host/**",
           "mailto:*",
           "https://oauth.net"
       ]

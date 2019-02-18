@@ -18,21 +18,32 @@ check the FIWARE Catalogue entry for
 
 The main identity management concepts within Keyrock are:
 
--   Users
+-   Users:
+
     -   Have a registered account in Keyrock.
+
     -   Can manage organizations and register applications.
--   Organizations
+
+-   Organizations:
+
     -   Are group of users that share resources of an application (roles and
         permissions).
+
     -   Users can be members or owners (manage the organization).
--   Applications
+
+-   Applications:
+
     -   has the client role in the OAuth 2.0 architecture and will request
         protected user data.
+
     -   Are able to authenticate users using their Oauth credentials (ID and
         secret) which unequivocally identify the application
+
     -   Define roles and permissions to manage authorization of users and
         organizations
+
     -   Can register Pep Proxy to protect backends.
+
     -   Can register IoT Agents.
 
 Keyrock provides both a GUI and an API interface.
@@ -60,19 +71,30 @@ They biggest change introduced in 7.x is that the identity manager no longer
 depends on Openstack components Keystone and Horizon. Now is fully implemented
 in Node JS. Another remarkable changes have been made:
 
-1.  A driver has been implemented in order to make authentication against
+-   A driver has been implemented in order to make authentication against
     another database different from the default one.
-2.  The appearance of the web portal can be easily modified though configurable
+
+-   The appearance of the web portal can be easily modified though configurable
     themes.
-3.  Now users don't need to switch session in order to create an application
+
+-   Now users don't need to switch session in order to create an application
     that will belong to an organization.
-4.  Permissions of an application can be edited or deleted.
-5.  IdM could play the role of gateway between services and eDIAS Node in order
+
+-   Permissions of an application can be edited or deleted.
+
+-   IdM could play the role of gateway between services and eDIAS Node in order
     to allow users authentication with their national eID.
-6.  OAuth Refresh Token Supported.
-7.  Configurable OAuth token types (Permanent tokens and Json Web Tokens).
-8.  OAuth Revoke Token endpoint enable.
-9.  Internazionalization od UI (Spanish and English supported).
-10. User Admin Panel.
-11. Trusted application for OAuth token validation.
-12. IdM could play the role as PDP for basic authorization.
+
+-   OAuth Refresh Token Supported.
+
+-   Configurable OAuth token types (Permanent tokens and Json Web Tokens).
+
+-   OAuth Revoke Token endpoint enable.
+
+-   Internazionalization od UI (Spanish and English supported).
+
+-   User Admin Panel.
+
+-   Trusted application for OAuth token validation.
+
+-   IdM could play the role as PDP for basic authorization.

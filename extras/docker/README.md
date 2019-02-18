@@ -32,7 +32,7 @@ networks:
                 - subnet: 172.18.1.0/24
                   gateway: 172.18.1.1
 volumes:
-    ? vol-mysql
+    vol-mysql:
 services:
     mysql:
         image: mysql/mysql-server:5.7.21

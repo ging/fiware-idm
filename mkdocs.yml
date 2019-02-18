@@ -6,12 +6,23 @@ docs_dir: doc
 site_dir: html
 theme: readthedocs
 extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://fiware.org/style/fiware_readthedocs_security.css"]
+use_directory_urls: false
 #google_analytics: ['UA-******', 'fiware-idm.readthedocs.io']
 pages:
-  - 'Home': index.md
-  - 'Getting Started': getting_started.md
-  - 'Users/Programmers Guide': user_guide.md
-  - 'Installation/Administration Guide': admin_guide.md
-  - 'IdM API': api.md
-  - 'Connecting to IdM with OAuth2.0': oauth.md
-  - 'Connecting IdM to a eIDAS Node': eidas.md
+  - Home: 'index.md'
+  - Getting Started: 'getting_started.md'
+  - Users/Programmers Guide:
+    - Introduction: 'user_and_programmers_guide/introduction.md'
+    - User Guide: 'user_and_programmers_guide/user_guide.md'
+    - Application Guide: 'user_and_programmers_guide/application_guide.md'
+    - Organization Guide: 'user_and_programmers_guide/organization_guide.md'
+    - Programmer Guide: 'user_and_programmers_guide/programmer_guide.md'
+  - Installation/Administration Guide:
+    - Introduction: 'installation_and_administration_guide/introduction.md'
+    - Installation: 'installation_and_administration_guide/installation.md'
+    - Configuration: 'installation_and_administration_guide/configuration.md'
+    - System Administration: 'installation_and_administration_guide/system_administration.md'
+    - Sanity Check Procedures: 'installation_and_administration_guide/sanity_check.md'
+  - IdM API: 'api.md'
+  - Connecting to IdM with OAuth2.0: 'oauth.md'
+  - Connecting IdM to a eIDAS Node: 'eidas.md'

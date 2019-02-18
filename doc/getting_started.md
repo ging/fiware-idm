@@ -52,14 +52,15 @@ Afterwards, navigate to the directory in which you have created the
 docker-compose.yml file and run:
 
 ```bash
-docker-compose.yml
+docker-compose up
 ```
 
 This will deploy two Docker containers: one for IdM Keyrock and another one for
 the database instance (in this case is MySQL). The database is seeded with a
 default user whose credentials are:
 
--   Email:admin@test.com
+-   Email: admin@test.com
+
 -   Password: 1234
 
 In order to create an OAuth Token we first need to register an application on
@@ -69,12 +70,13 @@ with user credentials) as described in
 [register application](https://fiware-idm.readthedocs.io/en/latest/user_guide/#register-an-application)
 or we can create through the API(in this guide we will user curl functionality
 but in the
-[https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication](apiary)
+[apiary](https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication)
 you can find how to perform this authentication with other programming
 languages):
 
-1. Generate an API token:
-    1. Request using default user credentials.
+&nbsp;&nbsp;1\. Generate an API token:
+
+&nbsp;&nbsp;&nbsp;&nbsp;1.1\. Request using default user credentials.
 
 ```bash
 curl --include \
@@ -87,7 +89,8 @@ curl --include \
 'http://localhost:3000/v1/auth/tokens'
 ```
 
-    2. Obtain API token from X-Subject-Header in response (in this case is 04c5b070-4292-4b3f-911b-36a103f3ac3f):
+&nbsp;&nbsp;&nbsp;&nbsp;1.2\. Obtain API token from X-Subject-Header in response
+(in this case is 04c5b070-4292-4b3f-911b-36a103f3ac3f):
 
 ```bash
 Content-Type:application/json,application/json; charset=utf-8
@@ -98,8 +101,10 @@ Date:Mon, 19 Mar 2018 15:05:35 GMT
 Connection:keep-alive
 ```
 
-2. Create an application using API token previously created:
-    1. Request (check that redirect_uri is http://localhost/login):
+&nbsp;&nbsp;2\. Create an application using API token previously created:
+
+&nbsp;&nbsp;&nbsp;&nbsp;2.1\. Request (check that redirect_uri is
+http://localhost/login):
 
 ```bash
 curl --include \
@@ -126,7 +131,8 @@ curl --include \
 'http://localhost:3000/v1/applications'
 ```
 
-    2. Example response with application info. In your case there will be different id and secret parameters. Save this parameters in a file because they will be needed in order to obtain an OAuth token.
+&nbsp;&nbsp;&nbsp;&nbsp;2.2\. Example response with application info. Save id
+and secret to be used later to obtain an OAuth token.
 
 ```bash
 {

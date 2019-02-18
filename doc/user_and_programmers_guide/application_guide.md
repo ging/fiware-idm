@@ -1,35 +1,4 @@
-# Introduction
-
-This document describes the user and programming guide for Identity Management
-component. Here you will find the necessary steps for use the IdM portal for
-create an account and manage it. You will also learn about role and applications
-management.
-
-# User Guide
-
-## Logging in
-
-Go to "Sign in" if you have previously created an account, otherwise "Sign up"
-to create a new account:
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_login.png)
-
-<p align="center">Figure 1: IdM Log in page</p>
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_signup.png)
-
-<p align="center">Figure 2: IdM Sign up page</p>
-
-Once you have logged successfully, you will be redirect to the home page. There
-are two main sections, Applications and Organizations.
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_homepage1.png)
-
-<p align="center">Figure 3: IdM home page</p>
-
-## Applications
-
-### List of applications
+## List of applications
 
 Look at the vertical menu on the left and click on the My Applications option.
 Here you can see the application in which you are authorized. You can also
@@ -44,7 +13,7 @@ applications.
 
 <p align="center">Figure 5: List organization applications</p>
 
-### Register an application
+## Register an application
 
 In home page, in the Applications section you can register new application by
 clicking on "Register". You can also register an application from My Application
@@ -81,7 +50,7 @@ Click on "Crop Image" when you complete this process and then click "Next".
 In the third step we set up the roles and permissions of the application. In the
 next section it is explained.
 
-### Manage roles
+## Manage roles
 
 In this page you will find two default roles: Provider and Purchaser. If you
 click in one of this roles you will see the permissions assigned to that role.
@@ -124,7 +93,7 @@ correspondng check box. Click "Save" button to create the new assignment.
 
 <p align="center">Figure 14: KeyRock New assignment</p>
 
-### Show application
+## Show application
 
 Once you have created an application, you are redirected to the page where all
 the information is displayed. You can also access this information by clicking
@@ -139,14 +108,20 @@ You can also perform several actions:
 
 -   Edit the application. Here you can change applications attributes: name,
     description, url, redirect_uri and logo.
--   Manage roles. Explained in the previous section.
--   Register a Pep Proxy.
--   Register an IoT Agent.
--   Authorize users.
--   Authorize organizations.
--   Authorize trusted applications
 
-### Register Pep Proxy and IoT Agents
+-   Manage roles. Explained in the previous section.
+
+-   Register a Pep Proxy.
+
+-   Register an IoT Agent.
+
+-   Authorize users.
+
+-   Authorize organizations.
+
+-   Authorize trusted applications.
+
+## Register Pep Proxy and IoT Agents
 
 For each application you can register a Pep Proxy in order to enable
 authentication and authorization via Oauth2. You can also register some IoT
@@ -159,7 +134,7 @@ IoT devices.
 
 You can also reset passwords of this components or delete them.
 
-### Authorize users and organizations
+## Authorize users and organizations
 
 You can add users or organizations in the application by clicking on the
 "Authorize" button.
@@ -186,7 +161,7 @@ When you assign roles to an organization, you assign it to the users who are
 owners or memebers of the application. In next section is explained more in
 detail how to manage organizations.
 
-### Authorize trusted applications
+## Authorize trusted applications
 
 When validating permissions in
 [Keyrock's built-in PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization)
@@ -203,61 +178,3 @@ applications you can use the API or the web interface:
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_trusted_applications.png)
 
 <p align="center">Figure 20: KeyRock Trusted Applications</p>
-
-## Organizations
-
-### List organizations
-
-Look again at the vertical menu on the left and click on the Organizations
-option. Here you can see all organizations to which the user belongs.
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_index_organizations.png)
-
-<p align="center">Figure 20: KeyRock list organizations</p>
-
-Click the "Create" button to create a new organization.
-
-### Create organization
-
-In order to create an organization you need to specify a name and a description
-of it and then click on the "Create Organization" button.
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_create_organization.png)
-
-<p align="center">Figure 21: KeyRock create organization</p>
-
-### Show organization
-
-You are now redirected to the Home menu on behalf of the newly created
-organization. Here you can see the several attributes of the organization.
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_organization_show.png)
-
-<p align="center">Figure 22: KeyRock Organization view</p>
-
-You can also perform several actions:
-
--   Edit the organization. Here you can: name, description, URL and logo.
--   Manage members.
-
-### Manage members
-
-If you click on the "Manage" button in the show view a modal is openned. In this
-modal you can search users to add to the organization. You can assign them the
-owner role or the member role. Only the owners of the organization can edit or
-add new members to it.
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_organization_members.png)
-
-<p align="center">Figure 23: KeyRock Organization view</p>
-
-# Programmer Guide
-
-## Further information
-
-For further information on KeyRock, please refer to the step-by-step video at
-[Help & Info Portal](http://help.lab.fiware.org/) choosing “Account”.
-
-![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_screencast.png)
-
-<p align="center">Figure 24: KeyRock Screencast</p>

@@ -1,7 +1,5 @@
 # Introduction
 
-TBD. Brief description of all possible configurations
-
 ## Enable HTTPS
 
 Follow the next steps in order to enable the server to listen to HTTPS requests.

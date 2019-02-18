@@ -7,7 +7,7 @@ function to_boolean(env, default_value){
 config.port = (process.env.IDM_PORT || 3000 );
 config.host = (process.env.IDM_HOST || 'http://localhost:' + config.port);
 
-config.debug = false;
+config.debug = to_boolean(process.env.IDM_DEBUG, true);
 
 // HTTPS enable
 config.https = {
@@ -19,12 +19,12 @@ config.https = {
 };
 
 // Config email list type to use domain filtering
-config.email_list_type = null   // whitelist or blacklist
+config.email_list_type = (process.env.IDM_EMAIL_LIST || null );   // whitelist or blacklist
 
 // Secret for user sessions in web
 config.session = {
     secret:  (process.env.IDM_SESSION_SECRET || require('crypto').randomBytes(20).toString('hex')),       // Must be changed
-    expires: 60 * 60 * 1000     // 1 hour
+    expires: (process.env.IDM_SESSION_DURATION || 60 * 60 * 1000)     // 1 hour
 }
 
 // Key to encrypt user passwords
@@ -34,18 +34,18 @@ config.password_encryption = {
 
 // Config oauth2 parameters
 config.oauth2 = {
-    authorization_code_lifetime: 5 * 60,            // Five minutes
-    access_token_lifetime: 60 * 60,                 // One hour
-    ask_authorization: true,                        // Prompt a message to users to allow the application to read their details
-    refresh_token_lifetime: 60 * 60 * 24 * 14,      // Two weeks
-    unique_url: false                               // This parameter allows to verify that an application with the same url 
-                                                    // does not exist when creating or editing it. If there are already applications 
-                                                    // with the same URL, they should be changed manually
+    authorization_code_lifetime: (process.env.IDM_OAUTH_AUTH_LIFETIME || 5 * 60),        // Five minutes
+    access_token_lifetime: (process.env.IDM_OAUTH_ACC_LIFETIME || 60 * 60),              // One hour
+    ask_authorization: (process.env.IDM_OAUTH_ASK_AUTH || true),                         // Prompt a message to users to allow the application to read their details
+    refresh_token_lifetime: (process.env.IDM_OAUTH_REFR_LIFETIME || 60 * 60 * 24 * 14),  // Two weeks
+    unique_url: (process.env.IDM_OAUTH_UNIQUE_URL || false)                              // This parameter allows to verify that an application with the same url 
+                                                                                         // does not exist when creating or editing it. If there are already applications 
+                                                                                         // with the same URL, they should be changed manually
 }
 
 // Config api parameters
 config.api = {
-    token_lifetime: 60 * 60     // One hour
+    token_lifetime: (process.env.IDM_API_LIFETIME || 60*60)     // One hour
 }
 
 // Configure Policy Decision Point (PDP)
@@ -65,11 +65,11 @@ config.authorization = {
 
 // Database info
 config.database  = {
-    host:     (process.env.DATABASE_HOST || 'localhost'),      
+    host:     (process.env.IDM_DB_HOST || 'localhost'),      
     password: (process.env.IDM_DB_PASS || 'test'),
     username: (process.env.IDM_DB_USER || 'root'),
     database: (process.env.IDM_DB_NAME || 'idm_test'),
-    dialect:  (process.env.IDM_DIALECT || 'mysql'),
+    dialect:  (process.env.IDM_DB_DIALECT || 'mysql'),
     port:     (process.env.IDM_DB_PORT || undefined)
 };
 // External user authentication
@@ -107,7 +107,7 @@ config.eidas = {
     enabled:       to_boolean(process.env.IDM_EIDAS_ENABLED, false),
     gateway_host:  (process.env.IDM_EIDAS_GATEWAY_HOST || 'localhost'),
     node_host:      (process.env.IDM_EIDAS_NODE_HOST || 'https://se-eidas.redsara.es/EidasNode/ServiceProvider'),
-    metadata_expiration: 60 * 60 * 24 * 365 // One year
+    metadata_expiration: (process.env.IDM_EIDAS_METADATA_LIFETIME || 60 * 60 * 24 * 365) // One year
 }
 
 

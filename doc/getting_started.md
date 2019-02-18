@@ -45,7 +45,7 @@ services:
             idm_network:
                 ipv4_address: 172.18.1.6
         environment:
-            - DATABASE_HOST=mysql
+            - IDM_DB_HOST=mysql
 ```
 
 Afterwards, navigate to the directory in which you have created the

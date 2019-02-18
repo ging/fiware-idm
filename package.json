@@ -107,7 +107,7 @@
     ],
     "*.md": [
       "prettier --tab-width 4 --print-width 80 --write --prose-wrap always",
-      "textlint --fix",
+      "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",
       "git add"
     ]
   }

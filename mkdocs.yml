@@ -21,8 +21,18 @@ pages:
     - Introduction: 'installation_and_administration_guide/introduction.md'
     - Installation: 'installation_and_administration_guide/installation.md'
     - Configuration: 'installation_and_administration_guide/configuration.md'
+    - Environment Variables: 'installation_and_administration_guide/environment_variables.md'
     - System Administration: 'installation_and_administration_guide/system_administration.md'
     - Sanity Check Procedures: 'installation_and_administration_guide/sanity_check.md'
-  - IdM API: 'api.md'
-  - Connecting to IdM with OAuth2.0: 'oauth.md'
-  - Connecting IdM to a eIDAS Node: 'eidas.md'
+  - IdM API:
+    - Introduction: 'api/introduction.md'
+  - Connecting to IdM with OAuth2.0:
+    - Introduction: 'oauth/introduction.md'
+    - Previous Steps: 'oauth/previous_steps.md'
+    - OAuth Authentication: 'oauth/oauth_documentation.md'
+  - Connecting IdM to a eIDAS Node:
+    - Introdution: 'eidas/introduction.md'
+    - Architecture: 'eidas/architecture.md'
+    - Server configuration: 'eidas/server_configuration.md'
+    - Registering an application as a eIDAS Service Provider: 'eidas/register_service_provider.md'
+    - User Authentication: 'eidas/user_authentication.md'

@@ -1,24 +1,4 @@
-# OAuth 2.0 API
-
-## Register your user account
-
-In order to start using the FIWARE IdM, you must first register your own
-account. You can see how to do that
-[User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/#def-user-guide).
-
-## Register your application
-
-The next step is registering your own application. The `Callback URL` attribute
-is a mandatory parameter used in OAuth2 authentication. The IdM provides you
-with a `Client ID` and a `Client Secret` which are used in OAuth2. You can see
-how to do that
-[User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/#def-register-app).
-
-## OAuth2 Authentication
-
-The FIWARE IdM complies with the OAuth2 standard described in
-[RFC 6749](http://tools.ietf.org/html/rfc6749) and supports all four grant types
-defined there.
+# Introduction
 
 The `Authorization Basic` header is built with the `Client ID` and
 `Client Secret` credentials provided by the FIWARE IdM following the
@@ -31,7 +11,7 @@ base64(client_id:client_secret)
 The `redirect_uri` parameter must match the `Callback URL` attribute provided in
 the application registration.
 
-### Authorization Code Grant
+## Authorization Code Grant
 
 The authorization code is obtained by using an authorization server (the IdM) as
 an intermediary between the client (the registrered application) and resource
@@ -41,7 +21,7 @@ user-agent as defined in [RFC2616](http://tools.ietf.org/html/rfc2616>), which
 in turn directs the resource owner back to the client with the authorization
 code.
 
-#### Authorization Request
+### Authorization Request
 
 ```
 GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
@@ -55,7 +35,7 @@ registration. The `redirect_uri` attribute must match the `Callback URL`
 attribute provided to the IdM within the application registration. `state` is
 optional and for internal use of you application, if needed.
 
-#### Authorization Request For Permanent Token
+### Authorization Request For Permanent Token
 
 ```
 GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
@@ -63,14 +43,14 @@ GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
 Host: idm-portal
 ```
 
-#### Authorization Response
+### Authorization Response
 
 ```
 HTTP/1.1 302 Found
 Location: https://client.example.com/callback_url?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz
 ```
 
-#### Access Token Request
+### Access Token Request
 
 ```
 POST /oauth2/token HTTP/1.1
@@ -82,7 +62,7 @@ grant_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA
 &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url
 ```
 
-#### Access Token Response
+### Access Token Response
 
 ```
 HTTP/1.1 200 OK
@@ -98,7 +78,7 @@ Pragma: no-cache
 }
 ```
 
-### Implicit Grant
+## Implicit Grant
 
 The implicit grant is a simplified authorization code flow optimized for clients
 implemented in a browser using a scripting language such as JavaScript. In the
@@ -107,7 +87,7 @@ is issued an access token directly (as the result of the resource owner
 authorization). The grant type is implicit, as no intermediate credentials (such
 as an authorization code) are issued (and later used to obtain an access token).
 
-#### Authorization Request
+### Authorization Request
 
 ```
 GET /oauth2/authorize?response_type=token&client_id=1&state=xyz
@@ -125,7 +105,7 @@ the IdM within the application registration.
 
 `state` is optional and for internal use of you application, if needed.
 
-#### Authorization Request For Permanent Token
+### Authorization Request For Permanent Token
 
 ```
 GET /oauth2/authorize?response_type=token&client_id=1&state=xyz
@@ -133,19 +113,19 @@ GET /oauth2/authorize?response_type=token&client_id=1&state=xyz
 Host: idm-portal
 ```
 
-#### Access Token Response
+### Access Token Response
 
 ```
 HTTP/1.1 302 Found
 Location: https://client.example.com/callback_url?token=SplxlOBeZQQYbYS6WxSbIA&token_type=Bearer&expires_in=3600&state=xyz&
 ```
 
-### Resource Owner Password Credentials Grant
+## Resource Owner Password Credentials Grant
 
 The resource owner password credentials (i.e., username and password) can be
 used directly as an authorization grant to obtain an access token.
 
-#### Access Token Request
+### Access Token Request
 
 ```
 POST /oauth2/token HTTP/1.1
@@ -156,7 +136,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=password&username=demo&password=123
 ```
 
-#### Permanent Token Request
+### Permanent Token Request
 
 ```
 POST /oauth2/token HTTP/1.1
@@ -167,16 +147,16 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=password&username=demo&password=123&scope=permanent
 ```
 
-#### Access Token Response
+### Access Token Response
 
 See [Authorization Code Grant](#def-codeGrantTokRes)
 
-### Refresh Token Grant
+## Refresh Token Grant
 
 The client can request for a new token using the refresh token obtained the
 first time through another grant type except the client credentials grant type.
 
-#### Access Token Request
+### Access Token Request
 
 ```
 POST /oauth2/token HTTP/1.1
@@ -187,7 +167,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
 ```
 
-#### Permanent Token Request
+### Permanent Token Request
 
 ```
 POST /oauth2/token HTTP/1.1
@@ -198,15 +178,15 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA&scope=permanent
 ```
 
-#### Access Token Response
+### Access Token Response
 
 See [Authorization Code Grant](#def-codeGrantTokRes)
 
-### Client Credentials Grant
+## Client Credentials Grant
 
 The client can request an access token using only its client credentials.
 
-#### Access Token Request
+### Access Token Request
 
 ```
 POST /oauth2/token HTTP/1.1
@@ -217,7 +197,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=client_credentials
 ```
 
-#### Permanent Token Request
+### Permanent Token Request
 
 ```
 POST /oauth2/token HTTP/1.1
@@ -228,11 +208,11 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=client_credentials&scope=permanent
 ```
 
-#### Access Token Response
+### Access Token Response
 
 See [Authorization Code Grant](#def-codeGrantTokRes)
 
-### Validate Access Tokens
+## Validate Access Tokens
 
 Once you have created an OAuth2.0 Access Token associated to a user, you can
 validate it in order to retrieve the user information and roles. Furthermore, if
@@ -248,7 +228,7 @@ an specific action in the application.
 > grant. You can still use this endpoint to validate the token, but the JSON (if
 > the token is valid) will be empty.
 
-### Revoke Token
+## Revoke Token
 
 In order to revoke a token, the following request should be send:
 
@@ -268,7 +248,7 @@ token_type_hint is optional and can have the values “access_token" or
 “refresh_token” depending the type of token you are trying to revoke. These
 value helps Keyrock to revoke tokens quickly.
 
-### Get user information and roles
+## Get user information and roles
 
 Request:
 
@@ -311,7 +291,7 @@ Example response:
     }
 ```
 
-### Validate authorization
+## Validate authorization
 
 If you have configured
 [Keyrock as PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization)
@@ -362,7 +342,7 @@ Example response:
     }
 ```
 
-### Select Token Type
+## Select Token Type
 
 Keyrock IdM allows you to choose the type of token to be generated when
 receiving an OAuth request. By default, the application creates Bearer Tokens
@@ -384,7 +364,7 @@ user information.
 <p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_TokenTypeJwt.png" width="740" align="center"></p>
 <p align="center">Figure 1: JSON Web Token type</p>
 
-#### Access Token Request with JWT
+### Access Token Request with JWT
 
 The JWT generation could be done through scope option in the request.
 
@@ -431,7 +411,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=password&username=demo&password=123&scope=jwt,permanent
 ```
 
-#### Access Token Response
+### Access Token Response
 
 ```
 HTTP/1.1 200 OK

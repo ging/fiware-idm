@@ -136,18 +136,18 @@ and secret to be used later to obtain an OAuth token.
 
 ```bash
 {
-  "application": {
-    "id": "fd7fe349-f7da-4c27-b404-74da17641025",
-    "secret": "9dc463cf-8318-4f65-bc02-778424fdfd77",
-    "image": "default",
-    "name": "Test_application 1",
-    "description": "description",
-    "redirect_uri": "http://localhost/login",
-    "url": "http://localhost",
-    "grant_type": "password,authorization_code,implicit",
-    "token_types": "jwt,permanent",
-    "jwt_secret": "3f1164da20d50c62",
-    "response_type": "code,token"
+"application":{
+    "id":"a17bf9e3-628d-4000-8d25-37703975a528",
+    "secret":"ac5df1fe-4caf-4ae6-9d21-60f3a9182887",
+    "image":"default",
+    "jwt_secret":"51129f085f3e1a80",
+    "name":"Test_application 1",
+    "description":"description",
+    "redirect_uri":"http://localhost/login",
+    "url":"http://localhost",
+    "grant_type":"password,authorization_code,implicit",
+    "token_types":"jwt,permanent,bearer",
+    "response_type":"code,token"
   }
 }
 ```
@@ -158,8 +158,8 @@ You have to create two environment variables (ID and SECRET) with your own
 values obtained in the previous step (application.ID and application.secret).
 
 ```bash
-ID=fd7fe349-f7da-4c27-b404-74da17641025
-SECRET=9dc463cf-8318-4f65-bc02-778424fdfd77
+ID=a17bf9e3-628d-4000-8d25-37703975a528
+SECRET=ac5df1fe-4caf-4ae6-9d21-60f3a9182887
 curl -X POST -H "Authorization: Basic $(echo -n $ID:$SECRET | base64 -w 0)"   --header "Content-Type: application/x-www-form-urlencoded" -d "grant_type=password&username=admin@test.com&password=1234" http://localhost:3000/oauth2/token
 
 ```
@@ -181,5 +181,5 @@ curl "http://localhost:3000/user?access_token=cd8c8e41ab0db220315ed54f173087d281
 And Keyrock will send:
 
 ```bash
-{"organizations":[],"displayName":"","roles":[{"id":"4cc0c6d2-8d11-497f-b679-7ffe052a5a69","name":"cacascasc"}],"app_id":"497419b7-4802-4981-bc05-e18d7b1c837a","trusted_apps":[],"isGravatarEnabled":false,"email":"admin@test.com","id":"admin","authorization_decision":"","app_azf_domain":"","eidas_profile":{},"username":"admin"}
+{"organizations":[],"displayName":"","roles":[],"app_id":"a17bf9e3-628d-4000-8d25-37703975a528","trusted_apps":[],"isGravatarEnabled":false,"email":"admin@test.com","id":"admin","authorization_decision":"","app_azf_domain":"","eidas_profile":{},"username":"admin"}
 ```

@@ -40,7 +40,7 @@ ease Keyrock configuration.
 | IDM_EX_AUTH_DB_USER                 | String  | Username to authenticate Keyrock to perform actions against the external database                               | -                           |
 | IDM_EX_AUTH_DB_PASS                 | String  | Password to authenticate Keyrock to perform actions against the external database                               | -                           |
 | IDM_EX_AUTH_DB_USER_TABLE           | String  | Name of the table to which Keyrock will perform an external authentication                                      | -                           |
-| IDM_EX_AUTH_DIALECT                 | String  | SQL Dialect of the external database                                                                            | -                           |
+| IDM_EX_AUTH_DIALECT                 | String  | SQL Dialect of the external database                                                                            | mysql,sqlite,postgres,mssql |
 | IDM_EMAIL_HOST                      | String  | Name of the host where is running the mail server                                                               | -                           |
 | IDM_EMAIL_PORT                      | Integer | Port where is running the mail server                                                                           | 0 to 65536                  |
 | IDM_EMAIL_ADDRESS                   | String  | Email Address used by Keyrock to send emails to the users                                                       | -                           |

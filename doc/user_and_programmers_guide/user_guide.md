@@ -1,4 +1,4 @@
-## Logging in
+## Sign in
 
 Go to "Sign in" if you have previously created an account, otherwise "Sign up"
 to create a new account:

@@ -71,7 +71,7 @@ config.database  = {
     database: (process.env.IDM_DB_NAME || 'idm'),
     dialect:  (process.env.IDM_DB_DIALECT || 'mysql'),
     port:     (process.env.IDM_DB_PORT || undefined)
-  };
+};
 
 // External user authentication
 config.external_auth = {

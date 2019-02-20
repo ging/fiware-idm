@@ -13,3 +13,10 @@ with:
 ```bash
 docker exec -it <container_name> /bin/bash
 ```
+
+The relationships between the differents tables and their attributes of the
+tables is the following:
+
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/database_structure.png)
+
+<p align="center">Figure 1: Tables relationship</p>

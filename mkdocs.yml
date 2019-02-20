@@ -29,7 +29,8 @@ pages:
   - Connecting to IdM with OAuth2.0:
     - Introduction: 'oauth/introduction.md'
     - Previous Steps: 'oauth/previous_steps.md'
-    - OAuth Authentication: 'oauth/oauth_documentation.md'
+    - OAuth Flows: 'oauth/oauth_documentation.md'
+    - Sign Out from a service: 'oauth/sign_out_oauth_service.md'
   - Connecting IdM to a eIDAS Node:
     - Introdution: 'eidas/introduction.md'
     - Architecture: 'eidas/architecture.md'

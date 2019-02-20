@@ -1,4 +1,69 @@
-# Introduction
+# Configuration description
+
+Keyrock is a powerful tool that could be easy configured to suit up with the
+specific needs of each use case. These are the main configurations:
+
+-   Host and port.
+
+-   Debug.
+
+-   HTTPS.
+
+-   Security (session and password encryption).
+
+-   OAuth2.
+
+-   eIDAS.
+
+-   API.
+
+-   Database.
+
+-   External authentication.
+
+-   Authorization.
+
+-   Mail Server.
+
+-   Email filtering.
+
+-   Site (themes).
+
+All this configurations could be done using environment variables. To check the
+list of environment vairables go to the next section.
+
+Apart from the config.js file, the UI has an aministration user view from which
+users could be easily managed.
+
+## Host and Port
+
+These are the basic configurations of Keyrock. The first configuration is to
+indicate in which port will be Keyrock listenning if HTTPS is not enabled. Host
+configuration is to indicate the domain name of Keyrock in prodoction. Otherwise
+it should be set to "http://localhost:" when running on development.
+
+```javascript
+config.port = 80;
+config.host = "http://keyrock-domain-name.org:" + config.port;
+```
+
+## Debug
+
+Enable this configuration to display logs related to requests of resources or
+performed SQL statements with the database.
+
+```javascript
+config.debug = true;
+```
+
+In addition, you can run Keyrock in debug mode with the following shell command:
+
+```bash
+npm run debug
+```
+
+To run this command is mandatory to install [nodemon](https://nodemon.io/) which
+will restart server anytime a change the code changes.
 
 ## Enable HTTPS
 
@@ -27,6 +92,129 @@ config.https = {
 sudo npm start
 ```
 
+## Security
+
+Apart from HTTPS there are other 2 configurations related to handle security:
+
+-   Session management. This parameter is used to set the key to encrypt user
+    sessions in the UI and the duration of the user session. For security
+    reasons, it is recommended to create a random key any time the server is
+    restarted. For instance:
+
+```javascript
+config.session = {
+    secret: require("crypto")
+        .randomBytes(20)
+        .toString("hex"),
+    expires: 60 * 60 * 1000
+};
+```
+
+-   Password encryption. Currently salt password is supported in Keyrock so this
+    parameter will be deprecated in the future. Anyway this could be configured
+    to encrypt password in case a developer decided not to use salt passwords.
+
+```javascript
+config.password_encryption = {
+    key: "idm_encryption"
+};
+```
+
+## OAuth2.0
+
+Some features of Keyrock could be configured. Most of them are related to
+lifetime of tokens.
+
+-   Authorization code, access token and refresh token lifetimes could be
+    changed easily. If you change one of this values it means that all services
+    register in Keyrock will be updated with this nea values.
+
+-   Ask authorization. The General Data Protection Regulation (GDPR) forces
+    clients to ask for a consent to obtain the user information. Actually, this
+    parameter should be always true, but there are some cases in which is useful
+    to set it to false. For instance, if a service in which existing users have
+    already gave their consent before and now this service wants to use Keyrock
+    but with their own user table to authenticate those users(see External
+    authentication).
+
+-   Unique URL. Currently, Keyrock allows to register services with the same
+    URL. In case a Service has not included Sign-out Callback URL Keyrock will
+    redirect sign out requests to the address stored in URL attribute. So, if
+    unique URL is not enable, some sign-out process could fail due to bad
+    request redirections.
+
+```javascript
+config.oauth2 = {
+    authorization_code_lifetime: 5 * 60,
+    access_token_lifetime: 60 * 60,
+    ask_authorization: true,
+    refresh_token_lifetime: 60 * 60 * 24 * 14,
+    unique_url: false
+};
+```
+
+Check
+[Connecting to IdM with OAuth2.0](https://fiware-idm.readthedocs.io/en/latest/oauth/introduction/index.html)
+to obtain a whole description of this feature.
+
+## eIDAS
+
+Check
+[Connecting IdM to eIDAS](https://fiware-idm.readthedocs.io/en/latest/eidas/introduction/index.html)
+to obtain a whole description of this feature. An example of this configuration
+is:
+
+```javascript
+config.eidas = {
+    enabled: true,
+    gateway_host: "localhost",
+    node_host: "https://se-eidas.redsara.es/EidasNode/ServiceProvider",
+    metadata_expiration: 60 * 60 * 24 * 365
+};
+```
+
+## API
+
+As in OAuth2.0 configuration, the API token lifetime could be changed to be
+shorter or larger based on the individual need of each Keyrock instance
+deployed.
+
+The API of keyrock to manage its own resources can be configure slightly
+
+```javascript
+config.api = {
+    token_lifetime: 60 * 60
+};
+```
+
+## Database
+
+There are several parameters related to the database configuration that could be
+change:
+
+-   Host. Is the domain name or IP of the machine in which the database is
+    running.
+
+-   Port. If not configured, the port assigned is the default one for each SQL
+    dialect. For instance, MySQL use 3306 por by default.
+
+-   Username and password. Some databases dialects as MySQL or Postgres needs to
+    authenticate an entity before performing actions against the database.
+
+-   Dialect. This paramter indicates which type SQL database is going to be
+    used.
+
+```javascript
+config.database = {
+    host: "localhost",
+    password: "idm",
+    username: "root",
+    database: "idm",
+    dialect: "mysql",
+    port: undefined
+};
+```
+
 ## External Authentication
 
 You can also configure the Identity Manager to authenticate users through an
@@ -40,9 +228,13 @@ database. These attributes are:
 -   id: A unique identifier of the user. The local copy of the user will have an
     identifier with the result of concatenating the configured prefix
     (_config.external_auth.id_prefix_) and the external ID.
--   username: the display name of the user
--   email: the email address is the value used for authenticating the user
--   password: the encrypted password of the user
+
+-   username: the display name of the user.
+
+-   email: the email address is the value used for authenticating the user.
+
+-   password: the encrypted password of the user.
+
 -   password*salt: if not specified, the value set in
     \_config.external_auth.password_encryption_key* will be used for checking
     the password encryption.
@@ -117,8 +309,9 @@ _external_auth.encryption_. SHA1 and BCrypt are currently supported.
 
 Configure Policy Decision Point (PDP)
 
--   IdM can perform basic policy checks (HTTP verb + path)
--   AuthZForce can perform basic policy checks as well as advanced
+-   IdM can perform basic policy checks (HTTP verb + path).
+
+-   AuthZForce can perform basic policy checks as well as advanced.
 
 If authorization level is advanced you can create rules, HTTP verb+resource and
 XACML advanced. In addition you need to have an instance of authzforce deployed
@@ -151,6 +344,34 @@ config.mail = {
     port: 25,
     from: "noreply@host"
 };
+```
+
+## Email filtering
+
+In order to increase control over who is sign up in Keyrock you can configure an
+email domain filter. There are two approaches:
+
+-   whitelist. It is a list in which you define valid email domains that can
+    register in Keyrock.
+
+-   blacklist. It is a list in which you define which email domains are going to
+    be block when registering in Keyrock.
+
+Once you have decided which approach use, you need to fill the corresponding
+file under /etc/email_list. These lists should have a domain(withour @) per
+line. For instance, a whitelist would be like:
+
+```txt
+allow.com
+valid.es
+permit.com
+```
+
+If this parameter is set to null or undefined it means that there won't be
+performed any email domail filtering. Example of configuration:
+
+```javascript
+config.email_list_type = "whitelist";
 ```
 
 ## Configure themes
@@ -224,7 +445,7 @@ config.site = {
 };
 ```
 
-Run the Identity manager and you will see the new appearance:
+Run again Keyrock to see the new appearance:
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/AdminGuide_customize_view.png)
 

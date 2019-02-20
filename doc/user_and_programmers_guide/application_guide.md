@@ -23,10 +23,35 @@ page.
 
 <p align="center">Figure 6: Home register an application</p>
 
-In the next step you have to give the application a name, description, URL and
-callback URL - required by the OAuth 2.0 Protocol. You also have to choose how
-is going to be the provider of the application: yourself or one of the
-organizations in which you are owner.
+There are several attributes that are mandatory:
+
+-   Name.
+
+-   Description.
+
+-   URL.
+
+-   Callback URL. Required by the OAuth 2.0 Protocol
+
+-   Provider. You have to choose who is going to be the provider of the
+    application: yourself or one of the organizations in which you are owner.
+
+Although the rest of attributes are not mandatory, it is important to understand
+its functionality:
+
+-   Sign-out Callback URL. This is the URL to which Keyrock will redirect a user
+    if a sign out is performed from a service. If is not configured it will be
+    redirected to the domain indicated in URL parameter. See more information
+    under
+    [sign out oauth section](https://fiware-idm.readthedocs.io/en/latest/oauth/sign_out_oauth_service/index.html#sign-out)
+
+-   Grant Type. You can select the different ways of obtaining an OAuth Access
+    Token. Check
+    [Connecting to IdM with OAuth2.0](https://fiware-idm.readthedocs.io/en/latest/oauth/oauth_documentation/index.html#introduction).
+
+-   eIDAS Authentication. This attributes allows your service to authenticate
+    users by their eID. See more information in
+    [Connecting IdM to a eIDAS Node Section](https://fiware-idm.readthedocs.io/en/latest/eidas/introduction/index.html).
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_register_app.png)
 

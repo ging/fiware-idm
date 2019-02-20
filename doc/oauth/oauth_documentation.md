@@ -4,7 +4,7 @@ The `Authorization Basic` header is built with the `Client ID` and
 `Client Secret` credentials provided by the FIWARE IdM following the
 [standard](http://tools.ietf.org/html/rfc2617). So the string will be
 
-```
+```bash
 base64(client_id:client_secret)
 ```
 
@@ -23,7 +23,7 @@ code.
 
 ### Authorization Request
 
-```
+```bash
 GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
 &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url HTTP/1.1
 Host: idm-portal
@@ -37,7 +37,7 @@ optional and for internal use of you application, if needed.
 
 ### Authorization Request For Permanent Token
 
-```
+```bash
 GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
 &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=permanent HTTP/1.1
 Host: idm-portal
@@ -45,14 +45,14 @@ Host: idm-portal
 
 ### Authorization Response
 
-```
+```bash
 HTTP/1.1 302 Found
 Location: https://client.example.com/callback_url?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz
 ```
 
 ### Access Token Request
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -64,7 +64,7 @@ grant_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA
 
 ### Access Token Response
 
-```
+```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Cache-Control: no-store
@@ -89,7 +89,7 @@ as an authorization code) are issued (and later used to obtain an access token).
 
 ### Authorization Request
 
-```
+```bash
 GET /oauth2/authorize?response_type=token&client_id=1&state=xyz
 &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url HTTP/1.1
 Host: idm-portal
@@ -107,7 +107,7 @@ the IdM within the application registration.
 
 ### Authorization Request For Permanent Token
 
-```
+```bash
 GET /oauth2/authorize?response_type=token&client_id=1&state=xyz
 &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=permanent HTTP/1.1
 Host: idm-portal
@@ -115,7 +115,7 @@ Host: idm-portal
 
 ### Access Token Response
 
-```
+```bash
 HTTP/1.1 302 Found
 Location: https://client.example.com/callback_url?token=SplxlOBeZQQYbYS6WxSbIA&token_type=Bearer&expires_in=3600&state=xyz&
 ```
@@ -127,7 +127,7 @@ used directly as an authorization grant to obtain an access token.
 
 ### Access Token Request
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -138,7 +138,7 @@ grant_type=password&username=demo&password=123
 
 ### Permanent Token Request
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -158,7 +158,7 @@ first time through another grant type except the client credentials grant type.
 
 ### Access Token Request
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -169,7 +169,7 @@ grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
 
 ### Permanent Token Request
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -188,7 +188,7 @@ The client can request an access token using only its client credentials.
 
 ### Access Token Request
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -199,7 +199,7 @@ grant_type=client_credentials
 
 ### Permanent Token Request
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -232,7 +232,7 @@ an specific action in the application.
 
 In order to revoke a token, the following request should be send:
 
-```
+```bash
 POST /oauth2/revoke HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -252,13 +252,13 @@ value helps Keyrock to revoke tokens quickly.
 
 Request:
 
-```
+```bash
 GET /user?access_token=2YotnFZFEjr1zCsicMWpAA
 ```
 
 Example response:
 
-```
+```javascript
     {
       "organizations": [
         {
@@ -303,13 +303,13 @@ included.
 
 Request:
 
-```
+```bash
 GET /user?access_token=2YotnFZFEjr1zCsicMWpAA&action=GET&resource=myResource&app_id=ea3edd2e-2220-4489-af7d-6d60fffb7d1a
 ```
 
 Example response:
 
-```
+```javascript
     {
       "organizations": [
         {
@@ -352,7 +352,8 @@ configured to generate permanent tokens (Bearer or JWT) as described in previous
 sections. These permanent tokens would never expired. These token types options
 could be selected in the interfaces as shown in the following figure:
 
-<p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_SelectTokenType.png" width="740" align="center"></p>
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_SelectTokenType.png)
+
 <p align="center">Figure 1: Select token type</p>
 
 JWT is a safe way to represent a set information between two parties. A JWT is
@@ -361,8 +362,9 @@ information about JWT could be found in this [link.](https://jwt.io/) If JWT is
 selected, a secret is provided in order to validate the token and obtain the
 user information.
 
-<p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_TokenTypeJwt.png" width="740" align="center"></p>
-<p align="center">Figure 1: JSON Web Token type</p>
+![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_TokenTypeJwt.png)
+
+<p align="center">Figure 2: JSON Web Token type</p>
 
 ### Access Token Request with JWT
 
@@ -371,7 +373,7 @@ The JWT generation could be done through scope option in the request.
 -   Authorization Code Grant and Implicit Grant should be included in URL as a
     query parameter. For instance in an Authorization Code request:
 
-```
+```bash
 GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
 &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=jwt HTTP/1.1
 Host: idm-portal
@@ -380,7 +382,7 @@ Host: idm-portal
 -   In the rest of grants it should be included in the body. For instance in a
     Resource Owner Password Credentials request:
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -394,7 +396,7 @@ in the scope of the request.
 
 -   For Authorization Code Grant and Implicit Grant:
 
-```
+```bash
 GET /oauth2/authorize?response_type=code&client_id=1&state=xyz
 &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcallback_url&scope=jwt,permanent HTTP/1.1
 Host: idm-portal
@@ -402,7 +404,7 @@ Host: idm-portal
 
 -   For the rest of grants:
 
-```
+```bash
 POST /oauth2/token HTTP/1.1
 Host: idm-portal
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -413,7 +415,7 @@ grant_type=password&username=demo&password=123&scope=jwt,permanent
 
 ### Access Token Response
 
-```
+```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Cache-Control: no-store

@@ -170,8 +170,6 @@ exports.external_destroy = function(req, res) {
   const oauth_client_id = req.query.client_id;
   const url = req.hostname;
 
-  debug(url);
-
   models.oauth_client
     .findOne({
       where: {

@@ -98,3 +98,5 @@ in Node JS. Another remarkable changes have been made:
 -   Trusted application for OAuth token validation.
 
 -   IdM could play the role as PDP for basic authorization.
+
+-   Complete Sign out. Delete session in services as well as in Keyrock.

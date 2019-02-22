@@ -28,8 +28,8 @@ const role_user_assignments = utils.readExampleFile(
 let token;
 let unauhtorized_token;
 let application_id;
-let users;
-let roles;
+const users = [];
+const roles = [];
 
 describe('API - 11 - Role user assignment: ', function() {
   // CREATE TOKEN WITH PROVIDER CREDENTIALS

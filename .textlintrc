@@ -189,6 +189,8 @@
        "ignore": [
           "http://mylogo.es/*",
           "http://idm-host/**",
+          "http://localhost/**",
+          "http://localhost:",
           "mailto:*",
           "https://oauth.net"
       ]

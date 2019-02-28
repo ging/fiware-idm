@@ -11,7 +11,7 @@ function to_array(env, default_value){
 config.port = (process.env.IDM_PORT || 3000 );
 config.host = (process.env.IDM_HOST || 'http://localhost:' + config.port);
 
-config.debug = to_boolean(process.env.IDM_DEBUG, true);
+config.debug = to_boolean(process.env.IDM_DEBUG, false);
 
 // HTTPS enable
 config.https = {

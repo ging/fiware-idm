@@ -14,6 +14,15 @@ ease Keyrock configuration.
 | IDM_SESSION_SECRET                  | String  | Value to encrypt user info in express sessions                                                                  | -                           |
 | IDM_SESSION_DURATION                | Integer | Lifetime of user session                                                                                        | -                           |
 | IDM_ENCRYPTION_KEY                  | String  | Value used to encrypt passwords in DB if salt is not use                                                        | -                           |
+| IDM_CORS_ENABLED                    | Boolean | Enable Keyrock CORS                                                                                             | true,false                  |
+| IDM_CORS_ORIGIN                     | String  | List of domains allowed separated by commas                                                                     | -                           |
+| IDM_CORS_METHODS                    | String  | List of HTTPS allowed verbs separated by commas                                                                 | -                           |
+| IDM_CORS_ALLOWED_HEADERS            | String  | List of headers allowed separated by commas                                                                     | -                           |
+| IDM_CORS_EXPOSED_HEADERS            | String  | List of exposed headers allowed separated by commas                                                             | -                           |
+| IDM_CORS_CREDENTIALS                | Boolean | Ti include cookies in headers                                                                                   | true,false                  |
+| IDM_CORS_MAS_AGE                    | Integer | Indicates how long the results of a preflight request                                                           | -                           |
+| IDM_CORS_PREFLIGHT                  | Boolean | Allow preflight requests                                                                                        | true,false                  |
+| IDM_CORS_OPTIONS_STATUS             | Integer | Status response code of HTTP OPTIONS verb                                                                       | -                           |
 | IDM_OAUTH_AUTH_LIFETIME             | Integer | Lifetime of OAuth2 Authorization Code                                                                           | -                           |
 | IDM_OAUTH_ACC_LIFETIME              | Integer | Lifetime of OAuth2 Access Token                                                                                 | -                           |
 | IDM_OAUTH_ASK_AUTH                  | Boolean | If is set to true, it will prompt authorization message when log in a service usign OAuth2                      | true,false                  |

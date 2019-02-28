@@ -9,7 +9,7 @@ specific needs of each use case. These are the main configurations:
 
 -   HTTPS.
 
--   Security (session and password encryption).
+-   Security (user session, password encryption and CORS).
 
 -   OAuth2.
 
@@ -94,7 +94,7 @@ sudo npm start
 
 ## Security
 
-Apart from HTTPS there are other 2 configurations related to handle security:
+Apart from HTTPS there are other 3 configurations related to handle security:
 
 -   Session management. This parameter is used to set the key to encrypt user
     sessions in the UI and the duration of the user session. For security
@@ -117,6 +117,27 @@ config.session = {
 ```javascript
 config.password_encryption = {
     key: "idm_encryption"
+};
+```
+
+-   CORS. This allows Keyrock to manage requests coming from another domain
+    different to Keyrock's one. Through this configuration you can indicate
+    which HTTP methods will be allowed, from which domain could requests come,
+    etc. This is the default CORS configuration:
+
+```javascript
+config.cors = {
+    enabled: true,
+    options: {
+        origin: "*",
+        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+        allowedHeaders: undefined,
+        exposedHeaders: undefined,
+        credentials: undefined,
+        maxAge: undefined,
+        preflightContinue: false,
+        optionsSuccessStatus: 204
+    }
 };
 ```
 

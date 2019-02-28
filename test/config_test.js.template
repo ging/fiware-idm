@@ -4,6 +4,10 @@ function to_boolean(env, default_value){
     return (env !== undefined) ? (env.toLowerCase() === 'true') : default_value;
 }
 
+function to_array(env, default_value){
+    return (env !== undefined) ? env.split(',') : default_value;
+}
+
 config.port = (process.env.IDM_PORT || 3000 );
 config.host = (process.env.IDM_HOST || 'http://localhost:' + config.port);
 
@@ -30,6 +34,21 @@ config.session = {
 // Key to encrypt user passwords
 config.password_encryption = {
     key: (process.env.IDM_ENCRYPTION_KEY || 'nodejs_idm')   // Must be changed
+}
+
+// Enable CORS
+config.cors = {
+    enabled: to_boolean(process.env.IDM_CORS_ENABLED, false),
+    options: {
+        origin: to_array(process.env.IDM_CORS_ORIGIN, '*'),
+        methods: to_array(process.env.IDM_CORS_METHODS, ['GET','HEAD','PUT','PATCH','POST','DELETE']),
+        allowedHeaders: (process.env.IDM_CORS_ALLOWED_HEADERS || undefined),
+        exposedHeaders: (process.env.IDM_CORS_EXPOSED_HEADERS || undefined),
+        credentials: (process.env.IDM_CORS_CREDENTIALS || undefined),
+        maxAge: (process.env.IDM_CORS_MAS_AGE || undefined),
+        preflightContinue: (process.env.IDM_CORS_PREFLIGHT || false),
+        optionsSuccessStatus: (process.env.IDM_CORS_OPTIONS_STATUS || 204)
+    }
 }
 
 // Config oauth2 parameters

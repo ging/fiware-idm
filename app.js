@@ -1,17 +1,18 @@
-const express = require('express');
-const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const cookie_parser = require('cookie-parser');
 const body_parser = require('body-parser');
-const method_override = require('method-override');
-const session = require('cookie-session');
-const partials = require('express-partials');
-const sass_middleware = require('node-sass-middleware');
-const force_ssl = require('express-force-ssl');
 const clc = require('cli-color');
-const i18n = require('i18n-express');
+const cookie_parser = require('cookie-parser');
+const cors = require('cors');
 const debug = require('debug')('idm:app');
+const express = require('express');
+const favicon = require('serve-favicon');
+const force_ssl = require('express-force-ssl');
+const i18n = require('i18n-express');
+const logger = require('morgan');
+const method_override = require('method-override');
+const partials = require('express-partials');
+const path = require('path');
+const sass_middleware = require('node-sass-middleware');
+const session = require('cookie-session');
 
 // Obtain secret from config file
 const config = require('./config.js');
@@ -40,9 +41,13 @@ app.disable('x-powered-by');
 app.use(body_parser.json());
 app.use(body_parser.urlencoded());
 
-const up_date = new Date();
+// CORS Enable
+if (config.cors.enabled) {
+  app.use(cors(config.cors.options));
+}
 
 // Set routes for version
+const up_date = new Date();
 app.use('/version', function(req, res) {
   const version = require('./version.json');
   version.keyrock.uptime = require('./lib/time').ms_to_time(

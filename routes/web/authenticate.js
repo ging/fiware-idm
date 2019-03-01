@@ -24,10 +24,6 @@ router.delete(
   web_session_controller.login_required,
   web_session_controller.destroy
 );
-router.delete(
-  '/external_logout',
-  web_session_controller.login_required,
-  web_session_controller.external_destroy
-);
+router.delete('/external_logout', web_session_controller.external_destroy);
 
 module.exports = router;

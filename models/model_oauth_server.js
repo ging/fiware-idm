@@ -358,24 +358,25 @@ function storeToken(token, client, identity, jwt) {
     }
   }
 
-  return Promise.all([
-    token.refreshToken
-      ? oauth_refresh_token.create({
-          // no refresh token for client_credentials
-          refresh_token: token.refreshToken,
-          expires: token.refreshTokenExpiresAt,
-          valid: true,
-          oauth_client_id: client.id,
-          user_id,
-          iot_id,
-          authorization_code: token.authorizationCode
-            ? token.authorizationCode
-            : null,
-          scope: token.scope,
-        })
-      : [],
-    !jwt
-      ? oauth_access_token.create({
+  let refresh_token_promise = token.refreshToken
+    ? oauth_refresh_token.create({
+        // no refresh token for client_credentials
+        refresh_token: token.refreshToken,
+        expires: token.refreshTokenExpiresAt,
+        valid: true,
+        oauth_client_id: client.id,
+        user_id,
+        iot_id,
+        authorization_code: token.authorizationCode
+          ? token.authorizationCode
+          : null,
+        scope: token.scope,
+      })
+    : Promise.resolve();
+
+  let access_token_promise = !jwt
+    ? refresh_token_promise.then(
+        oauth_access_token.create({
           access_token: token.accessToken,
           expires: token.accessTokenExpiresAt,
           valid: true,
@@ -388,7 +389,10 @@ function storeToken(token, client, identity, jwt) {
             : null,
           scope: token.scope === 'all' ? null : token.scope,
         })
-      : [],
+      )
+    : [];
+
+  let user_autho_app_promise =
     user_id && config_oauth2.ask_authorization
       ? user_authorized_application.findOrCreate({
           // User has enable application to read their information
@@ -398,8 +402,9 @@ function storeToken(token, client, identity, jwt) {
             oauth_client_id: client.id,
           },
         })
-      : [],
-  ])
+      : [];
+
+  return Promise.all([access_token_promise, user_autho_app_promise])
     .then(function() {
       if (user_id || iot_id) {
         token[identity.dataValues.type] = identity.dataValues.type;

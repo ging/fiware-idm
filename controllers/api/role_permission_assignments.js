@@ -57,7 +57,7 @@ exports.index = function(req, res) {
     });
 };
 
-// PUT /v1/applications/:application_id/roles/:role_id/permissions/:permission_id -- Edit role permission assignment
+// POST /v1/applications/:application_id/roles/:role_id/permissions/:permission_id -- Edit role permission assignment
 exports.create = function(req, res) {
   debug('--> create');
 

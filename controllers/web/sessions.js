@@ -23,7 +23,7 @@ exports.login_required = function(req, res, next) {
 
 // MW to perform actions forgot password and re send confirmation of registration
 exports.login_not_required = function(req, res, next) {
-  debug('--> login_required');
+  debug('--> login_not_required');
 
   if (req.session.user) {
     res.redirect('/');
@@ -139,6 +139,7 @@ exports.create = function(req, res) {
       res.redirect('/idm');
     });
   } else {
+    debug(errors);
     // If error exists send a message to /auth/login
     req.session.errors = errors;
     res.redirect('/auth/login');
@@ -147,7 +148,7 @@ exports.create = function(req, res) {
 
 // GET /update_password -- Render settings/password view with a warn to indicate user to change password
 exports.update_password = function(req, res) {
-  res.render('settings/password', {
+  res.render('settings/change_password', {
     errors: [],
     warn_change_password: true,
     csrf_token: req.csrfToken(),
@@ -168,8 +169,6 @@ exports.external_destroy = function(req, res) {
 
   const oauth_client_id = req.query.client_id;
   const url = req.hostname;
-
-  debug(url);
 
   models.oauth_client
     .findOne({

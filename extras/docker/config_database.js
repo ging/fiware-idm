@@ -57,7 +57,7 @@ sequelize
               process.env.IDM_ADMIN_PASS === undefined ||
               process.env.IDM_ADMIN_USER === undefined ||
               process.env.IDM_ADMIN_EMAIL === undefined ||
-              process.env.IDM_ADMIN_PASS === undefined
+              process.env.IDM_ADMIN_ID === undefined
             ) {
               debug(`****************
                                   WARNING: Seeding database with an admin user using default credentials. 

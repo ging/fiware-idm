@@ -27,14 +27,11 @@ const validate_token = function(req, res, next) {
 
   check_validate_token_request(req)
     .then(function(token_id) {
-      return search_token_owner(token_id)
-        .then(function(agent) {
-          req.token_owner = agent;
-          next();
-        })
-        .catch(function(error) {
-          return Promise.reject(error);
-        });
+      return search_token_owner(token_id);
+    })
+    .then(function(agent) {
+      req.token_owner = agent;
+      next();
     })
     .catch(function(error) {
       debug('Error: ' + error);

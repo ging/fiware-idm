@@ -159,7 +159,7 @@ exports.create = function(req, res) {
     });
 };
 
-// PUT /idm/admins/list_users/users/:userId/user_info -- Edit user info
+// PUT /idm/admins/list_users/users/:user_id/user_info -- Edit user info
 exports.edit_info = function(req, res) {
   debug('--> edit_info');
 
@@ -218,17 +218,19 @@ exports.edit_info = function(req, res) {
     });
 };
 
-// PUT /idm/admins/list_users/users/:userId/change_password -- Change password of user
+// PUT /idm/admins/list_users/users/:user_id/change_password -- Change password of user
 exports.change_password = function(req, res) {
   debug('--> change_password');
 
   // Array of errors to send to the view
   let errors = [];
 
+  const date_password = new Date(new Date().getTime());
+
   // Build a row and validate it
   const user = models.user.build({
     password: req.body.password1,
-    date_password: new Date(new Date().getTime()),
+    date_password,
   });
 
   // If password(again) is empty push an error into the array
@@ -247,9 +249,10 @@ exports.change_password = function(req, res) {
         return models.user.update(
           {
             password: req.body.password1,
+            date_password,
           },
           {
-            fields: ['password'],
+            fields: ['password', 'date_password'],
             where: { id: req.user.id },
           }
         );
@@ -267,7 +270,7 @@ exports.change_password = function(req, res) {
     });
 };
 
-// PUT /idm/admins/list_users/users/:userId/enable -- Enable user
+// PUT /idm/admins/list_users/users/:user_id/enable -- Enable user
 exports.enable = function(req, res) {
   debug('--> enable');
 

@@ -32,7 +32,7 @@ networks:
                 - subnet: 172.18.1.0/24
                   gateway: 172.18.1.1
 volumes:
-    ? vol-mysql
+    vol-mysql:
 services:
     mysql:
         image: mysql/mysql-server:5.7.21
@@ -55,7 +55,7 @@ services:
             idm_network:
                 ipv4_address: 172.18.1.6
         environment:
-            - DATABASE_HOST=mysql
+            - IDM_DB_HOST=mysql
 ```
 
 The different params mean:
@@ -71,7 +71,7 @@ The different params mean:
         perform requests.
     -   MYSQL_ROOT_HOST. Define the IP Address of the IdM Keyrock container in
         order to allow requests from it.
-    -   DATABASE_HOST. Define the name of the database container.
+    -   IDM_DB_HOST. Define the name of the database container.
 
 3. Use `sudo docker-compose up` to run the IdM Keyrock. This will automatically
    download the two images and run the IdM Keyrock service.
@@ -129,7 +129,7 @@ fiware-idm:
       idm_network:
         ipv4_address: 172.18.1.6
     environment:
-      - DATABASE_HOST=mysql
+      - IDM_DB_HOST=mysql
     volumes:
 	  - path_to_file:/opt/fiware-idm/config.js
 ```

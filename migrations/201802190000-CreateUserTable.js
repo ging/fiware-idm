@@ -1,7 +1,7 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable(
-      'User',
+      'user',
       {
         id: {
           type: Sequelize.STRING(36), //Sequelize.UUID,

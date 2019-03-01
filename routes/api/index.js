@@ -6,14 +6,18 @@ const api_authenticate_controller = require('../../controllers/api/index')
   .authenticate;
 
 // GET INFO FROM OAUTH2 TOKENS
+
+////////////////////////////////////////
+// ToDo: Check if is deprecated. I think this is to ensure compatibility with older releases of pep proxy
 const api_authenticate_oauth_controller = require('../../controllers/api/index')
   .authenticate_oauth;
-router.param('oauthTokenId', api_authenticate_oauth_controller.load_oauth);
+router.param('oauth_token_id', api_authenticate_oauth_controller.load_oauth);
 router.get(
-  '/access-tokens/:oauthTokenId',
+  '/access-tokens/:oauth_token_id',
   api_authenticate_oauth_controller.check_request,
   api_authenticate_oauth_controller.info_token
 );
+////////////////////////////////////////
 
 router.use('/auth', require('./authenticate'));
 

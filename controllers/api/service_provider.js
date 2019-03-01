@@ -19,7 +19,7 @@ exports.info = function(req, res) {
         },
       };
 
-      res.status(201).json(response);
+      res.status(200).json(response);
     })
     .catch(function(error) {
       debug('Error: ' + error);

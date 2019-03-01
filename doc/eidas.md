@@ -1,13 +1,5 @@
 # Connecting IdM to a eIDAS node
 
--   [Introduction](#def-introduction)
--   [Architecture](#def-architecture)
--   [Server configuration](#def-server-config)
--   [Registering an application as a eIDAS Service Provider](#def-registering-app)
--   [User authentication](#def-user-auth)
-
-<a name="def-introduction"></a>
-
 ## Introduction
 
 Secure electronic identification (eID) is one of the key enablers of data
@@ -39,8 +31,6 @@ Thus, every service deployed according FIWARE security basis, is now accessible
 by european citizens using their eID and in a transparent way for service
 providers.
 
-<a name="def-architecture"></a>
-
 ## Architecture
 
 The FIWARE identity - eIDAS authentication module allows a user with a valid
@@ -50,12 +40,12 @@ authorization.
 
 For enabling this, the service has to be registered in both IdM and eIDAS node.
 The service is registered in the IdM as a regular **Application**, including
-some extra configuration parameters as explained
-[below](<(#def-registering-app)>). On the other hand the service has to be
-registered in the eIDAS node as a **Service Provider** following the procedure
-of the specific Member State. Then, when the user is going to authenticate in
-the IdM it will have the option of selecting a kind of “Login with eID” option
-that will redirect it to the specific authentication gateway.
+some extra configuration parameters as explained [below](#def-registering-app).
+On the other hand the service has to be registered in the eIDAS node as a
+**Service Provider** following the procedure of the specific Member State. Then,
+when the user is going to authenticate in the IdM it will have the option of
+selecting a kind of “Login with eID” option that will redirect it to the
+specific authentication gateway.
 
 Then, the IdM and the eIDAS node will interchange the needed SAML requests to
 finally obtain the user eIDAS profile. With this profile, the IdM will create a
@@ -75,28 +65,27 @@ the entities.
 <p align="center"><img src="https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/eidas_flow.png" width="740" align="center"></p>
 <p align="center">Figure 2: FIWARE identity - eIDAS data flow</p>
 
-<a name="def-server-config"></a>
-
 ## Server configuration
 
 For configuring IdM to allow users to login with their eID, the connection to a
 eIDAS node has to be enabled in the configuration file:
 
-```
+```javascript
 config.eidas = {
-	enabled: true,
-	gateway_host: 'localhost',
-	node_host: 'https://eidas.node.es/EidasNode',
-	metadata_expiration: 60 * 60 * 24 * 365 // One year
-}
+    enabled: true,
+    gateway_host: "localhost",
+    node_host: "https://eidas.node.es/EidasNode",
+    metadata_expiration: 60 * 60 * 24 * 365 // One year
+};
 ```
 
 -   enabled: set to _true_ enables the connection to the eIDAS node.
--   gateway_host: indicates the DNS of the IdM service.
--   node_host: indicates the endpoint where the eIDAS node server is running.
--   metadata_expiration: expiration time for the service certificates.
 
-<a name="def-registering-app"></a>
+-   gateway_host: indicates the DNS of the IdM service.
+
+-   node_host: indicates the endpoint where the eIDAS node server is running.
+
+-   metadata_expiration: expiration time for the service certificates.
 
 ## Registering an application as a eIDAS Service Provider
 
@@ -120,7 +109,7 @@ filled.
 
 Once the application is registered, the metadata of the Service Provider is
 exposed in the endpoint
-http://idm-host/idm/applications/<application-id>/saml2/metadata. This metadata
+http://idm-host/idm/applications/*application-id*/saml2/metadata. This metadata
 file is needed for registering the Service Provider in the eIDAS node.
 
 **Note:** It is very important to register the Service Provider in the eIDAS
@@ -128,8 +117,6 @@ node following the specific instructions of the node owner. This instructions
 depends on the Member State where the node is deployed. Testing nodes can be
 deployed following the
 [instructions provided by the EC](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eIDAS-Node+-+Current+release).
-
-<a name="def-user-auth"></a>
 
 ## User authentication
 

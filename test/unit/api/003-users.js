@@ -14,17 +14,20 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const admin_login = utils.readExampleFile('./test/templates/login.json')
-  .good_admin_login;
-const user_login = utils.readExampleFile('./test/templates/login.json')
-  .good_login;
+const authenticate = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+);
 
-const users = utils.readExampleFile('./test/templates/api/users.json');
+const admin_login = authenticate.good_admin_login;
+const user_login = authenticate.good_login;
+
+const users = utils.readExampleFile('./test/templates/api/003-users.json');
 
 let valid_token;
 let invalid_token;
 
-describe('API - Users: ', function() {
+describe('API - 3 - Users: ', function() {
+  // CREATE A VALID ADMIN TOKEN
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_admin_login = {
@@ -41,6 +44,7 @@ describe('API - Users: ', function() {
     });
   });
 
+  // CREATE A VALID USER TOKEN
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_user_login = {

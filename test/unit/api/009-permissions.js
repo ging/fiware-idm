@@ -14,14 +14,18 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile('./test/templates/login.json')
-  .good_admin_login;
-const roles = utils.readExampleFile('./test/templates/api/roles.json');
+const login = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+).good_admin_login;
+const permissions = utils.readExampleFile(
+  './test/templates/api/009-permissions.json'
+);
 
 let token;
 let application_id;
 
-describe('API - Roles: ', function() {
+describe('API - 9 - Permissions: ', function() {
+  // CREATE TOKEN WITH PROVIDER CREDENTIALS
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -38,12 +42,13 @@ describe('API - Roles: ', function() {
     });
   });
 
+  // CREATE APPLICATION
   // eslint-disable-next-line no-undef
   before(function(done) {
     const create_application = {
       url: config.host + '/v1/applications',
       method: 'POST',
-      body: JSON.stringify(roles.before),
+      body: JSON.stringify(permissions.before),
       headers: {
         'Content-Type': 'application/json',
         'X-Auth-token': token,
@@ -57,182 +62,216 @@ describe('API - Roles: ', function() {
     });
   });
 
-  describe('1) When requesting list of roles', function() {
+  describe('1) When requesting list of permissions', function() {
     it('should return a 200 OK', function(done) {
-      const list_roles = {
-        url: config.host + '/v1/applications/' + application_id + '/roles',
+      const list_permissions = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'GET',
         headers: {
           'X-Auth-token': token,
         },
       };
-      request(list_roles, function(error, response, body) {
+      request(list_permissions, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('roles');
+        should(json).have.property('permissions');
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('2) When creating a role', function() {
+  describe('2) When creating a permission', function() {
     it('should return a 201 OK', function(done) {
-      const create_role = {
-        url: config.host + '/v1/applications/' + application_id + '/roles',
+      const create_permission = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
-        body: JSON.stringify(roles.create.valid_role_body),
+        body: JSON.stringify(permissions.create.valid_perm_body),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_role, function(error, response, body) {
+      request(create_permission, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('role');
+        should(json).have.property('permission');
         response.statusCode.should.equal(201);
         done();
       });
     });
   });
 
-  describe('3) When reading role info', function() {
-    let role_id;
-
-    // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
-      const create_role = {
-        url: config.host + '/v1/applications/' + application_id + '/roles',
+  describe('3) When creating a permission with resource+password and xml in the body', function() {
+    it('should return a 400 Bad request', function(done) {
+      const create_permission = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
-        body: JSON.stringify(roles.read.create),
+        body: JSON.stringify(permissions.create.invalid_perm_body),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_role, function(error, response, body) {
+      request(create_permission, function(error, response) {
+        should.not.exist(error);
+        response.statusCode.should.equal(400);
+        done();
+      });
+    });
+  });
+
+  describe('4) When reading permission info', function() {
+    let permission_id;
+
+    // eslint-disable-next-line snakecase/snakecase
+    beforeEach(function(done) {
+      const create_permission = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/permissions',
+        method: 'POST',
+        body: JSON.stringify(permissions.read.create),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-token': token,
+        },
+      };
+
+      request(create_permission, function(error, response, body) {
         const json = JSON.parse(body);
-        role_id = json.role.id;
+        permission_id = json.permission.id;
         done();
       });
     });
 
     it('should return a 200 OK', function(done) {
-      const read_role = {
+      const read_permission = {
         url:
           config.host +
           '/v1/applications/' +
           application_id +
-          '/roles/' +
-          role_id,
+          '/permissions/' +
+          permission_id,
         method: 'GET',
         headers: {
           'X-Auth-token': token,
         },
       };
 
-      request(read_role, function(error, response, body) {
+      request(read_permission, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('role');
+        should(json).have.property('permission');
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('4) When updating a role', function() {
-    let role_id;
-    let role_name;
+  describe('5) When updating a permission', function() {
+    let permission_id;
+    let permission_name;
+    let permission_resource;
+    let permission_action;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_role = {
-        url: config.host + '/v1/applications/' + application_id + '/roles',
+      const create_permission = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
-        body: JSON.stringify(roles.update.create),
+        body: JSON.stringify(permissions.update.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_role, function(error, response, body) {
+      request(create_permission, function(error, response, body) {
         const json = JSON.parse(body);
-        role_id = json.role.id;
-        role_name = json.role.name;
+        permission_id = json.permission.id;
+        permission_name = json.permission.name;
+        permission_action = json.permission.action;
+        permission_resource = json.permission.resource;
         done();
       });
     });
 
     it('should return a 200 OK', function(done) {
-      const update_role = {
+      const update_permission = {
         url:
           config.host +
           '/v1/applications/' +
           application_id +
-          '/roles/' +
-          role_id,
+          '/permissions/' +
+          permission_id,
         method: 'PATCH',
-        body: JSON.stringify(roles.update.new_values),
+        body: JSON.stringify(permissions.update.new_values),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(update_role, function(error, response, body) {
+      request(update_permission, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('values_updated');
         const response_name = json.values_updated.name;
-        should.notEqual(role_name, response_name);
+        const response_action = json.values_updated.action;
+        const response_resource = json.values_updated.resource;
+        should.notEqual(permission_name, response_name);
+        should.notEqual(permission_action, response_action);
+        should.notEqual(permission_resource, response_resource);
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('4) When deleting a role', function() {
-    let role_id;
+  describe('6) When deleting a permission', function() {
+    let permission_id;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_role = {
-        url: config.host + '/v1/applications/' + application_id + '/roles',
+      const create_permission = {
+        url:
+          config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
-        body: JSON.stringify(roles.delete.create),
+        body: JSON.stringify(permissions.delete.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_role, function(error, response, body) {
+      request(create_permission, function(error, response, body) {
         const json = JSON.parse(body);
-        role_id = json.role.id;
+        permission_id = json.permission.id;
         done();
       });
     });
 
     it('should return a 204 OK', function(done) {
-      const delete_role = {
+      const delete_permission = {
         url:
           config.host +
           '/v1/applications/' +
           application_id +
-          '/roles/' +
-          role_id,
+          '/permissions/' +
+          permission_id,
         method: 'DELETE',
         headers: {
           'X-Auth-token': token,
         },
       };
 
-      request(delete_role, function(error, response) {
+      request(delete_permission, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(204);
         done();

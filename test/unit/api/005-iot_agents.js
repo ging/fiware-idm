@@ -14,16 +14,18 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile('./test/templates/login.json')
-  .good_admin_login;
+const login = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+).good_admin_login;
 const iot_agents = utils.readExampleFile(
-  './test/templates/api/iot_agents.json'
+  './test/templates/api/005-iot_agents.json'
 );
 
 let token;
 let application_id;
 
-describe('API - iot_agents: ', function() {
+describe('API - 5 - iot_agents: ', function() {
+  // CREATE TOKEN WITH PROVIDER CREDENTIALS
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -40,6 +42,7 @@ describe('API - iot_agents: ', function() {
     });
   });
 
+  // CREATE APPLICATION
   // eslint-disable-next-line no-undef
   before(function(done) {
     const create_application = {

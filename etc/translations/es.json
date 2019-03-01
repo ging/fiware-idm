@@ -305,8 +305,8 @@
       "label02": "Nueva contraseña",
       "label03": "Confirmar nueva contraseña",
       "panel_title02": "Cambiar tu email",
-      "label04": "Email",
-      "label05": "Email actual",
+      "label04": "Nuevo email",
+      "label05": "Contraseña actual",
       "panel_title03": "Autentificación en dos pasos",
       "content01": "Tienes esta opción ",
       "content01_1": "desabilitada.",
@@ -667,7 +667,7 @@
       "panel_title01": "Credenciales OAuth2",
       "panel_title02": "PEP Proxy",
       "panel_title03": "Sensores IoT",
-      "panel_title04": "Aplicacions de confianza",
+      "panel_title04": "Aplicaciones de confianza",
       "panel_title05": "Usuarios autorizados",
       "panel_title06": "Organizaciones autorizadas",
       "panel_title07": "Autenticación eIDAS",
@@ -796,7 +796,7 @@
     "authorize": {
       "title": "Autorizar",
       "content01": "La aplicación",
-      "content02": "Email:",
+      "content02": "tendra permisos para:",
       "content03": "quiere acceder a su información de usuario.",
       "deny_btn": "Denegar",
       "authorize_btn": "Autorizar"

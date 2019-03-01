@@ -14,14 +14,17 @@ const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile('./test/templates/login.json').good_login;
-const applications = utils.readExampleFile(
-  './test/templates/api/applications.json'
+const login = utils.readExampleFile(
+  './test/templates/api/000-authenticate.json'
+).good_admin_login;
+const organizations = utils.readExampleFile(
+  './test/templates/api/004-organizations.json'
 );
 
 let token;
 
-describe('API - Applications: ', function() {
+describe('API - 4 - Organizations: ', function() {
+  // CREATE A VALID TOKEN
   // eslint-disable-next-line no-undef
   before(function(done) {
     const good_login = {
@@ -38,167 +41,167 @@ describe('API - Applications: ', function() {
     });
   });
 
-  describe('1) When requesting list of applications', function() {
+  describe('1) When requesting list of organizations', function() {
     it('should return a 200 OK', function(done) {
-      const list_applications = {
-        url: config.host + '/v1/applications',
+      const list_organizations = {
+        url: config.host + '/v1/organizations',
         method: 'GET',
         headers: {
           'X-Auth-token': token,
         },
       };
-      request(list_applications, function(error, response, body) {
+      request(list_organizations, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('applications');
+        should(json).have.property('organizations');
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('2) When creating an application', function() {
+  describe('2) When creating an organization', function() {
     it('should return a 201 OK', function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_organization = {
+        url: config.host + '/v1/organizations',
         method: 'POST',
-        body: JSON.stringify(applications.create.valid_app_body),
+        body: JSON.stringify(organizations.create.valid_org_body),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_organization, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('application');
+        should(json).have.property('organization');
         response.statusCode.should.equal(201);
         done();
       });
     });
   });
 
-  describe('3) When reading application info', function() {
-    let application_id;
+  describe('3) When reading organization info', function() {
+    let organization_id;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_organization = {
+        url: config.host + '/v1/organizations',
         method: 'POST',
-        body: JSON.stringify(applications.read.create),
+        body: JSON.stringify(organizations.read.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_organization, function(error, response, body) {
         const json = JSON.parse(body);
-        application_id = json.application.id;
+        organization_id = json.organization.id;
         done();
       });
     });
 
     it('should return a 200 OK', function(done) {
-      const read_application = {
-        url: config.host + '/v1/applications/' + application_id,
+      const read_organization = {
+        url: config.host + '/v1/organizations/' + organization_id,
         method: 'GET',
         headers: {
           'X-Auth-token': token,
         },
       };
 
-      request(read_application, function(error, response, body) {
+      request(read_organization, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
-        should(json).have.property('application');
+        should(json).have.property('organization');
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('4) When updating an application', function() {
-    let application_id;
-    let application_name;
+  describe('4) When updating an organization', function() {
+    let organization_id;
+    let organization_name;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_organization = {
+        url: config.host + '/v1/organizations',
         method: 'POST',
-        body: JSON.stringify(applications.update.create),
+        body: JSON.stringify(organizations.update.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_organization, function(error, response, body) {
         const json = JSON.parse(body);
-        application_id = json.application.id;
-        application_name = json.application.name;
+        organization_id = json.organization.id;
+        organization_name = json.organization.name;
         done();
       });
     });
 
     it('should return a 200 OK', function(done) {
-      const update_application = {
-        url: config.host + '/v1/applications/' + application_id,
+      const update_organization = {
+        url: config.host + '/v1/organizations/' + organization_id,
         method: 'PATCH',
-        body: JSON.stringify(applications.update.new_values),
+        body: JSON.stringify(organizations.update.new_values),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(update_application, function(error, response, body) {
+      request(update_organization, function(error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('values_updated');
         const response_name = json.values_updated.name;
-        should.notEqual(application_name, response_name);
+        should.notEqual(organization_name, response_name);
         response.statusCode.should.equal(200);
         done();
       });
     });
   });
 
-  describe('4) When deleting an application', function() {
-    let application_id;
+  describe('4) When deleting an organization', function() {
+    let organization_id;
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
-      const create_application = {
-        url: config.host + '/v1/applications',
+      const create_organization = {
+        url: config.host + '/v1/organizations',
         method: 'POST',
-        body: JSON.stringify(applications.delete.create),
+        body: JSON.stringify(organizations.delete.create),
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-token': token,
         },
       };
 
-      request(create_application, function(error, response, body) {
+      request(create_organization, function(error, response, body) {
         const json = JSON.parse(body);
-        application_id = json.application.id;
+        organization_id = json.organization.id;
         done();
       });
     });
 
     it('should return a 204 OK', function(done) {
-      const delete_application = {
-        url: config.host + '/v1/applications/' + application_id,
+      const delete_organization = {
+        url: config.host + '/v1/organizations/' + organization_id,
         method: 'DELETE',
         headers: {
           'X-Auth-token': token,
         },
       };
 
-      request(delete_application, function(error, response) {
+      request(delete_organization, function(error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(204);
         done();

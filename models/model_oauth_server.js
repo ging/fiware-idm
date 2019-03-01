@@ -58,6 +58,7 @@ function getAccessToken(bearerToken) {
       }
       const token = accessToken.toJSON();
       token.oauth_client = accessToken.OauthClient;
+
       if (accessToken.User) {
         token.user = accessToken.User;
         token.user.dataValues.type = 'user';

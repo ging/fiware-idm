@@ -38,7 +38,6 @@ jobs:
       dist: xenial
 
       node_js:
-        - "8"
         - "10"
 
       branches:

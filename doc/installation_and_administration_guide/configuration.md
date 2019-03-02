@@ -40,7 +40,7 @@ users could be easily managed.
 These are the basic configurations of Keyrock. The first configuration is to
 indicate in which port will be Keyrock listenning if HTTPS is not enabled. Host
 configuration is to indicate the domain name of Keyrock in prodoction. Otherwise
-it should be set to "http://localhost:" when running on development.
+it should be set to `http://localhost:` when running on development.
 
 ```javascript
 config.port = 80;
@@ -256,9 +256,9 @@ database. These attributes are:
 
 -   password: the encrypted password of the user.
 
--   password*salt: if not specified, the value set in
-    \_config.external_auth.password_encryption_key* will be used for checking
-    the password encryption.
+-   password_salt: if not specified, the value set in
+    `config.external_auth.password_encryption_key` will be used for checking the
+    password encryption.
 
 It is very common that the external database does not have a table with these
 parameters. In such case you can create a database view for exposing them.
@@ -268,23 +268,27 @@ _USERS_ and _ACTORS_ with the following structure:
 
 **USERS Table**
 
+```text
 | ID  | encrypted_password | password_salt | created_at               | last_sign_in_at          | actor_id |
 | --- | ------------------ | ------------- | ------------------------ | ------------------------ | -------- |
 | 1   | g34h432hjk54k2j    | 1234          | 2015-06-10 08:26:02.0113 | 2018-06-10 08:26:02.0113 | 12       |
 | 2   | 2h43h7fdj38302j    | 1234          | 2015-01-10 08:26:02.0113 | 2018-01-10 08:26:02.0113 | 22       |
 | 3   | j328478j328j423    | 1234          | 2015-02-10 08:26:02.0113 | 2018-10-10 08:26:02.0113 | 5        |
+```
 
 **ACTORS Table**
 
+```text
 | ID  | name          | email           | logo                   |
 | --- | ------------- | --------------- | ---------------------- |
 | 12  | Melinda López | melinda@test.es | http://mylogo.es/12344 |
 | 22  | Juanli Jons   | juanli@test.es  | http://mylogo.es/12121 |
 | 5   | Lesha Magnen  | lesha@test.es   | http://mylogo.es/1212  |
+```
 
 You can create a view with the SQL statement
 
-```
+```sql
 CREATE VIEW USER_VIEW AS
 	SELECT USERS.id, USERS.password_salt, USERS.encrypted_password as password, ACTORS.email, ACTORS.name as username
     FROM USERS,ACTORS

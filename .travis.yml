@@ -1,3 +1,7 @@
+branches:
+  only:
+    - master
+
 jobs:
   include:
     - stage: test
@@ -8,10 +12,6 @@ jobs:
 
       node_js:
         - "8"
-
-      branches:
-        only:
-          - master
 
       services:
         - mysql
@@ -40,10 +40,6 @@ jobs:
       node_js:
         - "10"
 
-      branches:
-        only:
-          - master
-
       services:
         - mysql
 
@@ -68,10 +64,6 @@ jobs:
 
       node_js:
         - "10"
-
-      branches:
-        only:
-          - master
 
       install:
         - npm install

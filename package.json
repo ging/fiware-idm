@@ -18,7 +18,7 @@
     "test:watch": "npm run test -- -w ./lib",
     "lint": "eslint . --cache",
     "lint:text": "textlint 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
-    "lint:md": "remark 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
+    "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js *.js",
     "prettier:text": "prettier '*.md' '**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
     "test:coverage": "istanbul cover _mocha -- --recursive 'test/**/*.js' --reporter spec --exit",

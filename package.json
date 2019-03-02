@@ -1,6 +1,6 @@
 {
   "name": "fiware-idm",
-  "version": "7.0.1",
+  "version": "7.6.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -113,6 +113,15 @@
       "prettier --tab-width 4 --print-width 80 --write --prose-wrap always",
       "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",
       "git add"
+    ]
+  },
+  "remarkConfig": {
+    "settings": {
+      "bullet": "-",
+      "paddedTable": true
+    },
+    "plugins": [
+      "remark-preset-lint-recommended"
     ]
   }
 }

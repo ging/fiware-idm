@@ -14,7 +14,7 @@ const config_attributes_representative = Object.keys(
 
 // Create identity provider
 const idp_options = {
-  sso_login_url: config.eidas.node_host,
+  sso_login_url: config.eidas.node_host || config.eidas.idp_host, // config.eidas.idp_host should be deprectated
   sso_logout_url: 'https://' + config.eidas.gateway_host + '/saml2/logout',
   certificates: [],
 };
@@ -302,7 +302,7 @@ exports.login = function(req, res) {
   delete req.body.password;
   delete req.query;
 
-  res.redirect(307, config.eidas.node_host);
+  res.redirect(307, config.eidas.node_host || config.eidas.idp_host); // config.eidas.idp_host should be deprectated
 };
 
 // POST /idm/applications/:application_id/saml2/login -- Response from eIDAs with user credentials

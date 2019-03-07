@@ -375,8 +375,8 @@ function storeToken(token, client, identity, jwt) {
     : Promise.resolve();
 
   let access_token_promise = !jwt
-    ? refresh_token_promise.then(
-        oauth_access_token.create({
+    ? refresh_token_promise.then(function() {
+        return oauth_access_token.create({
           access_token: token.accessToken,
           expires: token.accessTokenExpiresAt,
           valid: true,
@@ -388,9 +388,9 @@ function storeToken(token, client, identity, jwt) {
             ? token.authorizationCode
             : null,
           scope: token.scope === 'all' ? null : token.scope,
-        })
-      )
-    : [];
+        });
+      })
+    : Promise.resolve();
 
   let user_autho_app_promise =
     user_id && config_oauth2.ask_authorization
@@ -402,27 +402,29 @@ function storeToken(token, client, identity, jwt) {
             oauth_client_id: client.id,
           },
         })
-      : [];
+      : Promise.resolve();
 
-  return Promise.all([access_token_promise, user_autho_app_promise])
+  return access_token_promise
     .then(function() {
-      if (user_id || iot_id) {
-        token[identity.dataValues.type] = identity.dataValues.type;
-      }
+      return user_autho_app_promise.then(function() {
+        if (user_id || iot_id) {
+          token[identity.dataValues.type] = identity.dataValues.type;
+        }
 
-      if (token.scope === 'all') {
-        delete token.scope;
-      }
+        if (token.scope === 'all') {
+          delete token.scope;
+        }
 
-      return _.assign(
-        // expected to return client and user, but not returning
-        {
-          client,
-          access_token: token.accessToken, // proxy
-          refresh_token: token.refreshToken, // proxy
-        },
-        token
-      );
+        return _.assign(
+          // expected to return client and user, but not returning
+          {
+            client,
+            access_token: token.accessToken, // proxy
+            refresh_token: token.refreshToken, // proxy
+          },
+          token
+        );
+      });
     })
     .catch(function(err) {
       debug('saveToken - Err: ', err);

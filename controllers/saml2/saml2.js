@@ -344,6 +344,7 @@ exports.saml2_application_login = function(req, res) {
           id: user.id,
           username: user.username,
           image: '/img/logos/small/user.png',
+          oauth_sign_in: true,
         };
 
         const state = sp_states[response_to] ? sp_states[response_to] : 'xyz';

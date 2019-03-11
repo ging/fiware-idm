@@ -13,7 +13,7 @@ accepting eIDs issued in other Member States.
 
 Technical specifications and reference implementations of the interoperability
 nodes for the eID mechanisms were
-[published as open source](https://joinup.ec.europa.eu/document/eidas-technical-specifications-v10)
+[published as open source](https://joinup.ec.europa.eu/solution/european-system-recognition-electronic-identities-eidas)
 on 26th November 2015 for the technological infrastructure under Connecting
 Europe Facility (CEF) program.
 

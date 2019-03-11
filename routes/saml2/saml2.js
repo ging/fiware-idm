@@ -25,7 +25,6 @@ router.use(function(req, res, next) {
 router.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.send(err);

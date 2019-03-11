@@ -1,26 +1,24 @@
 <div id="content_body">
   	<div class="page-header">
-    	<h2>  
-    		Home
-   		</h2>
+    	<h2><%=translation.home.index.page_header%></h2>
   	</div>
 	<div id="home">
 		<div class="panel panel-default datatable" id="applications" data-pagination-url="/filters/applications" data-pagination-pages="">
   			<div class="panel-heading">
-      			<span class="title">Applications</span>      
-				<div class="table_actions clearfix"> 
+      			<span class="title"><%=translation.home.index.title%></span>
+				<div class="table_actions clearfix">
     				<div id="spinner_applications" class="loading-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
-  					<div class="btn-group"> 
-  						<a href="/idm/applications/new" title="Register" class="btn btn-primary btn-sm" id="applications__action_register_application">
-      						Register
- 						</a>
+  					<div class="btn-group">
+  						<a href="/idm/applications/new" title="<%=translation.home.index.link01%>" class="btn btn-primary btn-sm" id="applications__action_register_application">
+      					<%=translation.home.index.link01%>
+							</a>
 					</div>
 				</div>
 			</div>
   			<div class="panel-body datatable-content">
 			  	<% if (applications.length > 0) { %>
 					<div class="list-group" id="applications_content">
-						<% var i; for (i=0; i < applications.length; i++) { %> 
+						<% var i; for (i=0; i < applications.length; i++) { %>
 	  						<div class="list-group-item">
 	  							<a class="item" href="/idm/applications/<%= applications[i].id %>">
 	  								<div class="avatar filter_field">
@@ -31,31 +29,31 @@
 					  			</a>
 					  		</div>
 					  	<% } %>
-				  	</div>				
-				<% } else { -%>					
-			  		<p class="alert alert-info empty">You are not authorized in any application.</p> 
+				  	</div>
+				<% } else { -%>
+			  		<p class="alert alert-info empty"><%=translation.home.index.alert01%></p>
 				<% } %>
- 			</div>
+			</div>
   			<div class="panel-footer">
-      			<a href="/idm/applications/">View All</a>
+      		<a href="/idm/applications/"><%=translation.home.index.link02%></a>
   			</div>
 		</div>
 		<div class="panel panel-default datatable" id="organizations" data-pagination-url="/filters/organizations" data-user_id="" data-pagination-pages="">
 			<div class="panel-heading">
-				<span class="title">Organizations</span>      
+				<span class="title"><%=translation.home.index.panel_heading%></span>
 				<div class="table_actions clearfix">
     				<div id="spinner_organizations" class="loading-spinner-inline" style="display: none;"><i class="fa fa-circle-o-notch fa-spin"></i></div>
-					<div class="btn-group"> 
-						<a href="/idm/organizations/new" title="Create" class="btn btn-primary btn-sm" id="organizations__action_create_organization"> 
-      						Create
-						</a> 
+					<div class="btn-group">
+						<a href="/idm/organizations/new" title="<%=translation.home.index.link03%>" class="btn btn-primary btn-sm" id="organizations__action_create_organization"> 
+      				<%=translation.home.index.link03%>
+						</a>
   					</div>
 				</div>
 			</div>
 			<div class="panel-body datatable-content">
 			  	<% if (organizations.length > 0) { %>
 					<div class="list-group" id="applications_content">
-						<% var i; for (i=0; i < organizations.length; i++) { %> 
+						<% var i; for (i=0; i < organizations.length; i++) { %>
 	  						<div class="list-group-item">
 	  							<a class="item" href="/idm/organizations/<%= organizations[i].id %>">
 	  								<div class="avatar filter_field">
@@ -68,12 +66,11 @@
 					  	<% } %>
 				  	</div>
 				<% } else { -%>
-			  		<p class="alert alert-info empty">You don't have any organizations.</p>
-				<% } %>			    
+			  		<p class="alert alert-info empty"><%=translation.home.index.alert02%></p>
+				<% } %>
 			</div>
-  			<div class="panel-footer">
-      			<a href="/idm/organizations/">View All</a>
-
+			<div class="panel-footer">
+				<a href="/idm/organizations/"><%=translation.home.index.link04%></a>
 			</div>
 		</div>
     </div>
@@ -86,7 +83,7 @@
 						url: "/idm/users/<%= session.user.id %>/tour_ended",
 						data: "Tour ended",
 						dataType: 'html',
-						beforeSend: beforeSend("<%= csrfToken %>")
+						beforeSend: beforeSend("<%= csrf_token %>")
 					});
 				};
 
@@ -96,4 +93,3 @@
 		</script>
     <% } -%>
 </div>
-

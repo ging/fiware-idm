@@ -2,37 +2,37 @@
     <div id="create_application_modal" class="static_page">
         <div class="modal-header">
             <h3>
-                Create Organization
+                <%=translation.organizations.create.title%>
             </h3>
         </div>
         <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/organizations" method="POST" enctype="">
-            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <div class="modal-body clearfix">
                 <div>
                     <fieldset>
                         <div class="form-group required">
-                            <label class="control-label  required" for="id_name">Name</label>
+                            <label class="control-label  required" for="id_name"><%=translation.organizations.create.label01%></label>
                             <div class=" ">
                                 <input class="form-control" id="id_name" maxlength="64" name="organization[name]" type="text">
                             </div>
                         </div>
                         <% if (errors.indexOf("name") != -1) { %>
-                            <span class="help-block alert alert-danger ">Input required.</span>
+                            <span class="help-block alert alert-danger "><%=translation.organizations.create.required_field%></span>
                         <% } %>
                         <div class="form-group required">
-                            <label class="control-label  required" for="id_description">Description</label>
+                            <label class="control-label  required" for="id_description"><%=translation.organizations.create.label02%></label>
                             <div class="">
                                 <textarea class="form-control" cols="40" id="id_description" name="organization[description]" value="<%= organization.description %>" rows="4" style="overflow: hidden; word-wrap: break-word; height: 86px;"></textarea>
                             </div>
                         </div>
                         <% if (errors.indexOf("description") != -1) { %>
-                            <span class="help-block alert alert-danger ">Input required.</span>
+                            <span class="help-block alert alert-danger "><%=translation.organizations.create.required_field%></span>
                         <% } %>
                     </fieldset>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Create Organization</button>
+                <button type="submit" class="btn btn-primary"><%=translation.organizations.create.create_btn%></button>
             </div>
         </form>
     </div>

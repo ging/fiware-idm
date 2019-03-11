@@ -33,9 +33,10 @@ file_env 'IDM_DB_USER'
 file_env 'IDM_ADMIN_ID'
 file_env 'IDM_ADMIN_USER'
 file_env 'IDM_ADMIN_EMAIL'
-file_env 'IDM_ADMIN_PASS' 
+file_env 'IDM_ADMIN_PASS'
 file_env 'IDM_EX_AUTH_DB_USER'
 file_env 'IDM_EX_AUTH_DB_PASS'
+file_env 'IDM_DB_HOST'
 
 
 if [[ $IDM_SESSION_SECRET ==  "nodejs_idm" ]] || [[ IDM_ENCRYPTION_KEY == "nodejs_idm'" ]]; then
@@ -52,7 +53,7 @@ if [[ $IDM_DB_PASS == "idm" ]] && [[ $IDM_DB_USER == "root" ]]; then
 fi
 
 # Wait until database container is deployed
-until nc -z -v -w30 $DATABASE_HOST ${IDM_DB_PORT:-3306}  > /dev/null 2>&1
+until nc -z -v -w30 $IDM_DB_HOST ${IDM_DB_PORT:-3306}  > /dev/null 2>&1
 do
   echo "Waiting for database connection..."
   # wait for 2 seconds before check again

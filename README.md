@@ -1,12 +1,14 @@
 # Identity Manager - Keyrock
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c1f1239e878341b782be7ed9a67afdfd)](https://app.codacy.com/app/apozohue10/fiware-idm?utm_source=github.com&utm_medium=referral&utm_content=ging/fiware-idm&utm_campaign=Badge_Grade_Dashboard)
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
 [![License: MIT](https://img.shields.io/github/license/ging/fiware-idm.svg)](https://opensource.org/licenses/MIT)
 [![Docker badge](https://img.shields.io/docker/pulls/fiware/idm.svg)](https://hub.docker.com/r/fiware/idm/)
-[![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/search?q=%5Bfiware%5D+keyrock)
+[![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-keyrock)
 <br>
 [![Documentation](https://img.shields.io/readthedocs/fiware-idm.svg)](https://fiware-idm.readthedocs.io/en/latest/)
 [![Build Status](https://travis-ci.org/ging/fiware-idm.svg?branch=master)](https://travis-ci.org/ging/fiware-idm)
+[![Coverage Status](https://coveralls.io/repos/github/ging/fiware-idm/badge.svg?branch=master)](https://coveralls.io/github/ging/fiware-idm?branch=master)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/keyrock.svg)
 
 Keyrock is the FIWARE component responsible for Identity Management. Using
@@ -20,8 +22,8 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
-| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/idm/)| 
-|---|---|---|
+| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/idm/) | :dart: [Roadmap](https://github.com/ging/fiware-idm/blob/master/roadmap.md) |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------- | --------------------------------------------------------------------------- |
 
 
 ## Content
@@ -65,7 +67,7 @@ Keyrock provides both a GUI and an API interface.
 
 ### Software requirements
 
-This GE is based on a javascript environment and SQL databases. In order to run
+This GE is based on a JavaScript environment and SQL databases. In order to run
 the identity manager the following requirements must be installed:
 
 -   node.js
@@ -106,7 +108,7 @@ config.database = {
 };
 ```
 
-5.  To configure the server to listen HTTPs requests, generate certificates
+5.  To configure the server to listen HTTPS requests, generate certificates
     OpenSSL and configure config.js:
 
 ```console
@@ -131,7 +133,7 @@ npm run-script seed_db
 ```
 
 7.  Start server with admin rights (server listens in 3000 port by default or in
-    443 if HTTPs is enabled).
+    443 if HTTPS is enabled).
 
 ```console
 sudo npm start
@@ -170,10 +172,14 @@ based on FIWARE identity. This is posible thanks to
 
 ## Tests
 
-For performing a basic end-to-end test, you have to follow the next steps. A detailed description about how to run tests can be found [here](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
+For performing a basic end-to-end test, you have to follow the next steps. A
+detailed description about how to run tests can be found
+[here](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
 
-1. Verify that the host address of IdM can be reached. By default, web access will show a Login Page.
-2. Acquire a valid username and password and access with those credentials. The resulting web page is the landing page of the IdM KeyRock Portal.
+1. Verify that the host address of IdM can be reached. By default, web access
+   will show a Login Page.
+2. Acquire a valid username and password and access with those credentials. The
+   resulting web page is the landing page of the IdM KeyRock Portal.
 3. Verify that you can view the list of applications, organizations, etc.
 
 ## Advanced Documentation
@@ -190,12 +196,22 @@ depends on Openstack components Keystone and Horizon. Now is fully implemented
 in Node JS. Another remarkable changes have been made:
 
 1.  A driver has been implemented in order to make authentication against
-    another database different from the default one.+
+    another database different from the default one.
 2.  The appearance of the web portal can be easily modified though configurable
     themes.
 3.  Now users don't need to switch session in order to create an application
     that will belong to an organization.
 4.  Permissions of an application can be edited or deleted.
+5.  IdM could play the role of gateway between services and eDIAS Node in order
+    to allow users authentication with their national eID.
+6.  OAuth Refresh Token Supported.
+7.  Configurable OAuth token types (Permanent tokens and Json Web Tokens).
+8.  OAuth Revoke Token endpoint enable.
+9.  Internazionalization od UI (Spanish and English supported).
+10. User Admin Panel.
+11. Trusted application for OAuth token validation.
+12. IdM could play the role as PDP for basic authorization.
+13. Complete Sign out. Delete session in services as well as in Keyrock.
 
 ## Quality Assurance
 

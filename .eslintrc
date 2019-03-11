@@ -1,0 +1,14 @@
+{
+  "extends": "tamia",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": [
+    "snakecase"
+  ],
+  "rules": {
+  	"camelcase": 0,
+  	"snakecase/snakecase": "error",
+    "valid-jsdoc": 0
+  }
+}

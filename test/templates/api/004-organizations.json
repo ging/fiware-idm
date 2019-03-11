@@ -1,0 +1,40 @@
+{
+	"create": {
+		"valid_org_body": {
+			"organization": {
+		    	"name": "Test organization 1",
+    			"description": "description 1"
+			}
+		}
+	},
+	"read": {
+		"create": {
+			"organization": {
+		    	"name": "Test organization 2",
+    			"description": "description 2"
+			}
+		}
+	},
+	"update": {
+		"create": {
+			"organization": {
+		    	"name": "Test organization 3",
+    			"description": "description 3"
+			}
+		},
+		"new_values": {
+			"organization": {
+		    	"name": "new name of organization 3",
+    			"description": "new description 3"
+			}
+		}
+	},
+	"delete": {
+		"create": {
+			"organization": {
+		    	"name": "Test organization 4",
+    			"description": "description 4"
+			}
+		}
+	}
+}

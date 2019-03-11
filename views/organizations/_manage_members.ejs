@@ -1,20 +1,20 @@
 <div id="authorize_user" class="modal fade" style="top: 0px;" role="dialog" aria-hidden="false">
     <form id="submit_managed_members_form" class="" action="/idm/organizations/<%= organization.id %>/edit/members" method="POST">
-        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
-        <div class="modal-dialog">
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+        <div class="modal-dialog  modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button id="esc_auth_member" class="close" data-dismiss="modal">&times;</button>
-                    <h3>Manage your organization members</h3>
+                    <h3><%=translation.organizations.manage_members.title%></h3>
                 </div>
                 <div class="modal-body clearfix">
                     <div class="tab-content">
-                      <fieldset id="manage_organization_users_application_roles__update_owners_users" class="js-tab-pane active">
+                        <fieldset id="manage_organization_users_application_roles__update_owners_users" class="js-tab-pane active">
                         <input id="submit_members" name="submit_authorize" type="hidden" value="">
                         <div class="membership update_owners_users_membership dropdown_fix add-members" data-show-roles="True">
                             <div class="all-users">
                                 <header>
-                                    <h4>All users</h4>
+                                    <h4><%=translation.organizations.manage_members.header_title%></h4>
                                     <div class="form-group has-feedback">
                                         <input type="text" name="" id="available_update_owners_users" class="filter update_owners_users_server_filter form-control input-sm" placeholder="filter" data-url="/filters/users">
                                     </div>
@@ -26,17 +26,17 @@
                                     <ul id="available_members" class="available_members available_update_owners_users list-group">
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="no_available_update_owners_users" style="display: none;">
-                                        <li>No users found.</li>
+                                        <li><%=translation.organizations.manage_members.no_users%></li>
                                     </ul>
                                     <ul class="no_results list-group alert alert-info" id="perform_filter_available_update_owners_users" style="display: block;">
-                                        <li>Use the filter (type at least two characters).</li>
+                                        <li><%=translation.organizations.manage_members.filter_use%></li>
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
+                                <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.organizations.manage_members.alert01%></span>
                             </div>
                             <div class="members-list">
                                 <header>
-                                    <h4>Organization members</h4>
+                                    <h4><%=translation.organizations.manage_members.member_list_title%></h4>
                                     <div class="form-group has-feedback">
                                         <input type="text" name="" id="update_owners_users_members" class="filter update_owners_users_client_filter form-control input-sm" placeholder="filter">
                                     </div>
@@ -46,18 +46,17 @@
                                     <ul id="authorized_users" class="members update_owners_users_members list-group">
                                     </ul>
                                 </div>
-                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
-                                
-                                <div class="alert alert-warning no_roles_warning" style="display: none;">Some users don't have any role assigned. If you save now they won't be authorized in the organization</div>
+                                <span id="alert_error_search_authorized" style="display: none;" class='help-block alert alert-danger'><%=translation.organizations.manage_members.alert01%></span>
+                                <div class="alert alert-warning no_roles_warning" style="display: none;"><%=translation.organizations.manage_members.alert02%></div>
                             </div>
                         </div>
                     </fieldset>
-                    <span id="info_added_user" style="display: none;" class='help-block alert alert-info'>Member added</span>
+                    <span id="info_added_user" style="display: none;" class='help-block alert alert-info'><%=translation.organizations.manage_members.alert03%></span>
                 </div>
             </div>
             <div class="modal-footer">
-                <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="Save">
-                <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+                <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="<%=translation.organizations.manage_members.save_btn%>">
+                <button type="button" class="btn btn-default cancel" data-dismiss="modal"><%=translation.organizations.manage_members.cancel_btn%></button>
             </div>
         </div>
     </div>

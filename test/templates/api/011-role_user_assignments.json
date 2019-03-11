@@ -1,0 +1,77 @@
+{
+	"before": {
+		"applications": [
+			{
+				"application": {
+			    	"name": "Test_application for role user assignment",
+			    	"description": "Role assignment description",
+			    	"redirect_uri": "http://localhost/login",
+			    	"url": "http://localhost",
+			    	"grant_type": [
+				      	"authorization_code",
+				      	"implicit",
+				      	"password"
+			    	],
+			    	"token_types": [
+				      	"jwt",
+				      	"permanent"
+			    	]
+				}
+			}
+		],
+		"users": [
+			{ "user": 
+				{
+			    	"username": "userRUA1",
+			    	"email": "userrua1@test.com",
+			    	"password": "test"
+				}
+			},
+			{ "user": 
+				{
+			    	"username": "userRUA2",
+			    	"email": "userrua2@test.com",
+			    	"password": "test"
+				}
+			},
+			{ "user": 
+				{
+			    	"username": "userRUA3",
+			    	"email": "userrua3@test.com",
+			    	"password": "test"
+				}
+			}
+		],
+		"roles": [
+			{ "role": 
+				{
+					"name": "Role 1"
+				}
+			},
+			{ "role": 
+				{
+					"name": "Role 2"
+				}
+			},
+			{ "role": 
+				{
+					"name": "Role 3"
+				}
+			}
+		]
+	},
+	"add": {
+		"role_body": {
+			"role": {
+		    	"name": "role 1"
+			}
+		},
+		"permission_body": {
+			"permission": {
+				"name": "permission 1",
+				"action": "GET",
+				"resource": "login"
+			}
+		}
+	}
+}

@@ -13,9 +13,9 @@
             <h3>Accede</h3>
         </div>
 
-        <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/oauth2<%= application.url %>" method="POST"
+        <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="<%= application.url %>" method="POST"
             enctype="">
-            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <div class="modal-body clearfix">
                 <% var nameErrors = [] %>
                 <% if (errors.length) { %>
@@ -105,7 +105,7 @@
 
     <script type="text/javascript">
         $('header').remove();
-        var container_fluid = $('.container-fluid.wrap') 
+        var container_fluid = $('.container-fluid.wrap')
         container_fluid.css('padding', '0px')
         container_fluid.css('background-image', 'url(../img/vish_background.png)')
         container_fluid.css('max-width', '100%')

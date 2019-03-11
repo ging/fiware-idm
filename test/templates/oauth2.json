@@ -1,0 +1,64 @@
+{
+	"client": {
+		"id": "tutorial-dckr-site-0000-xpresswebapp",
+		"secret": "tutorial-dckr-site-0000-clientsecret",
+		"encode_id_secret": "dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA=="
+	},
+	"fake_client": {
+		"id": "false_id",
+		"secret": "false_secret",
+		"encode_id_secret": "false_encode"
+	},
+	"headers": {
+      	"Authorization": "Basic dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==",
+        "Content-Type": "application/x-www-form-urlencoded"
+ 	},
+ 	"fake_headers": {
+      	"Authorization": "Basic false_encode",
+        "Content-Type": "application/x-www-form-urlencoded"
+ 	},
+	"requests": {
+		"client_credentials_valid":{ 
+			"body": "grant_type=client_credentials"
+		},
+		"client_credentials_invalid":{ 
+			"body": "grant_type=client_credentials"
+		},
+		"password_credentials_valid":{ 
+			"body": "grant_type=password&username=alice-the-admin@test.com&password=test"
+		},
+		"password_credentials_invalid":{ 
+			"body": "grant_type=password&username=fake@test.com@test.com&password=fake"
+		},
+		"authorization_code_credentials_valid":{ 
+			"body": "grant_type=authorization_code&code=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&redirect_uri=http://localhost:3000/login"
+		},
+		"authorization_code_credentials_invalid":{ 
+			"body": "grant_type=authorization_code&code=fake&redirect_uri=http://localhost:3000/login"
+		},
+		"authorization_code_credentials_expired":{ 
+			"body": "grant_type=authorization_code&code=15682667caa4bb5ac15056fee3836b2980288bf2&redirect_uri=http://localhost:3000/login"
+		},
+		"refresh_token_valid":{ 
+			"body": "grant_type=refresh_token&refresh_token=r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3"
+		},
+		"refresh_token_invalid":{ 
+			"body": "grant_type=password&username=fake@test.com@test.com&password=fake"
+		},
+		"revoke_token_valid":{ 
+			"body": "token=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+		},
+		"revoke_token_invalid":{ 
+			"body": "token=fake"
+		},
+		"validate_token_valid":{ 
+			"query": "?access_token=m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4m4"
+		},
+		"validate_token_expired":{ 
+			"query": "?access_token=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+		},
+		"validate_token_invalid":{ 
+			"query": "?access_token=fake"
+		}
+	}
+}

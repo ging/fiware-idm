@@ -1,15 +1,25 @@
-var express = require('express');
-var router = express.Router({mergeParams: true});
+const express = require('express');
+const router = express.Router({ mergeParams: true }); // eslint-disable-line snakecase/snakecase
 
 // Role Permission Assignment API Controller
-var api_role_pem_assign_controller = require('../../controllers/api/index').role_permission_assignments;
+const api_role_pem_assign_controller = require('../../controllers/api/index')
+  .role_permission_assignments;
 
-router.param('roleId',   require('../../controllers/api/index').roles.load_role);
-router.param('permissionId',   require('../../controllers/api/index').permissions.load_permission);
+router.param('role_id', require('../../controllers/api/index').roles.load_role);
+router.param(
+  'permission_id',
+  require('../../controllers/api/index').permissions.load_permission
+);
 
 // Routes for role_permission_assignments
-router.get('/:roleId/permissions', 						api_role_pem_assign_controller.index);
-router.post('/:roleId/permissions/:permissionId', 		api_role_pem_assign_controller.create);
-router.delete('/:roleId/permissions/:permissionId', 	api_role_pem_assign_controller.delete);
+router.get('/:role_id/permissions', api_role_pem_assign_controller.index);
+router.post(
+  '/:role_id/permissions/:permission_id',
+  api_role_pem_assign_controller.create
+);
+router.delete(
+  '/:role_id/permissions/:permission_id',
+  api_role_pem_assign_controller.delete
+);
 
 module.exports = router;

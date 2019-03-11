@@ -306,7 +306,7 @@ exports.login = function(req, res) {
 };
 
 // POST /idm/applications/:application_id/saml2/login -- Response from eIDAs with user credentials
-exports.saml2_application_login = function(req, res) {
+exports.saml2_application_login = function(req, res, next) {
   debug('--> saml2_application_login', req.url);
 
   const options = { request_body: req.body };
@@ -314,6 +314,9 @@ exports.saml2_application_login = function(req, res) {
   return req.sp.post_assert(idp, options, function(error, saml_response) {
     if (error != null) {
       debug('Error', error);
+      if (error.extra && error.extra.status) {
+        return next(new Error(error.extra.status));
+      }
       return res.status(500).send('Internal Error');
     }
 

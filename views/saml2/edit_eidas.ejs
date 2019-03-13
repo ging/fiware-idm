@@ -223,6 +223,45 @@
                             	<label><input type="checkbox" name="NaturalPerson[Gender]" ><%=translation.saml2.edit_eidas.natural_label08%></label>
                             <% } %>
                         </div>
+
+
+                        <div class="attribute">
+                        	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('Email')) { %>
+                            	<label><input checked type="checkbox" name="NaturalPerson[Email]" ><%=translation.saml2.edit_eidas.natural_label09%></label>
+                            <% } else { %>
+                            	<label><input type="checkbox" name="NaturalPerson[Email]" ><%=translation.saml2.edit_eidas.natural_label09%></label>
+                            <% } %>
+                        </div>
+                        <div class="attribute">
+                        	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('CurrentPhoto')) { %>
+                            	<label><input checked type="checkbox" name="NaturalPerson[CurrentPhoto]" ><%=translation.saml2.edit_eidas.natural_label10%></label>
+                            <% } else { %>
+                            	<label><input type="checkbox" name="NaturalPerson[CurrentPhoto]" ><%=translation.saml2.edit_eidas.natural_label10%></label>
+                            <% } %>
+                        </div>
+                        <div class="attribute">
+                        	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('Degree')) { %>
+                            	<label><input checked type="checkbox" name="NaturalPerson[Degree]" ><%=translation.saml2.edit_eidas.natural_label11%></label>
+                            <% } else { %>
+                            	<label><input type="checkbox" name="NaturalPerson[Degree]" ><%=translation.saml2.edit_eidas.natural_label11%></label>
+                            <% } %>
+                        </div>
+                        <div class="attribute">
+                        	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('FieldOfStudy')) { %>
+                            	<label><input checked type="checkbox" name="NaturalPerson[FieldOfStudy]" ><%=translation.saml2.edit_eidas.natural_label12%></label>
+                            <% } else { %>
+                            	<label><input type="checkbox" name="NaturalPerson[FieldOfStudy]" ><%=translation.saml2.edit_eidas.natural_label12%></label>
+                            <% } %>
+                        </div>
+                        <div class="attribute">
+                        	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('HomeInstitutionName')) { %>
+                            	<label><input checked type="checkbox" name="NaturalPerson[HomeInstitutionName]" ><%=translation.saml2.edit_eidas.natural_label13%></label>
+                            <% } else { %>
+                            	<label><input type="checkbox" name="NaturalPerson[HomeInstitutionName]" ><%=translation.saml2.edit_eidas.natural_label13%></label>
+                            <% } %>
+                        </div>
+
+
 			                </div>
 	                    <div id="legal_person" class="extra col-md-4">
                 				<label class="control-label group"><%=translation.saml2.edit_eidas.subtitle02%></label>

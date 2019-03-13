@@ -4,6 +4,7 @@ const fs = require('fs');
 const debug = require('debug')('idm:saml2_controller');
 const exec = require('child_process').exec;
 const saml2 = require('../../lib/saml2.js');
+const image = require('../../lib/image.js');
 
 const config_attributes = require('../../etc/eidas/requested_attributes.json');
 const config_attributes_natural = Object.keys(config_attributes.NaturalPerson);
@@ -376,50 +377,67 @@ exports.saml2_application_login = function(req, res, next) {
 
 // Create a user when Saml flow has already finished
 function create_user(name_id, new_eidas_profile) {
-  return models.user
-    .findOne({
-      where: { eidas_id: name_id },
-    })
-    .then(function(user) {
-      if (user) {
-        // Update de eidas profile
-        const actual_eidas_profile_keys = Object.keys(user.extra.eidas_profile);
-        const new_eidas_profile_keys = Object.keys(new_eidas_profile);
-
-        const difference = new_eidas_profile_keys.filter(
-          x => !actual_eidas_profile_keys.includes(x)
-        );
-        const new_attributes = user.extra.eidas_profile;
-
-        for (let i = 0; i < difference.length; i++) {
-          new_attributes[difference[i]] = new_eidas_profile[difference[i]];
-        }
-
-        const user_extra = user.extra;
-        Object.assign(user_extra.eidas_profile, new_attributes);
-        user.extra = user_extra;
-        return user.save({
-          fields: ['extra'],
-        });
+  let image_name = 'default';
+  return image
+    .toJpg(new_eidas_profile.CurrentPhoto, 'public/img/users')
+    .then(function(file_name) {
+      if (file_name) {
+        image_name = file_name;
+        delete new_eidas_profile.CurrentPhoto;
       }
-
       return models.user
-        .build({
-          username:
-            new_eidas_profile.FirstName + ' ' + new_eidas_profile.FamilyName,
-          eidas_id: name_id,
-          extra: { eidas_profile: new_eidas_profile },
-          enabled: true,
+        .findOne({
+          where: { eidas_id: name_id },
         })
-        .save();
-    })
-    .then(function(user) {
-      debug(user);
-      return user;
-    })
-    .catch(function(error) {
-      debug('Error', error);
-      return Promise.reject(error);
+        .then(function(user) {
+          if (user) {
+            // Update de eidas profile
+            const actual_eidas_profile_keys = Object.keys(
+              user.extra.eidas_profile
+            );
+            const new_eidas_profile_keys = Object.keys(new_eidas_profile);
+
+            const difference = new_eidas_profile_keys.filter(
+              x => !actual_eidas_profile_keys.includes(x)
+            );
+            const new_attributes = user.extra.eidas_profile;
+
+            for (let i = 0; i < difference.length; i++) {
+              new_attributes[difference[i]] = new_eidas_profile[difference[i]];
+            }
+            const user_extra = user.extra;
+            Object.assign(user_extra.eidas_profile, new_attributes);
+            user.extra = user_extra;
+            user.email = new_eidas_profile.Email
+              ? new_eidas_profile.Email
+              : user.email;
+            user.image = image_name !== 'default' ? image_name : user.image;
+            return user.save({
+              fields: ['extra', 'email', 'image'],
+            });
+          }
+
+          return models.user
+            .build({
+              username:
+                new_eidas_profile.FirstName +
+                ' ' +
+                new_eidas_profile.FamilyName,
+              eidas_id: name_id,
+              email: new_eidas_profile.Email ? new_eidas_profile.Email : null,
+              image: image_name !== 'default' ? image_name : 'default',
+              extra: { eidas_profile: new_eidas_profile },
+              enabled: true,
+            })
+            .save();
+        })
+        .then(function(user) {
+          return user;
+        })
+        .catch(function(error) {
+          debug('Error', error);
+          return Promise.reject(error);
+        });
     });
 }
 

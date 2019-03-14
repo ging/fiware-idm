@@ -48,6 +48,12 @@
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
 			"@isRequired": "false"
 		},
+		"CountryOfBirth": {
+			"@FriendlyName": "CountryOfBirth",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/eid4u/naturalperson/CountryOfBirth",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
 		"Email": {
 			"@FriendlyName": "Email",
 			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/eid4u/naturalperson/Email",
@@ -84,13 +90,13 @@
 			"@FriendlyName": "LegalPersonIdentifier",
 			"@Name": "http://eidas.europa.eu/attributes/legalperson/LegalPersonIdentifier",
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
-			"@isRequired": "false"
+			"@isRequired": "true"
 		},
 		"LegalName": {
 			"@FriendlyName": "LegalName",
 			"@Name": "http://eidas.europa.eu/attributes/legalperson/LegalName",
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
-			"@isRequired": "false"
+			"@isRequired": "true"
 		},
 		"LegalPersonAddress": {
 			"@FriendlyName": "LegalPersonAddress",

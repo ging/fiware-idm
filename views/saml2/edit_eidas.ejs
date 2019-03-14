@@ -224,6 +224,13 @@
                             <% } %>
                         </div>
 
+                        <div class="attribute">
+                        	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('CountryOfBirth')) { %>
+                            	<label><input checked type="checkbox" name="NaturalPerson[CountryOfBirth]" ><%=translation.saml2.edit_eidas.natural_label14%></label>
+                            <% } else { %>
+                            	<label><input type="checkbox" name="NaturalPerson[CountryOfBirth]" ><%=translation.saml2.edit_eidas.natural_label14%></label>
+                            <% } %>
+                        </div>
 
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('Email')) { %>

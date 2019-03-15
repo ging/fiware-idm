@@ -11,6 +11,7 @@
 
     .modal-header {
       border: none;
+
       h3 {
         color: $text;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -37,8 +38,6 @@
       border: none;
       display: flex;
       flex-flow: wrap column;
-      margin: 0;
-      padding: 0;
 
       .checkbox {
         align-self: flex-start;
@@ -96,6 +95,94 @@
     pointer-events: auto;
   }
 
+  /*-----MODAL eID -----*/
+
+  .eID_modal {
+    font-family: "opensans-regular", Arial, sans-serif;
+    color: $text;
+
+    .modal-content {
+      border-radius: 1.5rem;
+
+      .modal-header {
+        border: none;
+        padding: 2rem 2rem 0 4rem;
+        margin: 0 0 2rem 0;
+
+        h3 {
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+          font-size: 3rem;
+          justify-self: center;
+        }
+
+        .close {
+          font-size: 4rem;
+          font-weight: 400;
+          opacity: 1;
+          color: $text;
+        }
+      }
+
+      .modal-body {
+        border: none;
+
+        ul {
+          margin: 0;
+          padding: 0;
+
+          li {
+            border: none;
+            text-align: center;
+            font-size: 2rem;
+            margin: 1rem;
+            border-radius: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+
+      .modal-footer {
+        border: none;
+        padding: 1rem 1rem 1.5rem 1rem;
+        margin: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+
+        .btn {
+          font-size: 1.7rem;
+          padding: 1rem 1.5rem 1rem 1.5rem;
+          border-radius: 0.7rem;
+          height: 4.5rem;
+          width: calc(40% - 1rem);
+          min-width: 10rem;
+          align-self: center;
+        }
+
+        .btn-primary {
+          background-color: $btn-secondary;
+          border: none;
+
+          &:hover {
+            background-color: darken($btn-secondary, 10%);
+          }
+        }
+
+        .btn-secondary {
+          &:hover {
+            background-color: lighten($color: $text, $amount: 45%);
+            color: inherit;
+          }
+        }
+      }
+    }
+  }
+
+  .country_selected {
+    background-color: lighten($color: $btn-secondary, $amount: 20);
+  }
+
   @media (max-width: 1200px) {
     .login {
       width: 60%;
@@ -149,12 +236,65 @@
             color: white;
           }
         }
+
+        .fa {
+          color: $text;
+        }
       }
 
       .modal-footer {
         .actions {
           a {
             color: white;
+          }
+        }
+      }
+    }
+
+    .eID_modal {
+      .modal-content {
+
+        .modal-header {
+          border: none;
+          padding: 2.5rem 2rem 0 4rem;
+          margin: 0 0 1rem 0;
+
+          h3 {
+            font-size: 2rem;
+            font-weight: 600;
+          }
+
+          .close {
+            font-size: 3rem;
+          }
+        }
+
+        .modal-body {
+          padding: 0 1rem 0 1rem;
+
+          ul {
+            li {
+              text-align: center;
+              font-size: 1.7rem;
+              padding: 0;
+              margin: .6rem;
+            }
+          }
+        }
+
+        .modal-footer {
+          border: none;
+          padding: 1rem 1rem 1.5rem 1rem;
+          margin: .7rem;
+          justify-content: center;
+          flex-flow: column-reverse wrap;
+
+          .btn {
+            font-size: 1.5rem;
+            width: calc(100% - 2rem);
+            min-width: 10rem;
+            align-content: center;
+            margin: .5rem;
           }
         }
       }
@@ -166,6 +306,7 @@
       padding: 1% 2.2% 3% 2.2%;
     }
   }
+
 
   @media (max-height: 460px) {
     .login {
@@ -217,6 +358,7 @@
             font-size: 1.6rem;
             color: white;
           }
+
           .form-control {
             height: 30px;
           }
@@ -237,6 +379,7 @@
           .buttons {
             width: 60%;
             padding: 0 0 0 0;
+
             button {
               font-size: 1.5rem;
               padding: 0.8rem 1.3rem 0.8rem 1.3rem;
@@ -244,6 +387,7 @@
               height: 3.8rem;
               width: 25%;
             }
+
             .btn-secondary {
               width: 50%;
               margin: 0 0 0 12%;
@@ -273,7 +417,53 @@
         pointer-events: auto;
       }
     }
+
+    .eID_modal {
+      .modal-content {
+        display: flex;
+        flex-flow: row wrap;
+        .modal-header {
+          width: 100%;
+          margin: 0 0 .7rem 0;
+          padding: 1.7rem 2rem 0 3rem;
+
+          h3 {
+            font-size: 2.3rem;
+            font-weight: 600;
+          }
+        }
+        .modal-body {
+          padding: 0 1rem 1.2rem 1rem;
+          width: 60%;
+
+          ul {
+            li {
+              text-align: center;
+              font-size: 1.4rem;
+              padding: 0;
+              margin: .6rem;
+              min-height: 3.8rem !important;
+            }
+          }
+        }
+
+        .modal-footer {
+          width: 30%;
+          border: none;
+          padding: .7rem;
+          margin: .7rem;
+          display: flex;
+          flex-flow: column-reverse wrap;
+
+          .btn {
+            margin: .3rem;
+            width: 100%;
+          }
+        }
+      }
+    }
   }
+
 
   /*-----iPhone4 portrait -----*/
 
@@ -327,6 +517,34 @@
           font-size: 1.1rem;
         }
       }
+
+      .eID_modal {
+        .modal-content {
+          .modal-body {
+            padding: 0 1rem 0 1rem;
+
+            ul {
+              li {
+                text-align: center;
+                font-size: 1.3rem;
+                padding: 0;
+                margin: .6rem;
+                min-height: 4rem !important;
+              }
+            }
+          }
+
+          .modal-footer {
+            border: none;
+            padding: .7rem;
+            margin: .7rem;
+
+            .btn {
+              margin: .3rem;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -346,14 +564,18 @@
             .obligatory01 {
               left: 4vw;
             }
+
             .obligatory02 {
               left: 46.5vw;
             }
           }
+
           .modal-footer {
             margin: 2.3rem 0 0 0;
+
             .checkbox {
               width: 26%;
+
               label {
                 margin: 0;
               }
@@ -371,6 +593,7 @@
                 font-size: 1.2rem;
               }
             }
+
             .actions {
               margin: 1rem 0 0 0;
 

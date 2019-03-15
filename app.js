@@ -38,8 +38,8 @@ if (config.debug) {
 app.disable('x-powered-by');
 
 // Parse request
-app.use(body_parser.json({ limit: '5mb' }));
-app.use(body_parser.urlencoded());
+app.use(body_parser.json({ limit: '50mb' }));
+app.use(body_parser.urlencoded({ limit: '50mb', extended: true }));
 
 // CORS Enable
 if (config.cors.enabled) {

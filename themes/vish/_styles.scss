@@ -6,7 +6,6 @@
   html,
   body {
     font-family: "opensans-regular", Arial, sans-serif;
-    background-size: cover;
     background-position: center;
     background-size: auto 100%;
     margin: 0 auto;
@@ -16,6 +15,13 @@
     //   max-width: 100%;
     // }
   }
+  .language_menu {
+    color: white;
+    a {
+      color: white;
+    }
+  }
+
 
 .alternative_login {
 

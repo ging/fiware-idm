@@ -128,7 +128,11 @@
   "footer": {
     "cred_date": "2018 ©",
     "author": "GING DIT",
-    "university": " - Universidad Politénica de Madrid (UPM)"
+    "university": " - Universidad Politénica de Madrid (UPM)",
+    "condit01": "El uso de los servicios de FIWARE Lab está sujeto a la aceptación de los",
+    "condit02": "Términos y Condiciones",
+    "condit03": "Política de privacidad y",
+    "condit04": "Política de cookies"
   },
   "help_about_items": {
     "title01": " Documentación",
@@ -780,7 +784,7 @@
   },
   "oauth": {
     "login": {
-      "title": "Log In",
+      "title": "Acceder",
       "alert01": "La sesión ha expirado",
       "alert02": "Nombre de usuario y contraseña no validos.",
       "label01": "Email",
@@ -790,7 +794,7 @@
       "loginin_btn": "Acceder",
       "eidas_loginin_btn": "Acceder con eID",
       "link01": "Registrarme",
-      "link02": "he olvidado mi contraseña",
+      "link02": "He olvidado mi contraseña",
       "link03": "¿No has recibido email de confirmación?"
     },
     "authorize": {
@@ -802,6 +806,21 @@
       "authorize_btn": "Autorizar"
     }
   },
+
+  "modal": {
+    "select": "Selecciona tu país",
+    "next": "Siguiente paso",
+    "close": "Cerrar"
+  },
+
+  "countries": {
+    "spain": "España",
+    "slovenia": "Eslovenia",
+    "italy": "Italia",
+    "austria": "Austria",
+    "portugal": "Portugal"
+  },
+
   "saml2": {
     "label01": "Persona de soporte",
     "label02": "Nombre",

@@ -4,8 +4,10 @@ const oauth2 = require('../config').oauth2;
 const _ = require('lodash');
 const jsonwebtoken = require('jsonwebtoken');
 const debug = require('debug')('idm:oauth2-model_oauth_server');
-const config_authzforce = require('./../config.js').authorization.authzforce;
-const config_oauth2 = require('./../config.js').oauth2;
+const config = require('./../config.js');
+const config_authzforce = config.authorization.authzforce;
+const config_oauth2 = config.oauth2;
+const config_cors = config.cors;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -38,6 +40,7 @@ function getAccessToken(bearerToken) {
             'username',
             'email',
             'gravatar',
+            'image',
             'extra',
             'eidas_id',
           ],
@@ -130,6 +133,7 @@ function getIdentity(id, password, oauth_client_id) {
       'id',
       'username',
       'gravatar',
+      'image',
       'email',
       'salt',
       'password',
@@ -581,12 +585,21 @@ function create_oauth_response(
   }
 
   if (type === 'user') {
-    const user_info = require('../templates/oauth_response/oauth_user_response.json');
+    const user_info = {
+      ...require('../templates/oauth_response/oauth_user_response.json'),
+    };
     user_info.username = identity.username;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
     user_info.email = identity.email;
     user_info.id = identity.id;
+
+    if (config.cors && config_cors.enabled) {
+      user_info.image =
+        identity.image !== 'default'
+          ? config.host + '/img/users/' + identity.image
+          : '';
+    }
 
     if (identity.eidas_id) {
       user_info.eidas_profile = identity.extra.eidas_profile;
@@ -594,7 +607,9 @@ function create_oauth_response(
 
     return search_user_info(user_info, action, resource, authzforce, req_app);
   } else if (type === 'iot') {
-    const iot_info = require('../templates/oauth_response/oauth_iot_response.json');
+    const iot_info = {
+      ...require('../templates/oauth_response/oauth_iot_response.json'),
+    };
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 

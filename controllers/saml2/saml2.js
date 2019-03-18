@@ -5,6 +5,7 @@ const debug = require('debug')('idm:saml2_controller');
 const exec = require('child_process').exec;
 const saml2 = require('../../lib/saml2.js');
 const image = require('../../lib/image.js');
+const gravatar = require('gravatar');
 
 const config_attributes = require('../../etc/eidas/requested_attributes.json');
 const config_attributes_natural = Object.keys(config_attributes.NaturalPerson);
@@ -344,10 +345,21 @@ exports.saml2_application_login = function(req, res, next) {
 
     return create_user(name_id, eidas_profile)
       .then(function(user) {
+        let image = '/img/logos/small/user.png';
+        if (user.email && user.gravatar) {
+          image = gravatar.url(
+            user.email,
+            { s: 25, r: 'g', d: 'mm' },
+            { protocol: 'https' }
+          );
+        } else if (user.image !== 'default') {
+          image = '/img/users/' + user.image;
+        }
+
         req.session.user = {
           id: user.id,
           username: user.username,
-          image: '/img/logos/small/user.png',
+          image,
           oauth_sign_in: true,
         };
 
@@ -379,7 +391,7 @@ exports.saml2_application_login = function(req, res, next) {
 function create_user(name_id, new_eidas_profile) {
   let image_name = 'default';
   return image
-    .toJpg(new_eidas_profile.CurrentPhoto, 'public/img/users')
+    .toImage(new_eidas_profile.CurrentPhoto, 'public/img/users')
     .then(function(file_name) {
       if (file_name) {
         image_name = file_name;
@@ -408,13 +420,22 @@ function create_user(name_id, new_eidas_profile) {
             const user_extra = user.extra;
             Object.assign(user_extra.eidas_profile, new_attributes);
             user.extra = user_extra;
-            user.email = new_eidas_profile.Email
-              ? new_eidas_profile.Email
-              : user.email;
+            user.email =
+              new_eidas_profile.Email && !user.email
+                ? new_eidas_profile.Email
+                : user.email;
+
+            // If user has eIDAs photo destroy previous one (if it exists) and create a new one
+            const image_old = image_name !== 'default' ? user.image : 'default';
             user.image = image_name !== 'default' ? image_name : user.image;
-            return user.save({
-              fields: ['extra', 'email', 'image'],
-            });
+
+            return image
+              .destroy('public/img/users/' + image_old)
+              .then(function() {
+                return user.save({
+                  fields: ['extra', 'email', 'image'],
+                });
+              });
           }
 
           return models.user

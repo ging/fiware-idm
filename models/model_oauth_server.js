@@ -5,6 +5,7 @@ const _ = require('lodash');
 const jsonwebtoken = require('jsonwebtoken');
 const debug = require('debug')('idm:oauth2-model_oauth_server');
 const config = require('./../config.js');
+const image = require('./../lib/image.js');
 const config_authzforce = config.authorization.authzforce;
 const config_oauth2 = config.oauth2;
 const config_cors = config.cors;
@@ -606,18 +607,44 @@ function create_oauth_response(
     user_info.email = identity.email;
     user_info.id = identity.id;
 
-    if (config.cors && config_cors.enabled) {
-      user_info.image =
-        identity.image !== 'default'
-          ? config.host + '/img/users/' + identity.image
-          : '';
-    }
-
     if (identity.eidas_id) {
       user_info.eidas_profile = identity.extra.eidas_profile;
     }
 
-    return search_user_info(user_info, action, resource, authzforce, req_app);
+    //original code:
+    // if (config.cors && config_cors.enabled) {
+    //   user_info.image =
+    //     identity.image !== 'default'
+    //       ? config.host + '/img/users/' + identity.image
+    //       : '';
+    // }
+    //CHANGE ONLY FOR VISH CASE
+    if (identity.image !== 'default') {
+      return image
+        .to64('public/img/users/', identity.image)
+        .then(function(data) {
+          user_info.image = 'data:image/png;base64,' + data;
+          return search_user_info(
+            user_info,
+            action,
+            resource,
+            authzforce,
+            req_app
+          );
+        })
+        .catch(function(error) {
+          debug('Error: ', error);
+          return search_user_info(
+            user_info,
+            action,
+            resource,
+            authzforce,
+            req_app
+          );
+        });
+    } else {
+      return search_user_info(user_info, action, resource, authzforce, req_app);
+    }
   } else if (type === 'iot') {
     const iot_info = {
       ...require('../templates/oauth_response/oauth_iot_response.json'),

@@ -424,10 +424,18 @@ function create_user(name_id, new_eidas_profile) {
               new_eidas_profile.Email && !user.email
                 ? new_eidas_profile.Email
                 : user.email;
+
+            // If user has eIDAs photo destroy previous one (if it exists) and create a new one
+            const image_old = image_name !== 'default' ? user.image : 'default';
             user.image = image_name !== 'default' ? image_name : user.image;
-            return user.save({
-              fields: ['extra', 'email', 'image'],
-            });
+
+            return image
+              .destroy('public/img/users/' + image_old)
+              .then(function() {
+                return user.save({
+                  fields: ['extra', 'email', 'image'],
+                });
+              });
           }
 
           return models.user

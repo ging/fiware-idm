@@ -4,6 +4,7 @@ const config = require('../../config');
 const email = require('../../lib/email.js');
 const fs = require('fs');
 const path = require('path');
+const image = require('../../lib/image.js');
 
 const email_list = config.email_list_type
   ? fs
@@ -350,22 +351,27 @@ exports.email_verify = function(req, res) {
 exports.cancel_account = function(req, res) {
   debug('--> cancel_account');
 
+  let user_image;
   models.user
-    .destroy({
-      where: { id: req.session.user.id },
-    })
-    .then(function(destroyed) {
-      if (destroyed) {
-        delete req.session.user;
-        req.session.message = {
-          text: 'Account cancelled succesfully.',
-          type: 'success',
-        };
-        res.redirect('/auth/login');
-      } else {
-        req.session.message = { text: 'Account not cancelled', type: 'danger' };
-        res.redirect('/');
+    .findById(req.session.user.id)
+    .then(function(user) {
+      if (user) {
+        user_image = user.image;
+        return user.destroy();
       }
+      req.session.message = { text: 'Account not cancelled', type: 'danger' };
+      return res.redirect('/');
+    })
+    .then(function() {
+      return image.destroy('public/img/users/' + user_image);
+    })
+    .then(function() {
+      delete req.session.user;
+      req.session.message = {
+        text: 'Account cancelled succesfully.',
+        type: 'success',
+      };
+      res.redirect('/auth/login');
     })
     .catch(function(error) {
       debug('  -> error' + error);

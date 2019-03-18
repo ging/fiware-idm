@@ -3,6 +3,7 @@ const path = require('path');
 const gravatar = require('gravatar');
 const models = require('../../models/models.js');
 const config = require('../../config.js');
+const image = require('../../lib/image.js');
 const debug = require('debug')('idm:web-list_users_controller');
 
 const email_list = config.email_list_type
@@ -295,13 +296,31 @@ exports.enable = function(req, res) {
 exports.delete = function(req, res) {
   debug('--> delete');
 
+  let users_image;
+
   models.user
-    .destroy({
-      where: { id: req.body.delete_users },
+    .findAll({
+      where: {
+        id: req.body.delete_users,
+      },
     })
-    .then(function(destroyed) {
-      debug(destroyed);
-      res.status(200).json('success');
+    .then(function(users) {
+      const users_index = users.length;
+      if (users_index > 0) {
+        users_image = users.map(user => 'public/img/users/' + user.image);
+        return models.user.destroy({
+          where: {
+            id: req.body.delete_users,
+          },
+        });
+      }
+      return res.status(200).json('success');
+    })
+    .then(function() {
+      return image.destroy_several(users_image);
+    })
+    .then(function() {
+      return res.status(200).json('success');
     })
     .catch(function(error) {
       debug('Error: ', error);

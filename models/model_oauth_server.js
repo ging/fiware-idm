@@ -593,12 +593,15 @@ function create_oauth_response(
     user_info.isGravatarEnabled = identity.gravatar;
     //original code: user_info.username = identity.username;
     //CHANGE ONLY FOR VISH CASE
-    user_info.username = identity.username.split(" ")[0];
-    user_info.surname = identity.username.split(" ")[1]===undefined ? " ":identity.username.split(" ")[1];
-    user_info.app_id = application_id;	      user_info.app_id = application_id;
-    user_info.isGravatarEnabled = identity.gravatar;	      user_info.isGravatarEnabled = identity.gravatar;
-    if(!identity.email){
-      identity.email = user_info.username + "@idm.vishub.org";
+    user_info.username = identity.username.split(' ')[0];
+    user_info.surname =
+      identity.username.split(' ')[1] === undefined
+        ? ' '
+        : identity.username.split(' ')[1];
+    user_info.app_id = application_id;
+    user_info.isGravatarEnabled = identity.gravatar;
+    if (!identity.email) {
+      identity.email = user_info.username + '@idm.vishub.org';
     }
     user_info.email = identity.email;
     user_info.id = identity.id;

@@ -5,6 +5,7 @@ const debug = require('debug')('idm:saml2_controller');
 const exec = require('child_process').exec;
 const saml2 = require('../../lib/saml2.js');
 const image = require('../../lib/image.js');
+const gravatar = require('gravatar');
 
 const config_attributes = require('../../etc/eidas/requested_attributes.json');
 const config_attributes_natural = Object.keys(config_attributes.NaturalPerson);
@@ -344,10 +345,21 @@ exports.saml2_application_login = function(req, res, next) {
 
     return create_user(name_id, eidas_profile)
       .then(function(user) {
+        let image = '/img/logos/small/user.png';
+        if (user.email && user.gravatar) {
+          image = gravatar.url(
+            user.email,
+            { s: 25, r: 'g', d: 'mm' },
+            { protocol: 'https' }
+          );
+        } else if (user.image !== 'default') {
+          image = '/img/users/' + user.image;
+        }
+
         req.session.user = {
           id: user.id,
           username: user.username,
-          image: '/img/logos/small/user.png',
+          image,
           oauth_sign_in: true,
         };
 

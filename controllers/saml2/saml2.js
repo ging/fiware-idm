@@ -379,7 +379,7 @@ exports.saml2_application_login = function(req, res, next) {
 function create_user(name_id, new_eidas_profile) {
   let image_name = 'default';
   return image
-    .toJpg(new_eidas_profile.CurrentPhoto, 'public/img/users')
+    .toImage(new_eidas_profile.CurrentPhoto, 'public/img/users')
     .then(function(file_name) {
       if (file_name) {
         image_name = file_name;
@@ -408,9 +408,10 @@ function create_user(name_id, new_eidas_profile) {
             const user_extra = user.extra;
             Object.assign(user_extra.eidas_profile, new_attributes);
             user.extra = user_extra;
-            user.email = new_eidas_profile.Email
-              ? new_eidas_profile.Email
-              : user.email;
+            user.email =
+              new_eidas_profile.Email && !user.email
+                ? new_eidas_profile.Email
+                : user.email;
             user.image = image_name !== 'default' ? image_name : user.image;
             return user.save({
               fields: ['extra', 'email', 'image'],

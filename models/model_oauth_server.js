@@ -609,6 +609,9 @@ function create_oauth_response(
 
     if (identity.eidas_id) {
       user_info.eidas_profile = identity.extra.eidas_profile;
+      for (var e in user_info.eidas_profile) {
+        user_info['eidas_profile-' + e] = user_info.eidas_profile[e];
+      }
     }
 
     //original code:

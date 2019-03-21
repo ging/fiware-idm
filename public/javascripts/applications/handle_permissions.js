@@ -72,6 +72,7 @@ $(document).ready(function() {
       resource: $(this)
         .find('#id_resource')
         .val(),
+      isRegex: $(this).find('#id_isRegex')[0].checked ? 1 : 0,
       action: $(this)
         .find('#id_action')
         .val(),
@@ -215,6 +216,11 @@ $(document).ready(function() {
             $('#create_permission_form')
               .find('#id_resource')
               .val(result.resource);
+            if (result.isRegex > 0) {
+              $('#create_permission_form').find(
+                '#id_isRegex'
+              )[0].checked = true;
+            }
             $('#create_permission_form')
               .find('#id_xml')
               .val(result.xml);

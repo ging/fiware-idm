@@ -47,6 +47,15 @@ module.exports = function(sequelize, DataTypes) {
             ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
             : ''),
       },
+      isRegex: {
+        type:
+          DataTypes.BOOLEAN() +
+          (sequelize.getDialect() === 'mysql'
+            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+            : ''),
+        allowNull: false,
+        default: false,
+      },
       xml: {
         type:
           DataTypes.TEXT() +

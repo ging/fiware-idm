@@ -26,6 +26,7 @@ exports.create_permission = function(req, res) {
       description: req.body.description,
       action: req.body.action,
       resource: req.body.resource,
+      isRegex: req.body.isRegex,
       xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined,
       oauth_client_id: req.application.id,
     });
@@ -64,6 +65,7 @@ exports.create_permission = function(req, res) {
                 'description',
                 'action',
                 'resource',
+                'isRegex',
                 'xml',
                 'oauth_client_id',
               ],
@@ -134,6 +136,7 @@ exports.edit_permission = function(req, res) {
       name: req.body.name,
       description: req.body.description,
       resource: req.body.resource,
+      isRegex: req.body.isRegex,
       action: req.body.action,
       xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined,
       oauth_client_id: req.application.id,
@@ -169,6 +172,7 @@ exports.edit_permission = function(req, res) {
                 name: req.body.name,
                 description: req.body.description,
                 resource: req.body.resource,
+                isRegex: req.body.isRegex,
                 action: req.body.action,
                 xml:
                   config_authzforce.level === 'advanced'
@@ -176,7 +180,14 @@ exports.edit_permission = function(req, res) {
                     : undefined,
               },
               {
-                fields: ['name', 'description', 'action', 'resource', 'xml'],
+                fields: [
+                  'name',
+                  'description',
+                  'action',
+                  'resource',
+                  'isRegex',
+                  'xml',
+                ],
                 where: {
                   id: req.permission.id,
                   oauth_client_id: req.application.id,

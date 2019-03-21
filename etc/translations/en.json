@@ -553,6 +553,7 @@
       "label02": "Description",
       "label03": "HTTP action",
       "label04": "Resource",
+      "label_is_regex": "Is regular expression?",
       "label05": "Use XACML to define a more complex authorization policy.",
       "required_field": "This is a required field."
     },

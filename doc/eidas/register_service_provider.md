@@ -27,4 +27,4 @@ file is needed for registering the Service Provider in the eIDAS node.
 node following the specific instructions of the node owner. This instructions
 depends on the Member State where the node is deployed. Testing nodes can be
 deployed following the
-[instructions provided by the EC](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eIDAS-Node+-+Current+release).
+[instructions provided by the EC](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eIDAS-Node+Integration+Package).

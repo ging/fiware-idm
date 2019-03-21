@@ -815,14 +815,21 @@ function user_permissions(roles_id, app_id, action, resource) {
     })
     .then(function(permissions) {
       if (permissions.length > 0) {
-        return models.permission.findAll({
-          where: {
-            id: permissions.map(elem => elem.permission_id),
-            oauth_client_id: app_id,
-            action,
-            resource,
-          },
-        });
+        return models.permission
+          .findAll({
+            where: {
+              id: permissions.map(elem => elem.permission_id),
+              oauth_client_id: app_id,
+              action,
+            },
+          })
+          .then(permissions =>
+            permissions.filter(permission =>
+              permission.isRegex == 1
+                ? new RegExp(permission.resource).exec(resource)
+                : permission.resource == resource
+            )
+          );
       }
       return [];
     });

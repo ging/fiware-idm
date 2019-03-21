@@ -2,11 +2,11 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) =>
-    queryInterface.addColumn('permission', 'isRegex', {
+    queryInterface.addColumn('permission', 'is_regex', {
       type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: false,
     }),
   down: (queryInterface, Sequelize) =>
-    queryInterface.removeColumn('permission', 'isRegex'),
+    queryInterface.removeColumn('permission', 'is_regex'),
 };

@@ -825,7 +825,7 @@ function user_permissions(roles_id, app_id, action, resource) {
           })
           .then(permissions =>
             permissions.filter(permission =>
-              permission.isRegex == 1
+              permission.is_regex == 1
                 ? new RegExp(permission.resource).exec(resource)
                 : permission.resource == resource
             )

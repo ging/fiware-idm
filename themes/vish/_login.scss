@@ -312,7 +312,7 @@
   @media (max-height: 460px) {
     .login {
       width: 100%;
-      padding: 1.5% 8% 5% 8%;
+      padding: 1.5% 8% 0 8%;
       margin: 0;
       background-color: transparent;
       box-shadow: none;
@@ -368,7 +368,8 @@
         .modal-footer {
           display: flex;
           flex-flow: wrap row;
-          margin: 2.7rem 0 0 0;
+          margin: .5rem 0 0 0;
+          padding: 0;
           width: 100%;
 
           .checkbox {
@@ -397,7 +398,7 @@
 
           .actions {
             padding: 0 1rem 0 1rem;
-            margin: 3rem 0 0rem 0;
+            margin: .5rem 0 0rem 0;
             flex-flow: nowrap row;
             justify-content: space-between;
             width: 100%;
@@ -553,7 +554,7 @@
   @media (max-width: 480px) {
     @media (max-height: 320px) {
       .login {
-        padding: 1% 6% 4% 6%;
+        padding: 0 6% 0 6%;
 
         form {
           .form-control {
@@ -572,7 +573,7 @@
           }
 
           .modal-footer {
-            margin: 2.3rem 0 0 0;
+            margin: 0;
 
             .checkbox {
               width: 26%;

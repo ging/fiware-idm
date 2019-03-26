@@ -179,7 +179,7 @@
       "link03": "¿No has recibido email de confirmación?"
     },
     "presentation": {
-      "title": "Gestor de Identidad",
+      "title": "Gestor de Identidad de ViSH",
       "subtitle01": "Bienvenido al Gestor de Identidades de FIWARE, desarrollado por la UPM.",
       "subtitle02": "Puedes personalizar esta página de login, como también cualquier otro estilo de la aplicación. ¡Revisa la documentación acerca de la personalización de estilos para aprender cómo hacerlo!.",
       "signup_btn": "Registrarte",

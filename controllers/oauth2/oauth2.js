@@ -258,7 +258,8 @@ function search_user_authorized_application(user_id, app_id) {
       ],
     })
     .then(function(user_is_authorized) {
-      return user_is_authorized.User;
+      if (user_is_authorized) {return user_is_authorized.User;}
+      return null;
     })
     .catch(function(error) {
       debug('Error ', error);

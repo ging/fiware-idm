@@ -1,0 +1,103 @@
+{
+	"create": {
+		"valid_app_body": {
+			"application": {
+		    	"name": "Test_application 1",
+		    	"description": "description1",
+		    	"redirect_uri": "http://localhost/login1",
+		    	"url": "http://localhost1",
+		    	"grant_type": [
+			      	"authorization_code",
+			      	"implicit",
+			      	"password"
+		    	],
+		    	"token_types": [
+			      	"jwt",
+			      	"permanent"
+		    	]
+			}
+		},
+		"app_token_type": {
+			"application": {
+		    	"name": "Test_application 1",
+		    	"description": "description1",
+		    	"redirect_uri": "http://localhost/login1",
+		    	"url": "http://localhost1",
+		    	"grant_type": [
+			      	"authorization_code",
+			      	"implicit",
+			      	"password"
+		    	]
+			}
+		}
+	},
+	"read": {
+		"create": {
+			"application": {
+		    	"name": "Test_application 2",
+		    	"description": "description2",
+		    	"redirect_uri": "http://localhost/login2",
+		    	"url": "http://localhost2",
+		    	"grant_type": [
+			      	"authorization_code",
+			      	"implicit",
+			      	"password"
+		    	],
+		    	"token_types": [
+			      	"jwt",
+			      	"permanent"
+		    	]
+			}
+		}
+	},
+	"update": {
+		"create": {
+			"application": {
+		    	"name": "Test_application 3",
+		    	"description": "description3",
+		    	"redirect_uri": "http://localhost/login3",
+		    	"url": "http://localhost3",
+		    	"grant_type": [
+			      	"authorization_code",
+			      	"implicit",
+			      	"password"
+		    	],
+		    	"token_types": [
+			      	"jwt",
+			      	"permanent"
+		    	]
+			}
+		},
+		"new_values": {
+			"application": {
+		        "name": "new name 3",
+		        "description": "new description3",
+		        "redirect_uri": "new redirect uri3",
+		        "token_types": ["permanent"],
+		        "grant_type": [
+		            "authorization_code",
+		            "password"
+		        ]
+		    }
+		}
+	},
+	"delete": {
+		"create": {
+			"application": {
+		    	"name": "Test_application 4",
+		    	"description": "description4",
+		    	"redirect_uri": "http://localhost/login4",
+		    	"url": "http://localhost4",
+		    	"grant_type": [
+			      	"authorization_code",
+			      	"implicit",
+			      	"password"
+		    	],
+		    	"token_types": [
+			      	"jwt",
+			      	"permanent"
+		    	]
+			}
+		}
+	}
+}

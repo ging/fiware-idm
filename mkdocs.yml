@@ -6,10 +6,34 @@ docs_dir: doc
 site_dir: html
 theme: readthedocs
 extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://fiware.org/style/fiware_readthedocs_security.css"]
+use_directory_urls: false
 #google_analytics: ['UA-******', 'fiware-idm.readthedocs.io']
 pages:
-  - 'Identity Manager - Keyrock': index.md
-  - 'Installation and Administration Guide': admin_guide.md
-  - 'Users and Programmers Guide': user_guide.md
-  - 'API Overview': api.md
-  - 'Connecting IdM to a eIDAS Node': eidas.md
+  - Home: 'index.md'
+  - Getting Started: 'getting_started.md'
+  - Users/Programmers Guide:
+    - Introduction: 'user_and_programmers_guide/introduction.md'
+    - User Guide: 'user_and_programmers_guide/user_guide.md'
+    - Application Guide: 'user_and_programmers_guide/application_guide.md'
+    - Organization Guide: 'user_and_programmers_guide/organization_guide.md'
+    - Programmer Guide: 'user_and_programmers_guide/programmer_guide.md'
+  - Installation/Administration Guide:
+    - Introduction: 'installation_and_administration_guide/introduction.md'
+    - Installation: 'installation_and_administration_guide/installation.md'
+    - Configuration: 'installation_and_administration_guide/configuration.md'
+    - Environment Variables: 'installation_and_administration_guide/environment_variables.md'
+    - System Administration: 'installation_and_administration_guide/system_administration.md'
+    - Sanity Check Procedures: 'installation_and_administration_guide/sanity_check.md'
+  - IdM API:
+    - Introduction: 'api/introduction.md'
+  - Connecting to IdM with OAuth2.0:
+    - Introduction: 'oauth/introduction.md'
+    - Previous Steps: 'oauth/previous_steps.md'
+    - OAuth Flows: 'oauth/oauth_documentation.md'
+    - Sign Out from a service: 'oauth/sign_out_oauth_service.md'
+  - Connecting IdM to a eIDAS Node:
+    - Introdution: 'eidas/introduction.md'
+    - Architecture: 'eidas/architecture.md'
+    - Server configuration: 'eidas/server_configuration.md'
+    - Registering an application as a eIDAS Service Provider: 'eidas/register_service_provider.md'
+    - User Authentication: 'eidas/user_authentication.md'

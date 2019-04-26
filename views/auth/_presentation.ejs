@@ -1,20 +1,19 @@
 <div class="presentation">
   <section class="media">
     <h3 class="media-heading">
-      Identity Manager
+      <%=translation.auth.presentation.title%>
     </h3>
     <span>
-      Welcome to an implementation of FIWARE Identity Manager developed by DIT-UPM.
+      <%=translation.auth.presentation.subtitle01%>
     </span>
     <p>
-      You can customize this login page as well as any other style/layout in this web service. Check customization documentation to learn how to do it!
+      <%=translation.auth.presentation.subtitle02%>
     </p>
     <footer>
       <a href="/sign_up/" class="btn btn-default sign_up">
-      Sign up
+        <%=translation.auth.presentation.signup_btn%>
       </a>
-    
-      <a href="http://fiware-idm.readthedocs.io/en/latest/customize/" class="btn btn-default">Check documentation</a>
+      <a href="http://fiware-idm.readthedocs.io/en/latest/customize/" class="btn btn-default"><%=translation.auth.presentation.docs_btn%></a>
     </footer>
   </section>
 </div>
@@ -22,7 +21,7 @@
 <script type="text/javascript" src="https://jira.fiware.org/s/4d99dfea096a41baa8a46feda6f85823-T/en_GBek2res/6346/29/1.4.16/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-GB&amp;collectorId=a188b867"></script>
 <script type="text/javascript">window.ATL_JQ_PAGE_PROPS =  {
   "triggerFunction": function(showCollectorDialog) {
-    //Requires that jQuery is available! 
+    //Requires that jQuery is available!
     jQuery("#myCustomTrigger").click(function(e) {
       e.preventDefault();
       showCollectorDialog();
@@ -35,6 +34,6 @@
     var r = confirm("The communications sent to the FIWARE Lab support list are public and they generate public tickets (including email addresses and names). Please avoid sending private info to them unless you are happy to see them publicly available.");
       if (r == true) {
           window.location = "mailto:fiware-lab-help@lists.fiware.org?Subject=FIWARE Lab Assistance";
-    } 
+    }
   }
 </script>

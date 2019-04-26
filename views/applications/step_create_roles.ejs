@@ -8,49 +8,47 @@
                     <div class="step active">3</div>
                     <div class="line"></div>
                 </div>
-            </h3><h3 class="step-title">Manage Roles</h3>
+            </h3><h3 class="step-title"><%=translation.applications.step_create_roles.title%></h3>
         </div>
         <div class="site-client-roles">
             <div class="workflow workflow-roles static_page">
                 <form id="assign_role_permission_form" action="/idm/applications/<%= application.id %>/edit/roles" method="POST">
-                    <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                    <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                     <input type="hidden" id="submit_assignment" name="submit_assignment" value="" />
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <fieldset id="manage_application_roles__update_owners" class="js-tab-pane active tab-pane">
                                 <section id="role_list" class="role_list">
                                     <header>
-                                        <h4>Roles</h4>
+                                        <h4><%=translation.applications.step_create_roles.subtitle01%></h4>
                                         <button id="roleButton" type="button" data-toggle="modal" data-target="#create_role" class="btn ajax-modal">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </header>
                                     <div class="btn-group-vertical roles update_owners_roles" data-toggle="buttons" id="update_owners_roles">
-
                                     </div>
                                 </section>
                                 <section id="permissions_list" class="permissions_list">
                                     <header>
-                                        <h4>Permissions</h4>
+                                        <h4><%=translation.applications.step_create_roles.subtitle02%></h4>
                                         <button id="permButton" type="button" data-toggle="modal" data-target="#create_permission" class="btn ajax-modal">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </header>
                                     <div class="alert alert-info" id="update_owners_info_message">
-                                        Select a role to see and manage its permissions
+                                        <%=translation.applications.step_create_roles.content01%>
                                     </div> 
                                     <div class="" id="update_owners_permissions" style="display: none;">
                                         <ul id="list_permissions" class="permissions update_owners_permissions list-group">
-  
                                         </ul>
                                     </div>
                                 </section>
                             </fieldset>
-                            <span id="alert_error" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+                            <span id="alert_error" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.step_create_roles.required_field%></span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input class="btn btn-primary pull right" type="submit" value="Finish" />
+                        <input class="btn btn-primary pull right" type="submit" value="<%=translation.applications.step_create_roles.finish_btn%>" />
                     </div>
                 </form> 
             </div>

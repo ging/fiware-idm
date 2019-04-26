@@ -1,53 +1,106 @@
-var express = require('express');
-var router = express.Router();
-var multer  = require('multer');
-var path = require('path');
-var uuid = require('uuid');
-var csrf = require('csurf')
-var bodyParser = require('body-parser');
-var csrfProtection = csrf({ cookie: true });
-var fs = require('fs');
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const uuid = require('uuid');
+const csrf = require('csurf');
+const csrf_protection = csrf({ cookie: true });
+const fs = require('fs');
 
 // Home web Controller
-var web_org_controller = require('../../controllers/web/index').organizations;
-var web_auth_org_controller = require('../../controllers/web/index').authorize_org_apps;
-var web_man_memb_controller = require('../../controllers/web/index').manage_members;
+const web_org_controller = require('../../controllers/web/index').organizations;
+const web_auth_org_controller = require('../../controllers/web/index')
+  .authorize_org_apps;
+const web_man_memb_controller = require('../../controllers/web/index')
+  .manage_members;
 
 // Autoloads
-router.param('organizationId',  web_org_controller.load_organization);
+router.param('organization_id', web_org_controller.load_organization);
 
 // Route to save images of applications
-var imageOrgUpload = multer.diskStorage({			
-    destination: function(req, file, callback) {
-    	if (!fs.existsSync('./public/img/organizations/')){
-		  fs.mkdirSync('./public/img/organizations/');
-		}
-        callback(null, './public/img/organizations/')
-    },
-    filename: function(req, file, callback) {
-        callback(null, uuid.v4() + path.extname(file.originalname))
+const image_org_upload = multer.diskStorage({
+  destination(req, file, callback) {
+    if (!fs.existsSync('./public/img/organizations/')) {
+      fs.mkdirSync('./public/img/organizations/');
     }
-})
+    callback(null, './public/img/organizations/');
+  },
+  filename(req, file, callback) {
+    callback(null, uuid.v4() + path.extname(file.originalname));
+  },
+});
 
 // Routes for organziations
-router.get('/available',                               csrfProtection, web_auth_org_controller.available_organizations);
+router.get(
+  '/available',
+  csrf_protection,
+  web_auth_org_controller.available_organizations
+);
 
-router.get('/',                                        csrfProtection, web_org_controller.index);
-router.get('/filtered',                   			   csrfProtection, web_org_controller.filter);
-router.get('/new',                                     csrfProtection, web_org_controller.new);
-router.post('/',                                       csrfProtection, web_org_controller.create);
-router.get('/:organizationId',                         csrfProtection, web_org_controller.show);
-router.get('/:organizationId/members',                 csrfProtection, web_org_controller.get_members);
-router.get('/:organizationId/applications',            csrfProtection, web_org_controller.get_applications);
-router.get('/:organizationId/edit',                    web_org_controller.owned_permissions,  csrfProtection, web_org_controller.edit);
-router.put('/:organizationId/edit/avatar',             web_org_controller.owned_permissions,  multer({storage: imageOrgUpload}).single('image'), csrfProtection,  web_org_controller.update_avatar);
-router.put('/:organizationId/edit/info',               web_org_controller.owned_permissions,  csrfProtection,    web_org_controller.update_info);
-router.delete('/:organizationId/edit/delete_avatar',   web_org_controller.owned_permissions,  csrfProtection,    web_org_controller.delete_avatar);
-router.delete('/:organizationId',                      web_org_controller.owned_permissions,  csrfProtection,    web_org_controller.destroy);
-router.delete('/:organizationId/remove',               csrfProtection,    web_org_controller.remove);
+router.get('/', csrf_protection, web_org_controller.index);
+router.get('/filtered', csrf_protection, web_org_controller.filter);
+router.get('/new', csrf_protection, web_org_controller.new);
+router.post('/', csrf_protection, web_org_controller.create);
+router.get('/:organization_id', csrf_protection, web_org_controller.show);
+router.get(
+  '/:organization_id/members',
+  csrf_protection,
+  web_org_controller.get_members
+);
+router.get(
+  '/:organization_id/applications',
+  csrf_protection,
+  web_org_controller.get_applications
+);
+router.get(
+  '/:organization_id/edit',
+  web_org_controller.owned_permissions,
+  csrf_protection,
+  web_org_controller.edit
+);
+router.put(
+  '/:organization_id/edit/avatar',
+  web_org_controller.owned_permissions,
+  multer({ storage: image_org_upload }).single('image'),
+  csrf_protection,
+  web_org_controller.update_avatar
+);
+router.put(
+  '/:organization_id/edit/info',
+  web_org_controller.owned_permissions,
+  csrf_protection,
+  web_org_controller.update_info
+);
+router.delete(
+  '/:organization_id/edit/delete_avatar',
+  web_org_controller.owned_permissions,
+  csrf_protection,
+  web_org_controller.delete_avatar
+);
+router.delete(
+  '/:organization_id',
+  web_org_controller.owned_permissions,
+  csrf_protection,
+  web_org_controller.destroy
+);
+router.delete(
+  '/:organization_id/remove',
+  csrf_protection,
+  web_org_controller.remove
+);
 
 // Routes to manage members in organizations
-router.get('/:organizationId/edit/members',            web_org_controller.owned_permissions,  csrfProtection,    web_man_memb_controller.get_members);
-router.post('/:organizationId/edit/members',           web_org_controller.owned_permissions,  csrfProtection,    web_man_memb_controller.add_members);
+router.get(
+  '/:organization_id/edit/members',
+  web_org_controller.owned_permissions,
+  csrf_protection,
+  web_man_memb_controller.get_members
+);
+router.post(
+  '/:organization_id/edit/members',
+  web_org_controller.owned_permissions,
+  csrf_protection,
+  web_man_memb_controller.add_members
+);
 
 module.exports = router;

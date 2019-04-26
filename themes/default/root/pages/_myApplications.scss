@@ -1,5 +1,6 @@
 #create_application_modal,
 #create_application_roles,
+#create_usage_policies,
 #create_application_iots,
 #upload_image_modal{
   @extend .well;
@@ -167,7 +168,8 @@
     color: #222;
   }
 }
-#create_application_roles{
+#create_application_roles,
+#create_usage_policies {
   .modal-dialog,
   .modal-content{
     margin-top: 0;

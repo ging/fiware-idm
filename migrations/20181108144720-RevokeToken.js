@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
@@ -9,49 +7,59 @@ module.exports = {
         onDelete: 'CASCADE',
         references: {
           table: 'oauth_refresh_token',
-          field: 'refresh_token'
-        }
+          field: 'refresh_token',
+        },
       }),
       queryInterface.addColumn('oauth_access_token', 'authorization_code', {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       }),
       queryInterface.addColumn('oauth_refresh_token', 'authorization_code', {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       }),
       queryInterface.addColumn('oauth_refresh_token', 'valid', {
         type: Sequelize.BOOLEAN,
-        defaultValue: null
+        defaultValue: null,
       }),
-      queryInterface.addConstraint('oauth_access_token', ['authorization_code'], {
-        type: 'foreign key',
-        name: 'authorization_code_at',
-        onDelete: 'CASCADE',
-        references: {
-          table: 'oauth_authorization_code',
-          field: 'authorization_code'
+      queryInterface.addConstraint(
+        'oauth_access_token',
+        ['authorization_code'],
+        {
+          type: 'foreign key',
+          name: 'authorization_code_at',
+          onDelete: 'CASCADE',
+          references: {
+            table: 'oauth_authorization_code',
+            field: 'authorization_code',
+          },
         }
-      }),
-      queryInterface.addConstraint('oauth_refresh_token', ['authorization_code'], {
-        type: 'foreign key',
-        name: 'authorization_code_rt',
-        onDelete: 'CASCADE',
-        references: {
-          table: 'oauth_authorization_code',
-          field: 'authorization_code'
+      ),
+      queryInterface.addConstraint(
+        'oauth_refresh_token',
+        ['authorization_code'],
+        {
+          type: 'foreign key',
+          name: 'authorization_code_rt',
+          onDelete: 'CASCADE',
+          references: {
+            table: 'oauth_authorization_code',
+            field: 'authorization_code',
+          },
         }
-      }),
+      ),
       queryInterface.changeColumn('oauth_client', 'token_type', {
         type: Sequelize.STRING(2000),
         defaultValue: 'bearer',
-        get: function () {
-          return (this.getDataValue('token_types')) ? this.getDataValue('token_types').split(',') : []
+        get() {
+          return this.getDataValue('token_types')
+            ? this.getDataValue('token_types').split(',')
+            : [];
         },
-        set: function (val) {
-          this.setDataValue('token_types', (val) ? val.toString() : null)
-        }
+        set(val) {
+          this.setDataValue('token_types', val ? val.toString() : null);
+        },
       }),
-      queryInterface.renameColumn('oauth_client', 'token_type', 'token_types')
-    ])
+      queryInterface.renameColumn('oauth_client', 'token_type', 'token_types'),
+    ]);
   },
 
   down: (queryInterface, Sequelize) => {
@@ -62,9 +70,9 @@ module.exports = {
       queryInterface.removeColumn('oauth_refresh_token', 'valid'),
       queryInterface.changeColumn('oauth_client', 'token_types', {
         type: Sequelize.STRING,
-        defaultValue: 'bearer'
+        defaultValue: 'bearer',
       }),
-      queryInterface.renameColumn('oauth_client', 'token_types', 'token_type')
-    ])
-  }
+      queryInterface.renameColumn('oauth_client', 'token_types', 'token_type'),
+    ]);
+  },
 };

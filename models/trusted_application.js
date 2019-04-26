@@ -5,12 +5,13 @@ module.exports = function(sequelize, DataTypes) {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
-      }
-    }, {
+        autoIncrement: true,
+      },
+    },
+    {
       tableName: 'trusted_application',
       timestamps: false,
       underscored: true,
-    } 
+    }
   );
-}
+};

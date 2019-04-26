@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" PolicySetId="<%= policy_id %>" Version="<%= version_policy %>"  PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+  <Description>Policy Set for application <%= app_id %></Description>
+  <Target />
+  <% for (role_id in role_permissions) {%>
+  	<%- include policy %>
+  <% } %>
+</PolicySet>

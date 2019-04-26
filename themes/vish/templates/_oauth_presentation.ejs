@@ -1,0 +1,174 @@
+<div class="container-fluid info">
+    <!-- Brand and toggle get grouped for better mobile display -->
+
+    <div class="logo-header">
+        <a href="http://vishub.org//" class="brand">
+            <img src="../img/vish_logo.png" alt="Vish logo">
+        </a>
+    </div>
+
+
+    <div class="login">
+        <div class="modal-header">
+            <h3><%=translation.oauth.login.title%></h3>
+        </div>
+
+        <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="<%= application.url %>"
+            method="POST" enctype="">
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+            <div class="modal-body clearfix">
+                <% var nameErrors = [] %>
+                <% if (errors.length) { %>
+                <% for (var i in errors) { %>
+                <% nameErrors.push(errors[i].message)%>
+                <% } %>
+                <% } %>
+                <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
+                <span class="help-block alert alert-warning">
+                    <p>Session expired</p>
+                </span>
+                <% } %>
+                <% if (nameErrors.indexOf("password_change") != -1) { %>
+                <span class="help-block alert alert-success">
+                    <p>Password changed. Please log in again to continue.</p>
+                </span>
+                <% } %>
+                <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+                <div class="alert alert-message alert-danger">
+                    <ul class="errorlist">
+                        <li>Invalid user name or password.</li>
+                    </ul>
+                </div>
+                <% } %>
+                <div class="form-group ">
+                    <label class="control-label label_01" for="id_username"><%=translation.oauth.login.label01%></label>
+                    <div class=" ">
+                        <input autofocus="autofocus" class="form-control" id="id_email" name="email" type="text" />
+                    </div>
+                </div>
+                <% if (nameErrors.indexOf("email") != -1) { %>
+                <span class="help-block alert alert-danger obligatory01 "><%=translation.oauth.login.required_field%></span>
+                <% } %>
+                <div class="form-group has-feedback">
+                    <label class="control-label label_01" for="id_password"><%=translation.oauth.login.label02%></label>
+                    <div class=" ">
+                        <input class="form-control" id="id_password" name="password" type="password" />
+                        <span class="form-control-feedback fa fa-eye"></span>
+                    </div>
+                </div>
+                <% if (nameErrors.indexOf("password") != -1) { %>
+                <span class="help-block alert alert-danger obligatory02 "><%=translation.oauth.login.required_field%></span>
+                <% } %>
+            </div>
+
+            <div class="modal-footer">
+                <div class="buttons">
+                    <button type="submit" class="btn btn-primary pull-right"><%=translation.oauth.login.title%></button>
+                    <% if (saml_request.enabled) { -%>
+                    <button type="button" class="btn btn-secondary pull-left" data-toggle="modal" data-target="#exampleModal">
+                        <%=translation.oauth.login.eidas_loginin_btn%>
+                    </button>
+                    <% } -%>
+                </div>
+
+                <div class="actions">
+                    <a href="http://vishub.org/users/sign_up">
+                        <%=translation.oauth.login.link01%>
+                    </a>
+                    <a href="http://vishub.org/users/password/new">
+                        <%=translation.oauth.login.link02%>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <form ng-controller="DummyCtrl" name="" autocomplete="on" class="eID_modal" action="/saml2/login?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>"
+            method="POST" enctype="">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title" id="exampleModalLabel"><%=translation.modal.select%></h3>
+                    </div>
+                    <div class="modal-body">
+                        <ul id="countries">
+                            <li class="list-group-item list-group-item-action list-group-item-primary list-country country_selected" value="ES"><%=translation.countries.spain%> / ES</li>
+                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="SI"><%=translation.countries.slovenia%>
+                                / SI</li>
+                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="IT"><%=translation.countries.italy%> / IT</li>
+                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="AT"><%=translation.countries.austria%>
+                                / AT</li>
+                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="PT"><%=translation.countries.portugal%>
+                                / PT</li>
+                        </ul>
+                    </div>
+
+                    <% if (saml_request.enabled) { -%>
+                        <input type="hidden" name="SAMLRequest" value="<%= saml_request.xml%>">
+                        <input type="hidden" name="postLocationUrl" value="<%= saml_request.postLocationUrl%>">
+                        <input type="hidden" name="redirectLocationUrl" value="<%= saml_request.redirectLocationUrl%>">
+                        <input type="hidden" name="country" id="countryID" value="ES">
+                        <input type="hidden" name="RelayState" value="MyRelayState">
+                        <input type="hidden" name="sendmethods" value="POST">
+                        <% } -%>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><%=translation.modal.close%></button>
+                        <button id="saml2_eidas_button" type="submit"  class="btn btn-primary"><%=translation.modal.next%></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    <script src="/javascripts/others/see_password.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $('header').remove();
+        var container_fluid = $('.container-fluid.wrap')
+        container_fluid.css('padding', '0px')
+        container_fluid.css("background", "transparent url(' ../img/vish_background.png ') center no-repeat")
+        container_fluid.css('max-width', '100%')
+        container_fluid.css('background-size', 'cover')
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            // Handle the submit button from the create role form
+            $("form#form_submit_authentication").on("submit", function (event) {
+                if ($('input#id_email').val() === '') {
+                    $('input#id_email').attr('name', '')
+                }
+
+                if ($('input#id_password').val() === '') {
+                    $('input#id_password').attr('name', '')
+                }
+                return true;
+            });
+
+
+            $("#countries").on('click', '.list-country', function() {
+                $("#countryID").val($(this).attr("value"));
+                $(this).siblings().removeClass("country_selected");
+                $(this).addClass("country_selected");
+            })
+
+        })
+
+    </script>
+
+
+    <div class="cred">
+        <%=translation.footer.vish%>
+        <a href="http://vishub.org/terms_of_use"
+            target="a_blank"><%=translation.footer.condit02%></a>
+    </div>
+</div>

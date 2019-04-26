@@ -2,16 +2,16 @@
 <script type="text/x-custom-template" id="iot_template">
 	<div class="row content_iot">
         <div class="col-md-8 user_iot">
-            <h6 class="panel-heading">Id of Sensor</h6>
+            <h6 class="panel-heading"><%=translation.templates.applications.iot_row.label01%></h6>
             <p>iot_id</p>
-            <h6 class="panel-heading show_password">Password of Sensor</h6>
+            <h6 class="panel-heading show_password"><%=translation.templates.applications.iot_row.label02%></h6>
             <p class="show_password">iot_password</p>
         </div>
         <div class="col-md-4 actions_iot">
             <br>
-            <a href="/idm/applications/application_id/iot/iot_id/reset_password" class="btn btn-default reset_password">Reset password</a>
+            <a href="/idm/applications/application_id/iot/iot_id/reset_password" class="btn btn-default reset_password"><%=translation.templates.applications.iot_row.reset_iot_btn%></a>
             <a href="/idm/applications/application_id/iot/iot_id/delete" class="btn btn-danger delete_iot">
-                <i class="far fa-trash-alt"></i> Delete
+                <i class="far fa-trash-alt"></i> <%=translation.templates.applications.iot_row.delete_iot_btn%>
             </a>
         </div>
     </div>

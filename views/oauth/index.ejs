@@ -1,4 +1,19 @@
-<div class="row">
-	<%- include _presentation %>
-  	<%- include _login %>
+<% 
+  var login = '_login';
+  var presentation = '_presentation';
+  if (site.theme !== 'default') {
+    if(fs.existsSync('themes/' + site.theme + '/templates/_oauth_login.ejs')) {
+      login = '../../themes/' + site.theme + '/templates/_oauth_login';
+    }
+    if(fs.existsSync('themes/' + site.theme + '/templates/_oauth_presentation.ejs')) {
+      presentation = '../../themes/' + site.theme + '/templates/_oauth_presentation';
+    }
+  }
+%>
+
+<div class=alternative_login>
+  <div class="row">
+    <%- include(login)%>
+    <%- include(presentation)%>
+  </div>
 </div>

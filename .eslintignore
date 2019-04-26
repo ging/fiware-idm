@@ -1,0 +1,24 @@
+# Ignore errors in front-end and tools for now.
+public/**/*.js
+# Ignore directories that are directly related with database
+seeders/**/*.js
+migrations/*.js
+models/**/*.js
+models/helpers/search_distinct.js
+# Ignore lib/saml2 for now because is an external library generated with coffe script
+# that needs to be checked deeply before
+lib/saml2.js
+
+ # editorconfig.org
+root = true
+
+ [*]
+indent_style = tab
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+ [*.{json,yml,md,babelrc,eslintrc,remarkrc}]
+indent_style = space
+indent_size = 2

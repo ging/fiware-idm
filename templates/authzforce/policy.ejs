@@ -1,0 +1,22 @@
+<Policy PolicyId="<%= role_id %>" Version="1.0" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-unless-permit">
+  <Description>Role <%= role_id %> from application <%= app_id %></Description>
+  <Target>
+    <AnyOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string"><%= app_id %></AttributeValue>
+          <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+              AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"
+              MustBePresent="true" />
+        </Match>
+      </AllOf>
+    </AnyOf>
+  </Target>
+  <% for (var i=0; i < role_permissions[role_id].length; i++) {%>
+    <% if (role_permissions[role_id][i].xml) { -%>
+      <%- role_permissions[role_id][i].xml %>   
+    <% } else { -%>
+      <%- include rule %>
+    <% } -%>
+  <% } %>
+</Policy>

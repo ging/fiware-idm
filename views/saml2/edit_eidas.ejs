@@ -4,182 +4,158 @@
 			<div class="edit">
 				<div class="modal-header">
 					<h3>
-						eIDAS Authentication Details
+						<%=translation.saml2.edit_eidas.title01%>
 					</h3>
 				</div>
 				<form id="eidas_credentials" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/eidas/info?_method=put" method="POST" enctype="">
-		            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+		            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 		            <div class="modal-body clearfix">
-
 		                <fieldset>
+			                <div class="form-group required eidas">
+		                        <label class="control-label required"><%=translation.saml2.label01%></label>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_support_contact_person_name"><%=translation.saml2.label02%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_support_contact_person_name" name="eidas_credentials[support_contact_person_name]" type="text" value="<%= eidas_credentials.support_contact_person_name %>">
+		                            </div>
+		                            <% if (errors.indexOf("support_contact_person_name") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_support_contact_person_surname"><%=translation.saml2.label03%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_support_contact_person_surname" name="eidas_credentials[support_contact_person_surname]" type="text" value="<%= eidas_credentials.support_contact_person_surname %>">
+		                            </div>
+		                            <% if (errors.indexOf("support_contact_person_surname") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_support_contact_person_email"><%=translation.saml2.label04%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_support_contact_person_email" name="eidas_credentials[support_contact_person_email]" type="text" value="<%= eidas_credentials.support_contact_person_email %>">
+		                            </div>
+		                            <% if (errors.indexOf("support_contact_person_email") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_support_contact_person_number"><%=translation.saml2.label05%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_support_contact_person_number" name="eidas_credentials[support_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.support_contact_person_telephone_number %>">
+		                            </div>
+		                            <% if (errors.indexOf("support_contact_person_telephone_number") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input_company">
+		                            <label class="control-label required" for="id_support_contact_person_company"><%=translation.saml2.label06%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_support_contact_person_company" name="eidas_credentials[support_contact_person_company]" type="text" value="<%= eidas_credentials.support_contact_person_company %>">
+		                            </div>
+		                            <% if (errors.indexOf("support_contact_person_company") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                    </div>
+		                    <div class="form-group required eidas">
+		                        <label class="control-label required"><%=translation.saml2.label07%></label>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_technical_contact_person_name"><%=translation.saml2.label08%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_technical_contact_person_name" name="eidas_credentials[technical_contact_person_name]" type="text" value="<%= eidas_credentials.technical_contact_person_name %>">
+		                            </div>
+		                            <% if (errors.indexOf("technical_contact_person_name") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_technical_contact_person_surname"><%=translation.saml2.label09%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_technical_contact_person_surname" name="eidas_credentials[technical_contact_person_surname]" type="text" value="<%= eidas_credentials.technical_contact_person_surname %>">
+		                            </div>
+		                            <% if (errors.indexOf("technical_contact_person_surname") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_technical_contact_person_email"><%=translation.saml2.label10%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_technical_contact_person_email" name="eidas_credentials[technical_contact_person_email]" type="text" value="<%= eidas_credentials.technical_contact_person_email %>">
+		                            </div>
+		                            <% if (errors.indexOf("technical_contact_person_email") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_technical_contact_person_number"><%=translation.saml2.label11%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_technical_contact_person_number" name="eidas_credentials[technical_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.technical_contact_person_telephone_number %>">
+		                            </div>
+		                            <% if (errors.indexOf("technical_contact_person_telephone_number") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>                    
+		                        <div class="eidas_input_company">
+		                            <label class="control-label required" for="id_technical_contact_person_company"><%=translation.saml2.label12%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_technical_contact_person_company" name="eidas_credentials[technical_contact_person_company]" type="text" value="<%= eidas_credentials.technical_contact_person_company %>">
+		                            </div>
+		                            <% if (errors.indexOf("technical_contact_person_company") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>    
+		                    </div>
+		                    <div class="form-group required eidas">
+		                        <label class="control-label required"><%=translation.saml2.label13%></label>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_company"><%=translation.saml2.label14%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_company" name="eidas_credentials[organization_name]" type="text" value="<%= eidas_credentials.organization_name %>">
+		                            </div>
+		                            <% if (errors.indexOf("organization_name") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input">
+		                            <label class="control-label required" for="id_company"><%=translation.saml2.label15%></label>
+		                            <div class="">
+		                                <input class="form-control" id="id_company" name="eidas_credentials[organization_url]" type="text" value="<%= eidas_credentials.organization_url %>">
+		                            </div>
+		                            <% if (errors.indexOf("organization_url") != -1) { %>
+		                                <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                            <% } %>
+		                        </div>
+		                        <div class="eidas_input_company">
+		                             <label class="control-label required" for="id_company"><%=translation.saml2.label16%></label>
+		                             <div class="">
+		                                 <input class="form-control" id="id_company" name="eidas_credentials[organization_nif]" type="text" value="<%= eidas_credentials.organization_nif %>">
+		                             </div>
+		                             <% if (errors.indexOf("organization_nif") != -1) { %>
+		                                 <span class="help-block alert alert-danger "><%=translation.saml2.required_field%></span>
+		                             <% } %>
+		                         </div>
+		                    </div>
 
 			                <div class="form-group required eidas">
-			                    <label class="control-label group required">Support Contact Person</label>
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_support_contact_person_name">Name</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_name" name="eidas_credentials[support_contact_person_name]" type="text" value="<%= eidas_credentials.support_contact_person_name %>">
-			                        </div>
-			                        <% if (errors.indexOf("support_contact_person_name") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_support_contact_person_surname">Surname</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_surname" name="eidas_credentials[support_contact_person_surname]" type="text" value="<%= eidas_credentials.support_contact_person_surname %>">
-			                        </div>
-			                        <% if (errors.indexOf("support_contact_person_surname") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_support_contact_person_email">Email</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_email" name="eidas_credentials[support_contact_person_email]" type="text" value="<%= eidas_credentials.support_contact_person_email %>">
-			                        </div>
-			                        <% if (errors.indexOf("support_contact_person_email") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_support_contact_person_number">Telephone Number</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_number" name="eidas_credentials[support_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.support_contact_person_telephone_number %>">
-			                        </div>
-			                        <% if (errors.indexOf("support_contact_person_telephone_number") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-
-			                    <div class="eidas_input_company">
-			                        <label class="control-label required" for="id_support_contact_person_company">Company</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_support_contact_person_company" name="eidas_credentials[support_contact_person_company]" type="text" value="<%= eidas_credentials.support_contact_person_company %>">
-			                        </div>
-			                        <% if (errors.indexOf("support_contact_person_company") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-			                </div>
-
-			                <div class="form-group required eidas">
-			                    <label class="control-label group required">Technical Contact Person</label>
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_technical_contact_person_name">Name</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_name" name="eidas_credentials[technical_contact_person_name]" type="text" value="<%= eidas_credentials.technical_contact_person_name %>">
-			                        </div>
-			                        <% if (errors.indexOf("technical_contact_person_name") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_technical_contact_person_surname">Surname</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_surname" name="eidas_credentials[technical_contact_person_surname]" type="text" value="<%= eidas_credentials.technical_contact_person_surname %>">
-			                        </div>
-			                        <% if (errors.indexOf("technical_contact_person_surname") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_technical_contact_person_email">Email</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_email" name="eidas_credentials[technical_contact_person_email]" type="text" value="<%= eidas_credentials.technical_contact_person_email %>">
-			                        </div>
-			                        <% if (errors.indexOf("technical_contact_person_email") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_technical_contact_person_number">Telephone Number</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_number" name="eidas_credentials[technical_contact_person_telephone_number]" type="text" value="<%= eidas_credentials.technical_contact_person_telephone_number %>">
-			                        </div>
-			                        <% if (errors.indexOf("technical_contact_person_telephone_number") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-
-			                    <div class="eidas_input_company">
-			                        <label class="control-label required" for="id_technical_contact_person_company">Company</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_technical_contact_person_company" name="eidas_credentials[technical_contact_person_company]" type="text" value="<%= eidas_credentials.technical_contact_person_company %>">
-			                        </div>
-			                        <% if (errors.indexOf("technical_contact_person_company") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-			                    
-			                </div>
-
-			                <div class="form-group required eidas">
-			                    <label class="control-label group required">Organization</label>
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_company">Name</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_company" name="eidas_credentials[organization_name]" type="text" value="<%= eidas_credentials.organization_name %>">
-			                        </div>
-			                        <% if (errors.indexOf("organization_name") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-
-
-			                    <div class="eidas_input">
-			                        <label class="control-label required" for="id_company">Url</label>
-			                        <div class="">
-			                            <input class="form-control" id="id_company" name="eidas_credentials[organization_url]" type="text" value="<%= eidas_credentials.organization_url %>">
-			                        </div>
-			                        <% if (errors.indexOf("organization_url") != -1) { %>
-			                            <span class="help-block alert alert-danger ">Input required.</span>
-			                        <% } %>
-			                    </div>
-
-			                    <div class="eidas_input_company">
-			                         <label class="control-label required" for="id_company">NIF</label>
-			                         <div class="">
-			                             <input class="form-control" id="id_company" name="eidas_credentials[organization_nif]" type="text" value="<%= eidas_credentials.organization_nif %>">
-			                         </div>
-			                         <% if (errors.indexOf("organization_nif") != -1) { %>
-			                             <span class="help-block alert alert-danger ">Input required.</span>
-			                         <% } %>
-			                     </div>
-			                </div>
-
-			                <div class="form-group required eidas">
-			                    <label class="control-label group required">Service Provider Type</label>
+			                    <label class="control-label group required"><%=translation.saml2.label17%></label>
 			                    <div class="eidas_input_company">
 			                         <div class="">
 			                             <div class="select-multiple form-group">
 			                                <select id="sp_type" name="eidas_credentials[sp_type]" class="selectpicker" data-size="2" data-width="100%" data-dropup-auto="false">
 			                                	<% if (eidas_credentials.sp_type === 'public') { %>
-			                                		<option selected value="public">public</option>
-			                                    	<option value="private">private</option>
+			                                		<option selected value="public"><%=translation.saml2.public_option%></option>
+			                                    	<option value="private"><%=translation.saml2.private_option%></option>
 			                                	<% } else { %>
-			                                		<option value="public">public</option>
-			                                    	<option selected value="private">private</option>
+			                                		<option value="public"><%=translation.saml2.public_option%></option>
+			                                    	<option selected value="private"><%=translation.saml2.private_option%></option>
 			                                	<% } %>
 			                                </select>
 			                            </div>
 			                         </div>
 			                         <% if (errors.indexOf("sp_type") != -1) { %>
-			                             <span class="help-block alert alert-danger" style="margin-top: 55px">Invalid SP Type.</span>
+			                             <span class="help-block alert alert-danger" style="margin-top: 55px"><%=translation.saml2.alert01%></span>
 			                         <% } %>
 			                     </div>
 			                </div>
@@ -187,7 +163,7 @@
 			            </fieldset>
 		            </div>
 			        <div class="modal-footer">
-			            <button type="submit" class="btn btn-primary">Update</button>
+			            <button type="submit" class="btn btn-primary"><%=translation.saml2.edit_eidas.update_btn%></button>
 			        </div>
 		    	</form>
 			</div>
@@ -198,262 +174,262 @@
 			<div class="edit update-avatar-modal">
 				<div class="modal-header">
 					<h3>
-						eIDAS Requested Attributes
+						<%=translation.saml2.edit_eidas.title02%>
 					</h3>
 				</div>
 				<form id="eidas_attributes" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid" action="/idm/applications/<%= application.id %>/edit/eidas/attributes?_method=put" method="POST" enctype="">
-		            <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+		            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 		            <div class="modal-body clearfix">
 		                <fieldset class="row">
 		                	<div id="natural_person" class="extra col-md-4">
-												<label class="control-label group">Natural Person</label>
-                    		<div class="attribute" style="display: flex;">
-                       			<label><input disabled checked type="checkbox" name="NaturalPerson[PersonIdentifier]" >Person Identifier</label>
+								<label class="control-label group"><%=translation.saml2.edit_eidas.subtitle01%></label>
+                    			<div class="attribute" style="display: flex;">
+                       			<label><input disabled checked type="checkbox" name="NaturalPerson[PersonIdentifier]" ><%=translation.saml2.edit_eidas.natural_label01%></label>
                         </div>
                         <div class="attribute">
-                            <label><input disabled checked type="checkbox" name="NaturalPerson[FamilyName]" >Family Name</label>
+                            <label><input disabled checked type="checkbox" name="NaturalPerson[FamilyName]" ><%=translation.saml2.edit_eidas.natural_label02%></label>
                         </div>
                         <div class="attribute">
-                            <label><input disabled checked type="checkbox" name="NaturalPerson[FirstName]" >First Name</label>
+                            <label><input disabled checked type="checkbox" name="NaturalPerson[FirstName]" ><%=translation.saml2.edit_eidas.natural_label03%></label>
                         </div>
                         <div class="attribute">
-                            <label><input disabled checked type="checkbox" name="NaturalPerson[DateOfBirth]" >Date of Birth</label>
+                            <label><input disabled checked type="checkbox" name="NaturalPerson[DateOfBirth]" ><%=translation.saml2.edit_eidas.natural_label04%></label>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('BirthName')) { %>
-                            	<label><input checked type="checkbox" name="NaturalPerson[BirthName]" >Birth Name</label>
+                            	<label><input checked type="checkbox" name="NaturalPerson[BirthName]" ><%=translation.saml2.edit_eidas.natural_label05%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="NaturalPerson[BirthName]" >Birth Name</label>
+                            	<label><input type="checkbox" name="NaturalPerson[BirthName]" ><%=translation.saml2.edit_eidas.natural_label05%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('PlaceOfBirth')) { %>
-                            	<label><input checked type="checkbox" name="NaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+                            	<label><input checked type="checkbox" name="NaturalPerson[PlaceOfBirth]" ><%=translation.saml2.edit_eidas.natural_label06%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="NaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+                            	<label><input type="checkbox" name="NaturalPerson[PlaceOfBirth]" ><%=translation.saml2.edit_eidas.natural_label06%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('CurrentAddress')) { %>
-                            	<label><input checked type="checkbox" name="NaturalPerson[CurrentAddress]" >Current Address</label>
+                            	<label><input checked type="checkbox" name="NaturalPerson[CurrentAddress]" ><%=translation.saml2.edit_eidas.natural_label07%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="NaturalPerson[CurrentAddress]" >Current Address</label>
+                            	<label><input type="checkbox" name="NaturalPerson[CurrentAddress]" ><%=translation.saml2.edit_eidas.natural_label07%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.NaturalPerson.includes('Gender')) { %>
-                            	<label><input checked type="checkbox" name="NaturalPerson[Gender]" >Gender</label>
+                            	<label><input checked type="checkbox" name="NaturalPerson[Gender]" ><%=translation.saml2.edit_eidas.natural_label08%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="NaturalPerson[Gender]" >Gender</label>
+                            	<label><input type="checkbox" name="NaturalPerson[Gender]" ><%=translation.saml2.edit_eidas.natural_label08%></label>
                             <% } %>
                         </div>
 			                </div>
 	                    <div id="legal_person" class="extra col-md-4">
-                				<label class="control-label group">Legal Person</label>
+                				<label class="control-label group"><%=translation.saml2.edit_eidas.subtitle02%></label>
                     		<div class="attribute">
                       		<% if (eidas_credentials.attributes_list.LegalPerson.includes('LegalPersonIdentifier')) { %>
-                              	<label><input checked type="checkbox" name="LegalPerson[LegalPersonIdentifier]" >Legal Person Identifier</label>
+                              	<label><input checked type="checkbox" name="LegalPerson[LegalPersonIdentifier]" ><%=translation.saml2.edit_eidas.legal_label01%></label>
                               <% } else { %>
-                              	<label><input type="checkbox" name="LegalPerson[LegalPersonIdentifier]" >Legal Person Identifier</label>
+                              	<label><input type="checkbox" name="LegalPerson[LegalPersonIdentifier]" ><%=translation.saml2.edit_eidas.legal_label01%></label>
                               <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('LegalName')) { %>
-                            	<label><input checked type="checkbox" name="LegalPerson[LegalName]" >Legal Name</label>
+                            	<label><input checked type="checkbox" name="LegalPerson[LegalName]" ><%=translation.saml2.edit_eidas.legal_label02%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[LegalName]" >Legal Name</label>
+                            	<label><input type="checkbox" name="LegalPerson[LegalName]" ><%=translation.saml2.edit_eidas.legal_label02%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('LegalPersonAddress')) { %>
-                            	<label><input checked type="checkbox" name="LegalPerson[LegalPersonAddress]" >Legal Person Address</label>
+                            	<label><input checked type="checkbox" name="LegalPerson[LegalPersonAddress]" ><%=translation.saml2.edit_eidas.legal_label03%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[LegalPersonAddress]" >Legal Person Address</label>
+                            	<label><input type="checkbox" name="LegalPerson[LegalPersonAddress]" ><%=translation.saml2.edit_eidas.legal_label03%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('VATRegistrationNumber')) { %>
-                            	<label><input checked type="checkbox" name="LegalPerson[VATRegistrationNumber]" >VAT Registration Number</label>
+                            	<label><input checked type="checkbox" name="LegalPerson[VATRegistrationNumber]" ><%=translation.saml2.edit_eidas.legal_label04%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[VATRegistrationNumber]" >VAT Registration Number</label>
+                            	<label><input type="checkbox" name="LegalPerson[VATRegistrationNumber]" ><%=translation.saml2.edit_eidas.legal_label04%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('TaxReference')) { %>
-                            	<label><input checked type="checkbox" name="LegalPerson[TaxReference]" >Tax Reference</label>
+                            	<label><input checked type="checkbox" name="LegalPerson[TaxReference]" ><%=translation.saml2.edit_eidas.legal_label05%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[TaxReference]" >Tax Reference</label>
+                            	<label><input type="checkbox" name="LegalPerson[TaxReference]" ><%=translation.saml2.edit_eidas.legal_label05%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('D201217EUIdentifier')) { %>
-                            	<label><input checked type="checkbox" name="LegalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+                            	<label><input checked type="checkbox" name="LegalPerson[D201217EUIdentifier]" ><%=translation.saml2.edit_eidas.legal_label06%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+                            	<label><input type="checkbox" name="LegalPerson[D201217EUIdentifier]" ><%=translation.saml2.edit_eidas.legal_label06%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('LEI')) { %>
-                            	<label><input type="checkbox" name="LegalPerson[LEI]" >LEI</label>
+                            	<label><input type="checkbox" name="LegalPerson[LEI]" ><%=translation.saml2.edit_eidas.legal_label07%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[LEI]" >LEI</label>
+                            	<label><input type="checkbox" name="LegalPerson[LEI]" ><%=translation.saml2.edit_eidas.legal_label07%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('EORI')) { %>
-                            	<label><input checked type="checkbox" name="LegalPerson[EORI]" >EORI</label>
+                            	<label><input checked type="checkbox" name="LegalPerson[EORI]" ><%=translation.saml2.edit_eidas.legal_label08%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[EORI]" >EORI</label>
+                            	<label><input type="checkbox" name="LegalPerson[EORI]" ><%=translation.saml2.edit_eidas.legal_label08%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('SEED')) { %>
-                            	<label><input checked type="checkbox" name="LegalPerson[SEED]" >SEED</label>
+                            	<label><input checked type="checkbox" name="LegalPerson[SEED]" ><%=translation.saml2.edit_eidas.legal_label09%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[SEED]" >SEED</label>
+                            	<label><input type="checkbox" name="LegalPerson[SEED]" ><%=translation.saml2.edit_eidas.legal_label09%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.LegalPerson.includes('SIC')) { %>
-                            	<label><input type="checkbox" name="LegalPerson[SIC]" >SIC</label>
+                            	<label><input type="checkbox" name="LegalPerson[SIC]" ><%=translation.saml2.edit_eidas.legal_label10%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="LegalPerson[SIC]" >SIC</label>
+                            	<label><input type="checkbox" name="LegalPerson[SIC]" ><%=translation.saml2.edit_eidas.legal_label10%></label>
                             <% } %>
                         </div>
                       </div>
 		                  <div id="representative_legal_person" class="extra col-md-4">
-	                      <label class="control-label group">Representative Legal Person</label>
+	                      <label class="control-label group"><%=translation.saml2.edit_eidas.subtitle03%></label>
                       	<div class="attribute">
                       		<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('PersonIdentifier')) { %>
-                          <label><input checked type="checkbox" name="RepresentativeNaturalPerson[PersonIdentifier]" >Person Identifier</label>
+                          <label><input checked type="checkbox" name="RepresentativeNaturalPerson[PersonIdentifier]" ><%=translation.saml2.edit_eidas.representative_label01%></label>
                         	<% } else { %>
-                          <label><input type="checkbox" name="RepresentativeNaturalPerson[PersonIdentifier]" >Person Identifier</label>
+                          <label><input type="checkbox" name="RepresentativeNaturalPerson[PersonIdentifier]" ><%=translation.saml2.edit_eidas.representative_label01%></label>
                           <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('FamilyName')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[FamilyName]" >Family Name</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[FamilyName]" ><%=translation.saml2.edit_eidas.representative_label02%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[FamilyName]" >Family Name</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[FamilyName]" ><%=translation.saml2.edit_eidas.representative_label02%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('FirstName')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[FirstName]" >First Name</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[FirstName]" ><%=translation.saml2.edit_eidas.representative_label03%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[FirstName]" >First Name</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[FirstName]" ><%=translation.saml2.edit_eidas.representative_label03%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('DateOfBirth')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[DateOfBirth]" >Date of Birth</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[DateOfBirth]" ><%=translation.saml2.edit_eidas.representative_label04%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[DateOfBirth]" >Date of Birth</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[DateOfBirth]" ><%=translation.saml2.edit_eidas.representative_label04%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('BirthName')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[BirthName]" >Birth Name</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[BirthName]" ><%=translation.saml2.edit_eidas.representative_label05%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[BirthName]" >Birth Name</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[BirthName]" ><%=translation.saml2.edit_eidas.representative_label05%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('PlaceOfBirth')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[PlaceOfBirth]" ><%=translation.saml2.edit_eidas.representative_label06%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[PlaceOfBirth]" >Place Of Birth</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[PlaceOfBirth]" ><%=translation.saml2.edit_eidas.representative_label06%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('CurrentAddress')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[CurrentAddress]" >Current Address</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[CurrentAddress]" ><%=translation.saml2.edit_eidas.representative_label07%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[CurrentAddress]" >Current Address</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[CurrentAddress]" ><%=translation.saml2.edit_eidas.representative_label07%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('Gender')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[Gender]" >Gender</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[Gender]" ><%=translation.saml2.edit_eidas.representative_label08%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[Gender]" >Gender</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[Gender]" ><%=translation.saml2.edit_eidas.representative_label08%></label>
                             <% } %>
                         </div>
                     		<div class="attribute">
                     			<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LegalPersonIdentifier')) { %>
-                        	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonIdentifier]" >Legal Person Identifier</label checked>
+                        	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonIdentifier]" ><%=translation.saml2.edit_eidas.representative_label09%></label checked>
                           <% } else { %>
-                          <label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonIdentifier]" >Legal Person Identifier</label>
+                          <label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonIdentifier]" ><%=translation.saml2.edit_eidas.representative_label09%></label>
                           <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LegalName')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LegalName]" >Legal Name</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LegalName]" ><%=translation.saml2.edit_eidas.representative_label10%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalName]" >Legal Name</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalName]" ><%=translation.saml2.edit_eidas.representative_label10%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LegalPersonAddress')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LegalPersonAddress]" >Legal Person Address</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LegalPersonAddress]" ><%=translation.saml2.edit_eidas.representative_label11%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonAddress]" >Legal Person Address</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[LegalPersonAddress]" ><%=translation.saml2.edit_eidas.representative_label11%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('VATRegistrationNumber')) { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[VATRegistrationNumber]" >VAT Registration Number</label checked>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[VATRegistrationNumber]" ><%=translation.saml2.edit_eidas.representative_label12%></label checked>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[VATRegistrationNumber]" >VAT Registration Number</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[VATRegistrationNumber]" ><%=translation.saml2.edit_eidas.representative_label12%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('TaxReference')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[TaxReference]" >Tax Reference</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[TaxReference]" ><%=translation.saml2.edit_eidas.representative_label13%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[TaxReference]" >Tax Reference</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[TaxReference]" ><%=translation.saml2.edit_eidas.representative_label13%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('D201217EUIdentifier')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[D201217EUIdentifier]" ><%=translation.saml2.edit_eidas.representative_label14%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[D201217EUIdentifier]" >D-2012-17-EUIdentifier</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[D201217EUIdentifier]" ><%=translation.saml2.edit_eidas.representative_label14%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('LEI')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LEI]" >LEI</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[LEI]" ><%=translation.saml2.edit_eidas.representative_label15%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[LEI]" >LEI</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[LEI]" ><%=translation.saml2.edit_eidas.representative_label15%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('EORI')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[EORI]" >EORI</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[EORI]" ><%=translation.saml2.edit_eidas.representative_label16%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[EORI]" >EORI</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[EORI]" ><%=translation.saml2.edit_eidas.representative_label16%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('SEED')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[SEED]" >SEED</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[SEED]" ><%=translation.saml2.edit_eidas.representative_label17%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[SEED]" >SEED</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[SEED]" ><%=translation.saml2.edit_eidas.representative_label17%></label>
                             <% } %>
                         </div>
                         <div class="attribute">
                         	<% if (eidas_credentials.attributes_list.RepresentativeNaturalPerson.includes('SIC')) { %>
-                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[SIC]" >SIC</label>
+                            	<label><input checked type="checkbox" name="RepresentativeNaturalPerson[SIC]" ><%=translation.saml2.edit_eidas.representative_label18%></label>
                             <% } else { %>
-                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[SIC]" >SIC</label>
+                            	<label><input type="checkbox" name="RepresentativeNaturalPerson[SIC]" ><%=translation.saml2.edit_eidas.representative_label18%></label>
                             <% } %>
                         </div>
                       </div>
 		                </fieldset>
 		            </div>
 			        <div class="modal-footer">
-			            <button type="submit" class="btn btn-primary">Update</button>
+			            <button type="submit" class="btn btn-primary"><%=translation.saml2.edit_eidas.update_btn%></button>
 			        </div>
 		        </form>
 			</div>

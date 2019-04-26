@@ -1,0 +1,18 @@
+{
+	"bad_login": { 
+	 	"name": "nobody@nowhere.com",
+	 	"password": "unknown" 
+	},
+	"good_admin_login": { 
+	 	"name": "alice-the-admin@test.com",
+	 	"password": "test" 
+	},
+	"good_login": { 
+	 	"name": "bob-the-manager@test.com",
+	 	"password": "test" 
+	},
+	"wrong_password_login": { 
+	 	"name": "alice-the-admin@test.com",
+	 	"password": "wrongPassword" 
+	}
+}

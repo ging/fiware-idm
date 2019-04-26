@@ -1,0 +1,81 @@
+{
+	"before": {
+		"application": {
+	    	"name": "Test_application trusted applications",
+	    	"description": "description for trusted applications",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	},
+	"update": {
+		"application": {
+	    	"name": "Trusted application for update",
+	    	"description": "Trusted application description",
+	    	"redirect_uri": "http://localhost/login",
+	    	"url": "http://localhost",
+	    	"grant_type": [
+		      	"authorization_code",
+		      	"implicit",
+		      	"password"
+	    	],
+	    	"token_types": [
+		      	"jwt",
+		      	"permanent"
+	    	]
+		}
+	},
+	"list": {
+		"applications": [
+			{
+				"application": {
+			    	"name": "Trusted application 1 to list",
+			    	"description": "Trusted application description",
+			    	"redirect_uri": "http://localhost/login",
+			    	"url": "http://localhost",
+			    	"grant_type": [
+				      	"authorization_code",
+				      	"implicit",
+				      	"password"
+			    	],
+			    	"token_types": [
+				      	"jwt",
+				      	"permanent"
+			    	]
+				}
+			},
+			{
+				"application": {
+			    	"name": "Trusted application 2 to list",
+			    	"description": "Trusted application description",
+			    	"redirect_uri": "http://localhost/login",
+			    	"url": "http://localhost",
+			    	"grant_type": [
+				      	"authorization_code",
+				      	"implicit",
+				      	"password"
+			    	],
+			    	"token_types": [
+				      	"jwt",
+				      	"permanent"
+			    	]
+				}
+			}
+		]
+	},
+	"delete": {
+		"create": {
+			"role": {
+		    	"name": "Test role 4"
+			}
+		}
+	}
+}

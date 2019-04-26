@@ -3,17 +3,16 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<a id="esc_perm_creation" class="close" data-dismiss="modal">×</a>
+				<a class="close" data-dismiss="modal">×</a>
 				<h3>
 				</h3><h3>Create data usage policy</h3>  
 			</div>
-			<form id="create_usage_policy_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/permissions/create/" method="POST" enctype="">
-				<input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+			<form id="create_usage_policy_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/usage_policies/create" method="POST" enctype="">
+				<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
 				<div class="modal-body clearfix">
 					<span id="xml_with_action_and_resource_not_allow" style="display: none;" class='help-block alert alert-danger'>If you use the advanced rule you cannot set also action and resource.</span>
 						<span id="define_rule" style="display: none;" class='help-block alert alert-danger'>You need to define both action and resource or an advanced XACML Rule.</span>
 					<fieldset>
-						<input id="id_application_id" name="application_id" type="hidden" value="">
 						<div class="form-group required">
 							<label class="control-label  required" for="id_name">Policy Name</label>
 							<div class=" ">
@@ -21,6 +20,7 @@
 							</div>
 						</div>
 						<span id="error_empty_name" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
 						<div class="form-group required">
 							<label class="control-label  required" for="id_description">Description</label>
 							<div class=" ">
@@ -28,16 +28,109 @@
 							</div>
 						</div>
 						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
+						<div class="form-group required">
+	                        <label class="control-label  required" for="policy_type">
+	                            Type
+	                        </label>
+	                        <div class="select-multiple">
+	                            <select id="policy_type" title="Nothing selected" name="policy_type" class="selectpicker" data-dropup-auto="false">
+	                                <option value="COUNT_POLICY">Count</option>
+	                                <option value="AGGREGATION_POLICY">Aggregation</option>
+	                            </select>
+	                        </div>
+	                    </div>
+	                    <span id="error_policy_type" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
+	                    <div id="parameters" class="form-group required" hidden>
+	                        <label class="control-label  required">
+	                            Parameters
+	                        </label>
+	                    </div>
+
+	                    <div id="max_number" class="form-group required" hidden>
+	                        <label class="control-label  required" for="policy_type">
+	                            Maximum Number of Events
+	                        </label>
+	                        <div class="time">
+								<input class="form-control" id="id_max_number_events" name="max_number_events" type="number">
+							</div>
+	                    </div>
+	                    <span id="error_policy_type" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
+	                    <div id="event_window" class="form-group required" hidden>
+	                        <label class="control-label  required" for="policy_type">
+	                            Event Window
+	                        </label>
+	                        <div class="time">
+								<input class="form-control" id="id_event_window" name="event_window" type="number">
+								<div class="select-multiple">
+		                            <select name="event_unit_time" class="selectpicker" data-dropup-auto="false">
+		                                <option value="SECONDS">seconds</option>
+		                                <option value="MINUTES">minutes</option>
+		                                <option value="HOURS">hours</option>
+		                                <option value="DAYS">days</option>
+		                            </select>
+		                        </div>
+							</div>
+	                    </div>
+	                    <span id="error_policy_type" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
+	                    <div id="aggregation_time" class="form-group required" hidden>
+	                        <label class="control-label  required" for="policy_type">
+	                            Aggregation Time
+	                        </label>
+	                        <div class="time">
+								<input class="form-control" id="id_aggregation_time" name="aggregation_time" type="number">
+								<div class="select-multiple">
+		                            <select name="aggregation_unit_time" class="selectpicker" data-dropup-auto="false">
+		                            	<option value="SECONDS">seconds</option>
+		                                <option value="MINUTES">minutes</option>
+		                                <option value="HOURS">hours</option>
+		                                <option value="DAYS">days</option>
+		                            </select>
+		                        </div>
+							</div>
+	                    </div>
+	                    <span id="error_policy_type" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
+
+	                    <div class="form-group required">
+	                        <label class="control-label required" for="punishment">
+	                            Punishment
+	                        </label>
+	                        <div class="select-multiple">
+	                            <select title="Nothing selected" name="punishment" class="selectpicker" data-dropup-auto="false">
+	                                <option value="KILL_JOB">Kill job</option>
+	                                <option value="UNSUBSCRIBE">Unsubscribe</option>
+	                                <option value="MONETIZE">Monetize</option>
+	                            </select>
+	                        </div>
+	                    </div>
+	                    <span id="error_punishment" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
+	                    <div class="form-group required">
+	                        <label class="control-label  required" for="time_lapse">
+	                            Time Lapse
+	                        </label>
+	                        <div class="time_lapse">
+								<input class="form-control timepicker" id="id_time_from" name="time_from" type="text">
+								<span>to</span>
+								<input class="form-control timepicker" id="id_time_to" name="time_to" type="text">
+							</div>
+	                    </div>
+	                    <span id="error_time_lapse" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+
 						<div class="panel-group" id="accordion">
 								<div class="panel">
 									<div class="panel-headding">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-xacml" class="panel-heading collapsed">
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-odrl" class="panel-heading collapsed">
 											<h4 class="panel-title panel-close">
 												ODRL Policy
 											</h4>
 										</a>
 									</div>
-									<div id="collapse-xacml" class="">
+									<div id="collapse-odrl" class="panel-collapse collapsed collapse">
 										<div class="panel-body">
 											<div class="form-group ">
 												<label class="control-label  " for="id_xml">Here you can define the Data Usage Policy.</label>
@@ -58,3 +151,71 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('input.timepicker').timepicker({});
+
+		$('select#policy_type').change(function(){
+			let type = $(this).find('option:selected').val();
+			$('#parameters').show()
+			if (type === 'COUNT_POLICY') {
+				$('#max_number').show()
+				$('#event_window').show()
+				$('#aggregation_time').hide()
+			}
+			if (type === 'AGGREGATION_POLICY') {
+				$('#max_number').hide()
+				$('#event_window').hide()
+				$('#aggregation_time').show()
+			}
+		})
+	});
+
+
+</script>
+
+<style type="text/css">
+	.time_lapse {
+		display:flex;
+		flex-direction:row;
+	}
+
+	.time_lapse input {
+		text-align: center;
+		min-width: 70px;
+		width: 15%;
+	}
+
+	.time_lapse span {
+		margin: 0 8px 0 8px;
+		display: inline-flex;
+  		align-items: center;
+	}
+
+	.ui-timepicker-container {
+      	z-index: 3500 !important;
+ 	}
+
+ 	.time {
+ 		display:flex;
+		flex-direction:row;	
+ 	}
+
+ 	.time .form-control {
+ 		min-width: 150px;
+		width: 30%;
+		margin-right: 8px;
+ 	}
+
+ 	.time .select-multiple {
+ 		min-width: 50px;
+		width: 15%;
+ 	}
+
+ 	#parameters {
+ 		border-bottom: 1px solid #A9A9A9;
+ 		width: 30%;
+ 	}
+
+</style>

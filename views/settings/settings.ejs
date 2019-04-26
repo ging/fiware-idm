@@ -1,36 +1,36 @@
 <div id="content_body">
     <div class="page-header">
         <h2>
-            Settings
+            <%=translation.settings.settings.title%>
         </h2>
     </div>
     <div class="panel-group settings" id="accordion">
         <div class="panel panel-default ">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse-0" class="panel-heading collapsed">
                 <h4 class="panel-title panel-close">
-                    Change your password
+                    <%=translation.settings.settings.panel_title01%>
                 </h4>
             </a>
             <div id="collapse-0" class="panel-collapse collapse change_password" style="height: 0px;">
                 <div class="panel-body">
                     <form accept-charset="UTF-8" action="/idm/settings/password/" method="post" class="ng-pristine ng-valid">
-                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                         <fieldset>
                             <legend></legend>
                             <div class="form-group required has-feedback">
-                                <label class="control-label  required" for="id_current_password">Current password</label>
+                                <label class="control-label  required" for="id_current_password"><%=translation.settings.settings.label01%></label>
                                 <div class=" ">
                                     <input class="form-control" id="id_current_password" name="current_password" type="password"><span class="form-control-feedback fa fa-eye"></span>
                                 </div>
                             </div>
                             <div class="form-group required has-feedback">
-                                <label class="control-label  required" for="id_new_password">New password</label>
+                                <label class="control-label  required" for="id_new_password"><%=translation.settings.settings.label02%></label>
                                 <div class=" ">
                                     <input class="form-control" id="id_new_password" name="new_password" type="password"><span class="form-control-feedback fa fa-eye"></span>
                                 </div>
                             </div>
                             <div class="form-group required has-feedback">
-                                <label class="control-label  required" for="id_confirm_password">Confirm new password</label>
+                                <label class="control-label  required" for="id_confirm_password"><%=translation.settings.settings.label03%></label>
                                 <div class=" ">
                                     <input class="form-control" id="id_confirm_password" name="confirm_password" type="password"><span class="form-control-feedback fa fa-eye"></span>
                                 </div>
@@ -44,25 +44,25 @@
         <div class="panel panel-default ">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse-1" class="panel-heading collapsed">
                 <h4 class="panel-title panel-close">
-                    Change your email
+                    <%=translation.settings.settings.panel_title02%>
                 </h4>
             </a>
             <div id="collapse-1" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
                     <form accept-charset="UTF-8" action="/idm/settings/email/" method="post" class="ng-pristine ng-valid">
-                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                         <fieldset>
                             <legend></legend>
                             <div class="form-group required">
-                                <label class="control-label  required" for="id_email">Email</label>
+                                <label class="control-label  required" for="id_email"><%=translation.settings.settings.label04%></label>
                                 <div class=" ">
                                     <input class="form-control" id="id_email" name="email" type="email" value="<%= session.user.email %>">
                                 </div>
                             </div>
                             <div class="form-group required has-feedback">
-                                <label class="control-label  required" for="id_password">Current password</label>
+                                <label class="control-label  required" for="id_email"><%=translation.settings.settings.label05%></label>
                                 <div class=" ">
-                                    <input class="form-control" id="id_password" name="password" type="password"><span class="form-control-feedback fa fa-eye"></span>
+                                    <input class="form-control" id="id_password" name="password" type="password"></span>
                                 </div>
                             </div>
                         </fieldset>
@@ -71,28 +71,28 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default ">
+        <!-- <div class="panel panel-default ">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse-2" class="panel-heading collapsed">
                 <h4 class="panel-title panel-close">
-                    Manage two-factor authentication
+                    <%=translation.settings.settings.panel_title03%>
                 </h4>
             </a>
             <div id="collapse-2" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
                     <form accept-charset="UTF-8" action="/idm/settings/twofactor/" id="two_factor_form" method="post" class="ng-pristine ng-valid">
-                        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
-                        <p>You have this option <b>disabled</b>.</p>
-                        <p>We highly recommend you enable it, since it provides a higher level of security to access your account.</p>
-                        <p>If you want to give two factor authentication a try, you need to provide a security question, just in case you happen to lose access to your authentication app.</p>
+                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+                        <p><%=translation.settings.settings.content01%><b><%=translation.settings.settings.content01_1%></b></p>
+                        <p><%=translation.settings.settings.content02%></p>
+                        <p><%=translation.settings.settings.content03%></p>
                         <fieldset>
                             <div class="form-group ">
-                                <label class="control-label  " for="id_security_question">Security question</label>
+                                <label class="control-label  " for="id_security_question"><%=translation.settings.settings.label06%></label>
                                 <div class=" ">
                                     <input class="form-control" id="id_security_question" name="security_question" type="text">
                                 </div>
                             </div>
                             <div class="form-group ">
-                                <label class="control-label  " for="id_security_answer">Security answer</label>
+                                <label class="control-label  " for="id_security_answer"><%=translation.settings.settings.label07%></label>
                                 <div class=" ">
                                     <input class="form-control" id="id_security_answer" name="security_answer" type="text">
                                 </div>
@@ -147,7 +147,7 @@
                                 },
                                 error: error });
                         });
-                            
+
                         $(document).on("click", "#two_factor_enable_modal, [data-dismiss='modal']", function(e) {
                             location.reload(true);
                         });
@@ -158,16 +158,16 @@
                     </script>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="panel panel-default cancel_account">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse-3" class="panel-heading collapsed">
                 <h4 class="panel-title panel-close">
-                    Cancel account
+                    <%=translation.settings.settings.panel_title04%>
                 </h4>
             </a>
             <div id="collapse-3" class="panel-collapse collapse">
                 <div class="panel-body">
-                    Unhappy? <a href="" class="ajax-modal" data-toggle="modal" data-target="#cancel_account_modal" rel="nofollow">Cancel my account</a>
+                    <%=translation.settings.settings.content04%><a href="" class="ajax-modal" data-toggle="modal" data-target="#cancel_account_modal" rel="nofollow"><%=translation.settings.settings.content04_link%></a>
                 </div>
             </div>
         </div>
@@ -180,7 +180,7 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        
+
         $('#id_new_password').bind("keyup input",function(e) {
             var input = $('#id_new_password')
             var value_input = $('#id_new_password').val()

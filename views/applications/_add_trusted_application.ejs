@@ -1,12 +1,12 @@
 <!-- Form to authorize user to be admin -->
 <div id="add_trusted_app" class="modal fade" style="top: 0px;" role="dialog" aria-hidden="false">
     <form id="trusted_applications_form" action="/idm/applications/<%= application.id%>/edit/trusted_applications" method="POST">
-        <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <a href="#" class="close" data-dismiss="modal">×</a>
-                    <h3>Manage trusted applications</h3>
+                    <h3><%=translation.applications.add_trusted_application.title%></h3>
                 </div>
                 <div class="modal-body clearfix">
                     <div class="tab-content">
@@ -15,9 +15,9 @@
                             <div class="handle_trusted_app">
                                 <div class="all-applications">
                                     <header>
-                                        <h4>Applications</h4>
+                                        <h4><%=translation.applications.add_trusted_application.subtitle01%></h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" id="filter_available_applications" class="form-control input-sm" placeholder="filter" data-url="/idm/applications/available">
+                                            <input type="text" id="filter_available_applications" class="form-control input-sm" placeholder="<%=translation.applications.add_trusted_application.placeholder_input%>" data-url="/idm/applications/available">
                                         </div>
                                         <div id="spinner_available_applications" class="filtering-spinner-inline" style="display: none;">
                                             <i class="fa fa-circle-o-notch fa-spin"></i>
@@ -27,37 +27,38 @@
                                         <ul id="available_applications" class="list-group">
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="no_available_applications" style="display: none;">
-                                            <li>No applications found.</li>
+                                            <li><%=translation.applications.add_trusted_application.alert01%></li>
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="perform_filter_available_applications" style="display: block;">
-                                            <li>Use the filter (type at least two characters).</li>
+                                            <li><%=translation.applications.add_trusted_application.alert03%></li>
                                         </ul>
                                     </div>
-                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'>Invalid characters</span>
+                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.add_trusted_application.alert04%></span>
                                 </div>
                                 <div class="trusted-applications">
                                     <header>
-                                        <h4>Trusted applications</h4>
+                                        <h4><%=translation.applications.add_trusted_application.subtitle02%></h4>
                                         <div class="form-group has-feedback">
-                                            <input type="text" id="filter_trusted_applications" class="form-control input-sm" placeholder="filter">
+                                            <input type="text" id="filter_trusted_applications" class="form-control input-sm" placeholder="<%=translation.applications.add_trusted_application.placeholder_input%>">
                                         </div>
                                     </header>
                                     <div class="pre-scrollable filterable">
                                         <ul id="trusted_applications_list" class="list-group">
                                         </ul>
                                         <ul class="no_results list-group alert alert-info" id="no_trusted_applications" style="display: none;">
-                                            <li>No trusted applications.</li>
+                                            <li><%=translation.applications.add_trusted_application.alert02%></li>
                                         </ul>                                
                                     </div>
+                                    <span id="alert_error_search_available" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.add_trusted_application.alert04%></span>
                                 </div>
                             </div>
                         </fieldset>    
-                        <span id="info_added_app" style="display: none;" class='help-block alert alert-info'>User authorized as admin</span>
+                        <span id="info_added_app" style="display: none;" class='help-block alert alert-info'><%=translation.applications.add_trusted_application.alert05%></span>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="Save">
-                    <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+                    <input id="submit_button" class="btn btn-primary pull-right always-enabled" type="submit" value="<%=translation.applications.add_trusted_application.save_btn%>">
+                    <button type="button" class="btn btn-default cancel" data-dismiss="modal"><%=translation.applications.add_trusted_application.cancel_btn%></button>
                 </div>
             </div>
         </div>

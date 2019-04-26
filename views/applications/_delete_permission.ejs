@@ -4,17 +4,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button id="esc_permission_delete" class="close" data-dismiss="modal">×</button>
-                <h3>Delete permission</h3>
+                <h3><%=translation.applications.delete_permission.title%></h3>
             </div>
             <form id="delete_permission_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
-                    <p>This will permanently delete the permission from the application and can't be undone. Are you sure you want to continue?</p>
-                    <input id="id_role_id" name="role_id" type="hidden" value="2ab96397e0e348d7a80dbc0489e4d2c8">
+                    <p><%=translation.applications.delete_permission.content01%></p>
+                    <input id="id_role_id" name="role_id" type="hidden" value="">
                 </div>
                 <div class="modal-footer">
-                    <input class="btn btn-primary pull-right" type="submit" value="Confirm">
-                    <a class="btn btn-default secondary cancel" data-dismiss="modal">Cancel</a>
+                    <input class="btn btn-primary pull-right" type="submit" value="<%=translation.applications.delete_permission.confirm_btn%>">
+                    <a class="btn btn-default secondary cancel" data-dismiss="modal"><%=translation.applications.delete_permission.cancel_btn%></a>
                 </div>
             </form>
         </div>

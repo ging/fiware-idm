@@ -4,24 +4,24 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button id="esc_role_creation" class="close" data-dismiss="modal">×</button>
-                <h3>Create role</h3> 
+                <h3><%=translation.applications.create_role.title%></h3> 
             </div>
             <form id="create_role_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/roles/create/" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrfToken%>' />
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
                     <fieldset>
                         <input id="id_application_id" name="application_id" type="hidden" value="">
                         <div class="form-group required">
-                            <label class="control-label  required" for="id_name">Role Name</label>
+                            <label class="control-label  required" for="id_name"><%=translation.applications.create_role.label01%></label>
                             <div class=" ">
                                 <input class="form-control" id="id_name" maxlength="64" name="name" type="text">
                             </div>
                         </div>
                     </fieldset>
-                    <span style="display: none;" class='help-block alert alert-danger'>Input required.</span>  
+                    <span style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_role.required_field%></span>  
                 </div>
                 <div class="modal-footer">
-                    <input class="btn btn-primary pull-right " type="submit" name="submit_roles" value="Save">
+                    <input class="btn btn-primary pull-right " type="submit" name="submit_roles" value="<%=translation.applications.create_role.save_input%>">
                 </div>
             </form>
         </div>

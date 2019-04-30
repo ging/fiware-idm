@@ -11,11 +11,12 @@ module.exports = {
   homes: require('../../controllers/web/homes'),
   roles: require('../../controllers/web/roles'),
   permissions: require('../../controllers/web/permissions'),
+  usage_policies: require('../../controllers/web/usage_policies'),
   pep_proxies: require('../../controllers/web/pep_proxies'),
   iot_agents: require('../../controllers/web/iot_agents'),
   users: require('../../controllers/web/users'),
   organizations: require('../../controllers/web/organizations'),
   manage_members: require('../../controllers/web/manage_members'),
   settings: require('../../controllers/web/settings'),
-  sessions: require('../../controllers/web/sessions')
-}
+  sessions: require('../../controllers/web/sessions'),
+};

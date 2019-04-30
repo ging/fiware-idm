@@ -138,6 +138,9 @@ const authzforce = sequelize.import(path.join(__dirname, 'authzforce'));
 // Import auth token table
 const auth_token = sequelize.import(path.join(__dirname, 'auth_token'));
 
+// Import usage policies table
+const usage_policy = sequelize.import(path.join(__dirname, 'usage_policy'));
+
 // Relation between oauth_client and trusted applications
 trusted_application.belongsTo(oauth_client, { onDelete: 'cascade' });
 trusted_application.belongsTo(oauth_client, {
@@ -270,6 +273,12 @@ eidas_credentials.belongsTo(oauth_client, {
   onDelete: 'cascade',
 });
 
+// Relation between eidas credentials and oauth client
+usage_policy.belongsTo(oauth_client, {
+  foreignKey: { allowNull: false, unique: true },
+  onDelete: 'cascade',
+});
+
 // Export tables
 exports.user = user;
 if (external_auth.enabled) {
@@ -294,6 +303,7 @@ exports.auth_token = auth_token;
 exports.user_authorized_application = user_authorized_application;
 exports.eidas_credentials = eidas_credentials;
 exports.trusted_application = trusted_application;
+exports.usage_policy = usage_policy;
 
 // Export helpers
 const search_identity = require('./helpers/search_identity');

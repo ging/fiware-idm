@@ -37,6 +37,59 @@
   }
 }
 
+#policy_list {
+  @include make-sm-column(5, $gutter: $grid-gutter-width);
+  @include make-md-column(5, $gutter: $grid-gutter-width);
+  @include make-lg-column(5, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .policy{
+    text-align: left;
+    position: relative;
+    height: 34px;
+    padding-top: 7px;
+    padding-left: 6px;
+    box-shadow: none;
+    a{
+      position: absolute;
+    }
+    .ajax-inline-edit{
+      right: 27px;
+      top: 8px;
+    }
+    .ajax-modal{
+      right: 7px;
+    }
+    label{
+      font-weight: normal;
+    }
+  }
+  .policy_active {
+    color: #fff;
+    background-color: #001630;
+    border-color: #001630;
+    label {
+      width: 80%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      i {
+        margin-top: 2px;
+        margin-right: 8px; 
+        float: left;
+      }
+    }
+    a {
+      color: inherit;
+    }
+  }
+}
+
+.ui-timepicker-container {
+  z-index: 3500 !important;
+}
+
 #permissions_list {
   @include make-sm-column(7, $gutter: $grid-gutter-width);
   @include make-md-column(7, $gutter: $grid-gutter-width);
@@ -69,6 +122,7 @@
 
 .permissions_list,
 .role_list,
+.policy_list,
 .services_list {
   padding: 15px;
   header{

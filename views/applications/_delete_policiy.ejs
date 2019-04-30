@@ -1,0 +1,22 @@
+<!-- Form to delete a role -->
+<div id="delete_policy" class="modal fade" style="top: 0px; display: none;" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="esc_policy_delete" class="close" data-dismiss="modal">×</button>
+                <h3><%=translation.applications.delete_role.title%></h3>
+            </div>
+            <form id="delete_policy_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="" method="POST" enctype="">
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+                <div class="modal-body clearfix">
+                    <p><%=translation.applications.delete_role.content01%></p>
+                    <input id="id_policy_id" name="policy_id" type="hidden" value="">
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-primary pull-right" type="submit" value="<%=translation.applications.delete_role.confirm_btn%>">
+                    <a class="btn btn-default secondary cancel" data-dismiss="modal"><%=translation.applications.delete_role.cancel_btn%></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

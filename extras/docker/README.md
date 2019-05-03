@@ -3,15 +3,15 @@
 To use this Generic Enabler you need to install
 [docker](https://docs.docker.com/installation/) and
 [docker-compose](https://docs.docker.com/compose/install/) on your machine. Two
-images are needed to run it: the _fiware/idm_ image and the
-_mysql/mysql-server:5.7.21_ image.
+images are needed to run it: the `fiware/idm` image and the
+`mysql/mysql-server:5.7.21` image.
 
 You can perform serveral actions using Docker:
 
--   You can run the service with docker-compose using images that we provide in
-    Docker Hub.
--   You can build your own image using the Dockerfile we provide and then run
-    with docker-compose.
+-   You can run the service with `docker-compose` using images that we provide
+    in Docker Hub.
+-   You can build your own image using the `Dockerfile` we provide and then run
+    with `docker-compose`.
 -   Other features.
 
 ## Run the service with docker compose
@@ -23,39 +23,60 @@ In order to run the IdM Keyrock follow these steps:
    following code and:
 
 ```yml
-version: "2"
-networks:
-    idm_network:
-        driver: bridge
-        ipam:
-            config:
-                - subnet: 172.18.1.0/24
-                  gateway: 172.18.1.1
-volumes:
-    vol-mysql:
+version: "3.5"
 services:
-    mysql:
-        image: mysql/mysql-server:5.7.21
-        ports:
-            - "3306:3306"
+    keyrock:
+        image: fiware/idm:7.6.0
+        container_name: fiware-keyrock
+        hostname: keyrock
         networks:
-            idm_network:
+            default:
                 ipv4_address: 172.18.1.5
-        volumes:
-            - vol-mysql:/var/lib/mysql
-        environment:
-            - MYSQL_ROOT_PASSWORD=idm
-            - MYSQL_ROOT_HOST=172.18.1.6
-    fiware-idm:
-        image: fiware/idm
+        depends_on:
+            - mysql-db
         ports:
             - "3000:3000"
             - "443:443"
+        environment:
+            - DEBUG=idm:*
+            - IDM_DB_HOST=mysql-db
+            - IDM_HOST=http://localhost:3000
+            - IDM_PORT=3000
+            # Development use only
+            # Use Docker Secrets for Sensitive Data
+            - IDM_DB_PASS=secret
+            - IDM_DB_USER=root
+            - IDM_ADMIN_USER=admin
+            - IDM_ADMIN_EMAIL=admin@test.com
+            - IDM_ADMIN_PASS=1234
+
+    mysql-db:
+        restart: always
+        image: mysql:5.7
+        hostname: mysql-db
+        container_name: db-mysql
+        expose:
+            - "3306"
+        ports:
+            - "3306:3306"
         networks:
-            idm_network:
+            default:
                 ipv4_address: 172.18.1.6
         environment:
-            - IDM_DB_HOST=mysql
+            # Development use only
+            # Use Docker Secrets for Sensitive Data
+            - "MYSQL_ROOT_PASSWORD=secret"
+            - "MYSQL_ROOT_HOST=172.18.1.5"
+        volumes:
+            - mysql-db:/var/lib/mysql
+
+networks:
+    default:
+        ipam:
+            config:
+                - subnet: 172.18.1.0/24
+volumes:
+    mysql-db: ~
 ```
 
 The different params mean:
@@ -84,7 +105,7 @@ Dockerfile to create your own image and the docker-compose.yml file described in
 the previous section as well as other files needed to run the container. There,
 to compile your own image just run:
 
-```bash
+```console
 	sudo docker build -t idm-fiware-image .
 ```
 
@@ -96,7 +117,7 @@ This builds a new Docker image following the steps in `Dockerfile` and saves it
 in your local Docker repository with the name `idm-fiware-image`. You can check
 the available images in your local repository using:
 
-```bash
+```console
 sudo docker images
 ```
 
@@ -107,7 +128,7 @@ sudo docker images
 Edit the `docker-compose.yml` to change name of the fiware-idm image. Now you
 can run as in the previous section:
 
-```bash
+```console
 	sudo docker-compose up
 ```
 

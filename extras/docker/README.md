@@ -47,7 +47,7 @@ services:
             - MYSQL_ROOT_PASSWORD=idm
             - MYSQL_ROOT_HOST=172.18.1.6
     fiware-idm:
-        image: fiware/idm
+        image: fiware/idm:7.5.1
         ports:
             - "3000:3000"
             - "443:443"
@@ -121,7 +121,7 @@ will find a template of the file. To copy the file to the container edit
 
 ```yml
 fiware-idm:
-    image: fiware/idm
+    image: fiware/idm:7.5.1
     ports:
       - "3000:3000"
       - "443:443"

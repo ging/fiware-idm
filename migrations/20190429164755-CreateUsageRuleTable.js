@@ -13,7 +13,7 @@ module.exports = {
         name: {
           type:
             Sequelize.STRING(255) +
-            (queryInterface.sequelize.dialect === 'mysql'
+            (queryInterface.sequelize.getDialect() === 'mysql'
               ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
               : ''),
           validate: {
@@ -23,7 +23,7 @@ module.exports = {
         description: {
           type:
             Sequelize.TEXT() +
-            (queryInterface.sequelize.dialect === 'mysql'
+            (queryInterface.sequelize.getDialect() === 'mysql'
               ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
               : ''),
           validate: {
@@ -31,7 +31,29 @@ module.exports = {
           },
         },
         type: {
-          type: Sequelize.ENUM('COUNT_POLICY', 'AGGREGATION_POLICY', 'CUSTOM'),
+          type: Sequelize.ENUM(
+            'COUNT_POLICY',
+            'AGGREGATION_POLICY',
+            'CUSTOM_POLICY'
+          ),
+          validate: {
+            notEmpty: { msg: 'error_empty_type' },
+            isAllow(value, next) {
+              const self = this;
+              if (self.type) {
+                if (
+                  ![
+                    'COUNT_POLICY',
+                    'AGGREGATION_POLICY',
+                    'CUSTOM_POLICY',
+                  ].includes(self.type)
+                ) {
+                  return next('error_invalid_type');
+                }
+              }
+              return next();
+            },
+          },
         },
         parameters: {
           type: Sequelize.JSON(),
@@ -40,7 +62,7 @@ module.exports = {
               const self = this;
               for (var key in self.parameters) {
                 if (!allowed_rules[self.type].parameters.includes(key)) {
-                  return next('invalidParameter');
+                  return next('error_invalid_parameter');
                 }
               }
               return next();
@@ -49,19 +71,45 @@ module.exports = {
         },
         punishment: {
           type: Sequelize.ENUM('KILL_JOB', 'UNSUBSCRIBE', 'MONETIZE'),
+          validate: {
+            isAllow(value, next) {
+              const self = this;
+              if (self.type && self.type !== 'CUSTOM_POLICY') {
+                if (
+                  !['KILL_JOB', 'UNSUBSCRIBE', 'MONETIZE'].includes(
+                    self.punishment
+                  )
+                ) {
+                  return next('error_invalid_punishment');
+                }
+              }
+              return next();
+            },
+          },
         },
         from: {
-          type: Sequelize.TIME(),
+          type: Sequelize.TIME,
         },
         to: {
-          type: Sequelize.TIME(),
+          type: Sequelize.TIME,
         },
         odrl: {
           type:
             Sequelize.TEXT() +
-            (queryInterface.sequelize.dialect === 'mysql'
+            (queryInterface.sequelize.getDialect() === 'mysql'
               ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
               : ''),
+          validate: {
+            isAllow(value, next) {
+              const self = this;
+              if (self.type && self.type === 'CUSTOM_POLICY') {
+                if (self.parameters || !self.odrl) {
+                  return next('error_invalid_custom');
+                }
+              }
+              return next();
+            },
+          },
         },
         oauth_client_id: {
           type: Sequelize.STRING(36), //Sequelize.UUID,

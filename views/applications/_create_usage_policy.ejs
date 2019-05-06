@@ -1,5 +1,5 @@
 <!-- Form to create permission -->
-<div id="create_usage_policy" class="modal fade" style="top: 0px; display: none;" aria-hidden="false">
+<div id="create_usage_policy_modal" class="modal fade" style="top: 0px; display: none;" aria-hidden="false">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -32,41 +32,43 @@
 						<div class="panel-group" id="accordion">
 							<div class="panel">
 								<div class="panel-headding">
-									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-default-policy" class="panel-heading collapsed">
+									<a data-toggle="collapse" data-parent="#accordion" class="panel-heading collapsed">
 										<h4 class="panel-title panel-close">
 											ODRL Default Policy
 										</h4>
 									</a>
 								</div>
-								<div id="collapse-default-policy" class="panel-collapse collapsed collapse">
+								<div id="collapse-default-policy" class="panel-collapse collapsed collapse in">
 									<div class="form-group required">
-				                        <label class="control-label  required" for="policy_type">
+				                        <label class="control-label  required" for="type">
 				                            Type
 				                        </label>
 				                        <div class="select-multiple">
-				                            <select id="policy_type" title="Nothing selected" name="policy_type" class="selectpicker" data-dropup-auto="false">
+				                            <select id="type" title="Nothing selected" name="type" class="selectpicker" data-dropup-auto="false">
 				                                <option value="COUNT_POLICY">Count</option>
 				                                <option value="AGGREGATION_POLICY">Aggregation</option>
+				                                <option value="CUSTOM_POLICY">Custom</option>
 				                            </select>
 				                        </div>
 				                    </div>
-				                    <span id="error_policy_type" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+				                    <span id="error_empty_type" style="display: none;" class='help-block alert alert-danger'>Type required.</span>
 
 				                    <div id="parameters" class="form-group required" hidden>
 				                        <label class="control-label  required">
 				                            Parameters
 				                        </label>
 				                    </div>
+				                    <span id="error_invalid_parameter" style="display: none;" class='help-block alert alert-danger'>Invalid paramter.</span>
 
 				                    <div id="max_number" class="form-group required parameter" hidden>
 				                        <label class="control-label  required" for="policy_type">
 				                            Maximum Number of Events
 				                        </label>
 				                        <div class="time">
-											<input class="form-control" id="id_max_number_events" name="parameters[max_number_events]" type="number">
+											<input class="form-control" id="id_max_number_events" name="parameters[max_number_events[value]]" type="number">
 										</div>
 				                    </div>
-				                    <span id="error_max_number_events" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+				                    
 
 				                    <div id="event_window" class="form-group required parameter" hidden>
 				                        <label class="control-label  required" for="policy_type">
@@ -84,7 +86,6 @@
 					                        </div>
 										</div>
 				                    </div>
-				                    <span id="error_event_window" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 
 				                    <div id="aggregation_time" class="form-group required parameter" hidden>
 				                        <label class="control-label required" for="policy_type">
@@ -102,23 +103,22 @@
 					                        </div>
 										</div>
 				                    </div>
-				                    <span id="error_aggregation_time" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 
-				                    <div class="form-group required">
+				                    <div id="punishment" class="form-group required" hidden>
 				                        <label class="control-label required" for="punishment">
 				                            Punishment
 				                        </label>
 				                        <div class="select-multiple">
-				                            <select title="Nothing selected" name="punishment" class="selectpicker" data-dropup-auto="false">
+				                            <select id="punishment" name="punishment" title="Nothing selected" class="selectpicker" data-dropup-auto="false">
 				                                <option value="KILL_JOB">Kill job</option>
 				                                <option value="UNSUBSCRIBE">Unsubscribe</option>
 				                                <option value="MONETIZE">Monetize</option>
 				                            </select>
 				                        </div>
 				                    </div>
-				                    <span id="error_punishment" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
+				                    <span id="error_invalid_punishment" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 
-				                    <div class="form-group required">
+				                    <div id="time_lapse" class="form-group required parameter" hidden>
 				                        <label class="control-label  required" for="time_lapse">
 				                            Time Lapse
 				                        </label>
@@ -128,26 +128,18 @@
 											<input class="form-control timepicker" id="id_time_to" name="to" type="text">
 										</div>
 				                    </div>
-				                    <span id="error_time_lapse" style="display: none;" class='help-block alert alert-danger'>Input required.</span>			
-								</div>
-							</div>
-							<div class="panel">
-								<div class="panel-headding">
-									<a data-toggle="collapse" data-parent="#accordion2" href="#collapse-odrl" class="panel-heading collapsed">
-										<h4 class="panel-title panel-close">
-											ODRL Custom Policy
-										</h4>
-									</a>
-								</div>
-								<div id="collapse-odrl" class="panel-collapse collapsed collapse">
-									<div class="panel-body">
-										<div class="form-group ">
-											<label class="control-label  " for="id_xml">Here you can define the Data Usage Policy.</label>
+
+				                    <div id="custom" class="form-group required parameter" hidden>
+				                        <label class="control-label  required" for="time_lapse">
+				                            Here you can define the Data Usage Policy.
+				                        </label>
+				                        <div class="form-group ">
 											<div class=" ">
-												<textarea class="form-control" cols="40" id="id_xml" name="xml" rows="10"></textarea>
+												<textarea class="form-control" cols="40" id="id_odrl" name="odrl" rows="10"></textarea>
 											</div>
 										</div>
-									</div>
+				                    </div>
+				                    <span id="error_invalid_custom" style="display: none;" class='help-block alert alert-danger'>Input required.</span>
 								</div>
 							</div>
 						</div>

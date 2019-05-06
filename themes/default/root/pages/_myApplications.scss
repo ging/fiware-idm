@@ -148,9 +148,6 @@
   }
   .panel{
     box-shadow: none;
-    &:first-child{
-      border-bottom: 1px solid $border-color
-    }
   }
   .in{
     .panel-title{

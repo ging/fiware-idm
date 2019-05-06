@@ -31,7 +31,29 @@ module.exports = function(sequelize, DataTypes) {
         },
       },
       type: {
-        type: DataTypes.ENUM('COUNT_POLICY', 'AGGREGATION_POLICY', 'CUSTOM'),
+        type: DataTypes.ENUM(
+          'COUNT_POLICY',
+          'AGGREGATION_POLICY',
+          'CUSTOM_POLICY'
+        ),
+        validate: {
+          notEmpty: { msg: 'error_empty_type' },
+          isAllow(value, next) {
+            const self = this;
+            if (self.type) {
+              if (
+                ![
+                  'COUNT_POLICY',
+                  'AGGREGATION_POLICY',
+                  'CUSTOM_POLICY',
+                ].includes(self.type)
+              ) {
+                return next('error_invalid_type');
+              }
+            }
+            return next();
+          },
+        },
       },
       parameters: {
         type: DataTypes.JSON(),
@@ -40,7 +62,7 @@ module.exports = function(sequelize, DataTypes) {
             const self = this;
             for (var key in self.parameters) {
               if (!allowed_rules[self.type].parameters.includes(key)) {
-                return next('invalidParameter');
+                return next('error_invalid_parameter');
               }
             }
             return next();
@@ -49,6 +71,21 @@ module.exports = function(sequelize, DataTypes) {
       },
       punishment: {
         type: DataTypes.ENUM('KILL_JOB', 'UNSUBSCRIBE', 'MONETIZE'),
+        validate: {
+          isAllow(value, next) {
+            const self = this;
+            if (self.type && self.type !== 'CUSTOM_POLICY') {
+              if (
+                !['KILL_JOB', 'UNSUBSCRIBE', 'MONETIZE'].includes(
+                  self.punishment
+                )
+              ) {
+                return next('error_invalid_punishment');
+              }
+            }
+            return next();
+          },
+        },
       },
       from: {
         type: DataTypes.TIME,
@@ -62,6 +99,17 @@ module.exports = function(sequelize, DataTypes) {
           (sequelize.getDialect() === 'mysql'
             ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
             : ''),
+        validate: {
+          isAllow(value, next) {
+            const self = this;
+            if (self.type && self.type === 'CUSTOM_POLICY') {
+              if (self.parameters || !self.odrl) {
+                return next('error_invalid_custom');
+              }
+            }
+            return next();
+          },
+        },
       },
     },
     {

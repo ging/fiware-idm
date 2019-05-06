@@ -1,30 +1,37 @@
 $(document).ready(function() {
   // Init timepicker for time lapse when creating a policy
-  $('input.timepicker').timepicker({});
+  $('input.timepicker').timepicker({
+    timeFormat: 'HH:mm',
+  });
 
-  let usage_policies_form = $('form#activate_usage_policies_form');
-  let usage_policies_list = $('div#application_policies');
+  let assign_role_permission_form = $('form#assign_role_permission_form');
+  let usage_policies_list = $('ul#application_policies');
+  let create_usage_policy_modal = $('div#create_usage_policy_modal');
   let create_usage_policy_form = $('form#create_usage_policy_form');
 
   let policies = [];
 
-  let application_id = usage_policies_form.attr('action').split('/')[3];
+  let application_id = assign_role_permission_form.attr('action').split('/')[3];
+
+  let role_policy_assign = {};
 
   // Obtain policies and render them
   $.ajax({
     url: '/idm/applications/' + application_id + '/edit/usage_policies',
     type: 'GET',
     beforeSend: before_send(
-      usage_policies_form.find('input:hidden[name=_csrf]').val()
+      assign_role_permission_form.find('input:hidden[name=_csrf]').val()
     ),
     success: function(result) {
       if (result.type === 'danger') {
         // Add message
         create_message(result.type, result.text);
       } else {
-        policies = result.policies;
-        for (let i = 0; i < policies.length; i++) {
-          render_policy(policies[i]);
+        policies = result;
+        if (policies.length > 0) {
+          for (let i = 0; i < policies.length; i++) {
+            render_policy(policies[i]);
+          }
         }
       }
     },
@@ -33,40 +40,93 @@ $(document).ready(function() {
   // Render policies
   function render_policy(policy) {
     var policy_row = $('#table_row_usage_policy_template').html();
-    policy_row = policy_row.replace(
-      /policy_name/g,
-      htmlEntities(policy.rule.name)
-    );
-    policy_row = policy_row.replace(/policy_id/g, policy.rule.id);
+    policy_row = policy_row.replace(/policy_name/g, htmlEntities(policy.name));
+    policy_row = policy_row.replace(/policy_id/g, policy.id);
     policy_row = policy_row.replace(/app_id/g, application_id);
     usage_policies_list.append(policy_row);
   }
 
-  // Handle activate policies
-  usage_policies_list.on('click', '.policy', function() {
-    let tick = $(this)
-      .children('label')
-      .children('i');
-    $(this).toggleClass('policy_active');
-    tick.toggle();
+  // Show policies of a role
+  $('#update_owners_roles').on('click', '.btn', function() {
+    $('div#update_owners_policies').show();
+    if (policies.length > 0) {
+      $('div#update_owners_policies_alert').hide();
+    }
+
+    var role = $(this).attr('id');
+    var policy = null;
+    for (var i = 0; i < policies.length; i++) {
+      policy = policies[i].id;
+      $('[data-policy-id=' + policy + ']').show();
+      if (typeof role_policy_assign[role] === 'undefined') {
+        $('[data-policy-id=' + policy + ']').removeClass('active');
+      } else {
+        if (role_policy_assign[role].includes(policy)) {
+          $('[data-policy-id=' + policy + ']').addClass('active');
+        } else {
+          $('[data-policy-id=' + policy + ']').removeClass('active');
+        }
+      }
+    }
+  });
+
+  // Select policy item from list
+  $('#update_owners_policies').on('click', '.list-group-item', function(e) {
+    var role = $('#update_owners_roles')
+      .find('div.active')
+      .attr('id');
+
+    var policy = $(this).attr('data-policy-id');
+    if (typeof role_policy_assign[role] === 'undefined') {
+      role_policy_assign[role] = [];
+    }
+
+    if ($('[data-policy-id=' + policy + ']').hasClass('active')) {
+      index = role_policy_assign[role].indexOf(policy);
+      if (index > -1) {
+        role_policy_assign[role].splice(index, 1);
+      }
+    } else {
+      role_policy_assign[role].push(policy);
+    }
+    $('[data-policy-id=' + policy + ']').toggleClass('active');
+    console.log(role_policy_assign);
   });
 
   ///// CREATE POLICY
 
-  $('select#policy_type').change(function() {
+  $('select#type').change(function() {
     let type = $(this)
       .find('option:selected')
       .val();
-    $('#parameters').show();
-    if (type === 'COUNT_POLICY') {
-      $('#max_number').show();
-      $('#event_window').show();
-      $('#aggregation_time').hide();
+
+    create_usage_policy_form.find('span.alert').hide('close');
+
+    if (type === 'COUNT_POLICY' || type === 'AGGREGATION_POLICY') {
+      $('#parameters').show();
+      $('#punishment').show();
+      $('#time_lapse').show();
+      $('#custom').hide();
+      if (type === 'COUNT_POLICY') {
+        $('#max_number').show();
+        $('#event_window').show();
+        $('#aggregation_time').hide();
+      }
+      if (type === 'AGGREGATION_POLICY') {
+        $('#max_number').hide();
+        $('#event_window').hide();
+        $('#aggregation_time').show();
+      }
     }
-    if (type === 'AGGREGATION_POLICY') {
+
+    if (type === 'CUSTOM_POLICY') {
+      $('#parameters').hide();
+      $('#punishment').hide();
+      $('#time_lapse').hide();
       $('#max_number').hide();
       $('#event_window').hide();
-      $('#aggregation_time').show();
+      $('#aggregation_time').hide();
+      $('#custom').show();
     }
 
     $('.parameter').each(function(i, obj) {
@@ -74,8 +134,16 @@ $(document).ready(function() {
         .find('input.form-control')
         .val('');
       $(this)
-        .find('.selectpicker')
+        .find('textarea.form-control')
+        .val('');
+      $(this)
+        .find('select.selectpicker')
         .selectpicker('val', 'SECONDS');
+      $(this)
+        .find('input.timepicker')
+        .timepicker({
+          timeFormat: 'HH:mm',
+        });
     });
   });
 
@@ -88,7 +156,22 @@ $(document).ready(function() {
       url = $form.attr('action');
 
     let policy = $form.serializeJSON();
-    console.log(policy);
+
+    const filterObject = (obj, filter, filterValue) =>
+      Object.keys(obj).reduce(
+        (acc, val) =>
+          obj[val][filter] === filterValue
+            ? acc
+            : {
+                ...acc,
+                [val]: obj[val],
+              },
+        {}
+      );
+
+    policy.parameters = filterObject(policy.parameters, 'value', '');
+
+    create_usage_policy_form.find('span.alert').hide('close');
 
     // Send the data using post with element id name
     var posting = $.post({
@@ -98,8 +181,40 @@ $(document).ready(function() {
     });
 
     // Alerts the results
-    posting.done(function(result) {
-      console.log(result);
+    posting.done(function(policy) {
+      policies.push(policy);
+      render_policy(policy);
+      create_usage_policy_modal.modal('toggle');
+      $('.form-group').each(function(i, obj) {
+        $(this)
+          .find('input.form-control')
+          .val('');
+        $(this)
+          .find('textarea.form-control')
+          .val('');
+        $(this)
+          .find('select#type')
+          .selectpicker('val', '');
+        $(this)
+          .find('select#punishment')
+          .selectpicker('val', '');
+        $(this)
+          .find('.time')
+          .find('select.selectpicker')
+          .selectpicker('val', 'SECONDS');
+        $(this)
+          .find('input.timepicker')
+          .timepicker({
+            timeFormat: 'HH:mm',
+          });
+      });
+    });
+
+    posting.fail(response => {
+      let errors = response.responseJSON;
+      for (let i = 0; i < errors.length; i++) {
+        create_usage_policy_form.find('#' + errors[i]).show('open');
+      }
     });
   });
 

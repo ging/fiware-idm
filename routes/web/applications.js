@@ -268,12 +268,6 @@ router.delete(
   csrf_protection,
   web_usage_policies_controller.delete
 );
-router.post(
-  '/:application_id/edit/usage_policies/activate',
-  web_check_perm_controller.owned_permissions,
-  csrf_protection,
-  web_usage_policies_controller.activate
-);
 
 // Routes to handle iot of applications
 router.get(

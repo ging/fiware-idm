@@ -4,7 +4,8 @@
             <div class="workflow workflow-roles static_page">
             	<form id="assign_role_permission_form" action="/idm/applications/<%= application.id %>/edit/roles" method="POST">
             		<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-	                <input type="hidden" id="submit_assignment" name="submit_assignment" value="" />
+	                <input type="hidden" id="submit_access_control_assignment" name="submit_access_control_assignment" value="" />
+	                <input type="hidden" id="submit_usage_control_assignment" name="submit_usage_control_assignment" value="" />
 	                <div class="modal-dialog">
 	                    <div class="modal-content">
 	                        <div class="modal-header">
@@ -39,7 +40,7 @@
 			                    </section>
 			                    <section id="policy_list" class="permissions_list">
 			                        <header>
-			                            <h4>Policies</h4>
+			                            <h4>Usage Policies</h4>
 			                            <button id="policy_button" type="button" data-toggle="modal" data-target="#create_usage_policy_modal" class="btn ajax-modal">
 			                            	<i class="fa fa-plus"></i>
 			                            </button>

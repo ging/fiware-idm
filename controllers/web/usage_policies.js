@@ -6,73 +6,47 @@ const debug = require('debug')('idm:web-usage_policies_controller');
 exports.index = function(req, res) {
   debug('--> index');
 
-  models.usage_policy
-    .findAll({
-      where: { oauth_client_id: req.application.id },
-    })
-    .then(function(policies) {
-      res.status(200).json(policies);
+  const search_roles = models.role.findAll({
+    where: { oauth_client_id: req.application.id },
+    attributes: ['id', 'name'],
+    order: [['id', 'DESC']],
+  });
+  const search_usage_policies = models.usage_policy.findAll({
+    where: { oauth_client_id: req.application.id },
+  });
+  const search_assignments = search_roles.then(function(roles) {
+    return models.role_usage_policy.findAll({
+      where: { role_id: roles.map(elem => elem.id) },
+    });
+  });
+
+  Promise.all([search_roles, search_usage_policies, search_assignments])
+    .then(function(values) {
+      const usage_policies = values[1];
+      const role_usage_policy_assign = {};
+
+      for (let i = 0; i < values[2].length; i++) {
+        if (!role_usage_policy_assign[values[2][i].role_id]) {
+          role_usage_policy_assign[values[2][i].role_id] = [];
+        }
+        role_usage_policy_assign[values[2][i].role_id].push(
+          values[2][i].usage_policy_id
+        );
+      }
+
+      res.send({
+        usage_policies,
+        role_usage_policy_assign,
+      });
     })
     .catch(function(error) {
       debug('Error: ', error);
       // Send message of fail when creating role
       res.send({
-        text: 'Error searching policies',
+        text: 'Error searching usage_policies',
         type: 'danger',
       });
     });
-
-  /*const json = {
-    policies: [
-      {
-      	id: '1',
-      	name: 'count_policy1',
-        description: 'noseque',
-		type: 'COUNT_POLICY',
-		parameters: {
-			num_max_events: 200,
-		},
-        punishment: 'KILL_JOB',
-        from: '12:00',
-        to: '14:00',
-      },
-      {
-		id: '2',
-		name: 'count_policy2',
-		description: 'noseque',
-        type: 'COUNT_POLICY',
-		parameters: {
-			event_window: 15,
-			unit_time: 'SECONDS',
-		},
-        punishment: 'UNSUBSCRIBE',
-        from: '12:00',
-        to: '14:00',
-      },
-      {
-		id: '3',
-		name: 'aggregation_policy2',
-		description: 'noseque',
-		type: 'AGGREGATION_POLICY',
-		parameters: {
-			aggregate_time: 10000,
-			unit_time: 'SECONDS',
-		},
-        punishment: 'MONETIZE',
-        from: '12:00',
-        to: '14:00',
-      },
-      {
-		id: '4',
-		name: 'custom',
-		description: 'noseque',
-		type: 'CUSTOM_POLICY',
-		odrl: 'custom_odrl',
-      },
-    ],
-  };
-
-  res.status(200).json(json);*/
 };
 
 // GET /idm/applications/:application_id/edit/usage_policies -- Create usage policy
@@ -116,12 +90,6 @@ exports.edit = function(req, res) {
 
 // GET /idm/applications/:application_id/edit/usage_policies/:usage_policy_id -- Delete usage policy
 exports.delete = function(req, res) {
-  debug(req.body);
-  res.send();
-};
-
-// GET /idm/applications/:application_id/edit/usage_policies/:usage_policy_id -- Activate usage policies
-exports.activate = function(req, res) {
   debug(req.body);
   res.send();
 };

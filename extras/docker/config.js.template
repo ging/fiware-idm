@@ -84,6 +84,15 @@ config.authorization = {
     }
 }
 
+// Enable usage control and configure where is the Policy Translation Point
+config.usage_control = {
+    enabled: to_boolean(process.env.IDM_USAGE_CONTROL_ENABLED, false),
+    ptp: {
+        host: (process.env.IDM_PTP_HOST || 'localhost'),
+        port: (process.env.IDM_PTP_PORT||  8081),
+    } 
+}
+
 // Database info
 config.database  = {
     host:     (process.env.IDM_DB_HOST || 'localhost'),

@@ -13,8 +13,6 @@ $(document).ready(function() {
 
   let application_id = assign_role_permission_form.attr('action').split('/')[3];
 
-  let role_policy_assign = {};
-
   // Obtain policies and render them
   $.ajax({
     url: '/idm/applications/' + application_id + '/edit/usage_policies',
@@ -27,7 +25,9 @@ $(document).ready(function() {
         // Add message
         create_message(result.type, result.text);
       } else {
-        policies = result;
+        policies = result.usage_policies;
+        application.role_policy_assign = result.role_usage_policy_assign;
+
         if (policies.length > 0) {
           for (let i = 0; i < policies.length; i++) {
             render_policy(policies[i]);
@@ -58,16 +58,17 @@ $(document).ready(function() {
     for (var i = 0; i < policies.length; i++) {
       policy = policies[i].id;
       $('[data-policy-id=' + policy + ']').show();
-      if (typeof role_policy_assign[role] === 'undefined') {
+      if (typeof application.role_policy_assign[role] === 'undefined') {
         $('[data-policy-id=' + policy + ']').removeClass('active');
       } else {
-        if (role_policy_assign[role].includes(policy)) {
+        if (application.role_policy_assign[role].includes(policy)) {
           $('[data-policy-id=' + policy + ']').addClass('active');
         } else {
           $('[data-policy-id=' + policy + ']').removeClass('active');
         }
       }
     }
+    console.log(application.role_policy_assign);
   });
 
   // Select policy item from list
@@ -77,20 +78,19 @@ $(document).ready(function() {
       .attr('id');
 
     var policy = $(this).attr('data-policy-id');
-    if (typeof role_policy_assign[role] === 'undefined') {
-      role_policy_assign[role] = [];
+    if (typeof application.role_policy_assign[role] === 'undefined') {
+      application.role_policy_assign[role] = [];
     }
 
     if ($('[data-policy-id=' + policy + ']').hasClass('active')) {
-      index = role_policy_assign[role].indexOf(policy);
+      index = application.role_policy_assign[role].indexOf(policy);
       if (index > -1) {
-        role_policy_assign[role].splice(index, 1);
+        application.role_policy_assign[role].splice(index, 1);
       }
     } else {
-      role_policy_assign[role].push(policy);
+      application.role_policy_assign[role].push(policy);
     }
     $('[data-policy-id=' + policy + ']').toggleClass('active');
-    console.log(role_policy_assign);
   });
 
   ///// CREATE POLICY
@@ -183,6 +183,7 @@ $(document).ready(function() {
     // Alerts the results
     posting.done(function(policy) {
       policies.push(policy);
+      $('div#update_owners_policies_alert').hide();
       render_policy(policy);
       create_usage_policy_modal.modal('toggle');
       $('.form-group').each(function(i, obj) {

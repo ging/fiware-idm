@@ -5,6 +5,7 @@ var application = {
   roles: [],
   permissions: [],
   role_permission_assign: {},
+  role_policy_assign: {},
 };
 
 $(document).ready(function() {

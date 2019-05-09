@@ -12,6 +12,7 @@ module.exports = {
   roles: require('../../controllers/web/roles'),
   permissions: require('../../controllers/web/permissions'),
   usage_policies: require('../../controllers/web/usage_policies'),
+  ptps: require('../../controllers/web/ptps'),
   pep_proxies: require('../../controllers/web/pep_proxies'),
   iot_agents: require('../../controllers/web/iot_agents'),
   users: require('../../controllers/web/users'),

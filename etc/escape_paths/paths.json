@@ -1,6 +1,7 @@
 {
 	"paths": [
 		"/saml2/metadata",
-		"/saml2/login"
+		"/saml2/login",
+		"/job_id"
 	]
 }

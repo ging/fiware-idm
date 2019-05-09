@@ -51,14 +51,16 @@ exports.index = function(req, res) {
 
 // GET /idm/applications/:application_id/edit/usage_policies -- Create usage policy
 exports.create = function(req, res) {
+  debug('--> create');
+  debug(req.body);
   const policies = models.usage_policy.build({
     name: req.body.name,
     description: req.body.description,
     type: req.body.type,
     parameters: req.body.parameters,
     punishment: req.body.punishment ? req.body.punishment : null,
-    from: req.body.from,
-    to: req.body.to,
+    from: req.body.from ? req.body.from : null,
+    to: req.body.to ? req.body.to : null,
     odrl: req.body.odrl,
     oauth_client_id: req.application.id,
   });

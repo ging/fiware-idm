@@ -110,12 +110,12 @@ $(document).ready(function() {
       if (type === 'COUNT_POLICY') {
         $('#max_number').show();
         $('#event_window').show();
-        $('#aggregation_time').hide();
+        $('#aggregate_time').hide();
       }
       if (type === 'AGGREGATION_POLICY') {
         $('#max_number').hide();
         $('#event_window').hide();
-        $('#aggregation_time').show();
+        $('#aggregate_time').show();
       }
     }
 
@@ -125,7 +125,7 @@ $(document).ready(function() {
       $('#time_lapse').hide();
       $('#max_number').hide();
       $('#event_window').hide();
-      $('#aggregation_time').hide();
+      $('#aggregate_time').hide();
       $('#custom').show();
     }
 

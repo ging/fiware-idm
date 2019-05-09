@@ -3,7 +3,7 @@
     	"parameters": ["event_window", "max_number_events"]
     },
     "AGGREGATION_POLICY": {
-    	"parameters": ["aggregation_time"]
+    	"parameters": ["aggregate_time"]
     },
     "CUSTOM_POLICY": {
     	"parameters": [""]

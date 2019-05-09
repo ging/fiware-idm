@@ -337,9 +337,11 @@ exports.ptp = ptp;
 // Export helpers
 const search_identity = require('./helpers/search_identity');
 const search_distinct = require('./helpers/search_distinct');
+const sequelize_functions = require('./helpers/sequelize_functions');
 
 exports.helpers = {
   search_pep_or_user: search_identity.search_pep_or_user,
   search_iot_or_user: search_identity.search_iot_or_user,
   search_distinct,
+  sequelize_functions,
 };

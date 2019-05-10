@@ -156,7 +156,7 @@ We also provide a Docker image to facilitate you the building of this GE.
 ## Usage
 
 Information about how to use the Keyrock GUI can be found in the
-[User & Programmers Manual](https://fiware-idm.readthedocs.io/en/latest/user_guide/).
+[User & Programmers Manual](https://fiware-idm.readthedocs.io/en/latest/user_and_programmers_guide/introduction).
 
 ## API
 

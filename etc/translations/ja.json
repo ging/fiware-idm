@@ -1,0 +1,896 @@
+{
+  "generic": {
+    "navigation": {
+      "first": "最初",
+      "last": "最後"
+    },
+    "tours": {
+      "init_tour": {
+        "title01": "始めましょう！",
+        "title02": "あなたのプロフィール",
+        "title03": "ナビゲーション",
+        "title04": "アプリケーション",
+        "title05": "組織",
+        "title06": "すべて設定済みです！",
+        "content01": "FIWARE の KeyRock Identity Manager へようこそ。これは概要を案内する基本的なツアーです。",
+        "content02": "あなたのプロフィール、設定、そしてログアウトにアクセスするために、このセクションを使用してください。",
+        "content03": "このサイドバーには KeyRock のさまざまなセクションがあります。",
+        "content04": "アプリケーションは、あなたが参加している FIWARE 技術を使ったサービスです (例えば、所有者または購入者として)。この表はそれらの簡単なサマリを示しています。",
+        "content05": "組織は基本的にユーザのグループです。アプリケーション内の複数ユーザを一度に認可したい場合に、非常に便利です。 それらの簡単なサマリはこの表で見つけることができます。",
+        "content06": "<p>基本ツアーを終了しました！次のツアーに進んで自分のプロフィールの最も重要な設定についてもっと学ぶか、このチュートリアルを終了して試してみることができます。</p><p>基本ツアーを終了しました！次のツアーに進んで自分のプロフィールの最も重要な設定についてもっと学ぶか、このチュートリアルを終了して試してみることができます。</p><a href='#' class='next-tour' data-current-tour='initTour' data-next-tour='profileTour'> > プロフィール・ツアーに進む</a>"
+      },
+      "profile_tour": {
+        "title01": "始めましょう！",
+        "title02": "あなたのプロフィール",
+        "title03": "あなたのプロフィール",
+        "title04": "あなたの組織",
+        "title05": "あなたのアプリ",
+        "title06": "あなたのプロフィール",
+        "title07": "プロフィールを編集",
+        "title08": "プロフィールを編集",
+        "title09": "これで準備完了です！",
+        "content01": "プロフィール・ツアーへようこそ！あなたのプロフィールの最も重要な設定がどのようになるのかを学ぶでしょう。",
+        "content02": "このメニューからあなたのプロフィール・ページにアクセスします。",
+        "content03": "これはあなたのプロフィール・ページです。アバターや自分に関する個人データなど、役に立つ情報がいくつか含まれています。",
+        "content04": "この表はあなたが所属する組織を示しています。",
+        "content05": "この表は、あなたが認可されたアプリケーションを示しています。つまり、あなたはそれらに対して少なくとも一つのロールを割り当てられています。",
+        "content06": "いくつかの個人情報を設定しましょう！プロフィールを編集するには、このボタンをクリックしてください。",
+        "content07": "あなた自身に関する有用な情報をいくつか提供してください。 あなたのプロフィール・ページに表示されます。",
+        "content08": "あなたのアバターを選択してください。以前にアップロードした画像から選択するか、新しい画像をアップロードするか、Gravatar を使用することもできます！",
+        "content09": "<p>あなたはプロフィール・ツアーを終了しました！次のツアーに進んでアプリケーションとその登録方法の詳細を学ぶか、このチュートリアルを終了して自分で試してみることができます。</p><p>IdM Keyrock をご利用いただきありがとうございます！</p><a href='#' class='next-tour' data-current-tour='profileTour' data-next-tour='appsTour'> >アプリケーション・ツアーに進む</a>"
+      },
+      "apps_tour": {
+        "title01": "始めましょう！",
+        "title02": "新しいアプリケーションを登録",
+        "title03": "STEP 1: 新しいアプリケーションを登録",
+        "title04": "STEP 1: 新しいアプリケーションを登録",
+        "title05": "STEP 1: 新しいアプリケーションを登録",
+        "title06": "STEP 1: 新しいアプリケーションを登録",
+        "title07": "STEP 1: 新しいアプリケーションを登録",
+        "title08": "STEP 1: 新しいアプリケーションを登録",
+        "title09": "STEP 2: 新しいアプリケーションを登録",
+        "title10": "STEP 2: 新しいアプリケーションを登録",
+        "title11": "STEP 3: 新しいアプリケーションを登録",
+        "title12": "STEP 3: 新しいアプリケーションを登録",
+        "title13": "新しいアプリケーションをチェックアウト",
+        "title14": "これで準備完了です！",
+        "content01": "アプリケーション・ツアーへようこそ！あなたはこれから KeyRock にアプリケーションを登録する方法を学びます。",
+        "content02": "新しいアプリケーションを登録する最も簡単な方法は、[登録] ボタンです。クリックして、最初のアプリケーションを登録してください！",
+        "content03": "<p>このフォームには、新しいアプリケーションを作成するために必要な基本情報が含まれています。</p>まず、あなたのアプリケーションの名前と詳細な説明を入力してください。",
+        "content04": "これはあなたのアプリの URL です。 このフィールドは、あなたのアプリに関する KeyRock へのリクエスト (たとえば、OAuth を使ってユーザを認可するとき) が実際にあなたのアプリから来ていることを確認するために必要です。",
+        "content05": "これは、アプリケーションの Callback URL です。KeyRock は OAuth の認可フローの後にユーザ・エージェントをその URL にリダイレクトします。",
+        "content06": "これらはあなたのアプリケーションが許可する OAuth2 グラント・タイプです。",
+        "content07": "これは誰がアプリケーションの提供者になるかを選択するためのものです : あなた自身かあなたが所有者である組織の一つです。",
+        "content08": "次のステップに進むにはこのボタンをクリックしてください。",
+        "content09": "このステップであなたのアプリのための画像を選択することができます。今はデフォルト画像のままにします。",
+        "content10": "次のステップに進むにはこのボタンをクリックしてください。",
+        "content11": "この最後のステップで、あなたのアプリのロールとパーミッションを管理することができます。今は何も変更しませんが、次のツアーでそれらについてもっと学ぶことができます。",
+        "content12": "新しいアプリの編集が終わったらこのボタンをクリックしてください。",
+        "content13": "これはあなたの新しいアプリの詳細ページで、いくつかの役に立つ情報があります。",
+        "content14": "<p>アプリケーション・ツアーを終了しました！次のツアーに進んで、アプリ内のロールとパーミッション、およびそれらを管理する方法についてさらに学ぶことができます。あるいは、このチュートリアルを終了して自分で試してみることもできます。</p><p>IdM Keyrock をご利用いただきありがとうございます！</p><a href='#' class='next-tour' data-current-tour='appsTour' data-next-tour='rolesTour'> > ロールとパーミッションのツアーに進む</a>"
+      },
+      "roles_tour": {
+        "title01": "始めましょう！",
+        "title02": "アプリケーションを選ぶ",
+        "title03": "アプリケーションの詳細ページ",
+        "title04": "アプリケーションの詳細ページ",
+        "title05": "ロールとパーミッションの管理",
+        "title06": "ロール",
+        "title07": "ロール",
+        "title08": "パーミッション",
+        "title09": "新しいパーミッション",
+        "title10": "新しいロール",
+        "title11": "変更の保存",
+        "title12": "ユーザの認可",
+        "title13": "組織の認可",
+        "title14": "これですべて設定済みです！",
+        "content01": "ロールとパーミッション・ツアーへようこそ。 これで、アプリケーション内のロールとパーミッションがどのように機能するかを学びます。",
+        "content02": "<p>ツアーを続けるには、いずれかのアプリをクリックしてください。アプリがない場合は作成するか、アプリケーション・ツアーに参加してください。</p><a href='#' class='next-tour' data-current-tour='rolesTour' data-next-tour='appsTour'> > アプリケーション・ツアーに進む</a>",
+        "content03": "これはあなたのアプリの詳細ページです。OAuth クレデンシャル、PEP Proxy またはいくつかの IoT センサの登録、およびその内部でのロールの管理などの重要な情報が含まれています。",
+        "content04": "このリンクをクリックすると、[ロール管理] ページまたはこのアプリケーションに移動します。クリックして続けます。",
+        "content05": "このビューでは、アプリケーションのロールとパーミッションを管理できます。",
+        "content06": "<p>これは、アプリケーション内に存在するロールのリストです。提供者 (provider) と 購入者 (purchaser) がデフォルトです。</p><p>ロールは基本的に一つ以上のパーミッションのセットです。アプリケーションでユーザを認可するときは、一つ以上のロールを割り当てなければなりません。",
+        "content07": "ロールをクリックすると、それに割り当てられているパーミッションが右側に表示されます。",
+        "content08": "これはあなたのアプリケーションで利用できるパーミッションのリストです。チェックされているものは、あなたが選んだロールに関連付けられているものです。",
+        "content09": "このボタンを使用して、アプリに対する新しいパーミッションを作成します。",
+        "content10": "このボタンを使用して、アプリに新しいロールを作成します。",
+        "content11": "このボタンをクリックして変更内容を保存します。",
+        "content12": "このセクションには、アプリ内で何らかのロールを割り当てられているユーザが表示されます。特定のユーザに新しいロールを割り当てるには、[認可] ボタンを使用します。",
+        "content13": "このセクションでは、アプリ内で何らかのロールを割り当てられている組織を示します。特定の組織に新しいロールを割り当てるには、[認可] ボタンを使用します。",
+        "content14": "<p>ロールとパーミッション・ツアーを終了しました。次のツアーに進んで組織の詳細を学ぶことも、このチュートリアルを終了して自分で実験を始めることもできます。</p><p>IdM Keyrock をご利用いただきありがとうございます！<</p><a href='#' class='next-tour' data-current-tour='rolesTour' data-next-tour='orgsTour'> > 組織ツアーに進む</a>"
+      },
+      "orgs_tour": {
+        "title01": "始めましょう！",
+        "title02": "新しい組織の作成",
+        "title03": "新しい組織の作成",
+        "title04": "新しい組織の作成",
+        "title05": "組織が作成されました！",
+        "title06": "メンバ",
+        "title07": "アプリケーション",
+        "title08": "これですべて設定済みです！",
+        "content01": "組織ツアーへようこそ！あなたはこれから KeyRock で組織を作成する方法を学びます。",
+        "content02": "新しい組織を作成する最も簡単な方法は、[作成] ボタンです。クリックして最初の組織を作成してください！",
+        "content03": "<p>このフォームには、新しい組織を作成するために必要な基本的な情報が含まれています。</p>組織の名前とその詳細な説明を入力するだけです。",
+        "content04": "新しい組織を作成し終わったら、このボタンをクリックしてください。",
+        "content05": "あなたの新しい組織は正常に作成されました。これはそのホームページです。",
+        "content06": "これらは組織のメンバです。",
+        "content07": "これらは組織が認可されているアプリケーションです。",
+        "content08": "<p>あなたは組織ツアーを終えました！ KeyRock についてさらに学習するために、'ヘルプと情報' に進むことも、自分で試してみることもできます。</p><p>IdM Keyrock をご利用いただきありがとうございます！<</p><a href='/idm/help_about' class='next-tour' data-current-tour='orgsTour' id='end-tours'> > 'ヘルプと情報' に進む</a>"
+      }
+    }
+  },
+  "header": {
+    "menu_item01": " プロフィール",
+    "menu_item02": " 設定",
+    "menu_item03": " ヘルプと情報",
+    "menu_item04": " サインアウト"
+  },
+  "footer": {
+    "cred_date": "2018 ©",
+    "author": "GING DIT",
+    "university": " - Technical University of Madrid (UPM)",
+    "vish": "The use of VISH services is subject to the acceptance of the",
+    "fiware": "The use of FIWARE Lab services is subject to acceptance of the",
+    "condit02": "Terms and Conditions",
+    "condit03": "Privacy Policy and",
+    "condit04": "Cookies Policy"
+  },
+  "help_about_items": {
+    "title01": " ドキュメント",
+    "content01": "この Identity Manager とその使用方法についてもっと知りたい場合は、以下のリンクをご覧ください:",
+    "item01": " FIWARE カタログ ",
+    "item02": " ReadTheDocs に Identity Manager をインストール、管理、使用のための完全なドキュメント",
+    "item03": " GitHub にプロジェクトのソースコード",
+    "item04": " FIWARE アカデミー",
+    "title02": " ラーニング・ツアー",
+    "content02": "ツアーを見逃しましたか？もう一度見たいですか？これは Identity Manager の基本から最も高度な機能のいくつかへと導くツアーの完全なリストです。",
+    "tour01": " 基本ツアー: Welcome ページを理解する。",
+    "tour02": "プロフィール・ツアー: 個人データを編集してアバターを設定します。",
+    "tour03": "アプリケーション・ツアー: 最初のアプリケーションを作成します。",
+    "tour04": "ロールとパーミッション・ツアー: アプリ内のロールとパーミッション、およびそれらのユーザの他の組織と認可方法について学びます。",
+    "tour05": "組織ツアー: 最初の組織を作成して、そのホームページを見てください。"
+  },
+  "navigation": {
+    "menu_title01": "メインメニュー",
+    "menu_title02": "IdM",
+    "menu_item01": "ホーム",
+    "menu_item02": "組織",
+    "menu_item03": "アプリケーション",
+    "menu_item04": "通知",
+    "menu_item05": "管理者",
+    "menu_item06": "ユーザ"
+  },
+  "help_about": {
+    "title": "ヘルプと情報"
+  },
+  "auth": {
+    "login": {
+      "title": "サインイン",
+      "alert01": "セッション期限切れ",
+      "alert02": "パスワード変更。続行するには、再度ログインしてください。",
+      "alert03": "ユーザ名またはパスワードが無効です。",
+      "label01": "Eメール",
+      "label02": "パスワード",
+      "required_field": "これは必須フィールドです。",
+      "checkbox": "サインイン情報を保存",
+      "loginin_btn": "サインイン",
+      "link01": "サインアップ",
+      "link02": "パスワードを忘れた",
+      "link03": "確認メールを受け取っていませんか？"
+    },
+    "presentation": {
+      "title": "ID 管理",
+      "subtitle01": "DIT-UPM によって開発された FIWARE Identity Manager の実装へようこそ",
+      "subtitle02": "この Web サービスでは、このサインイン・ページや他のスタイル/レイアウトをカスタマイズできます。カスタマイズ方法を確認するには、カスタマイズに関するドキュメントをチェックしてください。",
+      "signup_btn": "サインアップ",
+      "docs_btn": "ドキュメントの確認"
+    },
+    "confirmation": {
+      "title": "確認メールを再送信",
+      "label01": "Eメール",
+      "required_field": "このフィールドは必須です。",
+      "resend_btn": "再送信",
+      "link01": "サインアップ",
+      "link02": "パスワードを忘れた"
+    },
+    "pass_request": {
+      "title": "パスワードを忘れましたか？",
+      "content": "アカウントに関連付けたメール・アドレスを入力すると、数分でパスワードをリセットする方法についての説明が記載されたメールが届きます。",
+      "label": "Eメール",
+      "required_field": "このフィールドは必須です。",
+      "send_btn": "送信",
+      "link01": "サインアップ",
+      "link02": "確認メールを受け取っていませんか？"
+    },
+    "pass_reset": {
+      "title": "パスワードの変更",
+      "alert": "新しいパスワードと確認パスワードが不一致です。",
+      "required_field": "このフィールドは必須です。",
+      "label01": "パスワード",
+      "label02": "パスワード (確認)",
+      "change_btn": "パスワード変更",
+      "link01": "サインアップ",
+      "link02": "確認メールを受け取っていませんか？"
+    }
+  },
+  "home": {
+    "change_pass": {
+      "title": "パスワードの変更",
+      "content01": "パスワードを変更してから1年が経ちました。",
+      "content02": "このポータルの使用を続けるには変更してください。",
+      "continue_btn": "続行"
+    },
+    "index": {
+      "page_header": "ホーム",
+      "title": "アプリケーション",
+      "link01": "登録",
+      "alert01": "あなたはどのアプリケーションでも認可されていません。",
+      "link02": "全て表示",
+      "panel_heading": "組織",
+      "link03": "作成",
+      "alert02": "組織がありません。",
+      "link04": "全て表示"
+    }
+  },
+  "organizations": {
+    "delete_avatar": {
+      "title": "アップロードした画像の削除",
+      "content01": "この画像を削除してもよろしいですか？",
+      "content02": "いつでも好きなときにアップロードできます。",
+      "confirm_btn": "確認",
+      "cancel_btn": "中止"
+    },
+    "exit_org": {
+      "title": "組織を脱退",
+      "content": "本当にこの組織から脱退しますか？",
+      "exit_btn": "脱退"
+    },
+    "manage_members": {
+      "title": "組織のメンバを管理",
+      "header_title": "すべてのユーザ",
+      "no_users": "ユーザが見つかりません。",
+      "filter_use": "フィルタを使用します。最低2文字入力してください。",
+      "alert01": "無効な文字",
+      "member_list_title": "組織のメンバ",
+      "alert02": "何人かのユーザには何のロールも割り当てられていません。今保存すると彼らは組織内で認可されません。",
+      "alert03": "メンバが追加されました",
+      "save_btn": "保存",
+      "cancel_btn": "中止"
+    },
+    "edit": {
+      "title01": "組織の情報",
+      "required_field": "この入力は必須です。",
+      "label01": "名前",
+      "label02": "説明",
+      "label03": "Web サイト",
+      "update_btn": "組織の更新",
+      "title02": "組織のアバター",
+      "delete_btn": "この画像を削除",
+      "label04": "画像をアップロード",
+      "content01": "アバターとして使用したい画像の部分を選択してください。",
+      "crop_btn": "トリミングして使用",
+      "cancel_btn": "中止",
+      "title03": "中止",
+      "content02": "組織を削除します",
+      "content03": "これにより組織とそのすべてのデータが削除されます。",
+      "delete_org_btn": "組織を削除"
+    },
+    "index": {
+      "title": "組織",
+      "create_btn": "作成",
+      "tab01": "所有者",
+      "tab02": "メンバ",
+      "alert01": "あなたはどの組織の所有者でもありません。",
+      "alert02": "あなたはどの組織のメンバでもありません。"
+    },
+    "create": {
+      "title": "組織を作成",
+      "label01": "名前",
+      "required_field": "必須フィールドです。",
+      "label02": "説明",
+      "create_btn": "組織を作成"
+    },
+    "show": {
+      "edit_btn": "編集",
+      "exit_btn": "終了",
+      "label01": "説明",
+      "label02": "Webサイト",
+      "panel_title01": "メンバ",
+      "manage_btn": "管理",
+      "no_members": "メンバが見つかりませんでした。",
+      "panel_title02": "認可アプリケーション",
+      "no_apps": "アプリケーションが見つかりません。"
+    }
+  },
+  "settings": {
+    "settings": {
+      "title": "設定",
+      "panel_title01": "パスワードの変更",
+      "label01": "現在のパスワード",
+      "label02": "新しいパスワード",
+      "label03": "新しいパスワードの確認",
+      "panel_title02": "メール・アドレスの変更",
+      "label04": "新しい Eメール",
+      "label05": "現在のパスワード",
+      "panel_title03": "二要素認証の管理",
+      "content01": "利用可能オプション",
+      "content01_1": "無効",
+      "content02": "アカウントへのアクセスにより高いレベルのセキュリティが提供されるため、有効にすることを強くお勧めします。",
+      "content03": "2要素認証を試してみたい場合は、万が一認証アプリにアクセスできない場合に備えて、セキュリティに関する質問をする必要があります。",
+      "label06": "セキュリティの質問",
+      "label07": "セキュリティの答え",
+      "panel_title04": "アカウントのキャンセル",
+      "content04": "不適切ですか？ ",
+      "content04_link": "アカウントのキャンセル"
+    },
+    "delete_user": {
+      "title": "アカウントのキャンセル",
+      "content": "よろしいですか？アカウントをキャンセルすると、すべてのリソースが削除されます。 元に戻せません。",
+      "confirm_btn": "確認",
+      "cancel_btn": "中止"
+    },
+    "change_email": {
+      "title": "Eメールの変更",
+      "required_field": "これは必須フィールドです。",
+      "label01": "Eメール",
+      "label02": "現在の Eメール",
+      "change_btn": "変更"
+    },
+    "change_pass": {
+      "title": "パスワードの変更",
+      "required_field": "これは必須フィールドです。",
+      "pass_alert": "新しいパスワードと確認のパスワードが一致しません。",
+      "label01": "現在のパスワード",
+      "label02": "新しいパスワード",
+      "label03": "新しいパスワードの確認"
+    },
+    "warn_change_pass": {
+      "title": "パスワードの変更",
+      "content": "パスワードを変更してから1年が経ちました。 セキュリティ上の理由およびこのポータルの使用を継続するには、変更してください。",
+      "continue_btn": "続行"
+    }
+  },
+  "users": {
+    "delete_avatar": {
+      "title": "アップロードした画像の削除",
+      "content01": "この画像を削除してもよろしいですか？",
+      "content02": "いつでも好きなときにアップロードできます。",
+      "confirm_btn": "確認",
+      "cancel_btn": "中止"
+    },
+    "edit_user": {
+      "title01": "個人情報",
+      "label01": "ユーザ名",
+      "required_field": "この入力は必須です。",
+      "label02": "自己紹介",
+      "label03": "Webサイト",
+      "update_btn": "ユーザの更新",
+      "title02": "パーソナル・アバター",
+      "use_image_btn": "この画像を使用",
+      "delete_image_btn": "この画像を削除",
+      "use_gravatar_btn": "Gravatar を使用",
+      "edit_gravatar_btn": "Gravatar で編集",
+      "link01": "Gravatar と互換性があります。プロフィールを作成します。",
+      "link02": "ここに！",
+      "label04": "画像をアップロード",
+      "label05": "アバターとして使用したい画像の部分を選択してください。",
+      "crop_btn": "トリミングして使用",
+      "cancel_btn": "中止"
+    },
+    "new_user": {
+      "title": "登録",
+      "alert01": "二つのパスワード・フィールドが一致しませんでした。",
+      "alert02": "Eメールは既に使われています。",
+      "alert03": "Eメールが無効です。",
+      "label01": "ユーザ名",
+      "required_field": "これは必須フィールドです。",
+      "label02": "Eメール",
+      "content01": "Gravatar を持っているので、アバターに使用",
+      "label03": "パスワード",
+      "label04": "パスワード (確認)",
+      "label05": "キャプチャ",
+      "signup_btn": "サインアップ",
+      "link01": "パスワードを忘れた",
+      "link02": "確認メールを受け取っていませんか？"
+    },
+    "show_user": {
+      "placeholder_input": "フィルタ",
+      "edit_btn": "編集",
+      "title01": "説明",
+      "no_description": "説明がありません。",
+      "title02": "Webサイト",
+      "title03": "組織",
+      "alert01": "あなたはいかなる組織のメンバでも所有者でもありません。",
+      "title04": "アプリケーション",
+      "alert02": "あなたはどのアプリケーションでも認可されていません。"
+    }
+  },
+  "admin": {
+    "notify": {
+      "title": "通知",
+      "label01": "通知",
+      "label02": "組織 ID",
+      "label03": "CSV 形式のユーザ ID",
+      "label04": "表題",
+      "label05": "本文",
+      "option01": "すべてのユーザに通知",
+      "option02": "組織に通知",
+      "option03": "ユーザ ID でユーザに通知",
+      "alert01": "組織にユーザがいません。",
+      "alert02": "組織が見つかりません。",
+      "alert03": "ユーザ ID を書く必要があります。",
+      "alert04": "ユーザが見つかりません。",
+      "required_field": "これは必須フィールドです。",
+      "send_btn": "送信"
+    },
+    "administrators": {
+      "title": "管理者",
+      "panel_title": "許可された管理者",
+      "authorize_btn": "認可",
+      "alert01": "管理者がいません。"
+    },
+    "authorize_administrators": {
+      "title": "管理者の管理",
+      "subtitle01": "すべてのユーザ",
+      "subtitle02": "許可された管理者",
+      "placeholder_input": "フィルタ",
+      "cancel_btn": "中止",
+      "save_btn": "保存",
+      "alert01": "管理者がいません。",
+      "alert02": "ユーザが見つかりません。",
+      "alert03": "フィルタを使用します。最低2文字入力してください。",
+      "alert04": "無効な文字",
+      "alert05": "ユーザが管理者として認可されています。"
+    },
+    "users": {
+      "title": "ユーザ",
+      "content01": "表示",
+      "content02": "エントリ",
+      "create_user_btn": "ユーザを作成",
+      "delete_user_btn": "ユーザを削除",
+      "username_col_table": "ユーザ名",
+      "enable_col_table": "有効",
+      "actions_col_table": "アクション",
+      "alert01": "ユーザが見つかりません。"
+    },
+    "create_user": {
+      "title": "ユーザの作成",
+      "alert01": "2つのパスワード・フィールドが一致しませんでした。",
+      "alert02": "Eメールは既に使われています。",
+      "alert03": "Eメールが無効です。",
+      "label01": "ユーザ名",
+      "label02": "Eメール",
+      "label03": "パスワード",
+      "label04": "パスワード (確認)",
+      "label05": "説明",
+      "label06": "Web サイト",
+      "label07": "ユーザに Eメールを送信",
+      "label08": "有効",
+      "popover_title": "Eメールの送信",
+      "popover_body": "割り当てられたパスワードを含むメールをユーザに送信します。",
+      "required_field": "これは必須フィールドです。",
+      "create_btn": "作成"
+    },
+    "delete_user": {
+      "title": "ユーザの削除",
+      "content01": "これらのユーザを削除しようとしています: ",
+      "content02": "よろしいですか？ユーザを削除することは、すべてのリソースを削除することを意味します。元に戻せません。",
+      "confirm_input": "確認",
+      "cancel_btn": "中止"
+    },
+    "edit_user": {
+      "title": "ユーザの編集",
+      "alert01": "Eメールは既に使われています。",
+      "alert02": "Eメールが無効です。",
+      "label01": "ユーザ名",
+      "label02": "Eメール",
+      "label03": "説明",
+      "label04": "Webサイト",
+      "required_field": "これは必須フィールドです。",
+      "save_btn": "保存"
+    },
+    "reset_password": {
+      "title": "パスワードの変更",
+      "alert01": "2つのパスワード・フィールドが一致しませんでした。",
+      "label01": "パスワード",
+      "label02": "パスワード (確認)",
+      "required_field": "これは必須フィールドです。",
+      "save_btn": "保存"
+    }
+  },
+  "applications": {
+    "add_trusted_application": {
+      "title": "信頼できるアプリケーションの管理",
+      "subtitle01": "アプリケーション",
+      "subtitle02": "信頼できるアプリケーション",
+      "placeholder_input": "フィルタ",
+      "cancel_btn": "中止",
+      "save_btn": "保存",
+      "alert01": "アプリケーションが見つかりません。",
+      "alert02": "信頼できるアプリケーションはありません。",
+      "alert03": "フィルタを使用します。最低2文字入力してください。",
+      "alert04": "無効な文字",
+      "alert05": "信頼できるアプリケーションが追加されました。"
+    },
+    "authorize_organization": {
+      "title": "アプリケーションで組織を認可",
+      "subtitle01": "すべての組織",
+      "subtitle02": "認可期間",
+      "placeholder_input": "フィルタ",
+      "cancel_btn": "中止",
+      "save_btn": "保存",
+      "alert01": "組織が見つかりません。",
+      "alert02": "組織がありません。",
+      "alert03": "フィルタを使用します。最低2文字入力してください。",
+      "alert04": "一部の組織にはロールが割り当てられていません。今保存するとアプリケーションで認可されません。",
+      "alert05": "無効な文字です。",
+      "alert06": "組織が追加されました。",
+      "popover_title": "ロールの割り当て",
+      "popover_body": "組織のメンバや所有者に異なるロールを割り当てることができます。"
+    },
+    "authorize_user": {
+      "title": "アプリケーションでユーザを認可",
+      "subtitle01": "すべてのユーザ",
+      "subtitle02": "認可されたユーザ",
+      "placeholder_input": "フィルタ",
+      "cancel_btn": "中止",
+      "save_btn": "保存",
+      "alert01": "ユーザが見つかりません。",
+      "alert02": "ユーザがいません。",
+      "alert03": "フィルタを使用します。最低2文字入力してください。",
+      "alert04": "一部のユーザにはロールが割り当てられていません。今保存するとアプリケーションで認可されません。",
+      "alert05": "無効な文字",
+      "alert06": "ユーザが追加されました。"
+    },
+    "create_permission": {
+      "title": "パーミッションの作成",
+      "subtitle01": "HTTP 動詞とリソース・ルール",
+      "subtitle02": "高度な XACML ルール",
+      "save_btn": "保存",
+      "alert01": "高度な XACML ルールを使用している場合は、アクションとリソースも設定できません。",
+      "alert02": "アクションとリソースの両方または高度な XACML ルールを定義する必要があります。",
+      "alert03": "アクションとリソースの両方を定義する必要があります。",
+      "label01": "パーミッション名",
+      "label02": "説明",
+      "label03": "HTTP アクション",
+      "label04": "リソース",
+      "label05": "より複雑な認可ポリシーを定義するために XACML を使用してください。",
+      "required_field": "これは必須フィールドです。"
+    },
+    "create_role": {
+      "title": "ロールの作成",
+      "label01": "ロール名",
+      "required_field": "これは必須フィールドです。",
+      "save_input": "保存"
+    },
+    "delete_avatar": {
+      "title": "アップロードした画像の削除",
+      "content01": "この画像を削除してもよろしいですか？",
+      "content02": "いつでも好きなときにアップロードできます。",
+      "confirm_btn": "確認",
+      "cancel_btn": "中止"
+    },
+    "delete_permission": {
+      "title": "パーミッションの削除",
+      "content01": "アプリケーションからパーミッションが完全に削除されます。元に戻すことはできません。続けますか？",
+      "confirm_btn": "確認",
+      "cancel_btn": "中止"
+    },
+    "delete_role": {
+      "title": "ロールの削除",
+      "content01": "アプリケーションからロールが完全に削除されます。元に戻すことはできません。続けますか？",
+      "confirm_btn": "確認",
+      "cancel_btn": "中止"
+    },
+    "edit": {
+      "panel_title01": "アプリケーションの情報",
+      "panel_title02": "アプリケーション・アバター",
+      "panel_title03": "アプリケーションの削除",
+      "content01": "画像をアップロードする。",
+      "content02": "アバターとして使用したい部分を選択してください。",
+      "content03": "これでアプリケーションとそのすべてのデータが削除されます。",
+      "label01": "名前",
+      "label02": "説明",
+      "label03": "Url",
+      "label04": "Callback Url",
+      "label05": "Sign-out Callback Url",
+      "label06": "グラント・タイプ",
+      "required_field": "これは必須フィールドです。",
+      "alert01": "URL はすでに使われています。",
+      "save_btn": "保存",
+      "crop_btn": "トリミングして使用",
+      "cancel_btn": "中止",
+      "delete_image_btn": "画像を削除",
+      "delete_app_btn": "アプリケーションを削除",
+      "popover01_body": "セキュリティ上の理由から、この URL からの OAuth リクエストのみが KeyRock によって受け付けられます。",
+      "popover01_title": "アプリケーションの URL",
+      "popover02_body": "OAuth のフローが終了したときに、ユーザ・エージェントは、この URL にリダイレクトされます。",
+      "popover02_title": "アプリケーションの Callback URL",
+      "popover03_body": "ユーザ・エージェントが OAuth を介してサインインし、Keyrock のユーザ・セッションも削除する必要がある場合、Keyrock はこのエンドポイントにリダイレクトします。 このパラメータを設定しないと、ユーザ・エージェントは URL フィールドで以前に指定されたエンドポイントにリダイレクトされます。",
+      "popover03_title": "アプリケーションのサインアウト Callback",
+      "popover04_body": "Oauth 2.0 プロトコルを使用してユーザを認証するために、どのグラント・タイプがアプリケーションを受け入れるかを選択します。詳細については、<a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock のドキュメント</a>を参照してください。",
+      "popover04_title": "OAuth グラント・タイプ"
+    },
+    "index": {
+      "title": "アプリケーション",
+      "register_btn": "登録",
+      "providing_li": "提供中",
+      "purchasing_li": "購入中",
+      "authorized_li": "認可",
+      "no_organizations_option": "組織がありません",
+      "content01": "どんなアプリケーションの提供者でもありません。",
+      "content02": "どんなアプリケーションの購入者でもありません。",
+      "content03": "どのアプリケーションでも認可されていません。"
+    },
+    "manage_roles": {
+      "title": "ロールの管理",
+      "subtitle01": "ロール",
+      "subtitle02": "パーミッション",
+      "content01": "パーミッションを参照したり管理したりするロールを選択してください。",
+      "required_field": "これは必須フィールドです。",
+      "save_btn": "保存"
+    },
+    "new": {
+      "title": "アプリケーション情報",
+      "label01": "名前",
+      "label02": "説明",
+      "label03": "Url",
+      "label04": "Callback Url",
+      "label05": "Sign-out Callback Url",
+      "label06": "グラント・タイプ",
+      "label07": "プロバイダ",
+      "label08": "eIDAS 認証",
+      "required_field": "これは必須フィールドです。",
+      "alert01": "URL は既に使用されています。",
+      "popover01_body": "セキュリティ上の理由から、この URL からの OAuth 要求のみが KeyRock によって受け入れられます。",
+      "popover01_title": "アプリケーションの URL",
+      "popover02_body": "OAuth フローが終了すると、ユーザ・エージェントはこの URL にリダイレクトされます。",
+      "popover02_title": "アプリケーションの Callback URL",
+      "popover03_body": "ユーザ・エージェントが OAuth を通じてサインインしていて、Keyrock のユーザ・セッションも削除する必要がある場合、Keyrock はこのエンドポイントにリダイレクトします。このパラメータを設定しないと、ユーザ・エージェントは URL フィールドで以前に指定されたエンドポイントにリダイレクトされます。",
+      "popover03_title": "アプリケーションの Sign-out Callback Url",
+      "popover04_body": "Oauth 2.0 プロトコルを使用してユーザを認証するために、どのグラント・タイプがアプリケーションを受け入れるかを選択します。詳細については、<a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock のドキュメントを</a>をご覧ください。",
+      "popover04_title": "OAuth グラント・タイプ",
+      "popover05_body": "誰がアプリケーションの提供者になるかを選択します : あなた自身か、あなたが所有者である組織の1つ",
+      "popover05_title": "アプリケーションの提供者",
+      "popover06_body": "認証エンドポイントとして eIDAS も使用する場合は選択します。",
+      "popover06_title": "認証エンドポイント",
+      "next_btn": "次へ"
+    },
+    "show": {
+      "edit_span": "編集",
+      "manage_roles": "ロールの管理",
+      "label01": "説明",
+      "label02": "Url",
+      "label03": "Callback Url",
+      "label04": "アプリケーション Id",
+      "label05": "Pep Proxy ユーザ名",
+      "label06": "センサの Id",
+      "label07": "組織名",
+      "label08": "組織 NIF",
+      "label09": "サービス・プロバイダ・タイプ",
+      "label10": "メタデータ URL",
+      "panel_title01": "OAuth2 クレデンシャル",
+      "panel_title02": "PEP Proxy",
+      "panel_title03": "IoT センサ",
+      "panel_title04": "信頼できるアプリケーション",
+      "panel_title05": "認可されたユーザ",
+      "panel_title06": "認可された組織",
+      "panel_title07": "eIDAS 認証",
+      "panel_subtitle01": "Client ID",
+      "panel_subtitle02": "Client Secret",
+      "panel_subtitle03": "Token タイプ",
+      "permanent_option": "永久",
+      "popover01_body": "アプリケーションに使用する OAuth2 ライブラリでこれらのクレデンシャルを要求されます。",
+      "popover01_title": "OAuth2 クレデンシャル",
+      "popover02_body": "OAuth2 の scope パラメータを使用して、jwt と永久トークンのどちらを作成するかを選択できます。",
+      "popover02_title": "Token タイプ",
+      "popover03_body": "PEP Proxy を Authorization PDP と共に使用すると、アプリケーションに認証と認可のセキュリティを追加できます。このようにして、リソースに対する特定のパーミッションとポリシーを管理し、ユーザにさまざまなアクセスレベルを許可することもできます。",
+      "popover03_title": "PEP Proxy",
+      "popover04_body": "アプリケーションが IoT に関連しているならば、センサが認証されるためにここに登録する必要があります。",
+      "popover04_title": "IoT センサ",
+      "register_pep_btn": "新しい PEP Proxy を登録",
+      "reset_pep_btn": "パスワードをリセット",
+      "delete_pep_btn": "削除",
+      "register_iot_btn": "新しい IoT センサを登録",
+      "reset_iot_btn": "パスワードをリセット",
+      "delete_iot_btn": "削除",
+      "placeholder_input": "フィルタ",
+      "add_trusted_btn": "追加",
+      "authorize_btn": "認可",
+      "edit_btn": "編集",
+      "content01": "このアプリケーションは信頼されたアプリケーションを持っていません。",
+      "content02": "ユーザが見つかりません。",
+      "content03": "このアプリケーションは、認可された組織を持っていません。"
+    },
+    "step_create_avatar": {
+      "title": "アプリケーション・アバター",
+      "content01": "アバターとして使用したい画像の部分を選択します。",
+      "next_btn": "次へ"
+    },
+    "step_create_roles": {
+      "title": "ロール管理",
+      "subtitle01": "ロール",
+      "subtitle02": "パーミッション",
+      "content01": "パーミッションを表示および管理するためのロールを選択してください。",
+      "required_field": "これは必須フィールドです。",
+      "finish_btn": "Finish"
+    }
+  },
+  "templates": {
+    "admin": {
+      "user_row": {
+        "edit_option": "編集",
+        "reset_option": "パスワード変更"
+      }
+    },
+    "applications": {
+      "iot_row": {
+        "label01": "センサの ID",
+        "label02": "センサのパスワード",
+        "reset_iot_btn": "パスワードをリセット",
+        "delete_iot_btn": "削除"
+      },
+      "pep_proxy_row": {
+        "label01": "Pep Proxy ユーザ名",
+        "label02": "Pep Proxy パスワード",
+        "reset_pep_btn": "パスワードをリセット",
+        "delete_pep_btn": "削除"
+      }
+    },
+    "email": {
+      "base_email": {
+        "content01": "Technical University of Madrid (UPM)"
+      },
+      "activate": {
+        "subject": "Keyrock へようこそ",
+        "content01": "こんにちは",
+        "content02": "Keyrock へようこそ！以下の [同意] リンクをクリックすると、利用規約を読み、同意したことになり、アカウントの作成が確認されます。",
+        "content03": "同意"
+      },
+      "change_email": {
+        "subject": "アカウントのメール・アドレス変更リクエスト",
+        "content01": "こんにちは",
+        "content02": "Eメール・アカウントを変更するようリクエストしました。 リンクをたどって変更プロセスを終了します。",
+        "content03": "アカウントを確認します。"
+      },
+      "forgot_password": {
+        "subject": "パスワードの再設定手順",
+        "content01": "こんにちは",
+        "content02": "誰かがパスワードを変更するためのリンクをリクエストしました。 あなたは以下のリンクを通して変更を行うことができます。",
+        "content03": "パスワードを変更する。",
+        "content04": "リクエストしていない場合は、この Eメールを無視してください。",
+        "content05": "上記のリンクにアクセスして新しいパスワードを作成するまで、パスワードは変更されません。"
+      },
+      "user_info": {
+        "subject": "Keyrock へようこそ",
+        "content01": "Keyrock へようこそ！次のクレデンシャルを使用して、keyrock にアカウントが作成されました: ",
+        "content02": "Eメール:",
+        "content03": "パスワード:",
+        "content04": "ユーザ名:",
+        "content05": "ここでサインインできます: "
+      }
+    },
+    "organizations": {
+      "assign_role_organization_row" :{
+        "li01": "所有者",
+        "li02": "メンバ"
+      }
+    }, 
+    "users": {
+      "org_role_user_row" :{
+        "li01": "所有者",
+        "li02": "メンバ"
+      }
+    }
+  },
+  "oauth": {
+    "login": {
+      "title": "サインイン",
+      "alert01": "セッション期限切れ",
+      "alert02": "ユーザ名かパスワードが無効です。",
+      "label01": "Eメール",
+      "label02": "パスワード",
+      "required_field": "これは必須フィールドです。",
+      "checkbox": "サインイン情報を保存",
+      "loginin_btn": "サインイン",
+      "eidas_loginin_btn": "eID サインイン",
+      "link01": "サインアップ",
+      "link02": "パスワードを忘れた",
+      "link03": "確認メールを受け取っていませんか？"
+    },
+    "authorize": {
+      "title": "認可",
+      "content01": "アプリケーション",
+      "content02": "はできるようになります:",
+      "content03": "あなたの公開情報を読み取ります。",
+      "deny_btn": "拒否",
+      "authorize_btn": "認可"
+    }
+  },
+
+  "modal": {
+    "select": "国を選択",
+    "next": "次へ",
+    "close": "閉じる"
+  },
+
+  "countries": {
+    "spain": "スペイン",
+    "slovenia": "スロベニア",
+    "italy": "イタリア",
+    "austria": "オーストリア",
+    "portugal": "ポルトガル"
+  },
+
+  "saml2": {
+    "label01": "サポート担当者",
+    "label02": "名前",
+    "label03": "姓",
+    "label04": "Eメール",
+    "label05": "電話番号",
+    "label06": "会社",
+    "label07": "技術担当者",
+    "label08": "名前",
+    "label09": "姓",
+    "label10": "Eメール",
+    "label11": "電話番号",
+    "label12": "会社",
+    "label13": "組織",
+    "label14": "名前",
+    "label15": "Url",
+    "label16": "NIF",
+    "label17": "サービス・プロバイダ・タイプ",
+    "private_option": "プライベート",
+    "public_option": "パブリック",
+    "required_field": "これは必須フィールドです。",
+    "alert01": "無効な SP タイプ",
+    "edit_eidas": {
+      "title01": "eIDAS 認証の詳細",
+      "title02": "eIDAS が要求する属性",
+      "subtitle01": "個人 (Natural Person)",
+      "subtitle02": "法人",
+      "subtitle03": "代表法人",
+      "natural_label01": "個人識別番号",
+      "natural_label02": "ファミリーネーム",
+      "natural_label03": "ファーストネーム",
+      "natural_label04": "生年月日",
+      "natural_label05": "出生名",
+      "natural_label06": "出生地",
+      "natural_label07": "現在の住所",
+      "natural_label08": "性別",
+      "legal_label01": "法人識別番号",
+      "legal_label02": "法人名",
+      "legal_label03": "法人の住所",
+      "legal_label04": "VAT登録番号",
+      "legal_label05": "課税情報",
+      "legal_label06": "D-2012-17-EUIdentifier",
+      "legal_label07": "LEI",
+      "legal_label08": "EORI",
+      "legal_label09": "SEED",
+      "legal_label10": "SIC",
+      "representative_label01": "個人識別番号",
+      "representative_label02": "ファミリーネーム",
+      "representative_label03": "ファーストネーム",
+      "representative_label04": "生年月日",
+      "representative_label05": "出生名",
+      "representative_label06": "出生地",
+      "representative_label07": "現在の住所",
+      "representative_label08": "性別",
+      "representative_label09": "法人識別番号",
+      "representative_label10": "法人名",
+      "representative_label11": "法人の住所",
+      "representative_label12": "VAT登録番号",
+      "representative_label13": "課税情報",
+      "representative_label14": "D-2012-17-EUIdentifier",
+      "representative_label15": "LEI",
+      "representative_label16": "EORI",
+      "representative_label17": "SEED",
+      "representative_label18": "SIC",
+      "update_btn": "更新"
+    },
+    "step_create_eidas_credentials": {
+      "title": "eIDAS 認証の詳細", 
+      "next_btn": "次へ"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "fiware-idm",
-  "version": "7.0.1",
+  "version": "7.6.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -17,9 +17,10 @@
     "test:single": "DEBUG=idm:*,oauth2-server:* mocha",
     "test:watch": "npm run test -- -w ./lib",
     "lint": "eslint . --cache",
-    "lint:text": "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",
+    "lint:text": "textlint 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
+    "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js *.js",
-    "prettier:text": "prettier '*.md' '**/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
+    "prettier:text": "prettier '*.md' '**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
     "test:coverage": "istanbul cover _mocha -- --recursive 'test/**/*.js' --reporter spec --exit",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
@@ -86,6 +87,8 @@
     "mocha-lcov-reporter": "^1.3.0",
     "nock": "9.0.14",
     "prettier": "^1.14.2",
+    "remark-cli": "^6.0.1",
+    "remark-preset-lint-recommended": "^3.0.2",
     "should": "8.4.0",
     "sinon": "1.17.4",
     "sinon-chai": "2.8.0",
@@ -111,6 +114,15 @@
       "prettier --tab-width 4 --print-width 80 --write --prose-wrap always",
       "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",
       "git add"
+    ]
+  },
+  "remarkConfig": {
+    "settings": {
+      "bullet": "-",
+      "paddedTable": true
+    },
+    "plugins": [
+      "remark-preset-lint-recommended"
     ]
   }
 }

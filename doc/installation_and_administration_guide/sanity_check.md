@@ -9,20 +9,20 @@ before proceeding to unit tests, integration tests and user validation.
 
 Check if User Interface is working:
 
-1. Verify that the host address of IdM can be reached. By default, web access
-   will show a Login Page.
+1.  Verify that the host address of IdM can be reached. By default, web access
+    will show a Login Page.
 
-2. Acquire a valid username and password and access with those credentials. The
-   resulting web page is the landing page of the IdM KeyRock Portal.
+2.  Acquire a valid username and password and access with those credentials. The
+    resulting web page is the landing page of the IdM KeyRock Portal.
 
-3. Verify that you can view the list of applications, organizations, etc.
+3.  Verify that you can view the list of applications, organizations, etc.
 
 Check if API is working:
 
-1. Request an API token as describe in
-   [apiary](https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication/create-token-with-password-method).
-2. Verify that you can retrieve list of applications, organization, etc. For
-   instance you can check paths by:
+1.  Request an API token as describe in
+    [apiary](https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication/create-token-with-password-method).
+2.  Verify that you can retrieve list of applications, organization, etc. For
+    instance you can check paths by:
 
 ```bash
 curl --include \

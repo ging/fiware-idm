@@ -249,7 +249,7 @@ exports.role_permissions_assign = function(req, res) {
       config_usage_control.enabled && public_roles_uc_id.length > 0
         ? update_usage_control_assignment(
             req.application.id,
-            public_roles_ac_id,
+            public_roles_uc_id,
             req.body.submit_usage_control_assignment
           )
         : Promise.resolve();

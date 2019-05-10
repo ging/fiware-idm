@@ -99,8 +99,9 @@ click "Save".
 
 You are also permitted to add up new permissions by clicking on "New
 Permission". Here you need to enter the name of the permission, description,
-HTTP verb (GET, PUT, POST, DELETE) and the Path to that permission. Click
-"Create Permission" and "Finish" to finalize with creating the application.
+HTTP verb (GET, PUT, POST, DELETE) and the Path (which could also be a regular
+expression) to that permission. Click "Create Permission" and "Finish" to
+finalize with creating the application.
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_permissions_create.png)
 

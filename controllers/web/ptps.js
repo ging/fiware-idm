@@ -42,7 +42,7 @@ exports.submit_ptp_usage_policies = function(
             attributes: ['previous_job_id'],
           });
         })
-        .then(function(previous_job_id) {
+        .then(function(result) {
           ////// WHEN USING ROLES, CURRENTLY ALL POLICIES ARE SENDED
           /*// Object to be sent to authzforce to create policies
             const submit_ptp = {};
@@ -62,7 +62,7 @@ exports.submit_ptp_usage_policies = function(
 
           return ptp.submit_policies(
             application_id,
-            previous_job_id,
+            result.previous_job_id,
             policies_info
           );
         })

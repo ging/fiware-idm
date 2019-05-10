@@ -162,19 +162,19 @@ Information about how to use the Keyrock GUI can be found in the
 
 Resources can be managed through the API (e.g. Users, applications and
 organizations). Further information can be found in the
-[API section](http://fiware-idm.readthedocs.org/en/latest/api).
+[API section](https://fiware-idm.readthedocs.io/en/latest/api/introduction).
 
 Finally, one of the main uses of this Generic Enabler is to allow developers to
 add identity management (authentication and authorization) to their applications
 based on FIWARE identity. This is posible thanks to
 [OAuth2](https://oauth.net/2/) protocol. For more information check the
-[OAuth2 API](http://fiware-idm.readthedocs.org/en/latest/api/#def-apiOAuth).
+[OAuth2 API](https://fiware-idm.readthedocs.io/en/latest/oauth/introduction).
 
 ## Tests
 
 For performing a basic end-to-end test, you have to follow the next steps. A
 detailed description about how to run tests can be found
-[here](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
+[here](https://fiware-idm.readthedocs.io/en/latest/installation_and_administration_guide/sanity_check/).
 
 1. Verify that the host address of IdM can be reached. By default, web access
    will show a Login Page.
@@ -184,10 +184,10 @@ detailed description about how to run tests can be found
 
 ## Advanced Documentation
 
--   [How to run tests](http://fiware-idm.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
--   [User & Programmers Manual](http://fiware-idm.readthedocs.org/en/latest/user_guide/)
--   [Installation & Administration Guide](http://fiware-idm.readthedocs.org/en/latest/admin_guide/)
--   [Connecting IdM to a eIDAS node](http://fiware-idm.readthedocs.org/en/latest/eidas/)
+-   [How to run tests](https://fiware-idm.readthedocs.io/en/latest/installation_and_administration_guide/sanity_check/)
+-   [User & Programmers Manual](https://fiware-idm.readthedocs.io/en/latest/user_and_programmers_guide/introduction/)
+-   [Installation & Administration Guide](https://fiware-idm.readthedocs.io/en/latest/installation_and_administration_guide/introduction/)
+-   [Connecting IdM to a eIDAS node](https://fiware-idm.readthedocs.io/en/latest/oauth/introduction)
 
 ## Changes Introduced in 7.x
 

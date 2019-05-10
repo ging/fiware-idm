@@ -18,9 +18,9 @@ You can perform serveral actions using Docker:
 
 In order to run the IdM Keyrock follow these steps:
 
-1. Create a directory.
-2. Create a new file called `docker-compose.yml` inside your directory with the
-   following code and:
+1.  Create a directory.
+2.  Create a new file called `docker-compose.yml` inside your directory with the
+    following code and:
 
 ```yml
 version: "2"
@@ -73,8 +73,8 @@ The different params mean:
         order to allow requests from it.
     -   IDM_DB_HOST. Define the name of the database container.
 
-3. Use `sudo docker-compose up` to run the IdM Keyrock. This will automatically
-   download the two images and run the IdM Keyrock service.
+3.  Use `sudo docker-compose up` to run the IdM Keyrock. This will automatically
+    download the two images and run the IdM Keyrock service.
 
 ## Build your own image
 

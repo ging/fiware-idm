@@ -206,6 +206,7 @@ exports.show = function(req, res) {
         eidas_enabled: config.eidas.enabled,
         eidas_credentials: req.eidas_credentials,
         gateway_host: config.eidas.gateway_host,
+        data_usage_enabled: config.usage_control.enabled,
         errors: [],
         csrf_token: req.csrfToken(),
       });

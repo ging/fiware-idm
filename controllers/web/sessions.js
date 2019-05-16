@@ -12,6 +12,7 @@ const escape_paths = require('../../etc/escape_paths/paths.json').paths;
 // MW to authorized restricted http accesses
 exports.login_required = function(req, res, next) {
   debug('--> login_required');
+
   if (req.session.user || check_path(req.path)) {
     next();
   } else {

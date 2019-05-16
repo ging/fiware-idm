@@ -1,39 +1,39 @@
 var _tourTemplate =
   "<div class='popover tour'>\
-	<div class='arrow'></div>\
-	<h5 class='tour-title'>Tour title</h5>\
-	<h3 class='popover-title tour-subtitle'></h3>\
-	<div class='popover-content tour-content'></div>\
-	<div class='popover-navigation tour-navigation'><div class='btn-group'>\
-	<button class='btn btn-default' data-role='prev'>« Prev</button>\
-	<button class='btn btn-primary' data-role='next'>Next »</button>\
-	</div>\
-	<div class='btn-group'><button class='btn btn-default' data-role='end'>Exit</button></div>\
-	</div>";
+  <div class='arrow'></div>\
+  <h5 class='tour-title'>Tour title</h5>\
+  <h3 class='popover-title tour-subtitle'></h3>\
+  <div class='popover-content tour-content'></div>\
+  <div class='popover-navigation tour-navigation'><div class='btn-group'>\
+  <button class='btn btn-default' data-role='prev'>« Prev</button>\
+  <button class='btn btn-primary' data-role='next'>Next »</button>\
+  </div>\
+  <div class='btn-group'><button class='btn btn-default' data-role='end'>Exit</button></div>\
+  </div>";
 
 var _noNextTemplate =
   "<div class='popover tour'>\
-	<div class='arrow'></div>\
-	<h5 class='tour-title'>Tour title</h5>\
-	<h3 class='popover-title tour-subtitle'></h3>\
-	<div class='popover-content tour-content'></div>\
-	<div class='popover-navigation tour-navigation'><div class='btn-group'>\
-	<button class='btn btn-default' data-role='prev'>« Prev</button>\
-	</div>\
-	<div class='btn-group'><button class='btn btn-default' data-role='end'>Exit</button></div>\
-	</div>";
+  <div class='arrow'></div>\
+  <h5 class='tour-title'>Tour title</h5>\
+  <h3 class='popover-title tour-subtitle'></h3>\
+  <div class='popover-content tour-content'></div>\
+  <div class='popover-navigation tour-navigation'><div class='btn-group'>\
+  <button class='btn btn-default' data-role='prev'>« Prev</button>\
+  </div>\
+  <div class='btn-group'><button class='btn btn-default' data-role='end'>Exit</button></div>\
+  </div>";
 
 var _noPrevTemplate =
   "<div class='popover tour'>\
-	<div class='arrow'></div>\
-	<h5 class='tour-title'>Tour title</h5>\
-	<h3 class='popover-title tour-subtitle'></h3>\
-	<div class='popover-content tour-content'></div>\
-	<div class='popover-navigation tour-navigation'><div class='btn-group'>\
-	<button class='btn btn-primary' data-role='next'>Next »</button>\
-	</div>\
-	<div class='btn-group'><button class='btn btn-default' data-role='end'>Exit</button></div>\
-	</div>";
+  <div class='arrow'></div>\
+  <h5 class='tour-title'>Tour title</h5>\
+  <h3 class='popover-title tour-subtitle'></h3>\
+  <div class='popover-content tour-content'></div>\
+  <div class='popover-navigation tour-navigation'><div class='btn-group'>\
+  <button class='btn btn-primary' data-role='next'>Next »</button>\
+  </div>\
+  <div class='btn-group'><button class='btn btn-default' data-role='end'>Exit</button></div>\
+  </div>";
 
 var _toursDefaultOptions = {
   debug: false,

@@ -20,8 +20,8 @@ filled.
 
 Once the application is registered, the metadata of the Service Provider is
 exposed in the endpoint
-http://idm-host/idm/applications/*application-id*/saml2/metadata. This metadata
-file is needed for registering the Service Provider in the eIDAS node.
+`http://idm-host/idm/applications/*application-id*/saml2/metadata`. This
+metadata file is needed for registering the Service Provider in the eIDAS node.
 
 **Note:** It is very important to register the Service Provider in the eIDAS
 node following the specific instructions of the node owner. This instructions

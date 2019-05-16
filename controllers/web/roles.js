@@ -1,8 +1,9 @@
 const models = require('../../models/models.js');
 
 // Authzforce module
-const config_authorization = require('../../config.js').authorization;
-const config_usage_control = require('../../config.js').usage_control;
+const config = require('../../config.js');
+const config_authorization = config.authorization;
+const config_usage_control = config.usage_control;
 const authzforce_controller = require('./authzforces');
 const ptp_controller = require('./ptps');
 
@@ -27,6 +28,7 @@ exports.manage_roles_view = function(req, res) {
   res.render('applications/manage_roles', {
     application: req.application,
     authorization_level: config_authorization.level,
+    data_usage_enabled: config_usage_control.enabled,
     csrf_token: req.csrfToken(),
   });
 };
@@ -69,7 +71,6 @@ exports.manage_roles = function(req, res) {
           values[2][i].permission_id
         );
       }
-
       res.send({
         application: {
           id: req.application.id,

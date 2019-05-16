@@ -590,6 +590,7 @@ function create_oauth_response(
         require('../templates/oauth_response/oauth_user_response.json')
       )
     );
+
     user_info.username = identity.username;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
@@ -614,6 +615,7 @@ function create_oauth_response(
         require('../templates/oauth_response/oauth_iot_response.json')
       )
     );
+
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 
@@ -819,14 +821,21 @@ function user_permissions(roles_id, app_id, action, resource) {
     })
     .then(function(permissions) {
       if (permissions.length > 0) {
-        return models.permission.findAll({
-          where: {
-            id: permissions.map(elem => elem.permission_id),
-            oauth_client_id: app_id,
-            action,
-            resource,
-          },
-        });
+        return models.permission
+          .findAll({
+            where: {
+              id: permissions.map(elem => elem.permission_id),
+              oauth_client_id: app_id,
+              action,
+            },
+          })
+          .then(permissions =>
+            permissions.filter(permission =>
+              permission.is_regex == 1
+                ? new RegExp(permission.resource).exec(resource)
+                : permission.resource == resource
+            )
+          );
       }
       return [];
     });

@@ -80,7 +80,8 @@ in Node JS. Another remarkable changes have been made:
 -   Now users don't need to switch session in order to create an application
     that will belong to an organization.
 
--   Permissions of an application can be edited or deleted.
+-   Permissions of an application can be edited or deleted. Permission could be
+    define as regular expressions
 
 -   IdM could play the role of gateway between services and eDIAS Node in order
     to allow users authentication with their national eID.
@@ -91,7 +92,7 @@ in Node JS. Another remarkable changes have been made:
 
 -   OAuth Revoke Token endpoint enable.
 
--   Internazionalization od UI (Spanish and English supported).
+-   Internazionalization od UI (Spanish, Japanese and English supported).
 
 -   User Admin Panel.
 
@@ -100,3 +101,8 @@ in Node JS. Another remarkable changes have been made:
 -   IdM could play the role as PDP for basic authorization.
 
 -   Complete Sign out. Delete session in services as well as in Keyrock.
+
+-   Authentication using electronic Identification (eID) through european eIDAS
+    infrastructure.
+
+-   Data Usage Control Policies.

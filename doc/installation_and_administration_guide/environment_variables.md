@@ -63,3 +63,6 @@ ease Keyrock configuration.
 | IDM_ADMIN_USER                      | String  | Username of admin default user in Keyrock                                                                       | -                           |
 | IDM_ADMIN_EMAIL                     | String  | Email of admin default user in Keyrock                                                                          | -                           |
 | IDM_ADMIN_PASS                      | String  | Password of admin default user in Keyrock                                                                       | -                           |
+| IDM_USAGE_CONTROL_ENABLED           | String  | Enable Usage control feature Keyrock                                                                            | -                           |
+| IDM_PTP_HOST                        | String  | Name of the host where is running the PTP                                                                       | -                           |
+| IDM_PTP_PORT                        | Integer | Port where is listenning the PTP                                                                                | 0 to 65536                  |

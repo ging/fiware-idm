@@ -194,6 +194,23 @@ config.eidas = {
 };
 ```
 
+## Usage Control
+
+Check
+[data usage control section](https://fiware-idm.readthedocs.io/en/latest/usage_control/introduction/index.html)
+to obtain a whole description of this feature. An example of this configuration
+is:
+
+```javascript
+config.usage_control = {
+    enabled: true,
+    ptp: {
+        host: "localhost",
+        port: 8090
+    }
+};
+```
+
 ## API
 
 As in OAuth2.0 configuration, the API token lifetime could be changed to be

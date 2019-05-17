@@ -20,6 +20,7 @@
 		"valid_perm_body": {
 			"permission": {
 				"name": "permission 1",
+				"description": "permission 1 description",
 				"action": "GET",
 				"resource": "login"
 			}
@@ -27,6 +28,7 @@
 		"invalid_perm_body": {
 			"permission": {
 				"name": "permission 2",
+				"description": "permission 2 description",
 				"action": "GET",
 				"resource": "login",
 				"xml": "<xml test 2>"
@@ -36,7 +38,8 @@
 	"read": {
 		"create": {
 			"permission": {
-		    	"name": "Test permission 2",
+				"name": "Test permission 2",
+				"description": "Test permission 2 description",
 		    	"action": "GET",
 				"resource": "login"
 			}
@@ -45,14 +48,16 @@
 	"update": {
 		"create": {
 			"permission": {
-		    	"name": "Test permission 3",
+				"name": "Test permission 3",
+				"description": "Test permission 3 description",
 		    	"action": "GET",
 				"resource": "login"
 			}
 		},
 		"new_values": {
 			"permission": {
-		    	"name": "new name of permission 3",
+				"name": "new name of permission 3",
+				"description": "new description of permission 3",
 		    	"action": "POST",
 				"resource": "resource"
 			}
@@ -61,7 +66,8 @@
 	"delete": {
 		"create": {
 			"permission": {
-		    	"name": "Test permission 4",
+				"name": "Test permission 4",
+				"description": "Test permission 4 description",
 		    	"action": "GET",
 				"resource": "login"
 			}

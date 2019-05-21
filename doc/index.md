@@ -51,19 +51,19 @@ Keyrock provides both a GUI and an API interface.
 ## Usage
 
 Information about how to use the Keyrock GUI can be found in the
-[User & Programmers Manual](https://fiware-idm.readthedocs.io/en/latest/user_guide/).
+[User & Programmers Manual](https://fiware-idm.readthedocs.io/en/latest/user_and_programmers_guide/introduction).
 
 ## API
 
 Resources can be managed through the API (e.g. Users, applications and
 organizations). Further information can be found in the
-[API section](http://fiware-idm.readthedocs.org/en/latest/api).
+[API section](https://fiware-idm.readthedocs.io/en/latest/api/introduction).
 
 Finally, one of the main uses of this Generic Enabler is to allow developers to
 add identity management (authentication and authorization) to their applications
 based on FIWARE identity. This is posible thanks to
 [OAuth2](https://oauth.net/2/) protocol. For more information check the
-[OAuth2 API](http://fiware-idm.readthedocs.org/en/latest/api/#def-apiOAuth).
+[OAuth2 API](https://fiware-idm.readthedocs.io/en/latest/oauth/introduction).
 
 ## Changes Introduced in 7.x
 

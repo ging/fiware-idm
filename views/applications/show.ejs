@@ -6,17 +6,17 @@
                 <% if (user_logged_permissions.includes('2')) { -%>   
                     <a href="/idm/applications/<%= application.id %>/edit/" class="small">
                         <i class="fa fa-edit"></i>
-                        <span><%=translation.applications.show.edit_span%></span>
+                        <span><%=translation.applications.show.span01%></span>
                     </a>
                 <% } -%>
                 <% if (user_logged_permissions.includes('3')) { -%>
                     <a href="/idm/applications/<%= application.id %>/edit/roles/" class="small">
                     <% if (data_usage_enabled) { -%>
                         <i class="fas fa-door-open"></i>
-                        <span>access & usage</span>
+                        <span><%=translation.applications.show.span03%></span>
                     <% } else { -%>
                         <i class="fa fa-cogs"></i>
-                        <span><%=translation.applications.show.manage_roles%></span>
+                        <span><%=translation.applications.show.span02%></span>
                     <% } -%>
                     </a>
                 <% } -%>

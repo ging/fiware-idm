@@ -114,6 +114,7 @@ exports.create = function(req, res) {
           'id',
           'is_internal',
           'name',
+          'description',
           'action',
           'resource',
           'xml',

@@ -65,9 +65,9 @@ default user whose credentials are:
 
 In order to create an OAuth Token we first need to register an application on
 Keyrock. We can do it by using the UI (previous
-[log in](https://fiware-idm.readthedocs.io/en/latest/user_guide/#logging-in)
-with user credentials) as described in
-[register application](https://fiware-idm.readthedocs.io/en/latest/user_guide/#register-an-application)
+[log in](user_and_programmers_guide/user_guide.md#sign-in) with user
+credentials) as described in
+[register application](user_and_programmers_guide/application_guide.md#register-an-application)
 or we can create through the API(in this guide we will user curl functionality
 but in the
 [apiary](https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication)

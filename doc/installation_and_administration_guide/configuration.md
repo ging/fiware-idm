@@ -174,16 +174,13 @@ config.oauth2 = {
 };
 ```
 
-Check
-[Connecting to IdM with OAuth2.0](https://fiware-idm.readthedocs.io/en/latest/oauth/introduction/index.html)
-to obtain a whole description of this feature.
+Check [Connecting to IdM with OAuth2.0](../oauth/introduction.md) to obtain a
+whole description of this feature.
 
 ## eIDAS
 
-Check
-[Connecting IdM to eIDAS](https://fiware-idm.readthedocs.io/en/latest/eidas/introduction/index.html)
-to obtain a whole description of this feature. An example of this configuration
-is:
+Check [Connecting IdM to eIDAS](../eidas/introduction.md) to obtain a whole
+description of this feature. An example of this configuration is:
 
 ```javascript
 config.eidas = {

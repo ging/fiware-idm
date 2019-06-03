@@ -149,7 +149,7 @@ grant_type=password&username=demo&password=123&scope=permanent
 
 ### Access Token Response
 
-See [Authorization Code Grant](#def-codeGrantTokRes)
+See [Authorization Code Grant](#access-token-response)
 
 ## Refresh Token Grant
 
@@ -180,7 +180,7 @@ grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA&scope=permanent
 
 ### Access Token Response
 
-See [Authorization Code Grant](#def-codeGrantTokRes)
+See [Authorization Code Grant](#access-token-response)
 
 ## Client Credentials Grant
 
@@ -210,14 +210,14 @@ grant_type=client_credentials&scope=permanent
 
 ### Access Token Response
 
-See [Authorization Code Grant](#def-codeGrantTokRes)
+See [Authorization Code Grant](#access-token-response)
 
 ## Validate Access Tokens
 
 Once you have created an OAuth2.0 Access Token associated to a user, you can
 validate it in order to retrieve the user information and roles. Furthermore, if
 you have configured
-[Keyrock as PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization)
+[Keyrock as PDP](../installation_and_administration_guide/configuration.md#authorization)
 you can use the same endpoint for checking if the user is authorized to perform
 an specific action in the application.
 
@@ -294,7 +294,7 @@ Example response:
 ## Validate authorization
 
 If you have configured
-[Keyrock as PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization)
+[Keyrock as PDP](../installation_and_administration_guide/configuration.md#authorization)
 you can use the same endpoint for checking if the user is authorized to perform
 an specific action to an specific resource in the scope of an application.
 

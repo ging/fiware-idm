@@ -13,11 +13,11 @@ There are two approaches when a user sign in through a service:
 
 To perform a successful sing out is recommended to add Sign-out Callback Url
 parameter when
-[registering an application](https://fiware-idm.readthedocs.io/en/latest/user_and_programmers_guide/application_guide/index.html#register-an-application).
+[registering an application](../user_and_programmers_guide/application_guide.md#register-an-application).
 If the application is already created, it can be edited. Otherwise, the sign out
 request will be redirected to the URL which the service has registered in
 Keyrock.
-[Check config oauth](https://fiware-idm.readthedocs.io/en/latest/installation_and_administration_guide/configuration/index.html#oauth20).
+[Check config oauth](../installation_and_administration_guide/configuration.md#oauth20).
 
 Mention that the process of signing out is completely transparent for the user.
 

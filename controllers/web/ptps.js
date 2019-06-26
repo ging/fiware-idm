@@ -62,7 +62,7 @@ exports.submit_ptp_usage_policies = function(
 
           return ptp.submit_policies(
             application_id,
-            result.previous_job_id,
+            (result.previous_job_id) ? result.previous_job_id : null,
             policies_info
           );
         })

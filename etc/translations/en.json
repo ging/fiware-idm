@@ -577,12 +577,12 @@
       "select_time_option02": "minutes",
       "select_time_option03": "hours",
       "select_time_option04": "days",
-      "select_policy_option_01": "Count",
-      "select_policy_option_02": "Aggregation",
-      "select_policy_option_03": "Custom",
-      "select_punishment_option_01": "Kill job",
-      "select_punishment_option_02": "Unsubscribe",
-      "select_punishment_option_03": "Monetize",
+      "select_policy_option01": "Count",
+      "select_policy_option02": "Aggregation",
+      "select_policy_option03": "Custom",
+      "select_punishment_option01": "Kill job",
+      "select_punishment_option02": "Unsubscribe",
+      "select_punishment_option03": "Monetize",
       "required_field": "This is a required field."
     },
     "create_role": {

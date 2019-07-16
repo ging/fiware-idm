@@ -697,7 +697,7 @@ exports.create = function(req, res) {
                 '/activate?activation_key=' +
                 activation_key +
                 '&email=' +
-                user.email;
+                encodeURIComponent(user.email); // eslint-disable-line snakecase/snakecase
 
               const mail_data = {
                 name: user.username,
@@ -746,9 +746,9 @@ exports.activate = function(req, res, next) {
       include: [models.user],
     })
     .then(function(user_registration_profile) {
-      const user = user_registration_profile.User;
+      if (user_registration_profile && user_registration_profile.User) {
+        const user = user_registration_profile.User;
 
-      if (user) {
         // Activate the user if is not or if the actual date not exceeds the expiration date
         if (user.enabled) {
           res.locals.message = {
@@ -822,7 +822,7 @@ exports.password_send_email = function(req, res) {
       .then(function(user) {
         if (!user) {
           res.locals.message = {
-            text: `Sorry. You have specified an email address that is not registered. 
+            text: `Sorry. You have specified an email address that is not registered.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`,
             type: 'danger',
           };
@@ -832,7 +832,7 @@ exports.password_send_email = function(req, res) {
           });
         } else if (!user.enabled) {
           res.locals.message = {
-            text: `The email address you have specified is registered but not activated. 
+            text: `The email address you have specified is registered but not activated.
                                                Please check your email for the activation link or request a new one.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`,
             type: 'danger',
@@ -1091,7 +1091,7 @@ exports.resend_confirmation = function(req, res) {
           }
         } else {
           res.locals.message = {
-            text: `Sorry. You have specified an email address that is not registerd. 
+            text: `Sorry. You have specified an email address that is not registerd.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`,
             type: 'danger',
           };

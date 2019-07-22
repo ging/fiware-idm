@@ -209,7 +209,7 @@ exports.get_organizations = function(req, res) {
     .search_distinct(
       'user_organization',
       'organization',
-      req.session.user.id,
+      req.user.id,
       'user',
       key,
       offset,

@@ -59,8 +59,8 @@ config.oauth2 = {
     access_token_lifetime: (process.env.IDM_OAUTH_ACC_LIFETIME || 60 * 60),              // One hour
     ask_authorization: (process.env.IDM_OAUTH_ASK_AUTH || true),                         // Prompt a message to users to allow the application to read their details
     refresh_token_lifetime: (process.env.IDM_OAUTH_REFR_LIFETIME || 60 * 60 * 24 * 14),  // Two weeks
-    unique_url: (process.env.IDM_OAUTH_UNIQUE_URL || false)                              // This parameter allows to verify that an application with the same url 
-                                                                                         // does not exist when creating or editing it. If there are already applications 
+    unique_url: (process.env.IDM_OAUTH_UNIQUE_URL || false)                              // This parameter allows to verify that an application with the same url
+                                                                                         // does not exist when creating or editing it. If there are already applications
                                                                                          // with the same URL, they should be changed manually
 }
 
@@ -122,9 +122,12 @@ config.external_auth = {
 
 // Email configuration
 config.mail = {
+    transport: (process.env.IDM_EMAIL_TRANSPORT || 'smtp'),
+    domain: (process.env.IDM_EMAIL_DOMAIN || ''),
     host: (process.env.IDM_EMAIL_HOST || 'localhost'),
     port: (process.env.IDM_EMAIL_PORT || 25),
-    from: (process.env.IDM_EMAIL_ADDRESS || 'noreply@localhost')
+    from: (process.env.IDM_EMAIL_ADDRESS || 'noreply@localhost'),
+    mailgun_api_key: (process.env.IDM_MAILGUN_API_KEY || '')
 }
 
 // Config themes
@@ -149,7 +152,7 @@ if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  ==
     console.log('         template file - please update for a production instance');
     console.log('****************');
     /* eslint-enalbe no-console */
-    
+
 }
 
 

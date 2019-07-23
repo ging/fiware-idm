@@ -608,6 +608,10 @@ function create_oauth_response(
       user_info.eidas_profile = identity.extra.eidas_profile;
     }
 
+    if (identity.extra && identity.extra.identity_attributes) {
+      user_info.attributes = identity.extra.identity_attributes;
+    }
+
     return search_user_info(user_info, action, resource, authzforce, req_app);
   } else if (type === 'iot') {
     const iot_info = JSON.parse(

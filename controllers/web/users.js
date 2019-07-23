@@ -54,6 +54,7 @@ exports.load_user = function(req, res, next, user_id) {
           'website',
           'image',
           'gravatar',
+          'extra',
         ],
       })
       .then(function(user) {
@@ -324,6 +325,9 @@ exports.update_info = function(req, res) {
     req.body.user.description = null;
   }
 
+  const user_extra = user.extra ? user.extra : {};
+  user_extra.identity_attributes = req.body.user.attributes;
+
   user
     .validate()
     .then(function() {
@@ -333,9 +337,10 @@ exports.update_info = function(req, res) {
             username: req.body.user.username,
             description: req.body.user.description,
             website: req.body.user.website,
+            extra: user_extra,
           },
           {
-            fields: ['username', 'description', 'website'],
+            fields: ['username', 'description', 'website', 'extra'],
             where: { id: req.session.user.id },
           }
         )

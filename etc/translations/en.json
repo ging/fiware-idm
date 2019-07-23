@@ -375,7 +375,8 @@
       "label04": "Upload an image",
       "label05": "Select the part of the image you want to use as avatar.",
       "crop_btn": "Crop and use",
-      "cancel_btn": "Cancel"
+      "cancel_btn": "Cancel",
+      "label06": "Identity attributes"
     },
     "new_user": {
       "title": "Registration",

@@ -43,7 +43,7 @@
                                 <div class="form-group">
                                     <label class="control-label" for="id_attributes"><%=translation.users.edit_user.label06%></label>
                                     <div class="">
-                                        <input class="form-control" id="id_attributes" name="user[attributes]" type="text" value="<%= user.extra.identity_attributes %>">
+                                        <input class="form-control" id="id_attributes" name="user[attributes]" type="text" value="<%= user.extra ? user.extra.identity_attributes : '' %>">
                                     </div>
                                 </div>
                             </fieldset>

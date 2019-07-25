@@ -43,7 +43,44 @@
                                 <div class="form-group">
                                     <label class="control-label" for="id_attributes"><%=translation.users.edit_user.label06%></label>
                                     <div class="">
-                                        <input class="form-control" id="id_attributes" name="user[attributes]" type="text" value="<%= user.extra ? user.extra.identity_attributes : '' %>">
+                                        <table class="table table-bordered id_attributes_table"> 
+                                            <thead> 
+                                                <tr> 
+                                                    <th>Attribute</th> 
+                                                    <th>Value</th> 
+                                                </tr> 
+                                            </thead> 
+                                            <tbody> 
+                                                <tr> 
+                                                    <th scope="row">Vision</th> 
+                                                    <td> <input class="form-control" min="0" max="100"id="id_attributes" name="attributes[vision]" type="number" value="<%= user.extra ? user.extra.identity_attributes.vision : '' %>" id="example-number-input"></td>
+                                                </tr> 
+                                                <tr> 
+                                                    <th scope="row">Color Perception</th> 
+                                                    <td> <input class="form-control" min="0" max="100"id="id_attributes" name="attributes[color]" type="number" value="<%= user.extra ? user.extra.identity_attributes.color : '' %>" id="example-number-input"></td>
+                                                </tr>
+                                                <tr> 
+                                                    <th scope="row">Hearing</th> 
+                                                    <td> <input class="form-control" min="0" max="100"id="id_attributes" name="attributes[hearing]" type="number" value="<%= user.extra ? user.extra.identity_attributes.hearing : '' %>" id="example-number-input"></td>
+                                                </tr> 
+                                                <tr> 
+                                                    <th scope="row">Vocal Capability</th> 
+                                                    <td> <input class="form-control" min="0" max="100"id="id_attributes" name="attributes[vocal]" type="number" value="<%= user.extra ? user.extra.identity_attributes.vocal : '' %>" id="example-number-input"></td>
+                                                </tr> 
+                                                <tr> 
+                                                    <th scope="row">Manipulation Strength</th> 
+                                                    <td> <input class="form-control" min="0" max="100"id="id_attributes" name="attributes[manipulation]" type="number" value="<%= user.extra ? user.extra.identity_attributes.manipulation : '' %>" id="example-number-input"></td>
+                                                </tr> 
+                                                <tr> 
+                                                    <th scope="row">Reach</th> 
+                                                    <td> <input class="form-control" min="0" max="100"id="id_attributes" name="attributes[reach]" type="number" value="<%= user.extra ? user.extra.identity_attributes.reach : '' %>" id="example-number-input"></td>
+                                                </tr>
+                                                <tr> 
+                                                    <th scope="row">Cognition</th> 
+                                                    <td> <input class="form-control" min="0" max="100"id="id_attributes" name="attributes[cognition]" type="number" value="<%= user.extra ? user.extra.identity_attributes.cognition : '' %>" id="example-number-input"></td>
+                                                </tr> 
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </fieldset>

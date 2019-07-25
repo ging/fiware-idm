@@ -326,7 +326,7 @@ exports.update_info = function(req, res) {
   }
 
   const user_extra = user.extra ? user.extra : {};
-  user_extra.identity_attributes = req.body.user.attributes;
+  user_extra.identity_attributes = req.body.attributes;
 
   user
     .validate()

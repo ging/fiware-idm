@@ -104,6 +104,7 @@ exports.create = function(req, res) {
   check_create_body_request(req.body)
     .then(function() {
       // Build a row and validate if input values are correct (not empty) before saving values in permission table
+      req.body.permission.is_regex = !!req.body.permission.is_regex;
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
       permission.is_internal = false;
@@ -118,6 +119,7 @@ exports.create = function(req, res) {
           'action',
           'resource',
           'xml',
+          'is_regex',
           'oauth_client_id',
         ],
       });
@@ -180,6 +182,13 @@ exports.update = function(req, res) {
           req.permission.action = null;
           req.permission.resource = null;
         }
+
+        req.permission.is_regex = Object.prototype.hasOwnProperty.call(
+          req.body.permission,
+          'is_regex'
+        )
+          ? req.body.permission.is_regex
+          : req.permission.is_regex;
 
         return req.permission.save();
       })
@@ -318,6 +327,18 @@ function check_create_body_request(body) {
       }
     }
 
+    if (body.permission.is_regex) {
+      if (typeof body.permission.is_regex !== 'boolean') {
+        reject({
+          error: {
+            message: 'is_regex attribute must be a boolean',
+            code: 400,
+            title: 'Bad Request',
+          },
+        });
+      }
+    }
+
     resolve();
   });
 }
@@ -374,6 +395,18 @@ function check_update_body_request(body) {
           error: {
             message:
               'Cannot set action and resource at the same time as xacml rule',
+            code: 400,
+            title: 'Bad Request',
+          },
+        });
+      }
+    }
+
+    if (body.permission.is_regex) {
+      if (typeof body.permission.is_regex !== 'boolean') {
+        reject({
+          error: {
+            message: 'is_regex attribute must be a boolean',
             code: 400,
             title: 'Bad Request',
           },

@@ -965,7 +965,8 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "permission": {
                 "name": "permission 1",
                 "action": "GET",
-                "resource": "login"
+                "resource": "login",
+                "is_regex": false
               }
             }
 
@@ -988,6 +989,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                 "name": "permission 1",
                 "action": "GET",
                 "resource": "login",
+                "is_regex": false,
                 "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
               }
             }
@@ -1043,7 +1045,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "permission": {
                 "name": "new name permission",
                 "description": "new description permission",
-                "xml": "jambuno"
+                "xml": "<permission>...</permission>"
               }
             }
 

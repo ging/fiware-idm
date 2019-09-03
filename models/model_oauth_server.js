@@ -586,9 +586,12 @@ function create_oauth_response(
   }
 
   if (type === 'user') {
-    const user_info = {
-      ...require('../templates/oauth_response/oauth_user_response.json'),
-    };
+    const user_info = JSON.parse(
+      JSON.stringify(
+        require('../templates/oauth_response/oauth_user_response.json')
+      )
+    );
+
     user_info.username = identity.username;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
@@ -649,9 +652,12 @@ function create_oauth_response(
       return search_user_info(user_info, action, resource, authzforce, req_app);
     }
   } else if (type === 'iot') {
-    const iot_info = {
-      ...require('../templates/oauth_response/oauth_iot_response.json'),
-    };
+    const iot_info = JSON.parse(
+      JSON.stringify(
+        require('../templates/oauth_response/oauth_iot_response.json')
+      )
+    );
+
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 
@@ -857,14 +863,21 @@ function user_permissions(roles_id, app_id, action, resource) {
     })
     .then(function(permissions) {
       if (permissions.length > 0) {
-        return models.permission.findAll({
-          where: {
-            id: permissions.map(elem => elem.permission_id),
-            oauth_client_id: app_id,
-            action,
-            resource,
-          },
-        });
+        return models.permission
+          .findAll({
+            where: {
+              id: permissions.map(elem => elem.permission_id),
+              oauth_client_id: app_id,
+              action,
+            },
+          })
+          .then(permissions =>
+            permissions.filter(permission =>
+              permission.is_regex == 1
+                ? new RegExp(permission.resource).exec(resource)
+                : permission.resource == resource
+            )
+          );
       }
       return [];
     });

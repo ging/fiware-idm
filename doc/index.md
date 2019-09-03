@@ -51,19 +51,19 @@ Keyrock provides both a GUI and an API interface.
 ## Usage
 
 Information about how to use the Keyrock GUI can be found in the
-[User & Programmers Manual](https://fiware-idm.readthedocs.io/en/latest/user_guide/).
+[User & Programmers Manual](user_and_programmers_guide/introduction.md).
 
 ## API
 
 Resources can be managed through the API (e.g. Users, applications and
 organizations). Further information can be found in the
-[API section](http://fiware-idm.readthedocs.org/en/latest/api).
+[API section](api/introduction.md).
 
 Finally, one of the main uses of this Generic Enabler is to allow developers to
 add identity management (authentication and authorization) to their applications
 based on FIWARE identity. This is posible thanks to
 [OAuth2](https://oauth.net/2/) protocol. For more information check the
-[OAuth2 API](http://fiware-idm.readthedocs.org/en/latest/api/#def-apiOAuth).
+[OAuth2 API](oauth/introduction.md).
 
 ## Changes Introduced in 7.x
 
@@ -80,7 +80,8 @@ in Node JS. Another remarkable changes have been made:
 -   Now users don't need to switch session in order to create an application
     that will belong to an organization.
 
--   Permissions of an application can be edited or deleted.
+-   Permissions of an application can be edited or deleted. Permission could be
+    define as regular expressions
 
 -   IdM could play the role of gateway between services and eDIAS Node in order
     to allow users authentication with their national eID.
@@ -91,7 +92,7 @@ in Node JS. Another remarkable changes have been made:
 
 -   OAuth Revoke Token endpoint enable.
 
--   Internazionalization od UI (Spanish and English supported).
+-   Internazionalization od UI (Spanish, Japanese and English supported).
 
 -   User Admin Panel.
 
@@ -100,3 +101,8 @@ in Node JS. Another remarkable changes have been made:
 -   IdM could play the role as PDP for basic authorization.
 
 -   Complete Sign out. Delete session in services as well as in Keyrock.
+
+-   Authentication using electronic Identification (eID) through european eIDAS
+    infrastructure.
+
+-   Data Usage Control Policies.

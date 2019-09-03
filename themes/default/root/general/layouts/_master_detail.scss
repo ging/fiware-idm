@@ -37,6 +37,26 @@
   }
 }
 
+#policy_list {
+  @include make-sm-column(7, $gutter: $grid-gutter-width);
+  @include make-md-column(7, $gutter: $grid-gutter-width);
+  @include make-lg-column(7, $gutter: $grid-gutter-width);
+  @media (max-width: $screen-sm-min){
+    padding-left: 0;
+    padding-right: 0;
+  }
+  @media (max-width: 1600px){
+    float: right;
+  }
+  @media (max-width: $screen-sm-max){
+    float: none;
+  }
+}
+
+.ui-timepicker-container {
+  z-index: 3500 !important;
+}
+
 #permissions_list {
   @include make-sm-column(7, $gutter: $grid-gutter-width);
   @include make-md-column(7, $gutter: $grid-gutter-width);
@@ -69,6 +89,7 @@
 
 .permissions_list,
 .role_list,
+.policy_list,
 .services_list {
   padding: 15px;
   header{
@@ -132,7 +153,8 @@
   }
 }
 
-.permissions_list{
+.permissions_list,
+.policy_list {
   .alert{
     margin-top: 10px;
   }

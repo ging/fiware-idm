@@ -965,7 +965,8 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "permission": {
                 "name": "permission 1",
                 "action": "GET",
-                "resource": "login"
+                "resource": "login",
+                "is_regex": false
               }
             }
 
@@ -988,6 +989,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                 "name": "permission 1",
                 "action": "GET",
                 "resource": "login",
+                "is_regex": false,
                 "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
               }
             }
@@ -1043,7 +1045,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "permission": {
                 "name": "new name permission",
                 "description": "new description permission",
-                "xml": "jambuno"
+                "xml": "<permission>...</permission>"
               }
             }
 
@@ -1371,7 +1373,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + role_id - Id of the role.
     + permission_id - Id of the permission.
 
-### Assign a permission to a role [POST]
+### Assign a permission to a role [PUT]
 + Request (application/json)
     + Headers
         
@@ -1497,7 +1499,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + application_id - Id of the application.
     + role_id - Id of the role.
 
-### Assign a role to a user [POST]
+### Assign a role to a user [PUT]
 + Request (application/json)
     + Headers
         
@@ -1644,7 +1646,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + role_id - Id of the role.
     + organization_role_id - Id of organization role.
 
-### Assign a role to a organization [POST]
+### Assign a role to a organization [PUT]
 + Request (application/json)
     + Headers
         
@@ -1767,7 +1769,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
     + user_id - Id of the user.
     + organization_role_id - Id of the organization role.
 
-### Create relationship [POST]        
+### Create relationship [PUT]        
 + Request (application/json)
     + Headers
         

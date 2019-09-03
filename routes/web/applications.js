@@ -10,20 +10,20 @@ const fs = require('fs');
 // Config file
 const config = require('../../config');
 
+const index_controller = require('../../controllers/web/index');
+
 // Home web Controller
-const web_app_controller = require('../../controllers/web/index').applications;
-const web_check_perm_controller = require('../../controllers/web/index')
-  .check_permissions;
-const web_auth_user_controller = require('../../controllers/web/index')
-  .authorize_user_apps;
-const web_auth_org_controller = require('../../controllers/web/index')
-  .authorize_org_apps;
-const web_trusted_apps_controller = require('../../controllers/web/index')
-  .trusted_apps;
-const web_role_controller = require('../../controllers/web/index').roles;
-const web_perm_controller = require('../../controllers/web/index').permissions;
-const web_peppx_controller = require('../../controllers/web/index').pep_proxies;
-const web_iota_controller = require('../../controllers/web/index').iot_agents;
+const web_app_controller = index_controller.applications;
+const web_check_perm_controller = index_controller.check_permissions;
+const web_auth_user_controller = index_controller.authorize_user_apps;
+const web_auth_org_controller = index_controller.authorize_org_apps;
+const web_trusted_apps_controller = index_controller.trusted_apps;
+const web_role_controller = index_controller.roles;
+const web_perm_controller = index_controller.permissions;
+const web_usage_policies_controller = index_controller.usage_policies;
+const web_ptp_controller = index_controller.ptps;
+const web_peppx_controller = index_controller.pep_proxies;
+const web_iota_controller = index_controller.iot_agents;
 const saml2_controller = require('../../controllers/saml2/saml2');
 
 // Autoloads
@@ -243,6 +243,36 @@ router.delete(
   csrf_protection,
   web_perm_controller.delete_permission
 );
+
+if (config.usage_control.enabled) {
+  // Routes to handle data usage policies
+  router.get(
+    '/:application_id/edit/usage_policies',
+    web_check_perm_controller.owned_permissions,
+    csrf_protection,
+    web_usage_policies_controller.index
+  );
+  router.post(
+    '/:application_id/edit/usage_policies',
+    web_check_perm_controller.owned_permissions,
+    csrf_protection,
+    web_usage_policies_controller.create
+  );
+  router.put(
+    '/:application_id/edit/usage_policies/:usage_policy_id',
+    web_check_perm_controller.owned_permissions,
+    csrf_protection,
+    web_usage_policies_controller.edit
+  );
+  router.delete(
+    '/:application_id/edit/usage_policies/:usage_policy_id',
+    web_check_perm_controller.owned_permissions,
+    csrf_protection,
+    web_usage_policies_controller.delete
+  );
+  // POST PREVIOUS JOB ID
+  router.post('/:application_id/job_id', web_ptp_controller.create_job_id);
+}
 
 // Routes to handle iot of applications
 router.get(

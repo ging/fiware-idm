@@ -102,13 +102,18 @@ router.get(
   '/:application_id/roles/:role_id/permissions',
   api_role_pem_assign_controller.index
 );
-router.post(
+router.put(
   '/:application_id/roles/:role_id/permissions/:permission_id',
   api_role_pem_assign_controller.create
 );
 router.delete(
   '/:application_id/roles/:role_id/permissions/:permission_id',
   api_role_pem_assign_controller.delete
+);
+// POST endpoint is deprecated - maintained for backwards compatibility
+router.post(
+  '/:application_id/roles/:role_id/permissions/:permission_id',
+  api_role_pem_assign_controller.create
 );
 
 // Routes for role_user_assignments

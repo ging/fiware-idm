@@ -1,0 +1,11 @@
+{   
+    "COUNT_POLICY": {
+    	"parameters": ["event_window", "max_number_events"]
+    },
+    "AGGREGATION_POLICY": {
+    	"parameters": ["aggregate_time"]
+    },
+    "CUSTOM_POLICY": {
+    	"parameters": [""]
+    }
+}

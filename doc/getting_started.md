@@ -65,9 +65,9 @@ default user whose credentials are:
 
 In order to create an OAuth Token we first need to register an application on
 Keyrock. We can do it by using the UI (previous
-[log in](https://fiware-idm.readthedocs.io/en/latest/user_guide/#logging-in)
-with user credentials) as described in
-[register application](https://fiware-idm.readthedocs.io/en/latest/user_guide/#register-an-application)
+[log in](user_and_programmers_guide/user_guide.md#sign-in) with user
+credentials) as described in
+[register application](user_and_programmers_guide/application_guide.md#register-an-application)
 or we can create through the API(in this guide we will user curl functionality
 but in the
 [apiary](https://keyrock.docs.apiary.io/#reference/keyrock-api/authentication)
@@ -104,7 +104,7 @@ Connection:keep-alive
 &nbsp;&nbsp;2\. Create an application using API token previously created:
 
 &nbsp;&nbsp;&nbsp;&nbsp;2.1\. Request (check that redirect_uri is
-http://localhost/login):
+`http://localhost/login`):
 
 ```bash
 curl --include \
@@ -134,21 +134,21 @@ curl --include \
 &nbsp;&nbsp;&nbsp;&nbsp;2.2\. Example response with application info. Save id
 and secret to be used later to obtain an OAuth token.
 
-```bash
+```json
 {
-"application":{
-    "id":"a17bf9e3-628d-4000-8d25-37703975a528",
-    "secret":"ac5df1fe-4caf-4ae6-9d21-60f3a9182887",
-    "image":"default",
-    "jwt_secret":"51129f085f3e1a80",
-    "name":"Test_application 1",
-    "description":"description",
-    "redirect_uri":"http://localhost/login",
-    "url":"http://localhost",
-    "grant_type":"password,authorization_code,implicit",
-    "token_types":"jwt,permanent,bearer",
-    "response_type":"code,token"
-  }
+    "application": {
+        "id": "a17bf9e3-628d-4000-8d25-37703975a528",
+        "secret": "ac5df1fe-4caf-4ae6-9d21-60f3a9182887",
+        "image": "default",
+        "jwt_secret": "51129f085f3e1a80",
+        "name": "Test_application 1",
+        "description": "description",
+        "redirect_uri": "http://localhost/login",
+        "url": "http://localhost",
+        "grant_type": "password,authorization_code,implicit",
+        "token_types": "jwt,permanent,bearer",
+        "response_type": "code,token"
+    }
 }
 ```
 
@@ -167,8 +167,14 @@ curl -X POST -H "Authorization: Basic $(echo -n $ID:$SECRET | base64 -w 0)"   --
 In the body of the response we can found the OAuth Token in "access_token"
 parameter:
 
-```bash
-{"access_token":"cd8c8e41ab0db220315ed54f173087d281a4c686","token_type":"Bearer","expires_in":3599,"refresh_token":"8b96bc9dfbc8f1c0bd53e18720b6feb5b47de661","scope":["bearer"]}
+```json
+{
+    "access_token": "cd8c8e41ab0db220315ed54f173087d281a4c686",
+    "token_type": "Bearer",
+    "expires_in": 3599,
+    "refresh_token": "8b96bc9dfbc8f1c0bd53e18720b6feb5b47de661",
+    "scope": ["bearer"]
+}
 ```
 
 Last, you can retrieve information about the user who has generated the token
@@ -180,6 +186,19 @@ curl "http://localhost:3000/user?access_token=cd8c8e41ab0db220315ed54f173087d281
 
 And Keyrock will send:
 
-```bash
-{"organizations":[],"displayName":"","roles":[],"app_id":"a17bf9e3-628d-4000-8d25-37703975a528","trusted_apps":[],"isGravatarEnabled":false,"email":"admin@test.com","id":"admin","authorization_decision":"","app_azf_domain":"","eidas_profile":{},"username":"admin"}
+```json
+{
+    "organizations": [],
+    "displayName": "",
+    "roles": [],
+    "app_id": "a17bf9e3-628d-4000-8d25-37703975a528",
+    "trusted_apps": [],
+    "isGravatarEnabled": false,
+    "email": "admin@test.com",
+    "id": "admin",
+    "authorization_decision": "",
+    "app_azf_domain": "",
+    "eidas_profile": {},
+    "username": "admin"
+}
 ```

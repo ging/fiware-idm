@@ -7,12 +7,12 @@ authorization.
 
 For enabling this, the service has to be registered in both IdM and eIDAS node.
 The service is registered in the IdM as a regular **Application**, including
-some extra configuration parameters as explained [below](#def-registering-app).
-On the other hand the service has to be registered in the eIDAS node as a
-**Service Provider** following the procedure of the specific Member State. Then,
-when the user is going to authenticate in the IdM it will have the option of
-selecting a kind of “Login with eID” option that will redirect it to the
-specific authentication gateway.
+some extra configuration parameters as explained
+[here](../eidas/register_service_provider.md). On the other hand the service has
+to be registered in the eIDAS node as a **Service Provider** following the
+procedure of the specific Member State. Then, when the user is going to
+authenticate in the IdM it will have the option of selecting a kind of “Login
+with eID” option that will redirect it to the specific authentication gateway.
 
 Then, the IdM and the eIDAS node will interchange the needed SAML requests to
 finally obtain the user eIDAS profile. With this profile, the IdM will create a

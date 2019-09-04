@@ -324,7 +324,7 @@ exports.saml2_application_login = function(req, res, next) {
 
     // Save name_id and session_index for logout
     // Note:  In practice these should be saved in the user session, not globally.
-    const name_id = saml_response.user.name_id;
+    const name_id = saml_response.user.attributes.PersonIdentifier[0];
 
     // Commented beacuase no session index was returned when testing was performed
     //var session_index = saml_response.user.session_index;

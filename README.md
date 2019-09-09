@@ -215,7 +215,7 @@ in Node JS. Another remarkable changes have been made:
 
 ## Quality Assurance
 
-This project is part of [FIWARE](https://fiware.org/) and has been rated as
+This project is part of [FIWARE](https://www.fiware.org/) and has been rated as
 follows:
 
 -   **Version Tested:**

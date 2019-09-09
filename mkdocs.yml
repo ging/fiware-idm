@@ -5,7 +5,7 @@ site_description: Identity Management Keyrock Documentation
 docs_dir: doc
 site_dir: html
 theme: readthedocs
-extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://fiware.org/style/fiware_readthedocs_security.css"]
+extra_css: ["https://www.fiware.org/style/fiware_readthedocs.css", "https://www.fiware.org/style/fiware_readthedocs_security.css"]
 use_directory_urls: false
 #google_analytics: ['UA-******', 'fiware-idm.readthedocs.io']
 pages:

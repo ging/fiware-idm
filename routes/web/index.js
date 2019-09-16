@@ -1,5 +1,6 @@
 const express = require('express');
 const csrf = require('csurf');
+const debug = require('debug')('idm:web_index_model');
 
 const router = express.Router();
 
@@ -91,24 +92,34 @@ router.use(
 );
 
 // catch 404 and forward to error handler
-router.use(function(req, res, next) {
+router.use(function(req, res) {
   const err = new Error('Not Found');
   err.status = 404;
-  next(err);
+  res.locals.error = err;
+  res.render('errors/notFound');
 });
 
 // Error handler
 router.use(function(err, req, res) {
-  // set locals, only providing error in development
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
+  debug('Error: ', err);
   if (err.code === 'EBADCSRFTOKEN') {
-    res.status(403);
-    res.send('invalid csrf token');
+    err.status = 403;
+    debug('invalid csrf token');
   } else {
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error', { errors: [] });
+    err.status = err.status || 500;
+  }
+
+  // set locals, only providing error in development
+  res.locals.error =
+    req.app.get('env') === 'development'
+      ? err
+      : { message: 'internal error', status: 500 };
+
+  // render the error page
+  if (req.path.includes('/saml2/login')) {
+    res.render('errors/saml');
+  } else {
+    res.render('errors/generic');
   }
 });
 

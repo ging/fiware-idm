@@ -63,11 +63,11 @@ exports.load_user = function(req, res, next, user_id) {
           // Send request to next function
           next();
         } else {
-          req.session.message = {
-            text: ' User doesn`t exist.',
-            type: 'danger',
-          };
-          res.redirect('/');
+          // Reponse with message
+          const err = new Error('Not Found');
+          err.status = 404;
+          res.locals.error = err;
+          res.render('errors/notFound');
         }
       })
       .catch(function(error) {

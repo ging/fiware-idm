@@ -1,0 +1,82 @@
+<div class="error">
+	<h1>OAuth2 request has failed!</h1>
+	<div class="error-oauth">
+		<p><b>error - </b>
+			<% if (error.message) { -%>
+				<%= error.message %>
+			<% } else { -%>
+				internal error				
+			<% } -%>
+		</p>
+		<p>you can check your application configuration in <a href='/idm'>Homepage</a> or check your request 
+			<a data-toggle="collapse" href="#request_parameters" aria-expanded="true" aria-controls="request_parameters" class="collapsed">
+				parameters <i class="fa fa-angle-up"></i>
+			</a>
+		</p>
+		<div class="collapse_out">
+            <div id="request_parameters" class="form-group collapse" role="tabpanel">
+                <div>
+                    <div class="panel-heading">client_id (required)</div>
+                    <% if (query.client_id) { -%>
+                    	<%= query.client_id %>
+                    <% } else { -%>
+                    	undefined
+                    <% } -%>
+                </div>
+                <div>
+                    <div class="panel-heading">response_type (required)</div>
+                    <% if (query.response_type) { -%>
+                    	<%= query.response_type %>
+                    <% } else { -%>
+                    	undefined
+                    <% } -%>
+                </div>
+                <div>
+                    <div class="panel-heading">state (required)</div>
+                    <% if (query.state) { -%>
+                        <%= query.state %>
+                    <% } else { -%>
+                        undefined
+                    <% } -%>
+                </div>
+                <div>
+                    <div class="panel-heading">redirect_uri</div>
+					<% if (query.redirect_uri) { -%>
+                    	<%= query.redirect_uri %>
+                    <% } else { -%>
+                    	undefined
+                    <% } -%>
+                </div>
+                <div>
+                    <div class="panel-heading">scope</div>
+                    <% if (query.scope) { -%>
+                    	<%= query.scope %>
+                    <% } else { -%>
+                    	undefined
+                    <% } -%>
+                </div>
+            </div>
+        </div>  
+	</div>
+</div>
+
+
+<script type="text/javascript">
+    $('.collapsed').mouseover(function(){
+        $(this).children('i').toggleClass('fa-rotate-180');
+    });
+    $('.collapsed').mouseleave(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').removeClass('fa-rotate-180');
+        } else {
+            $(this).children('i').addClass('fa-rotate-180');
+        }
+    });
+    $('.collapsed').click(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').addClass('fa-rotate-180');
+        } else {
+            $(this).children('i').removeClass('fa-rotate-180');
+        }
+    });
+</script>

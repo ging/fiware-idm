@@ -1,4 +1,5 @@
 const body_parser = require('body-parser');
+const useragent = require('express-useragent');
 const clc = require('cli-color');
 const cookie_parser = require('cookie-parser');
 const cors = require('cors');
@@ -40,6 +41,9 @@ app.disable('x-powered-by');
 // Parse request
 app.use(body_parser.json({ limit: '50mb' }));
 app.use(body_parser.urlencoded({ limit: '50mb', extended: true }));
+
+// Parse user agent header
+app.use(useragent.express());
 
 // CORS Enable
 if (config.cors.enabled) {
@@ -112,6 +116,8 @@ app.use(function(req, res, next) {
 
   // {text: 'message text', type: 'info | success | warning | danger'}
   res.locals.message = {};
+  // {text: 'message text', status: ''}
+  res.locals.error = {};
 
   res.locals.site = config.site;
   res.locals.fs = require('fs');

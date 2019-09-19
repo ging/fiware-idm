@@ -312,8 +312,14 @@ function oauth_authorize(req, res) {
   const request = new Request(req);
   const response = new Response(res);
 
+  const options = {
+    allowEmptyState: config_oauth2.allow_empty_state // eslint-disable-line snakecase/snakecase
+      ? config_oauth2.allow_empty_state
+      : false,
+  };
+
   return oauth_server
-    .authorize(request, response)
+    .authorize(request, response, options)
     .then(function(success) {
       res.redirect(success);
     })
@@ -424,7 +430,7 @@ function authenticate_jwt(
         req_app
       )
         .then(function(response) {
-          return res.status(201).json(response);
+          return res.status(200).json(response);
         })
         .catch(function(error) {
           debug('Error ', error);
@@ -467,7 +473,7 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
       );
     })
     .then(function(response) {
-      return res.status(201).json(response);
+      return res.status(200).json(response);
     })
     .catch(function(error) {
       debug('Error ', error);

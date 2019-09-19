@@ -58,7 +58,10 @@ exports.response_type_required = function(req, res, next) {
     debug('Error ', err.message);
 
     res.locals.error = err;
-    res.render('errors/oauth', { query: req.query });
+    res.render('errors/oauth', {
+      query: req.query,
+      application: req.application,
+    });
   } else if (!req.query.client_id) {
     // Reponse with message
     const err = new Error('invalid_request: include client_id in request');
@@ -66,7 +69,10 @@ exports.response_type_required = function(req, res, next) {
     debug('Error ', err.message);
 
     res.locals.error = err;
-    res.render('errors/oauth', { query: req.query });
+    res.render('errors/oauth', {
+      query: req.query,
+      application: req.application,
+    });
   } else {
     next();
   }
@@ -85,6 +91,7 @@ exports.load_application = function(req, res, next) {
         'description',
         'image',
         'response_type',
+        'url',
         'redirect_uri',
       ],
     })
@@ -98,7 +105,7 @@ exports.load_application = function(req, res, next) {
         err.status = 404;
         res.locals.error = err;
         debug('Error ', err.message);
-        res.render('errors/oauth', { query: req.query });
+        res.render('errors/oauth', { query: req.query, application: {} });
       }
     })
     .catch(next);

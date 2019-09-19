@@ -18,8 +18,8 @@ if (config.eidas.enabled) {
   router.get(
     '/authorize',
     csrf_protection,
-    oauth_controller.response_type_required,
     oauth_controller.load_application,
+    oauth_controller.response_type_required,
     saml2_controller.search_eidas_credentials,
     saml2_controller.create_auth_request,
     oauth_controller.check_user
@@ -28,23 +28,23 @@ if (config.eidas.enabled) {
   router.get(
     '/authorize',
     csrf_protection,
-    oauth_controller.response_type_required,
     oauth_controller.load_application,
+    oauth_controller.response_type_required,
     oauth_controller.check_user
   );
 }
 router.post(
   '/authorize',
   csrf_protection,
-  oauth_controller.response_type_required,
   oauth_controller.load_application,
+  oauth_controller.response_type_required,
   oauth_controller.authenticate_user
 );
 router.post(
   '/enable_app',
   csrf_protection,
-  oauth_controller.response_type_required,
   oauth_controller.load_application,
+  oauth_controller.response_type_required,
   oauth_controller.load_user,
   oauth_controller.enable_app
 );
@@ -74,7 +74,10 @@ router.use(function(err, req, res, next) {
   res.status(err.status);
   if (req.useragent.isDesktop) {
     res.locals.error = err;
-    res.render('errors/oauth', { query: req.query });
+    res.render('errors/oauth', {
+      query: req.query,
+      application: req.application,
+    });
   } else {
     res.send(err.message);
   }

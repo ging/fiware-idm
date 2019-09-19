@@ -55,6 +55,7 @@ config.cors = {
 
 // Config oauth2 parameters
 config.oauth2 = {
+    allow_empty_state: (process.env.IDM_OAUTH_EMPTY_STATE || false),                     // allow empty state in request
     authorization_code_lifetime: (process.env.IDM_OAUTH_AUTH_LIFETIME || 5 * 60),        // Five minutes
     access_token_lifetime: (process.env.IDM_OAUTH_ACC_LIFETIME || 60 * 60),              // One hour
     ask_authorization: (process.env.IDM_OAUTH_ASK_AUTH || true),                         // Prompt a message to users to allow the application to read their details
@@ -147,7 +148,7 @@ if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  ==
     console.log('WARNING: The current encryption keys match the defaults found in the plaintext');
     console.log('         template file - please update for a production instance');
     console.log('****************');
-    /* eslint-enalbe no-console */
+    /* eslint-enable no-console */
 }
 
 

@@ -29,7 +29,9 @@ router.use(function(req, res) {
 });
 
 // Error handler
-router.use(function(err, req, res) {
+/* eslint-disable no-unused-vars */
+router.use(function(err, req, res, next) {
+  /* eslint-enable no-unused-vars */
   debug(err);
 
   err.status = err.status || 500;

@@ -228,7 +228,7 @@ describe('OAuth Token Request: ', function() {
         const json = JSON.parse(body);
         should(json).have.property('app_id');
         should(json).have.property('id');
-        response.statusCode.should.equal(201);
+        response.statusCode.should.equal(200);
         done();
       });
     });

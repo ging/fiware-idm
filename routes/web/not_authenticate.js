@@ -37,4 +37,12 @@ router.post(
   web_user_controller.resend_confirmation
 );
 
+// catch 404 and forward to error handler
+router.use(function(req, res) {
+  const err = new Error('Not Found');
+  err.status = 404;
+  res.locals.error = err;
+  res.render('errors/notFound');
+});
+
 module.exports = router;

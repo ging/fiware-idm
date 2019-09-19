@@ -1,0 +1,13 @@
+<div class="error">
+	<h1>Saml2 request has failed!</h1>
+	<div class="error-saml">
+		<p><b>error - </b>
+			<% if (error.message) { -%>
+				<%= error.message %>
+			<% } else { -%>
+				internal error				
+			<% } -%>
+		</p>
+		<p>you can check your application configuration in <a href='/idm'>Homepage</a></p>
+	</div>
+</div>

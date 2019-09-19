@@ -1,4 +1,4 @@
-<%if(session.user) {%>
+<%if(session.user && !error.status ) {%>
   <nav class="sidebar">
     <h5>
       <span class="hidden-xs hidden-sm"><%=translation.navigation.menu_title01%></span>

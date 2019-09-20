@@ -838,13 +838,11 @@
       "authorize_btn": "Authorize"
     }
   },
-
   "modal": {
     "select": "Select your country",
     "next": "Next step",
     "close": "Close"
   },
-
   "countries": {
     "spain": "Spain",
     "slovenia": "Slovenia",
@@ -852,7 +850,6 @@
     "austria": "Austria",
     "portugal": "Portugal"
   },
-
   "saml2": {
     "label01": "Support Contact Person",
     "label02": "Name",
@@ -922,6 +919,37 @@
     "step_create_eidas_credentials": {
       "title": "eIDAS Authentication Details", 
       "next_btn": "Next"
+    }
+  },
+  "errors": {
+    "saml": {
+      "title01": "ops! something went wrong!",
+      "content01": "contact with the administrators of",
+      "content02": "your web service provider",
+      "content03": "and send your",
+      "content04": "error details",
+      "title02": "Saml2 request has failed!",
+      "content05": "error",
+      "content06": "internal error"
+    },
+    "oauth": {
+      "title01": "ops! something went wrong!",
+      "content01": "contact with the administrators of",
+      "content02": "your web service provider",
+      "content03": "and send your",
+      "content04": "error details",
+      "title02": "OAuth2 request has failed!",
+      "content05": "error",
+      "content06": "internal error",
+      "content07": "(required)"
+    },
+    "not_found": {
+      "title01": "the page you have requested not exist",
+      "content01": "Go back to the",
+      "content02": "Homepage"
+    },
+    "generic": {
+      "content01": "Code"
     }
   }
 }

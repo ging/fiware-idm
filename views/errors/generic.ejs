@@ -1,6 +1,6 @@
 <div class="error">
 	<h1><%= error.message %></h1>
-	<p>Code: <%= error.status %></p>
+	<p><%=translation.errors.generic.content01%>: <%= error.status %></p>
 	<% if (error.stack) { -%>
 		<pre><%= error.stack %></pre>
 	<% } -%>

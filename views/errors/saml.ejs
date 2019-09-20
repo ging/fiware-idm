@@ -1,24 +1,24 @@
 <div class="error">
-	<h1>ops! something went wrong!</h1>
-    <p>contact with the administrators of
+	<h1><%=translation.errors.oauth.title01%></h1>
+    <p><%=translation.errors.oauth.content01%>
     <% if (application) { -%>
         <a href="<%= application.url%>"> <%= application.name %></a>
     <% } else { -%>
-        your web service provider 
+        <%=translation.errors.oauth.content02%> 
     <% } -%>
-    and send your 
+    <%=translation.errors.oauth.content03%> 
         <a data-toggle="collapse" href="#error_saml" aria-expanded="true" aria-controls="error_saml" class="collapsed">
-            error details <i class="fa fa-angle-up"></i>
+            <%=translation.errors.oauth.content04%> <i class="fa fa-angle-up"></i>
         </a>
     </p>
 	<div class="collapse_out">
     	<div id="error_saml" class="form-group collapse" role="tabpanel">
-			<h2>Saml2 request has failed!</h2>
-	        <p><b>error - </b>
+			<h2><%=translation.errors.oauth.title02%></h2>
+	        <p><b><%=translation.errors.oauth.content05%> - </b>
 	            <% if (error.message) { -%>
 	                <%= error.message %>
 	            <% } else { -%>
-	                internal error              
+	                <%=translation.errors.oauth.content06%>             
 	            <% } -%>
 	        </p>
 		</div>

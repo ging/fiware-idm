@@ -67,7 +67,7 @@ exports.load_user = function(req, res, next, user_id) {
           const err = new Error('Not Found');
           err.status = 404;
           res.locals.error = err;
-          res.render('errors/notFound');
+          res.render('errors/not_found');
         }
       })
       .catch(function(error) {

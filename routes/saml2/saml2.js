@@ -22,7 +22,7 @@ router.use(function(req, res) {
   err.status = 404;
   if (req.useragent.isDesktop) {
     res.locals.error = err;
-    res.render('errors/notFound');
+    res.render('errors/not_found');
   } else {
     res.status(404).json(err.message);
   }

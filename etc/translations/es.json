@@ -923,5 +923,36 @@
       "title": "Detalles de autenticación para eIDAS", 
       "next_btn": "Siguiente"
     }
+  },
+  "errors": {
+    "saml": {
+      "title01": "¡ups, algo fue mal!",
+      "content01": "Contacta con el administrador de",
+      "content02": "tu proveedor de servicios web",
+      "content03": "y envia los",
+      "content04": "detalles de tu error",
+      "title02": "¡La petición Saml ha fallado!",
+      "content05": "error",
+      "content06": "error interno"
+    },
+    "oauth": {
+      "title01": "¡ups, algo fue mal!",
+      "content01": "Contacta con el administrador de",
+      "content02": "tu proveedor de servicios web",
+      "content03": "y envia los",
+      "content04": "detalles de tu error",
+      "title02": "¡La petición OAuth ha fallado!",
+      "content05": "error",
+      "content06": "error interno",
+      "content07": "(obligatorio)"
+    },
+    "not_found": {
+      "title01": "la página que has solicitado no existe",
+      "content01": "vuelve de nuevo a",
+      "content02": "la página de inicio"
+    },
+    "generic": {
+      "content01": "Código"
+    }
   }
 }

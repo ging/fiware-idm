@@ -41,7 +41,7 @@ exports.load_application = function(req, res, next, application_id) {
           const err = new Error('Not Found');
           err.status = 404;
           res.locals.error = err;
-          res.render('errors/notFound');
+          res.render('errors/not_found');
         }
       })
       .catch(next);

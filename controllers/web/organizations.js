@@ -31,7 +31,7 @@ exports.load_organization = function(req, res, next, organization_id) {
           const err = new Error('Not Found');
           err.status = 404;
           res.locals.error = err;
-          res.render('errors/notFound');
+          res.render('errors/not_found');
         }
       })
       .catch(function(error) {

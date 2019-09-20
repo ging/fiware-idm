@@ -316,7 +316,7 @@ exports.saml2_application_login = function(req, res) {
   return req.sp.post_assert(idp, options, function(error, saml_response) {
     if (error != null) {
       res.locals.error = error;
-      res.render('errors/saml');
+      return res.render('errors/saml', { application: req.application });
     }
 
     // Save name_id and session_index for logout

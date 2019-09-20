@@ -1,13 +1,46 @@
 <div class="error">
-	<h1>Saml2 request has failed!</h1>
-	<div class="error-saml">
-		<p><b>error - </b>
-			<% if (error.message) { -%>
-				<%= error.message %>
-			<% } else { -%>
-				internal error				
-			<% } -%>
-		</p>
-		<p>you can check your application configuration in <a href='/idm'>Homepage</a></p>
+	<h1>ops! something went wrong!</h1>
+    <p>contact with the administrators of
+    <% if (application) { -%>
+        <a href="<%= application.url%>"> <%= application.name %></a>
+    <% } else { -%>
+        your web service provider 
+    <% } -%>
+    and send your 
+        <a data-toggle="collapse" href="#error_saml" aria-expanded="true" aria-controls="error_saml" class="collapsed">
+            error details <i class="fa fa-angle-up"></i>
+        </a>
+    </p>
+	<div class="collapse_out">
+    	<div id="error_saml" class="form-group collapse" role="tabpanel">
+			<h2>Saml2 request has failed!</h2>
+	        <p><b>error - </b>
+	            <% if (error.message) { -%>
+	                <%= error.message %>
+	            <% } else { -%>
+	                internal error              
+	            <% } -%>
+	        </p>
+		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+    $('.collapsed').mouseover(function(){
+        $(this).children('i').toggleClass('fa-rotate-180');
+    });
+    $('.collapsed').mouseleave(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').removeClass('fa-rotate-180');
+        } else {
+            $(this).children('i').addClass('fa-rotate-180');
+        }
+    });
+    $('.collapsed').click(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').addClass('fa-rotate-180');
+        } else {
+            $(this).children('i').removeClass('fa-rotate-180');
+        }
+    });
+</script>

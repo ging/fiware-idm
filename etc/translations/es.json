@@ -375,7 +375,8 @@
       "label04": "Subir una imagen",
       "label05": " Selecciona la parte de la imagen que quieras para usar de avatar.",
       "crop_btn": "Recortar y usar",
-      "cancel_btn": "Cancelar"
+      "cancel_btn": "Cancelar",
+      "label06": "Atributos de identidad"
     },
     "new_user": {
       "title": "Registro",

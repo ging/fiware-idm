@@ -40,6 +40,30 @@
                                         <input class="form-control" id="id_website" name="user[website]" type="url" value="<%= user.website %>">
                                     </div>
                                 </div>
+                                <% if (identity_attributes.enabled) { %>
+                                <div class="form-group">
+                                    <label class="control-label" for="id_attributes"><%=translation.users.edit_user.label06%></label>
+                                    <p class="id_attributes_warning"><%=translation.users.edit_user.warning%></label>
+                                    <div class="">
+                                        <table class="table table-bordered id_attributes_table"> 
+                                            <thead> 
+                                                <tr> 
+                                                    <th>Attribute</th> 
+                                                    <th>Value (%)</th> 
+                                                </tr> 
+                                            </thead> 
+                                            <tbody>
+                                                <% for (let attr in identity_attributes.attributes) { %>
+                                                <tr> 
+                                                    <th scope="row"><%=identity_attributes.attributes[attr].name%></th> 
+                                                    <td> <input class="form-control" min="<%=identity_attributes.attributes[attr].minVal%>" max=<%=identity_attributes.attributes[attr].maxVal%> id="id_attributes" name="attributes[<%=identity_attributes.attributes[attr].key%>]" type="<%=identity_attributes.attributes[attr].type%>" value="<%= user.extra ? user.extra.identity_attributes[identity_attributes.attributes[attr].key] : '' %>" id="example-number-input"></td>
+                                                </tr>
+                                                <% }%>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <% } %>
                             </fieldset>
                         </div>
                     </div>

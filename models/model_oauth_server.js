@@ -20,6 +20,8 @@ const oauth_authorization_code = models.oauth_authorization_code;
 const oauth_refresh_token = models.oauth_refresh_token;
 const user_authorized_application = models.user_authorized_application;
 
+const identity_attributes = config.identity_attributes || { enabled: false };
+
 function getAccessToken(bearerToken) {
   debug('-------getAccesToken-------');
 
@@ -606,6 +608,14 @@ function create_oauth_response(
 
     if (identity.eidas_id) {
       user_info.eidas_profile = identity.extra.eidas_profile;
+    }
+
+    if (
+      identity.extra &&
+      identity.extra.identity_attributes &&
+      identity_attributes.enabled
+    ) {
+      user_info.attributes = identity.extra.identity_attributes;
     }
 
     return search_user_info(user_info, action, resource, authzforce, req_app);

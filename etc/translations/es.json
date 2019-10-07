@@ -376,7 +376,8 @@
       "label05": " Selecciona la parte de la imagen que quieras para usar de avatar.",
       "crop_btn": "Recortar y usar",
       "cancel_btn": "Cancelar",
-      "label06": "Atributos de identidad"
+      "label06": "Atributos de identidad",
+      "warning": "Note: These attributes will be included in your public information provided to applications if you consent their use."
     },
     "new_user": {
       "title": "Registro",

@@ -375,7 +375,9 @@
       "label04": "이미지 업로드",
       "label05": "사용자 이미지로 사용하고 싶은 부분을 선택하세요.",
       "crop_btn": "자르기 및 사용",
-      "cancel_btn": "취소"
+      "cancel_btn": "취소",
+      "label06": "Identity attributes",
+      "warning": "Note: These attributes will be included in your public information provided to applications if you consent their use."
     },
     "new_user": {
       "title": "회원가입",

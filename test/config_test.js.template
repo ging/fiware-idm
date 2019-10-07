@@ -141,6 +141,20 @@ config.eidas = {
     metadata_expiration: (process.env.IDM_EIDAS_METADATA_LIFETIME || 60 * 60 * 24 * 365) // One year
 }
 
+// Enables the possibility of adding identity attributes in users' profile
+config.identity_attributes = {
+    enabled: false,
+    attributes: [
+        {name: 'Vision', key: 'vision', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Color Perception', key: 'color', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Hearing', key: 'hearing', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Vocal Capability', key: 'vocal', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Manipulation Strength', key: 'manipulation', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Reach', key: 'reach', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Cognition', key: 'cognition', type: 'number', minVal: '0', maxVal: '100'}
+    ]
+}
+
 
 if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  === 'nodejs_idm'){
     /* eslint-disable no-console */

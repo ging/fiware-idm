@@ -375,7 +375,9 @@
       "label04": "画像をアップロード",
       "label05": "アバターとして使用したい画像の部分を選択してください。",
       "crop_btn": "トリミングして使用",
-      "cancel_btn": "中止"
+      "cancel_btn": "中止",
+      "label06": "Identity attributes",
+      "warning": "Note: These attributes will be included in your public information provided to applications if you consent their use."
     },
     "new_user": {
       "title": "登録",

@@ -23,6 +23,8 @@ const debug = require('debug')('idm:web-user_controller');
 const email = require('../../lib/email.js');
 const image = require('../../lib/image.js');
 
+const identity_attributes = config.identity_attributes || { enabled: false };
+
 // MW to see if user can do some actions
 exports.owned_permissions = function(req, res, next) {
   debug('--> owned_permissions');
@@ -284,6 +286,7 @@ exports.edit = function(req, res) {
         }
 
         res.render('users/edit', {
+          identity_attributes,
           user: req.user,
           error: [],
           csrf_token: req.csrfToken(),

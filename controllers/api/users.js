@@ -296,6 +296,9 @@ exports.update = function(req, res) {
       req.user.gravatar = req.body.user.gravatar
         ? req.body.user.gravatar
         : req.user.gravatar;
+      req.user.extra = req.body.user.extra
+        ? req.body.user.extra
+        : req.user.extra;
       req.user.enabled = true;
       if (req.body.user.password) {
         req.user.password = req.body.user.password;

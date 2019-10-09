@@ -144,7 +144,7 @@ config.eidas = {
 // Enables the possibility of adding identity attributes in users' profile
 config.identity_attributes = {
     /* eslint-disable snakecase/snakecase */
-    enabled: true,
+    enabled: false,
     attributes: [
         {name: 'Vision', key: 'vision', type: 'number', minVal: '0', maxVal: '100'},
         {name: 'Color Perception', key: 'color', type: 'number', minVal: '0', maxVal: '100'},

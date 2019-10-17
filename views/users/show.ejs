@@ -45,6 +45,30 @@
                 <% } -%>
             </div>
         </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="description">
+                    <h5>Datos diversidad funcional</h5>
+                    <div class="info expander">
+                      <p><%= user.description %></p>
+
+
+                    </div>
+                </div>
+                <% if (user.website) { -%>
+                    <div class="contact_us">
+                        <h5>
+                            <%=translation.users.show_user.title02%>
+                        </h5>
+                        <div class="info">
+                            <p><%= user.website %></p>
+                        </div>
+                    </div>
+                <% } -%>
+            </div>
+        </div>
+
         <div class="panel panel-default datatable" id="auth_organizations" data-pagination-url="/filters/organizations" data-user_id="<%= user.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title"><%=translation.users.show_user.title03%></span>

@@ -286,7 +286,7 @@ function search_user_authorized_application(user_id, app_id) {
 // MW to load user
 exports.load_user = function(req, res, next) {
   debug(' --> load_user');
-
+  debug(req.session);
   if (req.session.user.id) {
     models.user
       .findOne({

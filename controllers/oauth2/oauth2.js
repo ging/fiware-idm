@@ -294,6 +294,9 @@ exports.load_user = function(req, res, next) {
       })
       .then(function(user) {
         req.user = user;
+        //mio--
+        debug(req.session.user);
+        //--
         next();
       })
       .catch(function(error) {
@@ -308,7 +311,10 @@ exports.load_user = function(req, res, next) {
 // POST /oauth2/enable_app -- User authorize the application to see their details
 exports.enable_app = function(req, res, next) {
   debug(' --> enable_app');
+  //AQUI mio
+  //-----------
 
+  //----------
   return oauth_authorize(req, res, next);
 };
 

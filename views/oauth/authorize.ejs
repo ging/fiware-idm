@@ -12,30 +12,19 @@
               <p>
                 <%=translation.oauth.authorize.content01%> <a href="/idm/applications/<%= application.id %>/"><%= application.name %></a> <%=translation.oauth.authorize.content02%>
               </p>
+              <div class="select-multiple">
+                  <select name="acces_data[]" class="selectpicker" data-dropup-auto="false" multiple>
+                      <option  value="username">Username</option>
+                      <option  value="email">Email</option>
+                      <option  value="description">Description</option>
+                      <option  value="website">Website</option>
+                      <option  value="image">Image</option>
+                      <option  value="gravatar">Gravatar</option>
+                      <option  value="extra">Extra</option>
+                  </select>
+              </div>
               <div class="alert alert-info">
-                <p><input type="checkbox" id="seleccion1" name="seleccion" value="username" checked>
-                  <label for="seleccion1">Username</label>
-                </p>
-                <p><input type="checkbox" id="seleccion2" name="seleccion"
-                  value="description" checked>
-                  <label for="seleccion2">Description</label>
-                </p>
-                <p>
-                  <input type="checkbox" id="seleccion3" name="seleccion" value="image" checked>
-                  <label for="seleccion3">Image</label>
-                </p>
-                <p>
-                  <input type="checkbox" id="seleccion4" name="seleccion" value="email" checked>
-                  <label for="seleccion4">Email</label>
-                </p>
-                <p>
-                  <input type="checkbox" id="seleccion5" name="seleccion"
-                  value="website" checked>
-                  <label for="seleccion5">Website</label>
-                </p>
-
-
-                <%=translation.oauth.authorize.content03%>
+                    <%=translation.oauth.authorize.content03%>
               </div>
             </div>
             <fieldset>

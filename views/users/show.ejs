@@ -41,34 +41,53 @@
                         <div class="info">
                             <p><%= user.website %></p>
                         </div>
+
                     </div>
                 <% } -%>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="description">
-                    <h5>Datos diversidad funcional</h5>
-                    <div class="info expander">
-                      <p><%= user.description %></p>
-
-
-                    </div>
-                </div>
-                <% if (user.website) { -%>
-                    <div class="contact_us">
-                        <h5>
-                            <%=translation.users.show_user.title02%>
-                        </h5>
-                        <div class="info">
-                            <p><%= user.website %></p>
+                <div class="extra">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse_identity_attributes" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
+                            Datos acerca de diversidad funcional <i class="fa fa-angle-up"></i>
+                        </a>
+                    </h4>
+                    <div class="collapse_out">
+                        <div id="collapse_identity_attributes" class="form-group collapse" role="tabpanel">
+                            <div>
+                              <h6 class="panel-heading">Vision</h6>
+                                <p><%=user.extra.identity_attributes.vision%> %</p>
+                            </div>
+                            <div>
+                              <h6 class="panel-heading">Color Perception</h6>
+                                <p><%=user.extra.identity_attributes.color? user.extra.identity_attributes.color : 0%> %</p>
+                            </div>
+                            <div>
+                              <h6 class="panel-heading">Hearing</h6>
+                                <p><%=user.extra.identity_attributes.hearing? user.extra.identity_attributes.hearing : 0%> %</p>
+                            </div>
+                            <div>
+                              <h6 class="panel-heading">Vocal Capability</h6>
+                                <p><%=user.extra.identity_attributes.vocal? user.extra.identity_attributes.vocal : 0%> %</p>
+                            </div>
+                            <div>
+                              <h6 class="panel-heading">Manipulation Strength</h6>
+                                <p><%=user.extra.identity_attributes.strength? user.extra.identity_attributes.strength : 0%> %</p>
+                            </div>
+                            <div>
+                              <h6 class="panel-heading">Reach</h6>
+                                <p><%=user.extra.identity_attributes.reach? user.extra.identity_attributes.reach : 0%> %</p>
+                            </div>
+                            <div>
+                              <h6 class="panel-heading">Cognition</h6>
+                                <p><%=user.extra.identity_attributes.cognition? user.extra.identity_attributes.cognition : 0 %> %</p>
+                            </div>
                         </div>
                     </div>
-                <% } -%>
+                </div>
+
+
+
             </div>
         </div>
-
         <div class="panel panel-default datatable" id="auth_organizations" data-pagination-url="/filters/organizations" data-user_id="<%= user.id %>" data-pagination-pages="">
             <div class="panel-heading">
                 <span class="title"><%=translation.users.show_user.title03%></span>

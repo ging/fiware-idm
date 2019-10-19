@@ -397,7 +397,7 @@ function storeToken(token, client, identity, jwt) {
         });
       })
     : Promise.resolve();
-
+  //AQUI
   let user_autho_app_promise =
     user_id && config_oauth2.ask_authorization
       ? user_authorized_application.findOrCreate({

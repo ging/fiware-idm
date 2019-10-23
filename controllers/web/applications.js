@@ -585,6 +585,7 @@ exports.update_avatar = function(req, res) {
 // PUT /idm/applications/:application_id/edit/info -- Update application information
 exports.update_info = function(req, res) {
   debug('--> update_info');
+  debug(req.body.application.grant_type);
 
   // If body has parameters id or secret don't update the application
   if (req.body.application.id || req.body.application.secret) {
@@ -603,7 +604,6 @@ exports.update_info = function(req, res) {
     application.grant_type = req.body.application.grant_type
       ? req.body.application.grant_type
       : [''];
-
     const response_type = [];
     if (application.grant_type.includes('authorization_code')) {
       response_type.push('code');

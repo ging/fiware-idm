@@ -294,9 +294,6 @@ exports.load_user = function(req, res, next) {
       })
       .then(function(user) {
         req.user = user;
-        //mio--
-        debug(req.session.user);
-        //--
         next();
       })
       .catch(function(error) {
@@ -311,11 +308,35 @@ exports.load_user = function(req, res, next) {
 // POST /oauth2/enable_app -- User authorize the application to see their details
 exports.enable_app = function(req, res, next) {
   debug(' --> enable_app');
-  //AQUI mio
+  //AQUI
   //-----------
+  const shared_attributes =
+    req.body.user_authorized_application.shared_attributes;
+  debug(shared_attributes);
 
-  //----------
-  return oauth_authorize(req, res, next);
+  if (config_oauth2.ask_authorization) {
+    return models.user_authorized_application
+      .findOrCreate({
+        // User has enable application to read their information
+        where: {
+          user_id: req.session.user.id,
+          oauth_client_id: req.application.id,
+        },
+        defaults: {
+          user_id: req.session.user.id,
+          oauth_client_id: req.application.id,
+          shared_attributes,
+        },
+      })
+      .then(function() {
+        return oauth_authorize(req, res, next);
+      })
+      .catch(function(error) {
+        next(error);
+      });
+  } 
+    return oauth_authorize(req, res, next);
+  
 };
 
 // Generate code or token
@@ -323,6 +344,10 @@ function oauth_authorize(req, res, next) {
   debug(' --> oauth_authorize');
 
   req.body.user = req.user;
+
+  //mio
+
+  //-----------------
 
   if (req.body.user.dataValues === undefined) {
     req.body.user.dataValues = {};

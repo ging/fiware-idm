@@ -20,7 +20,7 @@
         </header>
         <div class="panel panel-default">
             <div class="panel-body">
-              <% if ((user.extra.visible_attributes != null) && (user.extra.visible_attributes.includes('description'))){ -%>
+              <% if (user.extra.visible_attributes.includes('description')) { -%>
 
                 <div class="description">
                     <h5>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <%}-%>
-                <% if ((user.extra.visible_attributes != null) && (user.extra.visible_attributes.includes('website'))){ -%>
+                <% if (user.extra.visible_attributes.includes('website')){ -%>
 
                 <% if (user.website) { -%>
                     <div class="contact_us">
@@ -58,76 +58,43 @@
                 <% } -%>
                 <%} -%>
 
-                <% if ((user.extra.visible_attributes != null) && (user.extra.visible_attributes.includes('identity_attributes'))){ -%>
-
-                <% if ((user.extra !== null) && (user.extra.identity_attributes != null)) { %>
-                <div class="extra">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#collapse_identity_attributes" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
-                            Atributos de identidad <i class="fa fa-angle-up"></i>
-                        </a>
-                    </h4>
-                    <div class="collapse_out">
-                        <div id="collapse_identity_attributes" class="form-group collapse" role="tabpanel">
-                            <div>
-                              <h6 class="panel-heading">Vision</h6>
-                                <p><%=user.extra.identity_attributes.vision? user.extra.identity_attributes.vision : 0%> %</p>
-                            </div>
-                            <div>
-                              <h6 class="panel-heading">Color Perception</h6>
-                                <p><%=user.extra.identity_attributes.color? user.extra.identity_attributes.color : 0%> %</p>
-                            </div>
-                            <div>
-                              <h6 class="panel-heading">Hearing</h6>
-                                <p><%=user.extra.identity_attributes.hearing? user.extra.identity_attributes.hearing : 0%> %</p>
-                            </div>
-                            <div>
-                              <h6 class="panel-heading">Vocal Capability</h6>
-                                <p><%=user.extra.identity_attributes.vocal? user.extra.identity_attributes.vocal : 0%> %</p>
-                            </div>
-                            <div>
-                              <h6 class="panel-heading">Manipulation Strength</h6>
-                                <p><%=user.extra.identity_attributes.strength? user.extra.identity_attributes.strength : 0%> %</p>
-                            </div>
-                            <div>
-                              <h6 class="panel-heading">Reach</h6>
-                                <p><%=user.extra.identity_attributes.reach? user.extra.identity_attributes.reach : 0%> %</p>
-                            </div>
-                            <div>
-                              <h6 class="panel-heading">Cognition</h6>
-                                <p><%=user.extra.identity_attributes.cognition? user.extra.identity_attributes.cognition : 0 %> %</p>
-                            </div>
-                            <div>
-                              <% if (user.extra.identity_attributes.enabled) { %>
-
-                            <% for (let attr in identity_attributes.attributes) { %>
-                              <p><%=identity_attributes[attr].name%></p>
-                              <p><%=identity_attributes.attributes[1].name%></p>
-                              <%}%>
-                              <%}%>
-
-
+                <% if  (user.extra.visible_attributes.includes('identity_attributes')){%>
+                    <% if (identity_attributes.enabled)  { %>
+                    <div class="extra">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse_identity_attributes" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
+                                Atributos de identidad <i class="fa fa-angle-up"></i>
+                            </a>
+                        </h4>
+                        <div class="collapse_out">
+                            <div id="collapse_identity_attributes" class="form-group collapse" role="tabpanel">
+                              <% for (let attr in identity_attributes.attributes) { %>
+                                <div>
+                                  <h6 class="panel-heading"><%= identity_attributes.attributes[attr].name%></h6>
+                                    <p><%= user.extra.identity_attributes ? user.extra.identity_attributes[identity_attributes.attributes[attr].key] : '-'%> %</p>
+                                </div>
+                                <%}-%>
                             </div>
                         </div>
                     </div>
-                </div>
-                <% } else { %>
-                  <div class="extra">
-                      <h4 class="panel-title">
-                          <a data-toggle="collapse" href="#collapse_identity_attributes" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
-                              Atributos de identidad <i class="fa fa-angle-up"></i>
-                          </a>
-                      </h4>
-                      <div class="collapse_out">
-                          <div id="collapse_identity_attributes" class="form-group collapse" role="tabpanel">
-                              <div>
-                                  <p class="n-avail">Datos no disponibles</p>
-                                </div>
-                          </div>
-                  </div>
-                  </div>
-                <% } %>
-                <% } %>
+                    <% } else { %>
+                      <div class="extra">
+                          <h4 class="panel-title">
+                              <a data-toggle="collapse" href="#collapse_identity_attributes" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
+                                  Atributos de identidad <i class="fa fa-angle-up"></i>
+                              </a>
+                          </h4>
+                          <div class="collapse_out">
+                              <div id="collapse_identity_attributes" class="form-group collapse" role="tabpanel">
+                                  <div>
+                                      <p class="n-avail">Datos no disponibles</p>
+                                    </div>
+                              </div>
+                      </div>
+                      </div>
+                    <% } -%>
+                <% } -%>
+
 
 
 

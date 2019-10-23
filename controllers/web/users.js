@@ -321,8 +321,6 @@ exports.update_info = function(req, res) {
 
   // Build a row and validate if input values are correct (not empty) before saving values in user table
   req.body.user.id = req.session.user.id;
-  const visible_attributes = req.body.user.visible_attributes;
-  debug(visible_attributes);
   const user = models.user.build(req.body.user);
 
   if (
@@ -332,9 +330,10 @@ exports.update_info = function(req, res) {
   }
 
   const user_extra = user.extra ? user.extra : {};
-  debug(user_extra);
   user_extra.identity_attributes = req.body.attributes;
-  debug(user_extra);
+
+  const visible_attributes = req.body.user.visible_attributes;
+  debug(visible_attributes);
 
   user_extra.visible_attributes = visible_attributes;
 
@@ -388,6 +387,7 @@ exports.update_info = function(req, res) {
       res.render('users/edit', {
         user: req.body.user,
         error,
+        identity_attributes,
         csrf_token: req.csrfToken(),
       });
     });

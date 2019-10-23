@@ -40,7 +40,7 @@
                                         <input class="form-control" id="id_website" name="user[website]" type="url" value="<%= user.website %>">
                                     </div>
                                 </div>
-                                <% if (identity_attributes.enabled) { %>
+                                <% if ((identity_attributes.enabled) && (user.extra.identity_attributes != null)) { %>
                                 <div class="form-group">
                                     <label class="control-label" for="id_attributes"><%=translation.users.edit_user.label06%></label>
                                     <label class="id_attributes_warning"><%=translation.users.edit_user.warning%></label>
@@ -68,6 +68,48 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                      <div class="modal-header">
+                          <h3>
+                              Datos visibles en su perfil
+                          </h3>
+                      </div>
+                      <div class="modal-body clearfix">
+
+                        <div class="select-multiple">
+                            <select name="user[visible_attributes]" class="selectpicker" data-dropup-auto="false" multiple>
+                                <option style="display:none" selected name = "[username]" value="username">Username</option>
+
+                              <% if (user.extra.visible_attributes.includes('description')) { %>
+                                  <option selected name = "[description]" value="description">Description</option>
+                              <% } else { %>
+                                    <option  name = "[description]" value="description">Description</option>
+                              <% } %>
+                              <% if (user.extra.visible_attributes.includes('website')) { %>
+                                      <option selected name = "[website]" value="website">Website</option>
+                              <% } else { %>
+                                        <option  name = "[website]" value="website">Website</option>
+                              <% } %>
+                              <% if (user.extra.visible_attributes.includes('identity_attributes')) { %>
+                                    <option selected name = "[identity_attributes]" value="identity_attributes">Identity attributes</option>
+                              <% } else { %>
+                                            <option  name = "[identity_attributes]" value="identity_attributes">Identity attributes</option>
+                              <% } %>
+                              <% if (user.extra.visible_attributes.includes('image')) { %>
+                                              <option selected name = "[image]" value="image">Image</option>
+                              <% } else { %>
+                                              <option  name = "[image]" value="image">Image</option>
+                              <% } %>
+                              <% if (user.extra.visible_attributes.includes('gravatar')) { %>
+                                                  <option selected name = "[gravatar]" value="gravatar">Gravatar</option>
+                              <% } else { %>
+                                                  <option  name = "[gravatar]" value="gravatar">Gravatar</option>
+                              <% } %>
+
+
+                            </select>
+                        </div>
+                        <p></p>
+                      </div>
                         <button type="submit" class="btn btn-primary"><%=translation.users.edit_user.update_btn%></button>
                     </div>
                 </form>
@@ -167,33 +209,7 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div id="edit_attributes" class="edit">
-                <div class="modal-header">
-                    <h3>
-                        Datos visibles en su perfil
-                    </h3>
-                </div>
-                <div class="modal-body clearfix">
 
-                  <div class="select-multiple">
-                      <select name="user_authorized_application[shared_attributes]" class="selectpicker" data-dropup-auto="false" multiple>
-                        <option  value="username">Username</option>
-                          <option  value="description">Description</option>
-                          <option  value="identity_attributes">Datos acerca de diversidad funcional</option>
-                          <option  value="organizations">Organizaciones</option>
-                          <option  value="applications">Aplicaciones</option>
-                          <option  value="image">Image</option>
-                      </select>
-                  </div>
-                  <p></p>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <%- include _delete_avatar %>

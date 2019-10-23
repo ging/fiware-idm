@@ -1,18 +1,27 @@
 <div id="content_body">
     <div id="detailUser">
+
+
         <header>
             <h3 class="name">
+              <% if (user.extra.visible_attributes.includes('username')) { -%>
                 <%= user.username %>
+              <%}%>
+
                 <% if (user.auth) { -%>
                     <a href="/idm/users/<%= user.id %>/edit" class="small"><i class="fa fa-edit"></i><span><%=translation.users.show_user.edit_btn%></span></a>
                 <% } -%>
             </h3>
             <div class="logo">
+              <% if ((user.extra.visible_attributes != null) && (user.extra.visible_attributes.includes('image'))){ -%>
                 <img alt="user logo" src="<%= user.image %>">
+              <% }-%>
             </div>
         </header>
         <div class="panel panel-default">
             <div class="panel-body">
+              <% if ((user.extra.visible_attributes != null) && (user.extra.visible_attributes.includes('description'))){ -%>
+
                 <div class="description">
                     <h5>
                         <%=translation.users.show_user.title01%>
@@ -33,6 +42,9 @@
                         <% } -%>
                     </div>
                 </div>
+                <%}-%>
+                <% if ((user.extra.visible_attributes != null) && (user.extra.visible_attributes.includes('website'))){ -%>
+
                 <% if (user.website) { -%>
                     <div class="contact_us">
                         <h5>
@@ -44,7 +56,11 @@
 
                     </div>
                 <% } -%>
-                <% if (user.extra !== null) { %>
+                <%} -%>
+
+                <% if ((user.extra.visible_attributes != null) && (user.extra.visible_attributes.includes('identity_attributes'))){ -%>
+
+                <% if ((user.extra !== null) && (user.extra.identity_attributes != null)) { %>
                 <div class="extra">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" href="#collapse_identity_attributes" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
@@ -82,10 +98,15 @@
                                 <p><%=user.extra.identity_attributes.cognition? user.extra.identity_attributes.cognition : 0 %> %</p>
                             </div>
                             <div>
-                            <% for (let attr in user.extra.identity_attributes.attributes) { %>
-                              <p><%=user.extra.identity_attributes[attr].name%></p>
-                              <p><%=user.extra.identity_attributes.attributes[1].name%></p>
-                            <%}%>
+                              <% if (user.extra.identity_attributes.enabled) { %>
+
+                            <% for (let attr in identity_attributes.attributes) { %>
+                              <p><%=identity_attributes[attr].name%></p>
+                              <p><%=identity_attributes.attributes[1].name%></p>
+                              <%}%>
+                              <%}%>
+
+
                             </div>
                         </div>
                     </div>
@@ -107,6 +128,8 @@
                   </div>
                   </div>
                 <% } %>
+                <% } %>
+
 
 
 

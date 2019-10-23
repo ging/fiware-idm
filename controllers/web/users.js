@@ -144,6 +144,7 @@ exports.show = function(req, res, next) {
       res.render('users/show', {
         user: req.user,
         applications,
+        identity_attributes,
         csrf_token: req.csrfToken(),
       });
     })
@@ -331,7 +332,9 @@ exports.update_info = function(req, res) {
   }
 
   const user_extra = user.extra ? user.extra : {};
+  debug(user_extra);
   user_extra.identity_attributes = req.body.attributes;
+  debug(user_extra);
 
   user_extra.visible_attributes = visible_attributes;
 

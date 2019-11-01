@@ -89,5 +89,11 @@ router.put(
   csrf_protection,
   web_user_controller.starter_tour_ended
 );
-
+//------------------------
+router.get(
+  '/:user_id/_third_party_applications',
+  csrf_protection,
+  web_user_controller.show_third_party_applications
+);
+//---------------------------
 module.exports = router;

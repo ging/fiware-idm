@@ -94,10 +94,6 @@
                       </div>
                     <% } -%>
                 <% } -%>
-
-
-
-
             </div>
         </div>
         <div class="panel panel-default datatable" id="auth_organizations" data-pagination-url="/filters/organizations" data-user_id="<%= user.id %>" data-pagination-pages="">
@@ -151,3 +147,22 @@
 
 <script src="/javascripts/users/handle_get_applications.js" type="text/javascript"></script>
 <script src="/javascripts/users/handle_get_organizations.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('.panel-title a:first-child').mouseover(function(){
+        $(this).children().toggleClass('fa-rotate-180');
+    });
+    $('.panel-title a:first-child').mouseleave(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children().removeClass('fa-rotate-180');
+        } else {
+            $(this).children().addClass('fa-rotate-180');
+        }
+    });
+    $('.panel-title a:first-child').click(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children().addClass('fa-rotate-180');
+        } else {
+            $(this).children().removeClass('fa-rotate-180');
+        }
+    });
+</script>

@@ -1253,11 +1253,28 @@ exports.show_third_party_applications = function(req, res) {
       where: { user_id: req.user.id },
     })
     .then(function(third_party_applications) {
-      debug(third_party_applications);
-
+      const applications = [];
+      // If user has applciations, set image from file system and obtain info from each user
+      if (third_party_applications.length > 0) {
+        third_party_applications.forEach(function(app) {
+          if (app.image === 'default') {
+            app.image = '/img/logos/medium/app.png';
+          } else {
+            app.image = '/img/applications/' + app.image;
+          }
+          applications.push({
+            id: app.id,
+            app_id: app.oauth_client_id,
+            image: app.image,
+            attributes: app.shared_attributes,
+            date: app.login_date,
+          });
+        });
+        debug(applications);
+      }
       res.render('users/_third_party_applications', {
         user: req.user,
-        third_party_applications,
+        applications,
         csrf_token: req.csrfToken(),
       });
     })
@@ -1267,33 +1284,12 @@ exports.show_third_party_applications = function(req, res) {
 };
 
 //
-// // If user has applications, set image from file system and obtain info from each application
-// if (user_applications.length > 0) {
-//   user_applications.forEach(function(app) {
-//     if (
-//       applications.length === 0 ||
-//       !applications.some(elem => elem.id === app.OauthClient.id)
-//     ) {
-//       if (app.OauthClient.image === 'default') {
-//         app.OauthClient.image = '/img/logos/medium/app.png';
-//       } else {
-//         app.OauthClient.image =
-//           '/img/applications/' + app.OauthClient.image;
-//       }
-//       applications.push(app.OauthClient);
-//     }
-//   });
-//
+
 //   // Order applications and render view
 //   applications.sort(function(a, b) {
 //     return a.name > b.name ? 1 : b.name > a.name ? -1 : 0;
 //   });
 // }
 //
-// res.render('users/show', {
-//   user: req.user,
-//   applications,
-//   identity_attributes,
-//   csrf_token: req.csrfToken(),
-// });
+
 // })

@@ -8,35 +8,25 @@
 		</h2>
 	</div>
         </header>
+        <% for (var i = 0; i < applications.length; i++) { %>
         <div class="panel panel-default info">
             <div class="panel-body">
               <div class="panel-body datatable-content">
+                <h1 class="panel heading"><%=applications[i].name%></h1>
 
-                    <a class="item" href="/idm/applications/be001bd2-a379-4259-a2d2-cd6a71cc93fa">
-                      <div class="avatar filter_field">
-                        <img alt="application logo" src="/img/applications/07e7c85a-10b5-40f5-8cc8-14a57f221aaa.png">
-                      </div>
-                      <div class="name filter_field">App prueba 1</div>
-                      <div class="url filter_field">http://localhost</div>
-                    </a>
-              </div>
-              <div class="panel-body datatable-content">
-                    <a class="item" href="/idm/applications/bdc0816a-03f7-4487-8e6e-f2c5bd05c0cc">
-                      <div class="avatar filter_field">
-                        <img alt="application logo" src="/img/logos/medium/app.png">
-                      </div>
-                      <div class="name filter_field">FIWARE Course App</div>
-                      <div class="url filter_field">http://localhost</div>
-                    </a>
-              </div>
-              <div>
-                <% for (let app in applications) { %>
-                      <p><%=app%> --- <%= app.app_id%></p>
-                  <%}-%>
+                <div class="avatar logo">
+                  <img alt="application logo" src=<%=applications[i].image%>>
+                </div><br>
 
-            </div>
+                  <h4>Website: <%=applications[i].url%></h4>
+                  <h4>Fecha de acceso: <%=applications[i].login_date%></h4>
+                  <h4>Atributos compartidos: <%=applications[i].shared_attributes%></h4>
+
+
+              </div>
             </div>
         </div>
+        <%}-%>
 
     </div>
 </div>

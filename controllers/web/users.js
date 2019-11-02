@@ -103,7 +103,6 @@ exports.show = function(req, res, next) {
         res.locals.message = req.session.message;
         delete req.session.message;
       }
-
       if (req.user.gravatar) {
         req.user.image = gravatar.url(
           req.user.email,
@@ -1247,27 +1246,55 @@ function send_response(req, res, response, url) {
 // GET /idm/users/:user_id/_third_party_applications -- Send applications in where user is authorized
 exports.show_third_party_applications = function(req, res) {
   debug('--> show_third_party_applications');
-
   models.user_authorized_application
     .findAll({
       where: { user_id: req.user.id },
+      include: [
+        {
+          model: models.oauth_client,
+          attributes: ['id', 'name', 'url', 'image'],
+        },
+      ],
     })
     .then(function(third_party_applications) {
+      // See if user to show is equal to user logged
+      if (req.session.user.id === req.user.id) {
+        req.user.auth = true;
+      }
+      if (req.session.message) {
+        res.locals.message = req.session.message;
+        delete req.session.message;
+      }
+      if (req.user.gravatar) {
+        req.user.image = gravatar.url(
+          req.user.email,
+          { s: 100, r: 'g', d: 'mm' },
+          { protocol: 'https' }
+        );
+      } else if (req.user.image === 'default') {
+        req.user.image = '/img/logos/original/user.png';
+      } else {
+        req.user.image = '/img/users/' + req.user.image;
+      }
       const applications = [];
+
       // If user has applciations, set image from file system and obtain info from each user
       if (third_party_applications.length > 0) {
         third_party_applications.forEach(function(app) {
-          if (app.image === 'default') {
-            app.image = '/img/logos/medium/app.png';
+          if (app.OauthClient.image === 'default') {
+            app.OauthClient.image = '/img/logos/medium/app.png';
           } else {
-            app.image = '/img/applications/' + app.image;
+            app.OauthClient.image =
+              '/img/applications/' + app.OauthClient.image;
           }
+
           applications.push({
-            id: app.id,
-            app_id: app.oauth_client_id,
-            image: app.image,
-            attributes: app.shared_attributes,
-            date: app.login_date,
+            id: app.oauth_client_id,
+            name: app.OauthClient.name,
+            image: app.OauthClient.image,
+            url: app.OauthClient.url,
+            shared_attributes: app.shared_attributes,
+            login_date: app.login_date,
           });
         });
         debug(applications);
@@ -1282,14 +1309,3 @@ exports.show_third_party_applications = function(req, res) {
       debug('Error: ', error);
     });
 };
-
-//
-
-//   // Order applications and render view
-//   applications.sort(function(a, b) {
-//     return a.name > b.name ? 1 : b.name > a.name ? -1 : 0;
-//   });
-// }
-//
-
-// })

@@ -8,25 +8,35 @@
 		</h2>
 	</div>
         </header>
-        <% for (var i = 0; i < applications.length; i++) { %>
-        <div class="panel panel-default info">
-            <div class="panel-body">
-              <div class="panel-body datatable-content">
-                <h1 class="panel heading"><%=applications[i].name%></h1>
+        <% if (applications.length > 0) {%>
+          <% for (var i = 0; i < applications.length; i++) { %>
+            <div class="panel panel-default info">
+              <div class="panel-body">
+                <div class="panel-body datatable-content">
 
-                <div class="avatar logo">
-                  <img alt="application logo" src=<%=applications[i].image%>>
-                </div><br>
-
+                  <h1 class="panel heading"><%=applications[i].name%></h1>
+                  <div class="avatar logo">
+                    <img alt="application logo" src=<%=applications[i].image%>>
+                  </div><br>
                   <h4>Website: <%=applications[i].url%></h4>
                   <h4>Fecha de acceso: <%=applications[i].login_date%></h4>
                   <h4>Atributos compartidos: <%=applications[i].shared_attributes%></h4>
-
-
+                  <div class="btn-group">
+                    <a href="/" title="Delete" class="btn btn-primary btn-sm" id="user__delete_third_party_application">
+                      Delete
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-        </div>
-        <%}-%>
+            <%}%>
+        <%} else { %>
+          <div class="panel panel-default info">
+            <div class="panel-body">
+              <h2>No hay aplicaciones disponibles</h2>
+            </div>
+          </div>
+          <%}-%>
 
     </div>
 </div>

@@ -1309,3 +1309,11 @@ exports.show_third_party_applications = function(req, res) {
       debug('Error: ', error);
     });
 };
+// DELETE /idm/users/:user_id/edit/delete_avatar -- Delete user avatar
+exports.delete_third_party_application = function(req, res) {
+  debug('--> delete_third_party_application');
+  res.render('users/_third_party_applications', {
+    user: req.user,
+    csrf_token: req.csrfToken(),
+  });
+};

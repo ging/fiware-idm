@@ -1243,7 +1243,7 @@ function send_response(req, res, response, url) {
   }
 }
 
-// GET /idm/users/:user_id/_third_party_applications -- Send applications in where user is authorized
+// GET /idm/users/:user_id/_third_party_applications -- Send applications in which user is authorized
 exports.show_third_party_applications = function(req, res) {
   debug('--> show_third_party_applications');
   models.user_authorized_application
@@ -1309,9 +1309,11 @@ exports.show_third_party_applications = function(req, res) {
       debug('Error: ', error);
     });
 };
-// DELETE /idm/users/:user_id/edit/delete_avatar -- Delete user avatar
+// DELETE /idm/users/:user_id/_third_party_applications/delete -- Delete information
+//for a user_authorized_application
 exports.delete_third_party_application = function(req, res) {
   debug('--> delete_third_party_application');
+
   res.render('users/_third_party_applications', {
     user: req.user,
     csrf_token: req.csrfToken(),

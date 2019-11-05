@@ -22,7 +22,12 @@
                   <h4>Fecha de acceso: <%=applications[i].login_date%></h4>
                   <h4>Atributos compartidos: <%=applications[i].shared_attributes%></h4>
                   <div class="btn-group">
-                    <a href="/" title="Delete" class="btn btn-primary btn-sm" id="user__delete_third_party_application">
+                    <button id="delete_third_party_application" title="Delete application" class="btn btn-default btn-sm ajax-modal">
+                      Delete
+                    </button>
+                    </div>
+                  <div class="btn-group">
+                    <a href="/idm/users/<%= user.id %>/_third_party_applications/delete/<%= applications[i].id %>" title="Delete" class="btn btn-primary btn-sm" id="user__delete_third_party_application">
                       Delete
                     </a>
                   </div>
@@ -40,3 +45,5 @@
 
     </div>
 </div>
+
+<%include _delete_third_party_application%>

@@ -96,7 +96,7 @@ router.get(
   csrf_protection,
   web_user_controller.show_third_party_applications
 );
-router.delete(
+router.get(
   '/:user_id/_third_party_applications/delete/:application_id',
   web_user_controller.owned_permissions,
   csrf_protection,

@@ -7,13 +7,7 @@
             </div>
             <form id="delete_application_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/_third_party_applications" method="POST" enctype="">
                 <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-                <div class="modal-body clearfix">
-                    <div class="right">
-                        <p><%=translation.admin.delete_user.content01%></p>
-                        <ul id="list_users"></ul>
-                        <p><%=translation.admin.delete_user.content02%></p>
-                    </div>
-                </div>
+              
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="<%=translation.admin.delete_user.confirm_input%>">
                     <button data-dismiss="modal" class="btn btn-default secondary cancel"><%=translation.admin.delete_user.cancel_btn%></button>

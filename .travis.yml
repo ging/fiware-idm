@@ -1,6 +1,12 @@
 branches:
   only:
     - master
+    
+addons:
+  apt:
+    packages:
+      - build-essential
+      - python
 
 jobs:
   include:

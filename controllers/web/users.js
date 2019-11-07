@@ -1313,12 +1313,11 @@ exports.show_third_party_applications = function(req, res) {
 //for a user_authorized_application
 exports.delete_third_party_application = function(req, res) {
   debug('--> delete_third_party_application');
-  debug(req.body.applications);
-  // models.user_authorized_application
-  //   .destroy({
-  //     where: {oauth_client_id: req.applications.id}
-  //   })
+  debug(req.body.app_id);
 
+  models.user_authorized_application.destroy({
+    where: { oauth_client_id: req.body.app_id },
+  });
   models.user_authorized_application
     .findAll({
       where: { user_id: req.user.id },
@@ -1330,8 +1329,8 @@ exports.delete_third_party_application = function(req, res) {
       ],
     })
     .then();
-  res.redirect('users/_third_party_applications', {
-    user: req.user,
-    csrf_token: req.csrfToken(),
-  });
+  res.redirect('/idm/users/' + req.user.id + '/_third_party_applications');
+
+  //llamar al método anterior
+  //return show_third_party_applications(req, res, next);
 };

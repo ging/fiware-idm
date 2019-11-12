@@ -96,11 +96,12 @@ router.get(
   csrf_protection,
   web_user_controller.show_third_party_applications
 );
-router.get(
-  '/:user_id/_third_party_applications/delete/:app_id',
+router.delete(
+  '/:user_id/_third_party_applications',
   web_user_controller.owned_permissions,
   csrf_protection,
   web_user_controller.delete_third_party_application
+  // web_user_controller.show_third_party_applications
 );
 
 //---------------------------

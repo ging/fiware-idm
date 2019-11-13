@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
             : [];
         },
         set(val) {
-          this.setDataValue('shared_attributes', val.join(','));
+          this.setDataValue('shared_attributes', val.join(', '));
         },
       },
       login_date: {

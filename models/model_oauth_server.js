@@ -110,7 +110,7 @@ function getClient(clientId, clientSecret) {
       const clientWithGrants = client;
 
       clientWithGrants.grants = clientWithGrants.grant_type;
-      clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
+      clientWithGrants.redirectUris = clientWithGrants.redirect_uri;
       clientWithGrants.refreshTokenLifetime = oauth2.refresh_token_lifetime;
       clientWithGrants.accessTokenLifetime = oauth2.access_token_lifetime;
       clientWithGrants.authorizationCodeLifetime =
@@ -442,7 +442,14 @@ function getAuthorizationCode(code) {
 
   return oauth_authorization_code
     .findOne({
-      attributes: ['oauth_client_id', 'expires', 'user_id', 'scope', 'valid'],
+      attributes: [
+        'oauth_client_id',
+        'redirect_uri',
+        'expires',
+        'user_id',
+        'scope',
+        'valid',
+      ],
       where: { authorization_code: code },
       include: [user, oauth_client],
     })
@@ -457,11 +464,12 @@ function getAuthorizationCode(code) {
         code,
         client,
         expiresAt: authCodeModel.expires,
-        redirectUri: client.redirect_uri,
+        redirectUri: authCodeModel.redirect_uri,
         valid: authCodeModel.valid,
         user,
         scope: authCodeModel.scope,
       };
+
       return reCode;
     })
     .catch(function(err) {
@@ -471,12 +479,12 @@ function getAuthorizationCode(code) {
 
 function saveAuthorizationCode(code, client, user) {
   debug('-------saveAuthorizationCode-------');
-
+  debug(code);
   return oauth_authorization_code
     .create({
       expires: code.expiresAt,
       oauth_client_id: client.id,
-      redirect_uri: client.redirect_uri,
+      redirect_uri: code.redirectUri,
       authorization_code: code.authorizationCode,
       valid: true,
       user_id: user.id,

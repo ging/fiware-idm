@@ -1,9 +1,62 @@
-<div class="container">
-  <h2>Basic Card</h2>
-      <div class="card">
-  <div class="card-header">Header</div>
-  <div class="card-body">Content</div>
-  <div class="card-footer">Footer</div>
-</div>
+<div id="content_body">
+  <div id="new_home_page">
+    <header>
+      <div class="page-header">
+        <h1 class="title">
+          BIENVENIDO <%=session.user.username%>
+        </h1>
+        <p class="subtitle">"Mensaje de bienvenida"</p>
+      </div>
+    </header>
+    <div id="card-container">
+      <div class="col-sm-5" >
+        <div class="panel panel-default info">
+          <div class="panel-title">
+              <h2 class="title">Edita tu cuenta.</h2>
+          </div>
+          <hr>
+          <div class="panel-body">
+            <input type='hidden' name='app_name' value='' />
+            <div class="text-center">
+              <a href="/idm/users/<%=session.user.id%>/edit" title="Personalizar cuenta" class="btn btn-default btn-sm">
+                Comienza a personalizar tu cuenta.
+              </a>
+            </div>
 
+          </div>
+        </div>
+        <div class="panel panel-default info">
+          <div class="panel-title">
+            <h2 class="title">Cuentas vinculadas.</h2>
+          </div>
+          <hr>
+          <div class="panel-body">
+            <input type='hidden' name='app_name' value='' />
+            <div class="text-center">
+              <a href="/idm/users/<%=session.user.id%>/_third_party_applications" title="Administrar aplicaciones" class="btn btn-default btn-sm">
+                Administra las aplicaciones con acceso a tu cuenta.
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-5" >
+        <div class="panel panel-default info">
+          <div class="panel-title">
+            <h2 class="title">Privacidad.</h2>
+          </div>
+          <hr>
+          <div class="panel-body">
+            <input type='hidden' name='app_name' value='' />
+            <div class="text-center">
+              <a id="delete_application" title="Proteger cuenta" class="btn btn-default btn-sm">
+                Protege tu cuenta.
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+</div>
 </div>

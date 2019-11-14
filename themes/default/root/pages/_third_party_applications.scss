@@ -1,11 +1,57 @@
 #third_party_applications_page {
-
+  @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
   hr{
     border: 2px solid #C4C4C4;
   }
-  .panel-card-title{
-    flex-direction: row;
+  p{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+  }
+  button{
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    border: 0px;
+    color: #333333;
+  }
 
+  .title{
+    font-family: 'Rubik', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 36px;
+    color: #333333;
+  }
+  .subtitle{
+    font-size: 16px;
+    line-height: 19px;
+    color: #333333;
+  }
+  .app-name{
+    padding: 5% 0;
+    font-size: 16px;
+    line-height: 19px;
+    color: #000000;
+  }
+  @media (min-width: 768px){
+    .app-name{
+      padding: 10% 0;
+    }
+  }
+  .app-data{
+    font-size: 14px;
+    line-height: 17px;
+    color: #000000;
+  }
+
+
+  .panel-title{
   }
   .app-logo{
     width: 56px;
@@ -18,31 +64,6 @@
     padding: 15px;
   }
 
-  .app-name{
-    padding: 5% 0;
-    font-family: Lato;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 19px;
-    /* identical to box height */
-    color: #000000;
-  }
-  @media (min-width: 768px){
-    .app-name{
-      padding: 10% 0;
-
-    }
-  }
-  .app-data{
-    vertical-align: middle;
-    font-family: Lato;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 17px;
-    color: #000000;
-  }
 
   .vector{
     float: right;
@@ -57,15 +78,6 @@
     box-sizing: border-box;
     border-radius: 10px;
   }
-  .title{
-    font-family: Rubik !important;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 30px;
-    line-height: 36px;
-
-    color: #333333;
-  }
   .collapse.in{
     display: inline-block;
     padding: 10px;
@@ -79,19 +91,20 @@
   }
   @media (min-width: 768px){
     .collapse.in{
-display: block;     
+      display: block;
     }
   }
 
   .collapsing {
-    position: relative;
-    height: 0;
-    overflow: hidden;
-    -webkit-transition-property: height, visibility;
-    transition-property: height, visibility;
-    -webkit-transition-duration: 0s;
-    transition-duration: 0s;
-    -webkit-transition-timing-function: ease;
-    transition-timing-function: ease; }
-
+    z-index: +1;
+    display: inline-block;
+    padding: 10px;
+    position: absolute;
+    background: #FFFFFF;
+    border: 2px solid #C4C4C4;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
   }
+
+}

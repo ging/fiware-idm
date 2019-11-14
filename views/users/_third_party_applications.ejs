@@ -2,10 +2,10 @@
   <div id="third_party_applications_page">
     <header>
       <div class="page-header">
-        <p class="title">
+        <h1 class="title">
           CUENTAS VINCULADAS.
-        </p>
-        <p>En esta página puedes...</p>
+        </h1>
+        <p class="subtitle">En esta página puedes ver las aplicaciones a las que has autorizado a acceder a tus datos.</p>
       </div>
     </header>
 
@@ -20,7 +20,7 @@
                     <img class="app-logo" alt="application logo" src=<%=applications[i].image%>>
                   </div>
                   <div class="vector">
-                      <a data-toggle="collapse" href="#collapse_delete_button_<%=[i]%>" aria-expanded="true" aria-controls="collapse_oauth2_credentials" class="collapsed">
+                      <a data-toggle="collapse"  href="#collapse_delete_button_<%=[i]%>" aria-expanded="true" aria-controls="collapse_delete_button" class="collapsed">
                         <i class="fa fa-angle-up"></i>
                       </a>
                     <div class="collapse_out">
@@ -34,14 +34,14 @@
                     </div>
                   </div>
                   <div class="panel-body clearfix">
-                    <h1 class="app-name"><%=applications[i].name%></h1>
+                    <p class="app-name"><%=applications[i].name%></p>
                   </div>
                 </div>
                 <hr>
                 <div class="panel-body">
                   <input type='hidden' name='app_name' value='<%=applications[i].name%>' />
-                      <h4 class="app-data">Tiene acceso a: <%= applications[i].shared_attributes%></h4>
-                      <h4 class="app-data">Acceso concedido: <%= applications[i].login_date%></h4>
+                      <p class="app-data">Tiene acceso a: <%= applications[i].shared_attributes%></p>
+                      <p class="app-data">Acceso concedido: <%= applications[i].login_date%></p>
                 </div>
               </div>
             </div>
@@ -70,17 +70,11 @@
             <%}%>
           </div>
           <%} else { %>
-            <div class="panel panel-default info">
-              <div class="panel-body">
-                <h2>No hay aplicaciones disponibles</h2>
-              </div>
-            </div>
+                <p>No hay aplicaciones disponibles.</p>
             <%}-%>
           </div>
-
         </div>
 
-        <%- include _delete_third_party_application %>
 
 
         <script type="text/javascript">

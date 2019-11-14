@@ -54,11 +54,12 @@ router.post('/revoke', oauth_controller.revoke_token);
 router.use(function(req, res) {
   const err = new Error('Path not Found');
   err.status = 404;
+  res.status(404);
   if (req.useragent.isDesktop) {
     res.locals.error = err;
     res.render('errors/not_found');
   } else {
-    res.status(404).json(err.message);
+    res.json(err.message);
   }
 });
 

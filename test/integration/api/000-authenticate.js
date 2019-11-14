@@ -8,8 +8,8 @@
 // Load database configuration before
 require('../../config/config_database');
 
-process.env.IDM_DB_PASS = 'test';
-process.env.IDM_DB_USER = 'root';
+// process.env.IDM_DB_PASS = 'test';
+// process.env.IDM_DB_USER = 'root';
 
 // const keyrock = require('../../bin/www');
 const config = require('../../../config.js');

@@ -46,6 +46,7 @@ router.get('/', function(req, res) {
 router.use(function(req, res, next) {
   const err = new Error('Not Found');
   err.status = 404;
+  res.status(err.status);
   next(err);
 });
 

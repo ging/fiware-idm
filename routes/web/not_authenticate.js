@@ -42,6 +42,7 @@ router.use(function(req, res) {
   const err = new Error('Not Found');
   err.status = 404;
   res.locals.error = err;
+  res.status(err.status);
   res.render('errors/not_found');
 });
 

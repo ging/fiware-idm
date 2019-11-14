@@ -96,6 +96,8 @@ router.use(function(req, res) {
   const err = new Error('Not Found');
   err.status = 404;
   res.locals.error = err;
+
+  res.status(err.status);
   res.render('errors/not_found');
 });
 
@@ -110,6 +112,8 @@ router.use(function(err, req, res, next) {
   } else {
     err.status = err.status || 500;
   }
+
+  res.status(err.status);
 
   // set locals, only providing error in development
   res.locals.error =

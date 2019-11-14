@@ -52,14 +52,12 @@
                     <a href="#" class="close" data-dismiss="modal">×</a>
                     <h3>Borrar mis datos de la aplicación</h3>
                   </div>
-                  <form id="delete_application_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/_third_party_applications" method="DELETE" enctype="">
+                  <form id="delete_application_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/_third_party_applications?_method=delete" method="POST" enctype="">
                     <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-                    <input type='hidden' name='user_id' value='<%=user.id%>' />
+                    <input type="hidden" name="app_id" value="<%=applications[i].id%>"/>
                     <div class="modal-body clearfix">
-                      <p><%=user.id%></p>
                       <p>Estás a punto de borrar la siguiente aplicación</p>
                       <p><%=applications[i].name%></p>
-                      <p><%=applications[i].id%></p>
                     </div>
                     <div class="modal-footer">
                       <input type="submit" class="btn btn-primary" value="Borrar">
@@ -81,6 +79,9 @@
           </div>
 
         </div>
+
+        <%- include _delete_third_party_application %>
+
 
         <script type="text/javascript">
           $('.panel-title a:first-child').mouseover(function(){

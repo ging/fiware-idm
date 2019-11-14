@@ -1297,7 +1297,6 @@ exports.show_third_party_applications = function(req, res) {
             login_date: app.login_date,
           });
         });
-        debug(applications);
       }
       res.render('users/_third_party_applications', {
         user: req.user,
@@ -1311,26 +1310,11 @@ exports.show_third_party_applications = function(req, res) {
 };
 // DELETE /idm/users/:user_id/_third_party_applications -- Delete information
 //for a user_authorized_application
-// exports.delete_third_party_application = function(req, res) {
-//   debug('--> delete_third_party_application');
-//   debug(req.body.app_id);
-//
-//   //
-//   // models.user_authorized_application.destroy({
-//   //   where: { oauth_client_id: req.body.app_id },
-//   // });
-//   // models.user_authorized_application
-//   //   .findAll({
-//   //     where: { user_id: req.user.id },
-//   //     include: [
-//   //       {
-//   //         model: models.oauth_client,
-//   //         attributes: ['id', 'name', 'url', 'image'],
-//   //       },
-//   //     ],
-//   //   })
-//   //   .then();
-//
-//   //llamar al método anterior
-//   //return show_third_party_applications(req, res, next);
-// };
+exports.delete_third_party_application = function(req, res, next) {
+  debug('--> delete_third_party_application');
+
+  models.user_authorized_application.destroy({
+    where: { oauth_client_id: req.body.app_id },
+  });
+  next();
+};

@@ -1,0 +1,93 @@
+#navigation_bar {
+  @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+  h1{
+    margin: 15px 0;
+    font-family: 'Rubik';
+font-style: normal;
+font-weight: 500;
+font-size: 20px;
+line-height: 24px;
+text-align: center;
+color: #333333;
+  }
+  h4{
+    font-family: 'Rubik';
+font-style: normal;
+font-weight: normal;
+font-size: 16px;
+line-height: 19px;
+text-align: right;
+
+color: #333333;
+  }
+
+
+  li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+
+  li a.active {
+    background-color: #EAEAEA;
+    color: white;
+  }
+
+  li a:hover:not(.active) {
+      background-color: #EAEAEA;
+    color: white;
+  }
+
+  #user-logo img{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    text-align: center;
+  }
+
+  #app-logo img{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 160px;
+    height: 60px;
+    text-align: center;
+    margin: 3% auto 3%;
+  }
+  // li{
+  //   height: 71px;
+  //   text-align: right;
+  //   padding: 10px;
+  // }
+  // .active{
+  //   background-color: #EAEAEA;
+  //
+  // }
+  .sidebar{
+    position: absolute;
+    height: 100%;
+    width: 20%;
+    left: 0px;
+    top: 0px;
+    padding: 0px;
+    background: #FFFFFF;
+    box-shadow: 4px 0px 17px rgba(0, 0, 0, 0.25);
+  }
+
+
+  .edit{
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: right;
+    color: #333333;
+  }
+}

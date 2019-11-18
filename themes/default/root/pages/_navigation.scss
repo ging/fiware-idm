@@ -1,26 +1,43 @@
+#topheader .navbar-nav li > a {
+	text-transform: capitalize;
+	color: #333;
+	transition: background-color .2s, color .2s;
+
+	&:hover,
+	&:focus {
+		background-color: #333;
+		color: #fff;
+	}
+}
+
+#topheader .navbar-nav li.active > a {
+	background-color: #333;
+	color: #fff;
+}
+
 #navigation_bar {
   @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
   @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
-
+  z-index: +1;
   h1{
     margin: 15px 0;
     font-family: 'Rubik';
-font-style: normal;
-font-weight: 500;
-font-size: 20px;
-line-height: 24px;
-text-align: center;
-color: #333333;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    color: #333333;
   }
   h4{
     font-family: 'Rubik';
-font-style: normal;
-font-weight: normal;
-font-size: 16px;
-line-height: 19px;
-text-align: right;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: right;
 
-color: #333333;
+    color: #333333;
   }
 
 
@@ -37,8 +54,14 @@ color: #333333;
   }
 
   li a:hover:not(.active) {
-      background-color: #EAEAEA;
+    background-color: #EAEAEA;
     color: white;
+  }
+
+  .fa{
+    display: inline;
+    float: left;
+    text-align: center;
   }
 
   #user-logo img{
@@ -73,6 +96,7 @@ color: #333333;
     position: absolute;
     height: 100%;
     width: 20%;
+    // float: left;
     left: 0px;
     top: 0px;
     padding: 0px;

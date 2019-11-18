@@ -3,44 +3,46 @@
 
   <nav class="sidebar">
     <div id="app-logo">
-      <img src="../img/keyrock01.png" alt="Keyrock logo">
+      <img src="/img/keyrock01.png" alt="Keyrock logo">
     </div>
     <div id="user-logo">
+      <a href="/idm/users/<%=session.user.id%>">
       <img src="<%=session.user.image%>" alt="Profile image">
+    </a>
     </div>
     <h1><%=session.user.username%></h1>
 
       <ul>
         <li>
+          <a href="/idm" class="active">
+            <h4 tabindex="1"><i class="fa fa-home"></i><span>Inicio</span></h4>
+          </a>
+        </li>
+        <li>
+          <a href="/idm/users/<%=session.user.id%>/edit" class="">
+            <h4 tabindex="2"><i class="fa fa-edit"></i><span>Edita tu cuenta</span></h4>
+          </a>
+        </li>
+        <li>
           <a href="/idm" class="">
-            <h4 tabindex="1"><i class="fa"></i><span>Inicio</span></h4>
+            <h4 tabindex="3"><i class="fa fa-user-secret"></i><span>Privacidad</span></h4>
           </a>
         </li>
         <li>
-          <a href="/idm/users/<%=session.user.id%>/edit" class="edit">
-            <h4 tabindex="2"><i class="fa"></i><span>Edita tu cuenta</span></h4>
+          <a href="/idm/users/<%=session.user.id%>/_third_party_applications" class="">
+            <h4 tabindex="4"><i class="fa fa-link"></i><span>Cuentas vinculadas</span></h4>
           </a>
         </li>
         <li>
-          <a href="/idm" class="privacity">
-            <h4 tabindex="3"><i class="fa"></i><span>Privacidad</span></h4>
-          </a>
-        </li>
-        <li>
-          <a href="/idm/users/<%=session.user.id%>/_third_party_applications" class="admin-applications">
-            <h4 tabindex="4"><i class="fa"></i><span>Cuentas vinculadas</span></h4>
-          </a>
-        </li>
-        <li>
-          <a href="/idm" class="help">
-            <h4 tabindex="5"><i class="fa"></i><span>Ayuda</span></h4>
+          <a href="/idm" class="">
+            <h4 tabindex="5"><i class="fa fa-question-circle"></i><span>Ayuda</span></h4>
           </a>
         </li>
 
 
 
 
-
+<!--
 <hr>
         <a href="/idm/organizations" class="organizations">
           <h4 tabindex="6"><i class="fa"></i><span><%=translation.navigation.menu_item02%></span></h4>
@@ -64,7 +66,7 @@
               <h4 tabindex="3"><i class="fa"></i><span><%=translation.navigation.menu_item06%></span></h4>
             </a>
           </ul>
-        <%}%>
+        <%}%> -->
       </ul>
 
   </nav>
@@ -74,10 +76,8 @@
 
 
 <script type="text/javascript">
-$(function(){
-  $('.nav a').filter(function(){return this.href==location.href}).parent().addClass('active').siblings().removeClass('active')
-  // $('.nav a').click(function(){
-  //   $(this).parent().addClass('active').siblings().removeClass('active')
-  })
-})
+  $( '#topheader .navbar-nav a' ).on( 'click', function () {
+  	$( '#topheader .navbar-nav' ).find( 'li.active' ).removeClass( 'active' );
+  	$( this ).parent( 'li' ).addClass( 'active' );
+  });
 </script>

@@ -1,6 +1,14 @@
+
+#content_body{
+  margin-left: 20%;
+}
+
 #new_home_page {
   @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
   @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+  width: 100%;
+
   hr{
     border: 2px solid #C4C4C4;
     margin: 0px;

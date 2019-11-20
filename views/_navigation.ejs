@@ -77,9 +77,6 @@
 
 
 <script type="text/javascript">
-  // $(function() {
-  //   $('nav a[href^="idm' + location.pathname.split("/")[1] + '"]').addClass('active');
-  // });
   $(function() {
     var nav = document.getElementById('nav'),
         anchor = nav.getElementsByTagName('a'),
@@ -90,29 +87,6 @@
     for (var i = 0; i < anchor.length; i++) {
     if(anchor[i].href == current) {
         anchor[i].className = "active";
-
-    }
-
-}
+    }}
 });
-
-  // $(function() {
-  //     if ((location.pathname.split("/")[1]) !== ""){
-  //         $('nav a[href$="/' + location.pathname.split("/")[1] + '"]').addClass('active');
-  //     }
-  // });
-  // $(function(){
-  //     var current = location.pathname;
-  //     $('#navigation_bar .nav li a').each(function(){
-  //         var $this = $(this);
-  //         if ($this.attr('href') === current){
-  //             $this.addClass('active');
-  //           }
-  //         })
-  //       } );
-  //
-  // $('#navigation_bar .nav a' ).on( 'click', function () {
-  // 	$( '#navigation_bar .nav' ).find( 'a.active' ).removeClass( 'active' );
-  // 	$( this ).parent( 'a' ).addClass( 'active' );
-  // });
 </script>

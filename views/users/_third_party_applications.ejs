@@ -56,8 +56,8 @@
                     <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                     <input type="hidden" name="app_id" value="<%=applications[i].id%>"/>
                     <div class="modal-body clearfix">
-                      <p>Estás a punto de borrar la siguiente aplicación</p>
-                      <p><%=applications[i].name%></p>
+                      <p>Estás a punto de borrar la siguiente aplicación:</p>
+                      <h4><%=applications[i].name%></h4>
                     </div>
                     <div class="modal-footer">
                       <input type="submit" class="btn btn-primary" value="Borrar">

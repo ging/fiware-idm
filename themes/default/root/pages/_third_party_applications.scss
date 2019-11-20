@@ -19,6 +19,23 @@
     border: 0px;
     color: #333333;
   }
+  input{
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    border: 0px;
+  }
+
+  h4{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+    text-align: center;
+    font-size: 26px;
+  }
 
   .title{
     font-family: 'Rubik', sans-serif;
@@ -103,6 +120,12 @@
     box-sizing: border-box;
     box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
+  }
+
+  .modal-header h3 {
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
   }
 
 }

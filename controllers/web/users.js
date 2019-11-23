@@ -1289,7 +1289,8 @@ exports.show_third_party_applications = function(req, res) {
           }
 
           applications.push({
-            id: app.oauth_client_id,
+            id: app.id,
+            app_id: app.oauth_client_id,
             name: app.OauthClient.name,
             image: app.OauthClient.image,
             url: app.OauthClient.url,
@@ -1298,6 +1299,7 @@ exports.show_third_party_applications = function(req, res) {
           });
         });
       }
+      debug(applications);
       res.render('users/_third_party_applications', {
         user: req.user,
         applications,
@@ -1314,7 +1316,7 @@ exports.delete_third_party_application = function(req, res, next) {
   debug('--> delete_third_party_application');
 
   models.user_authorized_application.destroy({
-    where: { oauth_client_id: req.body.app_id },
+    where: { id: req.body.id },
   });
   next();
 };

@@ -13,61 +13,66 @@
     </a>
     </div>
     <h1><%=session.user.username%></h1>
-      <ul class="nav">
+      <ul>
         <li>
-          <a href="/idm">
+          <a href="/idm" class="new-home">
             <h4 tabindex="1"><i class="fa fa-home"></i><span>Inicio</span></h4>
           </a>
         </li>
         <li>
-          <a href="/idm/users/<%=session.user.id%>/edit">
+          <a href="/idm/users/<%=session.user.id%>/edit" class="edit">
             <h4 tabindex="2"><i class="fa fa-edit"></i><span>Edita tu cuenta</span></h4>
           </a>
         </li>
         <li>
-          <a href="/idm/#" class="">
+          <a href="/idm/#" class="privacy">
             <h4 tabindex="3"><i class="fa fa-user-secret"></i><span>Privacidad</span></h4>
           </a>
         </li>
         <li>
-          <a href="/idm/users/<%=session.user.id%>/_third_party_applications" class="">
+          <a href="/idm/users/<%=session.user.id%>/_third_party_applications" class="accounts">
             <h4 tabindex="4"><i class="fa fa-link"></i><span>Cuentas vinculadas</span></h4>
           </a>
         </li>
         <li>
-          <a href="/idm/#" class="">
+          <a href="/idm/help_about" class="help">
             <h4 tabindex="5"><i class="fa fa-question-circle"></i><span>Ayuda</span></h4>
           </a>
         </li>
+        <!--
 
-
-
-
-<!--
 <hr>
+<li>
         <a href="/idm/organizations" class="organizations">
           <h4 tabindex="6"><i class="fa"></i><span><%=translation.navigation.menu_item02%></span></h4>
         </a>
+        </li>
+        <li>
         <a href="/idm/applications" class="applications">
           <h4 tabindex="7"><i class="fa"></i><span><%=translation.navigation.menu_item03%></span></h4>
         </a>
+        </li> -->
         <%if(session.user.admin) {%>
           <h5>
             <span class="hidden-xs hidden-sm"></span>
             <span class="visible-sm"> </span>
           </h5>
-          <ul>
+            <li>
             <a href="/idm/admins/notify" class="notify">
               <h4 tabindex="1"><i class="fa"></i><span><%=translation.navigation.menu_item04%></span></h4>
             </a>
+            </li>
+            <li>
             <a href="/idm/admins/administrators" class="administrators">
               <h4 tabindex="2"><i class="fa"></i><span><%=translation.navigation.menu_item05%></span></h4>
             </a>
+            </li>
+            <li>
             <a href="/idm/admins/list_users" class="list_users">
               <h4 tabindex="3"><i class="fa"></i><span><%=translation.navigation.menu_item06%></span></h4>
             </a>
-          </ul>
-        <%}%> -->
+            </li>
+        <%}%>
       </ul>
 
   </nav>

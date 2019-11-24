@@ -334,9 +334,8 @@ exports.enable_app = function(req, res, next) {
       .catch(function(error) {
         next(error);
       });
-  } 
-    return oauth_authorize(req, res, next);
-  
+  }
+  return oauth_authorize(req, res, next);
 };
 
 // Generate code or token

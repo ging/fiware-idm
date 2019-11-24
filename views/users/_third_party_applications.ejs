@@ -54,7 +54,7 @@
                   </div>
                   <form id="delete_application_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/_third_party_applications?_method=delete" method="POST" enctype="">
                     <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-                    <input type="hidden" name="id" value="<%=applications[i].id%>"/>
+                    <input type="hidden" name="app_id" value="<%=applications[i].app_id%>"/>
                     <div class="modal-body clearfix">
                       <p>Estás a punto de borrar la siguiente aplicación:</p>
                       <h4><%=applications[i].name%></h4>

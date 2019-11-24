@@ -1316,7 +1316,7 @@ exports.delete_third_party_application = function(req, res, next) {
   debug('--> delete_third_party_application');
 
   models.user_authorized_application.destroy({
-    where: { id: req.body.id },
+    where: { user_id: req.session.user.id, oauth_client_id: req.body.app_id },
   });
   next();
 };

@@ -1,4 +1,5 @@
-<%if(session.user && !error.status ) {%>
+<%if(session.user && !error.status && (typeof flag === 'undefined')) {%>
+
 <div id = "navigation_bar">
 
   <nav class="sidebar" id="nav">

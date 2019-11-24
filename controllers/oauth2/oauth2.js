@@ -243,6 +243,7 @@ function check_user_authorized_application(req, res, next) {
               state: req.query.state,
             },
             csrf_token: req.csrfToken(),
+            flag: true,
           });
         }
       })

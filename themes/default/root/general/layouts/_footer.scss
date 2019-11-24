@@ -11,13 +11,15 @@ body {
 footer.footer-main {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: 50%;
   /* Set the fixed height of the footer here */
   height: 50px;
   font-size: 12px;
   //border-top: 1px solid $brand-secundary;
   left: 0;
   right: 0;
+  @media (min-width: 768px){
+  margin-left: 25%;}
   .container-fluid{
     //border-top: 1px solid #F2E826;
     //border-bottom: 1px solid $brand-primary;

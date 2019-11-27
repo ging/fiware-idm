@@ -375,7 +375,9 @@
       "label04": "Subir una imagen",
       "label05": " Selecciona la parte de la imagen que quieras para usar de avatar.",
       "crop_btn": "Recortar y usar",
-      "cancel_btn": "Cancelar"
+      "cancel_btn": "Cancelar",
+      "label06": "Atributos de identidad",
+      "warning": "Note: These attributes will be included in your public information provided to applications if you consent their use."
     },
     "new_user": {
       "title": "Registro",
@@ -928,6 +930,37 @@
     "step_create_eidas_credentials": {
       "title": "Detalles de autenticación para eIDAS", 
       "next_btn": "Siguiente"
+    }
+  },
+  "errors": {
+    "saml": {
+      "title01": "¡ups, algo fue mal!",
+      "content01": "Contacta con el administrador de",
+      "content02": "tu proveedor de servicios web",
+      "content03": "y envia los",
+      "content04": "detalles de tu error",
+      "title02": "¡La petición Saml ha fallado!",
+      "content05": "error",
+      "content06": "error interno"
+    },
+    "oauth": {
+      "title01": "¡ups, algo fue mal!",
+      "content01": "Contacta con el administrador de",
+      "content02": "tu proveedor de servicios web",
+      "content03": "y envia los",
+      "content04": "detalles de tu error",
+      "title02": "¡La petición OAuth ha fallado!",
+      "content05": "error",
+      "content06": "error interno",
+      "content07": "(obligatorio)"
+    },
+    "not_found": {
+      "title01": "la página que has solicitado no existe",
+      "content01": "vuelve de nuevo a",
+      "content02": "la página de inicio"
+    },
+    "generic": {
+      "content01": "Código"
     }
   }
 }

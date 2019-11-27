@@ -28,13 +28,10 @@ exports.load_organization = function(req, res, next, organization_id) {
           next();
         } else {
           // Reponse with message
-          const response = {
-            text: ' Organization doesn`t exist.',
-            type: 'danger',
-          };
-
-          // Send response depends on the type of request
-          send_response(req, res, response, '/idm/organizations');
+          const err = new Error('Not Found');
+          err.status = 404;
+          res.locals.error = err;
+          res.render('errors/not_found');
         }
       })
       .catch(function(error) {

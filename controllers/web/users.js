@@ -23,6 +23,8 @@ const debug = require('debug')('idm:web-user_controller');
 const email = require('../../lib/email.js');
 const image = require('../../lib/image.js');
 
+const identity_attributes = config.identity_attributes || { enabled: false };
+
 // MW to see if user can do some actions
 exports.owned_permissions = function(req, res, next) {
   debug('--> owned_permissions');
@@ -54,6 +56,7 @@ exports.load_user = function(req, res, next, user_id) {
           'website',
           'image',
           'gravatar',
+          'extra',
         ],
       })
       .then(function(user) {
@@ -63,11 +66,11 @@ exports.load_user = function(req, res, next, user_id) {
           // Send request to next function
           next();
         } else {
-          req.session.message = {
-            text: ' User doesn`t exist.',
-            type: 'danger',
-          };
-          res.redirect('/');
+          // Reponse with message
+          const err = new Error('Not Found');
+          err.status = 404;
+          res.locals.error = err;
+          res.render('errors/not_found');
         }
       })
       .catch(function(error) {
@@ -283,6 +286,7 @@ exports.edit = function(req, res) {
         }
 
         res.render('users/edit', {
+          identity_attributes,
           user: req.user,
           error: [],
           csrf_token: req.csrfToken(),
@@ -324,6 +328,9 @@ exports.update_info = function(req, res) {
     req.body.user.description = null;
   }
 
+  const user_extra = user.extra ? user.extra : {};
+  user_extra.identity_attributes = req.body.attributes;
+
   user
     .validate()
     .then(function() {
@@ -333,9 +340,10 @@ exports.update_info = function(req, res) {
             username: req.body.user.username,
             description: req.body.user.description,
             website: req.body.user.website,
+            extra: user_extra,
           },
           {
-            fields: ['username', 'description', 'website'],
+            fields: ['username', 'description', 'website', 'extra'],
             where: { id: req.session.user.id },
           }
         )

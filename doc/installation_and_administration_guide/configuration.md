@@ -146,9 +146,14 @@ config.cors = {
 Some features of Keyrock could be configured. Most of them are related to
 lifetime of tokens.
 
+-   Allow Empty State. If you enable this feature, is not necessary that the
+    service include the paramter state in the URL as a query string. The state
+    parameter is used to protect against XSRF, so in case of doubt set this
+    value to the default one (false).
+
 -   Authorization code, access token and refresh token lifetimes could be
     changed easily. If you change one of this values it means that all services
-    register in Keyrock will be updated with this nea values.
+    register in Keyrock will be updated with this new values.
 
 -   Ask authorization. The General Data Protection Regulation (GDPR) forces
     clients to ask for a consent to obtain the user information. Actually, this
@@ -166,6 +171,7 @@ lifetime of tokens.
 
 ```javascript
 config.oauth2 = {
+    allowEmptyState: false,
     authorization_code_lifetime: 5 * 60,
     access_token_lifetime: 60 * 60,
     ask_authorization: true,

@@ -47,14 +47,34 @@ exports.response_type_required = function(req, res, next) {
   debug(' --> response_type_required');
 
   if (
-    req.query.response_type &&
-    (req.query.response_type === 'code' || req.query.response_type === 'token')
+    !req.query.response_type ||
+    !(req.query.response_type === 'code' || req.query.response_type === 'token')
   ) {
-    next();
+    // Reponse with message
+    const err = new Error(
+      'invalid_request: response_type not valid or not exist'
+    );
+    err.status = 400;
+    debug('Error ', err.message);
+
+    res.locals.error = err;
+    res.render('errors/oauth', {
+      query: req.query,
+      application: req.application,
+    });
+  } else if (!req.query.client_id) {
+    // Reponse with message
+    const err = new Error('invalid_request: include client_id in request');
+    err.status = 400;
+    debug('Error ', err.message);
+
+    res.locals.error = err;
+    res.render('errors/oauth', {
+      query: req.query,
+      application: req.application,
+    });
   } else {
-    const text = 'Invalid response_type';
-    req.session.message = { text, type: 'danger' };
-    res.redirect('/auth/login');
+    next();
   }
 };
 
@@ -71,6 +91,7 @@ exports.load_application = function(req, res, next) {
         'description',
         'image',
         'response_type',
+        'url',
         'redirect_uri',
       ],
     })
@@ -79,24 +100,23 @@ exports.load_application = function(req, res, next) {
         req.application = application;
         next();
       } else {
-        const text =
-          'Application with id = ' + req.query.client_id + ' doesn`t exist';
-        req.session.message = { text, type: 'warning' };
-        res.redirect('/auth/login');
+        // Reponse with message
+        const err = new Error('invalid_client: application id not found');
+        err.status = 404;
+        res.locals.error = err;
+        debug('Error ', err.message);
+        res.render('errors/oauth', { query: req.query, application: {} });
       }
     })
-    .catch(function(error) {
-      debug('Error ', error);
-      next(error);
-    });
+    .catch(next);
 };
 
 // MW to check user session
-exports.check_user = function(req, res) {
+exports.check_user = function(req, res, next) {
   debug(' --> check_user');
 
   if (req.session.user) {
-    check_user_authorized_application(req, res);
+    check_user_authorized_application(req, res, next);
   } else {
     // Check if there are errors to be rendered
     const errors = req.session.errors || [];
@@ -137,13 +157,13 @@ exports.check_user = function(req, res) {
 };
 
 // POST /oauth2/authorize -- Function to handle authorization code and implicit requests
-exports.authenticate_user = function(req, res) {
+exports.authenticate_user = function(req, res, next) {
   debug(' --> authenticate_user');
 
   const errors = [];
 
   if (req.session.user) {
-    check_user_authorized_application(req, res);
+    check_user_authorized_application(req, res, next);
   } else {
     // See if inputs are empty
     if (!req.body.email) {
@@ -186,7 +206,7 @@ exports.authenticate_user = function(req, res) {
           oauth_sign_in: true,
         };
 
-        check_user_authorized_application(req, res);
+        check_user_authorized_application(req, res, next);
       });
     } else {
       // Redirect to the same OAuth2 service login endpoint
@@ -203,7 +223,7 @@ exports.authenticate_user = function(req, res) {
 };
 
 // Check if user has authorized the application
-function check_user_authorized_application(req, res) {
+function check_user_authorized_application(req, res, next) {
   debug(' --> check_user_authorized_application');
 
   if (config_oauth2.ask_authorization) {
@@ -211,14 +231,8 @@ function check_user_authorized_application(req, res) {
       .then(function(user) {
         if (user) {
           req.user = user;
-          oauth_authorize(req, res);
+          oauth_authorize(req, res, next);
         } else {
-          if (req.application.redirect_uri !== req.query.redirect_uri) {
-            res.locals.message = {
-              text: 'Mismatching redirect uri',
-              type: 'warning',
-            };
-          }
           res.render('oauth/authorize', {
             application: {
               name: req.application.name,
@@ -239,7 +253,7 @@ function check_user_authorized_application(req, res) {
       });
   } else {
     req.user = req.session.user;
-    oauth_authorize(req, res);
+    oauth_authorize(req, res, next);
   }
 }
 
@@ -292,14 +306,14 @@ exports.load_user = function(req, res, next) {
 };
 
 // POST /oauth2/enable_app -- User authorize the application to see their details
-exports.enable_app = function(req, res) {
+exports.enable_app = function(req, res, next) {
   debug(' --> enable_app');
 
-  return oauth_authorize(req, res);
+  return oauth_authorize(req, res, next);
 };
 
 // Generate code or token
-function oauth_authorize(req, res) {
+function oauth_authorize(req, res, next) {
   debug(' --> oauth_authorize');
 
   req.body.user = req.user;
@@ -312,15 +326,18 @@ function oauth_authorize(req, res) {
   const request = new Request(req);
   const response = new Response(res);
 
+  const options = {
+    allowEmptyState: config_oauth2.allow_empty_state // eslint-disable-line snakecase/snakecase
+      ? config_oauth2.allow_empty_state
+      : false,
+  };
+
   return oauth_server
-    .authorize(request, response)
+    .authorize(request, response, options)
     .then(function(success) {
       res.redirect(success);
     })
-    .catch(function(error) {
-      debug('Error: ', error);
-      res.status(error.code || 500).json(error);
-    });
+    .catch(next);
 }
 
 // GET /user -- Function to handle token authentication
@@ -424,7 +441,7 @@ function authenticate_jwt(
         req_app
       )
         .then(function(response) {
-          return res.status(201).json(response);
+          return res.status(200).json(response);
         })
         .catch(function(error) {
           debug('Error ', error);
@@ -467,7 +484,7 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
       );
     })
     .then(function(response) {
-      return res.status(201).json(response);
+      return res.status(200).json(response);
     })
     .catch(function(error) {
       debug('Error ', error);
@@ -477,7 +494,7 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
 }
 
 // POST /oauth2/revoke -- Function to revoke a token
-exports.revoke_token = function(req, res) {
+exports.revoke_token = function(req, res, next) {
   debug(' --> revoke_token');
 
   const options = {};
@@ -491,9 +508,5 @@ exports.revoke_token = function(req, res) {
       debug('Success revoking a token');
       return res.status(200).json();
     })
-    .catch(function(error) {
-      debug('Error ', error);
-      // Request is not authorized.
-      return res.status(error.code || 500).json(error.message || error);
-    });
+    .catch(next);
 };

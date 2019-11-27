@@ -10,5 +10,6 @@
     "id": "",
     "authorization_decision": "",
     "app_azf_domain": "",
-    "eidas_profile": {}
+    "eidas_profile": {},
+    "attributes": ""
 }

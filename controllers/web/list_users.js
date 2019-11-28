@@ -113,6 +113,7 @@ exports.create = function(req, res) {
         'image',
         'gravatar',
       ],
+      enable_tfa: true,
     },
   });
 

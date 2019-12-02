@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="card card-container">
+
+    <div >
+      <h1></h1>
+
+
+      <span >
+
+        <p>Scan the QR code or enter the secret key in Google Authenticator</p>
+
+        <img src=<%=qr%> alt="">
+        <p>Secret Key - <%=secret%></p>
+
+        <p>Auth Type - Time Based - OTP</p>
+
+        <form class="form-group" (ngSubmit)="confirm()" #otpForm="ngForm">
+          <input name="authcode" type="number" #iauthcode="ngModel" class="form-control" maxlength="6"
+            placeholder="Enter the Auth Code" id="authcode" autocomplete="off" [(ngModel)]="authcode" required>
+          <br>
+          <button type="Submit" class="btn btn-lg btn-primary btn-block btn-signin"
+            [disabled]="iauthcode?.errors?.required">Enable TFA</button>
+        </form>
+      </span>
+    </div>
+  </div>
+</div>

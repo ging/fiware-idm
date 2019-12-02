@@ -7,6 +7,9 @@ const user_controller = require('./users');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+const Speakeasy = require('speakeasy');
+const Qrcode = require('qrcode');
+
 const escape_paths = require('../../etc/escape_paths/paths.json').paths;
 
 // MW to authorized restricted http accesses
@@ -120,22 +123,37 @@ exports.create = function(req, res) {
         image = '/img/users/' + user.image;
       }
 
-      // Create session
-      req.session.user = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        image,
-        change_password: user.date_password,
-        starters_tour_ended: user.starters_tour_ended,
-      };
+      if (user.extra.enable_tfa) {
+        const secret = Speakeasy.generateSecret({ length: 20 });
 
-      // If user is admin add parameter to session
-      if (user.admin) {
-        req.session.user.admin = user.admin;
+        // QR code module to generate a QR code that stores the data in secret.otpauth_url,
+        //and then display the QR code to the user. This generates a PNG data URL.
+        Qrcode.toDataURL(secret.otpauth_url, function(err, data_url) {
+          return res.render('auth/tfa', {
+            user,
+            secret: secret.base32,
+            qr: data_url,
+            csrf_token: req.csrfToken(),
+          });
+        });
+      } else {
+        // In case that the user does not use the tfa, create session
+        req.session.user = {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          image,
+          change_password: user.date_password,
+          starters_tour_ended: user.starters_tour_ended,
+          extra: user.extra,
+        };
+
+        // If user is admin add parameter to session
+        if (user.admin) {
+          req.session.user.admin = user.admin;
+        }
+        res.redirect('/idm');
       }
-
-      res.redirect('/idm');
     });
   } else {
     debug(errors);
@@ -144,7 +162,35 @@ exports.create = function(req, res) {
     res.redirect('/auth/login');
   }
 };
+/*
+// POST /auth/login -- Create Session
+exports.tfa = function(req, res, next) {
+  debug('--> tfa');
 
+  const secret = Speakeasy.generateSecret({ length: 20 });
+  console.log('Your secret is: ' + secret.base32);
+
+  //generar codigo qr como datos
+  QRCode.toDataURL(secret.otpauth_url, function(err, data_url) {
+    // Display this data URL to the user in an <img> tag
+    // Example:
+    //  write('<img src="' + data_url + '">');
+  });
+  //pintar código qr en terminal
+  QRCode.toString(secret.otpauth_url, { type: 'terminal' }, function(
+    err,
+    data_url
+  ) {
+    console.log(data_url);
+  });
+  // response.send({ "secret": secret.base32 });
+  return res.render('auth/tfa', {
+    user: req.session.user,
+    secret: secret.base32,
+    csrf_token: req.csrfToken(),
+  });
+};
+*/
 // GET /update_password -- Render settings/password view with a warn to indicate user to change password
 exports.update_password = function(req, res) {
   res.render('settings/change_password', {

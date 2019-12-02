@@ -545,6 +545,7 @@ exports.authenticate = external_auth.enabled
             'admin',
             'date_password',
             'starters_tour_ended',
+            'extra',
           ],
           where: {
             email: username,

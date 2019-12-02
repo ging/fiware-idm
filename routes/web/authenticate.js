@@ -19,7 +19,9 @@ router.post(
   web_session_controller.login_not_required,
   web_session_controller.create
 );
-router.get('/auth/tfa', web_session_controller.tfa);
+
+router.post('/tfa_verify', web_session_controller.tfa_verify);
+
 router.delete(
   '/logout',
   web_session_controller.login_required,

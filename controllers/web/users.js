@@ -628,6 +628,20 @@ exports.create = function(req, res) {
     password: req.body.password1,
     date_password: new Date(new Date().getTime()),
     enabled: false,
+    extra: {
+      visible_attributes: [
+        'username',
+        'description',
+        'website',
+        'identity_attributes',
+        'image',
+        'gravatar',
+      ],
+      tfa: {
+        enabled: false,
+        secret: '',
+      },
+    },
   });
 
   // If password(again) is empty push an error into the array

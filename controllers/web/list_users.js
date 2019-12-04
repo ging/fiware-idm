@@ -114,7 +114,7 @@ exports.create = function(req, res) {
         'gravatar',
       ],
       tfa: {
-        enabled: true,
+        enabled: false,
         secret: '',
       },
     },

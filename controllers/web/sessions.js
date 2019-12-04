@@ -122,14 +122,16 @@ exports.create = function(req, res) {
       }
 
       if (user.extra && user.extra.tfa.enabled) {
-        debug('--> two factor authentication');
-        /*  if (user.extra.tfa.secret){
-          var secret = user.extra.tfa.secret;
-          debug("loaded stored secret");
-        } else{
-          var secret = Speakeasy.generateSecret({ length: 20 });
-        }*/
-        const secret = Speakeasy.generateSecret({ length: 20 });
+        debug('--> two factor authentication enabled');
+        let secret = '';
+        if (user.extra.tfa.secret) {
+          secret = user.extra.tfa.secret;
+          debug('Loaded stored secret');
+        } else {
+          secret = Speakeasy.generateSecret({ length: 20, issuer: 'IdM' });
+        }
+        debug(secret);
+
         // QR code module to generate a QR code that stores the data in secret.otpauth_url,
         //and then display the QR code to the user. This generates a PNG data URL.
         Qrcode.toDataURL(secret.otpauth_url, function(err, data_url) {
@@ -171,83 +173,17 @@ exports.create = function(req, res) {
 // POST /auth/tfa -- Verify token
 exports.tfa_verify = function(req, res) {
   debug('--> verify token');
+
+  const user_token = req.body.token;
+  debug(user_token);
   //Verify the token
-  if (
-    Speakeasy.totp.verify({
-      secret: req.body.secret,
-      encoding: 'base32',
-      token: req.body.token,
-      window: 0,
-    }) === true
-  ) {
-    /****************************/
-    /*
-      // Authenticate user using user controller function
-
-      user_controller.authenticate(req.body.email, req.body.password, function(
-        error,
-        user
-      ) {
-        if (error) {
-          // If error exists send a message to /auth/login
-          req.session.errors = [{ message: error.message }];
-          res.redirect('/auth/login');
-          return;
-        }
-
-        // Create req.session.user and save id and username
-        // The session is defined by the existence of: req.session.user
-        let image = '/img/logos/small/user.png';
-        if (user.gravatar) {
-          image = gravatar.url(
-            user.email,
-            { s: 25, r: 'g', d: 'mm' },
-            { protocol: 'https' }
-          );
-        } else if (user.image !== 'default') {
-          image = '/img/users/' + user.image;
-        }
-
-        if (user.extra && user.extra.tfa.enabled){
-          debug('--> two factor authentication')
-          const secret = Speakeasy.generateSecret({ length: 20 });
-          if (user.extra.tfa.secret.length != 0){
-            secret = user.extra.tfa.secret;
-            debug("stored secret");
-          }
-          // QR code module to generate a QR code that stores the data in secret.otpauth_url,
-          //and then display the QR code to the user. This generates a PNG data URL.
-          Qrcode.toDataURL(secret.otpauth_url, function(err, data_url) {
-            return res.render('auth/tfa', {
-              user,
-              secret: secret.base32,
-              qr: data_url,
-              csrf_token: req.csrfToken(),
-            });
-          });
-        } else {
-          debug('--> TFA Disabled')
-          // In case that the user does not use the tfa, create session
-          req.session.user = {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            image,
-            change_password: user.date_password,
-            starters_tour_ended: user.starters_tour_ended,
-            extra: user.extra,
-          };
-
-          // If user is admin add parameter to session
-          if (user.admin) {
-            req.session.user.admin = user.admin;
-          }
-          res.redirect('/idm');
-        }
-      });
-*/
-    /***********************/
-
+  const verified = Speakeasy.totp.verify({
+    secret: req.body.secret,
+    encoding: 'base32',
+    token: user_token,
+    window: 0,
+  });
+  if (verified) {
     models.user
       .find({
         attributes: [
@@ -312,12 +248,9 @@ exports.tfa_verify = function(req, res) {
             res.redirect('/idm');
           })
           .catch(function(error) {
-            debug('Error updating values of organization ' + error);
-            req.session.message = {
-              text: ' Fail update user.',
-              type: 'danger',
-            };
-            res.redirect('/idm/users/' + req.session.user.id);
+            debug('Error updating values of user ' + error);
+
+            res.redirect('/auth/login');
           });
       });
   } else {

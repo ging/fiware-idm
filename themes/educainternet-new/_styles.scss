@@ -1,0 +1,323 @@
+/****************************** Custom styles rewrite */
+
+html, body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background-size: cover;
+	background-color: #FFF;
+	margin: 0 auto;
+
+	
+	.container-fluid.wrap {
+		padding: 0;
+		max-width: 100%;
+		
+	}
+
+}
+
+.container-fluid.info {
+	.row & {
+		height: 100%;
+	}
+}
+
+.alert-danger {
+	border: .6px solid $alert-danger;
+	background-color: lighten( $alert-danger, 20%);
+	color: darken($alert-danger, 30%);
+}
+
+
+.fa-eye:before {
+    content: "\f070";
+}
+
+.fa-eye-slash:before {
+    content: "\f06e";
+}
+
+
+.row {
+	display: flex;
+	flex-direction: row-reverse;
+	margin: 0;
+	width: 100%;
+
+}
+	
+
+.container-fluid.info {
+	width: 60%;
+	display: flex;
+	flex-flow: wrap row;
+	justify-content: space-between;
+	margin: 0 0 0 2rem;
+	position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+
+	.media {
+		height: auto;
+	}
+
+	.logo-header {
+		width: 100%;
+		padding: 1rem;
+
+		.brand {
+			background-image: none;
+			width: 340px;
+			height: 45px;
+			font-size: 2.5rem;
+			color: $brand-secundary;
+			display: flex;
+			margin-top: 15px;
+
+					
+			.logo_bold {
+				font-weight: bold;
+				color: $brand-primary;
+					
+			}	
+		
+		}
+	}
+
+	
+	.cred {
+		width: 100%;
+		color: #ff7900;
+		align-self: flex-end;
+		text-align: left;
+		display: flex;
+		margin: 0 0 2rem 0;
+		font-size: 1.4rem;
+
+		.cred_img {
+			width: 4.1rem;
+			height: 4.1rem;
+			-webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+			-moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+			box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+
+			img {
+				height: 100%;
+				object-fit: cover;
+				align-content: center;
+			}
+		}
+
+		.cred_content {
+			margin: 0 0 0 1rem;
+			a {
+				color: #ff7900;
+				font-weight: 600;
+			}
+	
+			a:hover {
+				color: $text;
+	
+			}
+		}
+
+		
+	}
+}
+
+
+
+@media (max-width: 1280px) {
+
+	.container-fluid.info {
+		width: 55%;
+
+	}
+}
+
+
+
+@media (max-width: 990px) {
+	
+	.container-fluid.info {
+		width: 45%;
+
+	
+	}
+}
+
+
+@media (max-width: 850px) {
+	.container-fluid.info {
+		width: 50%;
+		
+		.cred {
+			visibility: hidden;
+		}
+	}
+}
+
+
+@media (max-width: 650px) {
+	
+	.container-fluid.info {
+		width: 0;
+		padding: 0;
+		margin: 0;
+		.logo-header {
+			position: fixed;
+			top: 1rem;
+			left: 1rem;
+		}
+
+		.cred {
+			visibility: hidden;
+			
+		}
+
+	}
+
+}
+
+
+@media (max-height:450px) {
+
+    @media (max-width:900px) {
+        
+        .container-fluid.info {
+			width: 0;
+			padding: 0;
+			margin: 0;
+			.logo-header {
+				position: fixed;
+				top: 3rem;
+				left: calc(50% - 95px);
+			}
+		}
+	}
+}
+
+
+/*------ GalaxyS5 landscape------*/
+
+@media (max-height: 361px) {
+
+    @media (max-width: 641px) {
+       
+		.container-fluid.info {
+			.logo-header {
+				top: 1rem;
+			}
+		}
+    }
+   
+}
+
+
+/*------ iPhone5/SE landscape------*/
+
+@media (max-height: 321px) {
+
+    @media (max-width: 570px) {
+       
+        .container-fluid.info {
+			.logo-header {
+				top: 1rem;
+			}
+		}
+    
+    }
+   
+}
+
+
+@media (min-height: 1020px) {
+
+	@media (min-width: 765px) {
+		
+		.container-fluid.info {
+			width: 60%;
+
+			.cred {
+				visibility: visible;
+				position: absolute;
+				bottom: 2em;
+				left: 50%;
+				transform: translateX(-50%);
+				color: black !important;
+				top: 93%;
+				margin: 0;
+				width: max-content;
+
+				a {
+					color: black !important;
+				}
+			}
+		}
+	}
+	
+}
+
+
+/*------ iPAD Pro landscape------*/
+
+@media (min-height: 1020px) {
+
+	@media (min-width: 1360px) {
+		
+		.container-fluid.info {
+			width: 70%;
+
+			.cred {
+				visibility: visible;
+				position: absolute;
+				color: white !important;
+				top: 93%;
+				margin: 0;
+				width: 70%;
+
+				a {
+					color: white !important;
+				}
+			}
+		}
+	}
+	
+}
+
+
+/*------ iPAD Pro landscape------*/
+
+@media (min-height: 1360px) {
+
+	@media (min-width: 1020px) {
+		
+		.container-fluid.info {
+			width: 70%;
+
+			.cred {
+				visibility: visible;
+				position: absolute;
+				color: white !important;
+				top: 93%;
+				left: 37%;
+				margin: 0;
+				width: 70%;
+
+				a {
+					color: white !important;
+				}
+			}
+		}
+	}
+	
+}
+
+.login .modal-footer .actions a.btnRegister {
+	text-decoration: none;
+	border: solid 1px #595959;
+	padding: 10px 15px;
+	display: inline-block;
+	color: #595959;
+	font-weight: bold;
+}

@@ -34,4 +34,17 @@ router.delete(
   web_setting_controller.cancel_account
 );
 
+router.get(
+  '/enable_tfa',
+  web_session_controller.password_check_date,
+  csrf_protection,
+  web_setting_controller.enable_tfa
+);
+router.post(
+  '/enable_tfa_verify',
+  web_session_controller.password_check_date,
+  csrf_protection,
+  web_setting_controller.enable_tfa_verify
+);
+
 module.exports = router;

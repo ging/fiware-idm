@@ -113,10 +113,10 @@ exports.create = function(req, res) {
         'image',
         'gravatar',
       ],
-      tfa: {
-        enabled: false,
-        secret: '',
-      },
+      // tfa: {
+      //   enabled: false,
+      //   secret: '',
+      // },
     },
   });
 

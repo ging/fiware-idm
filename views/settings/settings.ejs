@@ -73,33 +73,21 @@
         </div>
          <div class="panel panel-default ">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse-2" class="panel-heading collapsed">
-                <h4 class="panel-title panel-close">
-                    <%=translation.settings.settings.panel_title03%>
-                </h4>
+                <h4 class="panel-title panel-close">Autenticación en dos pasos</h4>
             </a>
             <div id="collapse-2" class="panel-collapse collapse" style="height: 0px;">
                 <div class="panel-body">
-                    <form accept-charset="UTF-8" action="/idm/settings/twofactor/" id="two_factor_form" method="post" class="ng-pristine ng-valid">
-                        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-                        <p><%=translation.settings.settings.content01%><b><%=translation.settings.settings.content01_1%></b></p>
-                        <p><%=translation.settings.settings.content02%></p>
-                        <p><%=translation.settings.settings.content03%></p>
-                        <fieldset>
-                            <div class="form-group ">
-                                <label class="control-label  " for="id_security_question"><%=translation.settings.settings.label06%></label>
-                                <div class=" ">
-                                    <input class="form-control" id="id_security_question" name="security_question" type="text">
-                                </div>
-                            </div>
-                            <div class="form-group ">
-                                <label class="control-label  " for="id_security_answer"><%=translation.settings.settings.label07%></label>
-                                <div class=" ">
-                                    <input class="form-control" id="id_security_answer" name="security_answer" type="text">
-                                </div>
-                            </div>
-                        </fieldset>
-                        <input class="btn btn-primary always-enabled" name="enable" type="submit" value="Enable">
-                    </form>
+                  <%if (!session.user.extra.tfa || !session.user.extra.tfa.enabled) {%>
+                    <p><%=translation.settings.settings.content01%><b>deshabilitada</b></p>
+                    <p><%=translation.settings.settings.content02%></p>
+                    <a href="/idm/settings/enable_tfa" class="small"><span>Habilitar</span></a>
+                  <%} else if (session.user.extra.tfa.enabled){%>
+                    <p><%=translation.settings.settings.content01%><b>habilitada</b></p>
+                    <a href="/idm/settings/disable_tfa" class="small"><span>Habilitar</span></a>
+
+
+
+                  <%}%>
                     <div id="result">
                     </div>
                     <!--
@@ -160,6 +148,7 @@
                     -->
                 </div>
             </div>
+
         </div>
         <div class="panel panel-default cancel_account">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse-3" class="panel-heading collapsed">

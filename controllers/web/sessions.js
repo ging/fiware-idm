@@ -121,7 +121,7 @@ exports.create = function(req, res) {
         image = '/img/users/' + user.image;
       }
 
-      if (user.extra && user.extra.tfa.enabled) {
+      if (user.extra && user.extra.tfa && user.extra.tfa.enabled) {
         debug('--> two factor authentication enabled');
         let secret = '';
         if (user.extra.tfa.secret) {

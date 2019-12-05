@@ -106,6 +106,7 @@ exports.create = function(req, res) {
         // If error exists send a message to /auth/login
         req.session.errors = [{ message: error.message }];
         res.redirect('/auth/login');
+        debug(error);
         return;
       }
       // Create req.session.user and save id and username
@@ -123,21 +124,22 @@ exports.create = function(req, res) {
 
       if (user.extra && user.extra.tfa && user.extra.tfa.enabled) {
         debug('--> two factor authentication enabled');
-        let secret = '';
-        if (user.extra.tfa.secret) {
-          secret = user.extra.tfa.secret;
-          debug('Loaded stored secret');
-        } else {
-          secret = Speakeasy.generateSecret({ length: 20, issuer: 'IdM' });
-        }
-        debug(secret);
 
-        // QR code module to generate a QR code that stores the data in secret.otpauth_url,
+        const secret = user.extra.tfa.secret;
+        debug('Loaded stored secret');
+        debug(secret);
+        const url = Speakeasy.otpauthURL({
+          secret,
+          label: user.username,
+          issuer: 'IdM',
+          encoding: 'base32',
+        });
+        //QR code module to generate a QR code that stores the data in secret.otpauth_url,
         //and then display the QR code to the user. This generates a PNG data URL.
-        Qrcode.toDataURL(secret.otpauth_url, function(err, data_url) {
+        Qrcode.toDataURL(url, function(err, data_url) {
           return res.render('auth/tfa', {
             user,
-            secret: secret.base32,
+            secret,
             qr: data_url,
             csrf_token: req.csrfToken(),
           });
@@ -175,7 +177,6 @@ exports.tfa_verify = function(req, res) {
   debug('--> verify token');
 
   const user_token = req.body.token;
-  debug(user_token);
   //Verify the token
   const verified = Speakeasy.totp.verify({
     secret: req.body.secret,
@@ -232,26 +233,7 @@ exports.tfa_verify = function(req, res) {
           req.session.user.admin = user.admin;
         }
 
-        //Store Secret
-        const user_extra = user.extra;
-        user_extra.tfa.secret = req.body.secret;
-        models.user
-          .update(
-            {
-              extra: user_extra,
-            },
-            {
-              where: { id: req.session.user.id },
-            }
-          )
-          .then(function() {
-            res.redirect('/idm');
-          })
-          .catch(function(error) {
-            debug('Error updating values of user ' + error);
-
-            res.redirect('/auth/login');
-          });
+        res.redirect('/idm');
       });
   } else {
     debug('Wrong token');

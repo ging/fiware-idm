@@ -386,11 +386,21 @@ exports.cancel_account = function(req, res) {
 exports.enable_tfa = function(req, res) {
   debug('--> enable_tfa');
   const errors = [];
-  const secret = Speakeasy.generateSecret({ length: 20, issuer: 'IdM' });
+  const secret = Speakeasy.generateSecret({
+    length: 20,
+    name: req.session.user.username,
+    issuer: 'IdM',
+  });
+  const url = Speakeasy.otpauthURL({
+    secret: secret.base32,
+    label: req.session.user.username,
+    issuer: 'IdM',
+    encoding: 'base32',
+  });
 
   // QR code module to generate a QR code that stores the data in secret.otpauth_url,
   //and then display the QR code to the user. This generates a PNG data URL.
-  Qrcode.toDataURL(secret.otpauth_url, function(err, data_url) {
+  Qrcode.toDataURL(url, function(err, data_url) {
     return res.render('settings/enable_tfa', {
       errors,
       user: req.session.user,

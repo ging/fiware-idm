@@ -429,27 +429,6 @@ exports.enable_tfa_verify = function(req, res) {
 
   // If the token is valid
   if (verified) {
-    // models.user
-    //   .find({
-    //     attributes: [
-    //       'id',
-    //       'username',
-    //       'salt',
-    //       'password',
-    //       'enabled',
-    //       'email',
-    //       'gravatar',
-    //       'image',
-    //       'admin',
-    //       'date_password',
-    //       'starters_tour_ended',
-    //       'extra',
-    //     ],
-    //     where: {
-    //       id: req.session.user.id,
-    //     },
-    //   })
-    //   .then(function(user) {
     //Store Secret
     const user = models.user.build(req.session.user);
     const user_extra = user.extra;

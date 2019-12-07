@@ -83,69 +83,12 @@
                     <a href="/idm/settings/enable_tfa" class="small"><span>Habilitar</span></a>
                   <%} else if (session.user.extra.tfa.enabled){%>
                     <p><%=translation.settings.settings.content01%><b>habilitada</b></p>
-                    <a href="/idm/settings/disable_tfa" class="small"><span>Habilitar</span></a>
-
-
+                    <a href="" class="ajax-modal" data-toggle="modal" data-target="#disable_tfa_modal" rel="nofollow">Deshabilitar</a>
 
                   <%}%>
                     <div id="result">
                     </div>
-                    <!--
-                    <script type="text/javascript">
 
-                        // Perform AJAX requests
-                        $("[name='enable'], [name='new_key']").click(function(e){
-                            e.preventDefault();
-                            /*// If there's an existing modal request open, cancel it out.
-                            if (horizon.modals._request && typeof(horizon.modals._request.abort) !== undefined) {
-                                horizon.modals._request.abort();
-                            }*/
-                            var $form = $("#two_factor_form"),
-                            data = $form.serialize() +
-                            "&" + $(this).attr("name").toLowerCase() +
-                            "=" + $(this).attr("name").toLowerCase();
-                            /*horizon.modals._request = */$.ajax({
-                                type: "POST",
-                                url: $form.attr('action'),
-                                data: data,
-                                dataType: 'html',
-                                //beforeSend: beforeSend,
-                                //complete: complete,
-                                success: function(data, textStatus, jqXHR){
-                                    if (data.search("<div class=\"alert alert-message alert-danger\">") === -1){
-                                        $form.closest(".modal").modal("hide");
-                                        //modal = horizon.modals.success(data, textStatus, jqXHR);
-                                    } else {
-                                        $form.closest(".modal").modal("hide");
-                                        $form.replaceWith(data)
-                                    }
-                                }/*,
-                            error: error*/ });
-                        });
-
-                        $("body").on("click", ".cancel_newkey", function(e){
-                            e.preventDefault();
-                            $.ajax({
-                                type: "POST",
-                                url: "/idm/settings/twofactor/disable/",
-                                dataType: 'html',
-                                beforeSend: beforeSend,
-                                complete: complete,
-                                success: function(data, textStatus, jqXHR){
-                                    location.reload(true);
-                                },
-                                error: error });
-                        });
-
-                        $(document).on("click", "#two_factor_enable_modal, [data-dismiss='modal']", function(e) {
-                            location.reload(true);
-                        });
-
-                        $(document).on("click", "#two_factor_enable_modal > .modal-dialog", function(e) {
-                            e.stopPropagation();
-                        });
-                    </script>
-                    -->
                 </div>
             </div>
 

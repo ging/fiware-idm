@@ -327,12 +327,11 @@ exports.update_info = function(req, res) {
   ) {
     req.body.user.description = null;
   }
+  const user_extra = req.session.user.extra ? req.session.user.extra : {};
 
-  const user_extra = user.extra ? user.extra : {};
   user_extra.identity_attributes = req.body.attributes;
 
   const visible_attributes = req.body.user.visible_attributes;
-  debug(visible_attributes);
 
   user_extra.visible_attributes = visible_attributes;
 

@@ -177,6 +177,8 @@ exports.tfa_verify = function(req, res) {
   debug('--> verify token');
 
   const user_token = req.body.token;
+  const temp_secret = req.body.secret;
+  const data_url = req.body.qr;
   //Verify the token
   const verified = Speakeasy.totp.verify({
     secret: req.body.secret,
@@ -184,28 +186,31 @@ exports.tfa_verify = function(req, res) {
     token: user_token,
     window: 0,
   });
-  if (verified) {
-    models.user
-      .find({
-        attributes: [
-          'id',
-          'username',
-          'salt',
-          'password',
-          'enabled',
-          'email',
-          'gravatar',
-          'image',
-          'admin',
-          'date_password',
-          'starters_tour_ended',
-          'extra',
-        ],
-        where: {
-          id: req.body.user_id,
-        },
-      })
-      .then(function(user) {
+  const errors = [];
+
+  //If the token is valid
+  models.user
+    .find({
+      attributes: [
+        'id',
+        'username',
+        'salt',
+        'password',
+        'enabled',
+        'email',
+        'gravatar',
+        'image',
+        'admin',
+        'date_password',
+        'starters_tour_ended',
+        'extra',
+      ],
+      where: {
+        id: req.body.user_id,
+      },
+    })
+    .then(function(user) {
+      if (verified) {
         // Create req.session.user and save id and username
         // The session is defined by the existence of: req.session.user
         let image = '/img/logos/small/user.png';
@@ -234,16 +239,18 @@ exports.tfa_verify = function(req, res) {
         }
 
         res.redirect('/idm');
-      });
-  } else {
-    debug('Wrong token');
-    //   res.render('auth/tfa', {
-    //     user: req.body.user,
-    //     secret: secret.base32,
-    //     qr: data_url,
-    //     csrf_token: req.csrfToken(),
-    //   });
-  }
+      } else {
+        errors.push('wrong_token');
+        debug('wrong_token');
+        res.render('auth/tfa', {
+          errors,
+          user,
+          csrf_token: req.body.csrf_token,
+          secret: temp_secret,
+          qr: data_url,
+        });
+      }
+    });
 };
 
 // GET /update_password -- Render settings/password view with a warn to indicate user to change password

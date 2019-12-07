@@ -18,7 +18,10 @@
         <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
             <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <input type='hidden' name='secret' value='<%= secret%>' />
-            <input type='hidden' name='user_id' value='<%=user.id%>' />
+            <input type='hidden' name='qr' value='<%= qr%>' />
+            <input type='hidden' name='user_id' value='<%= user.id%>' />
+
+
 
             <div class="modal-body clearfix">
                 <div class="form-group ">

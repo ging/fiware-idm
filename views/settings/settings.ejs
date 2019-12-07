@@ -88,10 +88,8 @@
                   <%}%>
                     <div id="result">
                     </div>
-
                 </div>
             </div>
-
         </div>
         <div class="panel panel-default cancel_account">
             <a data-toggle="collapse" data-parent="#accordion" href="#collapse-3" class="panel-heading collapsed">
@@ -109,6 +107,8 @@
 </div>
 
 <%- include _delete_user %>
+<%- include _disable_tfa %>
+
 <script src="/javascripts/users/handle_password_strength.js" type="text/javascript"></script>
 <script src="/javascripts/others/see_password.js" type="text/javascript"></script>
 

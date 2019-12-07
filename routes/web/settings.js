@@ -46,5 +46,11 @@ router.post(
   csrf_protection,
   web_setting_controller.enable_tfa_verify
 );
+router.delete(
+  '/disable_tfa',
+  web_session_controller.password_check_date,
+  csrf_protection,
+  web_setting_controller.disable_tfa
+);
 
 module.exports = router;

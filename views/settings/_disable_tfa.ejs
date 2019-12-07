@@ -1,0 +1,27 @@
+<!-- Form to cancel user application -->
+<div id="disable_tfa_modal" class="modal in" style="top: 0px;" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">×</a>
+                <h3>Deshabilitar autenticación en dos pasos</h3>
+            </div>
+            <form id="disable_tfa_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/settings/disable_tfa?_method=delete" method="POST" enctype="">
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+                <div class="modal-body clearfix">
+                    <div class="left">
+                        <fieldset>
+                        </fieldset>
+                    </div>
+                    <div class="right">
+                        <p>CANCELAR</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="<%=translation.settings.delete_user.confirm_btn%>">
+                    <button data-dismiss="modal" class="btn btn-default secondary cancel"><%=translation.settings.delete_user.cancel_btn%></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

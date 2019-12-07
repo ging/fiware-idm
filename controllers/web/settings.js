@@ -471,3 +471,63 @@ exports.enable_tfa_verify = function(req, res) {
     });
   }
 };
+// POST /idm/settings/enable_tfa_verify -- Verify elements for tfa
+exports.disable_tfa = function(req, res) {
+  debug('--> enable_tfa_verify');
+  const user_token = req.body.token;
+  const temp_secret = req.body.secret;
+  const data_url = req.body.qr;
+
+  //Verify the token
+  const verified = Speakeasy.totp.verify({
+    secret: req.body.secret,
+    encoding: 'base32',
+    token: user_token,
+    window: 0,
+  });
+  const errors = [];
+
+  // If the token is valid
+  if (verified) {
+    //Store Secret
+    const user = models.user.build(req.session.user);
+    const user_extra = user.extra;
+    user_extra.tfa = {
+      question: req.body.security_question,
+      answer: req.body.security_answer,
+      enabled: true,
+      secret: req.body.secret,
+    };
+
+    models.user
+      .update(
+        {
+          extra: user_extra,
+        },
+        {
+          where: { id: req.session.user.id },
+        }
+      )
+      .then(function() {
+        res.render('settings/settings', {
+          csrf_token: req.csrfToken(),
+        });
+      })
+      .catch(function(error) {
+        debug('Error updating values of user ' + error);
+
+        res.redirect('/');
+      });
+    // });
+  } else {
+    errors.push('wrong_token');
+    debug('wrong_token');
+
+    res.render('settings/enable_tfa', {
+      errors,
+      csrf_token: req.csrfToken(),
+      secret: temp_secret,
+      qr: data_url,
+    });
+  }
+};

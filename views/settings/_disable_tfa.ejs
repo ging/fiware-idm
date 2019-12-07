@@ -6,7 +6,7 @@
                 <a href="#" class="close" data-dismiss="modal">×</a>
                 <h3>Deshabilitar autenticación en dos pasos</h3>
             </div>
-            <form id="disable_tfa_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/settings/disable_tfa?_method=delete" method="POST" enctype="">
+            <form id="disable_tfa_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/settings/disable_tfa" method="POST" enctype="">
                 <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <div class="modal-body clearfix">
                     <div class="left">
@@ -14,7 +14,8 @@
                         </fieldset>
                     </div>
                     <div class="right">
-                        <p>CANCELAR</p>
+                        <p>¿Estás seguro? Al deshabilitar esta opción deberás proporcionar una nueva pregunta y respuesta
+                          y se generará un nuevo secreto.</p>
                     </div>
                 </div>
                 <div class="modal-footer">

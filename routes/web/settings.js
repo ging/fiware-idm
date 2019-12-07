@@ -46,7 +46,7 @@ router.post(
   csrf_protection,
   web_setting_controller.enable_tfa_verify
 );
-router.delete(
+router.post(
   '/disable_tfa',
   web_session_controller.password_check_date,
   csrf_protection,

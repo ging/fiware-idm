@@ -14,6 +14,8 @@
         <p>3. Escanea el código QR o introduce la clave secreta.</p>
         <p>4. Introduce debajo el token proporcionado por la app.</p>
       </span>
+      <div class="container">
+
         <div class="card card-container">
           <form accept-charset="UTF-8" autocomplete="off" action="/idm/settings/enable_tfa_verify" id="two_factor_form" method="post" class="ng-pristine ng-valid">
             <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
@@ -52,5 +54,6 @@
             </div>
           </form>
         </div>
+      </div>
   </div>
 </div>

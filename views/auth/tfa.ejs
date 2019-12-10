@@ -1,43 +1,86 @@
 <div class="tfa">
-<div class="container">
-  <div class="card card-container">
-    <div class="modal-header">
-        <h3>To finish the sign in process: </h3>
-    </div>
-    <div >
-      <span >
-        <p>1. Open the Google Authenticator app in your phone.</p>
-        <p>2. Scan the QR code or enter the secret key.</p>
-        <p>3. Introduce below the provided token. </p>
-        <p>In case you cant use the app, click de link below</p>
-        <div class="actions">
-            <a href="#">Pregunta de seguridad </a>
+  <div class="modal-header">
+    <h3>Para finalizar el proceso de acceso: </h3>
+  </div>
+  <div class="container">
+    <div id="card card-container">
+
+      <div class="row">
+        <div class="col-sm-6" id = "tfa_info">
+          <img src=<%=qr%> alt="Secreto del usuario" id="qr">
+          <p>Secret Key - <%=secret%></p>
         </div>
-        <img src=<%=qr%> alt="">
-        <p>Secret Key - <%=secret%></p>
-        <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
-            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-            <input type='hidden' name='secret' value='<%= secret%>' />
-            <input type='hidden' name='qr' value='<%= qr%>' />
-            <input type='hidden' name='user_id' value='<%= user.id%>' />
+        <div class="col-sm-6" >
+          <span>
+            <p>1. Abre la app Google Authenticator en tu smartphone. </p>
+            <p>2. Escanea el código QR o introduce la clave secreta. </p>
+            <p>3. Introduce debajo el token proporcionado por la app. </p>
+            <p>En caso de que no puedas usar la app, haz click en el enlace para que se muestre tu pregunta de seguridad.</p>
+          </span>
+          <div class="actions">
+            <a href="javascript:showQuestion();" id="toggle_ref1" >Registrarse con pregunta de seguridad </a>
+            <a href="javascript:showQuestion();" id="toggle_ref2" style="display: none">Registrarse con token</a>
 
-
-
-            <div class="modal-body clearfix">
-                <div class="form-group ">
-                    <label class="control-label" for="token">Token</label>
-                    <div class=" ">
-                        <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" placeholder="Enter de authorizatioon code" required/>
-                    </div>
-                </div>
+          </div>
+        </div>
+      </div>
+      <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+        <input type='hidden' name='secret' value='<%= secret%>' />
+        <input type='hidden' name='qr' value='<%= qr%>' />
+        <input type='hidden' name='user_id' value='<%= user.id%>' />
+        <div class="modal-body clearfix">
+        <div class="form-group" id="token_form">
+            <label class="control-label" for="token">Token</label>
+            <div class=" ">
+              <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" placeholder="Inserta el token" required/>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary pull-right"><%=translation.auth.login.loginin_btn%></button>
-
+            <% if (errors.includes('wrong_token')) { -%>
+                <span class="help-block alert alert-danger ">La verificación ha fallado porque la respuesta o el token introducido no son válidos.
+                   Por favor revisa la fecha y hora del sistema y vuelva a intentarlo.</span>
+            <% } -%>
+        </div>
+        <div class="form-group" id="question_form" style="display: none">
+            <label class="control-label" for="token">Pregunta de seguridad: <%=user.extra.tfa.question%></label>
+            <div class=" ">
+              <input autofocus="autofocus" class="form-control" id="security_answer" name="security_answer" type="text" autocomplete="off" placeholder="Inserta tu respuesta"/>
             </div>
-        </form>
-      </span>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary pull-right"><%=translation.auth.login.loginin_btn%></button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
-</div>
+
+<script type="text/javascript">
+function showQuestion() {
+  var div_token = document.getElementById("token_form");
+  var token_input = document.getElementById("token");
+  var answer_input = document.getElementById("security_answer")
+  var div_info = document.getElementById("tfa_info");
+  var div_question = document.getElementById("question_form");
+  var a_question = document.getElementById("toggle_ref1");
+  var a_token = document.getElementById("toggle_ref2");
+
+  //If user chooses to log in with security question
+  if (div_token.style.display === "none") {
+    div_token.style.display = "block";
+    div_question.style.display = "none";
+    a_question.style.display = "block";
+    a_token.style.display = "none";
+  } else {
+    div_token.style.display = "none";
+    div_question.style.display = "block";
+    a_question.style.display = "none";
+    a_token.style.display = "block";
+
+    token_input.required = false;
+    answer_input.required = true;
+    // div_info.style.display = "none";
+  }
+}
+
+</script>

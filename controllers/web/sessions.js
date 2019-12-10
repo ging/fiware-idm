@@ -139,6 +139,7 @@ exports.create = function(req, res) {
         Qrcode.toDataURL(url, function(err, data_url) {
           return res.render('auth/tfa', {
             user,
+            errors,
             secret,
             qr: data_url,
             csrf_token: req.csrfToken(),
@@ -177,6 +178,7 @@ exports.tfa_verify = function(req, res) {
   debug('--> verify token');
 
   const user_token = req.body.token;
+  const user_answer = req.body.security_answer;
   const temp_secret = req.body.secret;
   const data_url = req.body.qr;
   //Verify the token
@@ -186,6 +188,7 @@ exports.tfa_verify = function(req, res) {
     token: user_token,
     window: 0,
   });
+
   const errors = [];
 
   //If the token is valid
@@ -210,7 +213,13 @@ exports.tfa_verify = function(req, res) {
       },
     })
     .then(function(user) {
-      if (verified) {
+      let verified_answer = false;
+
+      if (user_answer === user.extra.tfa.answer) {
+        verified_answer = true;
+      }
+
+      if (verified || verified_answer) {
         // Create req.session.user and save id and username
         // The session is defined by the existence of: req.session.user
         let image = '/img/logos/small/user.png';

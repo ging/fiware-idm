@@ -40,10 +40,8 @@
             <h4 tabindex="5"><i class="fa fa-question-circle"></i><span>Ayuda</span></h4>
           </a>
         </li>
-        <!--
-
-<hr>
-<li>
+        <!--<hr>
+        <li>
         <a href="/idm/organizations" class="organizations">
           <h4 tabindex="6"><i class="fa"></i><span><%=translation.navigation.menu_item02%></span></h4>
         </a>
@@ -54,23 +52,23 @@
         </a>
         </li> -->
         <%if(session.user.admin) {%>
-          <h5>
+          <!-- <h5>
             <span class="hidden-xs hidden-sm"></span>
             <span class="visible-sm"> </span>
-          </h5>
+          </h5> -->
             <li>
-            <a href="/idm/admins/notify" class="notify">
-              <h4 tabindex="1"><i class="fa"></i><span><%=translation.navigation.menu_item04%></span></h4>
+            <a href="/idm/admins/notify" class="notify_">
+              <h4 tabindex="6"><i class="fa fa-comment"></i><span><%=translation.navigation.menu_item04%></span></h4>
             </a>
             </li>
             <li>
-            <a href="/idm/admins/administrators" class="administrators">
-              <h4 tabindex="2"><i class="fa"></i><span><%=translation.navigation.menu_item05%></span></h4>
+            <a href="/idm/admins/administrators" class="admins">
+              <h4 tabindex="2"><i class="fa fa-user-lock"></i><span><%=translation.navigation.menu_item05%></span></h4>
             </a>
             </li>
             <li>
-            <a href="/idm/admins/list_users" class="list_users">
-              <h4 tabindex="3"><i class="fa"></i><span><%=translation.navigation.menu_item06%></span></h4>
+            <a href="/idm/admins/list_users" class="list_users_">
+              <h4 tabindex="3"><i class="fa fa-user"></i><span><%=translation.navigation.menu_item06%></span></h4>
             </a>
             </li>
         <%}%>

@@ -178,10 +178,39 @@
     background-color: #dff0d8;
     border-color: #d0e9c6;
   }
+}
 
-  .modal-header h3 {
+
+
+#disable_tfa_modal{
+
+  h3 {
     font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
     font-style: normal;
     font-weight: normal;
+  }
+  p {
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+  }
+  input {
+    font-family: 'Rubik', sans-serif, "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    border: 0px;
+  }
+  button {
+    font-family: 'Rubik', sans-serif, "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    border: 0px;
+    color: #333333;
   }
 }

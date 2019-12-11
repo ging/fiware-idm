@@ -36,10 +36,7 @@
             <div class=" ">
               <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" required/>
             </div>
-            <% if (errors.includes('wrong_token')) { -%>
-                <span class="help-block alert alert-danger ">La verificación ha fallado porque la respuesta o el token introducido no son válidos.
-                   Por favor revisa la fecha y hora del sistema y vuelva a intentarlo.</span>
-            <% } -%>
+
         </div>
         <div class="form-group" id="question_form" style="display: none">
             <label class="control-label" for="token">Inserta tu respuesta: </label>
@@ -47,6 +44,10 @@
               <input autofocus="autofocus" class="form-control" id="security_answer" name="security_answer" type="text" autocomplete="off"/>
             </div>
         </div>
+        <% if (errors.includes('wrong_token')) { -%>
+            <span class="help-block alert alert-danger ">La verificación ha fallado porque la respuesta o el token introducido no son válidos.
+               Por favor revisa la fecha y hora del sistema y vuelva a intentarlo.</span>
+        <% } -%>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary pull-right">Acceder</button>
@@ -77,7 +78,8 @@ function showQuestion() {
     a_token.style.display = "none";
     security_question.style.display = "none";
     secret_key.style.display = "block";
-
+    token_input.required = true;
+    answer_input.required = false;
   } else {
     div_token.style.display = "none";
     div_question.style.display = "block";

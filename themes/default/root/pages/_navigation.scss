@@ -28,8 +28,8 @@
       }
       .sidebar ul{
         display: flex;
-        justify-content: space-between;
-        overflow: scroll;
+        justify-content: center;
+        // overflow: scroll;
         overflow-y: hidden;
         white-space: nowrap;
         height: 100%;
@@ -42,12 +42,15 @@
       .sidebar ul a.privacy,
       .sidebar ul a.accounts,
       .sidebar ul a.help,
+      .sidebar ul a.notify_,
+      .sidebar ul a.admins,
+      .sidebar ul a.list_users_,
       .sidebar ul a.active
       {
         float: left;
         display: inline-block;
-        // border-right: 1px solid #A9A9A9;
-        // border-left: 1px solid #A9A9A9;
+        border-right: 1px solid #A9A9A9;
+        border-left: 1px solid #A9A9A9;
         padding: 0 1.5rem;
         line-height: 42px;
         // display: block;
@@ -59,7 +62,11 @@
       .sidebar ul a.edit h4 span,
       .sidebar ul a.privacy h4 span,
       .sidebar ul a.accounts h4 span,
-      .sidebar ul a.help h4 span{
+      .sidebar ul a.help h4 span,
+      .sidebar ul a.notify_ h4 span,
+      .sidebar ul a.admins h4 span,
+      .sidebar ul a.list_users_ h4 span,
+      {
         display: none !important;
       }
       li a.active{

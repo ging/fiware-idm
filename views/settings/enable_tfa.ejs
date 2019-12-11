@@ -2,14 +2,14 @@
   <div id="enable_tfa_page">
 
   <div class="page-header">
-    <h2>Two Factor Authentication</h2>
+    <h2>AUTENTICACIÓN DE DOBLE FACTOR</h2>
   </div>
   <div class="panel-group settings" id="accordion">
     <% if (errors.includes('wrong_token')) { -%>
         <span class="help-block alert alert-danger ">La verificación ha fallado porque el token introducido no es válido.
            Por favor revisa la fecha y hora del sistema y vuelva a intentarlo.</span>
     <% } -%>
-      <p>Si quieres darle una oportunidad a la autenticación en dos pasos, necesitas seguir los siguientes pasos.</p>
+      <p>Si quieres darle una oportunidad a la autenticación en dos pasos, necesitas seguir los siguientes pasos:</p><br>
       <span >
       </span>
         <div class="card card-container">
@@ -29,7 +29,7 @@
                 <div class=" ">
                   <input class="form-control" id="id_security_answer" name="security_answer" type="text" required>
                 </div>
-              </div>
+              </div><br>
               <p>2. Abre la app Google Authenticator en tu smartphone.</p>
               <p>3. Escanea el código QR o introduce la clave secreta.</p>
               <p>4. Introduce debajo el token proporcionado por la app.</p>

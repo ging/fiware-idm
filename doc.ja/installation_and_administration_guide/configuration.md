@@ -149,10 +149,10 @@ config.cors = {
 Keyrock のいくつかの機能を設定できます。それらのほとんどはトークンの寿命に関連し
 ています。
 
--   Allow Empty State. If you enable this feature, is not necessary that the
-    service include the paramter state in the URL as a query string. The state
-    parameter is used to protect against XSRF, so in case of doubt set this
-    value to the default one (false).
+-   空の状態 (Empty State) を許可します。この機能を有効にする場合、サービスがクエ
+    リ文字列として URL にパラメータの状態を含める必要はありません。state パラメー
+    タは XSRF から保護するために使用されるため、疑わしい場合はこの値をデフォルト
+    値 (false) に設定します
 
 -   認証コード (Authorization code)。アクセス・トークン、およびリフレッシュ・ ト
     ークンの有効期間を簡単に変更できます。この値のいずれかを変更すると、 Keyrock

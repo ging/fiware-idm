@@ -1,36 +1,15 @@
 branches:
   only:
     - master
+    
+addons:
+  apt:
+    packages:
+      - build-essential
+      - python
 
 jobs:
   include:
-    - stage: test
-      name: "Unit Tests: Node 8"
-      language: node_js
-      sudo: required
-      dist: xenial
-
-      node_js:
-        - "8"
-
-      services:
-        - mysql
-
-      install:
-        - npm install
-
-      before_install:
-        - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
-        - sudo mysql_upgrade -u root -ptest
-        - sudo service mysql restart
-        - cp test/config_test.js.template config.js
-
-      before_script:
-        - npm run lint
-
-      after_script:
-        - npm run test:coveralls
-
     - stage: test
       name: "Unit Tests: Node 10"
       language: node_js
@@ -57,6 +36,33 @@ jobs:
 
       after_script:
         - npm run test:coveralls
+
+#    - stage: test
+#      name: "Unit Tests: Node 12"
+#      language: node_js
+#      sudo: required
+#      dist: xenial
+#
+#      node_js:
+#        - "12"
+#
+#      services:
+#        - mysql
+#
+#      install:
+#        - npm install
+#
+#      before_install:
+#        - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+#        - sudo mysql_upgrade -u root -ptest
+#        - sudo service mysql restart
+#        - cp test/config_test.js.template config.js
+#
+#      before_script:
+#        - npm run lint
+#
+#      after_script:
+#        - npm run test:coveralls
 
     - stage: test
       name: "Documentation Tests"

@@ -376,8 +376,8 @@
       "label05": "アバターとして使用したい画像の部分を選択してください。",
       "crop_btn": "トリミングして使用",
       "cancel_btn": "中止",
-      "label06": "Identity attributes",
-      "warning": "Note: These attributes will be included in your public information provided to applications if you consent their use."
+      "label06": "アイデンティティー属性",
+      "warning": "注：これらの属性は、使用に同意した場合にアプリケーションに提供される公開情報に含まれます。"
     },
     "new_user": {
       "title": "登録",
@@ -928,33 +928,33 @@
   },
   "errors": {
     "saml": {
-      "title01": "ops! something went wrong!",
-      "content01": "contact with the administrators of",
-      "content02": "your web service provider",
-      "content03": "and send your",
-      "content04": "error details",
-      "title02": "Saml2 request has failed!",
-      "content05": "error",
-      "content06": "internal error"
+      "title01": "何かが間違っています！",
+      "content01": "Web サービス・プロバイダーの",
+      "content02": "管理者に連絡を取り、",
+      "content03": "エラーの詳細を",
+      "content04": "送ってください",
+      "title02": "Saml2 リクエストが失敗しました！",
+      "content05": "エラー",
+      "content06": "内部エラー"
     },
     "oauth": {
-      "title01": "ops! something went wrong!",
-      "content01": "contact with the administrators of",
-      "content02": "your web service provider",
-      "content03": "and send your",
-      "content04": "error details",
-      "title02": "OAuth2 request has failed!",
-      "content05": "error",
-      "content06": "internal error",
-      "content07": "(required)"
+      "title01": "何かが間違っています！",
+      "content01": "Web サービス・プロバイダーの",
+      "content02": "管理者に連絡を取り、",
+      "content03": "エラーの詳細を",
+      "content04": "送ってください",
+      "title02": "OAuth2 リクエストが失敗しました！",
+      "content05": "エラー",
+      "content06": "内部エラー",
+      "content07": "(必須)"
     },
     "not_found": {
-      "title01": "the page you have requested not exist",
-      "content01": "Go back to the",
-      "content02": "Homepage"
+      "title01": "リクエストしたページは存在しません",
+      "content01": "ホームページに",
+      "content02": "戻る"
     },
     "generic": {
-      "content01": "Code"
+      "content01": "コード"
     }
   }
 }

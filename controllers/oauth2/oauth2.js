@@ -48,8 +48,15 @@ exports.response_type_required = function(req, res, next) {
 
   if (
     req.query.response_type &&
-    (req.query.response_type === 'code' || req.query.response_type === 'token')
+    (req.query.response_type === 'code' ||
+      req.query.response_type === 'id_token' ||
+      req.query.response_type === 'id_token token' ||
+      req.query.response_type === 'code id_token' ||
+      req.query.response_type === 'code token' ||
+      req.query.response_type === 'code id_token token' ||
+      req.query.response_type === 'none')
   ) {
+    debug(' -->' + req.query.response_type);
     next();
   } else {
     const text = 'Invalid response_type';

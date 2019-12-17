@@ -432,6 +432,7 @@ exports.enable_tfa_verify = function(req, res) {
     //Store Secret
     const user = models.user.build(req.session.user);
     const user_extra = user.extra;
+
     user_extra.tfa = {
       question: req.body.security_question,
       answer: req.body.security_answer,
@@ -471,7 +472,7 @@ exports.enable_tfa_verify = function(req, res) {
     });
   }
 };
-// POST /idm/settings/enable_tfa_verify -- Verify elements for tfa
+// POST /idm/settings/disable_tfa_verify -- DIsable tfa
 exports.disable_tfa = function(req, res) {
   debug('--> disable_tfa');
 

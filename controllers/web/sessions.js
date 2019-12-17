@@ -125,26 +125,47 @@ exports.create = function(req, res) {
       if (user.extra && user.extra.tfa && user.extra.tfa.enabled) {
         debug('--> two factor authentication enabled');
 
-        const secret = user.extra.tfa.secret;
-        debug('Loaded stored secret');
-        debug(secret);
-        const url = Speakeasy.otpauthURL({
-          secret,
-          label: user.username,
-          issuer: 'IdM',
-          encoding: 'base32',
-        });
-        //QR code module to generate a QR code that stores the data in secret.otpauth_url,
-        //and then display the QR code to the user. This generates a PNG data URL.
-        Qrcode.toDataURL(url, function(err, data_url) {
-          return res.render('auth/tfa', {
-            user,
-            errors,
+        const user_agent = req.headers['user-agent'];
+        debug(user_agent);
+
+        if (user.extra.tfa.user_agent === user_agent) {
+          debug('-->familiar device');
+          req.session.user = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            image,
+            change_password: user.date_password,
+            starters_tour_ended: user.starters_tour_ended,
+            extra: user.extra,
+          };
+          // If user is admin add parameter to session
+          if (user.admin) {
+            req.session.user.admin = user.admin;
+          }
+          res.redirect('/idm');
+        } else {
+          const secret = user.extra.tfa.secret;
+          debug('Loaded stored secret');
+          debug(secret);
+          const url = Speakeasy.otpauthURL({
             secret,
-            qr: data_url,
-            csrf_token: req.csrfToken(),
+            label: user.username,
+            issuer: 'IdM',
+            encoding: 'base32',
           });
-        });
+          //QR code module to generate a QR code that stores the data in secret.otpauth_url,
+          //and then display the QR code to the user. This generates a PNG data URL.
+          Qrcode.toDataURL(url, function(err, data_url) {
+            return res.render('auth/tfa', {
+              user,
+              errors,
+              secret,
+              qr: data_url,
+              csrf_token: req.csrfToken(),
+            });
+          });
+        }
       } else {
         // In case that the user does not use the tfa, create session
         debug('--> two factor authentication disabled');
@@ -232,6 +253,18 @@ exports.tfa_verify = function(req, res) {
         } else if (user.image !== 'default') {
           image = '/img/users/' + user.image;
         }
+        //Store device
+        const user_extra = user.extra;
+        const user_agent = req.headers['user-agent'];
+        user_extra.tfa.user_agent = user_agent;
+        models.user.update(
+          {
+            extra: user_extra,
+          },
+          {
+            where: { id: user.id },
+          }
+        );
         //Create session
         req.session.user = {
           id: user.id,
@@ -240,7 +273,7 @@ exports.tfa_verify = function(req, res) {
           image,
           change_password: user.date_password,
           starters_tour_ended: user.starters_tour_ended,
-          extra: user.extra,
+          extra: user_extra,
         };
         // If user is admin add parameter to session
         if (user.admin) {

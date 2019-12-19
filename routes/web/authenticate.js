@@ -20,6 +20,8 @@ router.post(
   web_session_controller.create
 );
 
+router.post('/security_question', web_session_controller.security_question);
+
 router.post('/tfa_verify', web_session_controller.tfa_verify);
 
 router.delete(

@@ -1,0 +1,85 @@
+<div id="tfa_page">
+  <div class="modal-header">
+    <h3>Registrarse con pregunta de seguridad: </h3>
+  </div>
+  <div class="container">
+    <div id="card card-container">
+      <div class="row">
+
+          <span>
+            <p>Has elegido acceder a tu perfil mediante la pregunta de seguridad.
+              ¡ATENCIÓN!
+              Si continúas, la autenticación de doble factor se deshabilitará y deberás habilitarla de nuevo en tus ajustes.
+              </p>
+          </span>
+
+      </div>
+      <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+        <input type='hidden' name='user_id' value='<%= user.id%>' />
+        <input type='hidden' name='login_security_question' value=true />
+        <div class="modal-body clearfix">
+        <div class="form-group" id="question_form" >
+          <div class=" ">
+            <label class="control-label" for="token">Inserta tu pregunta: </label>
+              <input autofocus="autofocus" class="form-control" id="security_question" name="security_question" type="text" autocomplete="off" required/>
+              <br>
+              <label class="control-label" for="token">Inserta tu respuesta: </label>
+
+              <input autofocus="autofocus" class="form-control" id="security_answer" name="security_answer" type="text" autocomplete="off" required/>
+            </div>
+        </div>
+        <% if (errors.includes('wrong_question')) { -%>
+            <span class="help-block alert alert-danger ">La verificación ha fallado porque la pregunta introducidano es correcta.
+               Por favor vuelva a intentarlo.</span>
+        <% } -%>
+        <% if (errors.includes('wrong_answer')) { -%>
+            <span class="help-block alert alert-danger ">La verificación ha fallado porque la respuesta introducidano es correcta.
+               Por favor vuelva a intentarlo.</span>
+        <% } -%>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary pull-right">Acceder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- <script type="text/javascript">
+function showQuestion() {
+  var div_token = document.getElementById("token_form");
+  var token_input = document.getElementById("token");
+  var answer_input = document.getElementById("security_answer")
+  var div_info = document.getElementById("tfa_info");
+  var div_question = document.getElementById("question_form");
+  var a_question = document.getElementById("toggle_ref1");
+  var a_token = document.getElementById("toggle_ref2");
+  var security_question = document.getElementById("security_question");
+  var secret_key = document.getElementById("secret_key");
+
+
+  //If user chooses to log in with security question
+  if (div_token.style.display === "none") {
+    div_token.style.display = "block";
+    div_question.style.display = "none";
+    a_question.style.display = "block";
+    a_token.style.display = "none";
+    security_question.style.display = "none";
+    secret_key.style.display = "block";
+    token_input.required = true;
+    answer_input.required = false;
+  } else {
+    div_token.style.display = "none";
+    div_question.style.display = "block";
+    a_question.style.display = "none";
+    a_token.style.display = "block";
+    security_question.style.display = "block"
+    secret_key.style.display = "none";
+
+    token_input.required = false;
+    answer_input.required = true;
+    // div_info.style.display = "none";
+  }
+}
+</script> -->

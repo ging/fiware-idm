@@ -17,81 +17,61 @@
             <p>1. Abre la app Google Authenticator en tu smartphone. </p>
             <p>2. Escanea el código QR o introduce la clave secreta. </p>
             <p>3. Introduce debajo el token proporcionado por la app. </p>
-            <p>En caso de que no puedas usar la app, haz click en el enlace para que se muestre tu pregunta de seguridad.</p>
-          </span>
-          <div class="actions">
-            <a href="javascript:showQuestion();" id="toggle_ref1" >Registrarse con pregunta de seguridad </a>
-            <a href="javascript:showQuestion();" id="toggle_ref2" style="display: none">Registrarse con token</a>
+            <p>4. Si este dispositivo es de confanza, marca la opción para que la plataforma lo recuerde. </p>
+            <p>En caso de que no puedas usar la app, podrás acceder a tu perfil mediante tu pregunta de seguridad haciendo
+              click en el siguiente enlace.
+              ¡ATENCIÓN! Esto deshabilitará la autenticación de doble factor.</p>
+            </span>
+            <div class="actions">
+              <form method="GET" action="/Controller?action=add">
+              </form>
+              <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/security_question" method="POST" enctype="">
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+                <input type='hidden' name='user_id' value='<%= user.id%>' />
+                <input type='hidden' name='login_security_question' value=true />
+
+                <input type="submit" id="security_question_button" class="btn btn-primary" value="Registrarse con pregunta de seguridad"/>
+              </form>
+              <!-- <a href="javascript:showQuestion();" id="toggle_ref1" >Registrarse con pregunta de seguridad </a>
+              <a href="javascript:showQuestion();" id="toggle_ref2" style="display: none">Registrarse con token</a> -->
+            </div>
           </div>
         </div>
-      </div>
-      <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
-        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-        <input type='hidden' name='secret' value='<%= secret%>' />
-        <input type='hidden' name='qr' value='<%= qr%>' />
-        <input type='hidden' name='user_id' value='<%= user.id%>' />
-        <div class="modal-body clearfix">
-        <div class="form-group" id="token_form">
-            <label class="control-label" for="token">Inserta el token: </label>
-            <div class=" ">
-              <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" required/>
+        <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
+          <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+          <input type='hidden' name='secret' value='<%= secret%>' />
+          <input type='hidden' name='qr' value='<%= qr%>' />
+          <input type='hidden' name='user_id' value='<%= user.id%>' />
+          <div class="modal-body clearfix">
+            <div class="form-group" id="token_form">
+              <label class="control-label" for="token">Inserta el token: </label>
+              <div class=" ">
+                <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" required/>
+              </div>
+
             </div>
-
-        </div>
-        <div class="form-group" id="question_form" style="display: none">
-            <label class="control-label" for="token">Inserta tu respuesta: </label>
-            <div class=" ">
-              <input autofocus="autofocus" class="form-control" id="security_answer" name="security_answer" type="text" autocomplete="off"/>
+            <div class="form-group" id="question_form" style="display: none">
+              <label class="control-label" for="token">Inserta tu respuesta: </label>
+              <div class=" ">
+                <input autofocus="autofocus" class="form-control" id="security_answer" name="security_answer" type="text" autocomplete="off"/>
+              </div>
             </div>
+            <% if (errors.includes('wrong_token')) { -%>
+              <span class="help-block alert alert-danger ">La verificación ha fallado porque el token introducido no es válido.
+                Por favor revise la fecha y hora del sistema y vuelva a intentarlo.</span>
+                <% } -%>
+              </div>
+              <div class="modal-footer" id="tfa_footer">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="remember_device" value=true>
+                    <span class="lbl padding-0">Recordar dispositivo
+                    </span>
+                    </label>
+                  </div>
+                  <button type="submit" class="btn btn-primary pull-right">Acceder</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <% if (errors.includes('wrong_token')) { -%>
-            <span class="help-block alert alert-danger ">La verificación ha fallado porque la respuesta o el token introducido no son válidos.
-               Por favor revisa la fecha y hora del sistema y vuelva a intentarlo.</span>
-        <% } -%>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary pull-right">Acceder</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<script type="text/javascript">
-function showQuestion() {
-  var div_token = document.getElementById("token_form");
-  var token_input = document.getElementById("token");
-  var answer_input = document.getElementById("security_answer")
-  var div_info = document.getElementById("tfa_info");
-  var div_question = document.getElementById("question_form");
-  var a_question = document.getElementById("toggle_ref1");
-  var a_token = document.getElementById("toggle_ref2");
-  var security_question = document.getElementById("security_question");
-  var secret_key = document.getElementById("secret_key");
-
-
-  //If user chooses to log in with security question
-  if (div_token.style.display === "none") {
-    div_token.style.display = "block";
-    div_question.style.display = "none";
-    a_question.style.display = "block";
-    a_token.style.display = "none";
-    security_question.style.display = "none";
-    secret_key.style.display = "block";
-    token_input.required = true;
-    answer_input.required = false;
-  } else {
-    div_token.style.display = "none";
-    div_question.style.display = "block";
-    a_question.style.display = "none";
-    a_token.style.display = "block";
-    security_question.style.display = "block"
-    secret_key.style.display = "none";
-
-    token_input.required = false;
-    answer_input.required = true;
-    // div_info.style.display = "none";
-  }
-}
-
-</script>

@@ -667,6 +667,10 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
     const search_trusted_apps = trusted_applications(req_app);
     promise_array.push(search_trusted_apps);
 
+    // Insert search trusted applications promise
+    const search_trusted_apps2 = trusted_applications(user_info.app_id);
+    promise_array.push(search_trusted_apps2);
+
     // Insert search search roles promise
     const search_roles = user_roles(user_info.id, user_info.app_id);
     promise_array.push(search_roles);
@@ -686,7 +690,10 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
     Promise.all(promise_array)
       .then(function(values) {
         const trusted_apps = values[0];
-        const roles = values[1];
+        values[1].forEach(app => {
+          if (! trusted_apps.includes(app)) trusted_apps.push(app);
+        })
+        const roles = values[2];
 
         if (req_app) {
           if (req_app !== user_info.app_id) {
@@ -701,13 +708,13 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
         }
 
         if (action && resource) {
-          if (values[2] && values[2].length > 0) {
+          if (values[3] && values[3].length > 0) {
             user_info.authorization_decision = 'Permit';
           } else {
             user_info.authorization_decision = 'Deny';
           }
         } else if (config_authzforce.enabled && authzforce) {
-          const authzforce_domain = values[2];
+          const authzforce_domain = values[3];
           if (authzforce_domain) {
             user_info.app_azf_domain = authzforce_domain.az_domain;
           }

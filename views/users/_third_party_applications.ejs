@@ -42,6 +42,8 @@
                   <input type='hidden' name='app_name' value='<%=applications[i].name%>' />
                       <p class="app-data">Tiene acceso a: <%= applications[i].shared_attributes%></p>
                       <p class="app-data">Acceso concedido: <%= applications[i].login_date%></p>
+                      <p id ="date" hidden><%= applications[i].login_date%></p>
+                      <p class="app-data" id ="show_date"></p>
                 </div>
               </div>
             </div>
@@ -77,22 +79,30 @@
 
 
 
-        <script type="text/javascript">
-          $('.panel-title a:first-child').mouseover(function(){
-            $(this).children().toggleClass('fa-rotate-180');
-          });
-          $('.panel-title a:first-child').mouseleave(function(){
-            if ($(this).hasClass('collapsed')){
-              $(this).children().removeClass('fa-rotate-180');
-            } else {
-              $(this).children().addClass('fa-rotate-180');
-            }
-          });
-          $('.panel-title a:first-child').click(function(){
-            if ($(this).hasClass('collapsed')){
-              $(this).children().addClass('fa-rotate-180');
-            } else {
-              $(this).children().removeClass('fa-rotate-180');
-            }
-          });
-        </script>
+<script type="text/javascript">
+  $('.panel-title a:first-child').mouseover(function(){
+    $(this).children().toggleClass('fa-rotate-180');
+  });
+  $('.panel-title a:first-child').mouseleave(function(){
+    if ($(this).hasClass('collapsed')){
+      $(this).children().removeClass('fa-rotate-180');
+    } else {
+      $(this).children().addClass('fa-rotate-180');
+    }
+  });
+  $('.panel-title a:first-child').click(function(){
+    if ($(this).hasClass('collapsed')){
+      $(this).children().addClass('fa-rotate-180');
+    } else {
+      $(this).children().removeClass('fa-rotate-180');
+    }
+  });
+</script>
+
+<!-- <script>
+var d = document.getElementById("date").textContent;
+console.log(d);
+var date = new Date(d);
+console.log(date);
+document.getElementById("show_date").innerHTML = "Acceso concedido: " + date.toDateString();
+</script> -->

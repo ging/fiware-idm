@@ -387,7 +387,7 @@ exports.enable_tfa = function(req, res) {
   debug('--> enable_tfa');
   const errors = [];
   const secret = Speakeasy.generateSecret({
-    length: 20,
+    // length: 20,
     name: req.session.user.username,
     issuer: 'IdM',
   });
@@ -420,7 +420,7 @@ exports.enable_tfa_verify = function(req, res) {
 
   //Verify the token
   const verified = Speakeasy.totp.verify({
-    secret: req.body.secret,
+    secret: temp_secret,
     encoding: 'base32',
     token: user_token,
     window: 0,

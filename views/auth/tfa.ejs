@@ -23,8 +23,7 @@
               ¡ATENCIÓN! Esto deshabilitará la autenticación de doble factor.</p>
             </span>
             <div class="actions">
-              <form method="GET" action="/Controller?action=add">
-              </form>
+
               <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/security_question" method="POST" enctype="">
                 <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
                 <input type='hidden' name='user_id' value='<%= user.id%>' />
@@ -49,12 +48,6 @@
                 <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" required/>
               </div>
 
-            </div>
-            <div class="form-group" id="question_form" style="display: none">
-              <label class="control-label" for="token">Inserta tu respuesta: </label>
-              <div class=" ">
-                <input autofocus="autofocus" class="form-control" id="security_answer" name="security_answer" type="text" autocomplete="off"/>
-              </div>
             </div>
             <% if (errors.includes('wrong_token')) { -%>
               <span class="help-block alert alert-danger ">La verificación ha fallado porque el token introducido no es válido.

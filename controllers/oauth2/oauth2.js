@@ -309,7 +309,6 @@ exports.load_user = function(req, res, next) {
 // POST /oauth2/enable_app -- User authorize the application to see their details
 exports.enable_app = function(req, res, next) {
   debug(' --> enable_app');
-  //AQUI
   //-----------
   const shared_attributes =
     req.body.user_authorized_application.shared_attributes;
@@ -344,10 +343,6 @@ function oauth_authorize(req, res, next) {
   debug(' --> oauth_authorize');
 
   req.body.user = req.user;
-
-  //mio
-
-  //-----------------
 
   if (req.body.user.dataValues === undefined) {
     req.body.user.dataValues = {};

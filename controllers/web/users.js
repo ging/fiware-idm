@@ -1257,7 +1257,7 @@ function send_response(req, res, response, url) {
   }
 }
 
-// GET /idm/users/:user_id/_third_party_applications -- Send applications in which user is authorized
+// GET /idm/users/:user_id/_third_party_applications -- Show applications in which user is authorized
 exports.show_third_party_applications = function(req, res) {
   debug('--> show_third_party_applications');
   models.user_authorized_application
@@ -1290,8 +1290,8 @@ exports.show_third_party_applications = function(req, res) {
       } else {
         req.user.image = '/img/users/' + req.user.image;
       }
-      const applications = [];
 
+      const applications = [];
       // If user has applciations, set image from file system and obtain info from each user
       if (third_party_applications.length > 0) {
         third_party_applications.forEach(function(app) {

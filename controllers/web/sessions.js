@@ -196,10 +196,10 @@ exports.create = function(req, res) {
   }
 };
 
-// GET /update_password -- Render settings/password view with a warn to indicate user to change password
+// POST security_question -- Render auth/security_question view to complete tfa without introducing token
 exports.security_question = function(req, res) {
   debug(req.body.user_id);
-  //If the token is valid
+  //Obtains user data
   models.user
     .find({
       attributes: [
@@ -221,11 +221,10 @@ exports.security_question = function(req, res) {
       },
     })
     .then(function(user) {
-      debug(user);
       res.render('auth/security_question', {
         errors: [],
         user,
-        csrf_token: req.body.csrf_token,
+        csrf_token: req.csrfToken(),
       });
     });
 };
@@ -299,13 +298,10 @@ exports.tfa_verify = function(req, res) {
           } else if (user.image !== 'default') {
             image = '/img/users/' + user.image;
           }
-          //Store device
-          const user_extra = user.extra;
-          const user_agent = req.headers['user-agent'];
-          user_extra.tfa.user_agent = user_agent;
 
           //Disable tfa
-          user_extra.tfa.enabled = false;
+          const user_extra = user.extra;
+          user_extra.tfa = {};
           models.user.update({ extra: user_extra }, { where: { id: user.id } });
           //Create session
           req.session.user = {
@@ -327,7 +323,7 @@ exports.tfa_verify = function(req, res) {
           res.render('auth/security_question', {
             errors,
             user,
-            csrf_token: req.body.csrf_token,
+            csrf_token: req.csrfToken(),
           });
         }
         //If user is trying to log in with token
@@ -384,60 +380,11 @@ exports.tfa_verify = function(req, res) {
         res.render('auth/tfa', {
           errors,
           user,
-          csrf_token: req.body.csrf_token,
+          csrf_token: req.csrfToken(),
           secret: user.extra.tfa.secret,
           qr: data_url,
         });
       }
-
-      // if (verified_token || (verified_answer && verified_question)) {
-      //   // Create req.session.user and save id and username
-      //   // The session is defined by the existence of: req.session.user
-      //   let image = '/img/logos/small/user.png';
-      //   if (user.gravatar) {
-      //     image = gravatar.url(
-      //       user.email,
-      //       { s: 25, r: 'g', d: 'mm' },
-      //       { protocol: 'https' }
-      //     );
-      //   } else if (user.image !== 'default') {
-      //     image = '/img/users/' + user.image;
-      //   }
-      //   //Store device
-      //   const user_extra = user.extra;
-      //   const user_agent = req.headers['user-agent'];
-      //   user_extra.tfa.user_agent = user_agent;
-      //   models.user.update(
-      //     {
-      //       extra: user_extra,
-      //     },
-      //     {
-      //       where: { id: user.id },
-      //     }
-      //   );
-      //   //Create session
-      //   req.session.user = {
-      //     id: user.id,
-      //     username: user.username,
-      //     email: user.email,
-      //     image,
-      //     change_password: user.date_password,
-      //     starters_tour_ended: user.starters_tour_ended,
-      //     extra: user_extra,
-      //   };
-      //   // If user is admin add parameter to session
-      //   if (user.admin) {
-      //     req.session.user.admin = user.admin;
-      //   }
-      //
-      //   res.redirect('/idm');
-      // } else {
-      //
-      //   if (!verified_token){
-      //
-      //
-      //   }
-      // }
     });
 };
 

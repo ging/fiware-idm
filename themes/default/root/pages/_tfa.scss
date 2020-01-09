@@ -16,6 +16,14 @@
     line-height: 36px;
     color: #333333;
   }
+  h4{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 36px;
+    color: #333333;
+  }
   label{
     color: #333333;
   }
@@ -30,6 +38,16 @@
 
 
   }
+  .panel {
+    background: #FFFFFF;
+    border: 2px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 10px;
+}
+.panel-title{
+  text-align: center;
+}
 
   .container{
     padding-top: 15px;
@@ -43,7 +61,9 @@
     margin-left: auto;
     margin-right: auto;
   }
-
+  .actions{
+        margin-bottom: 17px;
+  }
   .actions a {
     font-family:  'Lato', sans-serif, "Courier New", Courier, monospace;
     border-right: 0px;
@@ -52,6 +72,7 @@
     font-weight: normal;
     font-weight: 500;
     font-size: 16px;
+    paddinf: 10px;
   }
 
   .subtitle{
@@ -67,6 +88,6 @@
 }
 #security_question_button {
   color: black;
-  background-color: white;
+  background-color: #E6E6E6;
   border-color: #001630;
 }

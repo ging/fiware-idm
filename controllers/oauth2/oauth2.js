@@ -317,7 +317,7 @@ exports.enable_app = function(req, res, next) {
   if (config_oauth2.ask_authorization) {
     return models.user_authorized_application
       .findOrCreate({
-        // User has enable application to read their information
+        // User has enabled application to read their information
         where: {
           user_id: req.session.user.id,
           oauth_client_id: req.application.id,

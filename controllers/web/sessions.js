@@ -8,7 +8,6 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const Speakeasy = require('speakeasy');
-const Qrcode = require('qrcode');
 
 const escape_paths = require('../../etc/escape_paths/paths.json').paths;
 
@@ -149,23 +148,14 @@ exports.create = function(req, res) {
         } else {
           const secret = user.extra.tfa.secret;
           debug('Loaded stored secret');
-          debug(secret);
-          const url = Speakeasy.otpauthURL({
-            secret,
-            label: user.username,
-            issuer: 'IdM',
-            encoding: 'base32',
-          });
+
           //QR code module to generate a QR code that stores the data in secret.otpauth_url,
           //and then display the QR code to the user. This generates a PNG data URL.
-          Qrcode.toDataURL(url, function(err, data_url) {
-            return res.render('auth/tfa', {
-              user,
-              errors,
-              secret,
-              qr: data_url,
-              csrf_token: req.csrfToken(),
-            });
+          res.render('auth/tfa', {
+            user,
+            errors,
+            secret,
+            csrf_token: req.csrfToken(),
           });
         }
       } else {

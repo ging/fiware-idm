@@ -1,65 +1,65 @@
 <div id="tfa_page">
-  <div class="modal-header">
-    <h3>Para finalizar el proceso de acceso: </h3>
-  </div>
+
   <div class="container">
     <div id="card card-container">
-      <div class="row">
-        <div class="col-sm-6" id = "tfa_info">
-          <div class="image-wrapper">
-            <img id="qr-image" src=<%=qr%> alt="Secreto del usuario" >
-            <p class="subtitle" id="secret_key">Clave secreta: <%=secret%></p>
-            <p class="subtitle" style="display: none" id="security_question">Pregunta de seguridad: <%=user.extra.tfa.question%></p>
-          </div>
+      <div class="panel panel-default info" >
+        <div class="panel-title">
+
+          <h3>Verificación en dos pasos </h3>
         </div>
-        <div class="col-sm-6" >
-          <span>
-            <p>1. Abre la app Google Authenticator en tu smartphone. </p>
-            <p>2. Escanea el código QR o introduce la clave secreta. </p>
-            <p>3. Introduce debajo el token proporcionado por la app. </p>
-            <p>4. Si este dispositivo es de confanza, marca la opción para que la plataforma lo recuerde. </p>
-            <p>En caso de que no puedas usar la app, podrás acceder a tu perfil mediante tu pregunta de seguridad haciendo
-              click en el siguiente enlace.
-              ¡ATENCIÓN! Esto deshabilitará la autenticación de doble factor.</p>
+        <div class="panel-body">
+          <div class="col-sm-6">
+
+            <h4>Para finalizar el proceso de acceso: </h4>
+
+            <span>
+              <p>1. Abre la app Google Authenticator en tu smartphone. </p>
+              <p>2. Introduce debajo el token proporcionado por la app. </p>
+              <p>3. Si este dispositivo es de confanza, marca la opción para que la plataforma lo recuerde. </p>
             </span>
-            <div class="actions">
-
-              <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/security_question" method="POST" enctype="">
-                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-                <input type='hidden' name='user_id' value='<%= user.id%>' />
-                <input type='hidden' name='login_security_question' value=true />
-
-                <input type="submit" id="security_question_button" class="btn btn-primary" value="Registrarse con pregunta de seguridad"/>
-              </form>
-              <!-- <a href="javascript:showQuestion();" id="toggle_ref1" >Registrarse con pregunta de seguridad </a>
-              <a href="javascript:showQuestion();" id="toggle_ref2" style="display: none">Registrarse con token</a> -->
-            </div>
           </div>
-        </div>
-        <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
-          <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-          <input type='hidden' name='secret' value='<%= secret%>' />
-          <input type='hidden' name='qr' value='<%= qr%>' />
-          <input type='hidden' name='user_id' value='<%= user.id%>' />
-          <div class="modal-body clearfix">
-            <div class="form-group" id="token_form">
-              <label class="control-label" for="token">Inserta el token: </label>
-              <div class=" ">
-                <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" required/>
-              </div>
+          <div class="col-sm-6">
 
-            </div>
-            <% if (errors.includes('wrong_token')) { -%>
-              <span class="help-block alert alert-danger ">La verificación ha fallado porque el token introducido no es válido.
-                Por favor revise la fecha y hora del sistema y vuelva a intentarlo.</span>
-                <% } -%>
+            <h4>En caso de que no puedas usar la app:</h4>
+            <p>Puedes acceder a tu perfil mediante tu pregunta de seguridad haciendo
+              click en el siguiente botón.</p>
+              <p>¡ATENCIÓN! Esto deshabilitará la autenticación de doble factor.</p>
+              <div class="actions">
+                <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/security_question" method="POST" enctype="">
+                  <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+                  <input type='hidden' name='user_id' value='<%= user.id%>' />
+                  <input type='hidden' name='login_security_question' value=true />
+
+                  <input type="submit" id="security_question_button" class="btn btn-primary" value="Registrarse con pregunta de seguridad"/>
+                </form>
+
               </div>
-              <div class="modal-footer" id="tfa_footer">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" name="remember_device" value=true>
-                    <span class="lbl padding-0">Recordar dispositivo
-                    </span>
+            </div>
+
+          </div>
+          <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+            <input type='hidden' name='secret' value='<%= secret%>' />
+            <input type='hidden' name='user_id' value='<%= user.id%>' />
+            <div class="modal-body clearfix">
+              <div class="form-group" id="token_form">
+                <label class="control-label" for="token">Inserta el token: </label>
+                <div class=" ">
+                  <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" required/>
+                </div>
+
+              </div>
+              <% if (errors.includes('wrong_token')) { -%>
+                <span class="help-block alert alert-danger ">La verificación ha fallado porque el token introducido no es válido.
+                  Por favor revise la fecha y hora del sistema y vuelva a intentarlo.</span>
+                  <% } -%>
+                </div>
+                <div class="modal-footer" id="tfa_footer">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" name="remember_device" value=true>
+                      <span class="lbl padding-0">Recordar dispositivo
+                      </span>
                     </label>
                   </div>
                   <button type="submit" class="btn btn-primary pull-right">Acceder</button>
@@ -68,3 +68,4 @@
             </div>
           </div>
         </div>
+      </div>

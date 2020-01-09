@@ -41,6 +41,8 @@ function getAccessToken(bearerToken) {
             'id',
             'username',
             'email',
+            'description',
+            'website',
             'gravatar',
             'image',
             'extra',
@@ -598,12 +600,48 @@ function create_oauth_response(
         require('../templates/oauth_response/oauth_user_response.json')
       )
     );
+    models.user_authorized_application
+      .findOne({
+        where: { user_id: identity.id, oauth_client_id: application_id },
+      })
+      .then(function(third_party_application) {
+        user_info.shared_attributes = third_party_application.shared_attributes;
+        if (user_info.shared_attributes.includes('username')) {
+          user_info.username = identity.username;
+        }
+      });
+    debug(user_info.shared_attributes);
+    // .then(function(){
+    //   user_info.app_id = application_id;
+    //   user_info.isGravatarEnabled = identity.gravatar;
+    //   user_info.id = identity.id;
+    //
+    //   if (user_info.shared_attributes.includes("email")){
+    //     user_info.email = identity.email;
+    //   }
+    //   if (user_info.shared_attributes.includes("description")){
+    //     user_info.description = identity.description;
+    //   }
+    //   if (user_info.shared_attributes.includes("website")){
+    //     user_info.website = identity.website;
+    //   }
+    //   if (user_info.shared_attributes.includes("image")){
+    //     user_info.image = identity.image;
+    //   }
+    //
+    //   if (user_info.shared_attributes.includes("extra")){
+    //     user_info.extra = identity.extra;
+    //   }
+    //   debug(user_info);
 
-    user_info.username = identity.username;
+    user_info.id = identity.id;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
-    user_info.email = identity.email;
-    user_info.id = identity.id;
+    // user_info.username = identity.username;
+    // user_info.email = identity.email;
+    // user_info.website = identity.website;
+    // user_info.description = identity.description;
+    debug(user_info);
 
     if (config.cors && config_cors.enabled) {
       user_info.image =

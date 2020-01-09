@@ -10,11 +10,12 @@
           <div class="modal-body clearfix">
             <div>
               <p>
-                <%=translation.oauth.authorize.content01%> <a href="/idm/applications/<%= application.id %>/"><%= application.name %></a> <%=translation.oauth.authorize.content02%>
+                <%=translation.oauth.authorize.content01%> <a href="/idm/applications/<%= application.id %>/"><%= application.name %></a> tendrá permisos para acceder a:
               </p>
               <div class="select-multiple">
                   <select name="user_authorized_application[shared_attributes]" class="selectpicker" data-dropup-auto="false" multiple>
-                      <option  value="username">Username</option>
+                    <option style="display:none" selected name = "[username]" value="username">Username</option>
+                      <!-- <option  value="username" selected>Username</option> -->
                       <option  value="email">Email</option>
                       <option  value="description">Description</option>
                       <option  value="website">Website</option>

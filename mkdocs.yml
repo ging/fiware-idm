@@ -7,6 +7,8 @@ site_dir: html
 theme: readthedocs
 extra_css: ["https://www.fiware.org/style/fiware_readthedocs.css", "https://www.fiware.org/style/fiware_readthedocs_security.css"]
 use_directory_urls: false
+markdown_extensions:
+  - admonition
 #google_analytics: ['UA-******', 'fiware-idm.readthedocs.io']
 pages:
   - Home: 'index.md'

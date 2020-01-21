@@ -15,19 +15,20 @@ before('Create and populate database', function(done) {
 
   return new Promise(function(resolve, reject) {
     const create_database =
-      'mysql -u ' +
+      'sudo mysql -u ' +
       config.database.username +
       ' -p' +
       config.database.password +
       " -e 'CREATE DATABASE IF NOT EXISTS idm_test;'";
     const load_data =
-      'mysql -u ' +
+      'sudo mysql -u ' +
       config.database.username +
       ' -p' +
       config.database.password +
       ' --default-character-set=utf8 idm_test < test/mysql-data/backup.sql';
     exec(create_database, function(error) {
       if (error) {
+        // console.log(error);
         process.exit();
         reject('Unable to create test database: ', error);
       } else {
@@ -51,7 +52,7 @@ before('Create and populate database', function(done) {
 after('Delete database', function(done) {
   return new Promise(function(resolve, reject) {
     const load_data =
-      'mysql -u ' +
+      'sudo mysql -u ' +
       config.database.username +
       ' -p' +
       config.database.password +

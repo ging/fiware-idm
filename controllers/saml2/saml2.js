@@ -363,8 +363,8 @@ exports.saml2_application_login = function(req, res) {
 
         const state = sp_states[response_to] ? sp_states[response_to] : 'xyz';
 
-        const redirect_uri = sp_states[response_to]
-          ? sp_states[response_to]
+        const redirect_uri = sp_redirect_uris[response_to]
+          ? sp_redirect_uris[response_to]
           : req.application.redirect_uri.split(',')[0];
 
         const path =

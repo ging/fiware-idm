@@ -3,6 +3,7 @@ const fs = require('fs');
 const _ = require('lodash');
 
 const config = require('../../config');
+const config_usage_control = config.usage_control;
 
 const debug = require('debug')('idm:web-application_controller');
 const gravatar = require('gravatar');
@@ -37,23 +38,18 @@ exports.load_application = function(req, res, next, application_id) {
           next();
         } else {
           // Reponse with message
-          const response = {
-            text: ' Application doesn`t exist.',
-            type: 'danger',
-          };
-
-          // Send response depends on the type of request
-          send_response(req, res, response, '/idm/applications');
+          const err = new Error('Not Found');
+          err.status = 404;
+          res.locals.error = err;
+          res.render('errors/not_found');
         }
       })
-      .catch(function(error) {
-        next(error);
-      });
+      .catch(next);
   }
 };
 
 // GET /idm/applications -- List all applications
-exports.index = function(req, res) {
+exports.index = function(req, res, next) {
   debug('--> index');
 
   if (req.session.message) {
@@ -77,13 +73,7 @@ exports.index = function(req, res) {
         csrf_token: req.csrfToken(),
       });
     })
-    .catch(function(error) {
-      debug('Error: ' + error);
-      res.render('applications/index', {
-        organizations: [],
-        csrf_token: req.csrfToken(),
-      });
-    });
+    .catch(next);
 };
 
 // GET /idm/applications/filtered_user -- Filter applications of user by page
@@ -206,6 +196,7 @@ exports.show = function(req, res) {
         eidas_enabled: config.eidas.enabled,
         eidas_credentials: req.eidas_credentials,
         gateway_host: config.eidas.gateway_host,
+        data_usage_enabled: config.usage_control.enabled,
         errors: [],
         csrf_token: req.csrfToken(),
       });
@@ -561,6 +552,7 @@ exports.step_new_roles = function(req, res) {
   res.render('applications/step_create_roles', {
     application: req.application,
     authorization_level: config.authorization.level,
+    data_usage_enabled: config_usage_control.enabled,
     csrf_token: req.csrfToken(),
   });
 };

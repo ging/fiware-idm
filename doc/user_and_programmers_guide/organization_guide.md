@@ -30,6 +30,7 @@ organization. Here you can see the several attributes of the organization.
 You can also perform several actions:
 
 -   Edit the organization. Here you can: name, description, URL and logo.
+
 -   Manage members.
 
 ## Manage members

@@ -40,7 +40,7 @@ users could be easily managed.
 These are the basic configurations of Keyrock. The first configuration is to
 indicate in which port will be Keyrock listenning if HTTPS is not enabled. Host
 configuration is to indicate the domain name of Keyrock in prodoction. Otherwise
-it should be set to "http://localhost:" when running on development.
+it should be set to `http://localhost:` when running on development.
 
 ```javascript
 config.port = 80;
@@ -146,9 +146,14 @@ config.cors = {
 Some features of Keyrock could be configured. Most of them are related to
 lifetime of tokens.
 
+-   Allow Empty State. If you enable this feature, is not necessary that the
+    service include the paramter state in the URL as a query string. The state
+    parameter is used to protect against XSRF, so in case of doubt set this
+    value to the default one (false).
+
 -   Authorization code, access token and refresh token lifetimes could be
     changed easily. If you change one of this values it means that all services
-    register in Keyrock will be updated with this nea values.
+    register in Keyrock will be updated with this new values.
 
 -   Ask authorization. The General Data Protection Regulation (GDPR) forces
     clients to ask for a consent to obtain the user information. Actually, this
@@ -166,6 +171,7 @@ lifetime of tokens.
 
 ```javascript
 config.oauth2 = {
+    allowEmptyState: false,
     authorization_code_lifetime: 5 * 60,
     access_token_lifetime: 60 * 60,
     ask_authorization: true,
@@ -174,16 +180,13 @@ config.oauth2 = {
 };
 ```
 
-Check
-[Connecting to IdM with OAuth2.0](https://fiware-idm.readthedocs.io/en/latest/oauth/introduction/index.html)
-to obtain a whole description of this feature.
+Check [Connecting to IdM with OAuth2.0](../oauth/introduction.md) to obtain a
+whole description of this feature.
 
 ## eIDAS
 
-Check
-[Connecting IdM to eIDAS](https://fiware-idm.readthedocs.io/en/latest/eidas/introduction/index.html)
-to obtain a whole description of this feature. An example of this configuration
-is:
+Check [Connecting IdM to eIDAS](../eidas/introduction.md) to obtain a whole
+description of this feature. An example of this configuration is:
 
 ```javascript
 config.eidas = {
@@ -191,6 +194,23 @@ config.eidas = {
     gateway_host: "localhost",
     node_host: "https://se-eidas.redsara.es/EidasNode/ServiceProvider",
     metadata_expiration: 60 * 60 * 24 * 365
+};
+```
+
+## Usage Control
+
+Check
+[data usage control section](https://fiware-idm.readthedocs.io/en/latest/usage_control/introduction/index.html)
+to obtain a whole description of this feature. An example of this configuration
+is:
+
+```javascript
+config.usage_control = {
+    enabled: true,
+    ptp: {
+        host: "localhost",
+        port: 8090
+    }
 };
 ```
 
@@ -256,9 +276,9 @@ database. These attributes are:
 
 -   password: the encrypted password of the user.
 
--   password*salt: if not specified, the value set in
-    \_config.external_auth.password_encryption_key* will be used for checking
-    the password encryption.
+-   password_salt: if not specified, the value set in
+    `config.external_auth.password_encryption_key` will be used for checking the
+    password encryption.
 
 It is very common that the external database does not have a table with these
 parameters. In such case you can create a database view for exposing them.
@@ -268,25 +288,29 @@ _USERS_ and _ACTORS_ with the following structure:
 
 **USERS Table**
 
+```text
 | ID  | encrypted_password | password_salt | created_at               | last_sign_in_at          | actor_id |
 | --- | ------------------ | ------------- | ------------------------ | ------------------------ | -------- |
 | 1   | g34h432hjk54k2j    | 1234          | 2015-06-10 08:26:02.0113 | 2018-06-10 08:26:02.0113 | 12       |
 | 2   | 2h43h7fdj38302j    | 1234          | 2015-01-10 08:26:02.0113 | 2018-01-10 08:26:02.0113 | 22       |
 | 3   | j328478j328j423    | 1234          | 2015-02-10 08:26:02.0113 | 2018-10-10 08:26:02.0113 | 5        |
+```
 
 **ACTORS Table**
 
+```text
 | ID  | name          | email           | logo                   |
 | --- | ------------- | --------------- | ---------------------- |
 | 12  | Melinda López | melinda@test.es | http://mylogo.es/12344 |
 | 22  | Juanli Jons   | juanli@test.es  | http://mylogo.es/12121 |
 | 5   | Lesha Magnen  | lesha@test.es   | http://mylogo.es/1212  |
+```
 
 You can create a view with the SQL statement
 
-```
+```sql
 CREATE VIEW USER_VIEW AS
-	SELECT USERS.id, USERS.password_salt, USERS.encrypted_password as password, ACTORS.email, ACTORS.name as username
+    SELECT USERS.id, USERS.password_salt, USERS.encrypted_password as password, ACTORS.email, ACTORS.name as username
     FROM USERS,ACTORS
     WHERE USERS.actor_id = ACTORS.id;
 ```

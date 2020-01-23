@@ -42,16 +42,15 @@ its functionality:
 -   Sign-out Callback URL. This is the URL to which Keyrock will redirect a user
     if a sign out is performed from a service. If is not configured it will be
     redirected to the domain indicated in URL parameter. See more information
-    under
-    [sign out oauth section](https://fiware-idm.readthedocs.io/en/latest/oauth/sign_out_oauth_service/index.html#sign-out)
+    under [sign out oauth section](../oauth/sign_out_oauth_service.md#sign-out)
 
 -   Grant Type. You can select the different ways of obtaining an OAuth Access
     Token. Check
-    [Connecting to IdM with OAuth2.0](https://fiware-idm.readthedocs.io/en/latest/oauth/oauth_documentation/index.html#introduction).
+    [Connecting to IdM with OAuth2.0](../oauth/oauth_documentation.md#introduction).
 
 -   eIDAS Authentication. This attributes allows your service to authenticate
     users by their eID. See more information in
-    [Connecting IdM to a eIDAS Node Section](https://fiware-idm.readthedocs.io/en/latest/eidas/introduction/index.html).
+    [Connecting IdM to a eIDAS Node Section](../eidas/introduction.md).
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_register_app.png)
 
@@ -99,8 +98,9 @@ click "Save".
 
 You are also permitted to add up new permissions by clicking on "New
 Permission". Here you need to enter the name of the permission, description,
-HTTP verb (GET, PUT, POST, DELETE) and the Path to that permission. Click
-"Create Permission" and "Finish" to finalize with creating the application.
+HTTP verb (GET, PUT, POST, DELETE) and the Path (which could also be a regular
+expression) to that permission. Click "Create Permission" and "Finish" to
+finalize with creating the application.
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_permissions_create.png)
 
@@ -189,9 +189,8 @@ detail how to manage organizations.
 ## Authorize trusted applications
 
 When validating permissions in
-[Keyrock's built-in PDP](http://fiware-idm.readthedocs.io/en/latest/admin_guide/#authorization)
-as explained
-[here](http://fiware-idm.readthedocs.io/en/latest/api/#def-validate-auth) the
+[Keyrock's built-in PDP](../installation_and_administration_guide/configuration.md#authorization)
+as explained [here](../oauth/oauth_documentation.md#validate-authorization) the
 application in which the permission was created and assigned to the user is
 checked.
 

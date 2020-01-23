@@ -23,6 +23,8 @@ const debug = require('debug')('idm:web-user_controller');
 const email = require('../../lib/email.js');
 const image = require('../../lib/image.js');
 
+const identity_attributes = config.identity_attributes || { enabled: false };
+
 // MW to see if user can do some actions
 exports.owned_permissions = function(req, res, next) {
   debug('--> owned_permissions');
@@ -54,6 +56,7 @@ exports.load_user = function(req, res, next, user_id) {
           'website',
           'image',
           'gravatar',
+          'extra',
         ],
       })
       .then(function(user) {
@@ -63,11 +66,11 @@ exports.load_user = function(req, res, next, user_id) {
           // Send request to next function
           next();
         } else {
-          req.session.message = {
-            text: ' User doesn`t exist.',
-            type: 'danger',
-          };
-          res.redirect('/');
+          // Reponse with message
+          const err = new Error('Not Found');
+          err.status = 404;
+          res.locals.error = err;
+          res.render('errors/not_found');
         }
       })
       .catch(function(error) {
@@ -209,7 +212,7 @@ exports.get_organizations = function(req, res) {
     .search_distinct(
       'user_organization',
       'organization',
-      req.session.user.id,
+      req.user.id,
       'user',
       key,
       offset,
@@ -283,6 +286,7 @@ exports.edit = function(req, res) {
         }
 
         res.render('users/edit', {
+          identity_attributes,
           user: req.user,
           error: [],
           csrf_token: req.csrfToken(),
@@ -324,6 +328,9 @@ exports.update_info = function(req, res) {
     req.body.user.description = null;
   }
 
+  const user_extra = user.extra ? user.extra : {};
+  user_extra.identity_attributes = req.body.attributes;
+
   user
     .validate()
     .then(function() {
@@ -333,9 +340,10 @@ exports.update_info = function(req, res) {
             username: req.body.user.username,
             description: req.body.user.description,
             website: req.body.user.website,
+            extra: user_extra,
           },
           {
-            fields: ['username', 'description', 'website'],
+            fields: ['username', 'description', 'website', 'extra'],
             where: { id: req.session.user.id },
           }
         )
@@ -697,7 +705,7 @@ exports.create = function(req, res) {
                 '/activate?activation_key=' +
                 activation_key +
                 '&email=' +
-                user.email;
+                encodeURIComponent(user.email); // eslint-disable-line snakecase/snakecase
 
               const mail_data = {
                 name: user.username,
@@ -746,9 +754,9 @@ exports.activate = function(req, res, next) {
       include: [models.user],
     })
     .then(function(user_registration_profile) {
-      const user = user_registration_profile.User;
+      if (user_registration_profile && user_registration_profile.User) {
+        const user = user_registration_profile.User;
 
-      if (user) {
         // Activate the user if is not or if the actual date not exceeds the expiration date
         if (user.enabled) {
           res.locals.message = {
@@ -822,7 +830,7 @@ exports.password_send_email = function(req, res) {
       .then(function(user) {
         if (!user) {
           res.locals.message = {
-            text: `Sorry. You have specified an email address that is not registered. 
+            text: `Sorry. You have specified an email address that is not registered.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`,
             type: 'danger',
           };
@@ -832,7 +840,7 @@ exports.password_send_email = function(req, res) {
           });
         } else if (!user.enabled) {
           res.locals.message = {
-            text: `The email address you have specified is registered but not activated. 
+            text: `The email address you have specified is registered but not activated.
                                                Please check your email for the activation link or request a new one.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`,
             type: 'danger',
@@ -1091,7 +1099,7 @@ exports.resend_confirmation = function(req, res) {
           }
         } else {
           res.locals.message = {
-            text: `Sorry. You have specified an email address that is not registerd. 
+            text: `Sorry. You have specified an email address that is not registerd.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`,
             type: 'danger',
           };

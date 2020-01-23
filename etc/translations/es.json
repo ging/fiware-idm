@@ -129,7 +129,8 @@
     "cred_date": "2018 ©",
     "author": "GING DIT",
     "university": " - Universidad Politénica de Madrid (UPM)",
-    "condit01": "El uso de los servicios de FIWARE Lab está sujeto a la aceptación de los",
+    "vish": "El uso de los servicios de VISH está sujeto a la aceptación de los",
+    "fiware": "El uso de los servicios de FIWARE Lab está sujeto a la aceptación de los",
     "condit02": "Términos y Condiciones",
     "condit03": "Política de privacidad y",
     "condit04": "Política de cookies"
@@ -178,7 +179,7 @@
       "link03": "¿No has recibido email de confirmación?"
     },
     "presentation": {
-      "title": "Gestor de Identidad",
+      "title": "Gestor de Identidad de ViSH",
       "subtitle01": "Bienvenido al Gestor de Identidades de FIWARE, desarrollado por la UPM.",
       "subtitle02": "Puedes personalizar esta página de login, como también cualquier otro estilo de la aplicación. ¡Revisa la documentación acerca de la personalización de estilos para aprender cómo hacerlo!.",
       "signup_btn": "Registrarte",
@@ -374,7 +375,9 @@
       "label04": "Subir una imagen",
       "label05": " Selecciona la parte de la imagen que quieras para usar de avatar.",
       "crop_btn": "Recortar y usar",
-      "cancel_btn": "Cancelar"
+      "cancel_btn": "Cancelar",
+      "label06": "Atributos de identidad",
+      "warning": "Note: These attributes will be included in your public information provided to applications if you consent their use."
     },
     "new_user": {
       "title": "Registro",
@@ -553,7 +556,35 @@
       "label02": "Descripción",
       "label03": "Acción HTTP",
       "label04": "Recurso",
+      "label_is_regex": "¿Es una expresion regular?",
       "label05": "Use XACML para definir una regla de autorización mas compleja.",
+      "required_field": "Este campo es obligatorio."
+    },
+    "create_usage_policy": {
+      "title": "Crear politica de uso de datos",
+      "subtitle01": "Politica ODRL",
+      "save_btn": "Guardar",
+      "label01": "Nombre de la politica",
+      "label02": "Descripcion",
+      "label03": "Tipo",
+      "label04": "Parametros",
+      "label05": "Maximo numero de eventos",
+      "label06": "Ventana de tiempo",
+      "label07": "Tiempo de agregacion",
+      "label08": "Sancion",
+      "label09": "Intervalo de tiempo",
+      "label10": "Aqui puede definir su propia politica ODRL",
+      "select_place_holder": "Nada seleccionado",
+      "select_time_option01": "segundos",
+      "select_time_option02": "minutos",
+      "select_time_option03": "horas",
+      "select_time_option04": "dias",
+      "select_policy_option01": "Contar",
+      "select_policy_option02": "Agregacion",
+      "select_policy_option03": "Personalizable",
+      "select_punishment_option01": "Parar proceso",
+      "select_punishment_option02": "Dar de baja subscripcion",
+      "select_punishment_option03": "Monetizar",
       "required_field": "Este campo es obligatorio."
     },
     "create_role": {
@@ -625,7 +656,9 @@
       "title": "Gestionar Roles",
       "subtitle01": "Roles",
       "subtitle02": "Permisos",
+      "subtitle03": "Politicas de uso",
       "content01": "Seleccione un rol para ver sus permisos asociados",
+      "content02": "Seleccione un rol para ver sus politicas asociadas",
       "required_field": "Este campo es obligatorio.",
       "save_btn": "Guardar"
     },
@@ -656,8 +689,9 @@
       "next_btn": "Siguiente"
     },
     "show": {
-      "edit_span": "editar",
-      "manage_roles": "gestionar roles",
+      "span01": "Editar",
+      "span02": "Gestion de roles",
+      "span03": "Acceso & uso",
       "label01": "Descripción",
       "label02": "Url",
       "label03": "Url de retorno",
@@ -896,6 +930,37 @@
     "step_create_eidas_credentials": {
       "title": "Detalles de autenticación para eIDAS", 
       "next_btn": "Siguiente"
+    }
+  },
+  "errors": {
+    "saml": {
+      "title01": "¡ups, algo fue mal!",
+      "content01": "Contacta con el administrador de",
+      "content02": "tu proveedor de servicios web",
+      "content03": "y envia los",
+      "content04": "detalles de tu error",
+      "title02": "¡La petición Saml ha fallado!",
+      "content05": "error",
+      "content06": "error interno"
+    },
+    "oauth": {
+      "title01": "¡ups, algo fue mal!",
+      "content01": "Contacta con el administrador de",
+      "content02": "tu proveedor de servicios web",
+      "content03": "y envia los",
+      "content04": "detalles de tu error",
+      "title02": "¡La petición OAuth ha fallado!",
+      "content05": "error",
+      "content06": "error interno",
+      "content07": "(obligatorio)"
+    },
+    "not_found": {
+      "title01": "la página que has solicitado no existe",
+      "content01": "vuelve de nuevo a",
+      "content02": "la página de inicio"
+    },
+    "generic": {
+      "content01": "Código"
     }
   }
 }

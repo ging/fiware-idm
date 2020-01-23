@@ -32,11 +32,7 @@
 						</div>
 						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.required_field%></span>
 						<div class="panel-group" id="accordion">
-							<% if (authorization_level === 'advanced') { -%>
-								<div class="panel">
-							<% } else { -%>
-								<div class="panel" style="border-bottom: none;">
-							<% } -%>
+							<div class="panel">
 								<div class="panel-headding">  
 									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-verb-resource" class="panel-heading collapsed">
 										<h4 class="panel-title panel-close">
@@ -58,9 +54,13 @@
 												<input class="form-control" id="id_resource" maxlength="255" name="resource" type="text">
 											</div>
 										</div>
+										<div class="form-check">
+											<input class="form-check-input" id="id_is_regex"  name="is_regex" type="checkbox">
+											<label class="control-label" for="id_is_regex"><%=translation.applications.create_permission.label_is_regex%></label>
+
+										</div>
 									</div>
 								</div>
-							</div>
 							<% if (authorization_level === 'advanced') { -%>
 								<div class="panel">
 									<div class="panel-headding">

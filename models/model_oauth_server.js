@@ -21,6 +21,8 @@ const oauth_authorization_code = models.oauth_authorization_code;
 const oauth_refresh_token = models.oauth_refresh_token;
 const user_authorized_application = models.user_authorized_application;
 
+const identity_attributes = config.identity_attributes || { enabled: false };
+
 function getAccessToken(bearerToken) {
   debug('-------getAccesToken-------');
 
@@ -109,7 +111,7 @@ function getClient(clientId, clientSecret) {
       const clientWithGrants = client;
 
       clientWithGrants.grants = clientWithGrants.grant_type;
-      clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
+      clientWithGrants.redirectUris = clientWithGrants.redirect_uri;
       clientWithGrants.refreshTokenLifetime = oauth2.refresh_token_lifetime;
       clientWithGrants.accessTokenLifetime = oauth2.access_token_lifetime;
       clientWithGrants.authorizationCodeLifetime =
@@ -441,7 +443,14 @@ function getAuthorizationCode(code) {
 
   return oauth_authorization_code
     .findOne({
-      attributes: ['oauth_client_id', 'expires', 'user_id', 'scope', 'valid'],
+      attributes: [
+        'oauth_client_id',
+        'redirect_uri',
+        'expires',
+        'user_id',
+        'scope',
+        'valid',
+      ],
       where: { authorization_code: code },
       include: [user, oauth_client],
     })
@@ -456,11 +465,12 @@ function getAuthorizationCode(code) {
         code,
         client,
         expiresAt: authCodeModel.expires,
-        redirectUri: client.redirect_uri,
+        redirectUri: authCodeModel.redirect_uri,
         valid: authCodeModel.valid,
         user,
         scope: authCodeModel.scope,
       };
+
       return reCode;
     })
     .catch(function(err) {
@@ -470,12 +480,12 @@ function getAuthorizationCode(code) {
 
 function saveAuthorizationCode(code, client, user) {
   debug('-------saveAuthorizationCode-------');
-
+  debug(code);
   return oauth_authorization_code
     .create({
       expires: code.expiresAt,
       oauth_client_id: client.id,
-      redirect_uri: client.redirect_uri,
+      redirect_uri: code.redirectUri,
       authorization_code: code.authorizationCode,
       valid: true,
       user_id: user.id,
@@ -586,9 +596,12 @@ function create_oauth_response(
   }
 
   if (type === 'user') {
-    const user_info = {
-      ...require('../templates/oauth_response/oauth_user_response.json'),
-    };
+    const user_info = JSON.parse(
+      JSON.stringify(
+        require('../templates/oauth_response/oauth_user_response.json')
+      )
+    );
+
     user_info.username = identity.username;
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
@@ -609,6 +622,16 @@ function create_oauth_response(
 
     if (identity.eidas_id) {
       user_info.eidas_profile = identity.extra.eidas_profile;
+      for (var e in user_info.eidas_profile) {
+        user_info['eidas_profile_' + e] = user_info.eidas_profile[e];
+      }
+    }
+    if (
+      identity.extra &&
+      identity.extra.identity_attributes &&
+      identity_attributes.enabled
+    ) {
+      user_info.attributes = identity.extra.identity_attributes;
     }
 
     //original code:
@@ -646,9 +669,12 @@ function create_oauth_response(
       return search_user_info(user_info, action, resource, authzforce, req_app);
     }
   } else if (type === 'iot') {
-    const iot_info = {
-      ...require('../templates/oauth_response/oauth_iot_response.json'),
-    };
+    const iot_info = JSON.parse(
+      JSON.stringify(
+        require('../templates/oauth_response/oauth_iot_response.json')
+      )
+    );
+
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 
@@ -854,14 +880,21 @@ function user_permissions(roles_id, app_id, action, resource) {
     })
     .then(function(permissions) {
       if (permissions.length > 0) {
-        return models.permission.findAll({
-          where: {
-            id: permissions.map(elem => elem.permission_id),
-            oauth_client_id: app_id,
-            action,
-            resource,
-          },
-        });
+        return models.permission
+          .findAll({
+            where: {
+              id: permissions.map(elem => elem.permission_id),
+              oauth_client_id: app_id,
+              action,
+            },
+          })
+          .then(permissions =>
+            permissions.filter(permission =>
+              permission.is_regex == 1
+                ? new RegExp(permission.resource).exec(resource)
+                : permission.resource == resource
+            )
+          );
       }
       return [];
     });

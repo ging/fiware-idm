@@ -111,6 +111,7 @@ function check_user_action(application, path, method, permissions) {
     case path.includes('step/roles') ||
       path.includes('edit/roles') ||
       path.includes('edit/permissions') ||
+      path.includes('edit/usage_policies') ||
       path.includes('edit/eidas'):
       if (permissions.includes('3')) {
         return true;

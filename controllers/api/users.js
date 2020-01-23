@@ -211,13 +211,13 @@ exports.create = function(req, res) {
         fields: [
           'id',
           'username',
+          'description',
+          'website',
+          'gravatar',
           'email',
           'password',
           'date_password',
-          'description',
-          'website',
-          'url',
-          'gravatar',
+          'extra',
           'enabled',
           'salt',
         ],
@@ -296,6 +296,9 @@ exports.update = function(req, res) {
       req.user.gravatar = req.body.user.gravatar
         ? req.body.user.gravatar
         : req.user.gravatar;
+      req.user.extra = req.body.user.extra
+        ? req.body.user.extra
+        : req.user.extra;
       req.user.enabled = true;
       if (req.body.user.password) {
         req.user.password = req.body.user.password;

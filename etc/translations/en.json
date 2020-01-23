@@ -129,7 +129,8 @@
     "cred_date": "2018 ©",
     "author": "GING DIT",
     "university": " - Technical University of Madrid (UPM)",
-    "condit01": "The use of FIWARE Lab services is subject to acceptance of the",
+    "vish": "The use of VISH services is subject to the acceptance of the",
+    "fiware": "The use of FIWARE Lab services is subject to acceptance of the",
     "condit02": "Terms and Conditions",
     "condit03": "Privacy Policy and",
     "condit04": "Cookies Policy"
@@ -178,7 +179,7 @@
       "link03": "Confirmation not recieved?"
     },
     "presentation": {
-      "title": "Identity Manager",
+      "title": "ViSH Identity Manager",
       "subtitle01": "Welcome to an implementation of FIWARE Identity Manager developed by DIT-UPM.",
       "subtitle02": "You can customize this sign in page as well as any other style/layout in this web service. Check customization documentation to learn how to do it!",
       "signup_btn": "Sign up",
@@ -374,7 +375,9 @@
       "label04": "Upload an image",
       "label05": "Select the part of the image you want to use as avatar.",
       "crop_btn": "Crop and use",
-      "cancel_btn": "Cancel"
+      "cancel_btn": "Cancel",
+      "label06": "Identity attributes",
+      "warning": "Note: These attributes will be included in your public information provided to applications if you consent their use."
     },
     "new_user": {
       "title": "Registration",
@@ -553,7 +556,35 @@
       "label02": "Description",
       "label03": "HTTP action",
       "label04": "Resource",
+      "label_is_regex": "Is regular expression?",
       "label05": "Use XACML to define a more complex authorization policy.",
+      "required_field": "This is a required field."
+    },
+    "create_usage_policy": {
+      "title": "Create data usage policy",
+      "subtitle01": "ODRL Policy",
+      "save_btn": "Save",
+      "label01": "Policy Name",
+      "label02": "Description",
+      "label03": "Type",
+      "label04": "Parameters",
+      "label05": "Maximum Number of Events",
+      "label06": "Event Window",
+      "label07": "Aggregation Time",
+      "label08": "Punishment",
+      "label09": "Time Lapse",
+      "label10": "Here you can define the Data Usage Policy",
+      "select_place_holder": "Nothing selected",
+      "select_time_option01": "seconds",
+      "select_time_option02": "minutes",
+      "select_time_option03": "hours",
+      "select_time_option04": "days",
+      "select_policy_option01": "Count",
+      "select_policy_option02": "Aggregation",
+      "select_policy_option03": "Custom",
+      "select_punishment_option01": "Kill job",
+      "select_punishment_option02": "Unsubscribe",
+      "select_punishment_option03": "Monetize",
       "required_field": "This is a required field."
     },
     "create_role": {
@@ -625,7 +656,9 @@
       "title": "Manage Roles",
       "subtitle01": "Roles",
       "subtitle02": "Permissions",
+      "subtitle03": "Usage Policies",
       "content01": "Select a role to see and manage its permissions",
+      "content02": "Select a role to see and manage its policies or create a new one",
       "required_field": "This is a required field.",
       "save_btn": "Save"
     },
@@ -656,8 +689,9 @@
       "next_btn": "Next"
     },
     "show": {
-      "edit_span": "edit",
-      "manage_roles": "manage roles",
+      "span01": "edit",
+      "span02": "manage roles",
+      "span03": "access & usage",
       "label01": "Description",
       "label02": "Url",
       "label03": "Callback Url",
@@ -806,13 +840,11 @@
       "authorize_btn": "Authorize"
     }
   },
-
   "modal": {
     "select": "Select your country",
     "next": "Next step",
     "close": "Close"
   },
-
   "countries": {
     "spain": "Spain",
     "slovenia": "Slovenia",
@@ -820,7 +852,6 @@
     "austria": "Austria",
     "portugal": "Portugal"
   },
-
   "saml2": {
     "label01": "Support Contact Person",
     "label02": "Name",
@@ -896,6 +927,37 @@
     "step_create_eidas_credentials": {
       "title": "eIDAS Authentication Details", 
       "next_btn": "Next"
+    }
+  },
+  "errors": {
+    "saml": {
+      "title01": "ops! something went wrong!",
+      "content01": "contact with the administrators of",
+      "content02": "your web service provider",
+      "content03": "and send your",
+      "content04": "error details",
+      "title02": "Saml2 request has failed!",
+      "content05": "error",
+      "content06": "internal error"
+    },
+    "oauth": {
+      "title01": "ops! something went wrong!",
+      "content01": "contact with the administrators of",
+      "content02": "your web service provider",
+      "content03": "and send your",
+      "content04": "error details",
+      "title02": "OAuth2 request has failed!",
+      "content05": "error",
+      "content06": "internal error",
+      "content07": "(required)"
+    },
+    "not_found": {
+      "title01": "the page you have requested not exist",
+      "content01": "Go back to the",
+      "content02": "Homepage"
+    },
+    "generic": {
+      "content01": "Code"
     }
   }
 }

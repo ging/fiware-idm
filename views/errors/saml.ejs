@@ -1,0 +1,46 @@
+<div class="error">
+	<h1><%=translation.errors.oauth.title01%></h1>
+    <p><%=translation.errors.oauth.content01%>
+    <% if (application) { -%>
+        <a href="<%= application.url%>"> <%= application.name %></a>
+    <% } else { -%>
+        <%=translation.errors.oauth.content02%> 
+    <% } -%>
+    <%=translation.errors.oauth.content03%> 
+        <a data-toggle="collapse" href="#error_saml" aria-expanded="true" aria-controls="error_saml" class="collapsed">
+            <%=translation.errors.oauth.content04%> <i class="fa fa-angle-up"></i>
+        </a>
+    </p>
+	<div class="collapse_out">
+    	<div id="error_saml" class="form-group collapse" role="tabpanel">
+			<h2><%=translation.errors.oauth.title02%></h2>
+	        <p><b><%=translation.errors.oauth.content05%> - </b>
+	            <% if (error.message) { -%>
+	                <%= error.message %>
+	            <% } else { -%>
+	                <%=translation.errors.oauth.content06%>             
+	            <% } -%>
+	        </p>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+    $('.collapsed').mouseover(function(){
+        $(this).children('i').toggleClass('fa-rotate-180');
+    });
+    $('.collapsed').mouseleave(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').removeClass('fa-rotate-180');
+        } else {
+            $(this).children('i').addClass('fa-rotate-180');
+        }
+    });
+    $('.collapsed').click(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').addClass('fa-rotate-180');
+        } else {
+            $(this).children('i').removeClass('fa-rotate-180');
+        }
+    });
+</script>

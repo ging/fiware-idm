@@ -23,6 +23,7 @@ ease Keyrock configuration.
 | IDM_CORS_MAS_AGE                    | Integer | Indicates how long the results of a preflight request                                                           | -                           |
 | IDM_CORS_PREFLIGHT                  | Boolean | Allow preflight requests                                                                                        | true,false                  |
 | IDM_CORS_OPTIONS_STATUS             | Integer | Status response code of HTTP OPTIONS verb                                                                       | -                           |
+| IDM_OAUTH_EMPTY_STATE               | Boolean | Allow empty state in service requests                                                                           | true, false                 |
 | IDM_OAUTH_AUTH_LIFETIME             | Integer | Lifetime of OAuth2 Authorization Code                                                                           | -                           |
 | IDM_OAUTH_ACC_LIFETIME              | Integer | Lifetime of OAuth2 Access Token                                                                                 | -                           |
 | IDM_OAUTH_ASK_AUTH                  | Boolean | If is set to true, it will prompt authorization message when log in a service usign OAuth2                      | true,false                  |
@@ -50,9 +51,12 @@ ease Keyrock configuration.
 | IDM_EX_AUTH_DB_PASS                 | String  | Password to authenticate Keyrock to perform actions against the external database                               | -                           |
 | IDM_EX_AUTH_DB_USER_TABLE           | String  | Name of the table to which Keyrock will perform an external authentication                                      | -                           |
 | IDM_EX_AUTH_DIALECT                 | String  | SQL Dialect of the external database                                                                            | mysql,sqlite,postgres,mssql |
+| IDM_EMAIL_TRANSPORT                 | String  | Transport mode of the email                                                                                     | 'smtp' or 'mailgun'         |
+| IDM_EMAIL_DOMAIN                    | String  | Domain name (mailgun only)                                                                                      | -                           |
 | IDM_EMAIL_HOST                      | String  | Name of the host where is running the mail server                                                               | -                           |
 | IDM_EMAIL_PORT                      | Integer | Port where is running the mail server                                                                           | 0 to 65536                  |
 | IDM_EMAIL_ADDRESS                   | String  | Email Address used by Keyrock to send emails to the users                                                       | -                           |
+| IDM_MAILGUN_API_KEY                 | String  | API key used by mailgun to send emails (only relevant if transport is 'mailgun')                                | -                           |
 | IDM_TITLE                           | String  | Name of Keyrock when using a new theme                                                                          | -                           |
 | IDM_THEME                           | String  | Name of the folder in which is store all new styles                                                             | -                           |
 | IDM_EIDAS_ENABLED                   | Boolean | Enable Keyrock to allow user authentication in services using their eID                                         | true,false                  |
@@ -63,3 +67,6 @@ ease Keyrock configuration.
 | IDM_ADMIN_USER                      | String  | Username of admin default user in Keyrock                                                                       | -                           |
 | IDM_ADMIN_EMAIL                     | String  | Email of admin default user in Keyrock                                                                          | -                           |
 | IDM_ADMIN_PASS                      | String  | Password of admin default user in Keyrock                                                                       | -                           |
+| IDM_USAGE_CONTROL_ENABLED           | String  | Enable Usage control feature Keyrock                                                                            | -                           |
+| IDM_PTP_HOST                        | String  | Name of the host where is running the PTP                                                                       | -                           |
+| IDM_PTP_PORT                        | Integer | Port where is listenning the PTP                                                                                | 0 to 65536                  |

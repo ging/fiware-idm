@@ -622,6 +622,24 @@ textarea {
   }
 }
 
+.id_attributes_warning {
+  font-style: italic;
+}
+
+.id_attributes_table {
+  font-family: "Verdana", sans-serif;
+  font-size: 12px;
+  th {
+    font-weight: 100;
+  }
+  thead {
+    th {
+      font-weight: bold;
+    }  
+  }
+
+}
+
 #authorize_application_modal{
   @extend .well;
   .modal-body{

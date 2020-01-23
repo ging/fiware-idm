@@ -64,6 +64,14 @@ module.exports = function(sequelize, DataTypes) {
             ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
             : ''),
         validate: { notEmpty: { msg: 'redirectUri' } },
+        get() {
+          return this.getDataValue('redirect_uri')
+            ? this.getDataValue('redirect_uri').split(',')
+            : [];
+        },
+        set(val) {
+          this.setDataValue('redirect_uri', val ? val.toString() : null);
+        },
       },
       redirect_sign_out_uri: {
         type:

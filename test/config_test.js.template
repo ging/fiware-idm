@@ -55,6 +55,7 @@ config.cors = {
 
 // Config oauth2 parameters
 config.oauth2 = {
+    allow_empty_state: (process.env.IDM_OAUTH_EMPTY_STATE || false),                     // allow empty state in request
     authorization_code_lifetime: (process.env.IDM_OAUTH_AUTH_LIFETIME || 5 * 60),        // Five minutes
     access_token_lifetime: (process.env.IDM_OAUTH_ACC_LIFETIME || 60 * 60),              // One hour
     ask_authorization: (process.env.IDM_OAUTH_ASK_AUTH || true),                         // Prompt a message to users to allow the application to read their details
@@ -81,6 +82,15 @@ config.authorization = {
         enabled: to_boolean(process.env.IDM_AUTHZFORCE_ENABLED, false),
         host: (process.env.IDM_AUTHZFORCE_HOST || 'localhost'),
         port: (process.env.IDM_AUTHZFORCE_PORT||  8080),
+    } 
+}
+
+// Enable usage control and configure where is the Policy Translation Point
+config.usage_control = {
+    enabled: to_boolean(process.env.IDM_USAGE_CONTROL_ENABLED, false),
+    ptp: {
+        host: (process.env.IDM_PTP_HOST || 'localhost'),
+        port: (process.env.IDM_PTP_PORT||  8081),
     } 
 }
 
@@ -131,6 +141,22 @@ config.eidas = {
     metadata_expiration: (process.env.IDM_EIDAS_METADATA_LIFETIME || 60 * 60 * 24 * 365) // One year
 }
 
+// Enables the possibility of adding identity attributes in users' profile
+config.identity_attributes = {
+    /* eslint-disable snakecase/snakecase */
+    enabled: false,
+    attributes: [
+        {name: 'Vision', key: 'vision', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Color Perception', key: 'color', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Hearing', key: 'hearing', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Vocal Capability', key: 'vocal', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Manipulation Strength', key: 'manipulation', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Reach', key: 'reach', type: 'number', minVal: '0', maxVal: '100'},
+        {name: 'Cognition', key: 'cognition', type: 'number', minVal: '0', maxVal: '100'}
+    ]
+    /* eslint-enable snakecase/snakecase */
+}
+
 
 if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  === 'nodejs_idm'){
     /* eslint-disable no-console */
@@ -138,7 +164,7 @@ if (config.session.secret === 'nodejs_idm' || config.password_encryption.key  ==
     console.log('WARNING: The current encryption keys match the defaults found in the plaintext');
     console.log('         template file - please update for a production instance');
     console.log('****************');
-    /* eslint-enalbe no-console */
+    /* eslint-enable no-console */
 }
 
 

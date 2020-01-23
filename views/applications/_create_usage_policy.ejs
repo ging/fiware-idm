@@ -1,0 +1,152 @@
+<!-- Form to create permission -->
+<div id="create_usage_policy_modal" class="modal fade" style="top: 0px; display: none;" aria-hidden="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>
+				</h3><h3><%=translation.applications.create_usage_policy.title%></h3>  
+			</div>
+			<form id="create_usage_policy_form" ng-controller="DummyCtrl" name="" autocomplete="off" class="" action="/idm/applications/<%= application.id %>/edit/usage_policies" method="POST" enctype="">
+				<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+				<div class="modal-body clearfix">
+					<fieldset>
+						<div class="form-group required">
+							<label class="control-label  required" for="id_name"><%=translation.applications.create_usage_policy.label01%></label>
+							<div class=" ">
+								<input class="form-control" id="id_name" maxlength="255" name="name" type="text">
+							</div>
+						</div>
+						<span id="error_empty_name" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_usage_policy.required_field%></span>
+
+						<div class="form-group required">
+							<label class="control-label  required" for="id_description"><%=translation.applications.create_usage_policy.label02%></label>
+							<div class=" ">
+								<input class="form-control" id="id_description" name="description" type="text">
+							</div>
+						</div>
+						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_usage_policy.required_field%></span>
+
+						<div class="panel-group" id="accordion">
+							<div class="panel">
+								<div class="panel-headding">
+									<a data-toggle="collapse" data-parent="#accordion" class="panel-heading collapsed">
+										<h4 class="panel-title panel-close">
+											<%=translation.applications.create_usage_policy.subtitle01%>
+										</h4>
+									</a>
+								</div>
+								<div id="collapse-default-policy" class="panel-collapse collapsed collapse in">
+									<div class="form-group required">
+				                        <label class="control-label  required" for="type">
+				                            <%=translation.applications.create_usage_policy.label03%>
+				                        </label>
+				                        <div class="select-multiple">
+				                            <select id="type" title="<%=translation.applications.create_usage_policy.select_place_holder%>" name="type" class="selectpicker" data-dropup-auto="false">
+				                                <option value="COUNT_POLICY"><%=translation.applications.create_usage_policy.select_policy_option01%></option>
+				                                <option value="AGGREGATION_POLICY"><%=translation.applications.create_usage_policy.select_policy_option02%></option>
+				                                <option value="CUSTOM_POLICY"><%=translation.applications.create_usage_policy.select_policy_option03%></option>
+				                            </select>
+				                        </div>
+				                    </div>
+				                    <span id="error_empty_type" style="display: none;" class='help-block alert alert-danger'>Type required.</span>
+
+				                    <div id="parameters" class="form-group required" hidden>
+				                        <label class="control-label  required">
+				                            <%=translation.applications.create_usage_policy.label04%>
+				                        </label>
+				                    </div>
+				                    <span id="error_invalid_parameter" style="display: none;" class='help-block alert alert-danger'>Invalid paramter.</span>
+
+				                    <div id="max_number" class="form-group required parameter" hidden>
+				                        <label class="control-label  required" for="policy_type">
+				                            <%=translation.applications.create_usage_policy.label05%>
+				                        </label>
+				                        <div class="time">
+											<input class="form-control" id="id_max_number_events" name="parameters[max_number_events[value]]" type="number">
+										</div>
+				                    </div>
+				                    
+
+				                    <div id="event_window" class="form-group required parameter" hidden>
+				                        <label class="control-label  required" for="policy_type">
+				                            <%=translation.applications.create_usage_policy.label06%>
+				                        </label>
+				                        <div class="time">
+											<input class="form-control" id="id_event_window" name="parameters[event_window[value]]" type="number">
+											<div class="select-multiple">
+					                            <select name="parameters[event_window[unit]]" class="selectpicker" data-dropup-auto="false">
+					                                <option value="SECONDS"><%=translation.applications.create_usage_policy.select_time_option01%></option>
+													<option value="MINUTES"><%=translation.applications.create_usage_policy.select_time_option02%></option>
+													<option value="HOURS"><%=translation.applications.create_usage_policy.select_time_option03%></option>
+													<option value="DAYS"><%=translation.applications.create_usage_policy.select_time_option04%></option>
+					                            </select>
+					                        </div>
+										</div>
+				                    </div>
+
+				                    <div id="aggregate_time" class="form-group required parameter" hidden>
+				                        <label class="control-label required" for="policy_type">
+				                            <%=translation.applications.create_usage_policy.label07%>
+				                        </label>
+				                        <div class="time">
+											<input class="form-control" id="id_aggregate_time" name="parameters[aggregate_time[value]]" type="number">
+											<div class="select-multiple">
+					                            <select name="parameters[aggregate_time[unit]]" class="selectpicker" data-dropup-auto="false">
+					                            	<option value="SECONDS"><%=translation.applications.create_usage_policy.select_time_option01%></option>
+					                                <option value="MINUTES"><%=translation.applications.create_usage_policy.select_time_option02%></option>
+					                                <option value="HOURS"><%=translation.applications.create_usage_policy.select_time_option03%></option>
+					                                <option value="DAYS"><%=translation.applications.create_usage_policy.select_time_option04%></option>
+					                            </select>
+					                        </div>
+										</div>
+				                    </div>
+
+				                    <div id="punishment" class="form-group required" hidden>
+				                        <label class="control-label required" for="punishment">
+				                            <%=translation.applications.create_usage_policy.label08%>
+				                        </label>
+				                        <div class="select-multiple">
+				                            <select id="punishment" name="punishment" title="<%=translation.applications.create_usage_policy.select_place_holder%>" class="selectpicker" data-dropup-auto="false">
+				                                <option value="KILL_JOB"><%=translation.applications.create_usage_policy.select_punishment_option01%></option>
+				                                <option value="UNSUBSCRIBE"><%=translation.applications.create_usage_policy.select_punishment_option02%></option>
+				                                <option value="MONETIZE"><%=translation.applications.create_usage_policy.select_punishment_option03%></option>
+				                            </select>
+				                        </div>
+				                    </div>
+				                    <span id="error_invalid_punishment" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_usage_policy.required_field%></span>
+
+				                    <div id="time_lapse" class="form-group required parameter" hidden>
+				                        <label class="control-label  required" for="time_lapse">
+				                            <%=translation.applications.create_usage_policy.label09%>
+				                        </label>
+				                        <div class="time_lapse">
+											<input class="form-control timepicker" id="id_time_from" name="from" type="text">
+											<span>to</span>
+											<input class="form-control timepicker" id="id_time_to" name="to" type="text">
+										</div>
+				                    </div>
+
+				                    <div id="custom" class="form-group required parameter" hidden>
+				                        <label class="control-label  required" for="time_lapse">
+				                            <%=translation.applications.create_usage_policy.label10%>
+				                        </label>
+				                        <div class="form-group ">
+											<div class=" ">
+												<textarea class="form-control" cols="40" id="id_odrl" name="odrl" rows="10"></textarea>
+											</div>
+										</div>
+				                    </div>
+				                    <span id="error_invalid_custom" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_usage_policy.required_field%></span>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer">
+					<input class="btn btn-primary pull-right " type="submit" name="" value="<%=translation.applications.create_usage_policy.save_btn%>">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

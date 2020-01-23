@@ -1,0 +1,1913 @@
+FORMAT: 1A
+HOST: http://keyrock
+TITLE: Identity Manager GE - Keyrock 仕様
+DATE: 26 March 2018
+VERSION: v1
+APIARY_PROJECT: keyrock
+SPEC_URL: http://ging.github.io/fiware-idm/api-spec/
+GITHUB_SOURCE: https://github.com/ging/fiware-idm
+
+# Identity Manager GE - Keyrock
+
+Identity Manager (IdM) GE API 仕様は、認証およびユーザに関する既存の標準に準拠し、アクセス情報を提供します。次のセクションでは、これらの標準へのポインタと、該当する場合は RESTful バインディングの機能についての詳細を説明します。
+
+この仕様は、開発スキルを持つサービス開発者とクラウド・プロバイダを対象としています。前者については、このドキュメントは Identity Management Service API と相互運用する方法の完全な仕様を提供します。後者の場合、この仕様は、記述された機能を提供するためにクライアント・アプリケーション開発者に提供されるインタフェースを示します。この情報を使用するには、読者は最初に
+[Generic Enabler サービス](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.ArchitectureDescription.Security.IdentityManagement)
+について一般的な知識が必要です。 
+
+API ユーザは以下に精通している必要があります :
+
+* RESTful web サービス
+* HTTP/1.1
+* JSON データ・シリアライゼーション・フォーマット
+* OAuth 2.0 
+
+# はじめに
+
+## エディタ
+
++ Álvaro Alonso González
++ Enrique García Navalón
++ Federico A. Fernández Moreno
++ Alejandro Pozo Huertas
+
+## コピーライト
+
+Copyright © 2015-2016 by [UPM](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/UPM).
+
+## ライセンス　
+
+この仕様は、
+[FIWARE Open Specification License (implicit patent license)](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FI-WARE_Open_Specification_Legal_Notice_%28implicit_patents_license%29)
+の下で、ライセンスされています。
+
+
+## ステータス
+
+これは進行中の作業であり、日々変化しています。
+[FIWARE IdM Github プロジェクト](https://github.com/ging/fiware-idm/issues)
+にコメントを送ってください。
+
+## 謝辞
+
+編集者は、この仕様に貢献してくれたすべての人々に感謝の意を表したいと思います。
+
+
+#Group Keyrock API
+
+## 認証 (Authentication) [/v1/auth/tokens]
+API を介して Identity Manager を管理するには、HTTP ヘッダに含めるアクセス・トークンを取得する必要があります。アクセス・トークンを取得する方法は2つあります。
+
+### パスワード方式でトークンを作成 [POST]
++ Request
+    + Headers
+    
+            Content-Type: application/json
+            
+    + Body
+    
+            {
+              "name": "alice@test.com",
+              "password": "passw0rd"
+            }
++ Response 201 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 201 Created
+        X-Subject-Token: 04c5b070-4292-4b3f-911b-36a103f3ac3f
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 74
+        ETag: W/"4a-jYFzvNRMQcIZ2P+p5EfmbN+VHcw"
+        Date: Mon, 19 Mar 2018 15:05:35 GMT
+        Connection: keep-alive
+        
+    + Body
+    
+        {
+            "token": {
+                "methods": ["password"],
+                "expires_at":"2018-03-20T15:05:35.697Z"
+            }
+        }
+
+
+### トークン・メソッドでトークンを作成 [POST]
++ Reques
+    + Headers
+    
+            Content-Type: application/json
+            
+    + Body
+    
+            {
+              "token": "token_id"
+            }
+            
++ Response 201 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 201 Created
+        X-Subject-Token: 04c5b070-4292-4b3f-911b-36a103f3ac3f
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 74
+        ETag: W/"4a-jYFzvNRMQcIZ2P+p5EfmbN+VHcw"
+        Date: Mon, 19 Mar 2018 15:05:35 GMT
+        Connection: keep-alive
+        
+    + Body
+    
+        {
+            "token": {
+                "methods": ["password"],
+                "expires_at":"2018-03-20T15:05:35.697Z"
+            }
+        }
+            
+
+### トークン情報を取得 [GET]
++ Request
+    + Headers
+    
+            X-Auth-token: auth_token
+            X-Subject-token: subj_token
+            
+            
++ Response 201 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 278
+        ETag: W/"116-JwJR8Y5eFV2SDon0j1GE5yWyNx4"
+        Date: Tue, 20 Mar 2018 15:23:21 GMT
+        Connection: keep-alive
+
+        
+    + Body
+    
+        {
+          "access_token": "f0a0a067-6341-4943-8225-45f794b3d94b",
+          "expires": "2018-03-21T15:22:33.000Z",
+          "valid": true,
+          "User": {
+            "id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+            "username": "alice_new",
+            "email": "alice@test.com",
+            "date_password": "2018-03-20T12:12:09.000Z",
+            "enabled": true,
+            "admin": false
+          }
+        }
+
+
+### トークンを削除 [DELETE]
++ Request
+    + Headers
+    
+            X-Auth-token: auth_token
+            X-Subject-token: subj_token
+            
+            
++ Response 204 (application/json)
+        
+        
+## アプリケーション [/v1/applications]
+
+アプリケーションは Keyrock に登録され、OAuth2 リソースを消費します。
+
+### アプリケーションを一覧表示 [GET]
++ Request
+    + Headers
+    
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 200 Ok
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 303
+        ETag: W/"12f-64q7xcRDNfw7c2xrc1r2S5EFS6k"
+        Date: Tue, 20 Mar 2018 10:14:30 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+          "applications": [
+            {
+              "id": "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c",
+              "name": "Test_application 2",
+              "description": "Description",
+              "image": "default",
+              "url": "http://localhost",
+              "redirect_uri": "http://localhost/login",
+              "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
+              "response_type": "code,token",
+              "token_types": "bearer,jwt,permanent",
+              "client_type": null
+            },
+            {
+              "id": "fd7fe349-f7da-4c27-b404-74da17641025",
+              "name": "Test_application 1",
+              "description": "description",
+              "image": "default",
+              "url": "http://localhost",
+              "redirect_uri": "http://localhost/login",
+              "grant_type": "password,authorization_code,implicit",
+              "response_type": "code,token",
+              "token_types": "bearer",
+              "client_type": null
+            }
+          ]
+        }
+
+### アプリケーションを作成 [POST]
++ Request (application/json)
+    + Headers
+            
+            X-Auth-token: token
+    
+    + Body
+
+        {
+          "application": {
+            "name": "Test_application 1",
+            "description": "description",
+            "redirect_uri": "http://localhost/login",
+            "url": "http://localhost",
+            "grant_type": [
+              "authorization_code",
+              "implicit",
+              "password"
+            ],
+            "token_types": [
+                "jwt",
+                "permanent"
+            ]
+          }
+        }
+
+
++ Response 201 (application/json)
+    + Headers
+    
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 329
+        ETag: W/"149-yQORsIAntQ0YHR5uCyLZhk7jTkg"
+        Date: Tue, 20 Mar 2018 10:16:13 GMT
+        Connection: keep-alive
+
+    + Body
+            
+        {
+          "application": {
+            "id": "fd7fe349-f7da-4c27-b404-74da17641025",
+            "secret": "9dc463cf-8318-4f65-bc02-778424fdfd77",
+            "image": "default",
+            "name": "Test_application 1",
+            "description": "description",
+            "redirect_uri": "http://localhost/login",
+            "url": "http://localhost",
+            "grant_type": "password,authorization_code,implicit",
+            "token_types": "jwt,permanent",
+            "jwt_secret": "3f1164da20d50c62",
+            "response_type": "code,token"
+          }
+        }
+
+## アプリケーション [/v1/applications/{application_id}]
+
++ Parameters
+    + application_id - アプリケーションの Id
+    
+### アプリケーション詳細を読む [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 200 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 200 Ok
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 407
+        ETag: W/"197-biN1lSH/UM4L+dEtIoLYyOGteWE"
+        Date: Tue, 20 Mar 2018 10:25:33 GMT
+        Connection: keep-alive
+
+    + Body
+    
+            {
+                "application": {
+                    "id": "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c",
+                    "name": "Test_application 2",
+                    "description": "Description",
+                    "secret": "61f5def7-bcf9-45b1-9c69-d0887e403737",
+                    "url": "http://localhost",
+                    "redirect_uri": "http://localhost/login",
+                    "image": "default",
+                    "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
+                    "response_type": "code,token",
+                    "token_types": "bearer,jwt,permanent",
+                    "jwt_secret": "3f1164da20d50c62",
+                    "client_type": null,
+                    "scope": null,
+                    "extra": null
+                }
+            }
+
+### アプリケーションを更新 [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+        {
+            "application": {
+                "name": "new name",
+                "description": "new description",
+                "redirect_uri": "new redirect uri",
+                "token_types": ["permanent"]
+                "grant_type": [
+                    "authorization_code",
+                    "password"
+                ]
+            }
+        }
+
++ Response 200 (application/json)
+
+
+    + Headers
+    
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 170
+        ETag: W/"aa-XCFRn1K54wlgPzun8PluFjYwCO0"
+        Date: Tue, 20 Mar 2018 10:29:04 GMT
+        Connection: keep-alive
+    
+    + Body
+    
+        {
+          "values_updated": {
+            "name": "new name",
+            "description": "new description",
+            "redirect_uri": "new redirect uri",
+            "grant_type": "password,authorization_code",
+            "token_types": "bearer,permanent",
+            "jwt_secret": null,
+            "response_type": "code"
+          }
+        }
+
+### アプリケーションを削除 [DELETE]
++ Request
+    + Headers
+            
+            X-Auth-token: token
+            
++ Response 204 (application/json)
+
+# ユーザ [/v1/users]
+
+### ユーザを一覧表示 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 200 Ok
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 378
+        ETag: W/"17a-/TnzfhPjjd4IG4D1u38zPZiSIL0"
+        Date: Tue, 20 Mar 2018 10:08:27 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+          "users": [
+            {
+              "id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+              "username": "alice",
+              "email": "alice@test.com",
+              "enabled": true,
+              "gravatar": false,
+              "date_password": "2018-03-20T09:31:07.000Z",
+              "description": null,
+              "website": null
+            },
+            {
+              "id": "admin",
+              "username": "admin",
+              "email": "admin@test.com",
+              "enabled": true,
+              "gravatar": false,
+              "date_password": "2018-03-20T08:40:14.000Z",
+              "description": null,
+              "website": null
+            }
+          ]
+        }
+
+### ユーザを作成 [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+        {
+            "user": {
+                "username": "alice",
+                "email": "alice@test.com",
+                "password": "passw0rd"
+            }
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+        HTTP/1.1 201 Created
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 205
+        ETag: W/"cd-hbCwPDJrO5NvpsY2pqY6Qhlf/do"
+        Date: Tue, 20 Mar 2018 09:31:07 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+            "user": {
+                "id":"2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+                "image":"default",
+                "gravatar":false,
+                "enabled":true,
+                "admin":false,
+                "username":"alice",
+                "email":"alice@test.com",
+                "date_password":"2018-03-20T09:31:07.104Z"
+            }
+        }
+
+## ユーザ [/v1/users/{user_id}]
+
++ Parameters
+    + user_id - ユーザの Id
+
+### ユーザに関する情報を読む [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+
+    + Headers
+        HTTP/1.1 200 Ok
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 239
+        ETag: W/"ef-346BFly5PUZzqso7/DhcynciNPs"
+        Date: Tue, 20 Mar 2018 10:34:20 GMT
+        Connection: keep-alive
+
+    + Body
+    
+        {
+            "user": {
+                "id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+                "username": "alice",
+                "email": "alice@test.com",
+                "enabled": true,
+                "admin": false,
+                "image": "default",
+                "gravatar": false,
+                "date_password": "2018-03-20T09:31:07.000Z",
+                "description": null,
+                "website": null
+            }
+        }
+
+### ユーザを更新 [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+        { 
+            "user": {
+              "username": "new_alice",
+              "password": "passw0rd_new"
+            }
+        }
++ Response 200 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 72
+        ETag: W/"48-NygV9BIfH5juflD+icW6fPFuBkA"
+        Date: Tue, 20 Mar 2018 10:38:59 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+            "values_updated": {
+                "username": "alice_new",
+                "email": "alice_new@test.com"
+            }
+        }
+### ユーザを削除 [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 204 (application/json)
+
+# 組織 (Organizations) [/v1/organizations]
+
+### 組織を一覧表示 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+
+    + Headers
+    
+        HTTP/1.1 201 Created
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 355
+        ETag: W/"163-0eDqBVBTEbKRQmAm6AtzDLXVigI"
+        Date: Tue, 20 Mar 2018 10:45:36 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+          "organizations": [
+            {
+              "role": "owner",
+              "Organization": {
+                "id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+                "name": "Test organization 2",
+                "description": "description 2",
+                "image": "default",
+                "website": null
+              }
+            },
+            {
+              "role": "owner",
+              "Organization": {
+                "id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+                "name": "Test organization",
+                "description": "description",
+                "image": "default",
+                "website": null
+              }
+            }
+          ]
+        }
+
+### 組織を作成 [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+    
+            {
+                "organization": {
+                    "name": "Test organization",
+                    "description": "description"
+                }
+            } 
+
++ Response 201 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 201 Created
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 135
+        ETag: W/"87-mQPZWVCWNw1jTeBUp2u6DfQUBXg"
+        Date: Tue, 20 Mar 2018 10:41:14 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+          "organization": {
+            "id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+            "image": "default",
+            "name": "Test organization",
+            "description": "description"
+          }
+        }
+
+## 組織 [/v1/organizations/{organization_id}]
+
++ Parameters
+    + organization_id - 組織の Id
+
+### 組織に関する情報を読む [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+    + Headers
+
+        HTTP/1.1 201 Created
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 150
+        ETag: W/"96-Gd8UZNti5b/l9AK7zLVUgoPzoSg"
+        Date: Tue, 20 Mar 2018 10:46:47 GMT
+        Connection: keep-alive
+    
+    + Body
+        {
+          "organization": {
+            "id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+            "name": "Test organization",
+            "description": "description",
+            "website": null,
+            "image": "default"
+          }
+        }
+
+### 組織を更新 [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+    
+        {
+          "organization": {
+            "description": "new description",
+            "website": "http://test.com"
+          }
+        }
+
++ Response 200 (application/json)
+    
+    + Headers
+    
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 80
+        ETag: W/"50-SLhFvXhKe+sDolh13Q+2u5eotYw"
+        Date: Tue, 20 Mar 2018 10:48:45 GMT
+        Connection: keep-alive
+    
+    + Body
+    
+        {
+          "values_updated": {
+            "description": "new description",
+            "website": "http://test.com"
+          }
+        }
+
+### 組織を削除 [DELETE]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204 (application/json)
+
+## ロール [/v1/applications/{application_id}/roles]
+
++ Parameters
+    + application_id - アプリケーションの Id
+
+### ロールを一覧表示 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+    
+    + Headers
+    
+    HTTP/1.1 200 OK
+    X-Powered-By: Express
+    Content-Type: application/json; charset=utf-8
+    Content-Length: 209
+    ETag: W/"d1-00jqKKxgEvBT2U3J3v7Jttp5bOU"
+    Date: Tue, 20 Mar 2018 11:13:38 GMT
+    Connection: keep-alive
+
+    + Body
+    
+        {
+          "roles": [
+            {
+              "id": "purchaser",
+              "name": "Purchaser"
+            },
+            {
+              "id": "provider",
+              "name": "Provider"
+            },
+            {
+              "id": "ee2ec16f-694b-447f-b61a-e293b6fe5f7b",
+              "name": "role 2"
+            },
+            {
+              "id": "33fd15c0-e919-47b0-9e05-5f47999f6d91",
+              "name": "role 1"
+            }
+          ]
+        }
+
+### ロールを作成 [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+        
+            {
+              "role": {
+                "name": "role 1"
+              }
+            }
+
++ Response 201 (application/json)
+
+    + Headers
+
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 147
+        ETag: W/"93-gmWMlkuHssLlhgsbkRsYJjI1ZpE"
+        Date: Tue, 20 Mar 2018 10:56:16 GMT
+        Connection: keep-alive
+
+    + Body
+            {
+              "role": {
+                "id": "33fd15c0-e919-47b0-9e05-5f47999f6d91",
+                "is_internal": false,
+                "name": "role 1",
+                "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
+              }
+            }
+
+## ロール [/v1/applications/{application_id}/roles/{role_id}]
+
++ Parameters
+    + application_id - アプリケーションの Id
+    + role_id - ロールの Id
+
+### ロールの詳細を読む [GET]
++ Request
+    + Headers
+    
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 147
+        ETag: W/"93-jWdaZFK7V/AOFD7WOIM0aZePmqg"
+        Date: Tue, 20 Mar 2018 11:21:19 GMT
+        Connection: keep-alive
+    
+    + Body
+    
+        {
+          "role": {
+            "id": "33fd15c0-e919-47b0-9e05-5f47999f6d91",
+            "name": "role 1",
+            "is_internal": false,
+            "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
+          }
+        }
+
+### ロールを更新 [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+            {
+              "role": {
+                "name": "test_role_new",
+                "application_id": "2222"
+              }
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 43
+        ETag: W/"2b-pM4WlfxN6zpTuxeiYjs7ZBMAimM"
+        Date: Tue, 20 Mar 2018 11:24:07 GMT
+        Connection: keep-alive
+
+    + Body
+    
+        {
+          "values_updated": {
+            "name": "new role name"
+          }
+        }
+    
+
+### ロールを削除 [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204 (application/json)
+
+## パーミッション [/v1/applications/{application_id}/permissions]
+
++ Parameters
+    + application_id - アプリケーションの Id
+
+### パーミッションを一覧表示 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 816
+        ETag: W/"330-B4K+xvKY9Z0W5Qhy4XfXIxsJnwU"
+        Date: Tue, 20 Mar 2018 11:41:23 GMT
+        Connection: keep-alive
+    
+    
+    + Body
+        {
+          "permissions": [
+            {
+              "id": "6",
+              "name": "Get and assign only public owned roles",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            },
+            {
+              "id": "5",
+              "name": "Get and assign all public application roles",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            },
+            {
+              "id": "4",
+              "name": "Manage authorizations",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            },
+            {
+              "id": "3",
+              "name": "Manage roles",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            },
+            {
+              "id": "2",
+              "name": "Manage the application",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            },
+            {
+              "id": "15ca810b-27d1-44a1-8491-a3fb4b6bc6f3",
+              "name": "permission 1",
+              "description": null,
+              "action": "GET",
+              "resource": "login",
+              "xml": null
+            },
+            {
+              "id": "1",
+              "name": "Get and assign all internal application roles",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            }
+          ]
+        }
+
+### パーミッションを作成 [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+            {
+              "permission": {
+                "name": "permission 1",
+                "action": "GET",
+                "resource": "login"
+              }
+            }
+
++ Response 201 (application/json)
+    + Headers
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 193
+        ETag: W/"c1-WkjxOsda9h0YVjVe6wfJ3/BB5/E"
+        Date: Tue, 20 Mar 2018 11:34:41 GMT
+        Connection: keep-alive
+        
+    + Body
+    
+            {
+              "permission": {
+                "id": "15ca810b-27d1-44a1-8491-a3fb4b6bc6f3",
+                "is_internal": false,
+                "name": "permission 1",
+                "action": "GET",
+                "resource": "login",
+                "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
+              }
+            }
+
+## パーミッション [/v1/applications/{application_id}/permissions/{permission_id}]
+
++ Parameters
+    + application_id - アプリケーションの Id
+    + permission_id - パーミッションの Id
+
+### パーミッションの詳細を読む [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 223
+        ETag: W/"df-8dskjqxwg2z2vTSGP00GOfWr7ak"
+        Date: Tue, 20 Mar 2018 11:42:26 GMT
+        Connection: keep-alive
+
+    + Body
+
+            {
+              "permission": {
+                "id": "15ca810b-27d1-44a1-8491-a3fb4b6bc6f3",
+                "name": "permission 1",
+                "description": null,
+                "is_internal": false,
+                "action": "GET",
+                "resource": "login",
+                "xml": null,
+                "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
+              }
+            }
+
+### パーミッションを更新 [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+            {
+              "permission": {
+                "name": "new name permission",
+                "description": "new description permission",
+                "xml": ""xml": "<permission>...</permission>""
+              }
+            }
+
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 109
+        ETag: W/"6d-DcRDt9VL8q5NI3uqNXNrX+2Kq0U"
+        Date: Tue, 20 Mar 2018 11:45:49 GMT
+        Connection: keep-alive
+
+        
+    + Body
+        {
+          "values_updated": {
+            "name": "new name permission",
+            "description": "new description permission",
+            "xml": "xml rule"
+          }
+        }
+ 
+  
+### パーミッションを削除 [DELETE]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 204 (application/json)
+
+
+## Pep Proxies [/v1/applications/{application_id}/pep_proxies]
+
++ Parameters
+    + application_id - アプリケーションの Id
+
+
+### Pep Proxy の情報 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 126
+        ETag: W/"7e-WPTcZsaLk+L8CA5OdIqizFHVrPw"
+        Date: Tue, 20 Mar 2018 11:57:37 GMT
+        Connection: keep-alive
+    
+    
+    + Body
+        {
+          "pep_proxy": {
+            "id": "pep_proxy_2d19d297-e555-4e3a-a18d-22deda37036a",
+            "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
+          }
+        }
+
+### Pep Proxy を作成 [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 201 (application/json)
+    + Headers
+    
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 129
+        ETag: W/"81-pV8lmjYRuvS5Nc/SlKF+oCjMPlo"
+        Date: Tue, 20 Mar 2018 11:56:18 GMT
+        Connection: keep-alive
+
+    + Body
+    
+        {
+          "pep_proxy": {
+            "id": "pep_proxy_2d19d297-e555-4e3a-a18d-22deda37036a",
+            "password": "pep_proxy_950468f7-4198-42e1-8f41-4b1f8c5bc1f2"
+          }
+        }
+
+### Pep Proxy のパスワードをリセット [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+
++ Response 200 (application/json)
+    + Headers
+        
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 65
+        ETag: W/"41-U+BN5OW2bt+63vlUf0I9i/DAZ6M"
+        Date: Tue, 20 Mar 2018 11:58:45 GMT
+        Connection: keep-alive
+  
+    + Body
+    
+        {
+            "new_password":"pep_proxy_3b2c8791-71b9-444a-b8c7-00d37cf35149"
+        }
+    
+
+### Pep Proxy を削除 [DELETE]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+
++ Response 204 (application/json)
+
+
+## Iot Agents [/v1/applications/{application_id}/iot_agents]
+
++ Parameters
+    + application_id - アプリケーションの Id
+
+
+### Iot Agents を一覧表示 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 181
+        ETag: W/"b5-JcuFa5VxfeRl0gl4ZrpOvxi6mHM"
+        Date: Tue, 20 Mar 2018 12:03:26 GMT
+        Connection: keep-alive
+    
+    + Body
+        {
+          "iot_agents": [
+            {
+              "id": "iot_sensor_47886fa2-883e-4550-bb56-0138ae9862b7"
+            },
+            {
+              "id": "iot_sensor_74df472c-0fd1-4b8a-8f13-c6848307bc7d"
+            },
+            {
+              "id": "iot_sensor_f95fc041-7102-4be7-8948-37fb571afa89"
+            }
+          ]
+        }
+
+### Iot Agent を作成 [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 201 (application/json)
+    + Headers
+    
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 125
+        ETag: W/"7d-33tQwa1x8d+8o71baUJyd7SFNUM"
+        Date: Tue, 20 Mar 2018 12:01:48 GMT
+        Connection: keep-alive
+
+    + Body
+    
+        {
+          "iot_agent": {
+            "id": "iot_sensor_47886fa2-883e-4550-bb56-0138ae9862b7",
+            "password": "iot_sensor_14569214-60d7-44d1-856c-ec8d8967aba2"
+          }
+        }
+
+
+## Iot Agent [/v1/applications/{application_id}/iot_agents/{iot_agent_id}]
+
++ Parameters
+    + application_id - アプリケーションの Id 
+    + iot_agent_id - Iot agent の Id
+
+### Iot agent の詳細を読む [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 121
+        ETag: W/"79-PJ1MWYYk87AQio+Y/RZiMeOCRbU"
+        Date: Tue, 20 Mar 2018 12:07:34 GMT
+        Connection: keep-alive
+
+
+    + Body
+
+        {
+          "iot_agent": {
+            "id": "iot_sensor_47886fa2-883e-4550-bb56-0138ae9862b7",
+            "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
+          }
+        }
+
+### Iot Agent のパスワードをリセット [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 66
+        ETag: W/"42-hPGur0etQ8aToU1LaPV+T1XO4Wo"
+        Date: Tue, 20 Mar 2018 12:08:26 GMT
+        Connection: keep-alive
+        
+    + Body
+        {
+          "new_password": "iot_sensor_9d209e51-bff1-4a20-a0f1-d75706f95b04"
+        }
+    
+
+### Iot Agent を削除 [DELETE]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 204 (application/json)
+
+
+## ロール - パーミッションのリレーションシップ [/v1/applications/{application_id}/roles/{role_id}/permissions]
+
++ Parameters
+    + application_id - アプリケーションの Id
+    + role_id - ロールの Id
+
+### ロールに関連付けられているパーミッションの一覧表示 [GET]
++ Request
+    + Headers
+            
+            X-Auth-token: token
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 475
+        ETag: W/"1db-abmPwZLikwp2EbYVmU/UKdHtbGE"
+        Date: Tue, 20 Mar 2018 12:15:29 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+          "role_permission_assignments": [
+            {
+              "id": "15ca810b-27d1-44a1-8491-a3fb4b6bc6f3",
+              "is_internal": false,
+              "name": "new name permission",
+              "description": "new description permission",
+              "action": null,
+              "resource": null,
+              "xml": "xml rule"
+            },
+            {
+              "id": "3",
+              "is_internal": true,
+              "name": "Manage roles",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            },
+            {
+              "id": "1",
+              "is_internal": true,
+              "name": "Get and assign all internal application roles",
+              "description": null,
+              "action": null,
+              "resource": null,
+              "xml": null
+            }
+          ]
+        }
+
+## ロール - パーミッションのリレーション [/v1/applications/{application_id}/roles/{role_id}/permissions/{permission_id}]
+
++ Parameters
+    + application_id - アプリケーションの Id
+    + role_id - ロールの Id
+    + permission_id - パーミッションの Id
+
+### ロールにパーミッションをアサイン [PUT]
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+
+    + Headers
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 102
+        ETag: W/"66-G5t4RaonrlcbX68lBuXLPzS+Glc"
+        Date: Tue, 20 Mar 2018 12:18:41 GMT
+        Connection: keep-alive
+    
+    + Body
+    
+        {
+          "role_permission_assignments": {
+            "role_id": "33fd15c0-e919-47b0-9e05-5f47999f6d91",
+            "permission_id": "4"
+          }
+        }
+
+### ロールからパーミッションを削除 [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 204 (application/json)
+
+
+## アプリケーション内の認可ユーザー [/v1/applications/{application_id}/users]
++ Parameters
+    + application_id - アプリケーションの Id
+    
+
+### アプリケーション内のユーザを一覧表示 [GET]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+
+    + Headers
+        
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 310
+        ETag: W/"136-lW/H57r3jyK+ObyFOlWMB5tMuNU"
+        Date: Tue, 20 Mar 2018 12:27:09 GMT
+        Connection: keep-alive
+        
+    + Body
+    
+        {
+          "role_user_assignments": [
+            {
+              "user_id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+              "role_id": "provider"
+            },
+            {
+              "user_id": "admin",
+              "role_id": "purchaser"
+            },
+            {
+              "user_id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+              "role_id": "ee2ec16f-694b-447f-b61a-e293b6fe5f7b"
+            },
+            {
+              "user_id": "admin",
+              "role_id": "ee2ec16f-694b-447f-b61a-e293b6fe5f7b"
+            }
+          ]
+        }
+
+## アプリケーション内のユーザのロール [/v1/applications/{application_id}/users/{user_id}/roles]
+
++ Parameters
+    + application_id - アプリケーションの Id
+    + user_id - ユーザの Id
+
+### ユーザのロールの割り当てを一覧表示 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 199
+        ETag: W/"c7-kciYHLq/V20GkqNyzgr7HDzrWI4"
+        Date: Tue, 20 Mar 2018 12:29:34 GMT
+        Connection: keep-alive
+    
+    + Body
+        {
+          "role_user_assignments": [
+            {
+              "user_id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+              "role_id": "provider"
+            },
+            {
+              "user_id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+              "role_id": "ee2ec16f-694b-447f-b61a-e293b6fe5f7b"
+            }
+          ]
+        }
+
+## ロール - アプリケーション内のユーザのリレーションシップ [/v1/applications/{application_id}/users/{user_id}/roles/{role_id}]
+
++ Parameters
+    + user_id - ユーザの Id
+    + application_id - アプリケーションの Id
+    + role_id - ロールの Id
+
+### ユーザにロールをアサイン [PUT]
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+
+    + Headers
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 155
+        ETag: W/"9b-PTfLJchMB1s6mXINkQh6OJQnSgY"
+        Date: Tue, 20 Mar 2018 12:31:58 GMT
+        Connection: keep-alive
+
+    + Body
+        
+        {
+          "role_user_assignments": {
+            "role_id": "purchaser",
+            "user_id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+            "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025"
+          }
+        }
+
+
+### ユーザからロールのアサインを削除 [DELETE]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 204
+
+
+## アプリケーション内の認可された組織 [/v1/applications/{application_id}/organizations]
++ Parameters
+    + application_id - アプリケーションの Id
+    
+
+### アプリケーション内の組織を一覧表示 [GET]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 798
+        ETag: W/"31e-yAFZkeaD7GA4Xo4F6dAyMc/FISM"
+        Date: Tue, 20 Mar 2018 12:37:51 GMT
+        Connection: keep-alive
+
+    + Body
+    
+        {
+          "role_organization_assignments": [
+            {
+              "organization_id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+              "role_organization": "owner",
+              "role_id": "purchaser"
+            },
+            {
+              "organization_id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+              "role_organization": "owner",
+              "role_id": "ee2ec16f-694b-447f-b61a-e293b6fe5f7b"
+            },
+            {
+              "organization_id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+              "role_organization": "member",
+              "role_id": "33fd15c0-e919-47b0-9e05-5f47999f6d91"
+            },
+            {
+              "organization_id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+              "role_organization": "owner",
+              "role_id": "provider"
+            },
+            {
+              "organization_id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+              "role_organization": "owner",
+              "role_id": "33fd15c0-e919-47b0-9e05-5f47999f6d91"
+            },
+            {
+              "organization_id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+              "role_organization": "member",
+              "role_id": "ee2ec16f-694b-447f-b61a-e293b6fe5f7b"
+            }
+          ]
+        }
+
+
+## アプリケーションにおける組織のロール [/v1/applications/{application_id}/organizations/{organization_id}/roles]
++ Parameters
+    + organization_id - 組織の Id
+    + application_id - アプリケーションの Id
+
+### 組織のロールのアサインを一覧表示 [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 332
+        ETag: W/"14c-Itun6PzsweI15qednKd5+tG7Oh0"
+        Date: Tue, 20 Mar 2018 12:39:20 GMT
+        Connection: keep-alive
+
+    + Body
+        {
+          "role_organization_assignments": [
+            {
+              "organization_id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+              "role_id": "purchaser"
+            },
+            {
+              "organization_id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+              "role_id": "ee2ec16f-694b-447f-b61a-e293b6fe5f7b"
+            },
+            {
+              "organization_id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+              "role_id": "33fd15c0-e919-47b0-9e05-5f47999f6d91"
+            }
+          ]
+        }
+
+## ロール - アプリケーション内の組織のリレーションシップ [/v1/applications/{application_id}/organizations/{organization_id}/roles/{role_id}/organization_roles/{organization_role_id}]
+
++ Parameters
+    + organization_id - 組織の Id
+    + application_id - アプリケーションの Id
+    + role_id - ロールの Id
+    + organization_role_id - 組織ロールの Id
+
+### 組織にロールをアサイン [PUT]
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+
+    + Headers
+        
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 198
+        ETag: W/"c6-6eTVB6vyiwH6XKLZ3pLYYDXFMm4"
+        Date: Tue, 20 Mar 2018 12:41:47 GMT
+        Connection: keep-alive
+        
+    + Body
+        
+        {
+          "role_organization_assignments": {
+            "role_id": "provider",
+            "organization_id": "33cf4d3c-8dfb-4bed-bf37-7647f45528ec",
+            "oauth_client_id": "fd7fe349-f7da-4c27-b404-74da17641025",
+            "role_organization": "owner"
+          }
+        }
+
+
+### 組織からロールのアサインを削除 [DELETE]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 204
+
+
+## 組織のメンバ [/v1/organizations/{organization_id}/users]
+
++ Parameters
+    + organization_id - 組織の Id
+
+
+### メンバを一覧表示 [GET]
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+    
+    + Headers
+        
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 240
+        ETag: W/"f0-3G8Dv2NqT3KMGuO+jRta+nJMnJk"
+        Date: Tue, 20 Mar 2018 12:47:26 GMT
+        Connection: keep-alive
+        
+    + Body
+        
+        {
+          "organization_users": [
+            {
+              "user_id": "2d6f5391-6130-48d8-a9d0-01f20699a7eb",
+              "organization_id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+              "role": "owner"
+            },
+            {
+              "user_id": "admin",
+              "organization_id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+              "role": "member"
+            }
+          ]
+        }
+        
+
+
+## ユーザと組織のリレーションシップ [/v1/organizations/{organization_id}/users/{user_id}/organization_roles]
+
++ Parameters
+    + organization_id - 組織の Id
+    + user_id - ユーザの Id
+
+### ユーザと組織のリレーションシップの情報 [GET]        
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+
+    + Headers
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 114
+        ETag: W/"72-/fZonAf/VJOEZ94bshoBRSVQzmE"
+        Date: Tue, 20 Mar 2018 12:51:28 GMT
+        Connection: keep-alive
+        
+    + Body
+    
+        {
+          "organization_user": {
+            "user_id": "admin",
+            "organization_id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd",
+            "role": "member"
+          }
+        }
+
+
+## ユーザと組織のリレーションシップ [/v1/organizations/{organization_id}/users/{user_id}/organization_roles/{organization_role_id}]
+
++ Parameters
+    + organization_id - 組織の Id
+    + user_id - ユーザの Id
+    + organization_role_id - 組織ロールの Id
+
+### リレーションシップを作成 [PUT]
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+
+    + Headers
+    
+        HTTP/1.1 201 Created
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 125
+        ETag: W/"7d-lt1JE+QQNKxkfaswZ+ZRWXj2vdk"
+        Date: Tue, 20 Mar 2018 12:55:58 GMT
+        Connection: keep-alive
+        
+    + Body
+    
+        {
+          "user_organization_assignments": {
+            "role": "owner",
+            "user_id": "admin",
+            "organization_id": "3e20722f-d420-422d-89ba-3ae87bc1c0cd"
+          }
+        }
+
+### リレーションシップを削除 [DELETE] 
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 204
+
+## 信頼できるアプリケーション [/v1/applications/{application_id}/trusted_applications]
+
++ Parameters
+    + application_id - アプリケーションの Id
+
+### アプリケーションに関連付けられている信頼できるアプリケーションを一覧表示 [GET]
++ Request
+    + Headers
+            
+            X-Auth-token: token
++ Response 200 (application/json)
+    
+    + Headers
+        HTTP/1.1 200 OK
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 299
+        ETag: W/"12b-fgVfRrc8fzRhPLgAGLWe+LLPg74"
+        Date: Wed, 01 Aug 2018 11:34:42 GMT
+        Connection: keep-alive
+
+    + Body
+
+        {
+            "trusted_applications": [
+                "8692ec57-8514-4ef6-a347-3d1ac6409f79",
+                "78b4763f-139a-4820-a42b-3e265fb9d56e",
+                "462ee067-f10a-4c9c-aefe-079038830043",
+                "6781fd6c-9dd3-46d7-bdcc-4ca2af1ae42d",
+            ]
+        }
+
+## 信頼できるアプリケーション [/v1/applications/{application_id}/trusted_applications/{trustedApplicationId}]
+
++ Parameters
+    + application_id - アプリケーションの Id
+    + trustedApplicationId - 信頼できるものとして追加されるアプリケーションの Id
+
+### 信頼できるアプリケーションを追加 [PUT]
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 201
+    
+    + Headers
+        HTTP/1.1 201 Created
+        X-Powered-By: Express
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 123
+        ETag: W/"7b-uwB1nhIkCNnU+e+LWcHAN4IO5XQ"
+        Date: Wed, 01 Aug 2018 11:38:01 GMT
+        Connection: keep-alive
+    
+    + Body
+    
+        {
+            "oauth_client_id": "3e34cbf6-3579-4e54-878a-0a406962ac36",
+            "trusted_oauth_client_id":"0118ccb7-756e-42f9-8a19-5b4e83ca8c46"
+        }
+
+### アプリケーションから信頼できるアプリケーションを削除 [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+            
++ Response 204 (application/json)
+
+## サービス・プロバイダ [/v1/service_providers/configs]
+
+### サービス・プロバイダの設定を読む [GET]
+
+"Information" は、総ユーザ数、総組織数、およびアプリケーション数を示します。
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+    + Headers
+    
+        HTTP/1.1 201 Created
+        Content-Type: application/json; charset=utf-8
+        Content-Length: 77
+        ETag: W/"4d-XGO2xqHcxBbtv7+72qxVUUJvMT4"
+        Date: Tue, 20 Mar 2018 12:57:50 GMT
+        Connection: keep-alive
+        
+    + Body
+    
+        {
+          "information": {
+            "totalUsers": 2,
+            "totalOrganizations": 2,
+            "totalApplications": 4
+          }
+        }
+
+        

@@ -1,0 +1,91 @@
+<div class="error">
+	<h1><%=translation.errors.oauth.title01%></h1>
+    <p><%=translation.errors.oauth.content01%>
+    <% if (application) { -%>
+        <a href="<%= application.url%>"> <%= application.name %></a>
+    <% } else { -%>
+        <%=translation.errors.oauth.content02%>
+    <% } -%>
+    <%=translation.errors.oauth.content03%> 
+        <a data-toggle="collapse" href="#error_oauth" aria-expanded="true" aria-controls="error_oauth" class="collapsed">
+            <%=translation.errors.oauth.content04%> <i class="fa fa-angle-up"></i>
+        </a>
+    </p>
+    <div class="collapse_out">
+    	<div id="error_oauth" class="form-group collapse" role="tabpanel">
+            <div class="error-oauth">
+                <h2><%=translation.errors.oauth.title02%></h2>
+                <p><b><%=translation.errors.oauth.content05%> - </b>
+                    <% if (error.message) { -%>
+                        <%= error.message %>
+                    <% } else { -%>
+                        <%=translation.errors.oauth.content06%>             
+                    <% } -%>
+                </p>
+                <div id="request_parameters" class="collapse_out">
+                    <div>
+                        <div class="panel-heading">client_id <%=translation.errors.oauth.content07%></div>
+                        <% if (query.client_id) { -%>
+                            <%= query.client_id %>
+                        <% } else { -%>
+                            undefined
+                        <% } -%>
+                    </div>
+                    <div>
+                        <div class="panel-heading">response_type <%=translation.errors.oauth.content07%></div>
+                        <% if (query.response_type) { -%>
+                            <%= query.response_type %>
+                        <% } else { -%>
+                            undefined
+                        <% } -%>
+                    </div>
+                    <div>
+                        <div class="panel-heading">state <%=translation.errors.oauth.content07%></div>
+                        <% if (query.state) { -%>
+                            <%= query.state %>
+                        <% } else { -%>
+                            undefined
+                        <% } -%>
+                    </div>
+                    <div>
+                        <div class="panel-heading">redirect_uri</div>
+                        <% if (query.redirect_uri) { -%>
+                            <%= query.redirect_uri %>
+                        <% } else { -%>
+                            undefined
+                        <% } -%>
+                    </div>
+                    <div>
+                        <div class="panel-heading">scope</div>
+                        <% if (query.scope) { -%>
+                            <%= query.scope %>
+                        <% } else { -%>
+                            undefined
+                        <% } -%>
+                    </div>
+                </div>
+            </div>
+    	</div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $('.collapsed').mouseover(function(){
+        $(this).children('i').toggleClass('fa-rotate-180');
+    });
+    $('.collapsed').mouseleave(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').removeClass('fa-rotate-180');
+        } else {
+            $(this).children('i').addClass('fa-rotate-180');
+        }
+    });
+    $('.collapsed').click(function(){
+        if ($(this).hasClass('collapsed')){
+            $(this).children('i').addClass('fa-rotate-180');
+        } else {
+            $(this).children('i').removeClass('fa-rotate-180');
+        }
+    });
+</script>

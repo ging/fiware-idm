@@ -14,13 +14,14 @@
             <div class="workflow workflow-roles static_page">
                 <form id="assign_role_permission_form" action="/idm/applications/<%= application.id %>/edit/roles" method="POST">
                     <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-                    <input type="hidden" id="submit_assignment" name="submit_assignment" value="" />
+                    <input type="hidden" id="submit_access_control_assignment" name="submit_access_control_assignment" value="" />
+                    <input type="hidden" id="submit_usage_control_assignment" name="submit_usage_control_assignment" value="" />
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <fieldset id="manage_application_roles__update_owners" class="js-tab-pane active tab-pane">
                                 <section id="role_list" class="role_list">
                                     <header>
-                                        <h4><%=translation.applications.step_create_roles.subtitle01%></h4>
+                                        <h4><%=translation.applications.manage_roles.subtitle01%></h4>
                                         <button id="roleButton" type="button" data-toggle="modal" data-target="#create_role" class="btn ajax-modal">
                                             <i class="fa fa-plus"></i>
                                         </button>
@@ -30,27 +31,46 @@
                                 </section>
                                 <section id="permissions_list" class="permissions_list">
                                     <header>
-                                        <h4><%=translation.applications.step_create_roles.subtitle02%></h4>
+                                        <h4><%=translation.applications.manage_roles.subtitle02%></h4>
                                         <button id="permButton" type="button" data-toggle="modal" data-target="#create_permission" class="btn ajax-modal">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </header>
                                     <div class="alert alert-info" id="update_owners_info_message">
-                                        <%=translation.applications.step_create_roles.content01%>
+                                        <%=translation.applications.manage_roles.content01%>
                                     </div> 
                                     <div class="" id="update_owners_permissions" style="display: none;">
                                         <ul id="list_permissions" class="permissions update_owners_permissions list-group">
+                                            
                                         </ul>
                                     </div>
                                 </section>
+                                <% if (data_usage_enabled) { -%>
+                                    <section id="policy_list" class="permissions_list">
+                                        <header>
+                                            <h4>Usage Policies</h4>
+                                            <button id="policy_button" type="button" data-toggle="modal" data-target="#create_usage_policy_modal" class="btn ajax-modal">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </header>
+                                        <div class="alert alert-info" id="update_owners_policies_alert">
+                                            Select a role to see and manage its policies or create a new one
+                                        </div> 
+                                        <div class="" id="update_owners_policies" style="display: none;">
+                                            <ul id="application_policies" class="permissions update_owners_permissions list-group">
+                                                
+                                            </ul>
+                                        </div>
+                                    </section>
+                                <% } -%>
                             </fieldset>
-                            <span id="alert_error" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.step_create_roles.required_field%></span>
+                            <span id="alert_error" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.manage_roles.required_field%></span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input class="btn btn-primary pull right" type="submit" value="<%=translation.applications.step_create_roles.finish_btn%>" />
+                        <input class="btn btn-primary pull right" type="submit" value="<%=translation.applications.manage_roles.save_btn%>" />
                     </div>
-                </form> 
+                </form>
             </div>
         </div>
     </div>
@@ -58,15 +78,22 @@
 
 <div class="messages"></div>
 
+<script src="/javascripts/applications/handle_assign_permissions_roles.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_roles.js" type="text/javascript"></script>
+<script src="/javascripts/applications/handle_permissions.js" type="text/javascript"></script>
+<% if (data_usage_enabled) { -%>
+    <script src="/javascripts/applications/handle_usage_policies.js" type="text/javascript"></script>
+<% } -%>
+
 <%- include _create_role %>
 <%- include _delete_role %>
 <%- include _create_permission %>
 <%- include _delete_permission %>
+<% if (data_usage_enabled) { -%>
+    <%- include _create_usage_policy %>
+<% } -%>
 <%- include ../templates/./applications/./_new_role_row %>
 <%- include ../templates/./applications/./_new_permission_row %>
+<%- include ../templates/./applications/./_new_usage_policy_row %>
 <%- include ../templates/./applications/./_edit_role %>
 <%- include ../templates/./other/./_info_message %>
-
-<script src="/javascripts/applications/handle_assign_permissions_roles.js" type="text/javascript"></script>
-<script src="/javascripts/applications/handle_roles.js" type="text/javascript"></script>
-<script src="/javascripts/applications/handle_permissions.js" type="text/javascript"></script>

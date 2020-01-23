@@ -176,6 +176,7 @@ describe('API - 9 - Permissions: ', function() {
   describe('5) When updating a permission', function() {
     let permission_id;
     let permission_name;
+    let permission_description;
     let permission_resource;
     let permission_action;
 
@@ -196,6 +197,7 @@ describe('API - 9 - Permissions: ', function() {
         const json = JSON.parse(body);
         permission_id = json.permission.id;
         permission_name = json.permission.name;
+        permission_description = json.permission.description;
         permission_action = json.permission.action;
         permission_resource = json.permission.resource;
         done();
@@ -223,9 +225,11 @@ describe('API - 9 - Permissions: ', function() {
         const json = JSON.parse(body);
         should(json).have.property('values_updated');
         const response_name = json.values_updated.name;
+        const response_description = json.values_updated.description;
         const response_action = json.values_updated.action;
         const response_resource = json.values_updated.resource;
         should.notEqual(permission_name, response_name);
+        should.notEqual(permission_description, response_description);
         should.notEqual(permission_action, response_action);
         should.notEqual(permission_resource, response_resource);
         response.statusCode.should.equal(200);

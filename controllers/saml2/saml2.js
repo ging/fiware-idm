@@ -24,6 +24,7 @@ const idp_options = {
 const idp = new saml2.IdentityProvider(idp_options);
 
 const sp_states = {};
+const sp_redirect_uris = {};
 
 // GET /idm/applications/:application_id/step/eidas -- Form to add eIDAs credentials to application
 exports.step_new_eidas_crendentials = function(req, res) {
@@ -362,6 +363,10 @@ exports.saml2_application_login = function(req, res) {
 
         const state = sp_states[response_to] ? sp_states[response_to] : 'xyz';
 
+        const redirect_uri = sp_states[response_to]
+          ? sp_states[response_to]
+          : req.application.redirect_uri.split(',')[0];
+
         const path =
           '/oauth2/authorize?' +
           'response_type=code&' +
@@ -372,7 +377,7 @@ exports.saml2_application_login = function(req, res) {
           state +
           '&' +
           'redirect_uri=' +
-          req.application.redirect_uri;
+          redirect_uri;
 
         res.redirect(path);
       })
@@ -556,6 +561,18 @@ exports.search_eidas_credentials = function(req, res, next) {
     });
 };
 
+const get_redirect_uri = function(url) {
+  const params = url.split('?')[1].split('&');
+  let redirect_uri = '';
+  for (const p in params) {
+    if (params[p].split('=')[0] === 'redirect_uri') {
+      redirect_uri = params[p].split('=')[1];
+    }
+  }
+
+  return redirect_uri;
+};
+
 const get_state = function(url) {
   const params = url.split('?')[1].split('&');
   let state = '';
@@ -609,6 +626,7 @@ exports.create_auth_request = function(req, res, next) {
     });
 
     sp_states[auth_request.id] = get_state(req.url);
+    sp_redirect_uris[auth_request.id] = get_redirect_uri(req.url);
 
     req.saml_auth_request = {
       xml: auth_request.request,

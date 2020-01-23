@@ -24,6 +24,7 @@ const idp_options = {
 const idp = new saml2.IdentityProvider(idp_options);
 
 const sp_states = {};
+const sp_redirect_uris = {};
 
 // GET /idm/applications/:application_id/step/eidas -- Form to add eIDAs credentials to application
 exports.step_new_eidas_crendentials = function(req, res) {
@@ -308,23 +309,20 @@ exports.login = function(req, res) {
 };
 
 // POST /idm/applications/:application_id/saml2/login -- Response from eIDAs with user credentials
-exports.saml2_application_login = function(req, res, next) {
+exports.saml2_application_login = function(req, res) {
   debug('--> saml2_application_login', req.url);
 
   const options = { request_body: req.body };
 
   return req.sp.post_assert(idp, options, function(error, saml_response) {
     if (error != null) {
-      debug('Error', error);
-      if (error.extra && error.extra.status) {
-        return next(new Error(error.extra.status));
-      }
-      return res.status(500).send('Internal Error');
+      res.locals.error = error;
+      return res.render('errors/saml', { application: req.application });
     }
 
     // Save name_id and session_index for logout
     // Note:  In practice these should be saved in the user session, not globally.
-    const name_id = saml_response.user.name_id;
+    const name_id = saml_response.user.attributes.PersonIdentifier[0];
 
     // Commented beacuase no session index was returned when testing was performed
     //var session_index = saml_response.user.session_index;
@@ -365,6 +363,10 @@ exports.saml2_application_login = function(req, res, next) {
 
         const state = sp_states[response_to] ? sp_states[response_to] : 'xyz';
 
+        const redirect_uri = sp_states[response_to]
+          ? sp_states[response_to]
+          : req.application.redirect_uri.split(',')[0];
+
         const path =
           '/oauth2/authorize?' +
           'response_type=code&' +
@@ -375,7 +377,7 @@ exports.saml2_application_login = function(req, res, next) {
           state +
           '&' +
           'redirect_uri=' +
-          req.application.redirect_uri;
+          redirect_uri;
 
         res.redirect(path);
       })
@@ -559,6 +561,18 @@ exports.search_eidas_credentials = function(req, res, next) {
     });
 };
 
+const get_redirect_uri = function(url) {
+  const params = url.split('?')[1].split('&');
+  let redirect_uri = '';
+  for (const p in params) {
+    if (params[p].split('=')[0] === 'redirect_uri') {
+      redirect_uri = params[p].split('=')[1];
+    }
+  }
+
+  return redirect_uri;
+};
+
 const get_state = function(url) {
   const params = url.split('?')[1].split('&');
   let state = '';
@@ -612,6 +626,7 @@ exports.create_auth_request = function(req, res, next) {
     });
 
     sp_states[auth_request.id] = get_state(req.url);
+    sp_redirect_uris[auth_request.id] = get_redirect_uri(req.url);
 
     req.saml_auth_request = {
       xml: auth_request.request,

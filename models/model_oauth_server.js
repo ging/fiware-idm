@@ -601,7 +601,16 @@ function create_oauth_response(
       )
     );
 
-    user_info.username = identity.username;
+    if (identity.username.includes(' ')) {
+      user_info.username = identity.username.split(' ')[0];
+      user_info.surname =
+        identity.username.split(' ')[1] === undefined
+          ? ' '
+          : identity.username.split(' ')[1];
+    } else {
+      user_info.username = identity.username;
+      user_info.surname = ' ';
+    }
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
     user_info.email = identity.email;

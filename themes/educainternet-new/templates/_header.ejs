@@ -1,0 +1,32 @@
+<%if(session.user){%>
+	<header class="navbar navbar-default navbar-fixed-top">
+	  <div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+		  <div class="logo-header">
+			<a href="/" class=""></a><span class="brand-text"><%= site.title %></span>
+		  </div>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="header-navbar-collapse">
+		  <div id="user_info" class="col-md-pull-3 nav navbar-nav navbar-right">
+			<div id="profile_editor_switcher" class="dropdown switcher_bar" tabindex="1">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="">
+				  <img alt="User" src="<%= session.user.image %>">
+				  <%= session.user.username %>
+				  <i class="fa fa-angle-double-down"></i>
+				</a>
+				<ul id="editor_list" class="dropdown-menu multi-level dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
+				  <li>
+					<a href="/auth/logout?_method=DELETE" onclick="">
+					  <i class="fa fa-sign-out-alt"></i><%=translation.header.menu_item04%>
+					</a>
+				  </li>
+				</ul>
+			</div>
+		  </div>
+		</div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</header>
+<%}%>

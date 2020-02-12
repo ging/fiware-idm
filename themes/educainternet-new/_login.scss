@@ -1,0 +1,293 @@
+.login {
+    width: 40%;
+    border: solid 5px #ff7900;
+    background-color: rgba(255, 255, 255, 0.83);
+    margin: 150px auto 100px auto;
+    padding: 50px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    z-index: 1;
+
+
+    .modal-header {
+        border: none;
+
+        h3 {
+            color: $text;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 2.8rem;
+
+        }
+
+    }
+
+    .form-control {
+        height: 34px;
+        padding: 6px;
+        box-shadow: none;
+        background-color: $form_background;
+        border-radius: .3rem;
+        border: 1px solid #A9A9A9;
+
+    }
+
+
+    .modal-footer {
+        border: none;
+
+        button {
+            font-size: 1.5rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            text-align: center;
+            padding: 3rem 0 0 0;
+
+            a {
+                width: 100%;
+                align-self: center;
+                font-size: 1.6rem;
+                border: none;
+                padding: .5rem 0 0 0;
+                text-transform: uppercase;
+            }
+        }
+    }
+
+    .label_01 {
+        color: $text;
+        font-size: 1.6rem;
+    }
+
+    .lbl_01 {
+        font-size: 1.3rem;
+    }
+
+}
+
+
+@media (max-width: 1280px) {
+
+    .login {
+        width: 45%;
+        
+    }
+
+}
+
+
+@media (max-width: 990px) {
+
+    .login {
+        width: 55%;
+        padding: 22rem 8rem 0 8rem;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .login {
+        width: 50%;
+        padding: 22rem 8rem 0 8rem;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+    .login {
+        width: 100%;
+        padding: 20rem 6rem 0 6rem;
+
+        form {
+            width: 100%;
+
+            .modal-footer {
+                .actions {
+                    flex-wrap: wrap;
+
+                    a {
+                        margin: .7rem;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+}
+
+
+@media (max-width: 400px) {
+
+    .login {
+        width: 100%;
+        padding: 9rem 4rem 0 4rem;
+    }
+
+}
+
+
+@media (max-height:450px) {
+
+    @media (max-width: 900px) {
+
+        .login {
+            width: 100%;
+            padding: 10rem 3rem 0 10rem;
+
+            .modal-header {
+                border: none;
+
+                h3 {
+                    color: $text;
+                    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                    font-size: 2.3rem;
+                    padding: .2rem 0 .3rem 0;
+                    line-height: 0;
+
+                }
+
+            }
+
+            .alert-danger {
+                height: 25px;
+                padding: .6rem;
+
+            }
+
+            .form-control {
+                height: 30px;
+                padding: 6px;
+
+            }
+
+            form {
+                display: flex;
+                flex-wrap: nowrap;
+                width: 100%;
+
+                .modal-body {
+                    width: 60%;
+                }
+
+                .modal-footer {
+                    width: 54%;
+                    border: none;
+                    padding: 2rem 0 0 1.5rem;
+                    display: flex;
+                    flex-wrap: wrap;
+                    flex-direction: column;
+                    align-content: center;
+
+                    .checkbox {
+                        align-self: center;
+                        order: 2;
+                        margin: 1rem 0 0 0;
+                    }
+
+                    button {
+                        align-self: center;
+                        order: 1;
+                        font-size: 1.5rem;
+                        width: 8rem;
+                    }
+
+                    .actions {
+                        order: 3;
+                        display: flex;
+                        flex-wrap: wrap;
+                        padding: 1rem 0 0 0;
+
+                        a {
+                            width: 100%;
+                            font-size: 1.2rem;
+                            margin: 0;
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@media (min-height: 1020px) {
+
+    @media (min-width: 767px) {
+        .login {
+            width: 62%;
+            padding: 25rem 6rem 0 6rem;
+        }
+
+    }
+}
+
+/*------ iPhoneX GalaxyS5 portrait------*/
+
+@media (max-width: 376px) {
+
+    .login {
+        width: 100%;
+        padding: 14rem 4rem 0 4rem;
+    }
+
+}
+
+@media (max-height: 321px) {
+    .login {
+        padding: 0;
+    }
+}
+
+
+/*------ iPhone5/SE portrait------*/
+@media (max-width: 320px) {
+
+    @media (max-height: 568px) {
+        .login {
+            width: 100%;
+            padding: 7rem 2rem 0 2rem;
+        }
+
+    }
+
+}
+
+
+
+/*------ iPhone5/SE landscape------*/
+
+@media (max-height: 321px) {
+
+    @media (max-width: 570px) {
+
+        .login {
+            width: 100%;
+            padding: 8rem 6rem 0 6rem;
+
+        }
+
+    }
+
+}
+
+
+/*------ NEXUS 5 portrait------*/
+@media (max-width: 361px) {
+
+    @media (max-height: 641px) {
+        .login {
+            width: 100%;
+            padding: 7rem 2rem 0 2rem;
+        }
+
+    }
+
+}

@@ -1,0 +1,74 @@
+<div class="panel panel-default">
+    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-1" class="panel-heading collapsed">
+        <h4 class="panel-title panel-close">
+            <i class="fa fa-book" aria-hidden="true"></i><%=translation.help_about_items.title01%>
+        </h4>
+    </a>
+    <div id="collapse-1" class="panel-collapse collapse">
+        <div class="panel-body">
+            <p><%=translation.help_about_items.content01%></p>
+            <ul>
+                <li><a href="http://catalogue.fiware.org/enablers/identity-management-keyrock" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i><%=translation.help_about_items.item01%></a>
+                </li>
+                <li><a href="http://fiware-idm.readthedocs.io/en/latest/" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i><%=translation.help_about_items.item02%></a>
+                </li>
+                <li><a href="http://github.com/ging/fiware-idm" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i><%=translation.help_about_items.item03%></a>
+                </li>
+                <li><a href="https://edu.fiware.org/course/view.php?id=79" target="a_blank">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i><%=translation.help_about_items.item04%></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-2" class="panel-heading collapsed">
+        <h4 class="panel-title panel-close">
+            <i class="fa fa-graduation-cap" aria-hidden="true"></i> <%=translation.help_about_items.title02%>
+        </h4>
+    </a>
+    <div id="collapse-2" class="panel-collapse collapse">
+        <div class="panel-body">
+            <p><%=translation.help_about_items.content02%></p>
+            <ul>
+                <li><a href="#" class="launch-tour" data-next-tour="initTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                <%=translation.help_about_items.tour01%></a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="profileTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                <%=translation.help_about_items.tour02%></a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="appsTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                <%=translation.help_about_items.tour03%></a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="rolesTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                <%=translation.help_about_items.tour04%></a></li>
+                <li><a href="#" class="launch-tour" data-next-tour="orgsTour"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                <%=translation.help_about_items.tour05%></a></li>
+            </ul>
+
+            <script type="text/javascript">
+                $( document ).ready(function() {
+                    $("body").on("click", ".launch-tour", function() {
+
+                        var tour = $(this).attr('data-next-tour');
+
+                        $.each(tours, function(i, tour) {
+                            if (tour._getState('current_step')!== null && !tour.ended()) {
+                                tour.end();
+                            }
+                        });
+                        if (tour !== undefined) {
+
+                            tours[tour].init();
+                            if (tours[tour]._getState('current_step')!== null) {
+                                tours[tour].restart();
+                            } else {
+                                tours[tour].start(true);
+                            }
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </div>
+</div>

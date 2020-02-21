@@ -31,6 +31,7 @@
     "body-parser": "~1.18.2",
     "bootstrap-sass": "3.4.1",
     "camelcase": "^5.3.1",
+    "coap": "^0.23.1",
     "cookie-parser": "~1.4.3",
     "cookie-session": "^2.0.0-beta.3",
     "cors": "^2.8.5",

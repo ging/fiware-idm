@@ -1,0 +1,3 @@
+[submodule "server/fiware-idm"]
+	path = server/fiware-idm
+	url = https://github.com/ging/fiware-idm

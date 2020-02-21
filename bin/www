@@ -5,11 +5,14 @@
  */
 
 var app = require('../app');
+var app_coap = require('../controllers/coap/oauth2');
 var config = require('../config')
 var debug = require('debug')('idm:server');
 var fs = require("fs");
 var http = require('http');
 var https = require("https");
+var coap = require('coap')
+
 
 if (config.https.enabled) {
   var options = {
@@ -23,6 +26,7 @@ if (config.https.enabled) {
       }
   }
 }
+
 
 /**
  * Get port from environment and store in Express.
@@ -47,6 +51,20 @@ if (config.https.enabled) {
 
 }
  
+
+/**
+ * Create COAP server.
+ */
+
+var coap_server = coap.createServer();
+
+coap_server.on('request', app_coap.paths)
+
+coap_server.listen(5683, null, function(req, res) {
+  debug("COAP listening on 5683");
+})
+
+
 
 
 /**

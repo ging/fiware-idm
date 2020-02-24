@@ -16,6 +16,7 @@ const debug = require('debug')('idm:oauth_controller');
 // Create Oauth Server model
 const oauth_server = new OauthServer({
   model: require('../../models/model_oauth_server.js'),
+  jsonPayload: true, // eslint-disable-line snakecase/snakecase
   debug: true,
 });
 

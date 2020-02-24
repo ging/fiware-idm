@@ -6,6 +6,7 @@ const Response = OauthServer.Response;
 // Create Oauth Server model
 const oauth_server = new OauthServer({
   model: require('../../models/model_oauth_server.js'),
+  jsonPayload: true, // eslint-disable-line snakecase/snakecase
   debug: true,
 });
 
@@ -25,25 +26,42 @@ exports.paths = function(req, res) {
 function token(req, res) {
   debug(' --> token');
 
-  //const payload = JSON.parse(req.payload.toString('utf8'));
-  req.query = {};
+  const payload = JSON.parse(req.payload.toString('utf8'));
 
-  debug(req);
+  // Add variables to COAP request beacause are mandatory in OAuth dependency
+  req.query = {};
+  req.body = payload;
+  delete req.payload;
 
   const request = new Request(req);
   const response = new Response(res);
 
   oauth_server
     .token(request, response)
-    .then(function(token) {
-      debug(token);
-      res.status(200).json(response.body);
+    .then(function(result) {
+      const response = {
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+      };
+      res.end(JSON.stringify(response));
     })
     .catch(function(error) {
       debug('Error ', error);
-      // Request is not authorized.
-      return res.status(error.code || 500).json(error.message || error);
-    });
 
-  //res.end('Hello ' + req.url.split('/')[1] + '\n')
+      if (error.code) {
+        let num = error.code;
+        const digits = [];
+        while (num > 0) {
+          const numToPush = num % 10; // eslint-disable-line snakecase/snakecase
+          digits.push(numToPush.toString());
+          num = parseInt(num / 10); // eslint-disable-line snakecase/snakecase
+        }
+        digits.reverse().splice(1, 0, '.');
+        res.code = digits.join('');
+      } else {
+        res.code = '5.00';
+      }
+
+      res.end('error');
+    });
 }

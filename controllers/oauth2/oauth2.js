@@ -439,7 +439,8 @@ function authenticate_jwt(
         action,
         resource,
         authzforce,
-        req_app
+        req_app,
+        null
       )
         .then(function(response) {
           return res.status(200).json(response);
@@ -475,13 +476,16 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
     .then(function(token_info) {
       const identity = token_info.user;
       const application_id = token_info.oauth_client.id;
+      const expires_in = token_info.accessTokenExpiresAt;
+
       return create_oauth_response(
         identity,
         application_id,
         action,
         resource,
         authzforce,
-        req_app
+        req_app,
+        expires_in
       );
     })
     .then(function(response) {

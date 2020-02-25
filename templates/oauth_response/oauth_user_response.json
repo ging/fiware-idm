@@ -11,5 +11,6 @@
     "authorization_decision": "",
     "app_azf_domain": "",
     "eidas_profile": {},
-    "attributes": {}
+    "attributes": {},
+    "expires_in": ""
 }

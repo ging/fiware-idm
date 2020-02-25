@@ -4,5 +4,6 @@
     "app_id": "",
     "trusted_apps": [],
     "id": "",
-    "app_azf_domain": ""
+    "app_azf_domain": "",
+    "expires_in": ""
 }

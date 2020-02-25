@@ -324,6 +324,7 @@ function generateJwtToken(token, client, identity) {
     null,
     null,
     config_authzforce.enabled,
+    null,
     null
   )
     .then(function(response) {
@@ -585,7 +586,8 @@ function create_oauth_response(
   action,
   resource,
   authzforce,
-  req_app
+  req_app,
+  expires_in
 ) {
   debug('-------create_oauth_response-------');
 
@@ -600,6 +602,10 @@ function create_oauth_response(
         require('../templates/oauth_response/oauth_user_response.json')
       )
     );
+
+    if (expires_in) {
+      user_info.expires_in = expires_in;
+    }
 
     user_info.username = identity.username;
     user_info.app_id = application_id;
@@ -634,6 +640,9 @@ function create_oauth_response(
       )
     );
 
+    if (expires_in) {
+      user_info.expires_in = identity.expires_in;
+    }
     iot_info.app_id = application_id;
     iot_info.id = identity.id;
 

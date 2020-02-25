@@ -22,7 +22,11 @@ const email_list = config.email_list_type
 exports.settings = function(req, res) {
   debug('--> settings');
 
-  res.render('settings/settings', { csrf_token: req.csrfToken() });
+  //res.render('settings/settings', { csrf_token: req.csrfToken() });
+  res.render('settings/settings', {
+    csrf_token: req.csrfToken(),
+    sso_enabled: config.external_user_sso.enabled,
+  });
 };
 
 // POST /idm/settings/password -- Change password

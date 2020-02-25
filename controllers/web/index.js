@@ -20,4 +20,5 @@ module.exports = {
   manage_members: require('../../controllers/web/manage_members'),
   settings: require('../../controllers/web/settings'),
   sessions: require('../../controllers/web/sessions'),
+  sso: require('../../controllers/web/sso'),
 };

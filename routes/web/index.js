@@ -5,6 +5,7 @@ const debug = require('debug')('idm:web_index_model');
 const router = express.Router();
 
 const csrf_protection = csrf({ cookie: true });
+const config = require('../../config');
 
 // Create controllers
 const web_session_controller = require('../../controllers/web/index').sessions;
@@ -24,7 +25,11 @@ router.get('/', csrf_protection, function(req, res) {
   if (req.session.user) {
     res.redirect('/idm');
   } else {
-    res.render('index', { errors: [], csrf_token: req.csrfToken() });
+    res.render('index', {
+      errors: [],
+      csrf_token: req.csrfToken(),
+      sso_enabled: config.external_user_sso.enabled,
+    });
   }
 });
 

@@ -21,6 +21,8 @@ specific needs of each use case. These are the main configurations:
 
 -   External authentication.
 
+-   External Authentication with SAML.
+
 -   Authorization.
 
 -   Mail Server.
@@ -349,6 +351,58 @@ config.external_auth = {
 
 The way to check password validity can be customized in with parameter
 _external_auth.encryption_. SHA1 and BCrypt are currently supported.
+
+## External Authentication with SAML
+
+You can also configure the Identity Manager to authenticate users through an
+external user in identity provider(idp).
+
+When using this option, after the user correclty authenticates using his/her
+remote credentials, a local copy of the user is created. For authenticating the
+user externally Keyrock needs to read a set of user attributes from the SAML
+profile. These SAML profile are:
+
+-   username: the display name of the user.
+
+-   email: the email address is the value used for authenticating the user.
+
+For keycloak configuration(v4.8.3 Final), you create SAML client, and config
+
+-   Valid Redirect URIs to keyrock server.
+-   Assertion Consumer Service POST Binding URL to keyrock server.
+-   IDP Initiated SSO URL Name to create SAML entry point (URL). then config
+    mapper in keycloak for SAML profile.
+
+An example of this configuration is:
+
+```javascript
+config.external_user_sso = {
+    enabled:     true,
+    entry_point: 'https://{{keycloak-server}}/auth/realms/smartcity/protocol/saml/clients/keyrock'),
+    issuer:      'keyrock')
+}
+```
+
+An example of keycloak configuration is:
+
+**client configuration**
+
+```
+-   Valid Redirect URIs: https://{{keyrock-server}}:3005.
+-   Assertion Consumer Service POST Binding URL: https://{{keyrock-server}}:3005.
+-   IDP Initiated SSO URL Name: keyrock.
+    (You will got Target IDP initiated SSO URL: https://{{keyrock-server}}/auth/realms/smartcity/protocol/saml/clients/keyrock)
+```
+
+**mapper configuration**
+
+```
+-   username: the display name of the user.
+    (For Keycloak Mapper, Name: username, Type: User Property, Property: username)
+
+-   email: the email address is the value used for authenticating the user.
+    (For Keycloak Mapper, Name: email, Type: User Property, Property: email)
+```
 
 ## Authorization
 

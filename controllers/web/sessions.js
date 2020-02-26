@@ -8,6 +8,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const escape_paths = require('../../etc/escape_paths/paths.json').paths;
+const config = require('../../config');
 
 // MW to authorized restricted http accesses
 exports.login_required = function(req, res, next) {
@@ -77,7 +78,11 @@ exports.new = function(req, res) {
     res.locals.message = req.session.message;
     delete req.session.message;
   }
-  res.render('index', { errors, csrf_token: req.csrfToken() });
+  res.render('index', {
+    errors,
+    csrf_token: req.csrfToken(),
+    sso_enabled: config.external_user_sso.enabled,
+  });
 };
 
 // POST /auth/login -- Create Session
@@ -134,7 +139,6 @@ exports.create = function(req, res) {
       if (user.admin) {
         req.session.user.admin = user.admin;
       }
-
       res.redirect('/idm');
     });
   } else {

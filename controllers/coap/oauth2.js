@@ -43,6 +43,7 @@ function token(req, res) {
         access_token: result.access_token,
         refresh_token: result.refresh_token,
       };
+      res.code = '2.01';
       res.end(JSON.stringify(response));
     })
     .catch(function(error) {

@@ -1,30 +1,11 @@
 const models = require('../../models/models.js');
 const config = require('../../config');
-//const fs = require('fs');
-//const path = require('path');
 const gravatar = require('gravatar');
-//const https = require('https');
 const util = require('util');
-//const external_auth = config.external_auth;
-
-/*const email_list = config.email_list_type
-  ? fs
-      .readFileSync(
-        path.join(
-          __dirname,
-          '../../etc/email_list/' + config.email_list_type + '.txt'
-        )
-      )
-      .toString('utf-8')
-      .split('\n')
-  : [];*/
 
 const debug = require('debug')('idm:web-user_controller');
 
 const email = require('../../lib/email.js');
-//const image = require('../../lib/image.js');
-
-//const identity_attributes = config.identity_attributes || { enabled: false };
 
 // Create new user by email & username in SAML profile
 function create_user_from_saml(req, res, callback) {
@@ -32,11 +13,13 @@ function create_user_from_saml(req, res, callback) {
 
   if (!(typeof req.user.email !== 'undefined' && req.user.email)) {
     debug('---> SAML Profile: email must not empty');
+    req.session.errors = [{ message: 'invalid' }];
     return res.redirect('/auth/login');
   }
 
   if (!(typeof req.user.username !== 'undefined' && req.user.username)) {
     debug('---> SAML Profile: username must not empty');
+    req.session.errors = [{ message: 'invalid' }];
     return res.redirect('/auth/login');
   }
 
@@ -73,7 +56,6 @@ function create_user_from_saml(req, res, callback) {
           })
           .then(function() {
             // Send an email to the user
-            // Send an email to the user
             const link =
               config.host +
               '/activate?activation_key=' +
@@ -103,9 +85,8 @@ function create_user_from_saml(req, res, callback) {
   return undefined;
 }
 
-function findOrCreate_user_from_saml(req, res) {
-  // eslint-disable-line snakecase/snakecase
-  debug('--> findOrCreate_user_from_saml');
+function find_or_create_user_from_saml(req, res) {
+  debug('--> find_or_create_user_from_saml');
   debug(
     '--> SAML Prifole: ' +
       util.inspect(req.user, { showHidden: false, depth: null }) // eslint-disable-line snakecase/snakecase
@@ -113,6 +94,7 @@ function findOrCreate_user_from_saml(req, res) {
 
   if (!(typeof req.user.email !== 'undefined' && req.user.email)) {
     debug('---> SAML Profile: email must not empty');
+    req.session.errors = [{ message: 'invalid' }];
     return res.redirect('/auth/login');
   }
 
@@ -136,7 +118,13 @@ function findOrCreate_user_from_saml(req, res) {
       },
     })
     .then(function(user) {
-      if (user.enabled) {
+      if (user) {
+        if (user.enabled === false) {
+          debug('---> user is not enabled');
+          req.session.errors = [{ message: 'user_not_found' }];
+          res.redirect('/auth/login');
+        }
+
         // Create req.session.user and save id and username
         // The session is defined by the existence of: req.session.user
 
@@ -170,10 +158,10 @@ function findOrCreate_user_from_saml(req, res) {
         }
 
         res.redirect('/idm');
-        //return res.redirect('/idm');
+      } else {
+        debug('---> user not found & create new user');
+        create_user_from_saml(req, res, find_or_create_user_from_saml);
       }
-      debug('---> user not found & create new user');
-      create_user_from_saml(req, res, findOrCreate_user_from_saml); // eslint-disable-line snakecase/snakecase
     })
     .catch(function(error) {
       debug('---> user is not found: ' + error);
@@ -184,5 +172,5 @@ function findOrCreate_user_from_saml(req, res) {
 }
 
 exports.load_user_by_email = function(req, res) {
-  findOrCreate_user_from_saml(req, res); // eslint-disable-line snakecase/snakecase
+  find_or_create_user_from_saml(req, res);
 };

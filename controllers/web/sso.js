@@ -120,9 +120,9 @@ function find_or_create_user_from_saml(req, res) {
     .then(function(user) {
       if (user) {
         if (user.enabled === false) {
-          debug('---> user is not enabled');
+          debug('---> user is disabled');
           req.session.errors = [{ message: 'user_not_found' }];
-          res.redirect('/auth/login');
+          return res.redirect('/auth/login');
         }
 
         // Create req.session.user and save id and username
@@ -162,6 +162,7 @@ function find_or_create_user_from_saml(req, res) {
         debug('---> user not found & create new user');
         create_user_from_saml(req, res, find_or_create_user_from_saml);
       }
+      return undefined;
     })
     .catch(function(error) {
       debug('---> user is not found: ' + error);

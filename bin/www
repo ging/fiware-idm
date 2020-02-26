@@ -11,7 +11,6 @@ var debug = require('debug')('idm:server');
 var fs = require("fs");
 var http = require('http');
 var https = require("https");
-var coap = require('coap')
 
 
 if (config.https.enabled) {
@@ -53,19 +52,34 @@ if (config.https.enabled) {
  
 
 /**
- * Create COAP server.
+ * Create MQTT server.
  */
 
-var coap_server = coap.createServer();
+var mqtt = require('mosca');
+var settings = {
+  port:1883
+}
 
-coap_server.on('request', app_coap.paths)
+var mqtt_server = new mqtt.Server(settings);
 
-coap_server.listen(5683, null, function(req, res) {
-  debug("COAP listening on 5683");
-})
+mqtt_server.on('ready', function(){
+  debug("Mosca listenning on port 1883");
+});
 
+mqtt_server.on('clientConnected', function(client) {
+    debug('client connected', client.id);
+});
 
+mqtt_server.on('clientDisconnected', function(client) {
+  debug('Client Disconnected:', client.id);
+});
 
+// fired when a message is received
+mqtt_server.on('published', function(packet, client) {
+  debug('Published', packet.payload.toString('utf-8'));
+  if (client) {
+  }
+});
 
 /**
  * Normalize a port into a number, string, or false.

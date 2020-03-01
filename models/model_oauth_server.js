@@ -648,13 +648,15 @@ function create_oauth_response(
 
     return search_iot_info(iot_info);
   }
-  return search_app_info(application_id);
+
+  return search_app_info(application_id, expires_in);
 }
 
-function search_app_info(application_id) {
+function search_app_info(application_id, expires_in) {
   debug('-------search_app_info-------');
 
   return Promise.resolve({
+    expires_in: expires_in,
     app_id: application_id,
   });
 }

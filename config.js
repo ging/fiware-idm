@@ -16,7 +16,7 @@ config.debug = to_boolean(process.env.IDM_DEBUG, true);
 
 // HTTPS enable
 config.https = {
-    enabled: to_boolean(process.env.IDM_HTTPS_ENABLED, true),
+    enabled: to_boolean(process.env.IDM_HTTPS_ENABLED, false),
     cert_file: 'certs/idm-2018-cert.pem',
     key_file: 'certs/idm-2018-key.pem',
     ca_certs: [],

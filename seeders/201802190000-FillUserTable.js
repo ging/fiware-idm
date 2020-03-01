@@ -18,7 +18,7 @@ module.exports = {
         email: process.env.IDM_ADMIN_EMAIL || 'admin@test.com',
         password: crypto
           .createHmac('sha1', salt)
-          .update(process.env.IDM_ADMIN_PASS || '1234')
+          .update(process.env.IDM_ADMIN_PASS || 'katumun1sta')
           .digest('hex'),
         salt: salt,
         date_password: new Date(new Date().getTime()),

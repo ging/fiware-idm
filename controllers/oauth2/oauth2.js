@@ -23,7 +23,7 @@ const oauth_server = new OauthServer({
 // POST /oauth2/token -- Function to handle token requests
 exports.token = function(req, res) {
   debug(' --> token');
-
+  
   const request = new Request(req);
   const response = new Response(res);
 

@@ -12,6 +12,75 @@ var fs = require("fs");
 var http = require('http');
 var https = require("https");
 
+/**
+ * Create COAP server.
+ */
+
+// COAP
+
+var dgram = require('dgram');
+var server = dgram.createSocket('udp4');
+
+if (config.coap.enabled) {
+  server.on('error', (err) => {
+    debug(`server error:\n${err.stack}`);
+    server.close();
+  });
+
+  server.on('message', async (msg, rinfo) => {
+    let response = await app_coap.paths(msg)
+    var client = dgram.createSocket('udp4');
+    client.send(response, 0, response.length, rinfo.port, rinfo.address,function(error){
+      client.close();
+    });
+  });
+
+  server.on('listening', () => {
+    debug("COAP listening on " + config.coap.port);
+  });
+
+  server.bind(config.coap.port);
+}
+
+/**
+ * Create COAPs server.
+ */
+
+// COAPS
+var index = require('../lib/dtls');
+
+if (config.coaps.enabled) {
+
+  let dtls;
+  try {
+    dtls = index.createDTLSServer(config.coaps.crt_file, config.coaps.key_file, config.coaps.port, "udp4")
+  }
+  catch (err) {
+    if (err.code == "ENOENT") {
+      debug("Certificate and Key not found, generate new ones with the following command:\n  $ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert.key -out cert.crt -subj '/CN=node-dtls-tunnel/O=m4n3dw0lf/C=BR'");
+      process.exit(1)
+    }
+    else {
+       throw err;
+       process.exit(1)
+    }
+  }
+
+  debug("COAPs listening on " + config.coaps.port);
+
+  if (typeof(dtls) != "undefined") {
+    dtls.on( 'secureConnection', function( socket ) {
+      socket.on( 'message', async function( message ) {
+        let response = await app_coap.paths(message)
+        socket.send(response);
+      });
+    });
+  }
+}
+
+
+
+
 
 if (config.https.enabled) {
   var options = {
@@ -49,37 +118,7 @@ if (config.https.enabled) {
   });
 
 }
- 
 
-/**
- * Create MQTT server.
- */
-
-var mqtt = require('mosca');
-var settings = {
-  port:1883
-}
-
-var mqtt_server = new mqtt.Server(settings);
-
-mqtt_server.on('ready', function(){
-  debug("Mosca listenning on port 1883");
-});
-
-mqtt_server.on('clientConnected', function(client) {
-    debug('client connected', client.id);
-});
-
-mqtt_server.on('clientDisconnected', function(client) {
-  debug('Client Disconnected:', client.id);
-});
-
-// fired when a message is received
-mqtt_server.on('published', function(packet, client) {
-  debug('Published', packet.payload.toString('utf-8'));
-  if (client) {
-  }
-});
 
 /**
  * Normalize a port into a number, string, or false.

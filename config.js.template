@@ -9,6 +9,7 @@ function to_array(env, default_value){
 }
 
 config.port = (process.env.IDM_PORT || 3000 );
+config.hostname = '127.0.0.1'
 config.host = (process.env.IDM_HOST || 'http://localhost:' + config.port);
 
 config.debug = to_boolean(process.env.IDM_DEBUG, true);
@@ -22,6 +23,19 @@ config.https = {
     port: (process.env.IDM_HTTPS_PORT || 443 )
 };
 
+// COAP enable
+config.coap = {
+    enabled: to_boolean(process.env.IDM_COAP_ENABLED, true),
+    port: (process.env.IDM_COAP_PORT || 5683 )
+};
+
+// COAPs enable
+config.coaps = {
+    enabled: to_boolean(process.env.IDM_COAPS_ENABLED, true),
+    crt_file: 'certs/coaps/cert.crt',
+    key_file: 'certs/coaps/cert.key',
+    port: (process.env.IDM_COAPS_PORT || 4433 )
+};
 // Config email list type to use domain filtering
 config.email_list_type = (process.env.IDM_EMAIL_LIST || null );   // whitelist or blacklist
 

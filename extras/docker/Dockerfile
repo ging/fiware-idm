@@ -1,4 +1,4 @@
-ARG NODE_VERSION=10.17.0-slim
+ARG NODE_VERSION=8.11.4-stretch
 FROM node:${NODE_VERSION}
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
@@ -130,7 +130,7 @@ RUN apt-get update && \
 #
 # COPY . /opt/fiware-idm
 #
-RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="master"; else RELEASE=$(curl -s https://api.github.com/repos/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}/releases/latest | grep 'tag_name' | cut -d\" -f4); fi && \
+RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="coapOAuth"; else RELEASE=$(curl -s https://api.github.com/repos/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}/releases/latest | grep 'tag_name' | cut -d\" -f4); fi && \
     if [ ${DOWNLOAD_TYPE} = "latest" ] ; then echo "INFO: Building Latest Development"; else echo "INFO: Building Release: ${RELEASE}"; fi && \
     apt-get update && \
     apt-get install -y  --no-install-recommends unzip && \
@@ -144,13 +144,8 @@ WORKDIR /opt/fiware-idm
 
 RUN rm -rf doc extras  && \
     npm cache clean -f   && \
-    npm install --production  && \
-    rm -rf /root/.npm/cache/* && \
-    mkdir certs && \
-    openssl genrsa -out idm-2018-key.pem 2048 && \
-    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
-    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
-    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
+    npm install  && \
+    rm -rf /root/.npm/cache/* 
 
 
 # For local development, when running the Dockerfile from the root of the repository

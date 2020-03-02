@@ -1,5 +1,6 @@
 'use strict';
 
+var crypto = require('crypto');
 var salt = crypto
   .randomBytes(16)
   .toString('hex')

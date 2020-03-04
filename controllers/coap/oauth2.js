@@ -16,7 +16,7 @@ const oauth_server = new OauthServer({
 exports.paths = async function(req) {
   req = parse(req)
   let pet;
-  
+
   req.body = JSON.parse(req.payload.toString('utf8'))
   delete req.payload
   req.query = {};
@@ -48,7 +48,9 @@ exports.paths = async function(req) {
       break;
     default:
       let coap_options =  {
-        code: '4.00'
+        code: '4.00',
+        token: req.token,
+        messageId: req.messageId
       }
       response = generate(coap_options)
       break;
@@ -82,6 +84,7 @@ function token(req, res) {
       let coap_options =  {
         code: '2.01',
         token: req.token,
+        messageId: req.messageId,
         payload: new Buffer(JSON.stringify(payload)),
         options: [{
             name: 'Content-Format',
@@ -98,6 +101,7 @@ function token(req, res) {
       let coap_options =  {
         code: '2.01',
         token: req.token,
+        messageId: req.messageId,
         payload: new Buffer(payload),
         options: [{
             name: 'Content-Format',

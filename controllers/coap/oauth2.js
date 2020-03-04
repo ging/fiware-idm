@@ -50,6 +50,7 @@ exports.paths = async function(req) {
       let coap_options =  {
         code: '4.00',
         token: req.token,
+        ack: true,
         messageId: req.messageId
       }
       response = generate(coap_options)
@@ -84,6 +85,7 @@ function token(req, res) {
       let coap_options =  {
         code: '2.01',
         token: req.token,
+        ack: true,
         messageId: req.messageId,
         payload: new Buffer(JSON.stringify(payload)),
         options: [{
@@ -101,6 +103,7 @@ function token(req, res) {
       let coap_options =  {
         code: '2.01',
         token: req.token,
+        ack: true,
         messageId: req.messageId,
         payload: new Buffer(payload),
         options: [{

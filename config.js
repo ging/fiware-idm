@@ -9,14 +9,14 @@ function to_array(env, default_value){
 }
 
 config.port = (process.env.IDM_PORT || 3000 );
-config.hostname = '127.0.0.1'
+config.hostname = '172.19.1.5'
 config.host = (process.env.IDM_HOST || 'http://localhost:' + config.port);
 
 config.debug = to_boolean(process.env.IDM_DEBUG, true);
 
 // HTTPS enable
 config.https = {
-    enabled: to_boolean(process.env.IDM_HTTPS_ENABLED, false),
+    enabled: to_boolean(process.env.IDM_HTTPS_ENABLED, true),
     cert_file: 'certs/idm-2018-cert.pem',
     key_file: 'certs/idm-2018-key.pem',
     ca_certs: [],
@@ -25,7 +25,7 @@ config.https = {
 
 // COAP enable
 config.coap = {
-    enabled: to_boolean(process.env.IDM_COAP_ENABLED, true),
+    enabled: to_boolean(process.env.IDM_COAP_ENABLED, false),
     port: (process.env.IDM_COAP_PORT || 5683 )
 };
 
@@ -72,7 +72,7 @@ config.cors = {
 config.oauth2 = {
     allow_empty_state: (process.env.IDM_OAUTH_EMPTY_STATE || false),                       // allow empty state in request
     authorization_code_lifetime: (process.env.IDM_OAUTH_AUTH_LIFETIME || 5 * 60),        // Five minutes
-    access_token_lifetime: (process.env.IDM_OAUTH_ACC_LIFETIME || 5),              // One hour
+    access_token_lifetime: (process.env.IDM_OAUTH_ACC_LIFETIME || 10),              // One hour
     ask_authorization: (process.env.IDM_OAUTH_ASK_AUTH || true),                         // Prompt a message to users to allow the application to read their details
     refresh_token_lifetime: (process.env.IDM_OAUTH_REFR_LIFETIME || 60 * 60 * 24 * 14),  // Two weeks
     unique_url: (process.env.IDM_OAUTH_UNIQUE_URL || false)                              // This parameter allows to verify that an application with the same url
@@ -112,8 +112,8 @@ config.usage_control = {
 // Database info
 config.database  = {
     host:     (process.env.IDM_DB_HOST || 'localhost'),
-    password: (process.env.IDM_DB_PASS || 'keyrock2020'),
-    username: (process.env.IDM_DB_USER || 'idm'),
+    password: (process.env.IDM_DB_PASS || 'idm'),
+    username: (process.env.IDM_DB_USER || 'root'),
     database: (process.env.IDM_DB_NAME || 'idm'),
     dialect:  (process.env.IDM_DB_DIALECT || 'mysql'),
     port:     (process.env.IDM_DB_PORT || undefined)

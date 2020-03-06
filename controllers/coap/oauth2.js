@@ -79,7 +79,6 @@ function token(req, res) {
 
       let payload = {
         "access_token": result.access_token,
-        "refresh_token": result.refresh_token
       }
       
       let coap_options =  {

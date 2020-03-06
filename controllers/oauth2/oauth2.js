@@ -34,7 +34,10 @@ exports.token = function(req, res) {
         response.body.token_type = 'jwt';
         delete response.body.expires_in;
       }
-      res.status(200).json(response.body);
+      let response_oauth2 = {
+        access_token: response.body.access_token
+      }
+      res.status(200).json(response_oauth2);
     })
     .catch(function(error) {
       debug('Error ', error);

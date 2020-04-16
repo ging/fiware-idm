@@ -1,6 +1,6 @@
 {
   "name": "fiware-idm",
-  "version": "7.8.1",
+  "version": "7.8.2",
   "private": true,
   "license": "MIT",
   "scripts": {

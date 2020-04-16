@@ -61,6 +61,12 @@ module.exports = function(sequelize, DataTypes) {
         valid_pass = bcrypt.compareSync(password, this.password);
         break;
       }
+      case 'pbkdf2': {
+        const encripted = crypto.pbkdf2Sync(password, this.password_salt, external_auth.password_encryption_opt.iterations, external_auth.password_encryption_opt.keylen, external_auth.password_encryption_opt.digest).toString('base64');
+        valid_pass = encripted === this.password;
+        break;
+      }
+
       default: {
         valid_pass = false;
       }

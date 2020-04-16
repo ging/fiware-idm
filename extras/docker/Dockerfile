@@ -1,4 +1,4 @@
-ARG NODE_VERSION=10.17.0-slim
+ARG NODE_VERSION=10.19.0-slim
 FROM node:${NODE_VERSION}
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
@@ -9,6 +9,10 @@ ENV GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
 ENV DOWNLOAD_TYPE=${DOWNLOAD_TYPE}
 
 MAINTAINER FIWARE Identity Manager Team. DIT-UPM
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends ca-certificates curl wget \
+	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
 

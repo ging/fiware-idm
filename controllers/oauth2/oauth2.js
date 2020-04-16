@@ -224,7 +224,7 @@ exports.authenticate_user = function(req, res, next) {
 
 // Check if user has authorized the application
 function check_user_authorized_application(req, res, next) {
-  debug(' --> check_user_authorized_application');
+  debug(' --> check_user_authorized_application : ', config_oauth2.ask_authorization);
 
   if (config_oauth2.ask_authorization) {
     search_user_authorized_application(req.session.user.id, req.application.id)

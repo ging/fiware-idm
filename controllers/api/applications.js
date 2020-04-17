@@ -160,9 +160,19 @@ exports.create = function(req, res) {
           'password',
           'implicit',
           'authorization_code',
+          'hybrid',
           'refresh_token',
         ];
-        application.response_type = ['code', 'token'];
+        application.response_type = [
+          'code',
+          'token',
+          'id_token',
+          'id_token token',
+          'code id_token',
+          'code token',
+          'code id_token token',
+          'none',
+        ];
       }
 
       if (req.body.application.token_types) {
@@ -427,7 +437,14 @@ function check_create_body_request(body) {
       }
       if (body.application.grant_type.includes('implicit')) {
         oauth_types.grant_type.push('implicit');
-        oauth_types.response_type.push('token');
+        oauth_types.response_type.push('id_token');
+        oauth_types.response_type.push('id_token token');
+      }
+      if (body.application.grant_type.includes('hybrid')) {
+        oauth_types.grant_type.push('hybrid');
+        oauth_types.response_type.push('code id_token');
+        oauth_types.response_type.push('code token');
+        oauth_types.response_type.push('code id_token token');
       }
       if (body.application.grant_type.includes('refresh_token')) {
         oauth_types.grant_type.push('refresh_token');
@@ -542,7 +559,14 @@ function check_update_body_request(body) {
       }
       if (body.application.grant_type.includes('implicit')) {
         oauth_types.grant_type.push('implicit');
-        oauth_types.response_type.push('token');
+        //oauth_types.response_type.push('token');
+        oauth_types.response_type.push('id_token');
+      }
+      if (body.application.grant_type.includes('hybrid')) {
+        oauth_types.grant_type.push('hybrid');
+        oauth_types.response_type.push('code token');
+        oauth_types.response_type.push('code id_token');
+        oauth_types.response_type.push('code id_token token');
       }
       if (body.application.grant_type.includes('refresh_token')) {
         oauth_types.grant_type.push('refresh_token');

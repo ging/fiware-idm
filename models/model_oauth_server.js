@@ -56,6 +56,9 @@ function getAccessToken(bearerToken) {
       ],
     })
     .then(function(accessToken) {
+      debug('***********');
+      debug(accessToken);
+      debug('***********');
       if (!accessToken) {
         return false;
       }
@@ -300,6 +303,7 @@ function revokeAccessToken(accessToken, code, client_id, refresh_token) {
 
 function saveToken(token, client, identity) {
   debug('-------saveToken-------');
+  debug(token.scope);
 
   if (token.scope.includes('permanent')) {
     token.accessTokenExpiresAt = null;
@@ -310,6 +314,11 @@ function saveToken(token, client, identity) {
   if (token.scope.includes('jwt')) {
     return generateJwtToken(token, client, identity);
   }
+
+  /*if(token.idToken){
+    return generateIDToken(client, identity);
+  }*/
+  //llamar a genertateIDToken
   return storeToken(token, client, identity, false);
 }
 
@@ -348,6 +357,7 @@ function generateJwtToken(token, client, identity) {
 
 function storeToken(token, client, identity, jwt) {
   debug('-------storeToken-------');
+  debug(token.scope);
 
   let user_id = null;
   let iot_id = null;
@@ -872,7 +882,7 @@ function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
   if (scope) {
-    const requested_scopes = scope.split(',');
+    const requested_scopes = scope[0].split(',');
     if (
       requested_scopes.includes('bearer') &&
       requested_scopes.includes('jwt')

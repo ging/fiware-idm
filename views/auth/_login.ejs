@@ -51,6 +51,9 @@
                     </span>
                 </label>
             </div>
+            <% if ((typeof sso_enabled !== 'undefined') && (sso_enabled)) { %>
+              <a href="/auth/sso/login" class="btn btn-primary">Sing In with SSO</a>
+            <% } %>
             <button type="submit" class="btn btn-primary pull-right"><%=translation.auth.login.loginin_btn%></button>
             <div class="actions">
                 <a href="/sign_up/">

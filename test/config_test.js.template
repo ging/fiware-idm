@@ -120,6 +120,14 @@ config.external_auth = {
     }
 }
 
+// External user authentication with SAML Profile.
+// SAML Profile must include field username and email.
+config.external_user_sso = {
+    enabled:     to_boolean(process.env.IDM_EX_AUTH_SSO_ENABLED, true),
+    entry_point: (process.env.IDM_EX_AUTH_SSO_HOST   || 'https://keycloak'),
+    issuer:      (process.env.IDM_EX_AUTH_SSO_ISSUER || 'keyrock')
+}
+
 // Email configuration
 config.mail = {
     host: (process.env.IDM_EMAIL_HOST || 'localhost'),

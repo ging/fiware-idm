@@ -15,6 +15,9 @@ const path = require('path');
 const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
 
+const passport = require('passport');
+const saml = require('passport-saml');
+
 // Obtain secret from config file
 const config = require('./config.js');
 
@@ -23,6 +26,30 @@ const index = require('./routes/web/index');
 const api = require('./routes/api/index');
 const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+const saml_strategy = new saml.Strategy(
+  {
+    // config options here
+    callbackUrl: '/auth/sso/callback', // eslint-disable-line snakecase/snakecase
+    entryPoint: config.external_user_sso.entry_point, // eslint-disable-line snakecase/snakecase
+    issuer: config.external_user_sso.issuer, // eslint-disable-line snakecase/snakecase
+    identifierFormat: null, // eslint-disable-line snakecase/snakecase
+    validateInResponseTo: false, // eslint-disable-line snakecase/snakecase
+    disableRequestedAuthnContext: true, // eslint-disable-line snakecase/snakecase
+  },
+  function(profile, done) {
+    return done(null, profile);
+  }
+);
+
+passport.use('samlStrategy', saml_strategy);
 
 const app = express();
 
@@ -98,6 +125,9 @@ app.use(
     defaultLang: 'en', // eslint-disable-line snakecase/snakecase
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Helpers dinamicos:
 app.use(function(req, res, next) {

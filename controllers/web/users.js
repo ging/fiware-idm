@@ -295,6 +295,7 @@ exports.edit = function(req, res) {
       .on('error', function(e) {
         debug('Failed connecting to gravatar: ' + e);
         res.render('users/edit', {
+          identity_attributes,
           user: req.user,
           error: [],
           csrf_token: req.csrfToken(),
@@ -307,6 +308,7 @@ exports.edit = function(req, res) {
       { protocol: 'https' }
     );
     res.render('users/edit', {
+      identity_attributes,
       user: req.user,
       error: [],
       csrf_token: req.csrfToken(),
@@ -643,7 +645,6 @@ exports.create = function(req, res) {
           const activation_expires = new Date(
             new Date().getTime() + 1000 * 3600 * 24
           );
-
           models.user_registration_profile
             .findOrCreate({
               defaults: {
@@ -698,7 +699,6 @@ exports.create = function(req, res) {
                     debug('Failed connecting to gravatar: ' + e);
                   });
               }
-
               // Send an email to the user
               const link =
                 config.host +

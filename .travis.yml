@@ -1,6 +1,7 @@
 branches:
   only:
     - master
+    - sso-saml
     
 addons:
   apt:

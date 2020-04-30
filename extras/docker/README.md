@@ -96,6 +96,31 @@ The different params mean:
 
 3.  Use `sudo docker-compose up` to run the IdM Keyrock. This will automatically
     download the two images and run the IdM Keyrock service.
+    
+### Docker Secrets
+
+As an alternative to passing sensitive information via environment variables, `_FILE` may be appended to some sensitive
+environment variables, causing the initialization script to load the values for those variables from files present in
+the container. In particular, this can be used to load passwords from Docker secrets stored in
+`/run/secrets/<secret_name>` files. For example:
+
+```console
+docker run --name keyrock -e IDM_DB_USER_FILE=/run/secrets/password -d fiware/idm
+```
+
+Currently, this `_FILE` suffix is supported for:
+
+-   `IDM_SESSION_SECRET`
+-   `IDM_ENCRYPTION_KEY`
+-   `IDM_DB_PASS`
+-   `IDM_DB_USER`
+-   `IDM_ADMIN_ID`
+-   `IDM_ADMIN_USER`
+-   `IDM_ADMIN_EMAIL`
+-   `IDM_ADMIN_PASS`
+-   `IDM_EX_AUTH_DB_USER`
+-   `IDM_EX_AUTH_DB_PASS`
+-   `IDM_DB_HOST`
 
 ## Build your own image
 

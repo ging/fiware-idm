@@ -56,9 +56,6 @@ function getAccessToken(bearerToken) {
       ],
     })
     .then(function(accessToken) {
-      debug('***********');
-      debug(accessToken);
-      debug('***********');
       if (!accessToken) {
         return false;
       }
@@ -303,7 +300,6 @@ function revokeAccessToken(accessToken, code, client_id, refresh_token) {
 
 function saveToken(token, client, identity) {
   debug('-------saveToken-------');
-  debug(token.scope);
 
   if (token.scope.includes('permanent')) {
     token.accessTokenExpiresAt = null;
@@ -315,10 +311,6 @@ function saveToken(token, client, identity) {
     return generateJwtToken(token, client, identity);
   }
 
-  /*if(token.idToken){
-    return generateIDToken(client, identity);
-  }*/
-  //llamar a genertateIDToken
   return storeToken(token, client, identity, false);
 }
 
@@ -357,7 +349,6 @@ function generateJwtToken(token, client, identity) {
 
 function storeToken(token, client, identity, jwt) {
   debug('-------storeToken-------');
-  debug(token.scope);
 
   let user_id = null;
   let iot_id = null;
@@ -881,7 +872,7 @@ function app_authzforce_domain(app_id) {
 function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
-  if (scope) {
+  if (scope && scope.length > 0) {
     const requested_scopes = scope[0].split(',');
     if (
       requested_scopes.includes('bearer') &&
@@ -908,6 +899,47 @@ function verifyScope(token, scope) {
   return token.scope === scope;
 }
 
+/// OPEN ID CONNECT FUNCTIONS
+
+function generateIdToken(client, user) {
+  debug('-------generateIdToken-------');
+
+  let user_autho_app_promise = config_oauth2.ask_authorization
+    ? user_authorized_application.findOrCreate({
+        // User has enable application to read their information
+        where: { user_id: user.id, oauth_client_id: client.id },
+        defaults: {
+          user_id: user.id,
+          oauth_client_id: client.id,
+        },
+      })
+    : Promise.resolve();
+
+  return user_autho_app_promise
+    .then(function() {
+      return create_oauth_response(
+        user,
+        client.id,
+        null,
+        null,
+        config_authzforce.enabled,
+        null
+      );
+    })
+    .then(function(idToken) {
+      idToken['iss'] = config.host;
+      idToken['sub'] = user.id;
+      idToken['aud'] = client.id;
+      idToken['exp'] =
+        Math.round(Date.now() / 1000) + config_oauth2.access_token_lifetime;
+      idToken['iat'] = Math.round(Date.now() / 1000);
+      return idToken;
+    })
+    .catch(function(error) {
+      debug('-------generateidToken-------', error);
+    });
+}
+
 module.exports = {
   getAccessToken,
   getAuthorizationCode,
@@ -927,4 +959,5 @@ module.exports = {
   user_roles,
   user_permissions,
   trusted_applications,
+  generateIdToken,
 };

@@ -637,7 +637,9 @@
       "popover03_body": "IdM Keyrock redirigirá a esta URL si la aplicación ha realizado el acceso a través de OAuth y quiere cerrar la sesión también el IdM. Si no se configura este parametro, el usuario sera redirigido al punto de acceso especificado en el campo URL.",
       "popover03_title": "Url de retorno de desconexión de la aplicación",
       "popover04_body": "Seleccione que grant types serán usados por la aplicación para autorizar a los usuarios usando el prococolo OAuth 2.0. Visite <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> para más información",
-      "popover04_title": "OAuth Grant Types"
+      "popover04_title": "OAuth Grant Types",
+      "popover05_body": "Seleccion si quiere permitir la autenticación mediante OpenID Connect",
+      "popover05_title": "OpenID Connect"
     },
     "index": {
       "title": "Aplicaciones",
@@ -670,6 +672,7 @@
       "label06": "Grant Type",
       "label07": "Provider",
       "label08": "Autenticación eIDAS",
+      "label09": "Autenticación Open ID Connect",
       "required_field": "Este campo es obligatorio.",
       "alert01": "La URL ya esta en uso. ",
       "popover01_body": "Por razones de seguridad, solo peticiones OAuth provinientes de esta Url serán aceptadas por Keyrock.",
@@ -682,8 +685,10 @@
       "popover04_title": "OAuth Grant Types",
       "popover05_body": "Seleccione quien va a ser el provider de la aplicación: usted o alguna de las organizaciones de las que es propietario.",
       "popover05_title": "Provider de la aplicación",
-      "popover06_body": "Seleccione si quieres permiter que los usuarios se autentiquen a través del nodo eIDAS.",
+      "popover06_body": "Seleccione si quieres permitir que los usuarios se autentiquen a través del nodo eIDAS.",
       "popover06_title": "Punto de autenticación",
+      "popover07_body": "Seleccion si quiere permitir la autenticación mediante OpenID Connect",
+      "popover07_title": "OpenID Connect",
       "next_btn": "Siguiente"
     },
     "show": {
@@ -707,9 +712,12 @@
       "panel_title05": "Usuarios autorizados",
       "panel_title06": "Organizaciones autorizadas",
       "panel_title07": "Autenticación eIDAS",
+      "panel_title08": "Credenciales Open ID Connect",
       "panel_subtitle01": "ID del cliente",
       "panel_subtitle02": "Secreto del cliente",
       "panel_subtitle03": "Tipos de Token",
+      "panel_subtitle04": "Secreto JWT",
+      "panel_subtitle05": "OIC Secret",
       "permanent_option": "Permanente",
       "popover01_body": "Estos credenciales serán necesarios en la librería de OAuth2 que uses en tu aplicación",
       "popover01_title": "Credenciales OAuth2",
@@ -719,6 +727,9 @@
       "popover03_title": "PEP Proxy",
       "popover04_body": "Si tu aplicación esta basada en IoT,los sensores necesitan se registrados aqui para poder ser autenticados.",
       "popover04_title": "Sensores IoT",
+      "popover05_body": "You can copy this OIC credential into your application in order to validate a JWT generated using an OIC flow.",
+      "popover05_title": "Open ID Connect Credentials",
+      "reset_secret_btn": "Cambie secreto",
       "register_pep_btn": "Registre un nuevo PEP Proxy",
       "reset_pep_btn": "Cambiar contraseña",
       "delete_pep_btn": "Borrar",

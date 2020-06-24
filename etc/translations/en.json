@@ -637,7 +637,9 @@
       "popover03_body": "IdM Keyrock will redirect to this endpoint if the user agent has signed in through OAuth and it is needed to delete also de user session in Keyrock. If you don't configure this parameter, the user agent will be redirected to the endpoint specified before in url field.",
       "popover03_title": "Application Sign Out Callback",
       "popover04_body": "Select which grant types would accept the application in order to authorize users using Oauth 2.0 protocol. Visit <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> for more information",
-      "popover04_title": "OAuth Grant Types"
+      "popover04_title": "OAuth Grant Types",
+      "popover05_body": "Select if you also want to allow authentication with Open ID Connect. ",
+      "popover05_title": "Open ID Connect"
     },
     "index": {
       "title": "Applications",
@@ -670,6 +672,7 @@
       "label06": "Grant Type",
       "label07": "Provider",
       "label08": "eIDAS Authentication",
+      "label09": "Open ID Connect Authentication",
       "required_field": "This is a required field.",
       "alert01": "Url is already used",
       "popover01_body": "For security purposes, only OAuth requests coming from this URL will be accepted by KeyRock.",
@@ -684,6 +687,8 @@
       "popover05_title": "Owner application",
       "popover06_body": "Select if you also want to use eIDAS as authentication endpoint.",
       "popover06_title": "Authentication Endpoint",
+      "popover07_body": "Select if you also want to allow authentication with Open ID Connect. ",
+      "popover07_title": "Open ID Connect",
       "next_btn": "Next"
     },
     "show": {
@@ -707,9 +712,12 @@
       "panel_title05": "Authorized users",
       "panel_title06": "Authorized organizations",
       "panel_title07": "eIDAS Authentication",
+      "panel_title08": "Open ID Connect Credentials",
       "panel_subtitle01": "Client ID",
       "panel_subtitle02": "Client Secret",
       "panel_subtitle03": "Token types",
+      "panel_subtitle04": "JWT Secret",
+      "panel_subtitle05": "OIC Secret",
       "permanent_option": "Permanent",
       "popover01_body": "You will be asked for these credentials in the OAuth2 library you use for your application",
       "popover01_title": "OAuth2 Credentials",
@@ -719,6 +727,9 @@
       "popover03_title": "PEP Proxy",
       "popover04_body": "If your application is related to IoT, sensors need to be registered here for them to be authenticated.",
       "popover04_title": "IoT Sensors",
+      "popover05_body": "You can copy this OIC credential into your application in order to validate a JWT generated using an OIC flow.",
+      "popover05_title": "Open ID Connect Credentials",
+      "reset_secret_btn": "Reset secret",
       "register_pep_btn": "Register a new PEP Proxy",
       "reset_pep_btn": "Reset password",
       "delete_pep_btn": "Delete",

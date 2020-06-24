@@ -637,7 +637,9 @@
       "popover03_body": "ユーザ・エージェントが OAuth を介してサインインし、Keyrock のユーザ・セッションも削除する必要がある場合、Keyrock はこのエンドポイントにリダイレクトします。 このパラメータを設定しないと、ユーザ・エージェントは URL フィールドで以前に指定されたエンドポイントにリダイレクトされます。",
       "popover03_title": "アプリケーションのサインアウト Callback",
       "popover04_body": "Oauth 2.0 プロトコルを使用してユーザを認証するために、どのグラント・タイプがアプリケーションを受け入れるかを選択します。詳細については、<a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock のドキュメント</a>を参照してください。",
-      "popover04_title": "OAuth グラント・タイプ"
+      "popover04_title": "OAuth グラント・タイプ",
+      "popover05_body": "Select if you also want to allow authentication with Open ID Connect. ",
+      "popover05_title": "Open ID Connect"
     },
     "index": {
       "title": "アプリケーション",
@@ -670,6 +672,7 @@
       "label06": "グラント・タイプ",
       "label07": "プロバイダ",
       "label08": "eIDAS 認証",
+      "label09": "Open ID Connect Authentication",
       "required_field": "これは必須フィールドです。",
       "alert01": "URL は既に使用されています。",
       "popover01_body": "セキュリティ上の理由から、この URL からの OAuth 要求のみが KeyRock によって受け入れられます。",
@@ -684,6 +687,8 @@
       "popover05_title": "アプリケーションの提供者",
       "popover06_body": "認証エンドポイントとして eIDAS も使用する場合は選択します。",
       "popover06_title": "認証エンドポイント",
+      "popover07_body": "Select if you also want to allow authentication with Open ID Connect. ",
+      "popover07_title": "Open ID Connect",
       "next_btn": "次へ"
     },
     "show": {
@@ -707,9 +712,12 @@
       "panel_title05": "認可されたユーザ",
       "panel_title06": "認可された組織",
       "panel_title07": "eIDAS 認証",
+      "panel_title08": "Open ID Connect Credentials",
       "panel_subtitle01": "Client ID",
       "panel_subtitle02": "Client Secret",
       "panel_subtitle03": "Token タイプ",
+      "panel_subtitle04": "JWT Secret",
+      "panel_subtitle05": "OIC Secret",
       "permanent_option": "永久",
       "popover01_body": "アプリケーションに使用する OAuth2 ライブラリでこれらのクレデンシャルを要求されます。",
       "popover01_title": "OAuth2 クレデンシャル",
@@ -719,6 +727,9 @@
       "popover03_title": "PEP Proxy",
       "popover04_body": "アプリケーションが IoT に関連しているならば、センサが認証されるためにここに登録する必要があります。",
       "popover04_title": "IoT センサ",
+      "popover05_body": "You can copy this OIC credential into your application in order to validate a JWT generated using an OIC flow.",
+      "popover05_title": "Open ID Connect Credentials",
+      "reset_secret_btn": "Reset secret",
       "register_pep_btn": "新しい PEP Proxy を登録",
       "reset_pep_btn": "パスワードをリセット",
       "delete_pep_btn": "削除",

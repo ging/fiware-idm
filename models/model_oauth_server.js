@@ -94,6 +94,7 @@ function getClient(clientId, clientSecret) {
       'jwt_secret',
       'scope',
       'grant_type',
+      'response_type',
     ],
   };
   if (clientSecret) {
@@ -108,6 +109,7 @@ function getClient(clientId, clientSecret) {
       const clientWithGrants = client;
 
       clientWithGrants.grants = clientWithGrants.grant_type;
+      clientWithGrants.response_types = clientWithGrants.response_type;
       clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
       clientWithGrants.refreshTokenLifetime = oauth2.refresh_token_lifetime;
       clientWithGrants.accessTokenLifetime = oauth2.access_token_lifetime;
@@ -887,6 +889,9 @@ function validateScope(user, client, scope) {
       return requested_scopes.every(r => client.token_types.includes(r))
         ? requested_scopes
         : false;
+    }
+    if (requested_scopes.includes('openid')) {
+      return client.scope.includes('openid') ? requested_scopes : false;
     }
     return requested_scopes;
   }

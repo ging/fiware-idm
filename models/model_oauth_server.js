@@ -112,7 +112,7 @@ function getClient(clientId, clientSecret) {
 
       clientWithGrants.grants = clientWithGrants.grant_type;
       clientWithGrants.response_types = clientWithGrants.response_type;
-      clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
+      clientWithGrants.redirectUris = clientWithGrants.redirect_uri;
       clientWithGrants.refreshTokenLifetime = oauth2.refresh_token_lifetime;
       clientWithGrants.accessTokenLifetime = oauth2.access_token_lifetime;
       clientWithGrants.authorizationCodeLifetime =

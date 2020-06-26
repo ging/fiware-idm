@@ -96,6 +96,7 @@ function getClient(clientId, clientSecret) {
       'jwt_secret',
       'scope',
       'grant_type',
+      'response_type',
     ],
   };
   if (clientSecret) {
@@ -110,7 +111,8 @@ function getClient(clientId, clientSecret) {
       const clientWithGrants = client;
 
       clientWithGrants.grants = clientWithGrants.grant_type;
-      clientWithGrants.redirectUris = clientWithGrants.redirect_uri;
+      clientWithGrants.response_types = clientWithGrants.response_type;
+      clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
       clientWithGrants.refreshTokenLifetime = oauth2.refresh_token_lifetime;
       clientWithGrants.accessTokenLifetime = oauth2.access_token_lifetime;
       clientWithGrants.authorizationCodeLifetime =
@@ -312,6 +314,7 @@ function saveToken(token, client, identity) {
   if (token.scope.includes('jwt')) {
     return generateJwtToken(token, client, identity);
   }
+
   return storeToken(token, client, identity, false);
 }
 
@@ -889,8 +892,8 @@ function app_authzforce_domain(app_id) {
 function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
-  if (scope) {
-    const requested_scopes = scope.split(',');
+  if (scope && scope.length > 0) {
+    const requested_scopes = scope[0].split(',');
     if (
       requested_scopes.includes('bearer') &&
       requested_scopes.includes('jwt')
@@ -905,6 +908,9 @@ function validateScope(user, client, scope) {
         ? requested_scopes
         : false;
     }
+    if (requested_scopes.includes('openid')) {
+      return client.scope.includes('openid') ? requested_scopes : false;
+    }
     return requested_scopes;
   }
   return ['bearer'];
@@ -914,6 +920,47 @@ function verifyScope(token, scope) {
   debug('-------verifyScope-------');
 
   return token.scope === scope;
+}
+
+/// OPEN ID CONNECT FUNCTIONS
+
+function generateIdToken(client, user) {
+  debug('-------generateIdToken-------');
+
+  let user_autho_app_promise = config_oauth2.ask_authorization
+    ? user_authorized_application.findOrCreate({
+        // User has enable application to read their information
+        where: { user_id: user.id, oauth_client_id: client.id },
+        defaults: {
+          user_id: user.id,
+          oauth_client_id: client.id,
+        },
+      })
+    : Promise.resolve();
+
+  return user_autho_app_promise
+    .then(function() {
+      return create_oauth_response(
+        user,
+        client.id,
+        null,
+        null,
+        config_authzforce.enabled,
+        null
+      );
+    })
+    .then(function(idToken) {
+      idToken['iss'] = config.host;
+      idToken['sub'] = user.id;
+      idToken['aud'] = client.id;
+      idToken['exp'] =
+        Math.round(Date.now() / 1000) + config_oauth2.access_token_lifetime;
+      idToken['iat'] = Math.round(Date.now() / 1000);
+      return idToken;
+    })
+    .catch(function(error) {
+      debug('-------generateidToken-------', error);
+    });
 }
 
 module.exports = {
@@ -935,4 +982,5 @@ module.exports = {
   user_roles,
   user_permissions,
   trusted_applications,
+  generateIdToken,
 };

@@ -103,18 +103,34 @@
                                             <div id="jwt_secret" class="row" style="display: none;">
                                         <% } -%>
                                             <div class="col-md-10 sub-panel">
-                                                <h6 class="panel-heading">JWT secret</h6>
+                                                <h6 class="panel-heading"><%=translation.applications.show.panel_subtitle04%></h6>
                                                 <p id="secret"><%= application.jwt_secret%></p>
                                             </div>
                                             <div class="col-md-2 actions_token_type">
                                                 <br>
-                                                <a href="/idm/applications/<%= application.id %>/token_types/reset" class="btn btn-default reset_secret">Reset secret</a>
+                                                <a href="/idm/applications/<%= application.id %>/token_types/reset" class="btn btn-default reset_secret"><%=translation.applications.show.reset_secret_btn%></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <% if (application.response_type.includes('id_token')) { -%>
+                            <h4 class="panel-title" id="oic_title">
+                                <a data-toggle="collapse" href="#collapse_oic_credentials" aria-expanded="true" aria-controls="collapse_oic_credentials" class="collapsed">
+                                    <%=translation.applications.show.panel_title08%> <i class="fa fa-angle-up"></i>
+                                </a>
+                                <a href="#" class="contextual-help" data-toggle="popover" data-title="<%=translation.applications.show.popover05_title%>" data-placement="left" data-content="<%=translation.applications.show.popover05_body%>" data-original-title="" title=""><i class="fa fa-question-circle"></i></a>
+                            </h4>
+                            <div class="collapse_out">
+                                <div id="collapse_oic_credentials" class="form-group collapse" role="tabpanel">
+                                    <div>
+                                        <h6 class="panel-heading"><%=translation.applications.show.panel_subtitle05%></h6>
+                                        <p><%= application.jwt_secret%></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } -%>
                     </div>
                 <% } -%>
             </div>

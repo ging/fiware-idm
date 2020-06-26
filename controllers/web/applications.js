@@ -352,6 +352,7 @@ exports.create = function(req, res, next) {
     'implicit',
     'authorization_code',
     'refresh_token',
+    'hybrid',
   ];
   if (req.body.grant_type) {
     if (_.difference(req.body.grant_type, possible_grant_types).length > 0) {
@@ -372,7 +373,6 @@ exports.create = function(req, res, next) {
 
   // Build a row and validate if input values are correct (not empty) before saving values in oauth_client
   const application = models.oauth_client.build(req.body.application);
-
   application.grant_type = req.body.grant_type ? req.body.grant_type : [''];
 
   const response_type = [];
@@ -383,6 +383,20 @@ exports.create = function(req, res, next) {
   if (application.grant_type.includes('implicit')) {
     response_type.push('token');
   }
+
+  if (req.body.openID) {
+    response_type.push('id_token');
+    application.token_types = ['jwt'];
+    application.scope = ['openid'];
+    application.jwt_secret = crypto
+      .randomBytes(16)
+      .toString('hex')
+      .slice(0, 16);
+    if (!req.body.grant_type.includes('hybrid')) {
+      req.body.grant_type.push('hybrid');
+    }
+  }
+
   application.response_type = response_type;
 
   const validate = application.validate();
@@ -399,6 +413,7 @@ exports.create = function(req, res, next) {
         'secret',
         'image',
         'grant_type',
+        'scope',
         'response_type',
       ],
     });
@@ -613,6 +628,19 @@ exports.update_info = function(req, res) {
       response_type.push('token');
     }
 
+    if (req.body.openID) {
+      response_type.push('id_token');
+      application.token_types = ['jwt'];
+      application.scope = ['openid'];
+      application.jwt_secret = crypto
+        .randomBytes(16)
+        .toString('hex')
+        .slice(0, 16);
+      if (!req.body.application.grant_type.includes('hybrid')) {
+        req.body.application.grant_type.push('hybrid');
+      }
+    }
+
     application
       .validate()
       .then(function() {
@@ -625,6 +653,7 @@ exports.update_info = function(req, res) {
             redirect_sign_out_uri: req.body.application.redirect_sign_out_uri,
             grant_type: req.body.application.grant_type,
             response_type,
+            scope: req.body.openID ? ['openid'] : null,
           },
           {
             fields: [
@@ -635,6 +664,8 @@ exports.update_info = function(req, res) {
               'redirect_sign_out_uri',
               'grant_type',
               'response_type',
+              'jwt_secret',
+              'scope',
             ],
             where: { id: req.application.id },
           }

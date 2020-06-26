@@ -48,7 +48,10 @@ exports.response_type_required = function(req, res, next) {
 
   if (
     !req.query.response_type ||
-    !(req.query.response_type === 'code' || req.query.response_type === 'token')
+    !(
+      req.query.response_type.includes('code') ||
+      req.query.response_type.includes('token')
+    )
   ) {
     // Reponse with message
     const err = new Error(
@@ -224,7 +227,10 @@ exports.authenticate_user = function(req, res, next) {
 
 // Check if user has authorized the application
 function check_user_authorized_application(req, res, next) {
-  debug(' --> check_user_authorized_application : ', config_oauth2.ask_authorization);
+  debug(
+    ' --> check_user_authorized_application : ',
+    config_oauth2.ask_authorization
+  );
 
   if (config_oauth2.ask_authorization) {
     search_user_authorized_application(req.session.user.id, req.application.id)

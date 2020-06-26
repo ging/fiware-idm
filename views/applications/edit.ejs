@@ -98,9 +98,30 @@
 					            	<% } else { %>
 					            		<option value="refresh_token" name="[refresh_token]">Refresh Token</option>
 					            	<% } %>
+					            	<% if (application.grant_type.includes('hybrid')) { %>
+										<option selected value="hybrid" name="[hybrid]">Hybrid</option>
+					            	<% } else { %>
+					            		<option value="hybrid" name="[hybrid]">Hybrid</option>
+					            	<% } %>
 					            </select>
 					          </div>
 					        </div>
+					        <div class="form-group required">
+		                        <label class="control-label required" for="id_provider">
+		                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.edit.popover05_title%>" data-content="<%=translation.applications.edit.popover05_body%>" data-original-title="" title="">
+		                                <i class="fa fa-question-circle"></i>
+		                            </a>
+		                            <div class="checkbox">
+		                            	<% if (application.response_type.includes('id_token')) { %>
+											<label><input type="checkbox" name="openID" value="openID" checked><%=translation.applications.new.label09%>
+		                                </label>
+						            	<% } else { %>
+						            		<label><input type="checkbox" name="openID" value="openID"><%=translation.applications.new.label09%>
+		                                </label>
+						            	<% } %>
+		                            </div>
+		                        </label>
+		                    </div>
 						</fieldset>
 					</div>
 					<div class="modal-footer">

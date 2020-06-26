@@ -78,8 +78,20 @@
                                 <option selected value="password">Resource Owner Password</option>
                                 <option selected value="client_credentials">Client Credentials</option>
                                 <option selected value="refresh_token">Refresh Token</option>
+                                <option selected value="hybrid">Hybrid</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label required" for="id_provider">
+                            <a href="#" class="contextual-help" data-toggle="popover" data-placement="left" data-title="<%=translation.applications.new.popover07_title%>" data-content="<%=translation.applications.new.popover07_body%>" data-original-title="" title="">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="openID" value="openID"><%=translation.applications.new.label09%>
+                                </label>
+                            </div>
+                        </label>
                     </div>
                     <div class="form-group required">
                         <label class="control-label  required" for="id_provider">

@@ -160,12 +160,20 @@ exports.create = function(req, res) {
           'password',
           'implicit',
           'authorization_code',
+          'hybrid',
           'refresh_token',
         ];
-        application.response_type = ['code', 'token'];
+        application.response_type = ['code', 'token', 'none'];
       }
 
-      if (req.body.application.token_types) {
+      application.scope = req.body.application.scope
+        ? req.body.application.scope
+        : null;
+
+      if (
+        req.body.application.token_types ||
+        (application.scope && application.scope.includes('openid'))
+      ) {
         application.jwt_secret = req.body.application.token_types.includes(
           'jwt'
         )
@@ -190,6 +198,7 @@ exports.create = function(req, res) {
           'token_types',
           'jwt_secret',
           'response_type',
+          'scope',
         ],
       });
 
@@ -272,6 +281,9 @@ exports.update = function(req, res) {
       req.application.client_type = req.body.application.client_type
         ? req.body.application.client_type
         : req.application.client_type;
+      req.application.scope = req.body.application.scope
+        ? req.body.application.scope
+        : req.application.scope;
       req.application.image = 'default';
 
       req.application.token_types = req.body.application.token_types
@@ -429,8 +441,25 @@ function check_create_body_request(body) {
         oauth_types.grant_type.push('implicit');
         oauth_types.response_type.push('token');
       }
+      if (body.application.grant_type.includes('hybrid')) {
+        oauth_types.grant_type.push('hybrid');
+      }
       if (body.application.grant_type.includes('refresh_token')) {
         oauth_types.grant_type.push('refresh_token');
+      }
+      if (body.application.scope && body.application.scope.includes('openid')) {
+        if (!oauth_types.grant_type.includes('hybrid')) {
+          oauth_types.grant_type.push('hybrid');
+        }
+        if (!oauth_types.response_type.includes('code')) {
+          oauth_types.grant_type.push('authorization_code');
+          oauth_types.response_type.push('code');
+        }
+        if (!oauth_types.response_type.includes('token')) {
+          oauth_types.grant_type.push('implicit');
+          oauth_types.response_type.push('token');
+        }
+        oauth_types.response_type.push('id_token');
       }
     }
 
@@ -544,8 +573,25 @@ function check_update_body_request(body) {
         oauth_types.grant_type.push('implicit');
         oauth_types.response_type.push('token');
       }
+      if (body.application.grant_type.includes('hybrid')) {
+        oauth_types.grant_type.push('hybrid');
+      }
       if (body.application.grant_type.includes('refresh_token')) {
         oauth_types.grant_type.push('refresh_token');
+      }
+      if (body.application.scope && body.application.scope.includes('openid')) {
+        if (!oauth_types.grant_type.includes('hybrid')) {
+          oauth_types.grant_type.push('hybrid');
+        }
+        if (!oauth_types.response_type.includes('code')) {
+          oauth_types.grant_type.push('authorization_code');
+          oauth_types.response_type.push('code');
+        }
+        if (!oauth_types.response_type.includes('token')) {
+          oauth_types.grant_type.push('implicit');
+          oauth_types.response_type.push('token');
+        }
+        oauth_types.response_type.push('id_token');
       }
 
       if (oauth_types.grant_type.length <= 0) {

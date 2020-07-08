@@ -31,6 +31,10 @@ pages:
     - Previous Steps: 'oauth/previous_steps.md'
     - OAuth Flows: 'oauth/oauth_documentation.md'
     - Sign Out from a service: 'oauth/sign_out_oauth_service.md'
+  - Connecting to IdM with OpenID Connect:
+    - Introduction: 'oidc/introduction.md'
+    - Previous Steps: 'oidc/previous_steps.md'
+    - OIDC Flows: 'oidc/oidc_documentation.md'
   - Connecting IdM to a eIDAS Node:
     - Introdution: 'eidas/introduction.md'
     - Architecture: 'eidas/architecture.md'

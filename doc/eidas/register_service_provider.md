@@ -1,7 +1,7 @@
 # Registering an application as a eIDAS Service Provider
 
 Once the IdM has be configured to support eID authentication, registered
-applications can enable this kind of authentication indidually.
+applications can enable this kind of authentication individually.
 
 During the registration process a new checkbox is included as seen in the
 following image:

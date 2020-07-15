@@ -47,6 +47,48 @@
 			"@Name": "http://eidas.europa.eu/attributes/naturalperson/Gender",
 			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
 			"@isRequired": "false"
+		},
+		"Vision": {
+			"@FriendlyName": "Vision",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/a11y/naturalperson/vision",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"ColorPerception": {
+			"@FriendlyName": "ColorPerception",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/a11y/naturalperson/colorperception",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"Hearing": {
+			"@FriendlyName": "Hearing",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/a11y/naturalperson/hearing",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"VocalCapability": {
+			"@FriendlyName": "VocalCapability",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/a11y/naturalperson/vocalcapability",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"ManipulationStrength": {
+			"@FriendlyName": "ManipulationStrength",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/a11y/naturalperson/manipulationstrength",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"Reach": {
+			"@FriendlyName": "Reach",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/a11y/naturalperson/reach",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
+		},
+		"Cognition": {
+			"@FriendlyName": "Cognition",
+			"@Name": "http://eidas.europa.eu/attributes/sectorspecific/a11y/naturalperson/cognition",
+			"@NameFormat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+			"@isRequired": "false"
 		}
 	},
 	"LegalPerson": {

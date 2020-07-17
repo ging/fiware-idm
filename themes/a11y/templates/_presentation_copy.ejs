@@ -1,0 +1,112 @@
+<div class="container-fluid info">
+    <!-- Brand and toggle get grouped for better mobile display -->
+
+    <div class="logo-header">
+        <a href="/home/" class="brand">
+            <img src="../img/vish_logo.png" alt="Vish logo">
+        </a>
+    </div>
+
+
+    <div class="login">
+        <div class="modal-header">
+            <h3>Accede</h3>
+        </div>
+
+        <form id="form_submit_authentication" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/oauth2<%= application.url %>" method="POST"
+            enctype="">
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+            <div class="modal-body clearfix">
+                <% var nameErrors = [] %>
+                <% if (errors.length) { %>
+                <% for (var i in errors) { %>
+                <% nameErrors.push(errors[i].message)%>
+                <% } %>
+                <% } %>
+                <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
+                <span class="help-block alert alert-warning">
+                    <p>Session expired</p>
+                </span>
+                <% } %>
+                <% if (nameErrors.indexOf("password_change") != -1) { %>
+                <span class="help-block alert alert-success">
+                    <p>Password changed. Please log in again to continue.</p>
+                </span>
+                <% } %>
+                <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+                <div class="alert alert-message alert-danger">
+                    <ul class="errorlist">
+                        <li>Invalid user name or password.</li>
+                    </ul>
+                </div>
+                <% } %>
+                <div class="form-group ">
+                    <label class="control-label label_01" for="id_username">Email</label>
+                    <div class=" ">
+                        <input autofocus="autofocus" class="form-control" id="id_email" name="email" type="text" />
+                    </div>
+                </div>
+                <% if (nameErrors.indexOf("email") != -1) { %>
+                <span class="help-block alert alert-danger obligatory01 ">Este campo es obligatorio.</span>
+                <% } %>
+                <div class="form-group has-feedback">
+                    <label class="control-label label_01" for="id_password">Contraseña</label>
+                    <div class=" ">
+                        <input class="form-control" id="id_password" name="password" type="password" />
+                        <span class="form-control-feedback fa fa-eye"></span>
+                    </div>
+                </div>
+                <% if (nameErrors.indexOf("password") != -1) { %>
+                <span class="help-block alert alert-danger obligatory02 ">Este campo es obligatorio.</span>
+                <% } %>
+
+            </div>
+            <div class="modal-footer">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox">
+                        <span class="lbl padding-0 lbl_01">
+                            Recuérdame
+                        </span>
+                    </label>
+                </div>
+                <div class="buttons">
+                    <button type="submit" class="btn btn-primary pull-right">Acceder</button>
+                    <button type="submit" class="btn btn-secondary pull-left">Acceder con eIDAS</button>
+                </div>
+
+                <div class="actions">
+                    <a href="/sign_up/">
+                        Registrarme
+                    </a>
+                    <a href="/password/request/">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                    <a href="/confirmation/">
+                        ¿No has recibido la confirmación?
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="/javascripts/others/see_password.js" type="text/javascript"></script>
+
+
+    <div class="cred">
+        2015 ©
+        <a href="http://www.fiware.org/">FIWARE</a>.
+
+        El uso de los servicios de FIWARE Lab está sujeto a la aceptación de los
+        <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_LAB_Terms_and_Conditions"
+            target="a_blank">Términos
+            y Condiciones</a>,
+
+        <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_Privacy_Policy" target="a_blank">Política
+            de privacidad</a>
+        y
+        <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Cookies_Policy_FIWARE" target="a_blank">Política
+            de cookies</a>.
+    </div>
+
+</div>

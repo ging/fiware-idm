@@ -1,0 +1,620 @@
+.alternative_login {
+  .login {
+    width: 35%;
+    border: none;
+    background-color: $form_background;
+    margin: 0.5% 0 0 0;
+    padding: 3% 6% 3% 6%;
+    font-family: "opensans-regular", Arial, sans-serif;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 8px rgba(34, 34, 34, 0.3);
+
+    .modal-header {
+      border: none;
+
+      h3 {
+        color: $text;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 2.8rem;
+        margin: 0;
+      }
+    }
+
+    .form-control {
+      height: 34px;
+      padding: 6px;
+      box-shadow: 2px 2px 4px #c8dbe7 inset;
+      background-color: lighten(#c8dbe7, 13%);
+      border-radius: 0.5rem;
+      border: 1px solid #a9a9a9;
+    }
+
+    .form-control-feedback {
+      top: 38px;
+      pointer-events: auto;
+    }
+
+    .modal-footer {
+      border: none;
+      display: flex;
+      flex-flow: wrap column;
+
+      .checkbox {
+        align-self: flex-start;
+      }
+
+      button {
+        font-size: 1.7rem;
+        padding: 1rem 1.5rem 1rem 1.5rem;
+        border-radius: 0.7rem;
+        height: 4.5rem;
+        width: calc(40% - 1rem);
+        min-width: 10rem;
+        align-self: center;
+      }
+
+      .btn-secondary {
+        font-size: 1.5rem;
+        width: calc(60% - 1rem);
+        min-width: 15rem;
+        background-color: $btn-secondary;
+        color: white;
+
+        &:hover {
+          background-color: darken($btn-secondary, 10%);
+        }
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 3rem 0 0 0;
+
+        a {
+          width: 100%;
+          align-self: center;
+          font-size: 1.4rem;
+          border: none;
+          padding: 0.5rem 0 0 0;
+        }
+      }
+    }
+
+    .label_01 {
+      color: $text;
+      font-size: 1.6rem;
+    }
+
+    .lbl_01 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .form-control-feedback {
+    top: 40px;
+    pointer-events: auto;
+  }
+
+  /*-----MODAL eID -----*/
+
+  .eID_modal {
+    font-family: "opensans-regular", Arial, sans-serif;
+    color: $text;
+
+    .modal-content {
+      border-radius: 1.5rem;
+
+      .modal-header {
+        border: none;
+        padding: 2rem 2rem 0 4rem;
+        margin: 0 0 2rem 0;
+
+        h3 {
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+          font-size: 3rem;
+          justify-self: center;
+        }
+
+        .close {
+          font-size: 4rem;
+          font-weight: 400;
+          opacity: 1;
+          color: $text;
+        }
+      }
+
+      .modal-body {
+        border: none;
+
+        ul {
+          margin: 0;
+          padding: 0;
+
+          li {
+            border: none;
+            text-align: center;
+            font-size: 2rem;
+            margin: 1rem;
+            border-radius: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .modal-footer {
+        border: none;
+        padding: 1rem 1rem 1.5rem 1rem;
+        margin: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+
+        .btn {
+          font-size: 1.7rem;
+          padding: 1rem 1.5rem 1rem 1.5rem;
+          border-radius: 0.7rem;
+          height: 4.5rem;
+          width: calc(40% - 1rem);
+          min-width: 10rem;
+          align-self: center;
+        }
+
+        .btn-primary {
+          background-color: $btn-secondary;
+          border: none;
+
+          &:hover {
+            background-color: darken($btn-secondary, 10%);
+          }
+        }
+
+        .btn-secondary {
+          &:hover {
+            background-color: lighten($color: $text, $amount: 45%);
+            color: inherit;
+          }
+        }
+      }
+    }
+  }
+
+  .country_selected {
+    background-color: lighten($color: $btn-secondary, $amount: 20);
+  }
+
+  @media (max-width: 1200px) {
+    .login {
+      width: 60%;
+      border: none;
+      background-color: $form_background;
+      margin: 0.5% 0 0 0;
+      padding: 6rem 7rem 6rem 7rem;
+
+      .modal-header {
+        h3 {
+          font-size: 3.2rem;
+        }
+      }
+
+      .label_01 {
+        color: $text;
+        font-size: 1.9rem;
+      }
+
+      .lbl_01 {
+        font-size: 1.3rem;
+      }
+    }
+  }
+
+  @media (max-width: 800px) {
+    .login {
+      width: 70%;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .login {
+      width: 100%;
+      padding: 6% 8% 6% 8%;
+      margin: 0;
+      background: transparent;
+      box-shadow: none;
+      color: white;
+
+      .modal-header {
+        h3 {
+          font-size: 2.4rem;
+          color: white;
+        }
+      }
+
+      form {
+        .modal-body {
+          .label_01 {
+            color: white;
+          }
+        }
+
+        .fa {
+          color: $text;
+        }
+      }
+
+      .modal-footer {
+        .actions {
+          a {
+            color: white;
+          }
+        }
+      }
+    }
+
+    .eID_modal {
+      .modal-content {
+
+        .modal-header {
+          border: none;
+          padding: 2.5rem 2rem 0 4rem;
+          margin: 0 0 1rem 0;
+
+          h3 {
+            font-size: 2rem;
+            font-weight: 600;
+          }
+
+          .close {
+            font-size: 3rem;
+          }
+        }
+
+        .modal-body {
+          padding: 0 1rem 0 1rem;
+
+          ul {
+            li {
+              text-align: center;
+              font-size: 1.7rem;
+              padding: 0;
+              margin: .6rem;
+            }
+          }
+        }
+
+        .modal-footer {
+          border: none;
+          padding: 1rem 1rem 1.5rem 1rem;
+          margin: .7rem;
+          justify-content: center;
+          flex-flow: column-reverse wrap;
+
+          .btn {
+            font-size: 1.5rem;
+            width: calc(100% - 2rem);
+            min-width: 10rem;
+            align-content: center;
+            margin: .5rem;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-height: 490px) {
+    .login {
+      padding: 1% 2.2% 3% 2.2%;
+    }
+  }
+
+
+  @media (max-height: 460px) {
+    .login {
+      width: 100%;
+      padding: 1.5% 8% 0 8%;
+      margin: 0;
+      background-color: transparent;
+      box-shadow: none;
+
+      .modal-header {
+        h3 {
+          font-size: 2.4rem;
+          color: white;
+          padding: 0 0 0 1.5rem;
+        }
+      }
+
+      form {
+        display: flex;
+        justify-content: space-between;
+        flex-flow: wrap;
+        color: white;
+
+        .modal-body {
+          width: 100%;
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+
+          .form-group {
+            width: calc(50% - 2.5rem);
+          }
+
+          .obligatory01 {
+            position: absolute;
+            top: 50px;
+            left: 3vw;
+            width: calc(50% - 3rem);
+          }
+
+          .obligatory02 {
+            position: absolute;
+            top: 50px;
+            left: 43.5vw;
+            width: calc(50% - 3rem);
+          }
+
+          .label_01 {
+            font-size: 1.6rem;
+            color: white;
+          }
+
+          .form-control {
+            height: 30px;
+          }
+        }
+
+        .modal-footer {
+          display: flex;
+          flex-flow: wrap row;
+          margin: .5rem 0 0 0;
+          padding: 0;
+          width: 100%;
+
+          .checkbox {
+            padding: 0 0 0 2rem;
+            width: 37%;
+            display: flex;
+          }
+
+          .buttons {
+            width: 60%;
+            padding: 0 0 0 0;
+
+            button {
+              font-size: 1.5rem;
+              padding: 0.8rem 1.3rem 0.8rem 1.3rem;
+              border-radius: 0.5rem;
+              height: 3.8rem;
+              width: 25%;
+            }
+
+            .btn-secondary {
+              width: 50%;
+              margin: 0 0 0 12%;
+            }
+          }
+
+          .actions {
+            padding: 0 1rem 0 1rem;
+            margin: .5rem 0 0rem 0;
+            flex-flow: nowrap row;
+            justify-content: space-between;
+            width: 100%;
+
+            a {
+              font-size: 1.4rem;
+              text-align: left;
+              display: block;
+              width: auto;
+              color: white;
+            }
+          }
+        }
+      }
+
+      .form-control-feedback {
+        top: 33px;
+        pointer-events: auto;
+      }
+    }
+
+    .eID_modal {
+      .modal-content {
+        display: flex;
+        flex-flow: row wrap;
+        .modal-header {
+          width: 100%;
+          margin: 0 0 .7rem 0;
+          padding: 1.7rem 2rem 0 3rem;
+
+          h3 {
+            font-size: 2.3rem;
+            font-weight: 600;
+          }
+        }
+        .modal-body {
+          padding: 0 1rem 1.2rem 1rem;
+          width: 60%;
+
+          ul {
+            li {
+              text-align: center;
+              font-size: 1.4rem;
+              padding: 0;
+              margin: .6rem;
+              min-height: 3.8rem !important;
+            }
+          }
+        }
+
+        .modal-footer {
+          width: 30%;
+          border: none;
+          padding: .7rem;
+          margin: .7rem;
+          display: flex;
+          flex-flow: column-reverse wrap;
+
+          .btn {
+            margin: .3rem;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+
+  /*-----iPhone4 portrait -----*/
+
+  @media (max-width: 320px) {
+    @media (max-height: 480px) {
+      .login {
+        padding: 5% 6% 5% 6%;
+
+        .modal-header {
+          h3 {
+            font-size: 2.4rem;
+          }
+        }
+
+        .form-control {
+          height: 30px;
+          padding: 5px;
+        }
+
+        .form-control-feedback {
+          top: 30px;
+          pointer-events: auto;
+        }
+
+        .modal-footer {
+
+          .buttons {
+            button {
+              font-size: 1.4rem;
+              border-radius: 0.7rem;
+              height: 4rem;
+              width: 9rem;
+            }
+          }
+
+          .actions {
+            padding: 1.5rem 0 0 0;
+
+            a {
+              font-size: 1.2rem;
+            }
+          }
+        }
+
+        .label_01 {
+          color: $text;
+          font-size: 1.2rem;
+        }
+
+        .lbl_01 {
+          font-size: 1.1rem;
+        }
+      }
+
+      .eID_modal {
+        .modal-content {
+          .modal-body {
+            padding: 0 1rem 0 1rem;
+
+            ul {
+              li {
+                text-align: center;
+                font-size: 1.3rem;
+                padding: 0;
+                margin: .6rem;
+                min-height: 4rem !important;
+              }
+            }
+          }
+
+          .modal-footer {
+            border: none;
+            padding: .7rem;
+            margin: .7rem;
+
+            .btn {
+              margin: .3rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /*-----iPhone4 landscape -----*/
+  @media (max-width: 480px) {
+    @media (max-height: 320px) {
+      .login {
+        padding: 0 6% 0 6%;
+
+        form {
+          .form-control {
+            height: 30px;
+            padding: 5px;
+          }
+
+          .modal-body {
+            .obligatory01 {
+              left: 4vw;
+            }
+
+            .obligatory02 {
+              left: 46.5vw;
+            }
+          }
+
+          .modal-footer {
+            margin: 0;
+
+            .checkbox {
+              width: 26%;
+
+              label {
+                margin: 0;
+              }
+            }
+
+            .buttons {
+              width: 70%;
+
+              button {
+                font-size: 1.4rem;
+                height: 3.5rem;
+              }
+
+              .btn-secondary {
+                font-size: 1.2rem;
+              }
+            }
+
+            .actions {
+              margin: 1rem 0 0 0;
+
+              a {
+                font-size: 1.1rem;
+              }
+            }
+          }
+
+          .label_01 {
+            color: $text;
+            font-size: 1.2rem;
+          }
+
+          .lbl_01 {
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
+  }
+}

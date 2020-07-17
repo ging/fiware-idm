@@ -360,11 +360,12 @@ exports.saml2_application_login = function(req, res) {
           image,
           oauth_sign_in: true,
         };
-
+        debug('sp_states:', sp_states);
+        debug('response_to:', response_to);
         const state = sp_states[response_to] ? sp_states[response_to] : 'xyz';
 
-        const redirect_uri = sp_states[response_to]
-          ? sp_states[response_to]
+        const redirect_uri = sp_redirect_uris[response_to]
+          ? sp_redirect_uris[response_to]
           : req.application.redirect_uri.split(',')[0];
 
         const path =
@@ -501,7 +502,7 @@ exports.search_eidas_credentials = function(req, res, next) {
         // Create service provider
         const sp_options = {
           entity_id:
-            'https://' +
+            'http://' +
             config.eidas.gateway_host +
             '/idm/applications/' +
             req.application.id +
@@ -517,13 +518,13 @@ exports.search_eidas_credentials = function(req, res, next) {
             )
             .toString(),
           assert_endpoint:
-            'https://' +
+            'http://' +
             config.eidas.gateway_host +
             '/idm/applications/' +
             req.application.id +
             '/saml2/login',
           audience:
-            'https://' +
+            'http://' +
             config.eidas.gateway_host +
             '/idm/applications/' +
             req.application.id +

@@ -1,24 +1,18 @@
 /****************************** Custom styles rewrite */
 
-
-
-
   html,
   body {
     font-family: "opensans-regular", Arial, sans-serif;
     background-position: center;
     background-size: auto 100%;
     margin: 0 auto;
-
-    // .container-fluid.wrap {
-    //   padding: 0;
-    //   max-width: 100%;
-    // }
   }
+
   .language_menu {
-    color: white;
+    z-index: 99999;
+    
     a {
-      color: white;
+      color: gray;
     }
   }
 

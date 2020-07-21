@@ -100,80 +100,90 @@
   .eID_modal {
     font-family: "opensans-regular", Arial, sans-serif;
     color: $text;
-
-    .modal-content {
-      border-radius: 1.5rem;
-
-      .modal-header {
-        border: none;
-        padding: 2rem 2rem 0 4rem;
-        margin: 0 0 2rem 0;
-
-        h3 {
-          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-          font-size: 3rem;
-          justify-self: center;
-        }
-
-        .close {
-          font-size: 4rem;
-          font-weight: 400;
-          opacity: 1;
-          color: $text;
-        }
-      }
-
-      .modal-body {
-        border: none;
-
-        ul {
-          margin: 0;
-          padding: 0;
-
-          li {
+    .modal{
+      display: block;
+      top: 30px;
+      .modal-dialog{
+        width: 40vw;
+  
+        height: 100%;
+        .modal-content {
+          border-radius: 0;
+          box-shadow: none;
+          
+          .modal-header {
             border: none;
-            text-align: center;
-            font-size: 2rem;
-            margin: 1rem;
-            border-radius: 1.2rem;
+            padding: 2rem 2rem 0 4rem;
+            margin: 0 0 2rem 0;
+
+            h1 {
+              font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+              font-weight: bold;
+              font-size: 3rem;
+              justify-self: center;
+            }
+
+            .close {
+              font-size: 4rem;
+              font-weight: 400;
+              opacity: 1;
+              color: $text;
+            }
+          }
+
+          .modal-body {
+            border: none;
+
+            ul {
+              margin: 0;
+              padding: 0;
+
+              li {
+                border: none;
+                font-size: 2rem;
+                margin: 1rem;
+                border-radius: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+              }
+            }
+          }
+
+          .modal-footer {
+            border: none;
+            padding: 1rem 1rem 1.5rem 1rem;
+            margin: 1.5rem;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-          }
-        }
-      }
+            justify-content: space-between;
 
-      .modal-footer {
-        border: none;
-        padding: 1rem 1rem 1.5rem 1rem;
-        margin: 1.5rem;
-        display: flex;
-        justify-content: space-between;
+            .btn {
+              font-size: 1.7rem;
+              padding: 1rem 1.5rem 1rem 1.5rem;
+              border-radius: 0.3rem;
+              height: 4.5rem;
+              width: calc(40% - 1rem);
+              min-width: 10rem;
+              align-self: center;
+            }
 
-        .btn {
-          font-size: 1.7rem;
-          padding: 1rem 1.5rem 1rem 1.5rem;
-          border-radius: 0.7rem;
-          height: 4.5rem;
-          width: calc(40% - 1rem);
-          min-width: 10rem;
-          align-self: center;
-        }
+            .btn-primary {
+              background-color: $btn-secondary;
+              color: black;
+              border: none;
 
-        .btn-primary {
-          background-color: $btn-secondary;
-          border: none;
+              &:hover {
+                background-color: darken($btn-secondary, 10%);
+              }
+            }
 
-          &:hover {
-            background-color: darken($btn-secondary, 10%);
-          }
-        }
-
-        .btn-secondary {
-          &:hover {
-            background-color: lighten($color: $text, $amount: 45%);
-            color: inherit;
+            .btn-secondary {
+              &:hover {
+                background-color: lighten($color: $text, $amount: 45%);
+                color: inherit;
+              }
+            }
           }
         }
       }

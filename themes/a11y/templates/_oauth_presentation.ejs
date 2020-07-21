@@ -2,7 +2,7 @@
     <!-- Brand and toggle get grouped for better mobile display -->
 
 
-
+    <!--
     <div class="login">
         <div class="modal-header">
             <h3><%=translation.oauth.login.title%></h3>
@@ -77,29 +77,29 @@
             </div>
         </form>
     </div>
-
+    -->
     <!-- Modal -->
     <form ng-controller="DummyCtrl" name="" autocomplete="on" class="eID_modal" action="/saml2/login?response_type=<%= application.response_type %>&client_id=<%= application.id %>&state=<%= application.state %>&redirect_uri=<%= application.redirect_uri %>"
             method="POST" enctype="">
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <div class="modal " id="exampleModal" tabindex="0" role="dialog" aria-labelledby="CountryModal"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h3 class="modal-title" id="exampleModalLabel"><%=translation.modal.select%></h3>
+                        </button>-->
+                        <h1 class="modal-title" id="exampleModalLabel"><%=translation.modal.select%></h1>
                     </div>
                     <div class="modal-body">
                         <ul id="countries">
-                            <li class="list-group-item list-group-item-action list-group-item-primary list-country country_selected" value="ES"><%=translation.countries.spain%> / ES</li>
-                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="SI"><%=translation.countries.slovenia%>
+                            <li tabindex="1" class="list-group-item list-group-item-action list-group-item-primary list-country country_selected" value="ES"><%=translation.countries.spain%> / ES</li>
+                            <li tabindex="2" class="list-group-item list-group-item-action list-group-item-primary list-country" value="SI"><%=translation.countries.slovenia%>
                                 / SI</li>
-                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="IT"><%=translation.countries.italy%> / IT</li>
-                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="AT"><%=translation.countries.austria%>
+                            <li tabindex="3" class="list-group-item list-group-item-action list-group-item-primary list-country" value="IT"><%=translation.countries.italy%> / IT</li>
+                            <li tabindex="4" class="list-group-item list-group-item-action list-group-item-primary list-country" value="AT"><%=translation.countries.austria%>
                                 / AT</li>
-                            <li class="list-group-item list-group-item-action list-group-item-primary list-country" value="PT"><%=translation.countries.portugal%>
+                            <li tabindex="5" class="list-group-item list-group-item-action list-group-item-primary list-country" value="PT"><%=translation.countries.portugal%>
                                 / PT</li>
                         </ul>
                     </div>
@@ -111,11 +111,11 @@
                         <input type="hidden" name="country" id="countryID" value="ES">
                         <input type="hidden" name="RelayState" value="MyRelayState">
                         <input type="hidden" name="sendmethods" value="POST">
-                        <% } -%>
+                    <% } -%>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><%=translation.modal.close%></button>
-                        <button id="saml2_eidas_button" type="submit"  class="btn btn-primary"><%=translation.modal.next%></button>
+                        <button tabindex="6" type="button" class="btn btn-secondary" data-dismiss="modal"><%=translation.modal.close%></button>
+                        <button tabindex="7" id="saml2_eidas_button" type="submit" class="btn btn-primary"><%=translation.modal.next%></button>
                     </div>
                 </div>
             </div>
@@ -129,7 +129,8 @@
         $('header').remove();
         var container_fluid = $('.container-fluid.wrap')
         container_fluid.css('padding', '0px')
-        container_fluid.css("background", "transparent url(' ../img/vish_background.png ') center no-repeat")
+        //container_fluid.css("background", "transparent url(' ../img/vish_background.png ') center no-repeat")
+        container_fluid.css("background-color", '#74CED9')
         container_fluid.css('max-width', '100%')
         container_fluid.css('background-size', 'cover')
     </script>
@@ -151,7 +152,7 @@
 
 
             $("#countries").on('click', '.list-country', function() {
-                $("#countryID").val($(this).attr("value"));
+               /* $("#countryID").val($(this).attr("value"));*/
                 $(this).siblings().removeClass("country_selected");
                 $(this).addClass("country_selected");
             })

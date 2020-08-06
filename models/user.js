@@ -1,12 +1,12 @@
 // User model
-const configService = require('../lib/configService.js');
-const config = configService.getConfig();
+const config_service = require('../lib/configService.js');
+const config = config_service.get_config();
 
 // Vars for encrypting
 const crypto = require('crypto');
 const key = config.password_encryption.key;
 
-module.exports = function (sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes) {
   const User = sequelize.define(
     'User',
     {
@@ -54,13 +54,13 @@ module.exports = function (sequelize, DataTypes) {
           isUnique(value, next) {
             const self = this;
             User.find({ where: { email: value } })
-              .then(function (user) {
+              .then(function(user) {
                 if (user && self.id !== user.id) {
                   return next('emailUsed');
                 }
                 return next();
               })
-              .catch(function (err) {
+              .catch(function(err) {
                 return next(err);
               });
           },
@@ -73,7 +73,10 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(40),
         validate: { notEmpty: { msg: 'password1' } },
         set(password) {
-          const salt = crypto.randomBytes(16).toString('hex').slice(0, 16);
+          const salt = crypto
+            .randomBytes(16)
+            .toString('hex')
+            .slice(0, 16);
 
           let encripted = crypto
             .createHmac('sha1', salt)
@@ -128,7 +131,7 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
-  User.prototype.verifyPassword = function (password) {
+  User.prototype.verifyPassword = function(password) {
     const encripted = crypto
       .createHmac('sha1', this.salt ? this.salt : key)
       .update(password)

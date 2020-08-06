@@ -152,7 +152,7 @@ RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="master"; else RELEASE=$(c
 
 WORKDIR ${TARGET}
 
-RUN rm -rf doc extras  && \
+RUN rm -rf doc doc.ja extras test && \
     npm cache clean -f   && \
     npm install --production  && \
     rm -rf /root/.npm/cache/* && \
@@ -184,6 +184,17 @@ CMD ["npm", "start"]
 
 # Ports used by idm
 EXPOSE ${IDM_PORT:-3000}
+
+
+########################################################################################
+#
+# This build stage creates an anonymous user to be used with the distroless build
+# as defined below.
+#
+########################################################################################
+FROM node:${NODE_VERSION} AS anon-user
+RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
+    && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 
 
 #

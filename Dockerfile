@@ -1,14 +1,24 @@
-ARG NODE_VERSION=10.17.0-slim
-FROM node:${NODE_VERSION}
+ARG NODE_VERSION=10
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
 ARG DOWNLOAD_TYPE=latest
+ARG TARGET=/opt/fiware-idm
+
+FROM node:${NODE_VERSION} as builder
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+ARG DOWNLOAD_TYPE
+ARG TARGET
 
 ENV GITHUB_ACCOUNT=${GITHUB_ACCOUNT}
 ENV GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
 ENV DOWNLOAD_TYPE=${DOWNLOAD_TYPE}
 
 MAINTAINER FIWARE Identity Manager Team. DIT-UPM
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl wget \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
 
@@ -128,23 +138,13 @@ RUN apt-get update && \
 # Alternatively for local development, just copy this Dockerfile into file the
 # root of the repository and copy over your local source using :
 #
-COPY . /opt/fiware-idm
-#
-#RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="master"; else RELEASE=$(curl -s https://api.github.com/repos/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}/releases/latest | grep 'tag_name' | cut -d\" -f4); fi && \
-#    if [ ${DOWNLOAD_TYPE} = "latest" ] ; then echo "INFO: Building Latest Development"; else echo "INFO: Building Release: ${RELEASE}"; fi && \
-#    apt-get update && \
-#    apt-get install -y  --no-install-recommends unzip && \
-#    wget --no-check-certificate -O source.zip https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}/archive/${RELEASE}.zip && \
-#    unzip source.zip && \
-#    mv ${GITHUB_REPOSITORY}-${RELEASE} /opt/fiware-idm && \
-#    apt-get clean && \
-#    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+COPY . ${TARGET}
 
-WORKDIR /opt/fiware-idm
+WORKDIR ${TARGET}
 
-RUN rm -rf doc extras  && \
-    npm cache clean -f   && \
-    npm install --production  && \
+RUN rm -rf doc extras doc.ja test && \
+    npm cache clean -f  && \
+    npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \
@@ -152,18 +152,51 @@ RUN rm -rf doc extras  && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
     mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
 
-
-# For local development, when running the Dockerfile from the root of the repository
-# use the following commands to configure Keyrock, the database and add an entrypoint:
-#
-COPY extras/docker/config_database.js  extras/docker/config_database.js
-COPY extras/docker/docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
-
-# Run Idm Keyrock
-#COPY docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
-RUN chmod 755 docker-entrypoint.sh
-
-ENTRYPOINT ["/opt/fiware-idm/docker-entrypoint.sh"]
+USER node
+ENV NODE_ENV=development
+CMD ["npm", "start"]
 
 # Ports used by idm
-EXPOSE ${IDM_PORT}
+EXPOSE ${IDM_PORT:-3000}
+
+
+########################################################################################
+#
+# This build stage creates an anonymous user to be used with the distroless build
+# as defined below.
+#
+########################################################################################
+FROM node:${NODE_VERSION} AS anon-user
+RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
+    && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
+
+#
+# The following creates a distroless build for production.
+#
+
+FROM gcr.io/distroless/nodejs:${NODE_VERSION}
+ARG TARGET
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+ARG NODE_VERSION
+
+LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "org.opencontainers.image.authors"=""
+LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
+LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
+LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
+LABEL "org.nodejs.version"=${NODE_VERSION}
+
+COPY --from=builder "${TARGET}" "${TARGET}"
+WORKDIR "${TARGET}"
+
+USER nobody
+ENV NODE_ENV=production
+# Ports used by application
+EXPOSE ${IDM_PORT:-3000}
+CMD ["./bin/www"]
+HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
+  CMD ["/nodejs/bin/node", "./bin/healthcheck"]

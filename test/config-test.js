@@ -30,23 +30,6 @@ config.password_encryption = {
   key: 'nodejs_idm', // Must be changed
 };
 
-// Enable CORS
-config.cors = {
-  enabled: false,
-  options: {
-    /* eslint-disable snakecase/snakecase */
-    origin: ['*'],
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    allowedHeaders: '*',
-    exposedHeaders: undefined,
-    credentials: undefined,
-    maxAge: undefined,
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    /* eslint-enable snakecase/snakecase */
-  },
-};
-
 // Config oauth2 parameters
 config.oauth2 = {
   authorization_code_lifetime: 5 * 60, // Five minutes
@@ -78,25 +61,15 @@ config.authorization = {
   },
 };
 
-// Enable usage control and configure where is the Policy Translation Point
-config.usage_control = {
-  enabled: false,
-  ptp: {
-    host: 'localhost',
-    port: 8081,
-  },
-};
-
 // Database info
 config.database = {
   host: 'localhost',
-  password: 'idm',
+  password: 'test',
   username: 'root',
-  database: 'idm',
+  database: 'idm_test',
   dialect: 'mysql',
   port: undefined,
 };
-
 // External user authentication
 config.external_auth = {
   enabled: false,
@@ -133,58 +106,6 @@ config.eidas = {
   gateway_host: 'localhost',
   node_host: 'https://se-eidas.redsara.es/EidasNode/ServiceProvider',
   metadata_expiration: 60 * 60 * 24 * 365, // One year
-};
-
-// Enables the possibility of adding identity attributes in users' profile
-config.identity_attributes = {
-  /* eslint-disable snakecase/snakecase */
-  enabled: false,
-  attributes: [
-    {
-      name: 'Vision',
-      key: 'vision',
-      type: 'number',
-      minVal: '0',
-      maxVal: '100',
-    },
-    {
-      name: 'Color Perception',
-      key: 'color',
-      type: 'number',
-      minVal: '0',
-      maxVal: '100',
-    },
-    {
-      name: 'Hearing',
-      key: 'hearing',
-      type: 'number',
-      minVal: '0',
-      maxVal: '100',
-    },
-    {
-      name: 'Vocal Capability',
-      key: 'vocal',
-      type: 'number',
-      minVal: '0',
-      maxVal: '100',
-    },
-    {
-      name: 'Manipulation Strength',
-      key: 'manipulation',
-      type: 'number',
-      minVal: '0',
-      maxVal: '100',
-    },
-    { name: 'Reach', key: 'reach', type: 'number', minVal: '0', maxVal: '100' },
-    {
-      name: 'Cognition',
-      key: 'cognition',
-      type: 'number',
-      minVal: '0',
-      maxVal: '100',
-    },
-  ],
-  /* eslint-enable snakecase/snakecase */
 };
 
 module.exports = config;

@@ -1,6 +1,6 @@
 // User model
-const configService = require('../lib/configService.js');
-const config = configService.getConfig();
+const config_service = require('../lib/configService.js');
+const config = config_service.get_config();
 const external_auth = config.external_auth;
 
 // Vars for encrypting
@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 
 /* eslint-disable snakecase/snakecase */
 
-module.exports = function (sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes) {
   const User_Ext = sequelize.define(
     'User_Ext',
     {
@@ -46,7 +46,7 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
-  User_Ext.prototype.verifyPassword = function (password) {
+  User_Ext.prototype.verifyPassword = function(password) {
     let valid_pass;
 
     switch (external_auth.password_encryption) {

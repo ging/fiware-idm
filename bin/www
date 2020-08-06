@@ -6,15 +6,13 @@
 
 const app = require('../app');
 
-const configService = ('../lib/configService');
+const config_service = require('../lib/configService');
 const debug = require('debug')('idm:server');
 const fs = require("fs");
 const http = require('http');
 const https = require("https");
 
-
-configService.setConfig(require('../config'));
-const config = configService.getConfig();
+const config = config_service.get_config();
 
 if (config.https.enabled) {
   const options = {

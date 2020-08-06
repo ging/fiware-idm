@@ -4,8 +4,8 @@ const oauth2 = require('../config').oauth2;
 const _ = require('lodash');
 const jsonwebtoken = require('jsonwebtoken');
 const debug = require('debug')('idm:oauth2-model_oauth_server');
-const configService = require('../lib/configService.js');
-const config = configService.getConfig();
+const config_service = require('../lib/configService.js');
+const config = config_service.get_config();
 const config_authzforce = config.authorization.authzforce;
 const config_oauth2 = config.oauth2;
 const config_cors = config.cors;
@@ -58,7 +58,7 @@ function getAccessToken(bearerToken) {
         },
       ],
     })
-    .then(function (accessToken) {
+    .then(function(accessToken) {
       if (!accessToken) {
         return false;
       }
@@ -80,7 +80,7 @@ function getAccessToken(bearerToken) {
       //token.scope = token.scope
       return token;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getAccessToken - Err: ' + err);
     });
 }
@@ -105,7 +105,7 @@ function getClient(clientId, clientSecret) {
   }
   return oauth_client
     .findOne(options)
-    .then(function (client) {
+    .then(function(client) {
       if (!client) {
         return null;
       } //new Error("client not found");
@@ -124,7 +124,7 @@ function getClient(clientId, clientSecret) {
 
       return clientWithGrants;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getClient - Err: ', err);
     });
 }
@@ -157,7 +157,7 @@ function getIdentity(id, password, oauth_client_id) {
   });
 
   return Promise.all([search_user, search_iot])
-    .then(function (values) {
+    .then(function(values) {
       const user = values[0];
       const iot = values[1];
 
@@ -181,7 +181,7 @@ function getIdentity(id, password, oauth_client_id) {
 
       return false;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getIdentity - Err: ', err);
     });
 }
@@ -194,7 +194,7 @@ function getUser(email, password) {
       where: { email },
       attributes: ['id', 'username', 'password', 'scope'],
     })
-    .then(function (user) {
+    .then(function(user) {
       if (user) {
         if (user.verifyPassword(password)) {
           return user.toJSON();
@@ -202,7 +202,7 @@ function getUser(email, password) {
       }
       return false;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getUser - Err: ', err);
     });
 }
@@ -217,7 +217,7 @@ function revokeAuthorizationCode(code) {
         valid: true,
       },
     })
-    .then(function (rCode) {
+    .then(function(rCode) {
       if (rCode) {
         rCode.valid = false;
         rCode.save();
@@ -226,7 +226,7 @@ function revokeAuthorizationCode(code) {
       code.valid = false;
       return code;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getUser - Err: ', err);
     });
 }
@@ -252,7 +252,7 @@ function revokeRefreshToken(refreshToken, code, client_id) {
     .findOne({
       where: where_clause,
     })
-    .then(function (rT) {
+    .then(function(rT) {
       if (rT) {
         rT.valid = false;
         rT.save();
@@ -261,7 +261,7 @@ function revokeRefreshToken(refreshToken, code, client_id) {
       }
       return rT ? rT : null;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('revokeRefreshToken - Err: ', err);
     });
 }
@@ -288,7 +288,7 @@ function revokeAccessToken(accessToken, code, client_id, refresh_token) {
     .findOne({
       where: where_clause,
     })
-    .then(function (aT) {
+    .then(function(aT) {
       if (aT) {
         aT.valid = false;
         aT.save();
@@ -298,7 +298,7 @@ function revokeAccessToken(accessToken, code, client_id, refresh_token) {
 
       return aT ? aT : null;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('revokeRefreshToken - Err: ', err);
     });
 }
@@ -330,7 +330,7 @@ function generateJwtToken(token, client, identity) {
     config_authzforce.enabled,
     null
   )
-    .then(function (response) {
+    .then(function(response) {
       if (identity) {
         response.type = identity.type || identity.dataValues.type;
       }
@@ -347,7 +347,7 @@ function generateJwtToken(token, client, identity) {
       );
       return storeToken(token, client, identity, true);
     })
-    .catch(function (error) {
+    .catch(function(error) {
       debug('-------generateJwtToken-------', error);
     });
 }
@@ -385,7 +385,7 @@ function storeToken(token, client, identity, jwt) {
     : Promise.resolve();
 
   let access_token_promise = !jwt
-    ? refresh_token_promise.then(function () {
+    ? refresh_token_promise.then(function() {
         return oauth_access_token.create({
           access_token: token.accessToken,
           expires: token.accessTokenExpiresAt,
@@ -415,8 +415,8 @@ function storeToken(token, client, identity, jwt) {
       : Promise.resolve();
 
   return access_token_promise
-    .then(function () {
-      return user_autho_app_promise.then(function () {
+    .then(function() {
+      return user_autho_app_promise.then(function() {
         if (user_id || iot_id) {
           token[identity.dataValues.type] = identity.dataValues.type;
         }
@@ -436,7 +436,7 @@ function storeToken(token, client, identity, jwt) {
         );
       });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('saveToken - Err: ', err);
     });
 }
@@ -457,7 +457,7 @@ function getAuthorizationCode(code) {
       where: { authorization_code: code },
       include: [user, oauth_client],
     })
-    .then(function (authCodeModel) {
+    .then(function(authCodeModel) {
       if (!authCodeModel) {
         return false;
       }
@@ -476,7 +476,7 @@ function getAuthorizationCode(code) {
 
       return reCode;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getAuthorizationCode - Err: ', err);
     });
 }
@@ -494,11 +494,11 @@ function saveAuthorizationCode(code, client, user) {
       user_id: user.id,
       scope: code.scope,
     })
-    .then(function () {
+    .then(function() {
       code.code = code.authorizationCode;
       return code;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('saveAuthorizationCode - Err: ', err);
     });
 }
@@ -514,7 +514,7 @@ function getUserFromClient(client) {
 
   return role_assignment
     .findOne(options)
-    .then(function (role_assignment) {
+    .then(function(role_assignment) {
       if (!role_assignment) {
         return false;
       }
@@ -523,7 +523,7 @@ function getUserFromClient(client) {
       }
       return role_assignment.User.toJSON();
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getUserFromClient - Err: ', err);
     });
 }
@@ -561,7 +561,7 @@ function getRefreshToken(refreshToken) {
         },
       ],
     })
-    .then(function (savedRT) {
+    .then(function(savedRT) {
       const tokenTemp = {
         user: savedRT ? savedRT.User : {},
         client: savedRT ? savedRT.OauthClient : {},
@@ -578,7 +578,7 @@ function getRefreshToken(refreshToken) {
 
       return tokenTemp;
     })
-    .catch(function (err) {
+    .catch(function(err) {
       debug('getRefreshToken - Err: ', err);
     });
 }
@@ -664,7 +664,7 @@ function search_iot_info(iot_info) {
 function search_user_info(user_info, action, resource, authzforce, req_app) {
   debug('-------search_user_info-------');
 
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     const promise_array = [];
 
     // Insert search trusted applications promise
@@ -677,7 +677,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
 
     // Insert search permissions promise to generate decison
     if (action && resource) {
-      const search_permissions = search_roles.then(function (roles) {
+      const search_permissions = search_roles.then(function(roles) {
         return user_permissions(roles.all, user_info.app_id, action, resource);
       });
       promise_array.push(search_permissions);
@@ -688,7 +688,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
     }
 
     Promise.all(promise_array)
-      .then(function (values) {
+      .then(function(values) {
         const trusted_apps = values[0];
         const roles = values[1];
 
@@ -723,7 +723,7 @@ function search_user_info(user_info, action, resource, authzforce, req_app) {
 
         resolve(user_info);
       })
-      .catch(function (error) {
+      .catch(function(error) {
         debug('Error: ', error);
         reject({
           message: 'Internal error',
@@ -755,7 +755,7 @@ function user_roles(user_id, app_id) {
 
   // Search roles for user or the organization to which the user belongs
   promise_array.push(
-    promise_array[0].then(function (organizations) {
+    promise_array[0].then(function(organizations) {
       const search_role_organizations = [];
       if (organizations.length > 0) {
         for (let i = 0; i < organizations.length; i++) {
@@ -790,7 +790,7 @@ function user_roles(user_id, app_id) {
   );
 
   return Promise.all(promise_array)
-    .then(function (values) {
+    .then(function(values) {
       const role_assignment = values[1];
 
       const user_app_info = { user: [], organizations: [], all: [] };
@@ -803,7 +803,7 @@ function user_roles(user_id, app_id) {
         if (role_assignment[i].Organization) {
           const organization = role_assignment[i].Organization.dataValues;
           const index = user_app_info.organizations
-            .map(function (e) {
+            .map(function(e) {
               return e.id;
             })
             .indexOf(organization.id);
@@ -822,7 +822,7 @@ function user_roles(user_id, app_id) {
       }
       return Promise.resolve(user_app_info);
     })
-    .catch(function (error) {
+    .catch(function(error) {
       debug('Error: ', error);
       return Promise.reject({
         message: 'Internal error',
@@ -841,18 +841,18 @@ function user_permissions(roles_id, app_id, action, resource) {
       where: { role_id: roles_id },
       attributes: ['permission_id'],
     })
-    .then(function (permissions) {
+    .then(function(permissions) {
       if (permissions.length > 0) {
         return models.permission
           .findAll({
             where: {
-              id: permissions.map((elem) => elem.permission_id),
+              id: permissions.map(elem => elem.permission_id),
               oauth_client_id: app_id,
               action,
             },
           })
-          .then((permissions) =>
-            permissions.filter((permission) =>
+          .then(permissions =>
+            permissions.filter(permission =>
               permission.is_regex == 1
                 ? new RegExp(permission.resource).exec(resource)
                 : permission.resource == resource
@@ -872,9 +872,9 @@ function trusted_applications(app_id) {
       where: { oauth_client_id: app_id },
       attributes: ['trusted_oauth_client_id'],
     })
-    .then(function (trusted_apps) {
+    .then(function(trusted_apps) {
       if (trusted_apps.length > 0) {
-        return trusted_apps.map((id) => id.trusted_oauth_client_id);
+        return trusted_apps.map(id => id.trusted_oauth_client_id);
       }
       return [];
     });
@@ -905,7 +905,7 @@ function validateScope(user, client, scope) {
       requested_scopes.includes('permanent') ||
       requested_scopes.includes('jwt')
     ) {
-      return requested_scopes.every((r) => client.token_types.includes(r))
+      return requested_scopes.every(r => client.token_types.includes(r))
         ? requested_scopes
         : false;
     }
@@ -940,7 +940,7 @@ function generateIdToken(client, user) {
     : Promise.resolve();
 
   return user_autho_app_promise
-    .then(function () {
+    .then(function() {
       return create_oauth_response(
         user,
         client.id,
@@ -950,7 +950,7 @@ function generateIdToken(client, user) {
         null
       );
     })
-    .then(function (idToken) {
+    .then(function(idToken) {
       idToken['iss'] = config.host;
       idToken['sub'] = user.id;
       idToken['aud'] = client.id;
@@ -959,7 +959,7 @@ function generateIdToken(client, user) {
       idToken['iat'] = Math.round(Date.now() / 1000);
       return idToken;
     })
-    .catch(function (error) {
+    .catch(function(error) {
       debug('-------generateidToken-------', error);
     });
 }

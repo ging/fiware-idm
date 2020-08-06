@@ -12,7 +12,7 @@ process.env.IDM_DB_PASS = 'test';
 process.env.IDM_DB_USER = 'root';
 
 // const keyrock = require('../../bin/www');
-const config = require('../../../config.js');
+const config = require('../../config-test.js');
 const should = require('should');
 const request = require('request');
 const utils = require('../../utils');

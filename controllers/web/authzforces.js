@@ -1,7 +1,7 @@
 const authzforce = require('../../lib/authzforce.js');
 const models = require('../../models/models.js');
-const configService = require('../../lib/configService.js');
-const config_authorization = configService.getConfig().authorization;
+const config_service = require('../../lib/configService.js');
+const config_authorization = config_service.get_config().authorization;
 
 const debug = require('debug')('idm:web-authzforce_controller');
 

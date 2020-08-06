@@ -1,6 +1,6 @@
 const models = require('../../models/models.js');
-const configService = require('../../lib/configService.js');
-const config_authzforce = configService.getConfig().authorization;
+const config_service = require('../../lib/configService.js');
+const config_authzforce = config_service.get_config().authorization;
 
 const debug = require('debug')('idm:web-permission_controller');
 

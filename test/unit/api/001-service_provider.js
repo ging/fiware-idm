@@ -8,7 +8,7 @@
 // Load database configuration before
 require('../../config/config_database');
 
-const config = require('../../../config.js');
+const config = require('../../config-test.js');
 const should = require('should');
 const request = require('request');
 const utils = require('../../utils');

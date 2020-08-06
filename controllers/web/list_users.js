@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const gravatar = require('gravatar');
 const models = require('../../models/models.js');
-const configService = require('../../lib/configService.js');
-const config = configService.getConfig();
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config();
 const image = require('../../lib/image.js');
 const debug = require('debug')('idm:web-list_users_controller');
 

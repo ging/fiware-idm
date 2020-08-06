@@ -1,9 +1,9 @@
 const models = require('../../models/models.js');
 const create_oauth_response = require('../../models/model_oauth_server.js')
   .create_oauth_response;
-const configService = require('../../lib/configService.js');
-const config_eidas = configService.getConfig().eidas;
-const config_oauth2 = configService.getConfig().oauth2;
+const config_service = require('../../lib/configService.js');
+const config_eidas = config_service.get_config().eidas;
+const config_oauth2 = config_service.get_config().oauth2;
 const user_controller = require('../../controllers/web/users');
 const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
 const gravatar = require('gravatar');

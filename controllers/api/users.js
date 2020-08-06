@@ -3,8 +3,8 @@ const models = require('../../models/models.js');
 const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 
-const configService = require('../../lib/configService.js');
-const config = configService.getConfig();
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config();
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');

@@ -6,7 +6,7 @@
  */
 
 const exec = require('child_process').exec;
-const config = require('../../config');
+const config = require('../config-test');
 
 // eslint-disable-next-line no-undef
 before('Create and populate database', function(done) {

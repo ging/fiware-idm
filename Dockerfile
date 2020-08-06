@@ -144,6 +144,7 @@ WORKDIR ${TARGET}
 
 RUN rm -rf doc extras doc.ja test && \
     npm cache clean -f  && \
+    npm install -g sequelize && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir certs && \

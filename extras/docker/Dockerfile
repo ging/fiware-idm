@@ -154,7 +154,8 @@ WORKDIR ${TARGET}
 
 RUN rm -rf doc doc.ja extras test && \
     npm cache clean -f   && \
-    npm install --production  && \
+    npm install -g sequelize && \
+    npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \

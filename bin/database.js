@@ -34,7 +34,7 @@ sequelize
       err.original.code === 'ER_BAD_DB_ERROR' ||
       err.original.code === '3D000'
     ) {
-      exec('npm run-script create_db', function(error) {
+      exec('sequelize --env database db:create', function(error) {
         if (error) {
           debug('Unable to create database: ', err);
           process.exit();
@@ -42,7 +42,7 @@ sequelize
 
         debug('Database created');
 
-        exec('npm run-script migrate_db', function(error) {
+        exec('sequelize --env database db:migrate', function(error) {
           if (error) {
             debug('Unable to migrate database: ', err);
             process.exit();

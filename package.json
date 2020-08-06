@@ -25,6 +25,7 @@
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "dependencies": {
+    "@cloudreach/docker-secrets": "^1.0.3",
     "async": "^2.6.0",
     "base64-img": "^1.0.4",
     "bcrypt": "^3.0.7",

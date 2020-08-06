@@ -1,6 +1,6 @@
 // BD to store all eidas credentials of an application
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const EidasCredentials = sequelize.define(
     'EidasCredentials',
     {

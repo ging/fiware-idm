@@ -8,4 +8,3 @@ coverage/
 certs/
 helpers/custom_authentication_driver.js
 .eslintcache
-config.js

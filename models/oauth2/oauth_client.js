@@ -1,4 +1,5 @@
-const config_oauth2 = require('../../config.js').oauth2;
+const configService = require('../../lib/configService.js');
+const config_oauth2 = configService.getConfig().oauth2;
 
 // BD to store all applicationes with their feautures
 module.exports = function(sequelize, DataTypes) {

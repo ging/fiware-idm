@@ -16,7 +16,8 @@ const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
 
 // Obtain secret from config file
-const config = require('./config.js');
+const configService = require('./lib/configService.js');
+const config = configService.getConfig();
 
 // Create vars that store routes
 const index = require('./routes/web/index');
@@ -52,7 +53,7 @@ if (config.cors.enabled) {
 
 // Set routes for version
 const up_date = new Date();
-app.use('/version', function(req, res) {
+app.use('/version', function (req, res) {
   const version = require('./version.json');
   version.keyrock.uptime = require('./lib/time').ms_to_time(
     new Date() - up_date
@@ -100,7 +101,7 @@ app.use(
 );
 
 // Helpers dinamicos:
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.set(
     'Cache-Control',
     'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0'
@@ -171,10 +172,10 @@ if (config.https.enabled) {
 if (config.authorization.authzforce.enabled) {
   require('./lib/authzforce.js')
     .check_connection()
-    .then(function(status) {
+    .then(function (status) {
       debug(clc.green('Connection with Authzforce: ' + status));
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug(clc.red(error));
     });
 }

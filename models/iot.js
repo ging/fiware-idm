@@ -1,12 +1,12 @@
 // Table to store sensor information
-
-const config = require('../config.js').password_encryption;
+const configService = require('../lib/configService.js');
+const config = configService.getConfig().password_encryption;
 
 // Vars for encrypting
 const crypto = require('crypto');
 const key = config.key;
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const Iot = sequelize.define(
     'Iot',
     {
@@ -17,10 +17,7 @@ module.exports = function(sequelize, DataTypes) {
       password: {
         type: DataTypes.STRING(40),
         set(password) {
-          const salt = crypto
-            .randomBytes(16)
-            .toString('hex')
-            .slice(0, 16);
+          const salt = crypto.randomBytes(16).toString('hex').slice(0, 16);
 
           let encripted = crypto
             .createHmac('sha1', salt)
@@ -45,7 +42,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   );
 
-  Iot.prototype.verifyPassword = function(password) {
+  Iot.prototype.verifyPassword = function (password) {
     const encripted = crypto
       .createHmac('sha1', this.salt ? this.salt : key)
       .update(password)

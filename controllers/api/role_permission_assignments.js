@@ -2,7 +2,8 @@ const debug = require('debug')('idm:api-role_permission_assignments');
 const models = require('../../models/models.js');
 
 const authzforce_controller = require('./authzforces');
-const config_authzforce = require('../../config.js').authorization;
+const configService = require('../../lib/configService.js');
+const config_authzforce = configService.getConfig().authorization;
 
 // GET /v1/applications/:application_id/roles/:role_id/permissions -- Send index of role permissions assignments
 exports.index = function(req, res) {

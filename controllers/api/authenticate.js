@@ -1,6 +1,7 @@
 const models = require('../../models/models.js');
 const uuid = require('uuid');
-const config = require('../../config');
+const configService = require('../../lib/configService.js');
+const config = configService.getConfig();
 const debug = require('debug')('idm:api-authenticate');
 
 const user_api_controller = require('../../controllers/api/users.js');

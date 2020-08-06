@@ -1,5 +1,5 @@
 // Organization Model
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const Organization = sequelize.define(
     'Organization',
     {

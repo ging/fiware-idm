@@ -48,13 +48,13 @@ module.exports = {
             isUnique(value, next) {
               const self = this;
               User.find({ where: { email: value } })
-                .then(function(user) {
+                .then(function (user) {
                   if (user && self.id !== user.id) {
                     return next('emailUsed');
                   }
                   return next();
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                   return next(err);
                 });
             },

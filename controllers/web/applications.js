@@ -2,7 +2,8 @@ const models = require('../../models/models.js');
 const fs = require('fs');
 const _ = require('lodash');
 
-const config = require('../../config');
+const configService = require('../../lib/configService.js');
+const config = configService.getConfig();
 const config_usage_control = config.usage_control;
 
 const debug = require('debug')('idm:web-application_controller');

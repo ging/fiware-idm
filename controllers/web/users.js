@@ -1,5 +1,6 @@
 const models = require('../../models/models.js');
-const config = require('../../config');
+const configService = require('../../lib/configService.js');
+const config = configService.getConfig();
 const fs = require('fs');
 const path = require('path');
 const gravatar = require('gravatar');

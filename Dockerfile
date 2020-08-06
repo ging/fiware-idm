@@ -1,24 +1,12 @@
 ARG NODE_VERSION=10
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
-ARG DOWNLOAD_TYPE=latest
-ARG TARGET=/opt/fiware-idm
 
 FROM node:${NODE_VERSION} as builder
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
-ARG DOWNLOAD_TYPE
-ARG TARGET
 
-ENV GITHUB_ACCOUNT=${GITHUB_ACCOUNT}
-ENV GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
-ENV DOWNLOAD_TYPE=${DOWNLOAD_TYPE}
-
-MAINTAINER FIWARE Identity Manager Team. DIT-UPM
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl wget \
-    && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 WORKDIR /opt
 
@@ -119,6 +107,7 @@ ENV IDM_HOST="http://localhost:3000" \
 #  these values and add _FILE to the name of the variable.
 
 # Install Ubuntu dependencies & email dependency & Configure mail
+# hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential python debconf-utils curl git netcat  && \
     echo "postfix postfix/mailname string ${IDM_EMAIL_ADDRESS}" | debconf-set-selections && \
@@ -138,13 +127,14 @@ RUN apt-get update && \
 # Alternatively for local development, just copy this Dockerfile into file the
 # root of the repository and copy over your local source using :
 #
-COPY . ${TARGET}
+COPY . /opt/fiware-idm
 
-WORKDIR ${TARGET}
+WORKDIR /opt/fiware-idm
 
+# hadolint ignore=DL3008
 RUN rm -rf doc extras doc.ja test && \
     npm cache clean -f  && \
-    npm install -g sequelize && \
+    npm install -g sequelize@4.22.0 && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir certs && \
@@ -176,7 +166,6 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 #
 
 FROM gcr.io/distroless/nodejs:${NODE_VERSION}
-ARG TARGET
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
@@ -191,8 +180,8 @@ LABEL "org.opencontainers.image.description"="OAuth2-based authentication of use
 LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
 LABEL "org.nodejs.version"=${NODE_VERSION}
 
-COPY --from=builder "${TARGET}" "${TARGET}"
-WORKDIR "${TARGET}"
+COPY --from=builder /opt/fiware-idm /opt/fiware-idm
+WORKDIR /opt/fiware-idm
 
 USER nobody
 ENV NODE_ENV=production

@@ -66,7 +66,16 @@ exports.index = function(req, res) {
           { is_internal: true },
         ],
       },
-      attributes: ['id', 'name', 'description', 'action', 'resource', 'xml'],
+      attributes: [
+        'id',
+        'name',
+        'description',
+        'action',
+        'resource',
+        'fiware_service',
+        'use_fiware_service',
+        'xml',
+      ],
       order: [['id', 'DESC']],
     })
     .then(function(permissions) {
@@ -105,6 +114,10 @@ exports.create = function(req, res) {
     .then(function() {
       // Build a row and validate if input values are correct (not empty) before saving values in permission table
       req.body.permission.is_regex = !!req.body.permission.is_regex;
+      req.body.permission.use_fiware_service = !!req.body.permission
+        .use_fiware_service;
+      req.body.permission.fiware_service =
+        req.body.permission.fiware_service || '';
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
       permission.is_internal = false;
@@ -118,6 +131,8 @@ exports.create = function(req, res) {
           'description',
           'action',
           'resource',
+          'fiware_service',
+          'use_fiware_service',
           'xml',
           'is_regex',
           'oauth_client_id',
@@ -189,6 +204,20 @@ exports.update = function(req, res) {
         )
           ? req.body.permission.is_regex
           : req.permission.is_regex;
+
+        req.permission.use_fiware_service = Object.prototype.hasOwnProperty.call(
+          req.body.permission,
+          'use_fiware_service'
+        )
+          ? req.body.permission.use_fiware_service
+          : req.permission.use_fiware_service;
+
+        req.permission.fiware_service = Object.prototype.hasOwnProperty.call(
+          req.body.permission,
+          'fiware_service'
+        )
+          ? req.body.permission.fiware_service
+          : req.permission.fiware_service;
 
         return req.permission.save();
       })
@@ -339,6 +368,17 @@ function check_create_body_request(body) {
       }
     }
 
+    if (body.permission.use_fiware_service) {
+      if (typeof body.permission.use_fiware_service !== 'boolean') {
+        reject({
+          error: {
+            message: 'use_fiware_service attribute must be a boolean',
+            code: 400,
+            title: 'Bad Request',
+          },
+        });
+      }
+    }
     resolve();
   });
 }
@@ -414,6 +454,17 @@ function check_update_body_request(body) {
       }
     }
 
+    if (body.permission.use_fiware_service) {
+      if (typeof body.permission.use_fiware_service !== 'boolean') {
+        reject({
+          error: {
+            message: 'use_fiware_service attribute must be a boolean',
+            code: 400,
+            title: 'Bad Request',
+          },
+        });
+      }
+    }
     resolve();
   });
 }

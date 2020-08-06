@@ -73,6 +73,12 @@ $(document).ready(function() {
         .find('#id_resource')
         .val(),
       is_regex: $(this).find('#id_is_regex')[0].checked ? 1 : 0,
+      use_fiware_service: $(this).find('#id_use_fiware_service')[0].checked
+        ? 1
+        : 0,
+      fiware_service: $(this)
+        .find('#id_fiware_service')
+        .val(),
       action: $(this)
         .find('#id_action')
         .val(),
@@ -221,6 +227,14 @@ $(document).ready(function() {
                 '#id_is_regex'
               )[0].checked = true;
             }
+            if (result.use_fiware_service > 0) {
+              $('#create_permission_form').find(
+                '#id_use_fiware_service'
+              )[0].checked = true;
+            }
+            $('#create_permission_form')
+              .find('#id_fiware_service')
+              .val(result.fiware_service);
             $('#create_permission_form')
               .find('#id_xml')
               .val(result.xml);

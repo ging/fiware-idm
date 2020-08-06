@@ -47,6 +47,22 @@ module.exports = function(sequelize, DataTypes) {
             ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
             : ''),
       },
+      fiware_service: {
+        type:
+          DataTypes.STRING(255) +
+          (sequelize.getDialect() === 'mysql'
+            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+            : ''),
+      },
+      use_fiware_service: {
+        type:
+          DataTypes.BOOLEAN() +
+          (sequelize.getDialect() === 'mysql'
+            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
+            : ''),
+        allowNull: false,
+        default: false,
+      },
       is_regex: {
         type:
           DataTypes.BOOLEAN() +

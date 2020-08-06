@@ -33,7 +33,7 @@
 						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.required_field%></span>
 						<div class="panel-group" id="accordion">
 							<div class="panel">
-								<div class="panel-headding">  
+								<div class="panel-headding">
 									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-verb-resource" class="panel-heading collapsed">
 										<h4 class="panel-title panel-close">
 											<%=translation.applications.create_permission.subtitle01%>
@@ -58,6 +58,16 @@
 											<input class="form-check-input" id="id_is_regex"  name="is_regex" type="checkbox">
 											<label class="control-label" for="id_is_regex"><%=translation.applications.create_permission.label_is_regex%></label>
 
+										</div>
+										<div class="form-group">
+											<label class="control-label" for="id_fiware_service"><%=translation.applications.create_permission.label06%></label>
+											<div class=" ">
+												<input class="form-control" id="id_fiware_service" maxlength="255" name="fiware_service" type="text">
+											</div>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" id="id_use_fiware_service"  name="use_fiware_service" type="checkbox">
+											<label class="control-label" for="id_use_fiware_service"><%=translation.applications.create_permission.label_use_fiware_service%></label>
 										</div>
 									</div>
 								</div>

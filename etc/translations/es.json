@@ -556,6 +556,8 @@
       "label02": "Descripción",
       "label03": "Acción HTTP",
       "label04": "Recurso",
+      "label06": "Fiware Service Cabecera",
+      "label_use_fiware_service": "Use Fiware Service Cabecera",
       "label_is_regex": "¿Es una expresion regular?",
       "label05": "Use XACML para definir una regla de autorización mas compleja.",
       "required_field": "Este campo es obligatorio."
@@ -819,7 +821,7 @@
         "li01": "Propietario",
         "li02": "Miembro"
       }
-    }, 
+    },
     "users": {
       "org_role_user_row" :{
         "li01": "Propietario",
@@ -933,7 +935,7 @@
       "update_btn": "Actualizar"
     },
     "step_create_eidas_credentials": {
-      "title": "Detalles de autenticación para eIDAS", 
+      "title": "Detalles de autenticación para eIDAS",
       "next_btn": "Siguiente"
     }
   },

@@ -164,23 +164,6 @@ CMD ["npm", "start"]
 # Ports used by idm
 EXPOSE ${IDM_PORT:-3000}
 
-
-
-FROM node:${NODE_VERSION} as seeder
-# Copy config database file
-COPY config_database.js extras/docker/config_database.js
-COPY docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
-RUN chmod 755 docker-entrypoint.sh
-
-ENTRYPOINT ["/opt/fiware-idm/docker-entrypoint.sh"]
-USER node
-ENV NODE_ENV=development
-CMD ["npm", "start"]
-
-# Ports used by idm
-EXPOSE ${IDM_PORT:-3000}
-
-
 ########################################################################################
 #
 # This build stage creates an anonymous user to be used with the distroless build

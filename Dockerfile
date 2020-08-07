@@ -150,7 +150,6 @@ CMD ["npm", "start"]
 # Ports used by idm
 EXPOSE ${IDM_PORT:-3000}
 
-
 ########################################################################################
 #
 # This build stage creates an anonymous user to be used with the distroless build

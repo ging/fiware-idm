@@ -12,6 +12,8 @@ FROM node:${NODE_VERSION}-alpine as builder
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 
+SHELL ["/bin/ash", "-o", "pipefail", "-c"]
+
 ENV PYTHONUNBUFFERED=1
 
 #RUN apk add --no-cache python3 && \
@@ -19,6 +21,7 @@ ENV PYTHONUNBUFFERED=1
 #    python3 -m ensurepip && \
 #    pip3 install --no-cache --upgrade pip setuptools
 
+# hadolint ignore=DL3018,DL3013
 RUN apk --no-cache add git python2 make gcc g++ ca-certificates openssl && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
@@ -79,7 +82,7 @@ ENV IDM_HOST="http://localhost:3000" \
     IDM_EMAIL_ADDRESS="noreply@localhost"
 
 
-# hadolint ignore=DL3008
+# hadolint ignore=DL3018
 RUN apk add --no-cache ca-certificates bash
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"

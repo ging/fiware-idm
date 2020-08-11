@@ -23,6 +23,8 @@ ARG GITHUB_REPOSITORY
 ARG DOWNLOAD
 ARG SOURCE_BRANCH
 
+SHELL ["/bin/ash", "-o", "pipefail", "-c"]
+
 ENV PYTHONUNBUFFERED=1
 
 #RUN apk add --no-cache python3 && \
@@ -30,6 +32,7 @@ ENV PYTHONUNBUFFERED=1
 #    python3 -m ensurepip && \
 #    pip3 install --no-cache --upgrade pip setuptools
 
+# hadolint ignore=DL3018,DL3013
 RUN apk --no-cache add curl git python2 make gcc g++ ca-certificates openssl unzip && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
@@ -59,19 +62,13 @@ RUN \
     fi && \
     RELEASE_CONCAT=$(echo "${RELEASE}" | tr / -); \
     curl -s -L https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/archive/"${RELEASE}".zip > source.zip && \
-    unzip source.zip -x "*/test/**" "*/rpm/**" "*/ghpages/**" "*/docs/**" "*/.*" && \
+    unzip source.zip -x "*/test/**" "*/doc/**" "*/doc.ja/**" "*/extras/**" && \
     rm source.zip && \
-    mv "${GITHUB_REPOSITORY}-${RELEASE_CONCAT}" /opt/fiware-idm && \
-    # Remove unzip and clean apt cache
-    apt-get clean && \
-    apt-get remove -y unzip && \
-    apt-get -y autoremove && \
-    rm -rf /var/lib/apt/lists/* 
+    mv "${GITHUB_REPOSITORY}-${RELEASE_CONCAT}" /opt/fiware-idm
 
 WORKDIR /opt/fiware-idm
 
-RUN rm -rf doc extras doc.ja test node_modules && \
-    npm cache clean -f  && \
+RUN npm cache clean -f  && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir certs && \
@@ -122,7 +119,7 @@ ENV IDM_HOST="http://localhost:3000" \
     IDM_EMAIL_ADDRESS="noreply@localhost"
 
 
-# hadolint ignore=DL3008
+# hadolint ignore=DL3018
 RUN apk add --no-cache ca-certificates bash
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"

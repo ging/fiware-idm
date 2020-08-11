@@ -49,6 +49,9 @@ services:
             - IDM_ADMIN_USER=admin
             - IDM_ADMIN_EMAIL=admin@test.com
             - IDM_ADMIN_PASS=1234
+            # If sending eMails point to any STMP server
+            - IDM_EMAIL_HOST=mailer
+            - IDM_EMAIL_PORT=25
 
     mysql-db:
         restart: always
@@ -70,6 +73,20 @@ services:
         volumes:
             - mysql-db:/var/lib/mysql
 
+    mailer:
+        restart: always
+        image: mazdermind/docker-mail-relay
+        hostname: mailer
+        container_name: mailer
+        ports:
+            - "25:25"
+        environment:
+            - SMTP_LOGIN=<login> # Login to connect to the external relay
+            - SMTP_PASSWORD=<password> # Password to connect to the external relay
+            - EXT_RELAY_HOST=<hostname> # External relay DNS name
+            - EXT_RELAY_PORT=25
+            - ACCEPTED_NETWORKS=172.18.1.0/24
+            - USE_TLS=no
 networks:
     default:
         ipam:
@@ -96,6 +113,26 @@ The different params mean:
 
 3.  Use `sudo docker-compose up` to run the IdM Keyrock. This will automatically
     download the two images and run the IdM Keyrock service.
+
+## Sending eMails
+
+If you intend to send eMails when running a dockerized Keyrock instance, a
+separate Mail Relay docker container is needed to be set up when running within
+a private network.
+
+The Keyrock `IDM_EMAIL_HOST` and `IDM_EMAIL_PORT` docker ENV variables to point
+to the SMTP relay server .
+
+The SMTP relay settings should then be altered to match the external SMTP
+server. For example to use the Gmail SMTP server the following settings are
+required.
+
+-   Server address: `smtp.gmail.com`
+-   Username: Your Gmail address (for example, `example@gmail.com`)
+-   Password: Your Gmail password
+-   Port (TLS): `587`
+-   Port (SSL): `465`
+-   TLS/SSL required: `Yes`
 
 ## Build your own image
 

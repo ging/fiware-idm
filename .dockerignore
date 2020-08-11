@@ -2,3 +2,4 @@ node_modules/
 doc/
 doc.ja/
 npm-debug.log
+package-lock.json

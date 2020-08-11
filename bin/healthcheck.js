@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 
 const http = require('http');
-const port = process.env.IDM_PORT || '3000';
-const path = process.env.HEALTHCHECK_PATH || '/version';
+const config = require('../config');
 const http_code = process.env.HEALTHCHECK_CODE || 200;
 
 const options = {
   host: 'localhost',
-  port,
+  port: process.env.IDM_PORT || config.port,
   timeout: 2000,
   method: 'GET',
-  path,
+  path: process.env.HEALTHCHECK_PATH || '/version',
 };
 
 const request = http.request(options, result => {

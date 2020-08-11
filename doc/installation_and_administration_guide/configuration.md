@@ -380,15 +380,37 @@ config.authorization = {
 
 You can configure the IdM to send emails to users. Follow this
 [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04)
-to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04. Then edit
-config file:
+to configure Postfix as necessary. Then edit config file:
 
 ```javascript
 config.mail = {
-    host: "idm_host",
+    host: "mailer",
     port: 25,
     from: "noreply@host"
 };
+```
+
+Or set the Keyrock `IDM_EMAIL_HOST` and `IDM_EMAIL_PORT` docker ENV variables to
+point to the SMTP server.
+
+If you intend to send eMails when running a dockerized Keyrock instance, a
+separate Mail Relay docker container is needed to be set up when running within
+a private network:
+
+```yaml
+mailer:
+    restart: always
+    image: mazdermind/docker-mail-relay
+    hostname: mailer
+    container_name: mailer
+    ports:
+        - "25:25"
+    environment:
+        - SMTP_LOGIN=<login> # Login to connect to the external relay
+        - SMTP_PASSWORD=<password> # Password to connect to the external relay
+        - EXT_RELAY_HOST=<hostname> # External relay DNS name
+        - EXT_RELAY_PORT=25
+        - ACCEPTED_NETWORKS=172.18.1.0/24 # Range includes the I.P of Keyrock
 ```
 
 ## Email filtering

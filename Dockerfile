@@ -2,13 +2,103 @@ ARG NODE_VERSION=10
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
 
-FROM node:${NODE_VERSION} as builder
+########################################################################################
+#
+# This build stage retrieves the source code and sets up node-SAAS
+#
+######################################################################################## 
+
+FROM node:${NODE_VERSION}-alpine as builder
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ENV PYTHONUNBUFFERED=1
 
-WORKDIR /opt
+#RUN apk add --no-cache python3 && \
+#    ln -sf python3 /usr/bin/python && \
+#    python3 -m ensurepip && \
+#    pip3 install --no-cache --upgrade pip setuptools
+
+RUN apk --no-cache add git python2 make gcc g++ ca-certificates openssl && \
+    python -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip install --upgrade pip setuptools
+
+WORKDIR /opt/fiware-idm
+COPY . /opt/fiware-idm
+
+RUN rm -rf doc extras doc.ja test node_modules && \
+    npm cache clean -f  && \
+    npm install --only=prod --no-package-lock --no-optional  && \
+    rm -rf /root/.npm/cache/* && \
+    mkdir certs && \
+    openssl genrsa -out idm-2018-key.pem 2048 && \
+    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
+    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
+    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
+
+########################################################################################
+#
+# This build stage creates an alpine build for production.
+#
+# IMPORTANT: For production environments use Docker Secrets to protect values of the 
+# sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
+# variable.
+#
+#  - IDM_SESSION_SECRET
+#  - IDM_ENCRYPTION_KEY
+#  - IDM_DB_PASS
+#  - IDM_DB_USER
+#  - IDM_ADMIN_ID
+#  - IDM_ADMIN_USER
+#  - IDM_ADMIN_EMAIL
+#  - IDM_ADMIN_PASS
+#  - IDM_EX_AUTH_DB_USER
+#  - IDM_EX_AUTH_DB_PASS
+#  - IDM_DB_HOST
+#
+########################################################################################
+
+FROM node:${NODE_VERSION}-alpine
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+ARG NODE_VERSION
+
+WORKDIR /opt/fiware-idm
+COPY --from=builder /opt/fiware-idm .
+
+
+ENV IDM_HOST="http://localhost:3000" \
+    IDM_PORT="3000" \
+    IDM_PDP_LEVEL="basic" \
+    IDM_DB_HOST="localhost" \
+    IDM_DB_NAME="idm" \
+    IDM_DB_DIALECT="mysql" \
+    IDM_EMAIL_HOST="localhost" \
+    IDM_EMAIL_PORT="25" \
+    IDM_EMAIL_ADDRESS="noreply@localhost"
+
+
+# hadolint ignore=DL3008
+RUN apk add --no-cache ca-certificates bash
+
+LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "org.opencontainers.image.authors"=""
+LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
+LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
+LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
+LABEL "org.nodejs.version"=${NODE_VERSION}
+
+USER node
+ENV NODE_ENV=production
+# Ports used by application
+EXPOSE ${IDM_PORT:-3000}
+CMD ["npm", "start"]
+HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
+  CMD ["npm", "healthcheck"]
 
 # 
 # ALL ENVIRONMENT VARIABLES
@@ -90,102 +180,3 @@ WORKDIR /opt
 # ENV IDM_ADMIN_USER  "admin"
 # ENV IDM_ADMIN_EMAIL "admin@test.com"
 # ENV IDM_ADMIN_PASS  "1234"
-
-
-
-ENV IDM_HOST="http://localhost:3000" \
-    IDM_PORT="3000" \
-    IDM_PDP_LEVEL="basic" \
-    IDM_DB_HOST="localhost" \
-    IDM_DB_NAME="idm" \
-    IDM_DB_DIALECT="mysql" \
-    IDM_EMAIL_HOST="localhost" \
-    IDM_EMAIL_PORT="25" \
-    IDM_EMAIL_ADDRESS="noreply@localhost"
-
-# IMPORTANT: For a Production Environment Use Docker Secrets to define
-#  these values and add _FILE to the name of the variable.
-
-# Install Ubuntu dependencies & email dependency & Configure mail
-# hadolint ignore=DL3008
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential python debconf-utils curl git netcat  && \
-    echo "postfix postfix/mailname string ${IDM_EMAIL_ADDRESS}" | debconf-set-selections && \
-    echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-    apt-get install -y --no-install-recommends postfix mailutils && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    sed -i 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
-
-
-#
-# The following line retrieves the latest source code from GitHub.
-#
-# To obtain the latest stable release run this Docker file with the parameters
-# --no-cache --build-arg DOWNLOAD_TYPE=stable
-#
-# Alternatively for local development, just copy this Dockerfile into file the
-# root of the repository and copy over your local source using :
-#
-COPY . /opt/fiware-idm
-
-WORKDIR /opt/fiware-idm
-
-# hadolint ignore=DL3008
-RUN rm -rf doc extras doc.ja test && \
-    npm cache clean -f  && \
-    npm install -g sequelize@4.22.0 && \
-    npm install --only=prod --no-package-lock --no-optional  && \
-    rm -rf /root/.npm/cache/* && \
-    mkdir certs && \
-    openssl genrsa -out idm-2018-key.pem 2048 && \
-    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
-    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
-    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
-
-USER node
-ENV NODE_ENV=development
-CMD ["npm", "start"]
-
-# Ports used by idm
-EXPOSE ${IDM_PORT:-3000}
-
-########################################################################################
-#
-# This build stage creates an anonymous user to be used with the distroless build
-# as defined below.
-#
-########################################################################################
-FROM node:${NODE_VERSION} AS anon-user
-RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
-    && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
-
-#
-# The following creates a distroless build for production.
-#
-
-FROM gcr.io/distroless/nodejs:${NODE_VERSION}
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
-ARG NODE_VERSION
-
-LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
-LABEL "org.opencontainers.image.authors"=""
-LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
-LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
-LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
-LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
-LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
-LABEL "org.nodejs.version"=${NODE_VERSION}
-
-COPY --from=builder /opt/fiware-idm /opt/fiware-idm
-WORKDIR /opt/fiware-idm
-
-USER nobody
-ENV NODE_ENV=production
-# Ports used by application
-EXPOSE ${IDM_PORT:-3000}
-CMD ["./bin/www"]
-HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
-  CMD ["/nodejs/bin/node", "./bin/healthcheck"]

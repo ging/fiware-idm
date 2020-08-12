@@ -179,7 +179,10 @@ describe('API - 9 - Permissions: ', function() {
     let permission_description;
     let permission_resource;
     let permission_action;
-
+    // eslint-disable-next-line no-unused-vars
+    let permission_fiware_service;
+    // eslint-disable-next-line no-unused-vars
+    let permission_use_fiware_service;
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function(done) {
       const create_permission = {
@@ -200,6 +203,8 @@ describe('API - 9 - Permissions: ', function() {
         permission_description = json.permission.description;
         permission_action = json.permission.action;
         permission_resource = json.permission.resource;
+        permission_fiware_service = json.fiware_service;
+        permission_use_fiware_service = json.use_fiware_service;
         done();
       });
     });
@@ -228,10 +233,15 @@ describe('API - 9 - Permissions: ', function() {
         const response_description = json.values_updated.description;
         const response_action = json.values_updated.action;
         const response_resource = json.values_updated.resource;
+        const response_fiware_service = json.values_updated.fiware_service;
+        const response_use_fiware_service =
+          json.values_updated.use_fiware_service;
         should.notEqual(permission_name, response_name);
         should.notEqual(permission_description, response_description);
         should.notEqual(permission_action, response_action);
         should.notEqual(permission_resource, response_resource);
+        should.equal(undefined, response_fiware_service);
+        should.equal(false, response_use_fiware_service);
         response.statusCode.should.equal(200);
         done();
       });
@@ -280,6 +290,114 @@ describe('API - 9 - Permissions: ', function() {
         response.statusCode.should.equal(204);
         done();
       });
+    });
+  });
+});
+describe('7) When creating a permission with resource+password+use_fiware_service and no fiware_service', function() {
+  it('should return a 400 Bad request', function(done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create
+          .invalid_perm_body_no_fiware_service_but_use_fiware_service
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token,
+      },
+    };
+
+    request(create_permission, function(error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('8) When creating a permission with resource+password+fiware_service and no use_fiware_service', function() {
+  it('should return a 400 Bad request', function(done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create
+          .invalid_perm_body_no_use_fiware_service_but_fiware_service
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token,
+      },
+    };
+
+    request(create_permission, function(error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('9) When creating a permission with fiware_service and xml in body', function() {
+  it('should return a 400 Bad request', function(done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create.invalid_perm_body_fiware_service_and_xml
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token,
+      },
+    };
+
+    request(create_permission, function(error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('10) When creating a permission with use_fiware_service and xml in body', function() {
+  it('should return a 400 Bad request', function(done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create.invalid_perm_body_use_fiware_service_and_xml
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token,
+      },
+    };
+
+    request(create_permission, function(error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('11) When creating a permission with use_fiware_service equal false', function() {
+  it('should return a 201 OK', function(done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create
+          .valid_perm_body_no_fiware_service_but_use_fiware_service_is_false
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token,
+      },
+    };
+
+    request(create_permission, function(error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(201);
+      done();
     });
   });
 });

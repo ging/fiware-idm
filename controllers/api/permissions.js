@@ -116,8 +116,6 @@ exports.create = function(req, res) {
       req.body.permission.is_regex = !!req.body.permission.is_regex;
       req.body.permission.use_fiware_service = !!req.body.permission
         .use_fiware_service;
-      req.body.permission.fiware_service =
-        req.body.permission.fiware_service || '';
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
       permission.is_internal = false;
@@ -319,13 +317,16 @@ function check_create_body_request(body) {
 
     if (config_authzforce.level === 'advanced') {
       if (
-        (body.permission.resource || body.permission.action) &&
+        (body.permission.resource ||
+          body.permission.action ||
+          body.permission.fiware_service ||
+          body.permission.use_fiware_service) &&
         body.permission.xml
       ) {
         reject({
           error: {
             message:
-              'Cannot set action and resource at the same time as xacml rule',
+              'Cannot set action, resource, fiware_service and use_fiware_service at the same time as xacml rule',
             code: 400,
             title: 'Bad Request',
           },
@@ -379,6 +380,26 @@ function check_create_body_request(body) {
         });
       }
     }
+    if (body.permission.use_fiware_service && !body.permission.fiware_service) {
+      reject({
+        error: {
+          message:
+            'if use_fiware_service is set, fiware_service needs to be set',
+          code: 400,
+          title: 'Bad Request',
+        },
+      });
+    }
+    if (!body.permission.use_fiware_service && body.permission.fiware_service) {
+      reject({
+        error: {
+          message:
+            'if fiware_service is set, use_fiware_service needs to be set',
+          code: 400,
+          title: 'Bad Request',
+        },
+      });
+    }
     resolve();
   });
 }
@@ -428,13 +449,16 @@ function check_update_body_request(body) {
 
     if (config_authzforce.level === 'advanced') {
       if (
-        (body.permission.resource || body.permission.action) &&
+        (body.permission.resource ||
+          body.permission.action ||
+          body.permission.fiware_service ||
+          body.permission.use_fiware_service) &&
         body.permission.xml
       ) {
         reject({
           error: {
             message:
-              'Cannot set action and resource at the same time as xacml rule',
+              'Cannot set action, resource, fiware_service and use_fiware_service at the same time as xacml rule',
             code: 400,
             title: 'Bad Request',
           },
@@ -464,6 +488,26 @@ function check_update_body_request(body) {
           },
         });
       }
+    }
+    if (body.permission.use_fiware_service && !body.permission.fiware_service) {
+      reject({
+        error: {
+          message:
+            'if use_fiware_service is set, fiware_service needs to be set',
+          code: 400,
+          title: 'Bad Request',
+        },
+      });
+    }
+    if (!body.permission.use_fiware_service && body.permission.fiware_service) {
+      reject({
+        error: {
+          message:
+            'if fiware_service is set, use_fiware_service needs to be set',
+          code: 400,
+          title: 'Bad Request',
+        },
+      });
     }
     resolve();
   });

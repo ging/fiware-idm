@@ -22,7 +22,9 @@
 				"name": "permission 1",
 				"description": "permission 1 description",
 				"action": "GET",
-				"resource": "login"
+				"resource": "login",
+                "fiware_service": "test",
+				"use_fiware_service": true
 			}
 		},
 		"invalid_perm_body": {
@@ -32,6 +34,49 @@
 				"action": "GET",
 				"resource": "login",
 				"xml": "<xml test 2>"
+			}
+		},
+		"invalid_perm_body_no_fiware_service_but_use_fiware_service": {
+			"permission": {
+				"name": "permission 3",
+				"description": "permission 3 description",
+				"action": "GET",
+				"resource": "login",
+                "use_fiware_service": true
+			}
+		},
+		"invalid_perm_body_no_use_fiware_service_but_fiware_service": {
+			"permission": {
+				"name": "permission 4",
+				"description": "permission 4 description",
+				"action": "GET",
+				"resource": "login",
+                "fiware_service": "test"
+			}
+		},
+		"invalid_perm_body_fiware_service_and_xml": {
+			"permission": {
+				"name": "permission 5",
+				"description": "permission 5 description",
+				"xml": "<xml test 5>",
+                "fiware_service": "test"
+			}
+		},
+		"invalid_perm_body_use_fiware_service_and_xml": {
+			"permission": {
+				"name": "permission 6",
+				"description": "permission 6 description",
+				"xml": "<xml test 6>",
+				"use_fiware_service": true
+			}
+		},
+		"valid_perm_body_no_fiware_service_but_use_fiware_service_is_false": {
+			"permission": {
+				"name": "permission 7",
+				"description": "permission 7 description",
+				"action": "GET",
+				"resource": "login",
+				"use_fiware_service": false
 			}
 		}
 	},
@@ -51,7 +96,9 @@
 				"name": "Test permission 3",
 				"description": "Test permission 3 description",
 		    	"action": "GET",
-				"resource": "login"
+				"resource": "login",
+				"fiware_service": "test",
+				"use_fiware_service": true
 			}
 		},
 		"new_values": {
@@ -59,7 +106,8 @@
 				"name": "new name of permission 3",
 				"description": "new description of permission 3",
 		    	"action": "POST",
-				"resource": "resource"
+				"resource": "resource",
+				"use_fiware_service": false
 			}
 		}
 	},

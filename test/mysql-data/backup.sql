@@ -463,7 +463,7 @@ LOCK TABLES `permission` WRITE;
 INSERT INTO `permission` VALUES
 ('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
 ('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
-('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0),('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
+('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
 ('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
 ('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
 ('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0),

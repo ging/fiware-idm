@@ -872,9 +872,9 @@ function user_permissions(roles_id, app_id, action, resource, fiware_service) {
           .then(permissions =>
             permissions.filter(permission => {
               return (
-                (permission.is_regex == 1
+                (permission.is_regex === 1
                   ? new RegExp(permission.resource).exec(resource)
-                  : permission.resource == resource) &&
+                  : permission.resource === resource) &&
                 (permission.use_fiware_service === 1
                   ? permission.fiware_service === fiware_service
                   : true)

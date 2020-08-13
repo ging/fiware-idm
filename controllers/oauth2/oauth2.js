@@ -355,7 +355,7 @@ exports.authenticate_token = function(req, res) {
   const req_app = req.query.app_id ? req.query.app_id : undefined;
   const fiware_service = req.query.fiware_service
     ? req.query.fiware_service
-    : '';
+    : undefined;
 
   if ((action || resource || fiware_service) && authzforce) {
     const error = {

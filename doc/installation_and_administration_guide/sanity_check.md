@@ -35,26 +35,14 @@ curl --include \
 You can also check if Keyrock is working properly by running unit test. To do
 tthis, follow the next steps:
 
-&nbsp;&nbsp;1\. Under directory test you can find config_test.js.template file
-which has a default configuration to run tests. This configuration file will be
-used to create a testing database (called idm_test) that will be removed after
-performing all tests. First, if you have already a config.js file in root
-directory and you want to preserve this configuration, save this file in another
-directory because the following shell command will overwrite it or just change
-your config.js file with the values of config_test.js.template
-
-```bash
-cp test/config_test.js.template config.js
-```
-
-&nbsp;&nbsp;2\. Once you have copied config file, you can run all tests in this
+&nbsp;&nbsp;1\. Once you have copied config file, you can run all tests in this
 way:
 
 ```bash
 npm run test
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;2.1\. You can also run an individual test if you want:
+&nbsp;&nbsp;&nbsp;&nbsp;1.1\. You can also run an individual test if you want:
 
 ```bash
 npm run test:single test/unit/<path_to_file_test>.js

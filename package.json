@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node ./bin/www",
     "healthcheck": "node ./bin/healthcheck.js",
-    "seed": "node ./bin/database && node ./bin/www",
     "debug": "sudo DEBUG=idm:*,oauth2-server:*  nodemon --ignore 'public/' --ignore 'views/' start",
     "create_db": "./node_modules/.bin/sequelize --env database db:create",
     "migrate_db": "./node_modules/.bin/sequelize --env database db:migrate",

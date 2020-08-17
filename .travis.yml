@@ -32,6 +32,7 @@ jobs:
         - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
         - sudo mysql_upgrade -u root -ptest
         - sudo service mysql restart
+        - node ./test/database
 
       before_script:
         - npm run lint
@@ -58,6 +59,7 @@ jobs:
         - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
         - sudo mysql_upgrade -u root -ptest
         - sudo service mysql restart
+        - node ./test/database
 
       before_script:
         - npm run lint

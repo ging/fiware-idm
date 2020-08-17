@@ -6,8 +6,8 @@ eIDAS node has to be enabled in the configuration file:
 ```javascript
 config.eidas = {
     enabled: true,
-    gateway_host: "localhost",
-    node_host: "https://eidas.node.es/EidasNode",
+    gateway_host: 'localhost',
+    node_host: 'https://eidas.node.es/EidasNode',
     metadata_expiration: 60 * 60 * 24 * 365 // One year
 };
 ```

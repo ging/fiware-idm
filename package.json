@@ -17,7 +17,7 @@
     "lint:text": "textlint 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "prettier": "prettier --config .prettierrc.json --write **/*.js *.js",
-    "prettier:text": "prettier '*.md' '**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
+    "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
     "test": "nyc --reporter=text mocha -- --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
     "test:coverage": "nyc --reporter=lcov mocha -- --recursive 'test/**/*.js' ",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
@@ -114,7 +114,7 @@
       "git add"
     ],
     "*.md": [
-      "prettier --tab-width 4 --print-width 80 --write --prose-wrap always",
+      "prettier --parser markdown --tab-width 4 --print-width 80 --write --prose-wrap always",
       "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",
       "git add"
     ]

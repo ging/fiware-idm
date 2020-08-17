@@ -7,7 +7,7 @@ to a PTP has to be enabled in the configuration file:
 config.usage_control = {
     enabled: true,
     ptp: {
-        host: "localhost",
+        host: 'localhost',
         port: 8090
     }
 };

@@ -23,7 +23,7 @@ In order to run the IdM Keyrock follow these steps:
     following code and:
 
 ```yml
-version: "3.5"
+version: '3.5'
 services:
     keyrock:
         image: fiware/idm:7.6.0
@@ -35,8 +35,8 @@ services:
         depends_on:
             - mysql-db
         ports:
-            - "3000:3000"
-            - "443:443"
+            - '3000:3000'
+            - '443:443'
         environment:
             - DEBUG=idm:*
             - IDM_DB_HOST=mysql-db
@@ -56,17 +56,17 @@ services:
         hostname: mysql-db
         container_name: db-mysql
         expose:
-            - "3306"
+            - '3306'
         ports:
-            - "3306:3306"
+            - '3306:3306'
         networks:
             default:
                 ipv4_address: 172.18.1.6
         environment:
             # Development use only
             # Use Docker Secrets for Sensitive Data
-            - "MYSQL_ROOT_PASSWORD=secret"
-            - "MYSQL_ROOT_HOST=172.18.1.5"
+            - 'MYSQL_ROOT_PASSWORD=secret'
+            - 'MYSQL_ROOT_HOST=172.18.1.5'
         volumes:
             - mysql-db:/var/lib/mysql
 
@@ -144,8 +144,8 @@ will find a template of the file. To copy the file to the container edit
 fiware-idm:
     image: fiware/idm
     ports:
-        - "3000:3000"
-        - "443:443"
+        - '3000:3000'
+        - '443:443'
     networks:
         idm_network:
             ipv4_address: 172.18.1.6

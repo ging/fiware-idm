@@ -41,7 +41,12 @@ app.disable('x-powered-by');
 // Set security headers
 app.use(
   helmet.contentSecurityPolicy({
-    reportOnly: process.env.IDM_REPORT_ONLY === 'true', // eslint-disable-line snakecase/snakecase
+    directives: {
+      defaultSrc: ["'self'"], // eslint-disable-line snakecase/snakecase
+      scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
+    },
+    reportOnly: false, // eslint-disable-line snakecase/snakecase
   })
 );
 app.use(

@@ -25,6 +25,7 @@ const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
 
 const app = express();
+const helmet = require('helmet');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,6 +38,42 @@ if (config.debug) {
 
 // Disabled header
 app.disable('x-powered-by');
+// Set security headers
+app.use(
+  helmet.contentSecurityPolicy({
+    reportOnly: process.env.IDM_REPORT_ONLY === 'true', // eslint-disable-line snakecase/snakecase
+  })
+);
+app.use(
+  helmet.dnsPrefetchControl({
+    allow: process.env.IDM_DNS_PREFETCH_ALLOW === 'true',
+  })
+);
+app.use(helmet.expectCt());
+app.use(
+  helmet.frameguard({
+    action: process.env.IDM_FRAMEGUARD_ACTION || 'sameorigin',
+  })
+);
+app.use(
+  helmet.hsts({
+    maxAge: process.env.IDM_HTTPS_MAX_AGE || 15552000, // eslint-disable-line snakecase/snakecase
+    includeSubDomains: process.env.IDM_INCLUDE_SUB_DOMAINS !== 'false', // eslint-disable-line snakecase/snakecase
+    preload: process.env.IDM_PRELOAD === 'true',
+  })
+);
+app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
+
+//options.permittedPolicies is a string that must be "none",
+//"master-only", "by-content-type", or "all". It defaults to "none".
+app.use(
+  helmet.permittedCrossDomainPolicies({
+    permittedPolicies: process.env.IDM_PERMITTED_POLICIES || 'none', // eslint-disable-line snakecase/snakecase
+  })
+);
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
 
 // Parse request
 app.use(body_parser.json({ limit: '50mb' }));

@@ -23,7 +23,8 @@
   <link rel='stylesheet' href='/stylesheets/bootstrap-tour.min.css' />
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel='stylesheet' href='/stylesheets/bootstrap-select.min.css' />
-
+  <link rel="icon" type="image/png" href="../img/logo_orange.png">
+  <link type="image/x-icon" rel="shortcut icon" id="favIcon" href="../img/logo_orange.png">
   <script>
     var navigation = <%- JSON.stringify(translation.generic.navigation) %>
     var tours = <%- JSON.stringify(translation.generic.tours) %>
@@ -34,6 +35,7 @@
 </head>
 
 <body>
+<div class="grid">
 
   <%
   var header = '_header';
@@ -70,15 +72,7 @@
 
   <%- include(footer) %>
 
-  <div class="language_menu">
-    <p class="selected_option"><%=lang%> <span class="fa fa-arrow-alt-circle-up" id="lang_trigger"></span></p>
-    <ul class="lang_options" id="lang_content">
-      <li><a class="lang_es <%=(lang=="es" ? "active" : "")%>" href="/language?clang=es">es</a></li>
-      <li><a class="lang_en <%=(lang=="en" ? "active" : "")%>" href="/language?clang=en">en</a></li>
-      <li><a class="lang_ja <%=(lang=="ja" ? "active" : "")%>" href="/language?clang=ja">ja</a></li>
-      <li><a class="lang_ja <%=(lang=="ko" ? "active" : "")%>" href="/language?clang=ko">ko</a></li>
-    </ul>
-  </div>
+
 
   <script type="text/javascript">
     const accordion = (trigger, content) => {
@@ -109,7 +103,7 @@
     const lang_content = document.getElementById('lang_content');
     accordion(lang_trigger, lang_content);
   </script>
-
+</div>
 </body>
 
 </html>

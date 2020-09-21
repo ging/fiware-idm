@@ -3,6 +3,7 @@ const database = require('../config').database;
 const external_auth = require('../config').external_auth;
 const logs = require('../config.js').debug;
 const debug = require('debug')('idm:models');
+console.log('KIKEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEe');
 
 // Load ORM Model
 const Sequelize = require('sequelize');

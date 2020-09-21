@@ -1,0 +1,47 @@
+<div class="content">
+
+    <div class="form">
+        <h2>Acceso a Orange Digital Center</h2>
+        <form action="/auth/login/" method="POST" enctype="">
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+            <% var nameErrors = [] %>
+            <% if (errors.length) { %>
+              <% for (var i in errors) { %>
+                <% nameErrors.push(errors[i].message)%>
+              <% } %>
+            <% } %>
+            <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
+              <span class="help-block alert alert-warning">
+                  <p>Session expired</p>
+              </span>
+            <% } %>
+            <% if (nameErrors.indexOf("password_change") != -1) { %>
+              <span class="help-block alert alert-success">
+                  <p>Password changed. Please log in again to continue.</p>
+              </span>
+            <% } %>
+            <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+              <div class="alert alert-message alert-danger">
+                  <ul class="errorlist">
+                      <li>Email o contraseña inválidos.</li>
+                  </ul>
+              </div>
+            <% } %>
+            <% if (nameErrors.indexOf("email") != -1) { %>
+              <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+            <% } %>
+            <input id="email" type="email" placeholder="Email" autofocus="autofocus">
+            <% if (nameErrors.indexOf("password") != -1) { %>
+              <span class="help-block alert alert-danger ">Este campo es obligatorio.</span>
+            <% } %>
+            <input id="password" type="password" placeholder="Contraseña">
+            <span class="form-control-feedback fa fa-eye"></span>
+            <input id="submitButton"type="submit" class="disabled">
+        </form>
+
+        <a href="">¿Has olvidado la contraseña?</a>
+        <button class="registro">Regístrate</button>
+    </div>
+</div>
+
+<script src="/javascripts/others/see_password.js" type="text/javascript"></script>

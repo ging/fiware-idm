@@ -9,7 +9,7 @@ Keyrock is using Docker and Docker Compose. Create docker-compose.yml file and
 copy the following content to it:
 
 ```yaml
-version: "2"
+version: '2'
 
 networks:
     idm_network:
@@ -26,7 +26,7 @@ services:
     mysql:
         image: mysql/mysql-server:5.7.21
         ports:
-            - "3306:3306"
+            - '3306:3306'
         networks:
             idm_network:
                 ipv4_address: 172.18.1.5
@@ -39,8 +39,8 @@ services:
     fiware-idm:
         image: fiware/idm
         ports:
-            - "3000:3000"
-            - "443:443"
+            - '3000:3000'
+            - '443:443'
         networks:
             idm_network:
                 ipv4_address: 172.18.1.6
@@ -59,7 +59,7 @@ This will deploy two Docker containers: one for IdM Keyrock and another one for
 the database instance (in this case is MySQL). The database is seeded with a
 default user whose credentials are:
 
--   Email: admin@test.com
+-   Email: `admin@test.com`
 
 -   Password: 1234
 

@@ -11,7 +11,7 @@ config_service.set_config(require('../config-test'));
 const config = config_service.get_config();
 
 // eslint-disable-next-line no-undef
-before('Create and populate database', function(done) {
+before('Create and populate database', function() {
   // Mocha default timeout for tests is 2000 and to create database is needed more
   this.timeout(10000);
 
@@ -40,7 +40,6 @@ before('Create and populate database', function(done) {
           } else {
             // Run Keyrock
             require('../../bin/www');
-            done();
             resolve('created');
           }
         });
@@ -50,21 +49,16 @@ before('Create and populate database', function(done) {
 });
 
 // eslint-disable-next-line no-undef
-after('Delete database', function(done) {
+after('Delete database', function() {
   return new Promise(function(resolve, reject) {
     const load_data =
-      'mysql -u ' +
-      config.database.username +
-      ' -p' +
-      config.database.password +
-      " -e 'DROP DATABASE idm_test;'";
+      'mysql -u ' + config.database.username + ' -p' + config.database.password + " -e 'DROP DATABASE idm_test;'";
     exec(load_data, function(error) {
       if (error) {
         process.exit();
         reject('Unable to load database: ', error);
       } else {
         resolve('deleted');
-        done();
       }
     });
   });

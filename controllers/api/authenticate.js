@@ -50,6 +50,7 @@ const validate_token = function(req, res, next) {
 
 // Function to check if parameters exist in request
 function check_validate_token_request(req) {
+const tokenvalue = req.headers.authorization ? req.headers.authorization.split('Bearer ')[1] :req.headers['x-auth-token'];
   return new Promise(function(resolve, reject) {
     switch (true) {
       case ['POST', 'PATCH', 'PUT'].includes(req.method) &&
@@ -63,17 +64,17 @@ function check_validate_token_request(req) {
           },
         });
         break;
-      case !req.headers['x-auth-token']:
+      case (!req.headers.authorization && !req.headers['x-auth-token']):
         reject({
           error: {
-            message: 'Expecting to find X-Auth-token in requests',
+            message: 'Expecting to find X-Auth-token/Authorization in requests',
             code: 400,
             title: 'Bad Request',
           },
         });
         break;
       default:
-        resolve(req.headers['x-auth-token']);
+        resolve(tokenvalue);
     }
   });
 }
@@ -234,6 +235,7 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
 
 // Function to check if parameters exist in request
 function check_headers_request(req) {
+const tokenvalue = req.headers.authorization ? req.headers.authorization.split('Bearer ')[1] :req.headers['x-auth-token'];
   return new Promise(function(resolve, reject) {
     switch (true) {
       case !req.headers['x-subject-token']:
@@ -245,10 +247,10 @@ function check_headers_request(req) {
           },
         });
         break;
-      case !req.headers['x-auth-token']:
+      case (!req.headers.authorization && !req.headers['x-auth-token']):
         reject({
           error: {
-            message: 'Expecting to find X-Auth-token in requests',
+            message: 'Expecting to find X-Auth-token/Authorization in requests',
             code: 400,
             title: 'Bad Request',
           },
@@ -256,7 +258,7 @@ function check_headers_request(req) {
         break;
       default:
         resolve({
-          auth: req.headers['x-auth-token'],
+          auth: tokenvalue,
           subject: req.headers['x-subject-token'],
         });
     }

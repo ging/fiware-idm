@@ -10,13 +10,14 @@ exports.authenticate = function(username, password, callback) {
   // Search the user
   models.user_ext
     .find({
-      attributes: ['id', 'username', 'email', 'password', 'password_salt'],
+      attributes: ['id', 'name', 'email', 'encrypted_password'],
       where: {
         email: username,
       },
     })
     .then(function(user) {
-      debug('--> user found', user.username);
+      user.username = user.name;
+      debug('--> user found', user.name);
       if (user) {
         // Verify password
         if (user.verifyPassword(password)) {
@@ -78,13 +79,12 @@ function find_local_user(user, callback) {
 
 function create_local_user(user, callback) {
   debug('--> creating local user');
-
   // TODO: update user values if changed in external database
 
   // Build a row and validate it
   const local_user = models.user.build({
     id: external_auth.id_prefix + user.id,
-    username: user.username,
+    username: user.name,
     email: user.email,
     password: 'none',
     date_password: new Date(new Date().getTime()),

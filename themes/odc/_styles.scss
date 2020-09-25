@@ -14,6 +14,11 @@ body{
     padding: 0;
     margin: 0;
 }
+
+h1, h2, h3, h4, h5, h6{
+    font-family: Arial, "Helvetica Neue", sans-serif;
+
+}
 .grid{
     display: grid;
     grid-template-columns: 1fr;
@@ -25,10 +30,22 @@ body{
 .header{
     grid-area: 1 / 1 / 2 / 2;
     background-color: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    position: relative;
+
+    .language_menu{
+        color: $form_background;
+        
+        
+
+    }
+
 }
 
 .header a {
-	position: relative;
     display: inline-flex;
     align-items: baseline;
     align-self: center;
@@ -44,7 +61,7 @@ body{
 }
 
 .header a span {
-	font-size: 40px;
+	font-size: 2.8rem;
 	color: white;
 }
 
@@ -72,6 +89,9 @@ body{
 .content .form h2{
     color: #ff7900;
     font-weight: 800;
+    font-size: 2.5rem;
+    width: 110%;
+    margin-bottom: 2rem;
 }
 .content .form form{
     margin: 0 auto;
@@ -79,6 +99,16 @@ body{
     flex-wrap: wrap;
     flex-direction: column;
     align-items: flex-end;
+
+    .password{
+        position: relative;
+        width: 100%;
+        .show-password{
+            position: absolute;
+            top: 30%;
+            right: 3px;
+        }
+    }
 }
 .content form input{
     width: 100%;
@@ -136,6 +166,7 @@ body{
 }
 .sponsors li{
     width: calc(100%/4);
+    
 }
 .sponsors li .confianza{
     width: 35%;
@@ -184,8 +215,32 @@ body{
     background-color: #ff7900;
 
 }
+@media (max-width: 500px){
+    .grid{
+        width: 100%;
+    }
+    .header{
+        width: 100%;
+        a{
+            img{
+                margin-left: 2.5rem;
 
+            }
+        }
+        .language_menu{
+            right: 3%;
+        }
+    }
+}
 @media (max-width: 800px){
+    .header{
+        a{
+            span{
+                font-size: 2rem;
+
+            }
+        }
+    }
     .footer{
         display: none;
     }
@@ -195,9 +250,18 @@ body{
 }
 
 @media (max-width: 1100px){
+
+    .footer{
+        justify-content: center;
+    }
     .sponsors{
         width: 100%;
         margin-top: 1rem;
+    }
+    .sponsors li a{
+        display: flex; 
+        justify-content: center;
+        align-items: center;
     }
     .sponsors li:last-child img{
         align-self: flex-end;

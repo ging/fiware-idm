@@ -18,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      username: {
+      name: {
         type:
           DataTypes.STRING(64) +
           (sequelize.getDialect() === 'mysql'
@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
       password_salt: {
         type: DataTypes.STRING,
       },
-      password: {
+      encrypted_password: {
         type: DataTypes.STRING(40),
         validate: { notEmpty: { msg: 'password1' } },
       },
@@ -58,11 +58,19 @@ module.exports = function(sequelize, DataTypes) {
         break;
       }
       case 'bcrypt': {
-        valid_pass = bcrypt.compareSync(password, this.password);
+        valid_pass = bcrypt.compareSync(password, this.encrypted_password);
         break;
       }
       case 'pbkdf2': {
-        const encripted = crypto.pbkdf2Sync(password, this.password_salt, external_auth.password_encryption_opt.iterations, external_auth.password_encryption_opt.keylen, external_auth.password_encryption_opt.digest).toString('base64');
+        const encripted = crypto
+          .pbkdf2Sync(
+            password,
+            this.password_salt,
+            external_auth.password_encryption_opt.iterations,
+            external_auth.password_encryption_opt.keylen,
+            external_auth.password_encryption_opt.digest
+          )
+          .toString('base64');
         valid_pass = encripted === this.password;
         break;
       }

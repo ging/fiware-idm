@@ -1,6 +1,7 @@
 const ptp = require('../../lib/ptp.js');
 const models = require('../../models/models.js');
-const config_usage_control = require('../../config.js').usage_control;
+const config_service = require('../../lib/configService.js');
+const config_usage_control = config_service.get_config().usage_control;
 
 const debug = require('debug')('idm:web-ptp_controller');
 

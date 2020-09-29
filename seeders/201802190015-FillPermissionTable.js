@@ -51,7 +51,7 @@ module.exports = {
     ]);
   },
 
-  down: function(queryInterface, Sequelize) {
+  down: function (queryInterface, Sequelize) {
     return queryInterface.bulkDelete('permission', null, {});
   },
 };

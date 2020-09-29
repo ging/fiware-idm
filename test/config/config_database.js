@@ -6,7 +6,9 @@
  */
 
 const exec = require('child_process').exec;
-const config = require('../../config');
+const config_service = require('../../lib/configService.js');
+config_service.set_config(require('../config-test'));
+const config = config_service.get_config();
 
 // eslint-disable-next-line no-undef
 before('Create and populate database', function() {

@@ -1,5 +1,6 @@
 // User model
-const config = require('../config.js');
+const config_service = require('../lib/configService.js');
+const config = config_service.get_config();
 
 // Vars for encrypting
 const crypto = require('crypto');

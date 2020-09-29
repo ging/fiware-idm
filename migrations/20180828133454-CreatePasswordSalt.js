@@ -8,10 +8,7 @@ module.exports = {
         type: Sequelize.STRING(40),
         validate: { notEmpty: { msg: 'password1' } },
         set(password) {
-          const salt = crypto
-            .randomBytes(16)
-            .toString('hex')
-            .slice(0, 16);
+          const salt = crypto.randomBytes(16).toString('hex').slice(0, 16);
 
           let encripted = crypto
             .createHmac('sha1', salt)
@@ -31,10 +28,7 @@ module.exports = {
       queryInterface.changeColumn('iot', 'password', {
         type: Sequelize.STRING(40),
         set(password) {
-          const salt = crypto
-            .randomBytes(16)
-            .toString('hex')
-            .slice(0, 16);
+          const salt = crypto.randomBytes(16).toString('hex').slice(0, 16);
 
           let encripted = crypto
             .createHmac('sha1', salt)
@@ -54,10 +48,7 @@ module.exports = {
       queryInterface.changeColumn('pep_proxy', 'password', {
         type: Sequelize.STRING(40),
         set(password) {
-          const salt = crypto
-            .randomBytes(16)
-            .toString('hex')
-            .slice(0, 16);
+          const salt = crypto.randomBytes(16).toString('hex').slice(0, 16);
 
           let encripted = crypto
             .createHmac('sha1', salt)

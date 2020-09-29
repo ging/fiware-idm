@@ -1,4 +1,5 @@
-const config = require('../../config.js').database;
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config().database;
 const logs = require('../../config.js').debug;
 
 // Load ORM Model

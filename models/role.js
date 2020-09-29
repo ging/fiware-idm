@@ -1,6 +1,6 @@
 // Role model
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'Role',
     {

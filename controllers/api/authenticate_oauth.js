@@ -1,6 +1,7 @@
 const models = require('../../models/models.js');
 
-const config_authzforce = require('../../config.js').authzforce;
+const config_service = require('../../lib/configService.js');
+const config_authzforce = config_service.get_config().authzforce;
 const debug = require('debug')('idm:api-authenticate_oauth');
 
 const Sequelize = require('sequelize');

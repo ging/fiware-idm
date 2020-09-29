@@ -1,6 +1,6 @@
 // User Registration Profile model
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const User_Registration_Profile = sequelize.define(
     'User_Registration_Profile',
     {

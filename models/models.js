@@ -25,7 +25,7 @@ sequelize
   .then(() => {
     debug('Connection has been established successfully');
   })
-  .catch(err => {
+  .catch((err) => {
     debug('Unable to connect to the database: ', err);
   });
 
@@ -52,7 +52,7 @@ if (external_auth.enabled) {
     .then(() => {
       debug('Connection has been established successfully');
     })
-    .catch(err => {
+    .catch((err) => {
       debug('Unable to connect to the database: ', err);
     });
 }

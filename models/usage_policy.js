@@ -1,7 +1,7 @@
 // Usage Policies model
 const allowed_rules = require('../etc/data_usage/rule_parameters');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'Usage_Policy',
     {

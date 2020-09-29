@@ -1,5 +1,6 @@
 // User model
-const config = require('../config.js');
+const config_service = require('../lib/configService.js');
+const config = config_service.get_config();
 const external_auth = config.external_auth;
 
 // Vars for encrypting
@@ -62,7 +63,15 @@ module.exports = function(sequelize, DataTypes) {
         break;
       }
       case 'pbkdf2': {
-        const encripted = crypto.pbkdf2Sync(password, this.password_salt, external_auth.password_encryption_opt.iterations, external_auth.password_encryption_opt.keylen, external_auth.password_encryption_opt.digest).toString('base64');
+        const encripted = crypto
+          .pbkdf2Sync(
+            password,
+            this.password_salt,
+            external_auth.password_encryption_opt.iterations,
+            external_auth.password_encryption_opt.keylen,
+            external_auth.password_encryption_opt.digest
+          )
+          .toString('base64');
         valid_pass = encripted === this.password;
         break;
       }

@@ -16,7 +16,8 @@ const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
 
 // Obtain secret from config file
-const config = require('./config.js');
+const config_service = require('./lib/configService.js');
+const config = config_service.get_config();
 
 // Create vars that store routes
 const index = require('./routes/web/index');

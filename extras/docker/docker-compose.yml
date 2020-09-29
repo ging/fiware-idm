@@ -24,6 +24,9 @@ services:
       - IDM_ADMIN_USER=admin
       - IDM_ADMIN_EMAIL=admin@test.com
       - IDM_ADMIN_PASS=1234
+      # If sending eMails point to any STMP server
+      - IDM_EMAIL_HOST=mailer
+      - IDM_EMAIL_PORT=25
 
   mysql-db:
     restart: always
@@ -44,6 +47,32 @@ services:
       - "MYSQL_ROOT_HOST=172.18.1.5"
     volumes:
       - mysql-db:/var/lib/mysql
+
+  # Configure the SMTP settings below as necessary,
+  # For example to use Gmail SMTP
+  #
+  # server address: smtp.gmail.com
+  # username: Your Gmail address (for example, example@gmail.com)
+  # password: Your Gmail password
+  # port (TLS): 587
+  # port (SSL): 465
+  # TLS/SSL required: Yes
+
+  mailer:
+    restart: always
+    image: mazdermind/docker-mail-relay
+    hostname: mailer
+    container_name: mailer
+    ports:
+      - "25:25"
+    environment:
+      - SMTP_LOGIN=<login> # Login to connect to the external relay
+      - SMTP_PASSWORD=<password> # Password to connect to the external relay
+      - EXT_RELAY_HOST=<hostname> # External relay DNS name
+      - EXT_RELAY_PORT=25
+      - ACCEPTED_NETWORKS=172.18.1.0/24
+      - USE_TLS=no
+
 
 networks:
   default:

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: function(queryInterface, Sequelize) {
+  up: function (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('role', [
       {
         id: 'provider',
@@ -18,7 +18,7 @@ module.exports = {
     ]);
   },
 
-  down: function(queryInterface, Sequelize) {
+  down: function (queryInterface, Sequelize) {
     return queryInterface.bulkDelete('role', null, {});
   },
 };

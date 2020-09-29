@@ -1,6 +1,6 @@
 // Table to store sensor information
-
-const config = require('../config.js').password_encryption;
+const config_service = require('../lib/configService.js');
+const config = config_service.get_config().password_encryption;
 
 // Vars for encrypting
 const crypto = require('crypto');

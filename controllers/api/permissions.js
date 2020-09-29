@@ -3,7 +3,8 @@ const models = require('../../models/models.js');
 const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 
-const config_authzforce = require('../../config.js').authorization;
+const config_service = require('../../lib/configService.js');
+const config_authzforce = config_service.get_config().authorization;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;

@@ -103,9 +103,7 @@ Apart from HTTPS there are other 3 configurations related to handle security:
 
 ```javascript
 config.session = {
-    secret: require('crypto')
-        .randomBytes(20)
-        .toString('hex'),
+    secret: require('crypto').randomBytes(20).toString('hex'),
     expires: 60 * 60 * 1000
 };
 ```

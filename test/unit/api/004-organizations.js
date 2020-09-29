@@ -9,7 +9,9 @@
 require('../../config/config_database');
 
 // const keyrock = require('../../bin/www');
-const config = require('../../../config.js');
+const config_service = require('../../../lib/configService.js');
+config_service.set_config(require('../../config-test.js'));
+const config = config_service.get_config();
 const should = require('should');
 const request = require('request');
 const utils = require('../../utils');

@@ -1,16 +1,107 @@
-ARG NODE_VERSION=10.17.0-slim
-FROM node:${NODE_VERSION}
+ARG NODE_VERSION=10
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
-ARG DOWNLOAD_TYPE=latest
 
-ENV GITHUB_ACCOUNT=${GITHUB_ACCOUNT}
-ENV GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
-ENV DOWNLOAD_TYPE=${DOWNLOAD_TYPE}
+########################################################################################
+#
+# This build stage retrieves the source code and sets up node-SAAS
+#
+######################################################################################## 
 
-MAINTAINER FIWARE Identity Manager Team. DIT-UPM
+FROM node:${NODE_VERSION}-alpine as builder
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
 
-WORKDIR /opt
+SHELL ["/bin/ash", "-o", "pipefail", "-c"]
+
+ENV PYTHONUNBUFFERED=1
+
+#RUN apk add --no-cache python3 && \
+#    ln -sf python3 /usr/bin/python && \
+#    python3 -m ensurepip && \
+#    pip3 install --no-cache --upgrade pip setuptools
+
+# hadolint ignore=DL3018,DL3013
+RUN apk --no-cache add git python2 make gcc g++ ca-certificates openssl && \
+    python -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip install --upgrade pip setuptools
+
+WORKDIR /opt/fiware-idm
+COPY . /opt/fiware-idm
+
+RUN rm -rf doc extras doc.ja test node_modules && \
+    npm cache clean -f  && \
+    npm install --only=prod --no-package-lock --no-optional  && \
+    rm -rf /root/.npm/cache/* && \
+    mkdir certs && \
+    openssl genrsa -out idm-2018-key.pem 2048 && \
+    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
+    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
+    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
+
+########################################################################################
+#
+# This build stage creates an alpine build for production.
+#
+# IMPORTANT: For production environments use Docker Secrets to protect values of the 
+# sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
+# variable.
+#
+#  - IDM_SESSION_SECRET
+#  - IDM_ENCRYPTION_KEY
+#  - IDM_DB_PASS
+#  - IDM_DB_USER
+#  - IDM_ADMIN_ID
+#  - IDM_ADMIN_USER
+#  - IDM_ADMIN_EMAIL
+#  - IDM_ADMIN_PASS
+#  - IDM_EX_AUTH_DB_USER
+#  - IDM_EX_AUTH_DB_PASS
+#  - IDM_DB_HOST
+#
+########################################################################################
+
+FROM node:${NODE_VERSION}-alpine
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+ARG NODE_VERSION
+
+WORKDIR /opt/fiware-idm
+COPY --from=builder /opt/fiware-idm .
+
+
+ENV IDM_HOST="http://localhost:3000" \
+    IDM_PORT="3000" \
+    IDM_PDP_LEVEL="basic" \
+    IDM_DB_HOST="localhost" \
+    IDM_DB_NAME="idm" \
+    IDM_DB_DIALECT="mysql" \
+    IDM_EMAIL_HOST="localhost" \
+    IDM_EMAIL_PORT="25" \
+    IDM_EMAIL_ADDRESS="noreply@localhost"
+
+
+# hadolint ignore=DL3018
+RUN apk add --no-cache ca-certificates bash
+
+LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "org.opencontainers.image.authors"=""
+LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
+LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
+LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
+LABEL "org.nodejs.version"=${NODE_VERSION}
+
+USER node
+ENV NODE_ENV=production
+# Ports used by application
+EXPOSE ${IDM_PORT:-3000}
+CMD ["npm", "start"]
+HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
+  CMD ["npm", "healthcheck"]
 
 # 
 # ALL ENVIRONMENT VARIABLES
@@ -92,85 +183,3 @@ WORKDIR /opt
 # ENV IDM_ADMIN_USER  "admin"
 # ENV IDM_ADMIN_EMAIL "admin@test.com"
 # ENV IDM_ADMIN_PASS  "1234"
-
-
-
-ENV IDM_HOST="http://localhost:3000" \
-    IDM_PORT="3000" \
-    IDM_PDP_LEVEL="basic" \
-    IDM_DB_HOST="localhost" \
-    IDM_DB_NAME="idm" \
-    IDM_DB_DIALECT="mysql" \
-    IDM_EMAIL_HOST="localhost" \
-    IDM_EMAIL_PORT="25" \
-    IDM_EMAIL_ADDRESS="noreply@localhost"
-
-# IMPORTANT: For a Production Environment Use Docker Secrets to define
-#  these values and add _FILE to the name of the variable.
-
-# Install Ubuntu dependencies & email dependency & Configure mail
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential python debconf-utils curl git netcat  && \
-    echo "postfix postfix/mailname string ${IDM_EMAIL_ADDRESS}" | debconf-set-selections && \
-    echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-    apt-get install -y --no-install-recommends postfix mailutils && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    sed -i 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
-
-
-#
-# The following line retrieves the latest source code from GitHub.
-#
-# To obtain the latest stable release run this Docker file with the parameters
-# --no-cache --build-arg DOWNLOAD_TYPE=stable
-#
-# Alternatively for local development, just copy this Dockerfile into file the
-# root of the repository and copy over your local source using :
-#
-COPY . /opt/fiware-idm
-#
-#RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="master"; else RELEASE=$(curl -s https://api.github.com/repos/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}/releases/latest | grep 'tag_name' | cut -d\" -f4); fi && \
-#    if [ ${DOWNLOAD_TYPE} = "latest" ] ; then echo "INFO: Building Latest Development"; else echo "INFO: Building Release: ${RELEASE}"; fi && \
-#    apt-get update && \
-#    apt-get install -y  --no-install-recommends unzip && \
-#    wget --no-check-certificate -O source.zip https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}/archive/${RELEASE}.zip && \
-#    unzip source.zip && \
-#    mv ${GITHUB_REPOSITORY}-${RELEASE} /opt/fiware-idm && \
-#    apt-get clean && \
-#    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-WORKDIR /opt/fiware-idm
-
-RUN rm -rf doc extras  && \
-    npm cache clean -f   && \
-    npm install --production  && \
-    rm -rf /root/.npm/cache/* && \
-    mkdir certs && \
-    openssl genrsa -out idm-2018-key.pem 2048 && \
-    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
-    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
-    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
-
-
-# For local development, when running the Dockerfile from the root of the repository
-# use the following commands to configure Keyrock, the database and add an entrypoint:
-#
-COPY extras/docker/config_database.js  extras/docker/config_database.js
-COPY extras/docker/config.js.template  config.js
-COPY extras/docker/docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
-
-
-# Copy config database file
-#COPY config_database.js extras/docker/config_database.js
-# Copy config file
-#COPY config.js.template config.js
-
-# Run Idm Keyrock
-#COPY docker-entrypoint.sh /opt/fiware-idm/docker-entrypoint.sh
-RUN chmod 755 docker-entrypoint.sh
-
-ENTRYPOINT ["/opt/fiware-idm/docker-entrypoint.sh"]
-
-# Ports used by idm
-EXPOSE ${IDM_PORT}

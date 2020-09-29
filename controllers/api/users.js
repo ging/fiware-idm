@@ -2,7 +2,9 @@ const debug = require('debug')('idm:api-users');
 const models = require('../../models/models.js');
 const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
-const config = require('../../config');
+
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config();
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');

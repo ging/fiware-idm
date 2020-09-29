@@ -1,7 +1,8 @@
 const models = require('../../models/models.js');
 
 // Authzforce module
-const config = require('../../config.js');
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config();
 const config_authorization = config.authorization;
 const config_usage_control = config.usage_control;
 const authzforce_controller = require('./authzforces');

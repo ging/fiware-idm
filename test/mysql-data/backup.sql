@@ -677,6 +677,8 @@ CREATE TABLE `user_authorized_application` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `oauth_client_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `shared_attributes` char(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `login_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `oauth_client_id` (`oauth_client_id`),
@@ -691,7 +693,9 @@ CREATE TABLE `user_authorized_application` (
 
 LOCK TABLES `user_authorized_application` WRITE;
 /*!40000 ALTER TABLE `user_authorized_application` DISABLE KEYS */;
-INSERT INTO `user_authorized_application` VALUES (1,'admin','8ca60ce9-32f9-42d6-a013-a19b3af0c13d');
+INSERT INTO `user_authorized_application` VALUES 
+(1,'admin','8ca60ce9-32f9-42d6-a013-a19b3af0c13d', NULL, NULL),
+(2,'aaaaaaaa-good-0000-0000-000000000000','tutorial-dckr-site-0000-xpresswebapp', 'username,email', NULL);
 /*!40000 ALTER TABLE `user_authorized_application` ENABLE KEYS */;
 UNLOCK TABLES;
 

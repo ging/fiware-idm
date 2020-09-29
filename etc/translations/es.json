@@ -193,6 +193,12 @@
       "link01": "Registrarse",
       "link02": "Olvidé mi contraseña"
     },
+    "avoid_2fa": {
+      "title": "Deshaiblitar la segunda autenticación",
+      "label01": "Email",
+      "required_field": "This field is required.",
+      "resend_btn": "Enviar email"
+    },
     "pass_request": {
       "title": "¿Olvidaste tu contraseña?",
       "content": "Escribe el email asociado a tu cuenta y, en unos minutos, recibirás un email con las instrucciones para resetearla.",
@@ -211,6 +217,21 @@
       "change_btn": "Cambiar contraseña",
       "link01": "Registrarse",
       "link02": "¿No has recibido las instruccions de confirmación?"
+    },
+    "tfa": {
+      "title01": "Verificación en dos pasos",
+      "title02": "Para finalizar el proceso de acceso: ",
+      "content01": "1. Abre la app Google Authenticator en tu smartphone. ",
+      "content02": "2. Introduce debajo el token proporcionado por la app. ",
+      "content03": "3. Si este dispositivo es de confanza, marca la opción para que la plataforma lo recuerde. ",
+      "content04": "Inserta el token:",
+      "content05": "La verificación ha fallado porque el token introducido no es válido. Por favor revise la fecha y hora del sistema y vuelva a intentarlo.",
+      "content06": "Recordar dispositivo",
+      "button01": "Acceder",
+      "title03": "En caso de que no puedas usar la app:",
+      "content07": "Haga click en el siguiente boton e introduzca su correo electronico.",
+      "content08": "Le enviaremos las instrucciones que debe seguir para poder acceder a su perfil.",
+      "content09": "Desactivar Verificación en dos pasos"
     }
   },
   "home": {
@@ -315,13 +336,17 @@
       "panel_title03": "Autentificación en dos pasos",
       "content01": "Tienes esta opción ",
       "content01_1": "desabilitada.",
+      "content01_2": "habilitada.",
       "content02": "Recomendamos la activación de esta opción, ofrece un mayor nivel de seguridad a tu cuenta.",
       "content03": "Si quieres darle una oportunidad a la autentificación en dos pasos, necesitas facilitar una pregunta de seguridad, solo en caso de que pierdas el acceso a tu aplicación de autentificación.",
       "label06": "Pregunta de seguridad",
       "label07": "Respuesta de seguridad",
       "panel_title04": "Cancelar cuenta",
       "content04": "¿Descontento? ",
-      "content04_link": "Canelar mi cuenta"
+      "content04_link": "Canelar mi cuenta",
+      "panel_title05": "Autenticación en dos pasos",
+      "content05": "Habilitar",
+      "content06": "Deshabilitar"
     },
     "delete_user": {
       "title": "Cancelar cuenta",
@@ -348,6 +373,22 @@
       "title": "Cambiar contraseña",
       "content": "Llevas un año sin cambiar tu contraseña. Por razones de seguridad y para continuar usando este portal, por favor cámbiala.",
       "continue_btn": "Continuar"
+    },
+    "enable_tfa" : {
+      "title": "Autenticación en dos pasos",
+      "content01": "La verificación ha fallado porque el token introducido no es válido. Por favor revisa la fecha y hora del sistema y vuelva a intentarlo.",
+      "content02": "Si quieres habilitar la autenticación en dos pasos, necesitas seguir los siguientes pasos:",
+      "content03": "1. Abre la app Google Authenticator en tu smartphone.",
+      "content04": "2. Escanea el código QR o introduce la clave secreta.",
+      "content05": "3. Introduce debajo el token proporcionado por la app.",
+      "content06": "Clave secreta",
+      "label01": "Token",
+      "button01": "Habilitar"
+    },
+    "disable_tfa": {
+      "title": "Deshabilitar autenticación en dos pasos",
+      "content": "¿Estás seguro? Al deshabilitar esta opción se borrara la clave secreta almacenada y si quiera habilitarla de nuevo se generará una nueva clave.",
+      "confirm_btn": "Confirmar"
     }
   },
   "users": {
@@ -366,6 +407,13 @@
       "label03": "Website",
       "update_btn": "Actualizar usuario ",
       "title02": "Avatar Personal",
+      "title03": "Atributos visibles en tu pérfil",
+      "option01": "Nombre de usuario",
+      "option02": "Acerca de mi",
+      "option03": "Website",
+      "option04": "Atributos de identidad",
+      "option05": "Imagen",
+      "option06": "Gravatar",
       "use_image_btn": "Usar esta imagen ",
       "delete_image_btn": "Borrar esta imagen ",
       "use_gravatar_btn": "Usar Gravatar ",
@@ -812,6 +860,12 @@
         "content03": "Contraseña:",
         "content04": "Nombre de usuario:",
         "content05": "Puedes hacer log in aqui: "
+      },
+      "disable_2fa": {
+        "subject": "Verificación en dos pasos - Keyrock",
+        "content01": "Hola",
+        "content02": "Haciendo click en el siguiente enlace podra deshabilitar la verificación en dos pasos y acceder a su perfil en Keyrock.",
+        "content03": "Deshabilitar"
       }
     },
     "organizations": {

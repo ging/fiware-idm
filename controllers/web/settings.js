@@ -6,6 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const image = require('../../lib/image.js');
 
+const Speakeasy = require('speakeasy');
+const Qrcode = require('qrcode');
+
 const email_list = config.email_list_type
   ? fs
       .readFileSync(
@@ -22,7 +25,10 @@ const email_list = config.email_list_type
 exports.settings = function(req, res) {
   debug('--> settings');
 
-  res.render('settings/settings', { csrf_token: req.csrfToken() });
+  res.render('settings/settings', {
+    csrf_token: req.csrfToken(),
+    enable_2fa: config.enable_2fa,
+  });
 };
 
 // POST /idm/settings/password -- Change password
@@ -245,6 +251,7 @@ exports.email = function(req, res) {
                     };
                     res.render('settings/settings', {
                       csrf_token: req.csrfToken(),
+                      enable_2fa: config.enable_2fa,
                     });
                   })
                   .catch(function(error) {
@@ -325,6 +332,7 @@ exports.email_verify = function(req, res) {
                 };
                 res.render('settings/settings', {
                   csrf_token: req.csrfToken(),
+                  enable_2fa: config.enable_2fa,
                 });
               })
               .catch(function(error) {
@@ -375,6 +383,127 @@ exports.cancel_account = function(req, res) {
     })
     .catch(function(error) {
       debug('  -> error' + error);
+      res.redirect('/');
+    });
+};
+
+// POST /idm/settings/enable_tfa -- Enable tfa
+exports.enable_tfa = function(req, res) {
+  debug('--> enable_tfa');
+  const errors = [];
+  const secret = Speakeasy.generateSecret({
+    // length: 20,
+    name: req.session.user.username,
+    issuer: 'IdM',
+  });
+  const url = Speakeasy.otpauthURL({
+    secret: secret.base32,
+    label: req.session.user.username,
+    issuer: 'IdM',
+    encoding: 'base32',
+  });
+
+  // QR code module to generate a QR code that stores the data in secret.otpauth_url,
+  //and then display the QR code to the user. This generates a PNG data URL.
+  Qrcode.toDataURL(url, function(err, data_url) {
+    return res.render('settings/enable_tfa', {
+      errors,
+      user: req.session.user,
+      secret: secret.base32,
+      qr: data_url,
+      csrf_token: req.csrfToken(),
+    });
+  });
+};
+
+// POST /idm/settings/enable_tfa_verify -- Verify elements for tfa
+exports.enable_tfa_verify = function(req, res) {
+  debug('--> enable_tfa_verify');
+  const user_token = req.body.token;
+  const temp_secret = req.body.secret;
+  const data_url = req.body.qr;
+
+  //Verify the token
+  const verified = Speakeasy.totp.verify({
+    secret: temp_secret,
+    encoding: 'base32',
+    token: user_token,
+    window: 0,
+  });
+  const errors = [];
+
+  // If the token is valid
+  if (verified) {
+    //Store Secret
+    const user = models.user.build(req.session.user);
+    const user_extra = user.extra;
+
+    user_extra.tfa = {
+      question: req.body.security_question,
+      answer: req.body.security_answer,
+      enabled: true,
+      secret: req.body.secret,
+    };
+
+    models.user
+      .update(
+        {
+          extra: user_extra,
+        },
+        {
+          where: { id: req.session.user.id },
+        }
+      )
+      .then(function() {
+        res.render('settings/settings', {
+          csrf_token: req.csrfToken(),
+          enable_2fa: config.enable_2fa,
+        });
+      })
+      .catch(function(error) {
+        debug('Error updating values of user ' + error);
+
+        res.redirect('/');
+      });
+    // });
+  } else {
+    errors.push('wrong_token');
+    debug('wrong_token');
+
+    res.render('settings/enable_tfa', {
+      errors,
+      csrf_token: req.csrfToken(),
+      secret: temp_secret,
+      qr: data_url,
+    });
+  }
+};
+// POST /idm/settings/disable_tfa_verify -- DIsable tfa
+exports.disable_tfa = function(req, res) {
+  debug('--> disable_tfa');
+
+  const user = models.user.build(req.session.user);
+  const user_extra = user.extra;
+  user_extra.tfa = {};
+
+  models.user
+    .update(
+      {
+        extra: user_extra,
+      },
+      {
+        where: { id: req.session.user.id },
+      }
+    )
+    .then(function() {
+      res.render('settings/settings', {
+        csrf_token: req.csrfToken(),
+        enable_2fa: config.enable_2fa,
+      });
+    })
+    .catch(function(error) {
+      debug('Error updating values of user ' + error);
+
       res.redirect('/');
     });
 };

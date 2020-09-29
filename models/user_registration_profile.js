@@ -31,6 +31,14 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.DATE,
         defaultValue: undefined,
       },
+      disable_2fa_key: {
+        type: DataTypes.STRING,
+        defaultValue: undefined,
+      },
+      disable_2fa_expires: {
+        type: DataTypes.DATE,
+        defaultValue: undefined,
+      },
     },
     {
       tableName: 'user_registration_profile',

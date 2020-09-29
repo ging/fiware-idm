@@ -45,18 +45,18 @@
                                     <label class="control-label" for="id_attributes"><%=translation.users.edit_user.label06%></label>
                                     <label class="id_attributes_warning"><%=translation.users.edit_user.warning%></label>
                                     <div class="">
-                                        <table class="table table-bordered id_attributes_table"> 
-                                            <thead> 
-                                                <tr> 
-                                                    <th>Attribute</th> 
-                                                    <th>Value (%)</th> 
-                                                </tr> 
-                                            </thead> 
+                                        <table class="table table-bordered id_attributes_table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Attribute</th>
+                                                    <th>Value (%)</th>
+                                                </tr>
+                                            </thead>
                                             <tbody>
                                                 <% for (let attr in identity_attributes.attributes) { %>
-                                                <tr> 
-                                                    <th scope="row"><%=identity_attributes.attributes[attr].name%></th> 
-                                                    <td> <input class="form-control" min="<%=identity_attributes.attributes[attr].minVal%>" max=<%=identity_attributes.attributes[attr].maxVal%> id="id_attributes" name="attributes[<%=identity_attributes.attributes[attr].key%>]" type="<%=identity_attributes.attributes[attr].type%>" value="<%= user.extra ? user.extra.identity_attributes[identity_attributes.attributes[attr].key] : '' %>" id="example-number-input"></td>
+                                                <tr>
+                                                    <th scope="row"><%=identity_attributes.attributes[attr].name%></th>
+                                                    <td> <input class="form-control" min="<%=identity_attributes.attributes[attr].minVal%>" max=<%=identity_attributes.attributes[attr].maxVal%> id="id_attributes" name="attributes[<%=identity_attributes.attributes[attr].key%>]" type="<%=identity_attributes.attributes[attr].type%>" value="<%= user.extra.identity_attributes ? user.extra.identity_attributes[identity_attributes.attributes[attr].key] : '-' %>" id="example-number-input"></td>
                                                 </tr>
                                                 <% }%>
                                             </tbody>
@@ -64,6 +64,42 @@
                                     </div>
                                 </div>
                                 <% } %>
+                                <div class="form-group">
+                                    <label class="control-label" for="id_attributes">
+                                      <%=translation.users.edit_user.title03%>
+                                    </label>
+                                    <div class="select-multiple">
+                                        <select name="user[visible_attributes]" class="selectpicker" data-dropup-auto="false" multiple>
+                                            <option style="display:none" selected name = "[username]" value="username">Username</option>
+
+                                          <% if (user.extra.visible_attributes.includes('description')) { %>
+                                              <option selected name = "[description]" value="description">Description</option>
+                                          <% } else { %>
+                                                <option  name = "[description]" value="description">Description</option>
+                                          <% } %>
+                                          <% if (user.extra.visible_attributes.includes('website')) { %>
+                                                  <option selected name = "[website]" value="website">Website</option>
+                                          <% } else { %>
+                                                    <option  name = "[website]" value="website">Website</option>
+                                          <% } %>
+                                          <% if (user.extra.visible_attributes.includes('identity_attributes')) { %>
+                                                <option selected name = "[identity_attributes]" value="identity_attributes">Identity attributes</option>
+                                          <% } else { %>
+                                                        <option  name = "[identity_attributes]" value="identity_attributes">Identity attributes</option>
+                                          <% } %>
+                                          <% if (user.extra.visible_attributes.includes('image')) { %>
+                                                          <option selected name = "[image]" value="image">Image</option>
+                                          <% } else { %>
+                                                          <option  name = "[image]" value="image">Image</option>
+                                          <% } %>
+                                          <% if (user.extra.visible_attributes.includes('gravatar')) { %>
+                                                              <option selected name = "[gravatar]" value="gravatar">Gravatar</option>
+                                          <% } else { %>
+                                                              <option  name = "[gravatar]" value="gravatar">Gravatar</option>
+                                          <% } %>
+                                        </select>
+                                    </div>
+                                </div>
                             </fieldset>
                         </div>
                     </div>
@@ -167,6 +203,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <%- include _delete_avatar %>

@@ -249,6 +249,7 @@ function check_user_authorized_application(req, res, next) {
               state: req.query.state,
             },
             csrf_token: req.csrfToken(),
+            flag: true,
           });
         }
       })
@@ -292,7 +293,7 @@ function search_user_authorized_application(user_id, app_id) {
 // MW to load user
 exports.load_user = function(req, res, next) {
   debug(' --> load_user');
-
+  debug(req.session);
   if (req.session.user.id) {
     models.user
       .findOne({
@@ -314,7 +315,31 @@ exports.load_user = function(req, res, next) {
 // POST /oauth2/enable_app -- User authorize the application to see their details
 exports.enable_app = function(req, res, next) {
   debug(' --> enable_app');
+  //-----------
+  const shared_attributes =
+    req.body.user_authorized_application.shared_attributes;
 
+  if (config_oauth2.ask_authorization) {
+    return models.user_authorized_application
+      .findOrCreate({
+        // User has enabled application to read their information
+        where: {
+          user_id: req.session.user.id,
+          oauth_client_id: req.application.id,
+        },
+        defaults: {
+          user_id: req.session.user.id,
+          oauth_client_id: req.application.id,
+          shared_attributes,
+        },
+      })
+      .then(function() {
+        return oauth_authorize(req, res, next);
+      })
+      .catch(function(error) {
+        next(error);
+      });
+  }
   return oauth_authorize(req, res, next);
 };
 
@@ -480,6 +505,7 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
     .then(function(token_info) {
       const identity = token_info.user;
       const application_id = token_info.oauth_client.id;
+
       return create_oauth_response(
         identity,
         application_id,

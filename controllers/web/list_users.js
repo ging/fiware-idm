@@ -104,6 +104,20 @@ exports.create = function(req, res) {
     description: req.body.description,
     website: req.body.website,
     enabled: !!req.body.enabled,
+    extra: {
+      visible_attributes: [
+        'username',
+        'description',
+        'website',
+        'identity_attributes',
+        'image',
+        'gravatar',
+      ],
+      // tfa: {
+      //   enabled: false,
+      //   secret: '',
+      // },
+    },
   });
 
   // If password(again) is empty push an error into the array

@@ -1,0 +1,27 @@
+<!-- Form to disable two factor authentication -->
+<div id="disable_tfa_modal" class="modal in" style="top: 0px;" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">×</a>
+                <h3><%=translation.settings.disable_tfa.title%></h3>
+            </div>
+            <form id="disable_tfa_modal" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/settings/disable_tfa" method="POST" enctype="">
+                <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+                <div class="modal-body clearfix">
+                    <div class="left">
+                        <fieldset>
+                        </fieldset>
+                    </div>
+                    <div class="right">
+                        <p><%=translation.settings.disable_tfa.content%></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="<%=translation.settings.delete_user.confirm_btn%>">
+                    <button data-dismiss="modal" class="btn btn-default secondary cancel"><%=translation.settings.disable_tfa.confirm_btn%></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

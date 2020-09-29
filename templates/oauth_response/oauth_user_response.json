@@ -1,15 +1,19 @@
-{   
-    "organizations": [], 
+{
+    "organizations": [],
     "displayName": "",
     "roles": [],
     "app_id": "",
     "trusted_apps": [],
     "isGravatarEnabled": "",
-    "image": "",
-    "email": "",
     "id": "",
     "authorization_decision": "",
     "app_azf_domain": "",
     "eidas_profile": {},
-    "attributes": {}
+    "attributes": {},
+    "shared_attributes": "",
+    "username": "",
+    "email": "",
+    "image": "",
+    "gravatar": "",
+    "extra": ""
 }

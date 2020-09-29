@@ -41,6 +41,8 @@ function getAccessToken(bearerToken) {
             'id',
             'username',
             'email',
+            'description',
+            'website',
             'gravatar',
             'image',
             'extra',
@@ -86,7 +88,6 @@ function getAccessToken(bearerToken) {
 
 function getClient(clientId, clientSecret) {
   debug('-------getClient-------');
-
   const options = {
     where: { id: clientId },
     attributes: [
@@ -401,39 +402,46 @@ function storeToken(token, client, identity, jwt) {
       })
     : Promise.resolve();
 
-  let user_autho_app_promise =
+  //AQUI
+  /*let user_autho_app_promise =
     user_id && config_oauth2.ask_authorization
       ? user_authorized_application.findOrCreate({
           // User has enable application to read their information
-          where: { user_id, oauth_client_id: client.id },
+          where: { user_id,
+            oauth_client_id: client.id,
+            //mio----
+            //shared_attributes: shared_attributes
+            //-----
+          },
           defaults: {
             user_id,
             oauth_client_id: client.id,
+
           },
         })
-      : Promise.resolve();
+      : Promise.resolve();*/
 
   return access_token_promise
     .then(function() {
-      return user_autho_app_promise.then(function() {
-        if (user_id || iot_id) {
-          token[identity.dataValues.type] = identity.dataValues.type;
-        }
+      //  return user_autho_app_promise.then(function() {
+      if (user_id || iot_id) {
+        token[identity.dataValues.type] = identity.dataValues.type;
+      }
 
-        if (token.scope === 'all') {
-          delete token.scope;
-        }
+      if (token.scope === 'all') {
+        delete token.scope;
+      }
 
-        return _.assign(
-          // expected to return client and user, but not returning
-          {
-            client,
-            access_token: token.accessToken, // proxy
-            refresh_token: token.refreshToken, // proxy
-          },
-          token
-        );
-      });
+      return _.assign(
+        // expected to return client and user, but not returning
+        {
+          client,
+          access_token: token.accessToken, // proxy
+          refresh_token: token.refreshToken, // proxy
+        },
+        token
+      );
+      //  });
     })
     .catch(function(err) {
       debug('saveToken - Err: ', err);
@@ -604,32 +612,56 @@ function create_oauth_response(
       )
     );
 
-    user_info.username = identity.username;
-    user_info.app_id = application_id;
-    user_info.isGravatarEnabled = identity.gravatar;
-    user_info.email = identity.email;
     user_info.id = identity.id;
+    user_info.app_id = application_id;
 
-    if (config.cors && config_cors.enabled) {
-      user_info.image =
-        identity.image !== 'default'
-          ? config.host + '/img/users/' + identity.image
-          : '';
-    }
+    return models.user_authorized_application
+      .findOne({
+        where: { user_id: identity.id, oauth_client_id: application_id },
+      })
+      .then(function(third_party_application) {
+        let shared_attributes = third_party_application.shared_attributes;
+        if (shared_attributes.includes('username')) {
+          user_info.username = identity.username;
+        }
+        if (shared_attributes.includes('email')) {
+          user_info.email = identity.email;
+        }
+        if (
+          shared_attributes.includes('identity_attributes') &&
+          identity.extra &&
+          identity.extra.identity_attributes &&
+          identity_attributes.enabled
+        ) {
+          user_info.attributes = identity.extra.identity_attributes;
+        }
 
-    if (identity.eidas_id) {
-      user_info.eidas_profile = identity.extra.eidas_profile;
-    }
+        if (
+          shared_attributes.includes('image') &&
+          config.cors &&
+          config_cors.enabled
+        ) {
+          user_info.image =
+            identity.image !== 'default'
+              ? config.host + '/img/users/' + identity.image
+              : '';
+        }
 
-    if (
-      identity.extra &&
-      identity.extra.identity_attributes &&
-      identity_attributes.enabled
-    ) {
-      user_info.attributes = identity.extra.identity_attributes;
-    }
+        if (shared_attributes.includes('gravatar')) {
+          user_info.isGravatarEnabled = identity.gravatar;
+        }
+        if (identity.eidas_idm && shared_attributes.includes('eidas_profile')) {
+          user_info.eidas_profile = identity.extra.eidas_profile;
+        }
 
-    return search_user_info(user_info, action, resource, authzforce, req_app);
+        return search_user_info(
+          user_info,
+          action,
+          resource,
+          authzforce,
+          req_app
+        );
+      });
   } else if (type === 'iot') {
     const iot_info = JSON.parse(
       JSON.stringify(

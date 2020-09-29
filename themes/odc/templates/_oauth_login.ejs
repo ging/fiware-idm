@@ -2,7 +2,7 @@
 
     <div class="form">
         <h2>Acceso a Orange Digital Center</h2>
-        <form action="/auth/login/" method="POST" enctype="">
+        <form action="<%= application.url %>" autocomplete="on" method="POST" enctype="">
             <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <% var nameErrors = [] %>
             <% if (errors.length) { %>

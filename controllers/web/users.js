@@ -103,7 +103,6 @@ exports.show = function(req, res, next) {
         res.locals.message = req.session.message;
         delete req.session.message;
       }
-
       if (req.user.gravatar) {
         req.user.image = gravatar.url(
           req.user.email,
@@ -144,6 +143,7 @@ exports.show = function(req, res, next) {
       res.render('users/show', {
         user: req.user,
         applications,
+        identity_attributes,
         csrf_token: req.csrfToken(),
       });
     })
@@ -327,9 +327,13 @@ exports.update_info = function(req, res) {
   ) {
     req.body.user.description = null;
   }
+  const user_extra = req.session.user.extra ? req.session.user.extra : {};
 
-  const user_extra = user.extra ? user.extra : {};
   user_extra.identity_attributes = req.body.attributes;
+
+  const visible_attributes = req.body.user.visible_attributes;
+
+  user_extra.visible_attributes = visible_attributes;
 
   user
     .validate()
@@ -381,6 +385,7 @@ exports.update_info = function(req, res) {
       res.render('users/edit', {
         user: req.body.user,
         error,
+        identity_attributes,
         csrf_token: req.csrfToken(),
       });
     });
@@ -539,6 +544,7 @@ exports.authenticate = external_auth.enabled
             'admin',
             'date_password',
             'starters_tour_ended',
+            'extra',
           ],
           where: {
             email: username,
@@ -621,6 +627,20 @@ exports.create = function(req, res) {
     password: req.body.password1,
     date_password: new Date(new Date().getTime()),
     enabled: false,
+    extra: {
+      visible_attributes: [
+        'username',
+        'description',
+        'website',
+        'identity_attributes',
+        'image',
+        'gravatar',
+      ],
+      // tfa: {
+      //   enabled: false,
+      //   secret: '',
+      // },
+    },
   });
 
   // If password(again) is empty push an error into the array
@@ -1236,3 +1256,81 @@ function send_response(req, res, response, url) {
     res.redirect(url);
   }
 }
+
+// GET /idm/users/:user_id/_third_party_applications -- Show applications in which user is authorized
+exports.show_third_party_applications = function(req, res) {
+  debug('--> show_third_party_applications');
+  models.user_authorized_application
+    .findAll({
+      where: { user_id: req.user.id },
+      include: [
+        {
+          model: models.oauth_client,
+          attributes: ['id', 'name', 'url', 'image'],
+        },
+      ],
+    })
+    .then(function(third_party_applications) {
+      // See if user to show is equal to user logged
+      if (req.session.user.id === req.user.id) {
+        req.user.auth = true;
+      }
+      if (req.session.message) {
+        res.locals.message = req.session.message;
+        delete req.session.message;
+      }
+      if (req.user.gravatar) {
+        req.user.image = gravatar.url(
+          req.user.email,
+          { s: 100, r: 'g', d: 'mm' },
+          { protocol: 'https' }
+        );
+      } else if (req.user.image === 'default') {
+        req.user.image = '/img/logos/original/user.png';
+      } else {
+        req.user.image = '/img/users/' + req.user.image;
+      }
+
+      const applications = [];
+      // If user has applciations, set image from file system and obtain info from each user
+      if (third_party_applications.length > 0) {
+        third_party_applications.forEach(function(app) {
+          if (app.OauthClient.image === 'default') {
+            app.OauthClient.image = '/img/logos/medium/app.png';
+          } else {
+            app.OauthClient.image =
+              '/img/applications/' + app.OauthClient.image;
+          }
+
+          applications.push({
+            id: app.id,
+            app_id: app.oauth_client_id,
+            name: app.OauthClient.name,
+            image: app.OauthClient.image,
+            url: app.OauthClient.url,
+            shared_attributes: app.shared_attributes,
+            login_date: app.login_date,
+          });
+        });
+      }
+      debug(applications);
+      res.render('users/_third_party_applications', {
+        user: req.user,
+        applications,
+        csrf_token: req.csrfToken(),
+      });
+    })
+    .catch(function(error) {
+      debug('Error: ', error);
+    });
+};
+// DELETE /idm/users/:user_id/_third_party_applications -- Delete information
+//for a user_authorized_application
+exports.delete_third_party_application = function(req, res, next) {
+  debug('--> delete_third_party_application');
+
+  models.user_authorized_application.destroy({
+    where: { user_id: req.session.user.id, oauth_client_id: req.body.app_id },
+  });
+  next();
+};

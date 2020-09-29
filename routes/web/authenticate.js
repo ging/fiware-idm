@@ -19,6 +19,37 @@ router.post(
   web_session_controller.login_not_required,
   web_session_controller.create
 );
+
+// router.post(
+//   '/security_question',
+//   csrf_protection,
+//   web_session_controller.login_not_required,
+//   web_session_controller.security_question
+// );
+
+router.get(
+  '/avoid_2fa',
+  csrf_protection,
+  web_session_controller.login_not_required,
+  web_session_controller.avoid_2fa
+);
+
+router.post(
+  '/avoid_2fa',
+  csrf_protection,
+  web_session_controller.login_not_required,
+  web_session_controller.avoid_2fa_email
+);
+
+router.get(
+  '/disable_2fa',
+  csrf_protection,
+  web_session_controller.login_not_required,
+  web_session_controller.disable_2fa
+);
+
+router.post('/tfa_verify', csrf_protection, web_session_controller.tfa_verify);
+
 router.delete(
   '/logout',
   web_session_controller.login_required,

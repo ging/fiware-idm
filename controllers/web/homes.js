@@ -90,7 +90,9 @@ exports.index = function(req, res) {
 
   Promise.all([get_app, get_org])
     .then(function(values) {
+      //---------------
       res.render('home/index', {
+        // res.render('home/home', {
         applications: values[0],
         organizations: values[1],
         change_password: req.session.user.change_password,
@@ -100,7 +102,9 @@ exports.index = function(req, res) {
     })
     .catch(function(error) {
       debug('Error: ', error);
+      //-------
       res.render('home/index', {
+        // res.render('home/home', {
         applications: [],
         organizations: [],
         change_password: req.session.user.change_password,

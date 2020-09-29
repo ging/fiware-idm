@@ -35,14 +35,14 @@ app.set('view engine', 'ejs');
 if (config.debug) {
   app.use(logger('dev'));
 }
-
+// img-src 'self' data:image/png
 // Disabled header
 app.disable('x-powered-by');
 // Set security headers
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"], // eslint-disable-line snakecase/snakecase
+      defaultSrc: ["'self'", 'img-src', "'self'", 'data:'], // eslint-disable-line snakecase/snakecase
       scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
       styleSrc: ["'self'", 'https:', "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
     },

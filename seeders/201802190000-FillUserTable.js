@@ -24,6 +24,9 @@ module.exports = {
         date_password: new Date(new Date().getTime()),
         enabled: true,
         admin: true,
+        extra: `{
+          "visible_attributes": ["username", "description"]
+        }`,
       },
     ]);
   },

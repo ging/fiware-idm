@@ -1,0 +1,52 @@
+<div id="content_body">
+  <div id="enable_tfa_page">
+
+  <div class="page-header">
+    <h2><%=translation.settings.enable_tfa.title%></h2>
+  </div>
+  <div class="panel-group settings" id="accordion">
+    <% if (errors.includes('wrong_token')) { -%>
+        <span class="help-block alert alert-danger "><%=translation.settings.enable_tfa.content01%></span>
+    <% } -%>
+      <p><%=translation.settings.enable_tfa.content02%></p><br>
+      <span >
+      </span>
+        <div class="card card-container">
+          <form accept-charset="UTF-8" autocomplete="off" action="/idm/settings/enable_tfa_verify" id="two_factor_form" method="post" class="ng-pristine ng-valid">
+            <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+            <input type='hidden' name='secret' value='<%= secret%>' />
+            <input type='hidden' name='qr' value='<%= qr%>' />
+            <!-- <p>1. Proporciona una pregunta de seguridad y una respuesta secreta. Será de utilidad en caso de que pierdas el acceso a tu aplicación de autenticación.</p>
+              <div class="form-group ">
+                <label class="control-label" for="id_security_question">Pregunta de seguridad</label>
+                <div class=" ">
+                  <input class="form-control" id="id_security_question" name="security_question" type="text" required>
+                </div>
+              </div>
+              <div class="form-group ">
+                <label class="control-label  " for="id_security_answer">Respuesta de seguridad</label>
+                <div class=" ">
+                  <input class="form-control" id="id_security_answer" name="security_answer" type="text" required>
+                </div>
+              </div><br> -->
+              <p><%=translation.settings.enable_tfa.content03%></p>
+              <p><%=translation.settings.enable_tfa.content04%></p>
+              <p><%=translation.settings.enable_tfa.content05%></p>
+              <div class="image-wrapper">
+                <img src="<%=qr%>" alt="qr" />
+                <p><%=translation.settings.enable_tfa.content06%> - <%=secret%></p>
+              </div>
+                <div class="form-group ">
+                  <label class="control-label" for="token"><%=translation.settings.enable_tfa.label01%></label>
+                  <div class=" ">
+                    <input class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" placeholder="Inserta el token" required/>
+                  </div>
+                </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary pull-right"><%=translation.settings.enable_tfa.button01%></button>
+            </div>
+          </form>
+        </div>
+  </div>
+</div>
+</div>

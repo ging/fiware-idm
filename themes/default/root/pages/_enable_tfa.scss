@@ -1,0 +1,54 @@
+#enable_tfa_page {
+  @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+  hr{
+    border: 2px solid #C4C4C4;
+  }
+  p{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+
+    color: #333333;
+  }
+  h2{
+    font-family:  'Rubik', sans-serif, "Roboto";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 36px;
+    color: #333333;
+  }
+  .image-wrapper{
+    text-align: center;
+  }
+  label{
+    color: #333333;
+  }
+  button{
+    width: 120px;
+    height: 30px;
+    background: #CAE855;
+    border-radius: 4px;
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;  
+    color: #000000;
+
+  }
+
+  .image-wrapper{
+    text-align: center;
+  }
+  .qr-image{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

@@ -46,7 +46,7 @@ application will be able to access.
 Once you are finished, click the Authorize button to finish with the
 authorization process.
 
-## Third-party applications list
+<!-- ## Third-party applications list
 
 Look at the vertical menu on the left and click on the "Linked accounts" option.
 
@@ -62,7 +62,7 @@ You can also delete applications. When you click in the arrow you will see a
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_deletethirdpartyapplications.png)
 
-<p align="center">Figure 9: Delete third-party application</p>
+<p align="center">Figure 9: Delete third-party application</p> -->
 
 ## Two Factor Authentication
 

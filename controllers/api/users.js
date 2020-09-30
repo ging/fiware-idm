@@ -2,7 +2,9 @@ const debug = require('debug')('idm:api-users');
 const models = require('../../models/models.js');
 const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
-const config = require('../../config');
+
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config();
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
@@ -11,12 +13,7 @@ const external_auth = config.external_auth;
 
 const email_list = config.email_list_type
   ? fs
-      .readFileSync(
-        path.join(
-          __dirname,
-          '../../etc/email_list/' + config.email_list_type + '.txt'
-        )
-      )
+      .readFileSync(path.join(__dirname, '../../etc/email_list/' + config.email_list_type + '.txt'))
       .toString('utf-8')
       .split('\n')
   : [];
@@ -24,7 +21,7 @@ const email_list = config.email_list_type
 // MW to see if user is registered
 exports.authenticate = external_auth.enabled
   ? require('../../external_auth/authentication_driver').authenticate
-  : function(username, password, callback) {
+  : function (username, password, callback) {
       debug('--> authenticate');
 
       // Search the user
@@ -41,13 +38,13 @@ exports.authenticate = external_auth.enabled
             'image',
             'admin',
             'date_password',
-            'starters_tour_ended',
+            'starters_tour_ended'
           ],
           where: {
-            email: username,
-          },
+            email: username
+          }
         })
-        .then(function(user) {
+        .then(function (user) {
           if (user) {
             // Verify password and if user is enabled to use the web
             if (user.verifyPassword(password) && user.enabled) {
@@ -59,13 +56,13 @@ exports.authenticate = external_auth.enabled
             callback(new Error('user_not_found'));
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           callback(error);
         });
     };
 
 // MW to Autoload info if path include user_id
-exports.load_user = function(req, res, next, user_id) {
+exports.load_user = function (req, res, next, user_id) {
   debug('--> load_user');
 
   models.user
@@ -81,28 +78,28 @@ exports.load_user = function(req, res, next, user_id) {
         'gravatar',
         'date_password',
         'description',
-        'website',
-      ],
+        'website'
+      ]
     })
-    .then(function(user) {
+    .then(function (user) {
       if (user) {
         req.user = user;
         next();
       } else {
         res.status(404).json({
-          error: { message: 'User not found', code: 404, title: 'Not Found' },
+          error: { message: 'User not found', code: 404, title: 'Not Found' }
         });
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -110,7 +107,7 @@ exports.load_user = function(req, res, next, user_id) {
 };
 
 // MW to check if user is admin
-exports.check_admin = function(req, res, next) {
+exports.check_admin = function (req, res, next) {
   if (req.token_owner.admin) {
     next();
   } else {
@@ -118,14 +115,14 @@ exports.check_admin = function(req, res, next) {
       error: {
         message: 'User not authorized to perform action',
         code: 403,
-        title: 'Forbidden',
-      },
+        title: 'Forbidden'
+      }
     });
   }
 };
 
 // MW to check if user in url is the same as token owner
-exports.check_user = function(req, res, next) {
+exports.check_user = function (req, res, next) {
   if (req.token_owner.id === req.user.id || req.token_owner.admin) {
     next();
   } else {
@@ -133,36 +130,26 @@ exports.check_user = function(req, res, next) {
       error: {
         message: 'User not authorized to perform action',
         code: 403,
-        title: 'Forbidden',
-      },
+        title: 'Forbidden'
+      }
     });
   }
 };
 
 // GET /v1/users -- Send index of users
-exports.index = function(req, res) {
+exports.index = function (req, res) {
   debug('--> index');
 
   models.user
     .findAll({
-      attributes: [
-        'id',
-        'username',
-        'email',
-        'enabled',
-        'gravatar',
-        'date_password',
-        'description',
-        'website',
-      ],
+      attributes: ['id', 'username', 'email', 'enabled', 'gravatar', 'date_password', 'description', 'website']
     })
-    .then(function(users) {
+    .then(function (users) {
       if (users.length > 0) {
-        users = _.map(users, user => {
+        users = _.map(users, (user) => {
           user.urls = {
-            organization_roles_url:
-              '/v1/users/' + user.id + '/organization_roles',
-            roles_url: '/v1/users/' + user.id + '/roles',
+            organization_roles_url: '/v1/users/' + user.id + '/organization_roles',
+            roles_url: '/v1/users/' + user.id + '/roles'
           };
           return user;
         });
@@ -172,20 +159,20 @@ exports.index = function(req, res) {
           error: {
             message: 'Users not found',
             code: 404,
-            title: 'Not Found',
-          },
+            title: 'Not Found'
+          }
         });
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -193,11 +180,11 @@ exports.index = function(req, res) {
 };
 
 // POST /v1/users -- Create user
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   debug('--> create');
 
   check_create_body_request(req.body)
-    .then(function() {
+    .then(function () {
       const user = models.user.build(req.body.user);
 
       user.image = 'default';
@@ -206,7 +193,7 @@ exports.create = function(req, res) {
       user.date_password = new Date(new Date().getTime());
       return user.validate();
     })
-    .then(function(user) {
+    .then(function (user) {
       return user.save({
         fields: [
           'id',
@@ -219,16 +206,16 @@ exports.create = function(req, res) {
           'date_password',
           'extra',
           'enabled',
-          'salt',
-        ],
+          'salt'
+        ]
       });
     })
-    .then(function(user) {
+    .then(function (user) {
       const user_response = user.dataValues;
       delete user_response.password;
       res.status(201).json({ user: user_response });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         if (error.errors[0].message === 'emailUsed') {
@@ -236,24 +223,24 @@ exports.create = function(req, res) {
             error: {
               message: 'Email already used',
               code: 409,
-              title: 'Conflict',
-            },
+              title: 'Conflict'
+            }
           };
         } else if (error.errors[0].message === 'email') {
           error = {
             error: {
               message: 'Email not valid',
               code: 400,
-              title: 'Bad Request',
-            },
+              title: 'Bad Request'
+            }
           };
         } else {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
       }
@@ -262,43 +249,31 @@ exports.create = function(req, res) {
 };
 
 // GET /v1/users/:user_id -- Get info about user
-exports.info = function(req, res) {
+exports.info = function (req, res) {
   debug('--> info');
   const user = req.user;
   user.urls = {
     organization_roles_url: '/v1/users/' + user.id + '/organization_roles',
-    roles_url: '/v1/users/' + user.id + '/roles',
+    roles_url: '/v1/users/' + user.id + '/roles'
   };
   res.status(200).json({ user });
 };
 
 // PUT /v1/users/:user_id -- Edit user
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   debug('--> update');
 
   let user_previous_values = null;
   check_update_body_request(req.body)
-    .then(function() {
+    .then(function () {
       user_previous_values = JSON.parse(JSON.stringify(req.user.dataValues));
 
-      req.user.username = req.body.user.username
-        ? req.body.user.username
-        : req.user.username;
-      req.user.email = req.body.user.email
-        ? req.body.user.email
-        : req.user.email;
-      req.user.description = req.body.user.description
-        ? req.body.user.description
-        : req.user.description;
-      req.user.website = req.body.user.website
-        ? req.body.user.website
-        : req.user.website;
-      req.user.gravatar = req.body.user.gravatar
-        ? req.body.user.gravatar
-        : req.user.gravatar;
-      req.user.extra = req.body.user.extra
-        ? req.body.user.extra
-        : req.user.extra;
+      req.user.username = req.body.user.username ? req.body.user.username : req.user.username;
+      req.user.email = req.body.user.email ? req.body.user.email : req.user.email;
+      req.user.description = req.body.user.description ? req.body.user.description : req.user.description;
+      req.user.website = req.body.user.website ? req.body.user.website : req.user.website;
+      req.user.gravatar = req.body.user.gravatar ? req.body.user.gravatar : req.user.gravatar;
+      req.user.extra = req.body.user.extra ? req.body.user.extra : req.user.extra;
       req.user.enabled = true;
       if (req.body.user.password) {
         req.user.password = req.body.user.password;
@@ -307,10 +282,10 @@ exports.update = function(req, res) {
 
       return req.user.validate();
     })
-    .then(function() {
+    .then(function () {
       return req.user.save();
     })
-    .then(function() {
+    .then(function () {
       const difference = diff_object(user_previous_values, req.user.dataValues);
       const response =
         Object.keys(difference).length > 0
@@ -318,13 +293,13 @@ exports.update = function(req, res) {
           : {
               message: "Request don't change the user parameters",
               code: 200,
-              title: 'OK',
+              title: 'OK'
             };
       delete response.values_updated.password;
       delete response.values_updated.date_password;
       res.status(200).json(response);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         if (error.errors[0].message === 'emailUsed') {
@@ -332,24 +307,24 @@ exports.update = function(req, res) {
             error: {
               message: 'Email already used',
               code: 409,
-              title: 'Conflict',
-            },
+              title: 'Conflict'
+            }
           };
         } else if (error.errors[0].message === 'email') {
           error = {
             error: {
               message: 'Email not valid',
               code: 400,
-              title: 'Bad Request',
-            },
+              title: 'Bad Request'
+            }
           };
         } else {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
       }
@@ -358,30 +333,30 @@ exports.update = function(req, res) {
 };
 
 // DELETE /v1/users/:user_id -- Delete user
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   debug('--> delete');
 
   models.user
     .destroy({
-      where: { id: req.user.id },
+      where: { id: req.user.id }
     })
-    .then(function(destroyed) {
+    .then(function (destroyed) {
       if (destroyed) {
         return res.status(204).json('User ' + req.user.id + ' destroyed');
       }
       return Promise.reject({
-        error: { message: 'User not found', code: 404, title: 'Bad Request' },
+        error: { message: 'User not found', code: 404, title: 'Bad Request' }
       });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -390,57 +365,49 @@ exports.delete = function(req, res) {
 
 // Check body in create request
 function check_create_body_request(body) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!body.user) {
       reject({
         error: {
           message: 'Missing parameter user in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (!body.user.username) {
       reject({
         error: {
-          message:
-            'Missing parameter username in body request or empty username',
+          message: 'Missing parameter username in body request or empty username',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (!body.user.password) {
       reject({
         error: {
-          message:
-            'Missing parameter password in body request or empty password',
+          message: 'Missing parameter password in body request or empty password',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (!body.user.email) {
       reject({
         error: {
           message: 'Missing parameter email in body request or empty email',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (config.email_list_type && body.user.email) {
-      if (
-        config.email_list_type === 'whitelist' &&
-        !email_list.includes(body.user.email.split('@')[1])
-      ) {
+      if (config.email_list_type === 'whitelist' && !email_list.includes(body.user.email.split('@')[1])) {
         reject({
-          error: { message: 'Invalid email', code: 400, title: 'Bad Request' },
+          error: { message: 'Invalid email', code: 400, title: 'Bad Request' }
         });
       }
 
-      if (
-        config.email_list_type === 'blacklist' &&
-        email_list.includes(body.user.email.split('@')[1])
-      ) {
+      if (config.email_list_type === 'blacklist' && email_list.includes(body.user.email.split('@')[1])) {
         reject({
-          error: { message: 'Invalid email', code: 400, title: 'Bad Request' },
+          error: { message: 'Invalid email', code: 400, title: 'Bad Request' }
         });
       }
 
@@ -453,59 +420,53 @@ function check_create_body_request(body) {
 
 // Check body in update request
 function check_update_body_request(body) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!body.user) {
       reject({
         error: {
           message: 'Missing parameter user in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (body.user.id) {
       reject({
-        error: { message: 'Cannot set id', code: 400, title: 'Bad Request' },
+        error: { message: 'Cannot set id', code: 400, title: 'Bad Request' }
       });
     } else if (body.user.username && body.user.username.length === 0) {
       reject({
         error: {
           message: 'Cannot set empty username',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (body.user.email && body.user.email.length === 0) {
       reject({
         error: {
           message: 'Cannot set empty email',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (body.user.password && body.user.password.length <= 0) {
       reject({
         error: {
           message: 'Cannot set empty password',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else if (config.email_list_type && body.user.email) {
-      if (
-        config.email_list_type === 'whitelist' &&
-        !email_list.includes(body.user.email.split('@')[1])
-      ) {
+      if (config.email_list_type === 'whitelist' && !email_list.includes(body.user.email.split('@')[1])) {
         reject({
-          error: { message: 'Invalid email', code: 400, title: 'Bad Request' },
+          error: { message: 'Invalid email', code: 400, title: 'Bad Request' }
         });
       }
 
-      if (
-        config.email_list_type === 'blacklist' &&
-        email_list.includes(body.user.email.split('@')[1])
-      ) {
+      if (config.email_list_type === 'blacklist' && email_list.includes(body.user.email.split('@')[1])) {
         reject({
-          error: { message: 'Invalid email', code: 400, title: 'Bad Request' },
+          error: { message: 'Invalid email', code: 400, title: 'Bad Request' }
         });
       }
 

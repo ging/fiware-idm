@@ -9,34 +9,30 @@
 require('../../config/config_database');
 
 // const keyrock = require('../../bin/www');
-const config = require('../../../config.js');
+const config = require('../../config-test.js');
 const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile(
-  './test/templates/api/000-authenticate.json'
-).good_admin_login;
-const permissions = utils.readExampleFile(
-  './test/templates/api/009-permissions.json'
-);
+const login = utils.readExampleFile('./test/templates/api/000-authenticate.json').good_admin_login;
+const permissions = utils.readExampleFile('./test/templates/api/009-permissions.json');
 
 let token;
 let application_id;
 
-describe('API - 9 - Permissions: ', function() {
+describe('API - 9 - Permissions: ', function () {
   // CREATE TOKEN WITH PROVIDER CREDENTIALS
   // eslint-disable-next-line no-undef
-  before(function(done) {
+  before(function (done) {
     const good_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
       json: login,
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     };
-    return request(good_login, function(error, response) {
+    return request(good_login, function (error, response) {
       token = response.headers['x-subject-token'];
       done();
     });
@@ -44,35 +40,34 @@ describe('API - 9 - Permissions: ', function() {
 
   // CREATE APPLICATION
   // eslint-disable-next-line no-undef
-  before(function(done) {
+  before(function (done) {
     const create_application = {
       url: config.host + '/v1/applications',
       method: 'POST',
       body: JSON.stringify(permissions.before),
       headers: {
         'Content-Type': 'application/json',
-        'X-Auth-token': token,
-      },
+        'X-Auth-token': token
+      }
     };
 
-    request(create_application, function(error, response, body) {
+    request(create_application, function (error, response, body) {
       const json = JSON.parse(body);
       application_id = json.application.id;
       done();
     });
   });
 
-  describe('1) When requesting list of permissions', function() {
-    it('should return a 200 OK', function(done) {
+  describe('1) When requesting list of permissions', function () {
+    it('should return a 200 OK', function (done) {
       const list_permissions = {
-        url:
-          config.host + '/v1/applications/' + application_id + '/permissions',
+        url: config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'GET',
         headers: {
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
-      request(list_permissions, function(error, response, body) {
+      request(list_permissions, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('permissions');
@@ -82,20 +77,19 @@ describe('API - 9 - Permissions: ', function() {
     });
   });
 
-  describe('2) When creating a permission', function() {
-    it('should return a 201 OK', function(done) {
+  describe('2) When creating a permission', function () {
+    it('should return a 201 OK', function (done) {
       const create_permission = {
-        url:
-          config.host + '/v1/applications/' + application_id + '/permissions',
+        url: config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
         body: JSON.stringify(permissions.create.valid_perm_body),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_permission, function(error, response, body) {
+      request(create_permission, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('permission');
@@ -105,20 +99,19 @@ describe('API - 9 - Permissions: ', function() {
     });
   });
 
-  describe('3) When creating a permission with resource+password and xml in the body', function() {
-    it('should return a 400 Bad request', function(done) {
+  describe('3) When creating a permission with resource+password and xml in the body', function () {
+    it('should return a 400 Bad request', function (done) {
       const create_permission = {
-        url:
-          config.host + '/v1/applications/' + application_id + '/permissions',
+        url: config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
         body: JSON.stringify(permissions.create.invalid_perm_body),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_permission, function(error, response) {
+      request(create_permission, function (error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(400);
         done();
@@ -126,44 +119,38 @@ describe('API - 9 - Permissions: ', function() {
     });
   });
 
-  describe('4) When reading permission info', function() {
+  describe('4) When reading permission info', function () {
     let permission_id;
 
     // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       const create_permission = {
-        url:
-          config.host + '/v1/applications/' + application_id + '/permissions',
+        url: config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
         body: JSON.stringify(permissions.read.create),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_permission, function(error, response, body) {
+      request(create_permission, function (error, response, body) {
         const json = JSON.parse(body);
         permission_id = json.permission.id;
         done();
       });
     });
 
-    it('should return a 200 OK', function(done) {
+    it('should return a 200 OK', function (done) {
       const read_permission = {
-        url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/permissions/' +
-          permission_id,
+        url: config.host + '/v1/applications/' + application_id + '/permissions/' + permission_id,
         method: 'GET',
         headers: {
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(read_permission, function(error, response, body) {
+      request(read_permission, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('permission');
@@ -173,7 +160,7 @@ describe('API - 9 - Permissions: ', function() {
     });
   });
 
-  describe('5) When updating a permission', function() {
+  describe('5) When updating a permission', function () {
     let permission_id;
     let permission_name;
     let permission_description;
@@ -181,19 +168,18 @@ describe('API - 9 - Permissions: ', function() {
     let permission_action;
 
     // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       const create_permission = {
-        url:
-          config.host + '/v1/applications/' + application_id + '/permissions',
+        url: config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
         body: JSON.stringify(permissions.update.create),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_permission, function(error, response, body) {
+      request(create_permission, function (error, response, body) {
         const json = JSON.parse(body);
         permission_id = json.permission.id;
         permission_name = json.permission.name;
@@ -204,23 +190,18 @@ describe('API - 9 - Permissions: ', function() {
       });
     });
 
-    it('should return a 200 OK', function(done) {
+    it('should return a 200 OK', function (done) {
       const update_permission = {
-        url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/permissions/' +
-          permission_id,
+        url: config.host + '/v1/applications/' + application_id + '/permissions/' + permission_id,
         method: 'PATCH',
         body: JSON.stringify(permissions.update.new_values),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(update_permission, function(error, response, body) {
+      request(update_permission, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('values_updated');
@@ -238,44 +219,38 @@ describe('API - 9 - Permissions: ', function() {
     });
   });
 
-  describe('6) When deleting a permission', function() {
+  describe('6) When deleting a permission', function () {
     let permission_id;
 
     // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       const create_permission = {
-        url:
-          config.host + '/v1/applications/' + application_id + '/permissions',
+        url: config.host + '/v1/applications/' + application_id + '/permissions',
         method: 'POST',
         body: JSON.stringify(permissions.delete.create),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_permission, function(error, response, body) {
+      request(create_permission, function (error, response, body) {
         const json = JSON.parse(body);
         permission_id = json.permission.id;
         done();
       });
     });
 
-    it('should return a 204 OK', function(done) {
+    it('should return a 204 OK', function (done) {
       const delete_permission = {
-        url:
-          config.host +
-          '/v1/applications/' +
-          application_id +
-          '/permissions/' +
-          permission_id,
+        url: config.host + '/v1/applications/' + application_id + '/permissions/' + permission_id,
         method: 'DELETE',
         headers: {
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(delete_permission, function(error, response) {
+      request(delete_permission, function (error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(204);
         done();

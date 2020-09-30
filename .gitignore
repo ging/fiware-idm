@@ -8,4 +8,5 @@ coverage/
 certs/
 helpers/custom_authentication_driver.js
 .eslintcache
+.nyc_output/
 config.js

@@ -4,57 +4,24 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var config = require('../config')
-var debug = require('debug')('idm:server');
-var fs = require("fs");
-var http = require('http');
-var https = require("https");
 
-if (config.https.enabled) {
-  var options = {
-      key: fs.readFileSync(config.https.key_file).toString(),
-      cert: fs.readFileSync(config.https.cert_file).toString()
-  };
-  if (config.https.ca_certs) {
-      options.ca = [];
-      for (var ca in config.https.ca_certs) {
-          options.ca.push(fs.readFileSync(config.https.ca_certs[ca]).toString());
-      }
-  }
-}
 
-/**
- * Get port from environment and store in Express.
- */
-
-/**
- * Create HTTP or HTTPS server.
- */
-
-var server = http.createServer(app); 
-
-server.listen(config.port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-if (config.https.enabled) {
-  var serverSecure = https.createServer(options, app);
-
-  serverSecure.listen(config.https.port, function() {
-    debug('Listening on port ' + serverSecure.address().port);
-  });
-
-}
- 
-
+const config_service = require('../lib/configService');
+config_service.set_config(require('../config'), true);
+const config = config_service.get_config();
+const database = require("../lib/database");
+const debug = require('debug')('idm:server');
+const fs = require("fs");
+const http = require('http');
+const https = require("https");
+let server;
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+function normalize_port(val) {
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -69,18 +36,19 @@ function normalizePort(val) {
   return false;
 }
 
+
 /**
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function on_error(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
-  var port = error.port;
+  const port = error.port;
 
-  var bind = typeof port === 'string'
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -103,10 +71,50 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+function on_listening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+
+/**
+ * Create HTTP or HTTPS server.
+ */
+database.connect(config, err =>{
+  let options = {}
+
+  if (config.https.enabled) {
+    options = {
+        key: fs.readFileSync(config.https.key_file).toString(),
+        cert: fs.readFileSync(config.https.cert_file).toString()
+    };
+    if (config.https.ca_certs) {
+        options.ca = [];
+        for (const ca in config.https.ca_certs) {
+            options.ca.push(fs.readFileSync(config.https.ca_certs[ca]).toString());
+        }
+    }
+  }
+
+  const app = require('../app');
+  server = http.createServer(app); 
+
+  /**
+  * Get port from environment and store in Express.
+  */
+  server.listen(normalize_port(config.port));
+  server.on('error', on_error);
+  server.on('listening', on_listening);
+
+  if (config.https.enabled) {
+    const serverSecure = https.createServer(options, app);
+
+    serverSecure.listen(config.https.port, function() {
+      debug('Listening on port ' + serverSecure.address().port);
+    });
+  }
+});
+

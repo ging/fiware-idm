@@ -8,6 +8,9 @@ addons:
       - build-essential
       - python
 
+services:
+  - docker
+
 jobs:
   include:
     - stage: test
@@ -29,10 +32,10 @@ jobs:
         - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
         - sudo mysql_upgrade -u root -ptest
         - sudo service mysql restart
-        - cp test/config_test.js.template config.js
 
       before_script:
         - npm run lint
+        - node ./test/database
 
       after_script:
         - npm run test:coveralls
@@ -56,10 +59,10 @@ jobs:
         - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
         - sudo mysql_upgrade -u root -ptest
         - sudo service mysql restart
-        - cp test/config_test.js.template config.js
 
       before_script:
         - npm run lint
+        - node ./test/database
 
       after_script:
         - npm run test:coveralls
@@ -77,3 +80,11 @@ jobs:
       script:
         - npm run lint:md
         - npm run lint:text
+
+    - stage: test
+      name: "Dockerfile Tests"
+      language: bash
+      before_script:
+        - docker pull hadolint/hadolint
+      script:
+        - docker run --rm -i hadolint/hadolint < ./extras/docker/Dockerfile

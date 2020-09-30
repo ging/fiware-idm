@@ -16,7 +16,8 @@ const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
 
 // Obtain secret from config file
-const config = require('./config.js');
+const config_service = require('./lib/configService.js');
+const config = config_service.get_config();
 
 // Create vars that store routes
 const index = require('./routes/web/index');
@@ -44,27 +45,27 @@ app.use(
     directives: {
       defaultSrc: ["'self'", 'img-src', "'self'", 'data:'], // eslint-disable-line snakecase/snakecase
       scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"] // eslint-disable-line snakecase/snakecase
     },
-    reportOnly: false, // eslint-disable-line snakecase/snakecase
+    reportOnly: false // eslint-disable-line snakecase/snakecase
   })
 );
 app.use(
   helmet.dnsPrefetchControl({
-    allow: process.env.IDM_DNS_PREFETCH_ALLOW === 'true',
+    allow: process.env.IDM_DNS_PREFETCH_ALLOW === 'true'
   })
 );
 app.use(helmet.expectCt());
 app.use(
   helmet.frameguard({
-    action: process.env.IDM_FRAMEGUARD_ACTION || 'sameorigin',
+    action: process.env.IDM_FRAMEGUARD_ACTION || 'sameorigin'
   })
 );
 app.use(
   helmet.hsts({
     maxAge: process.env.IDM_HTTPS_MAX_AGE || 15552000, // eslint-disable-line snakecase/snakecase
     includeSubDomains: process.env.IDM_INCLUDE_SUB_DOMAINS !== 'false', // eslint-disable-line snakecase/snakecase
-    preload: process.env.IDM_PRELOAD === 'true',
+    preload: process.env.IDM_PRELOAD === 'true'
   })
 );
 app.use(helmet.ieNoOpen());
@@ -74,7 +75,7 @@ app.use(helmet.noSniff());
 //"master-only", "by-content-type", or "all". It defaults to "none".
 app.use(
   helmet.permittedCrossDomainPolicies({
-    permittedPolicies: process.env.IDM_PERMITTED_POLICIES || 'none', // eslint-disable-line snakecase/snakecase
+    permittedPolicies: process.env.IDM_PERMITTED_POLICIES || 'none' // eslint-disable-line snakecase/snakecase
   })
 );
 app.use(helmet.referrerPolicy());
@@ -94,11 +95,9 @@ if (config.cors.enabled) {
 
 // Set routes for version
 const up_date = new Date();
-app.use('/version', function(req, res) {
+app.use('/version', function (req, res) {
   const version = require('./version.json');
-  version.keyrock.uptime = require('./lib/time').ms_to_time(
-    new Date() - up_date
-  );
+  version.keyrock.uptime = require('./lib/time').ms_to_time(new Date() - up_date);
   version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
   res.status(200).send(version);
 });
@@ -113,7 +112,7 @@ app.use(
     secret: config.session.secret,
     name: 'session',
     secure: config.https.enabled,
-    maxAge: config.session.expires, // eslint-disable-line snakecase/snakecase
+    maxAge: config.session.expires // eslint-disable-line snakecase/snakecase
   })
 );
 
@@ -125,7 +124,7 @@ app.use(
     dest: path.join(__dirname, 'public/stylesheets'),
     debug: config.debug,
     outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
-    prefix: '/stylesheets', // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
+    prefix: '/stylesheets' // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
   })
 );
 app.use(express.static(path.join(__dirname, 'public')));
@@ -137,16 +136,13 @@ app.use(
     siteLangs: ['en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
     textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
     browserEnable: true, // eslint-disable-line snakecase/snakecase
-    defaultLang: 'en', // eslint-disable-line snakecase/snakecase
+    defaultLang: 'en' // eslint-disable-line snakecase/snakecase
   })
 );
 
 // Helpers dinamicos:
-app.use(function(req, res, next) {
-  res.set(
-    'Cache-Control',
-    'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0'
-  );
+app.use(function (req, res, next) {
+  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
   // init req.session.redir
   if (!req.session.redir) {
@@ -173,7 +169,7 @@ if (config.https.enabled) {
     enable301Redirects: true, // eslint-disable-line snakecase/snakecase
     trustXFPHeader: false, // eslint-disable-line snakecase/snakecase
     httpsPort: config.https.port, // eslint-disable-line snakecase/snakecase
-    sslRequiredMessage: 'SSL Required.', // eslint-disable-line snakecase/snakecase
+    sslRequiredMessage: 'SSL Required.' // eslint-disable-line snakecase/snakecase
   });
 
   // Set routes for api
@@ -182,11 +178,7 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', force_ssl, oauth2);
-  app.get(
-    '/user',
-    force_ssl,
-    require('./controllers/oauth2/oauth2').authenticate_token
-  );
+  app.get('/user', force_ssl, require('./controllers/oauth2/oauth2').authenticate_token);
 
   // Set routes for saml2
   app.use('/saml2', force_ssl, saml2);
@@ -213,10 +205,10 @@ if (config.https.enabled) {
 if (config.authorization.authzforce.enabled) {
   require('./lib/authzforce.js')
     .check_connection()
-    .then(function(status) {
+    .then(function (status) {
       debug(clc.green('Connection with Authzforce: ' + status));
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug(clc.red(error));
     });
 }

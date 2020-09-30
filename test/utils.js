@@ -11,7 +11,7 @@ function readExampleFile(name, raw) {
 }
 
 function delay(ms) {
-  return function(callback) {
+  return function (callback) {
     setTimeout(callback, ms);
   };
 }

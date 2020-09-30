@@ -11,6 +11,8 @@ specific needs of each use case. These are the main configurations:
 
 -   Security (user session, password encryption and CORS).
 
+-   Two Factor Authentication
+
 -   OAuth2.
 
 -   eIDAS.
@@ -44,7 +46,7 @@ it should be set to `http://localhost:` when running on development.
 
 ```javascript
 config.port = 80;
-config.host = "http://keyrock-domain-name.org:" + config.port;
+config.host = 'http://keyrock-domain-name.org:' + config.port;
 ```
 
 ## Debug
@@ -80,8 +82,8 @@ Follow the next steps in order to enable the server to listen to HTTPS requests.
 ```javascript
 config.https = {
     enabled: true,
-    cert_file: "certs/idm-2018-cert.pem",
-    key_file: "certs/idm-2018-key.pem",
+    cert_file: 'certs/idm-2018-cert.pem',
+    key_file: 'certs/idm-2018-key.pem',
     port: 443
 };
 ```
@@ -103,9 +105,7 @@ Apart from HTTPS there are other 3 configurations related to handle security:
 
 ```javascript
 config.session = {
-    secret: require("crypto")
-        .randomBytes(20)
-        .toString("hex"),
+    secret: require('crypto').randomBytes(20).toString('hex'),
     expires: 60 * 60 * 1000
 };
 ```
@@ -116,7 +116,7 @@ config.session = {
 
 ```javascript
 config.password_encryption = {
-    key: "idm_encryption"
+    key: 'idm_encryption'
 };
 ```
 
@@ -129,8 +129,8 @@ config.password_encryption = {
 config.cors = {
     enabled: true,
     options: {
-        origin: "*",
-        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+        origin: '*',
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
         allowedHeaders: undefined,
         exposedHeaders: undefined,
         credentials: undefined,
@@ -139,6 +139,16 @@ config.cors = {
         optionsSuccessStatus: 204
     }
 };
+```
+
+## Two Factor Authentication
+
+Enable this configuration to enable users to authenticate using an external
+device apart from using username/password (check the user guide for more
+information).
+
+```javascript
+config.debug = true;
 ```
 
 ## OAuth2.0
@@ -191,8 +201,8 @@ description of this feature. An example of this configuration is:
 ```javascript
 config.eidas = {
     enabled: true,
-    gateway_host: "localhost",
-    node_host: "https://se-eidas.redsara.es/EidasNode/ServiceProvider",
+    gateway_host: 'localhost',
+    node_host: 'https://se-eidas.redsara.es/EidasNode/ServiceProvider',
     metadata_expiration: 60 * 60 * 24 * 365
 };
 ```
@@ -208,7 +218,7 @@ is:
 config.usage_control = {
     enabled: true,
     ptp: {
-        host: "localhost",
+        host: 'localhost',
         port: 8090
     }
 };
@@ -247,11 +257,11 @@ change:
 
 ```javascript
 config.database = {
-    host: "localhost",
-    password: "idm",
-    username: "root",
-    database: "idm",
-    dialect: "mysql",
+    host: 'localhost',
+    password: 'idm',
+    username: 'root',
+    database: 'idm',
+    dialect: 'mysql',
     port: undefined
 };
 ```
@@ -320,11 +330,11 @@ users:
 
 **USER_VIEW Table**
 
-| ID  | password_salt | password        | email           | username      |
-| --- | ------------- | --------------- | --------------- | ------------- |
-| 1   | 1234          | g34h432hjk54k2j | melinda@test.es | Melinda López |
-| 2   | 1234          | 2h43h7fdj38302j | juanli@test.es  | Juanli Jons   |
-| 3   | 1234          | j328478j328j423 | lesha@test.es   | Lesha Magnen  |
+| ID  | password_salt | password        | email             | username      |
+| --- | ------------- | --------------- | ----------------- | ------------- |
+| 1   | 1234          | g34h432hjk54k2j | `melinda@test.es` | Melinda López |
+| 2   | 1234          | 2h43h7fdj38302j | `juanli@test.es`  | Juanli Jons   |
+| 3   | 1234          | j328478j328j423 | `lesha@test.es`   | Lesha Magnen  |
 
 For enabling this external authentication you have to modify config.js file
 customizing the database attributes.
@@ -332,17 +342,17 @@ customizing the database attributes.
 ```javascript
 config.external_auth = {
     enabled: true,
-    id_prefix: "external_",
+    id_prefix: 'external_',
     password_encryption_key: undefined,
-    ecryption: "bcyrpt",
+    ecryption: 'bcyrpt',
     database: {
-        host: "localhost",
+        host: 'localhost',
         port: undefined,
-        database: "idm",
-        username: "root",
-        password: "idm",
-        user_table: "user_view",
-        dialect: "mysql"
+        database: 'idm',
+        username: 'root',
+        password: 'idm',
+        user_table: 'user_view',
+        dialect: 'mysql'
     }
 };
 ```
@@ -367,10 +377,10 @@ In order to allow this characteristic you need to edit the config file:
 
 ```javascript
 config.authorization = {
-    level: "basic", // basic|advanced
+    level: 'basic', // basic|advanced
     authzforce: {
         enabled: false,
-        host: "localhost",
+        host: 'localhost',
         port: 8080
     }
 };
@@ -385,9 +395,9 @@ config file:
 
 ```javascript
 config.mail = {
-    host: "idm_host",
+    host: 'idm_host',
     port: 25,
-    from: "noreply@host"
+    from: 'noreply@host'
 };
 ```
 
@@ -416,7 +426,7 @@ If this parameter is set to null or undefined it means that there won't be
 performed any email domail filtering. Example of configuration:
 
 ```javascript
-config.email_list_type = "whitelist";
+config.email_list_type = 'whitelist';
 ```
 
 ## Configure themes
@@ -436,8 +446,8 @@ You can change between these themes in config.js
 
 ```javascript
 config.site = {
-    title: "Identity Manager",
-    theme: "default" // default/fiwarelab
+    title: 'Identity Manager',
+    theme: 'default' // default/fiwarelab
 };
 ```
 
@@ -460,16 +470,16 @@ cd themes/example && touch _colors.scss _styles.scss style.scss
 
 ```css
 /****************************** Default colors */
-@import "../default/colors";
+@import '../default/colors';
 
 /****************************** Custom colors */
-@import "colors";
+@import 'colors';
 
 /****************************** Default styles */
-@import "../default/styles_call";
+@import '../default/styles_call';
 
 /****************************** Custom styles */
-@import "styles";
+@import 'styles';
 ```
 
 -   Edit \_colors.scss. For example:
@@ -485,8 +495,8 @@ $brand-secundary: orange;
 
 ```javascript
 config.site = {
-    title: "Identity Manager",
-    theme: "example" // default/fiwarelab
+    title: 'Identity Manager',
+    theme: 'example' // default/fiwarelab
 };
 ```
 

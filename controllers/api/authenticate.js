@@ -1,13 +1,14 @@
 const models = require('../../models/models.js');
 const uuid = require('uuid');
-const config = require('../../config');
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config();
 const debug = require('debug')('idm:api-authenticate');
 
 const user_api_controller = require('../../controllers/api/users.js');
 const pep_proxy_api_controller = require('../../controllers/api/pep_proxies.js');
 
 // Middleware to see if the token correspond to user
-const is_user = function(req, res, next) {
+const is_user = function (req, res, next) {
   if (req.token_owner._modelOptions.tableName === 'user') {
     next();
   } else {
@@ -15,33 +16,33 @@ const is_user = function(req, res, next) {
       error: {
         message: 'User not allow to perform the action',
         code: 403,
-        title: 'Forbidden',
-      },
+        title: 'Forbidden'
+      }
     });
   }
 };
 
 // Middleware to check users token
-const validate_token = function(req, res, next) {
+const validate_token = function (req, res, next) {
   debug(' --> validate_token');
 
   check_validate_token_request(req)
-    .then(function(token_id) {
+    .then(function (token_id) {
       return search_token_owner(token_id);
     })
-    .then(function(agent) {
+    .then(function (agent) {
       req.token_owner = agent;
       next();
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -50,40 +51,42 @@ const validate_token = function(req, res, next) {
 
 // Function to check if parameters exist in request
 function check_validate_token_request(req) {
-  return new Promise(function(resolve, reject) {
+  const tokenvalue = req.headers.authorization
+    ? req.headers.authorization.split('Bearer ')[1]
+    : req.headers['x-auth-token'];
+  return new Promise(function (resolve, reject) {
     switch (true) {
       case ['POST', 'PATCH', 'PUT'].includes(req.method) &&
-        (!req.headers['content-type'] ||
-          !req.headers['content-type'].startsWith('application/json')):
+        (!req.headers['content-type'] || !req.headers['content-type'].startsWith('application/json')):
         reject({
           error: {
             message: 'Missing parameter: header Content-Type: application/json',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
         break;
-      case !req.headers['x-auth-token']:
+      case !req.headers.authorization && !req.headers['x-auth-token']:
         reject({
           error: {
-            message: 'Expecting to find X-Auth-token in requests',
+            message: 'Expecting to find X-Auth-token/Authorization in requests',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
         break;
       default:
-        resolve(req.headers['x-auth-token']);
+        resolve(tokenvalue);
     }
   });
 }
 
 // DELETE /v1/auth/tokens -- Delete token
-const delete_token = function(req, res) {
+const delete_token = function (req, res) {
   debug(' --> delete_token');
 
   check_headers_request(req)
-    .then(function(tokens) {
+    .then(function (tokens) {
       // Searc Auth token
       const search_auth_token = search_token(tokens.auth);
       // Search Subject token
@@ -91,26 +94,24 @@ const delete_token = function(req, res) {
 
       return Promise.all([search_auth_token, search_subj_token]);
     })
-    .then(function(values) {
+    .then(function (values) {
       return check_requested_tokens(values[0], values[1]);
     })
-    .then(function(token) {
+    .then(function (token) {
       return token.destroy();
     })
-    .then(function() {
-      res
-        .status(204)
-        .json('Appication ' + req.params.application_id + ' destroyed');
+    .then(function () {
+      res.status(204).json('Appication ' + req.params.application_id + ' destroyed');
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -118,11 +119,11 @@ const delete_token = function(req, res) {
 };
 
 // GET /v1/auth/tokens -- Get info from a token
-const info_token = function(req, res) {
+const info_token = function (req, res) {
   debug(' --> info_token');
 
   check_headers_request(req)
-    .then(function(tokens) {
+    .then(function (tokens) {
       // Searc Auth token
       const search_auth_token = search_token(tokens.auth);
       // Search Subject token
@@ -130,13 +131,13 @@ const info_token = function(req, res) {
 
       return Promise.all([search_auth_token, search_subj_token]);
     })
-    .then(function(values) {
+    .then(function (values) {
       return check_requested_tokens(values[0], values[1]);
     })
-    .then(function(token) {
+    .then(function (token) {
       res.status(200).json(token);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // Log the actual error to the debug log
       debug('Error: ' + error);
       // Always return the same 401 - Unauthorized error to the user.
@@ -146,8 +147,8 @@ const info_token = function(req, res) {
           error: {
             message: 'Invalid email or password',
             code: 401,
-            title: 'Unauthorized',
-          },
+            title: 'Unauthorized'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -156,14 +157,14 @@ const info_token = function(req, res) {
 
 // Function to check if auth and subject token are valid
 function check_requested_tokens(auth_token_info, subj_token_info) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!auth_token_info) {
       reject({
         error: {
           message: 'Auth Token not found',
           code: 404,
-          title: 'Not Found',
-        },
+          title: 'Not Found'
+        }
       });
     }
 
@@ -172,8 +173,8 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
         error: {
           message: 'Subject Token not found',
           code: 404,
-          title: 'Not Found',
-        },
+          title: 'Not Found'
+        }
       });
     }
 
@@ -182,16 +183,13 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
         error: {
           message: 'Auth Token has expired',
           code: 401,
-          title: 'Unauthorized',
-        },
+          title: 'Unauthorized'
+        }
       });
     }
 
     if (auth_token_info.user_id && subj_token_info.user_id) {
-      if (
-        auth_token_info.user_id === subj_token_info.user_id ||
-        auth_token_info.User.admin
-      ) {
+      if (auth_token_info.user_id === subj_token_info.user_id || auth_token_info.User.admin) {
         delete subj_token_info.dataValues.pep_proxy_id;
         delete subj_token_info.dataValues.user_id;
         delete subj_token_info.dataValues.PepProxy;
@@ -201,8 +199,8 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
           error: {
             message: 'User must be admin or owner of the two tokens',
             code: 403,
-            title: 'Forbidden',
-          },
+            title: 'Forbidden'
+          }
         });
       }
     } else if (auth_token_info.pep_proxy_id && subj_token_info.pep_proxy_id) {
@@ -211,8 +209,8 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
           error: {
             message: 'Pep Proxy must be owner of the two tokens',
             code: 403,
-            title: 'Forbidden',
-          },
+            title: 'Forbidden'
+          }
         });
       }
 
@@ -225,8 +223,8 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
         error: {
           message: 'Subject and auth token are not owned by the same entity',
           code: 403,
-          title: 'Forbidden',
-        },
+          title: 'Forbidden'
+        }
       });
     }
   });
@@ -234,30 +232,33 @@ function check_requested_tokens(auth_token_info, subj_token_info) {
 
 // Function to check if parameters exist in request
 function check_headers_request(req) {
-  return new Promise(function(resolve, reject) {
+  const tokenvalue = req.headers.authorization
+    ? req.headers.authorization.split('Bearer ')[1]
+    : req.headers['x-auth-token'];
+  return new Promise(function (resolve, reject) {
     switch (true) {
       case !req.headers['x-subject-token']:
         reject({
           error: {
             message: 'Expecting to find X-Subject-token in requests',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
         break;
-      case !req.headers['x-auth-token']:
+      case !req.headers.authorization && !req.headers['x-auth-token']:
         reject({
           error: {
-            message: 'Expecting to find X-Auth-token in requests',
+            message: 'Expecting to find X-Auth-token/Authorization in requests',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
         break;
       default:
         resolve({
-          auth: req.headers['x-auth-token'],
-          subject: req.headers['x-subject-token'],
+          auth: tokenvalue,
+          subject: req.headers['x-subject-token']
         });
     }
   });
@@ -271,38 +272,31 @@ function search_token(token_id) {
       include: [
         {
           model: models.user,
-          attributes: [
-            'id',
-            'username',
-            'email',
-            'date_password',
-            'enabled',
-            'admin',
-          ],
+          attributes: ['id', 'username', 'email', 'date_password', 'enabled', 'admin']
         },
         {
           model: models.pep_proxy,
-          attributes: ['id'],
-        },
-      ],
+          attributes: ['id']
+        }
+      ]
     })
-    .then(function(token_row) {
+    .then(function (token_row) {
       return Promise.resolve(token_row);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       return Promise.reject(error);
     });
 }
 
 // POST /v1/auth/tokens -- Create a token
-const create_token = function(req, res) {
+const create_token = function (req, res) {
   debug(' --> create_token');
 
   let response_methods = [];
   const methods = [];
 
   return check_create_token_request(req)
-    .then(function(checked) {
+    .then(function (checked) {
       response_methods = checked;
 
       // Check what methods are included in the request
@@ -315,25 +309,23 @@ const create_token = function(req, res) {
 
       return Promise.all(methods);
     })
-    .then(function(values) {
+    .then(function (values) {
       if (methods.length === 2) {
         if (values[0].id !== values[1].id) {
           return Promise.reject({
             error: {
               message: 'Token not correspond to user',
               code: 401,
-              title: 'Unauthorized',
-            },
+              title: 'Unauthorized'
+            }
           });
         }
       }
       return values;
     })
-    .then(function(authenticated) {
+    .then(function (authenticated) {
       const token_id = uuid.v4();
-      const expires = new Date(
-        new Date().getTime() + 1000 * config.api.token_lifetime
-      );
+      const expires = new Date(new Date().getTime() + 1000 * config.api.token_lifetime);
       let row = { access_token: token_id, expires, valid: true };
       if (authenticated[0]._modelOptions.tableName === 'user') {
         row = Object.assign({}, row, { user_id: authenticated[0].id });
@@ -343,32 +335,32 @@ const create_token = function(req, res) {
 
       models.auth_token
         .create(row)
-        .then(function() {
+        .then(function () {
           const response_body = {
             token: {
               methods: response_methods,
-              expires_at: expires,
+              expires_at: expires
             },
             idm_authorization_config: {
               level: config.authorization.level,
-              authzforce: config.authorization.authzforce.enabled,
-            },
+              authzforce: config.authorization.authzforce.enabled
+            }
           };
           res.setHeader('X-Subject-Token', token_id);
           res.status(201).json(response_body);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           debug('Error: ', error);
           res.status(500).json({
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           });
         });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // Log the actual error to the debug log
       debug('Error: ' + error);
       // If an actual 401 has been raised, use the existing message.
@@ -379,8 +371,8 @@ const create_token = function(req, res) {
           error: {
             message: 'Invalid email or password',
             code: 401,
-            title: 'Unauthorized',
-          },
+            title: 'Unauthorized'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -389,17 +381,14 @@ const create_token = function(req, res) {
 
 // Function to check if parameters exist in request
 function check_create_token_request(req) {
-  return new Promise(function(resolve, reject) {
-    if (
-      !req.headers['content-type'] ||
-      !req.headers['content-type'].startsWith('application/json')
-    ) {
+  return new Promise(function (resolve, reject) {
+    if (!req.headers['content-type'] || !req.headers['content-type'].startsWith('application/json')) {
       reject({
         error: {
           message: 'Missing parameter: header Content-Type: application/json',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -416,11 +405,10 @@ function check_create_token_request(req) {
     if (methods.length <= 0) {
       reject({
         error: {
-          message:
-            'Expecting to find name and password or token in body request',
+          message: 'Expecting to find name and password or token in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else {
       resolve(methods);
@@ -430,33 +418,33 @@ function check_create_token_request(req) {
 
 // Function to check password method parameter for identity
 function search_identity(name, password) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     models.helpers
       .search_pep_or_user(name)
-      .then(function(identity) {
+      .then(function (identity) {
         if (identity.length <= 0) {
           reject({
-            error: { message: 'User not found', code: 404, title: 'Not Found' },
+            error: { message: 'User not found', code: 404, title: 'Not Found' }
           });
         } else if (identity[0].source === 'user') {
           authenticate_user(name, password)
-            .then(function(values) {
+            .then(function (values) {
               resolve(values);
             })
-            .catch(function(error) {
+            .catch(function (error) {
               reject(error);
             });
         } else if (identity[0].source === 'pep_proxy') {
           authenticate_pep_proxy(name, password)
-            .then(function(values) {
+            .then(function (values) {
               resolve(values);
             })
-            .catch(function(error) {
+            .catch(function (error) {
               reject(error);
             });
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         reject(error);
       });
   });
@@ -464,24 +452,24 @@ function search_identity(name, password) {
 
 // Authenticate user
 function authenticate_user(email, password) {
-  return new Promise(function(resolve, reject) {
-    user_api_controller.authenticate(email, password, function(error, user) {
+  return new Promise(function (resolve, reject) {
+    user_api_controller.authenticate(email, password, function (error, user) {
       if (error) {
         if (error.message === 'invalid') {
           reject({
             error: {
               message: 'Invalid email or password',
               code: 401,
-              title: 'Unauthorized',
-            },
+              title: 'Unauthorized'
+            }
           });
         } else {
           reject({
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           });
         }
       } else {
@@ -493,27 +481,24 @@ function authenticate_user(email, password) {
 
 // Authenticate pep proxy
 function authenticate_pep_proxy(id, password) {
-  return new Promise(function(resolve, reject) {
-    pep_proxy_api_controller.authenticate(id, password, function(
-      error,
-      pep_proxy
-    ) {
+  return new Promise(function (resolve, reject) {
+    pep_proxy_api_controller.authenticate(id, password, function (error, pep_proxy) {
       if (error) {
         if (error.message === 'invalid') {
           reject({
             error: {
               message: 'Invalid id or password',
               code: 401,
-              title: 'Unauthorized',
-            },
+              title: 'Unauthorized'
+            }
           });
         } else {
           reject({
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           });
         }
       } else {
@@ -531,44 +516,35 @@ function search_token_owner(token_id) {
       include: [
         {
           model: models.user,
-          attributes: [
-            'id',
-            'username',
-            'email',
-            'date_password',
-            'enabled',
-            'admin',
-          ],
+          attributes: ['id', 'username', 'email', 'date_password', 'enabled', 'admin']
         },
         {
           model: models.pep_proxy,
-          attributes: ['id'],
-        },
-      ],
+          attributes: ['id']
+        }
+      ]
     })
-    .then(function(token_row) {
+    .then(function (token_row) {
       if (token_row) {
         if (new Date().getTime() > token_row.expires.getTime()) {
           return Promise.reject({
             error: {
               message: 'Token has expired',
               code: 401,
-              title: 'Unauthorized',
-            },
+              title: 'Unauthorized'
+            }
           });
         }
 
-        const token_owner = token_row.User
-          ? token_row.User
-          : token_row.PepProxy;
+        const token_owner = token_row.User ? token_row.User : token_row.PepProxy;
 
         return Promise.resolve(token_owner);
       }
       return Promise.reject({
-        error: { message: 'Token not found', code: 404, title: 'Not Found' },
+        error: { message: 'Token not found', code: 404, title: 'Not Found' }
       });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       return Promise.reject(error);
     });
 }
@@ -578,5 +554,5 @@ module.exports = {
   create_token,
   info_token,
   is_user,
-  delete_token,
+  delete_token
 };

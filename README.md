@@ -100,11 +100,11 @@ cp config.js.template config.js
 
 ```javascript
 config.database = {
-    host: "localhost", // default: 'localhost'
-    password: "idm", // default: 'idm'
-    username: "root", // default: 'root'
-    database: "idm", // default: 'idm'
-    dialect: "mysql" // default: 'mysql'
+    host: 'localhost', // default: 'localhost'
+    password: 'idm', // default: 'idm'
+    username: 'root', // default: 'root'
+    database: 'idm', // default: 'idm'
+    dialect: 'mysql' // default: 'mysql'
 };
 ```
 
@@ -118,8 +118,8 @@ config.database = {
 ```javascript
 config.https = {
     enabled: true, //default: 'false'
-    cert_file: "certs/idm-2018-cert.pem",
-    key_file: "certs/idm-2018-key.pem",
+    cert_file: 'certs/idm-2018-cert.pem',
+    key_file: 'certs/idm-2018-key.pem',
     port: 443
 };
 ```

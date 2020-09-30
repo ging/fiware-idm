@@ -1,24 +1,20 @@
-const config = require('../../config.js').database;
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config().database;
 const logs = require('../../config.js').debug;
 
 // Load ORM Model
 const Sequelize = require('sequelize');
 
 // Use BBDD Mysql
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    logging: logs,
-    port: config.port,
-    dialect: config.dialect,
-  }
-);
+const sequelize = new Sequelize(config.database, config.username, config.password, {
+  host: config.host,
+  logging: logs,
+  port: config.port,
+  dialect: config.dialect
+});
 
 // Helper to find info about pep proxy or user
-exports.search_pep_or_user = function(id) {
+exports.search_pep_or_user = function (id) {
   let query =
     'SELECT email, \'user\' as source FROM "user" WHERE email=:id' +
     ' UNION ALL ' +
@@ -30,12 +26,12 @@ exports.search_pep_or_user = function(id) {
 
   return sequelize.query(query, {
     replacements: { id },
-    type: Sequelize.QueryTypes.SELECT,
+    type: Sequelize.QueryTypes.SELECT
   });
 };
 
 // Helper to find info about iot or user
-exports.search_iot_or_user = function(id) {
+exports.search_iot_or_user = function (id) {
   let query =
     'SELECT email, \'user\' as source FROM "user" WHERE email=:id' +
     ' UNION ALL ' +
@@ -47,6 +43,6 @@ exports.search_iot_or_user = function(id) {
 
   return sequelize.query(query, {
     replacements: { id },
-    type: Sequelize.QueryTypes.SELECT,
+    type: Sequelize.QueryTypes.SELECT
   });
 };

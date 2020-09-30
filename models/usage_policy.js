@@ -1,59 +1,44 @@
 // Usage Policies model
 const allowed_rules = require('../etc/data_usage/rule_parameters');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'Usage_Policy',
     {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
+        primaryKey: true
       },
       name: {
         type:
           DataTypes.STRING(255) +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),
         validate: {
-          notEmpty: { msg: 'error_empty_name' },
-        },
+          notEmpty: { msg: 'error_empty_name' }
+        }
       },
       description: {
         type:
-          DataTypes.TEXT() +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          DataTypes.TEXT() + (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),
         validate: {
-          notEmpty: { msg: 'error_empty_description' },
-        },
+          notEmpty: { msg: 'error_empty_description' }
+        }
       },
       type: {
-        type: DataTypes.ENUM(
-          'COUNT_POLICY',
-          'AGGREGATION_POLICY',
-          'CUSTOM_POLICY'
-        ),
+        type: DataTypes.ENUM('COUNT_POLICY', 'AGGREGATION_POLICY', 'CUSTOM_POLICY'),
         validate: {
           notEmpty: { msg: 'error_empty_type' },
           isAllow(value, next) {
             const self = this;
             if (self.type) {
-              if (
-                ![
-                  'COUNT_POLICY',
-                  'AGGREGATION_POLICY',
-                  'CUSTOM_POLICY',
-                ].includes(self.type)
-              ) {
+              if (!['COUNT_POLICY', 'AGGREGATION_POLICY', 'CUSTOM_POLICY'].includes(self.type)) {
                 return next('error_invalid_type');
               }
             }
             return next();
-          },
-        },
+          }
+        }
       },
       parameters: {
         type: DataTypes.JSON(),
@@ -66,8 +51,8 @@ module.exports = function(sequelize, DataTypes) {
               }
             }
             return next();
-          },
-        },
+          }
+        }
       },
       punishment: {
         type: DataTypes.ENUM('KILL_JOB', 'UNSUBSCRIBE', 'MONETIZE'),
@@ -75,30 +60,23 @@ module.exports = function(sequelize, DataTypes) {
           isAllow(value, next) {
             const self = this;
             if (self.type && self.type !== 'CUSTOM_POLICY') {
-              if (
-                !['KILL_JOB', 'UNSUBSCRIBE', 'MONETIZE'].includes(
-                  self.punishment
-                )
-              ) {
+              if (!['KILL_JOB', 'UNSUBSCRIBE', 'MONETIZE'].includes(self.punishment)) {
                 return next('error_invalid_punishment');
               }
             }
             return next();
-          },
-        },
+          }
+        }
       },
       from: {
-        type: DataTypes.TIME,
+        type: DataTypes.TIME
       },
       to: {
-        type: DataTypes.TIME,
+        type: DataTypes.TIME
       },
       odrl: {
         type:
-          DataTypes.TEXT() +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          DataTypes.TEXT() + (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),
         validate: {
           isAllow(value, next) {
             const self = this;
@@ -108,14 +86,14 @@ module.exports = function(sequelize, DataTypes) {
               }
             }
             return next();
-          },
-        },
-      },
+          }
+        }
+      }
     },
     {
       tableName: 'usage_policy',
       timestamps: false,
-      underscored: true,
+      underscored: true
     }
   );
 };

@@ -23,6 +23,7 @@ ease Keyrock configuration.
 | IDM_CORS_MAS_AGE                    | Integer | Indicates how long the results of a preflight request                                                           | -                           |
 | IDM_CORS_PREFLIGHT                  | Boolean | Allow preflight requests                                                                                        | true,false                  |
 | IDM_CORS_OPTIONS_STATUS             | Integer | Status response code of HTTP OPTIONS verb                                                                       | -                           |
+| IDM_ENABLE_2FA                      | Boolean | Allow two factor authentication to access keyrock                                                               | true, false                 |
 | IDM_OAUTH_EMPTY_STATE               | Boolean | Allow empty state in service requests                                                                           | true, false                 |
 | IDM_OAUTH_AUTH_LIFETIME             | Integer | Lifetime of OAuth2 Authorization Code                                                                           | -                           |
 | IDM_OAUTH_ACC_LIFETIME              | Integer | Lifetime of OAuth2 Access Token                                                                                 | -                           |
@@ -40,6 +41,7 @@ ease Keyrock configuration.
 | IDM_DB_NAME                         | String  | Name of the database used by Keyrock                                                                            | -                           |
 | IDM_DB_DIALECT                      | String  | SQL Dialect of the database                                                                                     | mysql,sqlite,postgres,mssql |
 | IDM_DB_PORT                         | Integer | Port where Database is running                                                                                  | 0 to 65536                  |
+| IDM_DB_SEED                         | Boolean | Whether to seed the database with data                                                                          | true,false                  |
 | IDM_EX_AUTH_ENABLED                 | Boolean | Enable use of an external user table to authenticate users                                                      | true,false                  |
 | IDM_EX_AUTH_ID_PREFIX               | String  | Prefix to be add to ID in Keyrock user table when a external user logs in                                       | -                           |
 | IDM_EX_AUTH_PASSWORD_ENCRYPTION     | String  | Algorithm used to encrypt passwords in external user table                                                      | -                           |

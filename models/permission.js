@@ -1,73 +1,59 @@
 // Permission model
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'Permission',
     {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
+        primaryKey: true
       },
       name: {
         type:
           DataTypes.STRING(255) +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),
         validate: {
-          notEmpty: { msg: 'error_empty_name' },
-        },
+          notEmpty: { msg: 'error_empty_name' }
+        }
       },
       description: {
         type:
-          DataTypes.TEXT() +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          DataTypes.TEXT() + (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),
         validate: {
-          notEmpty: { msg: 'error_empty_description' },
-        },
+          notEmpty: { msg: 'error_empty_description' }
+        }
       },
       is_internal: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        defaultValue: false
       },
       action: {
         type:
           DataTypes.STRING(255) +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
       },
       resource: {
         type:
           DataTypes.STRING(255) +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
       },
       is_regex: {
         type:
           DataTypes.BOOLEAN() +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),
         allowNull: false,
-        default: false,
+        default: false
       },
       xml: {
         type:
-          DataTypes.TEXT() +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
-      },
+          DataTypes.TEXT() + (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
+      }
     },
     {
       tableName: 'permission',
       timestamps: false,
-      underscored: true,
+      underscored: true
     }
   );
 };

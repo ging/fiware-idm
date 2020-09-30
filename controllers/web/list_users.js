@@ -2,18 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const gravatar = require('gravatar');
 const models = require('../../models/models.js');
-const config = require('../../config.js');
+const config_service = require('../../lib/configService.js');
+const config = config_service.get_config();
 const image = require('../../lib/image.js');
 const debug = require('debug')('idm:web-list_users_controller');
 
 const email_list = config.email_list_type
   ? fs
-      .readFileSync(
-        path.join(
-          __dirname,
-          '../../email_list/' + config.email_list_type + '.txt'
-        )
-      )
+      .readFileSync(path.join(__dirname, '../../email_list/' + config.email_list_type + '.txt'))
       .toString('utf-8')
       .split('\n')
   : [];
@@ -21,40 +17,27 @@ const email_list = config.email_list_type
 const email = require('../../lib/email.js');
 
 // GET /idm/admins/list_users -- Render list users
-exports.show = function(req, res) {
+exports.show = function (req, res) {
   debug('--> list_users');
 
   res.render('admin/users', { csrf_token: req.csrfToken(), errors: [] });
 };
 
 // GET /idm/admins/list_users/users -- Send users
-exports.index = function(req, res) {
+exports.index = function (req, res) {
   debug('--> users');
 
   models.user
     .findAndCountAll({
-      attributes: [
-        'id',
-        'username',
-        'email',
-        'description',
-        'website',
-        'image',
-        'gravatar',
-        'enabled',
-      ],
+      attributes: ['id', 'username', 'email', 'description', 'website', 'image', 'gravatar', 'enabled']
     })
-    .then(function(data) {
+    .then(function (data) {
       const users = data.rows;
 
-      users.forEach(function(user) {
+      users.forEach(function (user) {
         let image = '/img/logos/medium/user.png';
         if (user.gravatar) {
-          image = gravatar.url(
-            user.email,
-            { s: 36, r: 'g', d: 'mm' },
-            { protocol: 'https' }
-          );
+          image = gravatar.url(user.email, { s: 36, r: 'g', d: 'mm' }, { protocol: 'https' });
         } else if (user.image !== 'default') {
           image = '/img/users/' + user.image;
         }
@@ -63,7 +46,7 @@ exports.index = function(req, res) {
 
       res.send({ users, count: data.count });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error searching users ' + error);
       const message = { text: ' Unable to search users', type: 'danger' };
       res.send(message);
@@ -71,23 +54,17 @@ exports.index = function(req, res) {
 };
 
 // POST /idm/admins/list_users/users -- Create new user
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   debug('--> create');
 
   req.body.enabled = req.body.enabled === 'true';
   req.body.send_email = req.body.send_email === 'true';
 
   if (config.email_list_type && req.body.email) {
-    if (
-      config.email_list_type === 'whitelist' &&
-      !email_list.includes(req.body.email.split('@')[1])
-    ) {
+    if (config.email_list_type === 'whitelist' && !email_list.includes(req.body.email.split('@')[1])) {
       res.send({ text: ' User creation failed.', type: 'danger' });
     }
-    if (
-      config.email_list_type === 'blacklist' &&
-      email_list.includes(req.body.email.split('@')[1])
-    ) {
+    if (config.email_list_type === 'blacklist' && email_list.includes(req.body.email.split('@')[1])) {
       res.send({ text: ' User creation failed.', type: 'danger' });
     }
   }
@@ -105,19 +82,12 @@ exports.create = function(req, res) {
     website: req.body.website,
     enabled: !!req.body.enabled,
     extra: {
-      visible_attributes: [
-        'username',
-        'description',
-        'website',
-        'identity_attributes',
-        'image',
-        'gravatar',
-      ],
+      visible_attributes: ['username', 'description', 'website', 'identity_attributes', 'image', 'gravatar']
       // tfa: {
       //   enabled: false,
       //   secret: '',
       // },
-    },
+    }
   });
 
   // If password(again) is empty push an error into the array
@@ -127,7 +97,7 @@ exports.create = function(req, res) {
 
   user
     .validate()
-    .then(function() {
+    .then(function () {
       // If the two password are differents, send an error
       if (req.body.password1 !== req.body.password2) {
         errors.push({ message: 'passwordDifferent' });
@@ -137,14 +107,14 @@ exports.create = function(req, res) {
         return user.save();
       }
     })
-    .then(function() {
+    .then(function () {
       // Send an email to the user
       if (req.body.send_email) {
         const mail_data = {
           username: user.username,
           email: user.email,
           password: req.body.password1,
-          link: config.host,
+          link: config.host
         };
 
         const translation = req.app.locals.translation;
@@ -161,12 +131,12 @@ exports.create = function(req, res) {
         website: user.website,
         image: '/img/logos/medium/user.png',
         gravatar: user.gravatar,
-        enabled: user.enabled,
+        enabled: user.enabled
       });
 
       // If validation fails, send an array with all errors found
     })
-    .catch(function(error) {
+    .catch(function (error) {
       if (error.message !== 'passwordDifferent') {
         errors = errors.concat(error.errors);
       }
@@ -175,20 +145,14 @@ exports.create = function(req, res) {
 };
 
 // PUT /idm/admins/list_users/users/:user_id/user_info -- Edit user info
-exports.edit_info = function(req, res) {
+exports.edit_info = function (req, res) {
   debug('--> edit_info');
 
   if (config.email_list_type && req.body.email) {
-    if (
-      config.email_list_type === 'whitelist' &&
-      !email_list.includes(req.body.email.split('@')[1])
-    ) {
+    if (config.email_list_type === 'whitelist' && !email_list.includes(req.body.email.split('@')[1])) {
       res.send({ text: ' User creation failed.', type: 'danger' });
     }
-    if (
-      config.email_list_type === 'blacklist' &&
-      email_list.includes(req.body.email.split('@')[1])
-    ) {
+    if (config.email_list_type === 'blacklist' && email_list.includes(req.body.email.split('@')[1])) {
       res.send({ text: ' User creation failed.', type: 'danger' });
     }
   }
@@ -196,7 +160,7 @@ exports.edit_info = function(req, res) {
   const new_data = {
     username: req.body.username,
     description: req.body.description,
-    website: req.body.website,
+    website: req.body.website
   };
 
   if (req.body.email !== req.user.email) {
@@ -209,32 +173,32 @@ exports.edit_info = function(req, res) {
   // Validate user email and username
   user
     .validate()
-    .then(function() {
+    .then(function () {
       return models.user.update(new_data, {
         fields: ['username', 'email', 'description', 'website'],
-        where: { id: req.user.id },
+        where: { id: req.user.id }
       });
     })
-    .then(function() {
+    .then(function () {
       res.status(200).json({
         user: {
           id: req.user.id,
           username: user.username,
           email: user.email ? user.email : req.user.email,
           description: user.description,
-          website: user.website,
-        },
+          website: user.website
+        }
       });
 
       // If validation fails, send an array with all errors found
     })
-    .catch(function(error) {
+    .catch(function (error) {
       res.status(400).json({ errors: error.errors });
     });
 };
 
 // PUT /idm/admins/list_users/users/:user_id/change_password -- Change password of user
-exports.change_password = function(req, res) {
+exports.change_password = function (req, res) {
   debug('--> change_password');
 
   // Array of errors to send to the view
@@ -245,7 +209,7 @@ exports.change_password = function(req, res) {
   // Build a row and validate it
   const user = models.user.build({
     password: req.body.password1,
-    date_password,
+    date_password
   });
 
   // If password(again) is empty push an error into the array
@@ -255,7 +219,7 @@ exports.change_password = function(req, res) {
   // Validate user email and username
   user
     .validate()
-    .then(function() {
+    .then(function () {
       // If the two password are differents, send an error
       if (req.body.password1 !== req.body.password2) {
         errors.push({ message: 'passwordDifferent' });
@@ -264,20 +228,20 @@ exports.change_password = function(req, res) {
         return models.user.update(
           {
             password: req.body.password1,
-            date_password,
+            date_password
           },
           {
             fields: ['password', 'date_password'],
-            where: { id: req.user.id },
+            where: { id: req.user.id }
           }
         );
       }
     })
-    .then(function() {
+    .then(function () {
       res.status(200).json('success');
       // If validation fails, send an array with all errors found
     })
-    .catch(function(error) {
+    .catch(function (error) {
       if (error.message !== 'passwordDifferent') {
         errors = errors.concat(error.errors);
       }
@@ -286,7 +250,7 @@ exports.change_password = function(req, res) {
 };
 
 // PUT /idm/admins/list_users/users/:user_id/enable -- Enable user
-exports.enable = function(req, res) {
+exports.enable = function (req, res) {
   debug('--> enable');
 
   models.user
@@ -294,20 +258,20 @@ exports.enable = function(req, res) {
       { enabled: req.body.enabled === 'true' },
       {
         fields: ['enabled'],
-        where: { id: req.user.id },
+        where: { id: req.user.id }
       }
     )
-    .then(function() {
+    .then(function () {
       res.status(200).json('success');
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
       res.status(400).json('fail');
     });
 };
 
 // DELETE /idm/admins/list_users/users -- Delete user
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   debug('--> delete');
 
   let users_image;
@@ -315,28 +279,28 @@ exports.delete = function(req, res) {
   models.user
     .findAll({
       where: {
-        id: req.body.delete_users,
-      },
+        id: req.body.delete_users
+      }
     })
-    .then(function(users) {
+    .then(function (users) {
       const users_index = users.length;
       if (users_index > 0) {
-        users_image = users.map(user => 'public/img/users/' + user.image);
+        users_image = users.map((user) => 'public/img/users/' + user.image);
         return models.user.destroy({
           where: {
-            id: req.body.delete_users,
-          },
+            id: req.body.delete_users
+          }
         });
       }
       return res.status(200).json('success');
     })
-    .then(function() {
+    .then(function () {
       return image.destroy_several(users_image);
     })
-    .then(function() {
+    .then(function () {
       return res.status(200).json('success');
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
       res.status(400).json('fail');
     });

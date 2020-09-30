@@ -18,13 +18,21 @@ module.exports = function(sequelize, DataTypes) {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      name: {
+      username: {
         type:
           DataTypes.STRING(64) +
           (sequelize.getDialect() === 'mysql'
             ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
             : ''),
         validate: { notEmpty: { msg: 'username' } },
+      },
+      name: {
+        type: DataTypes.STRING,
+        unique: false,
+      },
+      surname: {
+        type: DataTypes.STRING,
+        unique: false,
       },
       email: {
         type: DataTypes.STRING,

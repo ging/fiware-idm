@@ -605,6 +605,10 @@ function create_oauth_response(
     );
 
     user_info.username = identity.username;
+    if (identity.extra) {
+      user_info.firstname = identity.extra.firstname;
+      user_info.surname = identity.extra.surname;
+    }
     user_info.app_id = application_id;
     user_info.isGravatarEnabled = identity.gravatar;
     user_info.email = identity.email;
@@ -628,7 +632,6 @@ function create_oauth_response(
     ) {
       user_info.attributes = identity.extra.identity_attributes;
     }
-
     return search_user_info(user_info, action, resource, authzforce, req_app);
   } else if (type === 'iot') {
     const iot_info = JSON.parse(

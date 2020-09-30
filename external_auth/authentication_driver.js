@@ -10,7 +10,14 @@ exports.authenticate = function(username, password, callback) {
   // Search the user
   models.user_ext
     .find({
-      attributes: ['id', 'name', 'email', 'encrypted_password'],
+      attributes: [
+        'id',
+        'username',
+        'surname',
+        'name',
+        'email',
+        'encrypted_password',
+      ],
       where: {
         email: username,
       },
@@ -55,6 +62,7 @@ function find_local_user(user, callback) {
         'admin',
         'date_password',
         'starters_tour_ended',
+        'extra',
       ],
       where: {
         id: external_auth.id_prefix + user.id,
@@ -84,11 +92,12 @@ function create_local_user(user, callback) {
   // Build a row and validate it
   const local_user = models.user.build({
     id: external_auth.id_prefix + user.id,
-    username: user.name,
+    username: user.username,
     email: user.email,
     password: 'none',
     date_password: new Date(new Date().getTime()),
     enabled: true,
+    extra: { firstname: user.name, surname: user.surname },
   });
 
   local_user

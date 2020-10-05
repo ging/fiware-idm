@@ -354,45 +354,40 @@ function storeToken(token, client, identity, jwt) {
     : Promise.resolve();
 
   //AQUI
-  /*let user_autho_app_promise =
+  let shared_attributes = ['username', 'email'];
+  let user_autho_app_promise =
     user_id && config_oauth2.ask_authorization
       ? user_authorized_application.findOrCreate({
-          // User has enable application to read their information
-          where: { user_id,
-            oauth_client_id: client.id,
-            //mio----
-            //shared_attributes: shared_attributes
-            //-----
-          },
+          where: { user_id, oauth_client_id: client.id },
           defaults: {
             user_id,
             oauth_client_id: client.id,
-
-          },
+            shared_attributes: shared_attributes
+          }
         })
-      : Promise.resolve();*/
+      : Promise.resolve();
 
   return access_token_promise
     .then(function () {
-      //  return user_autho_app_promise.then(function() {
-      if (user_id || iot_id) {
-        token[identity.dataValues.type] = identity.dataValues.type;
-      }
+      return user_autho_app_promise.then(function () {
+        if (user_id || iot_id) {
+          token[identity.dataValues.type] = identity.dataValues.type;
+        }
 
-      if (token.scope === 'all') {
-        delete token.scope;
-      }
+        if (token.scope === 'all') {
+          delete token.scope;
+        }
 
-      return _.assign(
-        // expected to return client and user, but not returning
-        {
-          client,
-          access_token: token.accessToken, // proxy
-          refresh_token: token.refreshToken // proxy
-        },
-        token
-      );
-      //  });
+        return _.assign(
+          // expected to return client and user, but not returning
+          {
+            client,
+            access_token: token.accessToken, // proxy
+            refresh_token: token.refreshToken // proxy
+          },
+          token
+        );
+      });
     })
     .catch(function (err) {
       debug('saveToken - Err: ', err);

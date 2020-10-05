@@ -1,8 +1,8 @@
 const models = require('../../models/models.js');
-const create_oauth_response = require('../../models/model_oauth_server.js')
-  .create_oauth_response;
-const config_eidas = require('../../config.js').eidas;
-const config_oauth2 = require('../../config.js').oauth2;
+const create_oauth_response = require('../../models/model_oauth_server.js').create_oauth_response;
+const config_service = require('../../lib/configService.js');
+const config_eidas = config_service.get_config().eidas;
+const config_oauth2 = config_service.get_config().oauth2;
 const user_controller = require('../../controllers/web/users');
 const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
 const gravatar = require('gravatar');
@@ -16,11 +16,11 @@ const debug = require('debug')('idm:oauth_controller');
 // Create Oauth Server model
 const oauth_server = new OauthServer({
   model: require('../../models/model_oauth_server.js'),
-  debug: true,
+  debug: true
 });
 
 // POST /oauth2/token -- Function to handle token requests
-exports.token = function(req, res) {
+exports.token = function (req, res) {
   debug(' --> token');
 
   const request = new Request(req);
@@ -28,14 +28,14 @@ exports.token = function(req, res) {
 
   oauth_server
     .token(request, response)
-    .then(function(token) {
+    .then(function (token) {
       if (token.scope.includes('jwt')) {
         response.body.token_type = 'jwt';
         delete response.body.expires_in;
       }
       res.status(200).json(response.body);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error ', error);
       // Request is not authorized.
       return res.status(error.code || 500).json(error.message || error);
@@ -43,27 +43,22 @@ exports.token = function(req, res) {
 };
 
 // MW to see if query contains response_type attribute
-exports.response_type_required = function(req, res, next) {
+exports.response_type_required = function (req, res, next) {
   debug(' --> response_type_required');
 
   if (
     !req.query.response_type ||
-    !(
-      req.query.response_type.includes('code') ||
-      req.query.response_type.includes('token')
-    )
+    !(req.query.response_type.includes('code') || req.query.response_type.includes('token'))
   ) {
     // Reponse with message
-    const err = new Error(
-      'invalid_request: response_type not valid or not exist'
-    );
+    const err = new Error('invalid_request: response_type not valid or not exist');
     err.status = 400;
     debug('Error ', err.message);
 
     res.locals.error = err;
     res.render('errors/oauth', {
       query: req.query,
-      application: req.application,
+      application: req.application
     });
   } else if (!req.query.client_id) {
     // Reponse with message
@@ -74,7 +69,7 @@ exports.response_type_required = function(req, res, next) {
     res.locals.error = err;
     res.render('errors/oauth', {
       query: req.query,
-      application: req.application,
+      application: req.application
     });
   } else {
     next();
@@ -82,23 +77,15 @@ exports.response_type_required = function(req, res, next) {
 };
 
 // MW to search application
-exports.load_application = function(req, res, next) {
+exports.load_application = function (req, res, next) {
   debug(' --> load_application');
 
   models.oauth_client
     .findOne({
       where: { id: req.query.client_id },
-      attributes: [
-        'id',
-        'name',
-        'description',
-        'image',
-        'response_type',
-        'url',
-        'redirect_uri',
-      ],
+      attributes: ['id', 'name', 'description', 'image', 'response_type', 'url', 'redirect_uri']
     })
-    .then(function(application) {
+    .then(function (application) {
       if (application) {
         req.application = application;
         next();
@@ -115,7 +102,7 @@ exports.load_application = function(req, res, next) {
 };
 
 // MW to check user session
-exports.check_user = function(req, res, next) {
+exports.check_user = function (req, res, next) {
   debug(' --> check_user');
 
   if (req.session.user) {
@@ -136,22 +123,20 @@ exports.check_user = function(req, res, next) {
         image:
           req.application.image === 'default'
             ? '/img/logos/original/app.png'
-            : '/img/applications/' + req.application.image,
+            : '/img/applications/' + req.application.image
       },
       errors,
-      csrf_token: req.csrfToken(),
+      csrf_token: req.csrfToken()
     };
 
     render_values.saml_request = {
-      enabled: false,
+      enabled: false
     };
 
     if (config_eidas.enabled && req.sp) {
       render_values.saml_request.xml = req.saml_auth_request.xml;
-      render_values.saml_request.postLocationUrl =
-        req.saml_auth_request.postLocationUrl;
-      render_values.saml_request.redirectLocationUrl =
-        req.saml_auth_request.redirectLocationUrl;
+      render_values.saml_request.postLocationUrl = req.saml_auth_request.postLocationUrl;
+      render_values.saml_request.redirectLocationUrl = req.saml_auth_request.redirectLocationUrl;
       render_values.saml_request.enabled = true;
     }
 
@@ -160,7 +145,7 @@ exports.check_user = function(req, res, next) {
 };
 
 // POST /oauth2/authorize -- Function to handle authorization code and implicit requests
-exports.authenticate_user = function(req, res, next) {
+exports.authenticate_user = function (req, res, next) {
   debug(' --> authenticate_user');
 
   const errors = [];
@@ -178,10 +163,7 @@ exports.authenticate_user = function(req, res, next) {
 
     // If not, authenticate and search if user is authorized in the application
     if (req.body.email && req.body.password) {
-      user_controller.authenticate(req.body.email, req.body.password, function(
-        error,
-        user
-      ) {
+      user_controller.authenticate(req.body.email, req.body.password, function (error, user) {
         if (error) {
           // If error, send message to the icoming path
           req.session.errors = [error.message ? error.message : ''];
@@ -193,11 +175,7 @@ exports.authenticate_user = function(req, res, next) {
         // The session is defined by the existence of: req.session.user
         let image = '/img/logos/small/user.png';
         if (user.gravatar) {
-          image = gravatar.url(
-            user.email,
-            { s: 25, r: 'g', d: 'mm' },
-            { protocol: 'https' }
-          );
+          image = gravatar.url(user.email, { s: 25, r: 'g', d: 'mm' }, { protocol: 'https' });
         } else if (user.image !== 'default') {
           image = '/img/users/' + user.image;
         }
@@ -206,7 +184,7 @@ exports.authenticate_user = function(req, res, next) {
           username: user.username,
           email: user.email,
           image,
-          oauth_sign_in: true,
+          oauth_sign_in: true
         };
 
         check_user_authorized_application(req, res, next);
@@ -227,14 +205,11 @@ exports.authenticate_user = function(req, res, next) {
 
 // Check if user has authorized the application
 function check_user_authorized_application(req, res, next) {
-  debug(
-    ' --> check_user_authorized_application : ',
-    config_oauth2.ask_authorization
-  );
+  debug(' --> check_user_authorized_application : ', config_oauth2.ask_authorization);
 
   if (config_oauth2.ask_authorization) {
     search_user_authorized_application(req.session.user.id, req.application.id)
-      .then(function(user) {
+      .then(function (user) {
         if (user) {
           req.user = user;
           oauth_authorize(req, res, next);
@@ -246,13 +221,14 @@ function check_user_authorized_application(req, res, next) {
               id: req.query.client_id,
               redirect_uri: req.query.redirect_uri,
               url: '/oauth2/enable_app?' + url.parse(req.url).query,
-              state: req.query.state,
+              state: req.query.state
             },
             csrf_token: req.csrfToken(),
+            flag: true
           });
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ', error);
         req.session.errors = error;
         res.redirect('/');
@@ -273,36 +249,36 @@ function search_user_authorized_application(user_id, app_id) {
       include: [
         {
           model: models.user,
-          attributes: ['id', 'username', 'gravatar', 'image', 'email'],
-        },
-      ],
+          attributes: ['id', 'username', 'gravatar', 'image', 'email']
+        }
+      ]
     })
-    .then(function(user_is_authorized) {
+    .then(function (user_is_authorized) {
       if (user_is_authorized) {
         return user_is_authorized.User;
       }
       return null;
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error ', error);
       Promise.reject('Internal error');
     });
 }
 
 // MW to load user
-exports.load_user = function(req, res, next) {
+exports.load_user = function (req, res, next) {
   debug(' --> load_user');
-
+  debug(req.session);
   if (req.session.user.id) {
     models.user
       .findOne({
-        where: { id: req.session.user.id },
+        where: { id: req.session.user.id }
       })
-      .then(function(user) {
+      .then(function (user) {
         req.user = user;
         next();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error ', error);
         next(error);
       });
@@ -312,9 +288,32 @@ exports.load_user = function(req, res, next) {
 };
 
 // POST /oauth2/enable_app -- User authorize the application to see their details
-exports.enable_app = function(req, res, next) {
+exports.enable_app = function (req, res, next) {
   debug(' --> enable_app');
+  //-----------
+  const shared_attributes = req.body.user_authorized_application.shared_attributes;
 
+  if (config_oauth2.ask_authorization) {
+    return models.user_authorized_application
+      .findOrCreate({
+        // User has enabled application to read their information
+        where: {
+          user_id: req.session.user.id,
+          oauth_client_id: req.application.id
+        },
+        defaults: {
+          user_id: req.session.user.id,
+          oauth_client_id: req.application.id,
+          shared_attributes
+        }
+      })
+      .then(function () {
+        return oauth_authorize(req, res, next);
+      })
+      .catch(function (error) {
+        next(error);
+      });
+  }
   return oauth_authorize(req, res, next);
 };
 
@@ -335,19 +334,19 @@ function oauth_authorize(req, res, next) {
   const options = {
     allowEmptyState: config_oauth2.allow_empty_state // eslint-disable-line snakecase/snakecase
       ? config_oauth2.allow_empty_state
-      : false,
+      : false
   };
 
   return oauth_server
     .authorize(request, response, options)
-    .then(function(success) {
+    .then(function (success) {
       res.redirect(success);
     })
     .catch(next);
 }
 
 // GET /user -- Function to handle token authentication
-exports.authenticate_token = function(req, res) {
+exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
   const action = req.query.action ? req.query.action : undefined;
   const resource = req.query.resource ? req.query.resource : undefined;
@@ -361,7 +360,7 @@ exports.authenticate_token = function(req, res) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
-      title: 'Bad Request',
+      title: 'Bad Request'
     };
     return res.status(400).json(error);
   }
@@ -369,7 +368,7 @@ exports.authenticate_token = function(req, res) {
   if (req_app) {
     return models.oauth_client
       .findById(req_app)
-      .then(function(application) {
+      .then(function (application) {
         if (application) {
           if (application.token_types.includes('jwt')) {
             return authenticate_jwt(
@@ -397,12 +396,12 @@ exports.authenticate_token = function(req, res) {
         const message = {
           message: 'Unauthorized',
           code: 401,
-          title: 'Unauthorized',
+          title: 'Unauthorized'
         };
 
         return res.status(401).json(message);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error ', error);
         // Request is not authorized.
         return res.status(error.code || 500).json(error.message || error);
@@ -425,10 +424,7 @@ function authenticate_jwt(
 ) {
   debug(' --> authenticate_jwt');
 
-  jsonwebtoken.verify(req.query.access_token, jwt_secret, function(
-    err,
-    decoded
-  ) {
+  jsonwebtoken.verify(req.query.access_token, jwt_secret, function (err, decoded) {
     if (err) {
       debug('Error ' + err);
       authenticate_bearer(
@@ -446,7 +442,7 @@ function authenticate_jwt(
         gravatar: decoded.isGravatarEnabled,
         email: decoded.email,
         id: decoded.id,
-        type: decoded.type ? decoded.type : 'app',
+        type: decoded.type ? decoded.type : 'app'
       };
 
       const application_id = decoded.app_id;
@@ -463,7 +459,7 @@ function authenticate_jwt(
         .then(function(response) {
           return res.status(200).json(response);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           debug('Error ', error);
           // Request is not authorized.
           return res.status(error.code || 500).json(error.message || error);
@@ -484,21 +480,21 @@ function authenticate_bearer(
 ) {
   debug(' --> authenticate_bearer');
   const options = {
-    allowBearerTokensInQueryString: true, // eslint-disable-line snakecase/snakecase
+    allowBearerTokensInQueryString: true // eslint-disable-line snakecase/snakecase
   };
 
   const request = new Request({
     headers: { authorization: req.headers.authorization },
     method: req.method,
     query: req.query,
-    body: req.body,
+    body: req.body
   });
 
   const response = new Response(res);
 
   oauth_server
     .authenticate(request, response, options)
-    .then(function(token_info) {
+    .then(function (token_info) {
       const identity = token_info.user;
       const application_id = token_info.oauth_client.id;
       return create_oauth_response(
@@ -511,10 +507,10 @@ function authenticate_bearer(
         req_app
       );
     })
-    .then(function(response) {
+    .then(function (response) {
       return res.status(200).json(response);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error ', error);
       // Request is not authorized.
       return res.status(error.code || 500).json(error.message || error);
@@ -522,7 +518,7 @@ function authenticate_bearer(
 }
 
 // POST /oauth2/revoke -- Function to revoke a token
-exports.revoke_token = function(req, res, next) {
+exports.revoke_token = function (req, res, next) {
   debug(' --> revoke_token');
 
   const options = {};
@@ -532,7 +528,7 @@ exports.revoke_token = function(req, res, next) {
 
   return oauth_server
     .revoke(request, response, options)
-    .then(function() {
+    .then(function () {
       debug('Success revoking a token');
       return res.status(200).json();
     })

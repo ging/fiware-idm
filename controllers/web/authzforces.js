@@ -1,17 +1,15 @@
 const authzforce = require('../../lib/authzforce.js');
 const models = require('../../models/models.js');
-const config_authorization = require('../../config.js').authorization;
+const config_service = require('../../lib/configService.js');
+const config_authorization = config_service.get_config().authorization;
 
 const debug = require('debug')('idm:web-authzforce_controller');
 
 // Create all rules and policies in atuhzforce and save in database
-exports.submit_authzforce_policies = function(
-  application_id,
-  submit_assignment
-) {
+exports.submit_authzforce_policies = function (application_id, submit_assignment) {
   debug('--> submit_authzforce_policies');
   if (config_authorization.authzforce.enabled) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       // Delete roles provider and purchaser if they exist in request
       delete submit_assignment.provider;
       delete submit_assignment.purchaser;
@@ -22,7 +20,7 @@ exports.submit_authzforce_policies = function(
       // filter submit assignment to obtain all permission ids
       for (const role in submit_assignment) {
         permissions.push(
-          ...submit_assignment[role].filter(function(elem) {
+          ...submit_assignment[role].filter(function (elem) {
             if (['1', '2', '3', '4', '5', '6'].includes(elem)) {
               return false;
             }
@@ -35,9 +33,9 @@ exports.submit_authzforce_policies = function(
       models.permission
         .findAll({
           where: { id: permissions, oauth_client_id: application_id },
-          includes: ['id', 'name', 'action', 'resource', 'xml'],
+          includes: ['id', 'name', 'action', 'resource', 'xml']
         })
-        .then(function(permissions_info) {
+        .then(function (permissions_info) {
           if (permissions_info.length > 0) {
             // Object to be sent to authzforce to create policies
             const submit_authzforce = {};
@@ -45,17 +43,11 @@ exports.submit_authzforce_policies = function(
             // Associate permission id to it's info
             for (const role in submit_assignment) {
               for (let i = 0; i < submit_assignment[role].length; i++) {
-                if (
-                  !['1', '2', '3', '4', '5', '6'].includes(
-                    submit_assignment[role][i]
-                  )
-                ) {
+                if (!['1', '2', '3', '4', '5', '6'].includes(submit_assignment[role][i])) {
                   if (!submit_authzforce[role]) {
                     submit_authzforce[role] = [];
                   }
-                  const permission = permissions_info.find(
-                    elem => elem.id === submit_assignment[role][i]
-                  );
+                  const permission = permissions_info.find((elem) => elem.id === submit_assignment[role][i]);
                   submit_authzforce[role].push(permission);
                 }
               }
@@ -64,9 +56,9 @@ exports.submit_authzforce_policies = function(
             // Search if application has an authzforce domain associated
             models.authzforce
               .findOne({
-                where: { oauth_client_id: application_id },
+                where: { oauth_client_id: application_id }
               })
-              .then(function(domain) {
+              .then(function (domain) {
                 if (!domain) {
                   domain = { oauth_client_id: application_id };
                 }
@@ -75,21 +67,12 @@ exports.submit_authzforce_policies = function(
                   // Handle equest to authzforce
                   authzforce
                     .handle(domain, submit_authzforce)
-                    .then(function(authzforce_response) {
+                    .then(function (authzforce_response) {
                       // Log info about request state
-                      debug(
-                        'DOMAIN OF APPLICATION IS: ' +
-                          authzforce_response[1].az_domain
-                      );
+                      debug('DOMAIN OF APPLICATION IS: ' + authzforce_response[1].az_domain);
                       debug('POLICY ID: ' + authzforce_response[1].policy);
-                      debug(
-                        'VERSION OF POLICY: ' +
-                          authzforce_response[1].version_policy
-                      );
-                      debug(
-                        'RESPONSE CODE FROM POLICY ACTIVATION: ' +
-                          authzforce_response[2].status
-                      );
+                      debug('VERSION OF POLICY: ' + authzforce_response[1].version_policy);
+                      debug('RESPONSE CODE FROM POLICY ACTIVATION: ' + authzforce_response[2].status);
 
                       let type;
                       let message;
@@ -117,11 +100,7 @@ exports.submit_authzforce_policies = function(
                       }
 
                       if (domain.az_domain) {
-                        update_domain(
-                          application_id,
-                          domain,
-                          authzforce_response[1].version_policy
-                        );
+                        update_domain(application_id, domain, authzforce_response[1].version_policy);
                       } else {
                         create_domain(application_id, authzforce_response[1]);
                       }
@@ -129,36 +108,36 @@ exports.submit_authzforce_policies = function(
                       // Send message of success of assign permissions to roles
                       resolve({ text: message, type });
                     })
-                    .catch(function(error) {
+                    .catch(function (error) {
                       debug('Error ' + error);
                       reject({
                         text: ' Authzforce error',
-                        type: 'warning',
+                        type: 'warning'
                       });
                     });
                 } else {
                   reject({
                     text: ' invalid submit.',
-                    type: 'warning',
+                    type: 'warning'
                   });
                 }
               })
-              .catch(function(error) {
+              .catch(function (error) {
                 debug('Error ' + error);
                 reject({
                   text: ' authzforce search error.',
-                  type: 'warning',
+                  type: 'warning'
                 });
               });
           } else {
             reject({ text: ' Not create rules.', type: 'warning' });
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           debug('Error ' + error);
           reject({
             text: ' permission search error.',
-            type: 'warning',
+            type: 'warning'
           });
         });
     });
@@ -175,12 +154,12 @@ function create_domain(application_id, authzforce) {
       az_domain: authzforce.az_domain,
       policy: authzforce.policy,
       version: authzforce.version_policy,
-      oauth_client_id: application_id,
+      oauth_client_id: application_id
     })
-    .then(function() {
+    .then(function () {
       debug('Success creating row in authzforce table');
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
       debug('Error creating row in authzforce table');
     });
@@ -193,21 +172,21 @@ function update_domain(application_id, domain, version) {
   return models.authzforce
     .update(
       {
-        version,
+        version
       },
       {
         fields: ['version'],
         where: {
           az_domain: domain.az_domain,
           policy: domain.policy,
-          oauth_client_id: application_id,
-        },
+          oauth_client_id: application_id
+        }
       }
     )
-    .then(function() {
+    .then(function () {
       debug('Success updating authzforce table');
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
       debug('Error updating authzforce table');
     });

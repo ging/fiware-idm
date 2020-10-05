@@ -1,0 +1,53 @@
+<div id="tfa_page">
+
+    <div class="card card-container">
+      <div class="panel panel-default info" >
+        <div class="panel-heading">
+
+          <h3><%=translation.auth.tfa.title01%> </h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-sm-6">
+
+            <h4><%=translation.auth.tfa.title02%> </h4>
+
+            <span>
+              <p><%=translation.auth.tfa.content01%></p>
+              <p><%=translation.auth.tfa.content02%></p>
+              <p><%=translation.auth.tfa.content03%></p>
+            </span>
+            <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
+              <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+              <input type='hidden' name='user_id' value='<%= user.id%>' />
+              <div class="form-group" id="token_form">
+                <label class="control-label" for="token"><%=translation.auth.tfa.content04%> </label>
+                <div class=" ">
+                  <input autofocus="autofocus" class="form-control" id="token" name="token" type="number" maxlength="6" autocomplete="off" required/>
+                </div>
+              </div>
+              <% if (errors.includes('wrong_token')) { -%>
+              <span class="help-block alert alert-danger "><%=translation.auth.tfa.content05%></span>
+              <% } -%>
+              <div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="remember_device" value=true>
+                    <span class="lbl padding-0"><%=translation.auth.tfa.content06%></span>
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-primary pull-right"><%=translation.auth.tfa.button01%></button>
+              </div>
+            </form>
+          </div>
+          <div class="col-sm-6">
+
+            <h4><%=translation.auth.tfa.title03%></h4>
+            <p><%=translation.auth.tfa.content07%></p>
+            <p><%=translation.auth.tfa.content08%></p>
+            <a href="/auth/avoid_2fa" title="acceder" class="btn btn-primary"><%=translation.auth.tfa.content09%></a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</div>

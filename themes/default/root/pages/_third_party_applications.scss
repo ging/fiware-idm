@@ -1,0 +1,131 @@
+#third_party_applications_page {
+  @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+  hr{
+    border: 2px solid #C4C4C4;
+  }
+  p{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+  }
+  button{
+    font-family:  'Rubik', sans-serif, "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    border: 0px;
+    color: #333333;
+  }
+  input{
+    font-family:  'Rubik', sans-serif, "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    border: 0px;
+  }
+
+  h4{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+    text-align: center;
+    font-size: 26px;
+  }
+
+  .title{
+    font-family:  'Rubik', sans-serif, "Roboto";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 36px;
+    color: #333333;
+  }
+  .subtitle{
+    font-size: 16px;
+    line-height: 19px;
+    color: #333333;
+  }
+  .app-name{
+    padding: 5% 0;
+    font-size: 16px;
+    line-height: 19px;
+    color: #000000;
+  }
+  @media (min-width: 768px){
+    .app-name{
+      padding: 10% 0;
+    }
+  }
+  .app-data{
+    font-size: 14px;
+    line-height: 17px;
+    color: #000000;
+  }
+
+
+  .app-logo{
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #C4C4C4;
+  }
+  .app-logo-container{
+    float: left;
+    padding: 15px;
+  }
+
+
+  .vector{
+    float: right;
+    padding: 8px;
+    position: relative;
+  }
+
+  .panel{
+    height: 260px;
+
+    border: 2px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  .collapse.in{
+    display: inline-block;
+    padding: 10px;
+    position: absolute;
+    z-index: +1;
+    background: #FFFFFF;
+    border: 2px solid #C4C4C4;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+  }
+  @media (min-width: 768px){
+    .collapse.in{
+      display: block;
+    }
+  }
+
+  .collapsing {
+    z-index: +1;
+    display: inline-block;
+    padding: 10px;
+    position: absolute;
+    background: #FFFFFF;
+    border: 2px solid #C4C4C4;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+  }
+
+  .modal-header h3 {
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+  }
+
+}

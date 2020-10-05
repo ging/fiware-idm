@@ -4,6 +4,7 @@
     </div>
     <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/login/" method="POST" enctype="">
         <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+        <input type='hidden' name='ua' id="ua"/>
         <div class="modal-body clearfix">
             <% var nameErrors = [] %>
             <% if (errors.length) { %>
@@ -68,3 +69,7 @@
 </div>
 
 <script src="/javascripts/others/see_password.js" type="text/javascript"></script>
+<script>
+  document.getElementById("ua").innerHTML =
+  "User-agent header sent: " + navigator.userAgent;
+</script>

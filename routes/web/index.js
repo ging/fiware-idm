@@ -27,6 +27,17 @@ router.get('/', csrf_protection, function(req, res) {
     res.render('index', { errors: [], csrf_token: req.csrfToken() });
   }
 });
+// router.get('/', csrf_protection, function(req, res) {
+//   if (req.session.user) {
+//     res.redirect('/home');
+//   } else {
+//     res.render('index', { errors: [], csrf_token: req.csrfToken() });
+//   }
+// });
+// //-----------------------
+// router.get('/home', csrf_protection){
+//   res.redirect('/home');
+// }
 
 router.get('/language', function(req, res) {
   const callback_url = req.header('Referer') || '/idm';

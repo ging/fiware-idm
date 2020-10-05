@@ -23,7 +23,7 @@ In order to run the IdM Keyrock follow these steps:
     following code and:
 
 ```yml
-version: "3.5"
+version: '3.5'
 services:
     keyrock:
         image: fiware/idm:7.6.0
@@ -35,8 +35,8 @@ services:
         depends_on:
             - mysql-db
         ports:
-            - "3000:3000"
-            - "443:443"
+            - '3000:3000'
+            - '443:443'
         environment:
             - DEBUG=idm:*
             - IDM_DB_HOST=mysql-db
@@ -49,6 +49,9 @@ services:
             - IDM_ADMIN_USER=admin
             - IDM_ADMIN_EMAIL=admin@test.com
             - IDM_ADMIN_PASS=1234
+            # If sending eMails point to any STMP server
+            - IDM_EMAIL_HOST=mailer
+            - IDM_EMAIL_PORT=25
 
     mysql-db:
         restart: always
@@ -56,20 +59,34 @@ services:
         hostname: mysql-db
         container_name: db-mysql
         expose:
-            - "3306"
+            - '3306'
         ports:
-            - "3306:3306"
+            - '3306:3306'
         networks:
             default:
                 ipv4_address: 172.18.1.6
         environment:
             # Development use only
             # Use Docker Secrets for Sensitive Data
-            - "MYSQL_ROOT_PASSWORD=secret"
-            - "MYSQL_ROOT_HOST=172.18.1.5"
+            - 'MYSQL_ROOT_PASSWORD=secret'
+            - 'MYSQL_ROOT_HOST=172.18.1.5'
         volumes:
             - mysql-db:/var/lib/mysql
 
+    mailer:
+        restart: always
+        image: mazdermind/docker-mail-relay
+        hostname: mailer
+        container_name: mailer
+        ports:
+            - '25:25'
+        environment:
+            - SMTP_LOGIN=<login> # Login to connect to the external relay
+            - SMTP_PASSWORD=<password> # Password to connect to the external relay
+            - EXT_RELAY_HOST=<hostname> # External relay DNS name
+            - EXT_RELAY_PORT=25
+            - ACCEPTED_NETWORKS=172.18.1.0/24
+            - USE_TLS=no
 networks:
     default:
         ipam:
@@ -96,6 +113,52 @@ The different params mean:
 
 3.  Use `sudo docker-compose up` to run the IdM Keyrock. This will automatically
     download the two images and run the IdM Keyrock service.
+
+### Docker Secrets
+
+As an alternative to passing sensitive information via environment variables,
+`_FILE` may be appended to some sensitive environment variables, causing the
+initialization script to load the values for those variables from files present
+in the container. In particular, this can be used to load passwords from Docker
+secrets stored in `/run/secrets/<secret_name>` files. For example:
+
+```console
+docker run --name keyrock -e IDM_DB_USER_FILE=/run/secrets/password -d fiware/idm
+```
+
+Currently, this `_FILE` suffix is supported for:
+
+-   `IDM_SESSION_SECRET`
+-   `IDM_ENCRYPTION_KEY`
+-   `IDM_DB_PASS`
+-   `IDM_DB_USER`
+-   `IDM_ADMIN_ID`
+-   `IDM_ADMIN_USER`
+-   `IDM_ADMIN_EMAIL`
+-   `IDM_ADMIN_PASS`
+-   `IDM_EX_AUTH_DB_USER`
+-   `IDM_EX_AUTH_DB_PASS`
+-   `IDM_DB_HOST`
+
+## Sending eMails
+
+If you intend to send eMails when running a dockerized Keyrock instance, a
+separate Mail Relay docker container is needed to be set up when running within
+a private network.
+
+The Keyrock `IDM_EMAIL_HOST` and `IDM_EMAIL_PORT` docker ENV variables to point
+to the SMTP relay server .
+
+The SMTP relay settings should then be altered to match the external SMTP
+server. For example to use the Gmail SMTP server the following settings are
+required.
+
+-   Server address: `smtp.gmail.com`
+-   Username: Your Gmail address (for example, `example@gmail.com`)
+-   Password: Your Gmail password
+-   Port (TLS): `587`
+-   Port (SSL): `465`
+-   TLS/SSL required: `Yes`
 
 ## Build your own image
 
@@ -144,8 +207,8 @@ will find a template of the file. To copy the file to the container edit
 fiware-idm:
     image: fiware/idm
     ports:
-        - "3000:3000"
-        - "443:443"
+        - '3000:3000'
+        - '443:443'
     networks:
         idm_network:
             ipv4_address: 172.18.1.6

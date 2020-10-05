@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: function(queryInterface, Sequelize) {
+  up: function (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('oauth_client', [
       {
         id: 'idm_admin_app',
@@ -11,12 +11,12 @@ module.exports = {
         redirect_uri: '',
         grant_type: '',
         response_type: '',
-        image: 'default',
-      },
+        image: 'default'
+      }
     ]);
   },
 
-  down: function(queryInterface, Sequelize) {
+  down: function (queryInterface, Sequelize) {
     return queryInterface.bulkDelete('oauth_client', null, {});
-  },
+  }
 };

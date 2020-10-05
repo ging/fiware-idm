@@ -4,13 +4,10 @@ var config = require('../config.js').password_encryption;
 
 var crypto = require('crypto');
 var key = config.key;
-var salt = crypto
-  .randomBytes(16)
-  .toString('hex')
-  .slice(0, 16);
+var salt = crypto.randomBytes(16).toString('hex').slice(0, 16);
 
 module.exports = {
-  up: function(queryInterface, Sequelize) {
+  up: function (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('user', [
       {
         id: process.env.IDM_ADMIN_ID || 'admin',
@@ -24,11 +21,14 @@ module.exports = {
         date_password: new Date(new Date().getTime()),
         enabled: true,
         admin: true,
-      },
+        extra: `{
+          "visible_attributes": ["username", "description"]
+        }`
+      }
     ]);
   },
 
-  down: function(queryInterface, Sequelize) {
+  down: function (queryInterface, Sequelize) {
     return queryInterface.bulkDelete('user', null, {});
-  },
+  }
 };

@@ -1,6 +1,6 @@
 // BD to store all Auth Tokens
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const AuthToken = sequelize.define(
     'AuthToken',
     {
@@ -8,15 +8,15 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       expires: DataTypes.DATE,
-      valid: DataTypes.BOOLEAN,
+      valid: DataTypes.BOOLEAN
     },
     {
       tableName: 'auth_token',
       timestamps: false,
-      underscored: true,
+      underscored: true
     }
   );
 

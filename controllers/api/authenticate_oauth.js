@@ -1,20 +1,21 @@
 const models = require('../../models/models.js');
 
-const config_authzforce = require('../../config.js').authzforce;
+const config_service = require('../../lib/configService.js');
+const config_authzforce = config_service.get_config().authzforce;
 const debug = require('debug')('idm:api-authenticate_oauth');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 // Middleware to load oauth2 token info
-exports.load_oauth = function(req, res, next, oauth_token_id) {
+exports.load_oauth = function (req, res, next, oauth_token_id) {
   if (!oauth_token_id) {
     res.status(400).json({
       error: {
         message: 'Expecting to find Oauth Token in url',
         code: 400,
-        title: 'Bad Request',
-      },
+        title: 'Bad Request'
+      }
     });
   } else {
     // eslint-disable-next-line snakecase/snakecase
@@ -22,19 +23,19 @@ exports.load_oauth = function(req, res, next, oauth_token_id) {
 
     // Search info of oauth token and include pep proxy
     search_oauth2_token(subject_token)
-      .then(function(oauth2_token_owner) {
+      .then(function (oauth2_token_owner) {
         req.oauth2_token_owner = oauth2_token_owner;
         next();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ' + error);
         if (!error.error) {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
         next(error);
@@ -43,33 +44,33 @@ exports.load_oauth = function(req, res, next, oauth_token_id) {
 };
 
 // Middlware to check request
-exports.check_request = function(req, res, next) {
+exports.check_request = function (req, res, next) {
   if (!req.headers['x-auth-token']) {
     res.status(400).json({
       error: {
         message: 'Expecting to find X-Auth-token in requests',
         code: 400,
-        title: 'Bad Request',
-      },
+        title: 'Bad Request'
+      }
     });
   } else {
     const auth_token = req.headers['x-auth-token'];
 
     // Search info of auth token and include pep proxy
     search_auth_token(auth_token)
-      .then(function(auth_token_owner) {
+      .then(function (auth_token_owner) {
         req.auth_token_owner = auth_token_owner;
         next();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ' + error);
         if (!error.error) {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
         res.status(error.error.code).json(error);
@@ -78,7 +79,7 @@ exports.check_request = function(req, res, next) {
 };
 
 // GET /access-tokens/:oauth_token -- Get info from a token
-exports.info_token = function(req, res) {
+exports.info_token = function (req, res) {
   debug(' --> info_token');
 
   const app_id = req.oauth2_token_owner.oauth_client_id;
@@ -94,25 +95,25 @@ exports.info_token = function(req, res) {
       isGravatarEnabled: false, //eslint-disable-line snakecase/snakecase
       email: '',
       id: req.oauth2_token_owner.iot,
-      app_azf_domain: '',
+      app_azf_domain: ''
     };
     res.status(200).json(iot_info);
   } else if (req.oauth2_token_owner.user) {
     const user = req.oauth2_token_owner.user;
     // Search roles of user in application
     search_user_info(user, app_id)
-      .then(function(user_info) {
+      .then(function (user_info) {
         res.status(200).json(user_info);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ' + error);
         if (!error.error) {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
         res.status(error.error.code).json(error);
@@ -126,7 +127,7 @@ exports.info_token = function(req, res) {
       isGravatarEnabled: false, //eslint-disable-line snakecase/snakecase
       email: '',
       id: '',
-      app_azf_domain: '',
+      app_azf_domain: ''
     };
     res.status(200).json(user_info);
   }
@@ -140,29 +141,27 @@ function search_auth_token(token_id) {
       include: [
         {
           model: models.pep_proxy,
-          attributes: ['id', 'oauth_client_id'],
+          attributes: ['id', 'oauth_client_id']
         },
         {
           model: models.user,
-          attributes: ['id', 'username', 'email', 'image', 'gravatar'],
-        },
-      ],
+          attributes: ['id', 'username', 'email', 'image', 'gravatar']
+        }
+      ]
     })
-    .then(function(token_info) {
+    .then(function (token_info) {
       if (token_info) {
         if (new Date().getTime() > token_info.expires.getTime()) {
           return Promise.reject({
             error: {
               message: 'Auth token has expired',
               code: 401,
-              title: 'Unauthorized',
-            },
+              title: 'Unauthorized'
+            }
           });
         }
 
-        const auth_token_owner = token_info.User
-          ? token_info.User
-          : token_info.PepProxy;
+        const auth_token_owner = token_info.User ? token_info.User : token_info.PepProxy;
 
         return Promise.resolve(auth_token_owner);
       }
@@ -170,8 +169,8 @@ function search_auth_token(token_id) {
         error: {
           message: 'Auth token not found',
           code: 404,
-          title: 'Not Found',
-        },
+          title: 'Not Found'
+        }
       });
     });
 }
@@ -184,24 +183,24 @@ function search_oauth2_token(token_id) {
       include: [
         {
           model: models.user,
-          attributes: ['id', 'username', 'email', 'gravatar'],
-        },
-      ],
+          attributes: ['id', 'username', 'email', 'gravatar']
+        }
+      ]
     })
-    .then(function(token_info) {
+    .then(function (token_info) {
       if (token_info) {
         if (new Date().getTime() > token_info.expires.getTime()) {
           return Promise.reject({
             error: {
               message: 'Oauth token has expired',
               code: 401,
-              title: 'Unauthorized',
-            },
+              title: 'Unauthorized'
+            }
           });
         }
 
         const oauth2_token_owner = {
-          oauth_client_id: token_info.oauth_client_id,
+          oauth_client_id: token_info.oauth_client_id
         };
 
         if (token_info.user_id) {
@@ -218,8 +217,8 @@ function search_oauth2_token(token_id) {
         error: {
           message: 'Oauth token not found',
           code: 404,
-          title: 'Not Found',
-        },
+          title: 'Not Found'
+        }
       });
     });
 }
@@ -231,57 +230,53 @@ function search_user_info(user, app_id) {
     include: [
       {
         model: models.organization,
-        attributes: ['id'],
-      },
-    ],
+        attributes: ['id']
+      }
+    ]
   });
   // Search roles for user or the organization to which the user belongs
-  const search_roles = search_organizations.then(function(organizations) {
+  const search_roles = search_organizations.then(function (organizations) {
     const search_role_organizations = [];
     if (organizations.length > 0) {
       for (let i = 0; i < organizations.length; i++) {
         search_role_organizations.push({
           organization_id: organizations[i].organization_id,
-          role_organization: organizations[i].role,
+          role_organization: organizations[i].role
         });
       }
     }
     return models.role_assignment.findAll({
       where: {
         [Op.or]: [{ [Op.or]: search_role_organizations }, { user_id: user.id }],
-        oauth_client_id: app_id,
+        oauth_client_id: app_id
       },
       include: [
         {
           model: models.user,
-          attributes: ['id', 'username', 'email', 'gravatar'],
+          attributes: ['id', 'username', 'email', 'gravatar']
         },
         {
           model: models.role,
-          attributes: ['id', 'name'],
+          attributes: ['id', 'name']
         },
         {
           model: models.organization,
-          attributes: ['id', 'name', 'description', 'website'],
-        },
-      ],
+          attributes: ['id', 'name', 'description', 'website']
+        }
+      ]
     });
   });
 
-  let search_authzforce = new Promise(resolve => {
+  let search_authzforce = new Promise((resolve) => {
     resolve();
   });
   if (config_authzforce) {
     search_authzforce = models.authzforce.findOne({
-      where: { oauth_client_id: app_id },
+      where: { oauth_client_id: app_id }
     });
   }
 
-  return Promise.all([
-    search_organizations,
-    search_roles,
-    search_authzforce,
-  ]).then(function(values) {
+  return Promise.all([search_organizations, search_roles, search_authzforce]).then(function (values) {
     const role_assignment = values[1];
 
     if (role_assignment.length <= 0) {
@@ -289,8 +284,8 @@ function search_user_info(user, app_id) {
         error: {
           message: 'User is not authorized',
           code: 401,
-          title: 'Unauthorized',
-        },
+          title: 'Unauthorized'
+        }
       });
     }
     const user_info = {
@@ -301,7 +296,7 @@ function search_user_info(user, app_id) {
       isGravatarEnabled: user.gravatar, //eslint-disable-line snakecase/snakecase
       email: user.email,
       id: user.id,
-      app_azf_domain: config_authzforce && values[2] ? values[2].az_domain : '',
+      app_azf_domain: config_authzforce && values[2] ? values[2].az_domain : ''
     };
 
     for (let i = 0; i < role_assignment.length; i++) {
@@ -311,7 +306,7 @@ function search_user_info(user, app_id) {
         if (role_assignment[i].Organization) {
           const organization = role_assignment[i].Organization.dataValues;
           const index = user_info.organizations
-            .map(function(e) {
+            .map(function (e) {
               return e.id;
             })
             .indexOf(organization.id);

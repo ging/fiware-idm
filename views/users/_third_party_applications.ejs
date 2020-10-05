@@ -1,0 +1,108 @@
+<div id="content_body">
+  <div id="third_party_applications_page">
+    <header>
+      <div class="page-header">
+        <h1 class="title">
+          CUENTAS VINCULADAS.
+        </h1>
+        <p class="subtitle">En esta página puedes ver las aplicaciones a las que has autorizado a acceder a tus datos.</p>
+      </div>
+    </header>
+
+    <div id="card-container">
+      <% if (applications.length > 0) {%>
+        <div class="row">
+          <% for (var i = 0; i < applications.length; i++) { %>
+            <div class="col-sm-4" >
+              <div class="panel panel-default info">
+                <div class="panel-title">
+                  <div class="app-logo-container">
+                    <img class="app-logo" alt="application logo" src=<%=applications[i].image%>>
+                  </div>
+                  <div class="vector">
+                      <a data-toggle="collapse"  href="#collapse_delete_button_<%=[i]%>" aria-expanded="true" aria-controls="collapse_delete_button" class="collapsed">
+                        <i class="fa fa-angle-up"></i>
+                      </a>
+                    <div class="collapse_out">
+                      <div id="collapse_delete_button_<%=[i]%>" class="form-group collapse" role="tabpanel">
+                          <div class="btn-group">
+                            <button id="delete_application" title="Delete application" data-toggle="modal" data-target="#delete_application_modal<%=[i]%>" class="btn btn-default btn-sm ajax-modal">
+                              Retirar acceso
+                            </button>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel-body clearfix">
+                    <p class="app-name"><%=applications[i].name%></p>
+                  </div>
+                </div>
+                <hr>
+                <div class="panel-body">
+                  <input type='hidden' name='app_name' value='<%=applications[i].name%>' />
+                      <p class="app-data">Tiene acceso a: <%= applications[i].shared_attributes%></p>
+                      <p class="app-data">Acceso concedido: <%= applications[i].login_date%></p>
+                      <p id ="date" hidden><%= applications[i].login_date%></p>
+                      <p class="app-data" id ="show_date"></p>
+                </div>
+              </div>
+            </div>
+            <div id="delete_application_modal<%=[i]%>" class="modal fade" style="top: 0px;" aria-hidden="false">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">×</a>
+                    <h3>Borrar mis datos de la aplicación</h3>
+                  </div>
+                  <form id="delete_application_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/idm/users/<%= user.id %>/_third_party_applications?_method=delete" method="POST" enctype="">
+                    <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+                    <input type="hidden" name="app_id" value="<%=applications[i].app_id%>"/>
+                    <div class="modal-body clearfix">
+                      <p>Estás a punto de borrar la siguiente aplicación:</p>
+                      <h4><%=applications[i].name%></h4>
+                    </div>
+                    <div class="modal-footer">
+                      <input type="submit" class="btn btn-primary" value="Borrar">
+                      <button data-dismiss="modal" class="btn btn-default secondary cancel">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <%}%>
+          </div>
+          <%} else { %>
+                <p>No hay aplicaciones disponibles.</p>
+            <%}-%>
+          </div>
+        </div>
+
+
+
+<script type="text/javascript">
+  $('.panel-title a:first-child').mouseover(function(){
+    $(this).children().toggleClass('fa-rotate-180');
+  });
+  $('.panel-title a:first-child').mouseleave(function(){
+    if ($(this).hasClass('collapsed')){
+      $(this).children().removeClass('fa-rotate-180');
+    } else {
+      $(this).children().addClass('fa-rotate-180');
+    }
+  });
+  $('.panel-title a:first-child').click(function(){
+    if ($(this).hasClass('collapsed')){
+      $(this).children().addClass('fa-rotate-180');
+    } else {
+      $(this).children().removeClass('fa-rotate-180');
+    }
+  });
+</script>
+
+<!-- <script>
+var d = document.getElementById("date").textContent;
+console.log(d);
+var date = new Date(d);
+console.log(date);
+document.getElementById("show_date").innerHTML = "Acceso concedido: " + date.toDateString();
+</script> -->

@@ -1,0 +1,196 @@
+// #navigation_bar {
+//   @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+//   @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+//   @media (max-width: 767px){
+//     margin-top: 44px;
+// }
+
+
+//   //big screen
+//   @media (min-width: 768px){
+//     .sidebar{
+//       position: fixed !important;
+//       height: 100%;
+//       width: 20%;
+//       // top: 0px;
+//       top: 43px;
+//       display: block;
+//       left: 0px;
+//       padding: 0px;
+//       background: #FFFFFF;
+//       box-shadow: 4px 0px 17px rgba(0, 0, 0, 0.25);
+//     }}
+
+
+//     //small screen
+//     @media (max-width: 767px){
+//       .sidebar{
+//       }
+//       .sidebar ul{
+//         display: flex;
+//         justify-content: center;
+//         // overflow: scroll;
+//         overflow-y: hidden;
+//         white-space: nowrap;
+//         height: 100%;
+//         width:100%;
+//         padding-top: 0;
+//         margin: auto;
+//       }
+//       .sidebar ul a.new-home,
+//       .sidebar ul a.edit,
+//       .sidebar ul a.privacy,
+//       .sidebar ul a.accounts,
+//       .sidebar ul a.help,
+//       .sidebar ul a.notify_,
+//       .sidebar ul a.admins,
+//       .sidebar ul a.list_users_,
+//       .sidebar ul a.active
+//       {
+//         float: left;
+//         display: inline-block;
+//         border-right: 1px solid #A9A9A9;
+//         border-left: 1px solid #A9A9A9;
+//         padding: 0 1.5rem;
+//         line-height: 42px;
+//         // display: block;
+//         height: 30px;
+//         width: 50px;
+
+//       }
+//       .sidebar ul a.new-home h4 span,
+//       .sidebar ul a.edit h4 span,
+//       .sidebar ul a.privacy h4 span,
+//       .sidebar ul a.accounts h4 span,
+//       .sidebar ul a.help h4 span,
+//       .sidebar ul a.notify_ h4 span,
+//       .sidebar ul a.admins h4 span,
+//       .sidebar ul a.list_users_ h4 span,
+//       {
+//         display: none !important;
+//       }
+//       li a.active{
+//         background-color: #EAEAEA;
+//         color: white;
+//       }
+//       li a.active h4 span{
+//         display: none;
+//         height: auto;
+//         width: auto;
+//       }
+//     }
+
+//     //
+//     // @media (max-width: 1024px){
+//     // .sidebar {
+//     //   position: relative !important;
+//     //   margin-bottom: 0 !important;
+//     //   border-bottom: 1px solid #A9A9A9 !important;
+//     //   padding-right: 0px !important;
+//     //   padding-left: 0px !important;
+//     // }}
+
+
+//     // @media (max-width: 768px) {
+//     //   .sidebar ul a.home i,
+//     //   .sidebar ul a.edit i,
+//     //   .sidebar ul a.privacy i,
+//     //   .sidebar ul a.accounts i,
+//     //   .sidebar ul a.help i,{
+//     //     float: left;
+//     //     font-size: 16px;
+//     //   }
+
+
+//     z-index: +1;
+//     h1{
+//       margin: 15px 0;
+//       font-family: 'Rubik';
+//       font-style: normal;
+//       font-weight: 500;
+//       font-size: 20px;
+//       line-height: 24px;
+//       text-align: center;
+//       color: #333333;
+//     }
+//     h4{
+//       font-family: 'Rubik';
+//       font-style: normal;
+//       font-weight: normal;
+//       font-size: 16px;
+//       line-height: 19px;
+//       text-align: right;
+
+//       color: #333333;
+//     }
+
+
+//     li a {
+//       display: block;
+//       color: #000;
+//       padding: 8px 16px;
+//       text-decoration: none;
+//     }
+
+//     li a.active {
+//       background-color: #EAEAEA;
+//       color: white;
+//     }
+
+//     li a:hover:not(.active) {
+//       background-color: #EAEAEA;
+//       color: white;
+//     }
+
+//     .fa{
+//       display: inline;
+//       float: left;
+//       text-align: center;
+//     }
+
+//     #user-logo img{
+//       margin-left: auto;
+//       margin-right: auto;
+//       display: block;
+//       border-radius: 50%;
+//       width: 90px;
+//       height: 90px;
+//       text-align: center;
+//     }
+
+//     #app-logo img{
+//       margin-left: auto;
+//       margin-right: auto;
+//       display: block;
+//       width: 160px;
+//       height: 60px;
+//       text-align: center;
+//       margin: 3% auto 3%;
+//     }
+//     // @media (max-width: 1024px){
+//     //    #app-logo  img{
+//     //   width: 100px;
+//     //   height: 30px;
+//     // }
+//     // }
+//     //Comment for different style
+//     // li{
+//     //   height: 71px;
+//     //   text-align: right;
+//     // }
+
+
+
+
+//     .edit{
+//       font-family: 'Rubik';
+//       font-style: normal;
+//       font-weight: normal;
+//       font-size: 16px;
+//       line-height: 19px;
+//       text-align: right;
+//       color: #333333;
+//     }
+
+
+//   }

@@ -1,0 +1,47 @@
+<!-- <div id="tfa_page">
+  <div class="modal-header">
+    <h3>Registrarse con pregunta de seguridad: </h3>
+  </div>
+  <div class="container">
+    <div id="card card-container">
+      <div class="row">
+
+          <span>
+            <p>Has elegido acceder a tu perfil mediante la pregunta de seguridad.
+              ¡ATENCIÓN!
+              Si continúas, la autenticación de doble factor se deshabilitará y deberás habilitarla de nuevo en tus ajustes.
+              </p>
+          </span>
+
+      </div>
+      <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/auth/tfa_verify/" method="POST" enctype="">
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+        <input type='hidden' name='user_id' value='<%= user.id%>' />
+        <input type='hidden' name='login_security_question' value=true />
+        <div class="modal-body clearfix">
+        <div class="form-group" id="question_form" >
+          <div class=" ">
+            <label class="control-label" for="token">Inserta tu pregunta: </label>
+              <input autofocus="autofocus" class="form-control" id="security_question" name="security_question" type="text" autocomplete="off" required/>
+              <br>
+              <label class="control-label" for="token">Inserta tu respuesta: </label>
+
+              <input autofocus="autofocus" class="form-control" id="security_answer" name="security_answer" type="text" autocomplete="off" required/>
+            </div>
+        </div>
+        <% if (errors.includes('wrong_question')) { -%>
+            <span class="help-block alert alert-danger ">La verificación ha fallado porque la pregunta introducida no es correcta.
+               Por favor vuelva a intentarlo.</span>
+        <% } -%>
+        <% if (errors.includes('wrong_answer')) { -%>
+            <span class="help-block alert alert-danger ">La verificación ha fallado porque la respuesta introducida no es correcta.
+               Por favor vuelva a intentarlo.</span>
+        <% } -%>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary pull-right">Acceder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->

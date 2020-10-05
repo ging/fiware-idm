@@ -1,24 +1,24 @@
 // Authzforce model
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'Authzforce',
     {
       az_domain: {
         type: DataTypes.STRING,
-        primaryKey: true,
+        primaryKey: true
       },
       policy: {
-        type: DataTypes.UUID,
+        type: DataTypes.UUID
       },
       version: {
-        type: DataTypes.INTEGER,
-      },
+        type: DataTypes.INTEGER
+      }
     },
     {
       tableName: 'authzforce',
       timestamps: false,
-      underscored: true,
+      underscored: true
     }
   );
 };

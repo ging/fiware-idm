@@ -1,0 +1,91 @@
+#tfa_page {
+  @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+  p{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+  }
+
+  h3{
+    font-family: 'Rubik', sans-serif, "Roboto";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 36px;
+    color: #333333;
+  }
+  h4{
+    font-family: 'Lato', sans-serif, "Courier New", Courier, monospace;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 36px;
+    color: #333333;
+  }
+  label{
+    color: #333333;
+  }
+
+  button{
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+  }
+
+  .panel-default {
+    background: #FFFFFF;
+    border: 2px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 20px;
+
+    .panel-heading {
+      border-bottom: 0px;
+    }
+    .panel-body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .col-sm-6 {
+        padding: 0px 40px 0px 0px;
+      }
+    }
+  }
+
+  .actions{
+    margin-bottom: 17px;
+  }
+
+  .actions a {
+    font-family:  'Lato', sans-serif, "Courier New", Courier, monospace;
+    border-right: 0px;
+    padding-left: 0px;
+    font-style: normal;
+    font-weight: normal;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .subtitle{
+    font-family:  'Lato', sans-serif, "Courier New", Courier, monospace;
+    border-right: 0px;
+    padding-left: 0px;
+    font-style: normal;
+    font-weight: normal;
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  #security_question_button {
+    color: black;
+    background-color: #E6E6E6;
+    border-color: #001630;
+  }
+
+}
+

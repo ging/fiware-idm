@@ -9,48 +9,46 @@
 require('../../config/config_database');
 
 // const keyrock = require('../../bin/www');
-const config = require('../../../config.js');
+const config_service = require('../../../lib/configService.js');
+config_service.set_config(require('../../config-test.js'));
+const config = config_service.get_config();
 const should = require('should');
 const request = require('request');
 const utils = require('../../utils');
 
-const login = utils.readExampleFile(
-  './test/templates/api/000-authenticate.json'
-).good_admin_login;
-const organizations = utils.readExampleFile(
-  './test/templates/api/004-organizations.json'
-);
+const login = utils.readExampleFile('./test/templates/api/000-authenticate.json').good_admin_login;
+const organizations = utils.readExampleFile('./test/templates/api/004-organizations.json');
 
 let token;
 
-describe('API - 4 - Organizations: ', function() {
+describe('API - 4 - Organizations: ', function () {
   // CREATE A VALID TOKEN
   // eslint-disable-next-line no-undef
-  before(function(done) {
+  before(function (done) {
     const good_login = {
       url: config.host + '/v1/auth/tokens',
       method: 'POST',
       json: login,
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     };
-    return request(good_login, function(error, response) {
+    return request(good_login, function (error, response) {
       token = response.headers['x-subject-token'];
       done();
     });
   });
 
-  describe('1) When requesting list of organizations', function() {
-    it('should return a 200 OK', function(done) {
+  describe('1) When requesting list of organizations', function () {
+    it('should return a 200 OK', function (done) {
       const list_organizations = {
         url: config.host + '/v1/organizations',
         method: 'GET',
         headers: {
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
-      request(list_organizations, function(error, response, body) {
+      request(list_organizations, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('organizations');
@@ -60,19 +58,19 @@ describe('API - 4 - Organizations: ', function() {
     });
   });
 
-  describe('2) When creating an organization', function() {
-    it('should return a 201 OK', function(done) {
+  describe('2) When creating an organization', function () {
+    it('should return a 201 OK', function (done) {
       const create_organization = {
         url: config.host + '/v1/organizations',
         method: 'POST',
         body: JSON.stringify(organizations.create.valid_org_body),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_organization, function(error, response, body) {
+      request(create_organization, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('organization');
@@ -82,38 +80,38 @@ describe('API - 4 - Organizations: ', function() {
     });
   });
 
-  describe('3) When reading organization info', function() {
+  describe('3) When reading organization info', function () {
     let organization_id;
 
     // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       const create_organization = {
         url: config.host + '/v1/organizations',
         method: 'POST',
         body: JSON.stringify(organizations.read.create),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_organization, function(error, response, body) {
+      request(create_organization, function (error, response, body) {
         const json = JSON.parse(body);
         organization_id = json.organization.id;
         done();
       });
     });
 
-    it('should return a 200 OK', function(done) {
+    it('should return a 200 OK', function (done) {
       const read_organization = {
         url: config.host + '/v1/organizations/' + organization_id,
         method: 'GET',
         headers: {
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(read_organization, function(error, response, body) {
+      request(read_organization, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('organization');
@@ -123,23 +121,23 @@ describe('API - 4 - Organizations: ', function() {
     });
   });
 
-  describe('4) When updating an organization', function() {
+  describe('4) When updating an organization', function () {
     let organization_id;
     let organization_name;
 
     // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       const create_organization = {
         url: config.host + '/v1/organizations',
         method: 'POST',
         body: JSON.stringify(organizations.update.create),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_organization, function(error, response, body) {
+      request(create_organization, function (error, response, body) {
         const json = JSON.parse(body);
         organization_id = json.organization.id;
         organization_name = json.organization.name;
@@ -147,18 +145,18 @@ describe('API - 4 - Organizations: ', function() {
       });
     });
 
-    it('should return a 200 OK', function(done) {
+    it('should return a 200 OK', function (done) {
       const update_organization = {
         url: config.host + '/v1/organizations/' + organization_id,
         method: 'PATCH',
         body: JSON.stringify(organizations.update.new_values),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(update_organization, function(error, response, body) {
+      request(update_organization, function (error, response, body) {
         should.not.exist(error);
         const json = JSON.parse(body);
         should(json).have.property('values_updated');
@@ -170,38 +168,38 @@ describe('API - 4 - Organizations: ', function() {
     });
   });
 
-  describe('4) When deleting an organization', function() {
+  describe('4) When deleting an organization', function () {
     let organization_id;
 
     // eslint-disable-next-line snakecase/snakecase
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       const create_organization = {
         url: config.host + '/v1/organizations',
         method: 'POST',
         body: JSON.stringify(organizations.delete.create),
         headers: {
           'Content-Type': 'application/json',
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(create_organization, function(error, response, body) {
+      request(create_organization, function (error, response, body) {
         const json = JSON.parse(body);
         organization_id = json.organization.id;
         done();
       });
     });
 
-    it('should return a 204 OK', function(done) {
+    it('should return a 204 OK', function (done) {
       const delete_organization = {
         url: config.host + '/v1/organizations/' + organization_id,
         method: 'DELETE',
         headers: {
-          'X-Auth-token': token,
-        },
+          'X-Auth-token': token
+        }
       };
 
-      request(delete_organization, function(error, response) {
+      request(delete_organization, function (error, response) {
         should.not.exist(error);
         response.statusCode.should.equal(204);
         done();

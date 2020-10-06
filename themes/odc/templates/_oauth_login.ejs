@@ -1,15 +1,16 @@
 <div class="content">
 
     <div class="form">
-        <h2>Acceso a Orange Digital Center</h2>
+        <h2>Acceso aa Orange Digital Center</h2>
         <form action="<%= application.url %>" autocomplete="on" method="POST" enctype="">
             <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <% var nameErrors = [] %>
-            <% if (errors.length) { %>
+<% if (errors.length) { %>
               <% for (var i in errors) { %>
                 <% nameErrors.push(errors[i].message)%>
               <% } %>
             <% } %>
+<div style="display:none"><%=JSON.stringify(errors)%></div>            
             <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
               <span class="help-block alert alert-warning">
                   <p>Session expired</p>
@@ -20,7 +21,7 @@
                   <p>Password changed. Please log in again to continue.</p>
               </span>
             <% } %>
-            <% if (nameErrors.indexOf("Cannot read property 'name' of null") != -1 || nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+            <% if (errors.indexOf("Cannot read property 'name' of null") !=-1 || nameErrors.indexOf("Cannot read property 'name' of null") != -1 || nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
               <div class="alert alert-message alert-danger">
                   <ul class="errorlist">
                       <li>Email o contraseña inválidos.</li>

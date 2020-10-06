@@ -21,7 +21,7 @@
                   <p>Password changed. Please log in again to continue.</p>
               </span>
             <% } %>
-            <% if (errors.indexOf("Cannot read property 'name' of null") !=-1 || nameErrors.indexOf("Cannot read property 'name' of null") != -1 || nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+            <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
               <div class="alert alert-message alert-danger">
                   <ul class="errorlist">
                       <li>Email o contraseña inválidos.</li>
@@ -40,7 +40,7 @@
               <span class="form-control-feedback show-password fa fa-eye"></span>
             </div>
 
-            <input id="submitButton" type="submit" placeholder="Enviar" class="disabled">
+            <input id="submitButton" type="submit" placeholder="Enviar" class="disabled" value="Enviar">
         </form>
 
         <a href="https://orangedigitalcenter.es/users/password/new">¿Has olvidado la contraseña?</a>

@@ -23,9 +23,9 @@ exports.authenticate = function(username, password, callback) {
       },
     })
     .then(function(user) {
-      user.username = user.name;
-      debug('--> user found', user.name);
       if (user) {
+        debug('--> user found', user.name);
+        user.username = user.name;
         // Verify password
         if (user.verifyPassword(password)) {
           find_local_user(user, function(local_user) {

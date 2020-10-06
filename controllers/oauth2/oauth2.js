@@ -123,6 +123,7 @@ exports.check_user = function(req, res, next) {
   } else {
     // Check if there are errors to be rendered
     const errors = req.session.errors || [];
+    req.session.errors = [];
 
     const render_values = {
       application: {

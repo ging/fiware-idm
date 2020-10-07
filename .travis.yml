@@ -34,7 +34,6 @@ jobs:
         - sudo service mysql restart
 
       before_script:
-        - cp config.js.template config.js
         - npm run lint
         - node ./test/database
 
@@ -62,7 +61,6 @@ jobs:
         - sudo service mysql restart
 
       before_script:
-        - cp config.js.template config.js
         - npm run lint
         - node ./test/database
 

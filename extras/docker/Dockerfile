@@ -107,7 +107,6 @@ ARG NODE_VERSION
 WORKDIR /opt/fiware-idm
 COPY --from=builder /opt/fiware-idm .
 
-
 ENV IDM_HOST="http://localhost:3000" \
     IDM_PORT="3000" \
     IDM_PDP_LEVEL="basic" \
@@ -175,6 +174,8 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 # ENV IDM_CORS_MAS_AGE undefined
 # ENV IDM_CORS_PREFLIGHT false
 # ENV IDM_CORS_OPTIONS_STATUS 204
+
+# ENV IDM_ENABLE_2FA false
 
 # ENV IDM_PDP_LEVEL "basic"
 # ENV IDM_AUTHZFORCE_ENABLED false

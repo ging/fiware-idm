@@ -1,6 +1,6 @@
 {
   "name": "fiware-idm",
-  "version": "7.8.2",
+  "version": "7.9.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -26,7 +26,6 @@
     "test:watch": "npm run test -- -w ./lib"
   },
   "dependencies": {
-    "@cloudreach/docker-secrets": "^1.0.3",
     "async": "^2.6.0",
     "base64-img": "^1.0.4",
     "bcrypt": "^5.0.0",
@@ -54,6 +53,7 @@
     "i18n-express": "^1.1.3",
     "is-hex": "^1.1.3",
     "jimp": "^0.6.0",
+    "jsdom": "^16.4.0",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.19",
     "method-override": "^2.3.9",

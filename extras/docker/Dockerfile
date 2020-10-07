@@ -176,6 +176,8 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 # ENV IDM_CORS_PREFLIGHT false
 # ENV IDM_CORS_OPTIONS_STATUS 204
 
+# ENV IDM_ENABLE_2FA false
+
 # ENV IDM_PDP_LEVEL "basic"
 # ENV IDM_AUTHZFORCE_ENABLED false
 # ENV IDM_AUTHZFORCE_HOST "localhost"

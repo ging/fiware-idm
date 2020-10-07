@@ -22,12 +22,6 @@ and incorporated in the next release of the product planned for February 2019:
 
 -   Extend Unit tests: to be run in CI
 
--   OpenID Connect: support to this standard as an extension of the current
-    OAuth 2.0 implementation.
-
--   2 factor authentication: support two levels of authentication based on
-    email/password + QR
-
 -   Enable users to manage access to their data by third party applications
 
 ## Medium term

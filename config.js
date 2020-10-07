@@ -26,7 +26,7 @@ config.https = {
 config.email_list_type = process.env.IDM_EMAIL_LIST || null; // whitelist or blacklist
 
 // Enable 2fa authentication
-config.enable_2fa = process.env.IDM_ENABLE_2FA || true;
+config.enable_2fa = process.env.IDM_ENABLE_2FA || false;
 
 // Secret for user sessions in web
 config.session = {

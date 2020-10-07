@@ -107,6 +107,8 @@ ARG NODE_VERSION
 WORKDIR /opt/fiware-idm
 COPY --from=builder /opt/fiware-idm .
 
+RUN cp config.js.template config.js
+RUN rm config.js.template
 
 ENV IDM_HOST="http://localhost:3000" \
     IDM_PORT="3000" \

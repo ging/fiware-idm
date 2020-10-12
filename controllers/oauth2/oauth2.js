@@ -26,8 +26,19 @@ exports.token = function (req, res) {
   const request = new Request(req);
   const response = new Response(res);
 
+  const grant_type = config_oauth2.not_require_client_authentication_grant_type;
+
+  const options = {
+    // eslint-disable-next-line snakecase/snakecase
+    requireClientAuthentication: grant_type
+      ? {
+          [grant_type]: false
+        }
+      : {}
+  };
+
   oauth_server
-    .token(request, response)
+    .token(request, response, options)
     .then(function (token) {
       if (token.scope.includes('jwt')) {
         response.body.token_type = 'jwt';

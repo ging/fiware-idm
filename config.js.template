@@ -38,7 +38,7 @@ config.cors = {
   enabled: false,
   options: {
     /* eslint-disable snakecase/snakecase */
-    origin: ['*'],
+    origin: '*',
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     allowedHeaders: '*',
     exposedHeaders: undefined,
@@ -59,6 +59,8 @@ config.oauth2 = {
   unique_url: false, // This parameter allows to verify that an application with the same url
   // does not exist when creating or editing it. If there are already applications
   // with the same URL, they should be changed manually
+  not_require_client_authentication_grant_type: undefined // Define grant types that do not require a client authentication
+
 };
 
 // Config api parameters

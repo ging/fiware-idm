@@ -446,8 +446,8 @@ CREATE TABLE `permission` (
   `xml` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `oauth_client_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `is_regex` tinyint(1) NOT NULL DEFAULT '0',
-  `fiware_service` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `use_fiware_service` tinyint(1) NOT NULL DEFAULT '0',
+  `authorization_service_header` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `use_authorization_service_header` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `oauth_client_id` (`oauth_client_id`),
   CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`oauth_client_id`) REFERENCES `oauth_client` (`id`) ON DELETE CASCADE
@@ -695,7 +695,7 @@ CREATE TABLE `user_authorized_application` (
 
 LOCK TABLES `user_authorized_application` WRITE;
 /*!40000 ALTER TABLE `user_authorized_application` DISABLE KEYS */;
-INSERT INTO `user_authorized_application` VALUES 
+INSERT INTO `user_authorized_application` VALUES
 (1,'admin','8ca60ce9-32f9-42d6-a013-a19b3af0c13d', NULL, NULL),
 (2,'aaaaaaaa-good-0000-0000-000000000000','tutorial-dckr-site-0000-xpresswebapp', 'username,email', NULL);
 /*!40000 ALTER TABLE `user_authorized_application` ENABLE KEYS */;

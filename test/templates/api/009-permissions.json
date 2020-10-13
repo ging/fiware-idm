@@ -23,8 +23,8 @@
 				"description": "permission 1 description",
 				"action": "GET",
 				"resource": "login",
-                "fiware_service": "test",
-				"use_fiware_service": true
+                "authorization_service_header": "test",
+				"use_authorization_service_header": true
 			}
 		},
 		"invalid_perm_body": {
@@ -36,47 +36,47 @@
 				"xml": "<xml test 2>"
 			}
 		},
-		"invalid_perm_body_no_fiware_service_but_use_fiware_service": {
+		"invalid_perm_body_no_authorization_service_header_but_use_authorization_service_header": {
 			"permission": {
 				"name": "permission 3",
 				"description": "permission 3 description",
 				"action": "GET",
 				"resource": "login",
-                "use_fiware_service": true
+                "use_authorization_service_header": true
 			}
 		},
-		"invalid_perm_body_no_use_fiware_service_but_fiware_service": {
+		"invalid_perm_body_no_use_authorization_service_header_but_authorization_service_header": {
 			"permission": {
 				"name": "permission 4",
 				"description": "permission 4 description",
 				"action": "GET",
 				"resource": "login",
-                "fiware_service": "test"
+                "authorization_service_header": "test"
 			}
 		},
-		"invalid_perm_body_fiware_service_and_xml": {
+		"invalid_perm_body_authorization_service_header_and_xml": {
 			"permission": {
 				"name": "permission 5",
 				"description": "permission 5 description",
 				"xml": "<xml test 5>",
-                "fiware_service": "test"
+                "authorization_service_header": "test"
 			}
 		},
-		"invalid_perm_body_use_fiware_service_and_xml": {
+		"invalid_perm_body_use_authorization_service_header_and_xml": {
 			"permission": {
 				"name": "permission 6",
 				"description": "permission 6 description",
 				"xml": "<xml test 6>",
-				"use_fiware_service": true
+				"use_authorization_service_header": true
 			}
 		},
-		"valid_perm_body_no_fiware_service_but_use_fiware_service_is_false": {
+		"valid_perm_body_no_authorization_service_header_but_use_authorization_service_header_is_false": {
 			"permission": {
 				"name": "permission 7",
 				"description": "permission 7 description",
 				"action": "GET",
 				"resource": "login",
-				"use_fiware_service": false
+				"use_authorization_service_header": false
 			}
 		}
 	},
@@ -97,8 +97,8 @@
 				"description": "Test permission 3 description",
 		    	"action": "GET",
 				"resource": "login",
-				"fiware_service": "test",
-				"use_fiware_service": true
+				"authorization_service_header": "test",
+				"use_authorization_service_header": true
 			}
 		},
 		"new_values": {
@@ -107,7 +107,7 @@
 				"description": "new description of permission 3",
 		    	"action": "POST",
 				"resource": "resource",
-				"use_fiware_service": false
+				"use_authorization_service_header": false
 			}
 		}
 	},

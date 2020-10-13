@@ -38,21 +38,17 @@ module.exports = function (sequelize, DataTypes) {
           DataTypes.STRING(255) +
           (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
       },
-      fiware_service: {
+      authorization_service_header: {
         type:
           DataTypes.STRING(255) +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
       },
-      use_fiware_service: {
+      use_authorization_service_header: {
         type:
           DataTypes.BOOLEAN() +
-          (sequelize.getDialect() === 'mysql'
-            ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci'
-            : ''),
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),
         allowNull: false,
-        default: false,
+        default: false
       },
       is_regex: {
         type:

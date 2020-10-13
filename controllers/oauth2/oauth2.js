@@ -352,11 +352,11 @@ exports.authenticate_token = function (req, res) {
   const resource = req.query.resource ? req.query.resource : undefined;
   const authzforce = req.query.authzforce ? req.query.authzforce : undefined;
   const req_app = req.query.app_id ? req.query.app_id : undefined;
-  const fiware_service = req.query.fiware_service
-    ? req.query.fiware_service
+  const authorization_service_header = req.query.authorization_service_header
+    ? req.query.authorization_service_header
     : undefined;
 
-  if ((action || resource || fiware_service) && authzforce) {
+  if ((action || resource || authorization_service_header) && authzforce) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
@@ -376,21 +376,13 @@ exports.authenticate_token = function (req, res) {
               res,
               action,
               resource,
-              fiware_service,
+              authorization_service_header,
               authzforce,
               req_app,
               application.jwt_secret
             );
           }
-          return authenticate_bearer(
-            req,
-            res,
-            action,
-            resource,
-            fiware_service,
-            authzforce,
-            req_app
-          );
+          return authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
         }
 
         const message = {
@@ -412,30 +404,13 @@ exports.authenticate_token = function (req, res) {
 };
 
 // Authenticate an incoming Json Web Token
-function authenticate_jwt(
-  req,
-  res,
-  action,
-  resource,
-  fiware_service,
-  authzforce,
-  req_app,
-  jwt_secret
-) {
+function authenticate_jwt(req, res, action, resource, authorization_service_header, authzforce, req_app, jwt_secret) {
   debug(' --> authenticate_jwt');
 
   jsonwebtoken.verify(req.query.access_token, jwt_secret, function (err, decoded) {
     if (err) {
       debug('Error ' + err);
-      authenticate_bearer(
-        req,
-        res,
-        action,
-        resource,
-        fiware_service,
-        authzforce,
-        req_app
-      );
+      authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
     } else {
       const identity = {
         username: decoded.username,
@@ -452,11 +427,11 @@ function authenticate_jwt(
         application_id,
         action,
         resource,
-        fiware_service,
+        authorization_service_header,
         authzforce,
         req_app
       )
-        .then(function(response) {
+        .then(function (response) {
           return res.status(200).json(response);
         })
         .catch(function (error) {
@@ -469,15 +444,7 @@ function authenticate_jwt(
 }
 
 // Authenticate an incoming Bearer Token
-function authenticate_bearer(
-  req,
-  res,
-  action,
-  resource,
-  fiware_service,
-  authzforce,
-  req_app
-) {
+function authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app) {
   debug(' --> authenticate_bearer');
   const options = {
     allowBearerTokensInQueryString: true // eslint-disable-line snakecase/snakecase
@@ -502,7 +469,7 @@ function authenticate_bearer(
         application_id,
         action,
         resource,
-        fiware_service,
+        authorization_service_header,
         authzforce,
         req_app
       );

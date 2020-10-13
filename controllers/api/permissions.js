@@ -70,11 +70,11 @@ exports.index = function (req, res) {
         'description',
         'action',
         'resource',
-        'fiware_service',
-        'use_fiware_service',
-        'xml',
+        'authorization_service_header',
+        'use_authorization_service_header',
+        'xml'
       ],
-      order: [['id', 'DESC']],
+      order: [['id', 'DESC']]
     })
     .then(function (permissions) {
       if (permissions.length > 0) {
@@ -112,8 +112,7 @@ exports.create = function (req, res) {
     .then(function () {
       // Build a row and validate if input values are correct (not empty) before saving values in permission table
       req.body.permission.is_regex = !!req.body.permission.is_regex;
-      req.body.permission.use_fiware_service = !!req.body.permission
-        .use_fiware_service;
+      req.body.permission.use_authorization_service_header = !!req.body.permission.use_authorization_service_header;
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
       permission.is_internal = false;
@@ -127,12 +126,12 @@ exports.create = function (req, res) {
           'description',
           'action',
           'resource',
-          'fiware_service',
-          'use_fiware_service',
+          'authorization_service_header',
+          'use_authorization_service_header',
           'xml',
           'is_regex',
-          'oauth_client_id',
-        ],
+          'oauth_client_id'
+        ]
       });
     })
     .then(function (permission) {
@@ -194,19 +193,19 @@ exports.update = function (req, res) {
           ? req.body.permission.is_regex
           : req.permission.is_regex;
 
-        req.permission.use_fiware_service = Object.prototype.hasOwnProperty.call(
+        req.permission.use_authorization_service_header = Object.prototype.hasOwnProperty.call(
           req.body.permission,
-          'use_fiware_service'
+          'use_authorization_service_header'
         )
-          ? req.body.permission.use_fiware_service
-          : req.permission.use_fiware_service;
+          ? req.body.permission.use_authorization_service_header
+          : req.permission.use_authorization_service_header;
 
-        req.permission.fiware_service = Object.prototype.hasOwnProperty.call(
+        req.permission.authorization_service_header = Object.prototype.hasOwnProperty.call(
           req.body.permission,
-          'fiware_service'
+          'authorization_service_header'
         )
-          ? req.body.permission.fiware_service
-          : req.permission.fiware_service;
+          ? req.body.permission.authorization_service_header
+          : req.permission.authorization_service_header;
 
         return req.permission.save();
       })
@@ -303,15 +302,13 @@ function check_create_body_request(body) {
 
     if (config_authzforce.level === 'advanced') {
       if (
-        (body.permission.resource ||
-          body.permission.action ||
-          body.permission.use_fiware_service) &&
+        (body.permission.resource || body.permission.action || body.permission.use_authorization_service_header) &&
         body.permission.xml
       ) {
         reject({
           error: {
             message:
-              'Cannot set action, resource, fiware_service and use_fiware_service at the same time as xacml rule',
+              'Cannot set action, resource, authorization_service_header and use_authorization_service_header at the same time as xacml rule',
             code: 400,
             title: 'Bad Request'
           }
@@ -351,35 +348,33 @@ function check_create_body_request(body) {
       }
     }
 
-    if (body.permission.use_fiware_service) {
-      if (typeof body.permission.use_fiware_service !== 'boolean') {
+    if (body.permission.use_authorization_service_header) {
+      if (typeof body.permission.use_authorization_service_header !== 'boolean') {
         reject({
           error: {
-            message: 'use_fiware_service attribute must be a boolean',
+            message: 'use_authorization_service_header attribute must be a boolean',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
       }
     }
-    if (body.permission.use_fiware_service && !body.permission.fiware_service) {
+    if (body.permission.use_authorization_service_header && !body.permission.authorization_service_header) {
       reject({
         error: {
-          message:
-            'if use_fiware_service is set, fiware_service needs to be set',
+          message: 'if use_authorization_service_header is set, authorization_service_header needs to be set',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
-    if (!body.permission.use_fiware_service && body.permission.fiware_service) {
+    if (!body.permission.use_authorization_service_header && body.permission.authorization_service_header) {
       reject({
         error: {
-          message:
-            'if fiware_service is set, use_fiware_service needs to be set',
+          message: 'if authorization_service_header is set, use_authorization_service_header needs to be set',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
     resolve();
@@ -431,15 +426,13 @@ function check_update_body_request(body) {
 
     if (config_authzforce.level === 'advanced') {
       if (
-        (body.permission.resource ||
-          body.permission.action ||
-          body.permission.use_fiware_service) &&
+        (body.permission.resource || body.permission.action || body.permission.use_authorization_service_header) &&
         body.permission.xml
       ) {
         reject({
           error: {
             message:
-              'Cannot set action, resource, fiware_service and use_fiware_service at the same time as xacml rule',
+              'Cannot set action, resource, authorization_service_header and use_authorization_service_header at the same time as xacml rule',
             code: 400,
             title: 'Bad Request'
           }
@@ -459,35 +452,33 @@ function check_update_body_request(body) {
       }
     }
 
-    if (body.permission.use_fiware_service) {
-      if (typeof body.permission.use_fiware_service !== 'boolean') {
+    if (body.permission.use_authorization_service_header) {
+      if (typeof body.permission.use_authorization_service_header !== 'boolean') {
         reject({
           error: {
-            message: 'use_fiware_service attribute must be a boolean',
+            message: 'use_authorization_service_header attribute must be a boolean',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
       }
     }
-    if (body.permission.use_fiware_service && !body.permission.fiware_service) {
+    if (body.permission.use_authorization_service_header && !body.permission.authorization_service_header) {
       reject({
         error: {
-          message:
-            'if use_fiware_service is set, fiware_service needs to be set',
+          message: 'if use_authorization_service_header is set, authorization_service_header needs to be set',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
-    if (!body.permission.use_fiware_service && body.permission.fiware_service) {
+    if (!body.permission.use_authorization_service_header && body.permission.authorization_service_header) {
       reject({
         error: {
-          message:
-            'if fiware_service is set, use_fiware_service needs to be set',
+          message: 'if authorization_service_header is set, use_authorization_service_header needs to be set',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
     resolve();

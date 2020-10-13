@@ -27,8 +27,8 @@ exports.create_permission = function (req, res) {
       description: req.body.description,
       action: req.body.action,
       resource: req.body.resource,
-      fiware_service: req.body.fiware_service,
-      use_fiware_service: req.body.use_fiware_service,
+      authorization_service_header: req.body.authorization_service_header,
+      use_authorization_service_header: req.body.use_authorization_service_header,
       is_regex: req.body.is_regex,
       xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined,
       oauth_client_id: req.application.id
@@ -68,12 +68,12 @@ exports.create_permission = function (req, res) {
                 'description',
                 'action',
                 'resource',
-                'fiware_service',
-                'use_fiware_service',
+                'authorization_service_header',
+                'use_authorization_service_header',
                 'is_regex',
                 'xml',
-                'oauth_client_id',
-              ],
+                'oauth_client_id'
+              ]
             })
             .then(function () {
               // Send message of success of creating permission
@@ -138,8 +138,8 @@ exports.edit_permission = function (req, res) {
       name: req.body.name,
       description: req.body.description,
       resource: req.body.resource,
-      fiware_service: req.body.fiware_service,
-      use_fiware_service: req.body.use_fiware_service,
+      authorization_service_header: req.body.authorization_service_header,
+      use_authorization_service_header: req.body.use_authorization_service_header,
       is_regex: req.body.is_regex,
       action: req.body.action,
       xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined,
@@ -176,8 +176,8 @@ exports.edit_permission = function (req, res) {
                 name: req.body.name,
                 description: req.body.description,
                 resource: req.body.resource,
-                fiware_service: req.body.fiware_service,
-                use_fiware_service: req.body.use_fiware_service,
+                authorization_service_header: req.body.authorization_service_header,
+                use_authorization_service_header: req.body.use_authorization_service_header,
                 is_regex: req.body.is_regex,
                 action: req.body.action,
                 xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined
@@ -188,10 +188,10 @@ exports.edit_permission = function (req, res) {
                   'description',
                   'action',
                   'resource',
-                  'fiware_service',
-                  'use_fiware_service',
+                  'authorization_service_header',
+                  'use_authorization_service_header',
                   'is_regex',
-                  'xml',
+                  'xml'
                 ],
                 where: {
                   id: req.permission.id,

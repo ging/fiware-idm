@@ -23,8 +23,8 @@
         "description": "permission 1 description",
         "action": "POST",
         "resource": "/login",
-        "fiware_service": "test",
-        "use_fiware_service": true
+        "authorization_service_header": "test",
+        "use_authorization_service_header": true
       }
     },
     "valid_perm_body2": {

@@ -23,12 +23,12 @@ exports.index = function (req, res) {
             'description',
             'action',
             'resource',
-            'fiware_service',
-            'use_fiware_service',
-            'xml',
-          ],
-        },
-      ],
+            'authorization_service_header',
+            'use_authorization_service_header',
+            'xml'
+          ]
+        }
+      ]
     })
     .then(function (rows) {
       if (rows.length > 0) {
@@ -199,12 +199,12 @@ function search_role_permission(application_id) {
               'description',
               'action',
               'resource',
-              'fiware_service',
-              'use_fiware_service',
-              'xml',
-            ],
-          },
-        ],
+              'authorization_service_header',
+              'use_authorization_service_header',
+              'xml'
+            ]
+          }
+        ]
       });
     });
 

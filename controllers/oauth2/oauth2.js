@@ -30,12 +30,12 @@ exports.token = function (req, res) {
 
   const options = {
     // eslint-disable-next-line snakecase/snakecase
-    requireClientAuthentication: grant_type
-      ? {
-          [grant_type]: false
-        }
-      : {}
+    requireClientAuthentication: {}
   };
+  grant_type.forEach((key) => {
+    // eslint-disable-next-line snakecase/snakecase
+    options.requireClientAuthentication[key] = false;
+  });
 
   oauth_server
     .token(request, response, options)

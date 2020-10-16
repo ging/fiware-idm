@@ -20,7 +20,7 @@
                   <p>Password changed. Please log in again to continue.</p>
               </span>
             <% } %>
-            <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+            <% if (errors.indexOf("user_not_found") !=-1 || errors.indexOf("invalid")!=-1 || nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
               <div class="alert alert-message alert-danger">
                   <ul class="errorlist">
                       <li>Email o contraseña inválidos.</li>

@@ -1,7 +1,7 @@
 <div class="content">
 
     <div class="form">
-        <h2>Acceso aa Orange Digital Center</h2>
+        <h2>Acceso a Orange Digital Center</h2>
         <form action="<%= application.url %>" autocomplete="on" method="POST" enctype="">
             <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
             <% var nameErrors = [] %>
@@ -21,7 +21,7 @@
                   <p>Password changed. Please log in again to continue.</p>
               </span>
             <% } %>
-            <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+            <% if (errors.indexOf("user_not_found") !=-1 || errors.indexOf("invalid")!=-1 || nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
               <div class="alert alert-message alert-danger">
                   <ul class="errorlist">
                       <li>Email o contraseña inválidos.</li>

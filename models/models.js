@@ -1,6 +1,7 @@
 const path = require('path');
 const database = require('../config').database;
 const external_auth = require('../config').external_auth;
+const external_auth_ldap = require('../config').external_auth_ldap;
 const logs = require('../config.js').debug;
 const debug = require('debug')('idm:models');
 
@@ -26,6 +27,10 @@ sequelize
 
 let user_ext;
 let ext_sequelize;
+
+if (external_auth.enabled && external_auth_ldap.enabled) {
+  throw 'Just a single external auth driver can be used';
+}
 
 if (external_auth.enabled) {
   ext_sequelize = new Sequelize(

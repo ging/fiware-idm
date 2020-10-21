@@ -6,6 +6,7 @@ const path = require('path');
 const gravatar = require('gravatar');
 const https = require('https');
 const external_auth = config.external_auth;
+const external_auth_ldap = config.external_auth_ldap;
 
 const email_list = config.email_list_type
   ? fs
@@ -469,48 +470,57 @@ exports.set_gravatar = function (req, res) {
 };
 
 // MW to see if user is registered
-exports.authenticate = external_auth.enabled
-  ? require('../../external_auth/authentication_driver').authenticate
-  : function (username, password, callback) {
-      debug('--> authenticate');
+let authentication_driver; 
 
-      // Search the user
-      models.user
-        .find({
-          attributes: [
-            'id',
-            'username',
-            'salt',
-            'password',
-            'enabled',
-            'email',
-            'gravatar',
-            'image',
-            'admin',
-            'date_password',
-            'starters_tour_ended',
-            'extra'
-          ],
-          where: {
-            email: username
-          }
-        })
-        .then(function (user) {
-          if (user) {
-            // Verify password and if user is enabled to use the web
-            if (user.verifyPassword(password) && user.enabled) {
-              callback(null, user);
-            } else {
-              callback(new Error('invalid'));
-            }
+if (external_auth.enabled)
+  authentication_driver = require('../../external_auth/authentication_driver').authenticate;
+
+else if (external_auth_ldap.enabled)
+  authentication_driver = require('../../external_auth/authentication_driver_ldap').authenticate;
+
+else
+  authentication_driver = function (username, password, callback) {
+    debug('--> authenticate');
+
+    // Search the user
+    models.user
+      .find({
+        attributes: [
+          'id',
+          'username',
+          'salt',
+          'password',
+          'enabled',
+          'email',
+          'gravatar',
+          'image',
+          'admin',
+          'date_password',
+          'starters_tour_ended',
+          'extra'
+        ],
+        where: {
+          email: username
+        }
+      })
+      .then(function (user) {
+        if (user) {
+          // Verify password and if user is enabled to use the web
+          if (user.verifyPassword(password) && user.enabled) {
+            callback(null, user);
           } else {
-            callback(new Error('user_not_found'));
+            callback(new Error('invalid'));
           }
-        })
-        .catch(function (error) {
-          callback(error);
-        });
-    };
+        } else {
+          callback(new Error('user_not_found'));
+        }
+      })
+      .catch(function (error) {
+        callback(error);
+      });
+  };
+
+exports.authenticate = authentication_driver;
 
 // GET /sign_up -- View to create a new user
 exports.new = function (req, res) {

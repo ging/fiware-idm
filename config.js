@@ -115,6 +115,23 @@ config.external_auth = {
   }
 };
 
+// External user authentication with LDAP
+// Testing credentials from https://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/
+config.external_auth_ldap = {
+  enabled: false,
+  id_prefix: 'external_ldap_',
+  database: {
+    host: 'ldap.forumsys.com',
+    port: 389,
+    reader_dn: 'cn=read-only-admin,dc=example,dc=com',
+    reader_password: 'password',
+    suffix: 'dc=example,dc=com',
+    idAttribute: 'uid',
+    usernameAttribute: 'uid',
+    emailAttribute: 'mail'
+  }
+}
+
 // Email configuration
 config.mail = {
   host: 'localhost',

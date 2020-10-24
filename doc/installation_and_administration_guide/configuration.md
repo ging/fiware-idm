@@ -21,7 +21,7 @@ specific needs of each use case. These are the main configurations:
 
 -   Database.
 
--   External authentication.
+-   External authentication (SQL and LDAP).
 
 -   Authorization.
 
@@ -266,7 +266,7 @@ config.database = {
 };
 ```
 
-## External Authentication
+## External Authentication (SQL database)
 
 You can also configure the Identity Manager to authenticate users through an
 external database.
@@ -359,6 +359,31 @@ config.external_auth = {
 
 The way to check password validity can be customized in with parameter
 _external_auth.encryption_. SHA1 and BCrypt are currently supported.
+
+## External Authentication (LDAP)
+
+You can connect your Keyrock instance to an already existing LDAP users directory. In the same way than when using SQL-based external database, this allows you to authenticate users available in the external LDAP directory. Once authenticated, a local copy of the user is created. However, the password is always checked in the external directory so it is not stored in Keyrock's database.
+
+For enabling this feature, you have to configure the following parameters in the config.js file. You can see an example of how to authenticate users registered in the sample LDAP directory available at forumsys.com. As you can see, the needed attributes in the LDAP directory are and id, a username and an email (you can configure the desired attribute name to use). 
+
+```javascript
+// External user authentication with LDAP
+// Testing credentials from https://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/
+config.external_auth_ldap = {
+  enabled: true,
+  id_prefix: 'external_ldap_',
+  database: {
+    host: 'ldap.forumsys.com',
+    port: 389,
+    reader_dn: 'cn=read-only-admin,dc=example,dc=com',
+    reader_password: 'password',
+    suffix: 'dc=example,dc=com',
+    idAttribute: 'uid',
+    usernameAttribute: 'uid',
+    emailAttribute: 'mail'
+  }
+}
+```
 
 ## Authorization
 

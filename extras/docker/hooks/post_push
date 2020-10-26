@@ -1,6 +1,4 @@
 #!/bin/bash
-docker image push $IMAGE_NAME-pm2 
-
 docker image push $IMAGE_NAME-distroless
 
 

@@ -37,6 +37,9 @@ jobs:
         - npm run lint
         - node ./test/database
 
+      script:
+        - IDM_DB_PASS=test IDM_DB_NAME=idm_test npm test
+
       after_script:
         - npm run test:coveralls
 
@@ -63,6 +66,9 @@ jobs:
       before_script:
         - npm run lint
         - node ./test/database
+
+      script:
+        - IDM_DB_PASS=test IDM_DB_NAME=idm_test npm test
 
       after_script:
         - npm run test:coveralls

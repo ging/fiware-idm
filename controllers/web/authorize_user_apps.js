@@ -1,7 +1,6 @@
 const models = require('../../models/models.js');
 const gravatar = require('gravatar');
-const array_contains_array = require('../../lib/object_functions.js')
-  .array_contains_array;
+const array_contains_array = require('../../lib/object_functions.js').array_contains_array;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -9,7 +8,7 @@ const Op = Sequelize.Op;
 const debug = require('debug')('idm:web-authorize_user_app_controller');
 
 // GET /idm/applications/:application_id/edit/users -- Search users authorized
-exports.get_users = function(req, res, next) {
+exports.get_users = function (req, res, next) {
   debug('--> get_users');
 
   // See if the request is via AJAX or browser
@@ -20,27 +19,23 @@ exports.get_users = function(req, res, next) {
         where: {
           oauth_client_id: req.application.id,
           user_id: { [Op.ne]: null },
-          organization_id: { [Op.eq]: null },
+          organization_id: { [Op.eq]: null }
         },
         include: [
           {
             model: models.user,
-            attributes: ['id', 'username', 'email', 'image', 'gravatar'],
-          },
-        ],
+            attributes: ['id', 'username', 'email', 'image', 'gravatar']
+          }
+        ]
       })
-      .then(function(users_application) {
+      .then(function (users_application) {
         // Array of users authorized in the application
         const users_authorized = [];
 
-        users_application.forEach(function(app) {
+        users_application.forEach(function (app) {
           let image = '/img/logos/medium/user.png';
           if (app.User.gravatar) {
-            image = gravatar.url(
-              app.User.email,
-              { s: 36, r: 'g', d: 'mm' },
-              { protocol: 'https' }
-            );
+            image = gravatar.url(app.User.email, { s: 36, r: 'g', d: 'mm' }, { protocol: 'https' });
           } else if (app.User.image !== 'default') {
             image = '/img/users/' + app.User.image;
           }
@@ -48,7 +43,7 @@ exports.get_users = function(req, res, next) {
             user_id: app.User.id,
             role_id: app.role_id,
             username: app.User.username,
-            image,
+            image
           }); // Added parameter is to control which elements will be deleted or added
           // to the table when authorizing other users
         });
@@ -59,9 +54,7 @@ exports.get_users = function(req, res, next) {
         // If permission is assign only public owned roles
         if (req.user_owned_permissions.includes('6')) {
           where_search_role.push({
-            id: req.user_owned_roles.filter(
-              elem => !(elem === 'provider' || elem === 'purchaser')
-            ),
+            id: req.user_owned_roles.filter((elem) => !(elem === 'provider' || elem === 'purchaser'))
           });
         }
 
@@ -80,15 +73,12 @@ exports.get_users = function(req, res, next) {
           .findAll({
             where: { [Op.or]: where_search_role },
             attributes: ['id', 'name'],
-            order: [['id', 'DESC']],
+            order: [['id', 'DESC']]
           })
-          .then(function(roles) {
+          .then(function (roles) {
             // Filter users_authorized depends on the permissions of the user logged
             for (let i = 0; i < users_authorized.length; i++) {
-              if (
-                roles.some(role => role.id === users_authorized[i].role_id) ===
-                false
-              ) {
+              if (roles.some((role) => role.id === users_authorized[i].role_id) === false) {
                 users_authorized[i].role_id = '';
               }
             }
@@ -97,14 +87,14 @@ exports.get_users = function(req, res, next) {
             res.send({
               users_authorized,
               roles,
-              errors: [],
+              errors: []
             });
           })
-          .catch(function(error) {
+          .catch(function (error) {
             next(error);
           });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         next(error);
       });
   } else {
@@ -114,31 +104,27 @@ exports.get_users = function(req, res, next) {
 };
 
 // GET /idm/applications/:application_id/users/available -- Search users to authorize in an application
-exports.available_users = function(req, res) {
+exports.available_users = function (req, res) {
   debug('--> available_users');
 
   // Obtain key to search in the organization table
   const key = req.query.key;
 
-  if (
-    key.length > 1 &&
-    key.includes('%') === false &&
-    key.includes('_') === false
-  ) {
+  if (key.length > 1 && key.includes('%') === false && key.includes('_') === false) {
     // Search if username is like the input key
     models.user
       .findAll({
         attributes: ['username', 'id', 'image'],
         where: {
           username: {
-            like: '%' + key + '%',
-          },
-        },
+            like: '%' + key + '%'
+          }
+        }
       })
-      .then(function(users) {
+      .then(function (users) {
         // If found, send ana array of users with the name and the id of each one
         if (users.length > 0) {
-          users.forEach(function(elem) {
+          users.forEach(function (elem) {
             if (elem.image !== 'default') {
               elem.image = '/img/users/' + elem.image;
             } else {
@@ -157,7 +143,7 @@ exports.available_users = function(req, res) {
 };
 
 // POST /idm/applications/:application_id/edit/users -- Authorize users in an application
-exports.authorize_users = function(req, res) {
+exports.authorize_users = function (req, res) {
   debug('--> authorize_users');
 
   const users_to_be_authorized = JSON.parse(req.body.submit_authorize);
@@ -169,9 +155,7 @@ exports.authorize_users = function(req, res) {
     // If permissionis assign only public owned roles
     if (req.user_owned_permissions.includes('6')) {
       where_search_role.push({
-        id: req.user_owned_roles.filter(
-          elem => !(elem === 'provider' || elem === 'purchaser')
-        ),
+        id: req.user_owned_roles.filter((elem) => !(elem === 'provider' || elem === 'purchaser'))
       });
     }
 
@@ -187,14 +171,12 @@ exports.authorize_users = function(req, res) {
 
     const search_changeable_roles_by_user = models.role.findAll({
       where: { [Op.or]: where_search_role },
-      attributes: ['id'],
+      attributes: ['id']
     });
 
-    search_changeable_roles_by_user.then(function(changeable_roles_by_user) {
+    search_changeable_roles_by_user.then(function (changeable_roles_by_user) {
       // Array of ids that user can change
-      const ids_changeable_roles_by_user = changeable_roles_by_user.map(
-        elem => elem.id
-      );
+      const ids_changeable_roles_by_user = changeable_roles_by_user.map((elem) => elem.id);
 
       // Array of new rows in role_assignment
       const new_assignment = [];
@@ -207,17 +189,12 @@ exports.authorize_users = function(req, res) {
           new_assignment.push({
             user_id: users_to_be_authorized[i].user_id,
             role_id: users_to_be_authorized[i].role_id,
-            oauth_client_id: req.application.id,
+            oauth_client_id: req.application.id
           });
         }
       }
 
-      if (
-        array_contains_array(
-          ids_changeable_roles_by_user,
-          ids_roles_to_be_changed
-        )
-      ) {
+      if (array_contains_array(ids_changeable_roles_by_user, ids_roles_to_be_changed)) {
         debug('You can change new roles');
 
         // Delete rows from role_assignment
@@ -226,35 +203,35 @@ exports.authorize_users = function(req, res) {
             oauth_client_id: req.application.id,
             role_id: ids_changeable_roles_by_user,
             user_id: { [Op.ne]: null },
-            organization_id: { [Op.eq]: null },
-          },
+            organization_id: { [Op.eq]: null }
+          }
         });
 
         // Handle promise of delete and create rows
         delete_rows
-          .then(function() {
+          .then(function () {
             // Create rows in role_assignment
             return models.role_assignment
               .bulkCreate(new_assignment)
-              .then(function() {
+              .then(function () {
                 // Send message of success in updating authorizations
                 req.session.message = {
                   text: ' Modified users authorization.',
-                  type: 'success',
+                  type: 'success'
                 };
                 res.redirect('/idm/applications/' + req.application.id);
               })
-              .catch(function(error) {
+              .catch(function (error) {
                 debug('Error: ', error);
                 return Promise.reject();
               });
           })
-          .catch(function(error) {
+          .catch(function (error) {
             debug('Error: ', error);
             // Send message of fail when updating authorizations
             req.session.message = {
               text: ' Modified users authorization error.',
-              type: 'danger',
+              type: 'danger'
             };
             res.redirect('/idm/applications/' + req.application.id);
           });

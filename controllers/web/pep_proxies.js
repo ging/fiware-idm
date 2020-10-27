@@ -4,7 +4,7 @@ const uuid = require('uuid');
 const debug = require('debug')('idm:web-pep_proxy_controller');
 
 // Autoload info if path include pep_id
-exports.load_pep = function(req, res, next, pep_id) {
+exports.load_pep = function (req, res, next, pep_id) {
   debug('--> load_pep');
 
   // Add id of pep proxy in request
@@ -13,7 +13,7 @@ exports.load_pep = function(req, res, next, pep_id) {
 };
 
 // GET /idm/applications/:application_id/pep/register -- Register Pep Proxy
-exports.register_pep = function(req, res) {
+exports.register_pep = function (req, res) {
   debug('--> register_pep');
 
   // Id and password of the proxy
@@ -23,63 +23,48 @@ exports.register_pep = function(req, res) {
   // See if the application has already assigned a pep proxy
   models.pep_proxy
     .findOne({
-      where: { oauth_client_id: req.application.id },
+      where: { oauth_client_id: req.application.id }
     })
-    .then(function(pep_proxy) {
+    .then(function (pep_proxy) {
       // If not create it
       if (!pep_proxy) {
         // Build a new row in the pep_proxy table
         const pep_proxy = models.pep_proxy.build({
           id,
           password,
-          oauth_client_id: req.application.id,
+          oauth_client_id: req.application.id
         });
         return pep_proxy.save({
-          fields: ['id', 'password', 'oauth_client_id', 'salt'],
+          fields: ['id', 'password', 'oauth_client_id', 'salt']
         });
       }
       const response = { text: ' Pep Proxy already created.', type: 'warning' };
 
       // Send response depends on the type of request
-      return send_response(
-        req,
-        res,
-        response,
-        '/idm/applications/' + req.application.id
-      );
+      return send_response(req, res, response, '/idm/applications/' + req.application.id);
     })
-    .then(function() {
+    .then(function () {
       // Send message of success in create a pep proxy
       const response = {
         message: { text: ' Create Pep Proxy.', type: 'success' },
-        pep: { id, password },
+        pep: { id, password }
       };
 
       // Send response depends on the type of request
-      send_response(
-        req,
-        res,
-        response,
-        '/idm/applications/' + req.application.id
-      );
+      send_response(req, res, response, '/idm/applications/' + req.application.id);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
 
       const response = { text: ' Failed create Pep Proxy.', type: 'warning' };
 
       // Send response depends on the type of request
-      send_response(
-        req,
-        res,
-        response,
-        '/idm/applications/' + req.application.id
-      );
+      send_response(req, res, response, '/idm/applications/' + req.application.id);
     });
 };
 
 // DELETE /idm/applications/:application_id/pep/:pep_id/delete -- Delete Pep Proxy
-exports.delete_pep = function(req, res) {
+exports.delete_pep = function (req, res) {
   debug('--> delete_pep');
 
   // Destroy pep proxy form table
@@ -87,16 +72,16 @@ exports.delete_pep = function(req, res) {
     .destroy({
       where: {
         id: req.pep.id,
-        oauth_client_id: req.application.id,
-      },
+        oauth_client_id: req.application.id
+      }
     })
-    .then(function(deleted) {
+    .then(function (deleted) {
       let response;
       if (deleted) {
         // Send message of success of deleting pep proxy
         response = {
           text: ' Pep Proxy was successfully deleted.',
-          type: 'success',
+          type: 'success'
         };
       } else {
         // Send message of fail when deleting pep proxy
@@ -104,31 +89,21 @@ exports.delete_pep = function(req, res) {
       }
 
       // Send response depends on the type of request
-      send_response(
-        req,
-        res,
-        response,
-        '/idm/applications/' + req.application.id
-      );
+      send_response(req, res, response, '/idm/applications/' + req.application.id);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
 
       // Send message of fail when deleting pep proxy
       const response = { text: ' Failed deleting pep proxy', type: 'danger' };
 
       // Send response depends on the type of request
-      send_response(
-        req,
-        res,
-        response,
-        '/idm/applications/' + req.application.id
-      );
+      send_response(req, res, response, '/idm/applications/' + req.application.id);
     });
 };
 
 // GET /idm/applications/:application_id/pep/:pep_id/reset_password -- Change password to Pep Proxy
-exports.reset_password_pep = function(req, res) {
+exports.reset_password_pep = function (req, res) {
   debug('--> reset_password_pep');
 
   // New password
@@ -141,68 +116,58 @@ exports.reset_password_pep = function(req, res) {
         fields: ['password'],
         where: {
           id: req.pep.id,
-          oauth_client_id: req.application.id,
-        },
+          oauth_client_id: req.application.id
+        }
       }
     )
-    .then(function(reseted) {
+    .then(function (reseted) {
       let response;
       if (reseted[0] === 1) {
         // Send message of success changing password pep proxy
         response = {
           message: {
             text: ' Pep Proxy was successfully updated.',
-            type: 'success',
+            type: 'success'
           },
-          pep: { id: req.pep.id, password: password_new },
+          pep: { id: req.pep.id, password: password_new }
         };
       } else {
         // Send message of failed when reseting iot sensor
         response = {
           text: ' Failed changing password pep proxy',
-          type: 'danger',
+          type: 'danger'
         };
       }
 
       // Send response depends on the type of request
-      send_response(
-        req,
-        res,
-        response,
-        '/idm/applications/' + req.application.id
-      );
+      send_response(req, res, response, '/idm/applications/' + req.application.id);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
 
       // Send message of fail when changing password to pep proxy
       const response = {
         text: ' Failed changing password pep proxy',
-        type: 'danger',
+        type: 'danger'
       };
 
       // Send response depends on the type of request
-      send_response(
-        req,
-        res,
-        response,
-        '/idm/applications/' + req.application.id
-      );
+      send_response(req, res, response, '/idm/applications/' + req.application.id);
     });
 };
 
 // MW to check pep proxy authentication
-exports.authenticate = function(id, password, callback) {
+exports.authenticate = function (id, password, callback) {
   debug('--> authenticate');
 
   // Search the user through the email
   models.pep_proxy
     .find({
       where: {
-        id,
-      },
+        id
+      }
     })
-    .then(function(pep_proxy) {
+    .then(function (pep_proxy) {
       if (pep_proxy) {
         // Verify password
         if (pep_proxy.verifyPassword(password)) {
@@ -214,7 +179,7 @@ exports.authenticate = function(id, password, callback) {
         callback(new Error('pep_proxy_not_found'));
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       callback(error);
     });
 };

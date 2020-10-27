@@ -19,5 +19,5 @@ module.exports = {
   organizations: require('../../controllers/web/organizations'),
   manage_members: require('../../controllers/web/manage_members'),
   settings: require('../../controllers/web/settings'),
-  sessions: require('../../controllers/web/sessions'),
+  sessions: require('../../controllers/web/sessions')
 };

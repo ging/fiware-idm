@@ -43,35 +43,19 @@ const image_app_upload = multer.diskStorage({
   },
   filename(req, file, callback) {
     callback(null, uuid.v4() + path.extname(file.originalname));
-  },
+  }
 });
 
-router.get(
-  '/available',
-  csrf_protection,
-  web_trusted_apps_controller.available_applications
-);
+router.get('/available', csrf_protection, web_trusted_apps_controller.available_applications);
 
 // Routes to create, edit and delete applications
 router.get('/', csrf_protection, web_app_controller.index);
 router.get('/filtered_user', csrf_protection, web_app_controller.filter_user);
-router.get(
-  '/filtered_organization',
-  csrf_protection,
-  web_app_controller.filter_organization
-);
+router.get('/filtered_organization', csrf_protection, web_app_controller.filter_organization);
 router.get('/new', csrf_protection, web_app_controller.new);
 router.post('/', csrf_protection, web_app_controller.create);
-router.get(
-  '/:application_id/authorized_users',
-  csrf_protection,
-  web_app_controller.authorized_users
-);
-router.get(
-  '/:application_id/authorized_organizations',
-  csrf_protection,
-  web_app_controller.authorized_organizations
-);
+router.get('/:application_id/authorized_users', csrf_protection, web_app_controller.authorized_users);
+router.get('/:application_id/authorized_organizations', csrf_protection, web_app_controller.authorized_organizations);
 router.get(
   '/:application_id/trusted_applications',
   csrf_protection,
@@ -86,12 +70,7 @@ if (config.eidas) {
     web_app_controller.show
   );
 } else {
-  router.get(
-    '/:application_id',
-    web_check_perm_controller.owned_permissions,
-    csrf_protection,
-    web_app_controller.show
-  );
+  router.get('/:application_id', web_check_perm_controller.owned_permissions, csrf_protection, web_app_controller.show);
 }
 router.get(
   '/:application_id/step/avatar',

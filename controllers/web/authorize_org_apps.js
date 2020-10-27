@@ -1,13 +1,12 @@
 const models = require('../../models/models.js');
-const array_contains_array = require('../../lib/object_functions.js')
-  .array_contains_array;
+const array_contains_array = require('../../lib/object_functions.js').array_contains_array;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const debug = require('debug')('idm:web-authorize_user_org_controller');
 
 // GET /idm/applications/:application_id/edit/organizations -- Search organizations authorized
-exports.get_organizations = function(req, res, next) {
+exports.get_organizations = function (req, res, next) {
   debug('--> get_organizations');
 
   // See if the request is via AJAX or browser
@@ -18,20 +17,20 @@ exports.get_organizations = function(req, res, next) {
         where: {
           oauth_client_id: req.application.id,
           user_id: { [Op.eq]: null },
-          organization_id: { [Op.ne]: null },
+          organization_id: { [Op.ne]: null }
         },
         include: [
           {
             model: models.organization,
-            attributes: ['id', 'name', 'image'],
-          },
-        ],
+            attributes: ['id', 'name', 'image']
+          }
+        ]
       })
-      .then(function(organizations_application) {
+      .then(function (organizations_application) {
         // Array of organizations authorized in the application
         const organizations_authorized = [];
 
-        organizations_application.forEach(function(app) {
+        organizations_application.forEach(function (app) {
           let image = '/img/logos/medium/group.png';
           if (app.Organization.image !== 'default') {
             image = '/img/organizations/' + app.Organization.image;
@@ -41,7 +40,7 @@ exports.get_organizations = function(req, res, next) {
             role_organization: app.role_organization,
             role_id: app.role_id,
             name: app.Organization.name,
-            image,
+            image
           }); // Added parameter is to control which elements will be deleted or added
           // to the table when authorizing other organizations
         });
@@ -52,9 +51,7 @@ exports.get_organizations = function(req, res, next) {
         // If permission is assign only public owned roles
         if (req.user_owned_permissions.includes('6')) {
           where_search_role.push({
-            id: req.user_owned_roles.filter(
-              elem => !(elem === 'provider' || elem === 'purchaser')
-            ),
+            id: req.user_owned_roles.filter((elem) => !(elem === 'provider' || elem === 'purchaser'))
           });
         }
 
@@ -73,16 +70,12 @@ exports.get_organizations = function(req, res, next) {
           .findAll({
             where: { [Op.or]: where_search_role },
             attributes: ['id', 'name'],
-            order: [['id', 'DESC']],
+            order: [['id', 'DESC']]
           })
-          .then(function(roles) {
+          .then(function (roles) {
             // Filter organizations_authorized depends on the permissions of the user logged
             for (let i = 0; i < organizations_authorized.length; i++) {
-              if (
-                roles.some(
-                  role => role.id === organizations_authorized[i].role_id
-                ) === false
-              ) {
+              if (roles.some((role) => role.id === organizations_authorized[i].role_id) === false) {
                 organizations_authorized[i].role_id = '';
               }
             }
@@ -91,14 +84,14 @@ exports.get_organizations = function(req, res, next) {
             res.send({
               organizations_authorized,
               roles,
-              errors: [],
+              errors: []
             });
           })
-          .catch(function(error) {
+          .catch(function (error) {
             next(error);
           });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         next(error);
       });
   } else {
@@ -108,31 +101,27 @@ exports.get_organizations = function(req, res, next) {
 };
 
 // GET /idm/organizations/available -- Search organizations to authorize in an application
-exports.available_organizations = function(req, res) {
+exports.available_organizations = function (req, res) {
   debug('--> available_organizations');
 
   // Obtain key to search in the organization table
   const key = req.query.key;
 
-  if (
-    key.length > 1 &&
-    key.includes('%') === false &&
-    key.includes('_') === false
-  ) {
+  if (key.length > 1 && key.includes('%') === false && key.includes('_') === false) {
     // Search if username is like the input key
     models.organization
       .findAll({
         attributes: ['name', 'id', 'image'],
         where: {
           name: {
-            like: '%' + key + '%',
-          },
-        },
+            like: '%' + key + '%'
+          }
+        }
       })
-      .then(function(organizations) {
+      .then(function (organizations) {
         // If found, send ana array of organizations with the name and the id of each one
         if (organizations.length > 0) {
-          organizations.forEach(function(elem) {
+          organizations.forEach(function (elem) {
             if (elem.image !== 'default') {
               elem.image = '/img/organizations/' + elem.image;
             } else {
@@ -151,7 +140,7 @@ exports.available_organizations = function(req, res) {
 };
 
 // POST /idm/applications/:application_id/edit/organizations -- Authorize organizations in an application
-exports.authorize_organizations = function(req, res) {
+exports.authorize_organizations = function (req, res) {
   debug('--> authorize_organizations');
 
   const organizations_to_be_authorized = JSON.parse(req.body.submit_authorize);
@@ -163,9 +152,7 @@ exports.authorize_organizations = function(req, res) {
     // If permissionis assign only public owned roles
     if (req.user_owned_permissions.includes('6')) {
       where_search_role.push({
-        id: req.user_owned_roles.filter(
-          elem => !(elem === 'provider' || elem === 'purchaser')
-        ),
+        id: req.user_owned_roles.filter((elem) => !(elem === 'provider' || elem === 'purchaser'))
       });
     }
 
@@ -181,14 +168,12 @@ exports.authorize_organizations = function(req, res) {
 
     const search_changeable_roles_by_user = models.role.findAll({
       where: { [Op.or]: where_search_role },
-      attributes: ['id'],
+      attributes: ['id']
     });
 
-    search_changeable_roles_by_user.then(function(changeable_roles_by_user) {
+    search_changeable_roles_by_user.then(function (changeable_roles_by_user) {
       // Array of ids that user can change
-      const ids_changeable_roles_by_user = changeable_roles_by_user.map(
-        elem => elem.id
-      );
+      const ids_changeable_roles_by_user = changeable_roles_by_user.map((elem) => elem.id);
 
       // Array of new rows in role_assignment
       const new_assignment = [];
@@ -197,25 +182,17 @@ exports.authorize_organizations = function(req, res) {
       const ids_roles_to_be_changed = [];
       for (let i = 0; i < organizations_to_be_authorized.length; i++) {
         if (organizations_to_be_authorized[i].role_id !== '') {
-          ids_roles_to_be_changed.push(
-            organizations_to_be_authorized[i].role_id
-          );
+          ids_roles_to_be_changed.push(organizations_to_be_authorized[i].role_id);
           new_assignment.push({
             organization_id: organizations_to_be_authorized[i].organization_id,
-            role_organization:
-              organizations_to_be_authorized[i].role_organization,
+            role_organization: organizations_to_be_authorized[i].role_organization,
             role_id: organizations_to_be_authorized[i].role_id,
-            oauth_client_id: req.application.id,
+            oauth_client_id: req.application.id
           });
         }
       }
 
-      if (
-        array_contains_array(
-          ids_changeable_roles_by_user,
-          ids_roles_to_be_changed
-        )
-      ) {
+      if (array_contains_array(ids_changeable_roles_by_user, ids_roles_to_be_changed)) {
         debug('You can change new roles');
 
         // Delete rows from role_assignment
@@ -224,35 +201,35 @@ exports.authorize_organizations = function(req, res) {
             oauth_client_id: req.application.id,
             role_id: ids_changeable_roles_by_user,
             user_id: { [Op.eq]: null },
-            organization_id: { [Op.ne]: null },
-          },
+            organization_id: { [Op.ne]: null }
+          }
         });
 
         // Handle promise of delete and create rows
         delete_rows
-          .then(function() {
+          .then(function () {
             // Create rows in role_assignment
             return models.role_assignment
               .bulkCreate(new_assignment)
-              .then(function() {
+              .then(function () {
                 // Send message of success in updating authorizations
                 req.session.message = {
                   text: ' Modified organizations authorization.',
-                  type: 'success',
+                  type: 'success'
                 };
                 res.redirect('/idm/applications/' + req.application.id);
               })
-              .catch(function(error) {
+              .catch(function (error) {
                 debug('Error: ', error);
                 return Promise.reject();
               });
           })
-          .catch(function(error) {
+          .catch(function (error) {
             debug('Error: ', error);
             // Send message of fail when updating authorizations
             req.session.message = {
               text: ' Modified organizations authorization error.',
-              type: 'danger',
+              type: 'danger'
             };
             res.redirect('/idm/applications/' + req.application.id);
           });

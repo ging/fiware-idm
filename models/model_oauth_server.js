@@ -541,33 +541,34 @@ function create_oauth_response(identity, application_id, action, resource, authz
         where: { user_id: identity.id, oauth_client_id: application_id }
       })
       .then(function (third_party_application) {
-        let shared_attributes = third_party_application.shared_attributes;
-        if (shared_attributes.includes('username')) {
-          user_info.username = identity.username;
-        }
-        if (shared_attributes.includes('email')) {
-          user_info.email = identity.email;
-        }
-        if (
-          shared_attributes.includes('identity_attributes') &&
-          identity.extra &&
-          identity.extra.identity_attributes &&
-          identity_attributes.enabled
-        ) {
-          user_info.attributes = identity.extra.identity_attributes;
-        }
+        if (third_party_application) {
+          const shared_attributes = third_party_application.shared_attributes || '';
+          if (shared_attributes.includes('username')) {
+            user_info.username = identity.username;
+          }
+          if (shared_attributes.includes('email')) {
+            user_info.email = identity.email;
+          }
+          if (
+            shared_attributes.includes('identity_attributes') &&
+            identity.extra &&
+            identity.extra.identity_attributes &&
+            identity_attributes.enabled
+          ) {
+            user_info.attributes = identity.extra.identity_attributes;
+          }
 
-        if (shared_attributes.includes('image') && config.cors && config_cors.enabled) {
-          user_info.image = identity.image !== 'default' ? config.host + '/img/users/' + identity.image : '';
-        }
+          if (shared_attributes.includes('image') && config.cors && config_cors.enabled) {
+            user_info.image = identity.image !== 'default' ? config.host + '/img/users/' + identity.image : '';
+          }
 
-        if (shared_attributes.includes('gravatar')) {
-          user_info.isGravatarEnabled = identity.gravatar;
+          if (shared_attributes.includes('gravatar')) {
+            user_info.isGravatarEnabled = identity.gravatar;
+          }
+          if (identity.eidas_idm && shared_attributes.includes('eidas_profile')) {
+            user_info.eidas_profile = identity.extra.eidas_profile;
+          }
         }
-        if (identity.eidas_idm && shared_attributes.includes('eidas_profile')) {
-          user_info.eidas_profile = identity.extra.eidas_profile;
-        }
-
         return search_user_info(user_info, action, resource, authzforce, req_app);
       });
   } else if (type === 'iot') {

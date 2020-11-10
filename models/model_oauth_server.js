@@ -604,6 +604,7 @@ function create_oauth_response(
       )
     );
 
+    debug('IDENTITY IDENTITY:', identity);
     user_info.username = identity.username;
     if (identity.extra) {
       user_info.firstname = identity.extra.firstname;

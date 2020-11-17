@@ -18,7 +18,7 @@ them, don't hesitate to ask. We're here to help! This is simply a reminder of wh
 merging your code._
 
 -   [ ] I have read the [CONTRIBUTING](https://github.com/ging/fiware-idm/blob/master/CONTRIBUTING.md) doc
--   [ ] I have signed the [CLA](https://fiware.github.io/contribution-requirements/individual-cla.pdf)
+-   [ ] I have signed the [CLA](https://github.com/ging/fiware-idm/blob/master/keyrock-individual-cla.pdf)
 -   [ ] I have added tests that prove my fix is effective or that my feature works
 -   [ ] I have added necessary documentation (if appropriate)
 -   [ ] Any dependent changes have been merged and published in downstream modules

@@ -3,7 +3,7 @@ const debug = require('debug')('idm:web-admin_controller');
 const gravatar = require('gravatar');
 
 // See if user is administrator
-exports.is_admin = function(req, res, next) {
+exports.is_admin = function (req, res, next) {
   debug('--> is_admin');
 
   // If users session has not the admin field redirect to initial page
@@ -15,7 +15,7 @@ exports.is_admin = function(req, res, next) {
 };
 
 // GET /idm/admins/users -- Send admin users
-exports.admin_users = function(req, res) {
+exports.admin_users = function (req, res) {
   debug(' --> admin_users');
 
   const key = req.query.key ? req.query.key : '';
@@ -27,25 +27,21 @@ exports.admin_users = function(req, res) {
       where: {
         admin: true,
         username: {
-          like: '%' + key + '%',
-        },
+          like: '%' + key + '%'
+        }
       },
       attributes: ['id', 'email', 'username', 'image', 'gravatar'],
       offset,
-      limit,
+      limit
     })
-    .then(function(result) {
+    .then(function (result) {
       const users = result.rows;
       const count = result.count;
 
       if (users.length > 0) {
-        users.forEach(function(user) {
+        users.forEach(function (user) {
           if (user.gravatar) {
-            user.image = gravatar.url(
-              user.email,
-              { s: 100, r: 'g', d: 'mm' },
-              { protocol: 'https' }
-            );
+            user.image = gravatar.url(user.email, { s: 100, r: 'g', d: 'mm' }, { protocol: 'https' });
           } else if (user.image === 'default') {
             user.image = '/img/logos/medium/user.png';
           } else {
@@ -55,7 +51,7 @@ exports.admin_users = function(req, res) {
       }
       res.send({ admin_users: users, admin_users_number: count });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error get admin users: ' + error);
       const message = { text: ' Unable to find admins', type: 'danger' };
       send_response(req, res, message, '/idm/admins/administrators');
@@ -63,7 +59,7 @@ exports.admin_users = function(req, res) {
 };
 
 // GET /idm/admins/administrators --  Render administrators view
-exports.index_administrators = function(req, res) {
+exports.index_administrators = function (req, res) {
   debug('--> index_administrators');
 
   // Set message to send when rendering view and delete from request
@@ -76,21 +72,21 @@ exports.index_administrators = function(req, res) {
 };
 
 // PUT /idm/admins/administrators --  Give admin role to specified users
-exports.update_administrators = function(req, res) {
+exports.update_administrators = function (req, res) {
   debug('--> update_administrators');
 
   models.user
     .findAll({
       where: { admin: true },
-      attributes: ['id'],
+      attributes: ['id']
     })
-    .then(function(users) {
-      const actual_admins = users.map(elem => elem.id);
+    .then(function (users) {
+      const actual_admins = users.map((elem) => elem.id);
 
       const new_admins = JSON.parse(req.body.submit_authorize);
       const users_not_admin = [];
 
-      actual_admins.forEach(function(elem) {
+      actual_admins.forEach(function (elem) {
         if (new_admins.includes(elem)) {
           new_admins.splice(new_admins.indexOf(elem), 1);
         } else {
@@ -101,50 +97,50 @@ exports.update_administrators = function(req, res) {
       models.user
         .update(
           {
-            admin: true,
+            admin: true
           },
           {
             where: { id: new_admins },
-            fields: ['admin'],
+            fields: ['admin']
           }
         )
-        .then(function() {
+        .then(function () {
           models.user
             .update(
               {
-                admin: false,
+                admin: false
               },
               {
                 where: { id: users_not_admin },
-                fields: ['admin'],
+                fields: ['admin']
               }
             )
-            .then(function() {
+            .then(function () {
               req.session.message = {
                 text: ' Success authorize admins.',
-                type: 'success',
+                type: 'success'
               };
               res.redirect('/idm/admins/administrators');
             })
-            .catch(function(error) {
+            .catch(function (error) {
               debug('  -> error' + error);
               req.session.message = {
                 text: ' Fail authorize admins.',
-                type: 'danger',
+                type: 'danger'
               };
               res.redirect('/idm/admins/administrators');
             });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           debug('  -> error' + error);
           req.session.message = {
             text: ' Fail authorize admins.',
-            type: 'danger',
+            type: 'danger'
           };
           res.redirect('/idm/admins/administrators');
         });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('  -> error' + error);
       res.redirect('/idm/admins/administrators');
     });

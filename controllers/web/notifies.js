@@ -4,19 +4,19 @@ const debug = require('debug')('idm:web-notify_controller');
 const email = require('../../lib/email.js');
 
 // GET /idm/admins/notify -- Render notify view
-exports.show_notify = function(req, res) {
+exports.show_notify = function (req, res) {
   debug('--> notify');
 
   res.render('admin/notify', {
     errors: {},
     users: [],
     subject: '',
-    csrf_token: req.csrfToken(),
+    csrf_token: req.csrfToken()
   });
 };
 
 // POST /idm/admins/notify -- Send message with info obtain from body
-exports.send_message = function(req, res) {
+exports.send_message = function (req, res) {
   debug('--> send_message');
 
   // Objects of errors to be sent to the view
@@ -47,7 +47,7 @@ exports.send_message = function(req, res) {
         errors: {},
         users: [],
         subject: '',
-        csrf_token: req.csrfToken(),
+        csrf_token: req.csrfToken()
       });
   }
 };
@@ -62,14 +62,14 @@ function send_message_all_users(req, res, errors) {
       errors,
       users: [],
       subject: '',
-      csrf_token: req.csrfToken(),
+      csrf_token: req.csrfToken()
     });
   } else {
     // Get all enabled users
     get_all_users()
-      .then(function(users) {
+      .then(function (users) {
         // Map array of users to get emails and join all these emails into a string
-        const emails = users.map(elem => elem.email).join();
+        const emails = users.map((elem) => elem.email).join();
 
         const translation = req.app.locals.translation;
 
@@ -78,11 +78,11 @@ function send_message_all_users(req, res, errors) {
 
         req.session.message = {
           text: ' Success sending email.',
-          type: 'success',
+          type: 'success'
         };
         res.redirect('/');
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('  -> error' + error);
         req.session.message = { text: ' Fail sending email.', type: 'danger' };
         res.redirect('/');
@@ -98,7 +98,7 @@ function send_message_organization(req, res, errors) {
 
   if (organization.length > 0) {
     get_organization(organization)
-      .then(function(users) {
+      .then(function (users) {
         // If users not found send an error message
         if (users.length < 1) {
           errors.not_users_organization = true;
@@ -110,11 +110,11 @@ function send_message_organization(req, res, errors) {
             errors,
             users: req.body.user_ids,
             subject: req.body.subject,
-            csrf_token: req.csrfToken(),
+            csrf_token: req.csrfToken()
           });
         } else {
           // Map array of users to get emails and join all these emails into a string
-          const emails = users.map(elem => elem.email).join();
+          const emails = users.map((elem) => elem.email).join();
 
           const translation = req.app.locals.translation;
 
@@ -123,12 +123,12 @@ function send_message_organization(req, res, errors) {
 
           req.session.message = {
             text: ' Success sending email.',
-            type: 'success',
+            type: 'success'
           };
           res.redirect('/');
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('  -> error' + error);
         req.session.message = { text: ' Fail sending email.', type: 'danger' };
         res.redirect('/');
@@ -140,7 +140,7 @@ function send_message_organization(req, res, errors) {
       errors,
       users: req.body.user_ids,
       subject: req.body.subject,
-      csrf_token: req.csrfToken(),
+      csrf_token: req.csrfToken()
     });
   }
 }
@@ -164,7 +164,7 @@ function send_message_users_by_id(req, res, errors) {
 
   if (user_ids.length > 0) {
     check_users_by_id(user_ids)
-      .then(function(result) {
+      .then(function (result) {
         // If users not found send an error message
         if (result.users_not_found.length > 0) {
           errors.users_not_found = result.users_not_found;
@@ -176,11 +176,11 @@ function send_message_users_by_id(req, res, errors) {
             errors,
             users: req.body.user_ids,
             subject: req.body.subject,
-            csrf_token: req.csrfToken(),
+            csrf_token: req.csrfToken()
           });
         } else {
           // Map array of users to get emails and join all these emails into a string
-          const emails = result.users.map(elem => elem.email).join();
+          const emails = result.users.map((elem) => elem.email).join();
 
           const translation = req.app.locals.translation;
 
@@ -189,12 +189,12 @@ function send_message_users_by_id(req, res, errors) {
 
           req.session.message = {
             text: ' Success sending email.',
-            type: 'success',
+            type: 'success'
           };
           res.redirect('/');
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('  -> error' + error);
         req.session.message = { text: ' Fail sending email.', type: 'danger' };
         res.redirect('/');
@@ -206,7 +206,7 @@ function send_message_users_by_id(req, res, errors) {
       errors,
       users: req.body.user_ids,
       subject: req.body.subject,
-      csrf_token: req.csrfToken(),
+      csrf_token: req.csrfToken()
     });
   }
 }
@@ -216,12 +216,12 @@ function get_all_users() {
   return models.user
     .findAll({
       where: { enabled: true },
-      attributes: ['email'],
+      attributes: ['email']
     })
-    .then(function(users) {
+    .then(function (users) {
       return users;
     })
-    .catch(function(error) {
+    .catch(function (error) {
       return Promise.reject(error);
     });
 }
@@ -229,19 +229,11 @@ function get_all_users() {
 // Function to gel all emails of users from a specific organization
 function get_organization(organization_id) {
   return models.helpers
-    .search_distinct(
-      'user_organization',
-      'user',
-      organization_id,
-      'organization',
-      '%%',
-      0,
-      false
-    )
-    .then(function(users) {
+    .search_distinct('user_organization', 'user', organization_id, 'organization', '%%', 0, false)
+    .then(function (users) {
       return users;
     })
-    .catch(function(error) {
+    .catch(function (error) {
       return Promise.reject(error);
     });
 }
@@ -251,16 +243,16 @@ function check_users_by_id(user_ids) {
   return models.user
     .findAll({
       where: { id: user_ids, enabled: true },
-      attributes: ['id', 'email'],
+      attributes: ['id', 'email']
     })
-    .then(function(users) {
+    .then(function (users) {
       // Check if users requested are in the database
-      const users_not_found = user_ids.filter(function(id) {
-        return !users.map(elem => elem.id).includes(id);
+      const users_not_found = user_ids.filter(function (id) {
+        return !users.map((elem) => elem.id).includes(id);
       });
       return { users_not_found, users };
     })
-    .catch(function(error) {
+    .catch(function (error) {
       return Promise.reject(error);
     });
 }

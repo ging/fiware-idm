@@ -8,7 +8,7 @@ const _ = require('lodash');
 const Op = Sequelize.Op;
 
 // MW to Autoload info if path include role_id
-exports.load_role = function(req, res, next, role_id) {
+exports.load_role = function (req, res, next, role_id) {
   debug('--> load_role');
   let where = { id: role_id, oauth_client_id: req.application.id };
 
@@ -19,28 +19,28 @@ exports.load_role = function(req, res, next, role_id) {
   // Search role whose id is role_id
   models.role
     .findOne({
-      where,
+      where
     })
-    .then(function(role) {
+    .then(function (role) {
       // If role exists, set image from file system
       if (role) {
         req.role = role;
         next();
       } else {
         res.status(404).json({
-          error: { message: 'Role not found', code: 404, title: 'Not Found' },
+          error: { message: 'Role not found', code: 404, title: 'Not Found' }
         });
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -48,43 +48,29 @@ exports.load_role = function(req, res, next, role_id) {
 };
 
 // GET /v1/:application_id/roles' -- Send index of roles
-exports.index = function(req, res) {
+exports.index = function (req, res) {
   debug('--> index');
 
   // Array to indicate which roles are going to be search
   const where_search_role = [];
-  if (
-    req.needed_permissions.includes('3') &&
-    req.user_owned_permissions.includes('3')
-  ) {
+  if (req.needed_permissions.includes('3') && req.user_owned_permissions.includes('3')) {
     where_search_role.push({ oauth_client_id: req.application.id });
     where_search_role.push({ is_internal: true });
   } else {
     // If permission is assign only public owned roles
-    if (
-      req.needed_permissions.includes('6') &&
-      req.user_owned_permissions.includes('6')
-    ) {
+    if (req.needed_permissions.includes('6') && req.user_owned_permissions.includes('6')) {
       where_search_role.push({
-        id: req.user_owned_roles.filter(
-          elem => !(elem === 'provider' || elem === 'purchaser')
-        ),
+        id: req.user_owned_roles.filter((elem) => !(elem === 'provider' || elem === 'purchaser'))
       });
     }
 
     // If permission is assign all public owned roles
-    if (
-      req.needed_permissions.includes('5') &&
-      req.user_owned_permissions.includes('5')
-    ) {
+    if (req.needed_permissions.includes('5') && req.user_owned_permissions.includes('5')) {
       where_search_role.push({ oauth_client_id: req.application.id });
     }
 
     // If permission is assign only internal roles
-    if (
-      req.needed_permissions.includes('1') &&
-      req.user_owned_permissions.includes('1')
-    ) {
+    if (req.needed_permissions.includes('1') && req.user_owned_permissions.includes('1')) {
       where_search_role.push({ is_internal: true });
     }
   }
@@ -93,13 +79,13 @@ exports.index = function(req, res) {
     .findAll({
       where: { [Op.or]: where_search_role },
       attributes: ['id', 'name'],
-      order: [['id', 'DESC']],
+      order: [['id', 'DESC']]
     })
-    .then(function(roles) {
+    .then(function (roles) {
       if (roles.length > 0) {
-        roles = _.map(roles, role => {
+        roles = _.map(roles, (role) => {
           role.urls = {
-            permissions_url: '/v1/roles/' + role.id + '/permissions',
+            permissions_url: '/v1/roles/' + role.id + '/permissions'
           };
           return role;
         });
@@ -109,20 +95,20 @@ exports.index = function(req, res) {
           error: {
             message: 'Roles not found',
             code: 404,
-            title: 'Not Found',
-          },
+            title: 'Not Found'
+          }
         });
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -130,35 +116,35 @@ exports.index = function(req, res) {
 };
 
 // POST /v1/:application_id/roles' -- Create role
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   debug('--> create');
 
   check_create_body_request(req.body)
-    .then(function() {
+    .then(function () {
       // Build a row and validate if input values are correct (not empty) before saving values in role table
       const role = models.role.build({
         id: uuid.v4(),
         is_internal: false,
         name: req.body.role.name,
-        oauth_client_id: req.application.id,
+        oauth_client_id: req.application.id
       });
 
       return role.save({
-        fields: ['id', 'is_internal', 'name', 'oauth_client_id'],
+        fields: ['id', 'is_internal', 'name', 'oauth_client_id']
       });
     })
-    .then(function(role) {
+    .then(function (role) {
       res.status(201).json({ role });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -166,36 +152,36 @@ exports.create = function(req, res) {
 };
 
 // GET /v1/:application_id/roles/:role_id -- Get info about role
-exports.info = function(req, res) {
+exports.info = function (req, res) {
   debug('--> info');
   const role = req.role;
   role.urls = {
-    permissions_url: '/v1/roles/' + role.id + '/permissions',
+    permissions_url: '/v1/roles/' + role.id + '/permissions'
   };
 
   res.status(200).json({ role });
 };
 
 // PATCH /v1/:application_id/roles/:role_id -- Edit role
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   debug('--> update');
 
   if (req.role.id === 'provider' || req.role.id === 'purchaser') {
     res.status(403).json({
-      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' }
     });
   } else {
     let role_previous_values = null;
 
     check_update_body_request(req.body)
-      .then(function() {
+      .then(function () {
         role_previous_values = JSON.parse(JSON.stringify(req.role.dataValues));
 
         req.role.name = req.body.role.name ? req.body.role.name : req.role.name;
 
         return req.role.save();
       })
-      .then(function(role) {
+      .then(function (role) {
         const difference = diff_object(role_previous_values, role.dataValues);
         const response =
           Object.keys(difference).length > 0
@@ -203,19 +189,19 @@ exports.update = function(req, res) {
             : {
                 message: "Request don't change the role parameters",
                 code: 200,
-                title: 'OK',
+                title: 'OK'
               };
         res.status(200).json(response);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ' + error);
         if (!error.error) {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
         res.status(error.error.code).json(error);
@@ -224,28 +210,28 @@ exports.update = function(req, res) {
 };
 
 // DELETE /v1/:application_id/roles/:role_id -- Delete role
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   debug('--> delete');
 
   if (req.role.id === 'provider' || req.role.id === 'purchaser') {
     res.status(403).json({
-      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' }
     });
   } else {
     req.role
       .destroy()
-      .then(function() {
+      .then(function () {
         res.status(204).json('Role ' + req.params.role_id + ' destroyed');
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ' + error);
         if (!error.error) {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
         res.status(error.error.code).json(error);
@@ -254,7 +240,7 @@ exports.delete = function(req, res) {
 };
 
 // MW to search roles that user can change
-exports.search_changeable_roles = function(req, res, next) {
+exports.search_changeable_roles = function (req, res, next) {
   debug('--> search_changeable_roles');
 
   if (req.needed_permissions.length >= 0) {
@@ -262,30 +248,19 @@ exports.search_changeable_roles = function(req, res, next) {
     const where_search_role = [];
 
     // If permission is assign only public owned roles
-    if (
-      req.needed_permissions.includes('6') &&
-      req.user_owned_permissions.includes('6')
-    ) {
+    if (req.needed_permissions.includes('6') && req.user_owned_permissions.includes('6')) {
       where_search_role.push({
-        id: req.user_owned_roles.filter(
-          elem => !(elem === 'provider' || elem === 'purchaser')
-        ),
+        id: req.user_owned_roles.filter((elem) => !(elem === 'provider' || elem === 'purchaser'))
       });
     }
 
     // If permission is assign all public owned roles
-    if (
-      req.needed_permissions.includes('5') &&
-      req.user_owned_permissions.includes('5')
-    ) {
+    if (req.needed_permissions.includes('5') && req.user_owned_permissions.includes('5')) {
       where_search_role.push({ oauth_client_id: req.application.id });
     }
 
     // If permission is assign only internal roles
-    if (
-      req.needed_permissions.includes('1') &&
-      req.user_owned_permissions.includes('1')
-    ) {
+    if (req.needed_permissions.includes('1') && req.user_owned_permissions.includes('1')) {
       where_search_role.push({ is_internal: true });
     }
 
@@ -294,21 +269,21 @@ exports.search_changeable_roles = function(req, res, next) {
       .findAll({
         where: { [Op.or]: where_search_role },
         attributes: ['id', 'name'],
-        order: [['id', 'DESC']],
+        order: [['id', 'DESC']]
       })
-      .then(function(roles) {
+      .then(function (roles) {
         req.changeable_role = roles;
         next();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ' + error);
         if (!error.error) {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
         res.status(error.error.code).json(error);
@@ -320,14 +295,14 @@ exports.search_changeable_roles = function(req, res, next) {
 
 // Check body in create request
 function check_create_body_request(body) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!body.role) {
       reject({
         error: {
           message: 'Missing parameter role in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -336,8 +311,8 @@ function check_create_body_request(body) {
         error: {
           message: 'Missing parameter name in body request or empty name',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -347,14 +322,14 @@ function check_create_body_request(body) {
 
 // Check body in update request
 function check_update_body_request(body) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!body.role) {
       reject({
         error: {
           message: 'Missing parameter role in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -363,8 +338,8 @@ function check_update_body_request(body) {
         error: {
           message: 'Cannot set empty name',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -373,8 +348,8 @@ function check_update_body_request(body) {
         error: {
           message: 'Cannot set id or is_internal',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 

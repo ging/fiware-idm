@@ -16,7 +16,7 @@ router.post(
 );
 
 // catch 404 and forward to error handler
-router.use(function(req, res) {
+router.use(function (req, res) {
   const err = new Error('Path not Found');
 
   err.status = 404;
@@ -30,7 +30,7 @@ router.use(function(req, res) {
 
 // Error handler
 /* eslint-disable no-unused-vars */
-router.use(function(err, req, res, next) {
+router.use(function (err, req, res, next) {
   /* eslint-enable no-unused-vars */
   debug(err);
 

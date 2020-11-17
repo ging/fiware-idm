@@ -8,19 +8,9 @@ const web_setting_controller = require('../../controllers/web/index').settings;
 const web_session_controller = require('../../controllers/web/index').sessions;
 
 // Routes for settings
-router.get(
-  '/',
-  web_session_controller.password_check_date,
-  csrf_protection,
-  web_setting_controller.settings
-);
+router.get('/', web_session_controller.password_check_date, csrf_protection, web_setting_controller.settings);
 router.post('/password', csrf_protection, web_setting_controller.password);
-router.post(
-  '/email',
-  web_session_controller.password_check_date,
-  csrf_protection,
-  web_setting_controller.email
-);
+router.post('/email', web_session_controller.password_check_date, csrf_protection, web_setting_controller.email);
 router.get(
   '/email/verify',
   web_session_controller.password_check_date,

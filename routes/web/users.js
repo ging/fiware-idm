@@ -9,8 +9,7 @@ const fs = require('fs');
 
 // Home web Controller
 const web_user_controller = require('../../controllers/web/index').users;
-const web_auth_user_controller = require('../../controllers/web/index')
-  .authorize_user_apps;
+const web_auth_user_controller = require('../../controllers/web/index').authorize_user_apps;
 
 // Autoloads
 router.param('user_id', web_user_controller.load_user);
@@ -25,33 +24,16 @@ const image_user_upload = multer.diskStorage({
   },
   filename(req, file, callback) {
     callback(null, uuid.v4() + path.extname(file.originalname));
-  },
+  }
 });
 
 // Routes for users
-router.get(
-  '/available',
-  csrf_protection,
-  web_auth_user_controller.available_users
-);
+router.get('/available', csrf_protection, web_auth_user_controller.available_users);
 
 router.get('/:user_id', csrf_protection, web_user_controller.show);
-router.get(
-  '/:user_id/organizations',
-  csrf_protection,
-  web_user_controller.get_organizations
-);
-router.get(
-  '/:user_id/applications',
-  csrf_protection,
-  web_user_controller.get_applications
-);
-router.get(
-  '/:user_id/edit',
-  web_user_controller.owned_permissions,
-  csrf_protection,
-  web_user_controller.edit
-);
+router.get('/:user_id/organizations', csrf_protection, web_user_controller.get_organizations);
+router.get('/:user_id/applications', csrf_protection, web_user_controller.get_applications);
+router.get('/:user_id/edit', web_user_controller.owned_permissions, csrf_protection, web_user_controller.edit);
 router.put(
   '/:user_id/edit/info',
   web_user_controller.owned_permissions,

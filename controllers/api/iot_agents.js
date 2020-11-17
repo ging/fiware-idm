@@ -3,16 +3,16 @@ const models = require('../../models/models.js');
 const uuid = require('uuid');
 
 // MW to Autoload info if path include iotId
-exports.load_iota = function(req, res, next, iot_agent_id) {
+exports.load_iota = function (req, res, next, iot_agent_id) {
   debug('--> load_iot');
 
   // Search application whose id is application_id
   models.iot
     .findOne({
       where: { id: iot_agent_id, oauth_client_id: req.application.id },
-      attributes: ['id', 'password', 'oauth_client_id', 'salt'],
+      attributes: ['id', 'password', 'oauth_client_id', 'salt']
     })
-    .then(function(iot) {
+    .then(function (iot) {
       if (iot) {
         req.iot = iot;
         next();
@@ -21,20 +21,20 @@ exports.load_iota = function(req, res, next, iot_agent_id) {
           error: {
             message: 'Iot Agent not found',
             code: 404,
-            title: 'Not Found',
-          },
+            title: 'Not Found'
+          }
         });
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -42,15 +42,15 @@ exports.load_iota = function(req, res, next, iot_agent_id) {
 };
 
 // GET /v1/:application_id/iot_agents -- Send index of iot_agents
-exports.index = function(req, res) {
+exports.index = function (req, res) {
   debug('--> index');
 
   models.iot
     .findAll({
       where: { oauth_client_id: req.application.id },
-      attributes: ['id'],
+      attributes: ['id']
     })
-    .then(function(iots) {
+    .then(function (iots) {
       if (iots.length > 0) {
         res.status(200).json({ iot_agents: iots });
       } else {
@@ -58,20 +58,20 @@ exports.index = function(req, res) {
           error: {
             message: 'Iot agents not found',
             code: 404,
-            title: 'Not Found',
-          },
+            title: 'Not Found'
+          }
         });
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -79,7 +79,7 @@ exports.index = function(req, res) {
 };
 
 // POST /v1/:application_id/iot_agents -- Create iot_agent
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   debug('--> create');
 
   // Id and password of the iot agent
@@ -90,24 +90,24 @@ exports.create = function(req, res) {
   const iot = models.iot.build({
     id,
     password,
-    oauth_client_id: req.application.id,
+    oauth_client_id: req.application.id
   });
   iot
     .save({
-      fields: ['id', 'password', 'salt', 'oauth_client_id'],
+      fields: ['id', 'password', 'salt', 'oauth_client_id']
     })
-    .then(function() {
+    .then(function () {
       res.status(201).json({ iot_agent: { id, password } });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -115,7 +115,7 @@ exports.create = function(req, res) {
 };
 
 // GET /v1/:application_id/iot_agents/:iot_agentId -- Get info about iot_agent
-exports.info = function(req, res) {
+exports.info = function (req, res) {
   debug('--> info');
 
   delete req.iot.dataValues.password;
@@ -124,7 +124,7 @@ exports.info = function(req, res) {
 };
 
 // PATCH /v1/:application_id/iot_agents/:iot_agentId -- Reset iot_agent password
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   debug('--> update');
 
   const password = 'iot_sensor_' + uuid.v4();
@@ -133,20 +133,20 @@ exports.update = function(req, res) {
 
   req.iot
     .save({
-      fields: ['password', 'salt'],
+      fields: ['password', 'salt']
     })
-    .then(function() {
+    .then(function () {
       res.status(200).json({ new_password: password });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -154,23 +154,23 @@ exports.update = function(req, res) {
 };
 
 // DELETE /v1/:application_id/iot_agents/:iot_agentId -- Delete iot_agent
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   debug('--> delete');
 
   req.iot
     .destroy()
-    .then(function() {
+    .then(function () {
       res.status(204).json('Pep Proxy ' + req.iot.id + ' destroyed');
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);

@@ -1,6 +1,6 @@
 // BD to store all OAuth Refresh Tokens
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const RefreshToken = sequelize.define(
     'RefreshToken',
     {
@@ -8,29 +8,27 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.STRING(256),
         primaryKey: true,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       expires: DataTypes.DATE,
       scope: {
         type: DataTypes.STRING(2000),
         get() {
-          return this.getDataValue('scope')
-            ? this.getDataValue('scope').split(',')
-            : [];
+          return this.getDataValue('scope') ? this.getDataValue('scope').split(',') : [];
         },
         set(val) {
           this.setDataValue('scope', val ? val.toString() : null);
-        },
+        }
       },
       valid: {
         type: DataTypes.BOOLEAN,
-        defaultValue: null,
-      },
+        defaultValue: null
+      }
     },
     {
       tableName: 'oauth_refresh_token',
       timestamps: false,
-      underscored: true,
+      underscored: true
     }
   );
 

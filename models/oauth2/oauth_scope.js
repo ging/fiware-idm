@@ -1,6 +1,6 @@
 // BD to store OAuth scopes
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const OAuthScope = sequelize.define(
     'OauthScope',
     {
@@ -9,15 +9,15 @@ module.exports = function(sequelize, DataTypes) {
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       scope: DataTypes.STRING,
-      is_default: DataTypes.BOOLEAN,
+      is_default: DataTypes.BOOLEAN
     },
     {
       tableName: 'oauth_scope',
       timestamps: false,
-      underscored: true,
+      underscored: true
     }
   );
 

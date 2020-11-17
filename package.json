@@ -17,7 +17,7 @@
     "lint": "eslint . --cache",
     "lint:text": "textlint 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
-    "prettier": "prettier --config .prettierrc.json --write **/*.js *.js",
+    "prettier": "prettier --config .prettierrc.json --write routes/**/*.js models/**/*.js controllers/**/*.js **/*.js *.js",
     "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
     "test": "nyc --reporter=text mocha -- --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
     "test:coverage": "nyc --reporter=lcov mocha -- --recursive 'test/**/*.js' --timeout 3000 --ui bdd --exit",

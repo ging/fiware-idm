@@ -15,7 +15,7 @@
     "undo_all_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo:all",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "lint": "eslint . --cache",
-    "lint:text": "textlint 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
+    "lint:text": "textlint '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md'",
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "prettier": "prettier --config .prettierrc.json --write routes/**/*.js models/**/*.js controllers/**/*.js **/*.js *.js",
     "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",

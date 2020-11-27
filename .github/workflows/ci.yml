@@ -92,7 +92,7 @@ jobs:
           node ./test/database
           IDM_DB_PASS=test 
           IDM_DB_NAME=idm_test
-          npm test:coverage
+          npm run test:coverage
       - name: Push to Coveralls
         uses: coverallsapp/github-action@master
         with:

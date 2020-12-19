@@ -11,6 +11,8 @@ Keyrock は、各ユースケースの特定のニーズに合わせて簡単に
 
 -   セキュリティ (ユーザ・セッション、パスワードの暗号化と CORS)
 
+-   二要素認証 (Two Factor Authentication)
+
 -   OAuth2.0
 
 -   eIDAS
@@ -21,7 +23,7 @@ Keyrock は、各ユースケースの特定のニーズに合わせて簡単に
 
 -   データベース
 
--   外部認証
+-   外部認証 (SQL および LDAP)
 
 -   認可
 
@@ -46,7 +48,7 @@ config.js ファイルとは別に、UI には管理ユーザ・ビューがあ�
 
 ```javascript
 config.port = 80;
-config.host = "http://keyrock-domain-name.org:" + config.port;
+config.host = 'http://keyrock-domain-name.org:' + config.port;
 ```
 
 ## デバッグ
@@ -82,8 +84,8 @@ npm run debug
 ```javascript
 config.https = {
     enabled: true,
-    cert_file: "certs/idm-2018-cert.pem",
-    key_file: "certs/idm-2018-key.pem",
+    cert_file: 'certs/idm-2018-cert.pem',
+    key_file: 'certs/idm-2018-key.pem',
     port: 443
 };
 ```
@@ -105,9 +107,7 @@ HTTPS とは別に、セキュリティの処理に関連する他の 3 つの�
 
 ```javascript
 config.session = {
-    secret: require("crypto")
-        .randomBytes(20)
-        .toString("hex"),
+    secret: require('crypto').randomBytes(20).toString('hex'),
     expires: 60 * 60 * 1000
 };
 ```
@@ -119,7 +119,7 @@ config.session = {
 
 ```javascript
 config.password_encryption = {
-    key: "idm_encryption"
+    key: 'idm_encryption'
 };
 ```
 
@@ -132,8 +132,8 @@ config.password_encryption = {
 config.cors = {
     enabled: true,
     options: {
-        origin: "*",
-        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+        origin: '*',
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
         allowedHeaders: undefined,
         exposedHeaders: undefined,
         credentials: undefined,
@@ -142,6 +142,16 @@ config.cors = {
         optionsSuccessStatus: 204
     }
 };
+```
+
+## 二要素認証 (Two Factor Authentication)
+
+この構成を有効にすると、ユーザはユーザ名/パスワードを使用する以外に外部デバ
+イスを使用して認証できるようになります (詳細については、ユーザ・ガイドを確
+認してください)。
+
+```javascript
+config.debug = true;
 ```
 
 ## OAuth2.0
@@ -194,8 +204,8 @@ config.oauth2 = {
 ```javascript
 config.eidas = {
     enabled: true,
-    gateway_host: "localhost",
-    node_host: "https://se-eidas.redsara.es/EidasNode/ServiceProvider",
+    gateway_host: 'localhost',
+    node_host: 'https://se-eidas.redsara.es/EidasNode/ServiceProvider',
     metadata_expiration: 60 * 60 * 24 * 365
 };
 ```
@@ -210,7 +220,7 @@ config.eidas = {
 config.usage_control = {
     enabled: true,
     ptp: {
-        host: "localhost",
+        host: 'localhost',
         port: 8090
     }
 };
@@ -246,16 +256,16 @@ config.api = {
 
 ```javascript
 config.database = {
-    host: "localhost",
-    password: "idm",
-    username: "root",
-    database: "idm",
-    dialect: "mysql",
+    host: 'localhost',
+    password: 'idm',
+    username: 'root',
+    database: 'idm',
+    dialect: 'mysql',
     port: undefined
 };
 ```
 
-## 外部認証 (External Authentication)
+## 外部認証 (External Authentication) (SQL database)
 
 外部データベースを介してユーザを認証するように Identity Manager を設定することも
 できます。
@@ -318,11 +328,11 @@ CREATE VIEW USER_VIEW AS
 
 **USER_VIEW テーブル**
 
-| ID  | password_salt | password        | email           | username      |
-| --- | ------------- | --------------- | --------------- | ------------- |
-| 1   | 1234          | g34h432hjk54k2j | melinda@test.es | Melinda López |
-| 2   | 1234          | 2h43h7fdj38302j | juanli@test.es  | Juanli Jons   |
-| 3   | 1234          | j328478j328j423 | lesha@test.es   | Lesha Magnen  |
+| ID  | password_salt | password        | email             | username      |
+| --- | ------------- | --------------- | ----------------- | ------------- |
+| 1   | 1234          | g34h432hjk54k2j | `melinda@test.es` | Melinda López |
+| 2   | 1234          | 2h43h7fdj38302j | `juanli@test.es`  | Juanli Jons   |
+| 3   | 1234          | j328478j328j423 | `lesha@test.es`   | Lesha Magnen  |
 
 この外部認証を有効にするには、データベースの属性をカスタマイズして config.js フ
 ァイルを修正する必要があります。
@@ -330,23 +340,56 @@ CREATE VIEW USER_VIEW AS
 ```javascript
 config.external_auth = {
     enabled: true,
-    id_prefix: "external_",
+    id_prefix: 'external_',
     password_encryption_key: undefined,
-    ecryption: "bcyrpt",
+    ecryption: 'bcyrpt',
     database: {
         host: "localhost",
         port: undefined,
-        database: "idm",
-        username: "root",
-        password: "idm",
-        user_table: "user_view",
-        dialect: "mysql"
+        database: 'idm',
+        username: 'root',
+        password: 'idm',
+        user_table: 'user_view',
+        dialect: 'mysql'
     }
 };
 ```
 
 パスワードの有効性をチェックする方法は、_external_auth.encryption_ パラメータで
 カスタマイズできます。 SHA1 と BCrypt は現在サポートされています。
+
+## 外部認証 (External Authentication) (LDAP)
+
+Keyrock インスタンスを既存の LDAP ユーザ・ディレクトリに接続できます。 SQL
+ベースの外部データベースを使用する場合と同じように、これにより、外部 LDAP
+ディレクトリで使用可能なユーザを認証できます。 認証されると、ユーザーのローカル
+コピーが作成されます。 ただし、パスワードは常に外部ディレクトリでチェックされる
+ため、Keyrock のデータベースには保存されません。
+
+この機能を有効にするには、config.js ファイルで次のパラメータを構成する必要が
+あります。 forumsys.com で入手可能なサンプル LDAP ディレクトリに登録されている
+ユーザを認証する方法の例を見ることができます。 ご覧のとおり、LDAP ディレクトリ
+で必要な属性は、id, ユーザー名 および 電子メールです (使用する属性名を構成でき
+ます)。
+
+```javascript
+// External user authentication with LDAP
+// Testing credentials from https://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/
+config.external_auth_ldap = {
+  enabled: true,
+  id_prefix: 'external_ldap_',
+  database: {
+    host: 'ldap.forumsys.com',
+    port: 389,
+    reader_dn: 'cn=read-only-admin,dc=example,dc=com',
+    reader_password: 'password',
+    suffix: 'dc=example,dc=com',
+    idAttribute: 'uid',
+    usernameAttribute: 'uid',
+    emailAttribute: 'mail'
+  }
+}
+```
 
 ## 認可 (Authorization)
 
@@ -365,10 +408,10 @@ Authzforce のインスタンスをデプロイする必要があります。許
 
 ```javascript
 config.authorization = {
-    level: "basic", // basic|advanced
+    level: 'basic', // basic|advanced
     authzforce: {
         enabled: false,
-        host: "localhost",
+        host: 'localhost',
         port: 8080
     }
 };
@@ -383,10 +426,33 @@ config.authorization = {
 
 ```javascript
 config.mail = {
-    host: "idm_host",
+    host: 'mailer',
     port: 25,
-    from: "noreply@host"
+    from: 'noreply@host'
 };
+```
+
+または、Keyrock の `IDM_EMAIL_HOST` と `IDM_EMAIL_PORT` の DockerENV 変数を SMTP
+サーバを指すように設定します。
+
+Docker コンテナ化された Keyrock インスタンスを実行しているときに電子メールを送信
+する場合は、プライベート・ネットワーク内で実行しているときに別のメールリレー
+Docker コンテナを設定する必要があります:
+
+```yaml
+mailer:
+    restart: always
+    image: mazdermind/docker-mail-relay
+    hostname: mailer
+    container_name: mailer
+    ports:
+        - '25:25'
+    environment:
+        - SMTP_LOGIN=<login> # Login to connect to the external relay
+        - SMTP_PASSWORD=<password> # Password to connect to the external relay
+        - EXT_RELAY_HOST=<hostname> # External relay DNS name
+        - EXT_RELAY_PORT=25
+        - ACCEPTED_NETWORKS=172.18.1.0/24 # Range includes the I.P of Keyrock
 ```
 
 ## メール・フィルタリング
@@ -413,7 +479,7 @@ permit.com
 ルタは実行されません。 設定例 :
 
 ```javascript
-config.email_list_type = "whitelist";
+config.email_list_type = 'whitelist';
 ```
 
 ## テーマの設定
@@ -433,8 +499,8 @@ fiwarelab の 2 つのテーマがあります。
 
 ```javascript
 config.site = {
-    title: "Identity Manager",
-    theme: "default" // default/fiwarelab
+    title: 'Identity Manager',
+    theme: 'default' // default/fiwarelab
 };
 ```
 
@@ -457,16 +523,16 @@ cd themes/example && touch _colors.scss _styles.scss style.scss
 
 ```css
 /****************************** Default colors */
-@import "../default/colors";
+@import '../default/colors';
 
 /****************************** Custom colors */
-@import "colors";
+@import 'colors';
 
 /****************************** Default styles */
-@import "../default/styles_call";
+@import '../default/styles_call';
 
 /****************************** Custom styles */
-@import "styles";
+@import 'styles';
 ```
 
 -   \_colors.scss を編集します。たとえば :
@@ -482,8 +548,8 @@ $brand-secundary: orange;
 
 ```javascript
 config.site = {
-    title: "Identity Manager",
-    theme: "example" // default/fiwarelab
+    title: 'Identity Manager',
+    theme: 'example' // default/fiwarelab
 };
 ```
 

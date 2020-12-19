@@ -100,7 +100,7 @@ ENV PYTHONUNBUFFERED=1
 RUN apk --no-cache add curl git python2 make gcc g++ ca-certificates openssl unzip && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
-    pip install --upgrade pip setuptools
+    pip install --no-cache-dir --upgrade pip setuptools
 
 
 # As an Alternative for local development, just copy this Dockerfile into file the root of 

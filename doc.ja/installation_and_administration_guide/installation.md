@@ -52,7 +52,7 @@ cp config.js.template config.js
 &nbsp;&nbsp;&nbsp;&nbsp;3.1\. ポートとホストを設定します:
 
 ```javascript
-config.host = "http://localhost:3000";
+config.host = 'http://localhost:3000';
 config.port = 3000 ;
 ```
 
@@ -60,11 +60,11 @@ config.port = 3000 ;
 
 ```javascript
 config.database = {
-    host: "localhost",
-    password: "idm",
-    username: "root",
-    database: "idm",
-    dialect: "mysql"
+    host: 'localhost',
+    password: 'idm',
+    username: 'root',
+    database: 'idm',
+    dialect: 'mysql'
 };
 ```
 
@@ -72,7 +72,7 @@ config.database = {
 
 ```javascript
 config.session = {
-    secret: "nodejs_idm"
+    secret: 'nodejs_idm'
 };
 ```
 
@@ -80,7 +80,7 @@ config.session = {
 
 ```javascript
 config.password_encryption = {
-    key: "nodejs_idm"
+    key: 'nodejs_idm'
 };
 ```
 

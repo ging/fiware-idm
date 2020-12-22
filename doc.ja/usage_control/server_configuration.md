@@ -7,7 +7,7 @@ PTP への接続を有効にする必要があります :
 config.usage_control = {
     enabled: true,
     ptp: {
-        host: "localhost",
+        host: 'localhost',
         port: 8090
     }
 };

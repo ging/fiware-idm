@@ -6,7 +6,7 @@
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-keyrock)
 <br>
 [![Documentation](https://img.shields.io/readthedocs/fiware-idm.svg)](https://fiware-idm.readthedocs.io/en/latest/)
-[![Build Status](https://travis-ci.org/ging/fiware-idm.svg?branch=master)](https://travis-ci.org/ging/fiware-idm)
+[![CI](https://github.com/ging/fiware-idm/workflows/CI/badge.svg)](https://github.com/ging/fiware-idm/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/ging/fiware-idm/badge.svg?branch=master)](https://coveralls.io/github/ging/fiware-idm?branch=master)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/keyrock.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c1f1239e878341b782be7ed9a67afdfd)](https://app.codacy.com/app/apozohue10/fiware-idm?utm_source=github.com&utm_medium=referral&utm_content=ging/fiware-idm&utm_campaign=Badge_Grade_Dashboard)

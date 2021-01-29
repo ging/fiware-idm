@@ -898,8 +898,8 @@ function app_authzforce_domain(app_id) {
 function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
-  if (scope) {
-    const requested_scopes = scope.split(',');
+  if (scope && scope.length > 0) {
+    const requested_scopes = scope[0].split(',');
     if (
       requested_scopes.includes('bearer') &&
       requested_scopes.includes('jwt')

@@ -1,13 +1,13 @@
 # サーバ設定
 
-データ使用ポリシーの作成を許可するように IdM を設定するには、設定ファイルで
-PTP への接続を有効にする必要があります :
+データ使用ポリシーの作成を許可するように IdM を設定するには、設定ファイルで PTP
+への接続を有効にする必要があります :
 
 ```javascript
 config.usage_control = {
     enabled: true,
     ptp: {
-        host: "localhost",
+        host: 'localhost',
         port: 8090
     }
 };

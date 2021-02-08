@@ -11,18 +11,18 @@ const Op = Sequelize.Op;
 const api_check_perm_controller = require('./check_permissions');
 
 // MW to Autoload info if path include application_id
-exports.load_application = function(req, res, next, application_id) {
+exports.load_application = function (req, res, next, application_id) {
   debug('--> load_application');
 
   if (application_id === 'idm_admin_app') {
     res.status(403).json({
-      error: { message: 'Not allowed', code: 403, title: 'Forbidden' },
+      error: { message: 'Not allowed', code: 403, title: 'Forbidden' }
     });
   } else {
     // Search application whose id is application_id
     models.oauth_client
       .findById(application_id)
-      .then(function(application) {
+      .then(function (application) {
         // If application exists, set image from file system
         if (application) {
           req.application = application;
@@ -32,22 +32,22 @@ exports.load_application = function(req, res, next, application_id) {
           error: {
             message: 'Application not found',
             code: 404,
-            title: 'Not Found',
-          },
+            title: 'Not Found'
+          }
         });
       })
-      .then(function() {
+      .then(function () {
         next();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('Error: ' + error);
         if (!error.error) {
           error = {
             error: {
               message: 'Internal error',
               code: 500,
-              title: 'Internal error',
-            },
+              title: 'Internal error'
+            }
           };
         }
         res.status(error.error.code).json(error);
@@ -56,7 +56,7 @@ exports.load_application = function(req, res, next, application_id) {
 };
 
 // GET /v1/applications -- Send index of applications
-exports.index = function(req, res) {
+exports.index = function (req, res) {
   debug('--> index');
 
   // Search organizations in wich user is member or owner
@@ -65,20 +65,20 @@ exports.index = function(req, res) {
     include: [
       {
         model: models.organization,
-        attributes: ['id'],
-      },
-    ],
+        attributes: ['id']
+      }
+    ]
   });
   search_organizations
-    .then(function(organizations) {
+    .then(function (organizations) {
       return models.role_assignment.findAll({
         where: {
           [Op.or]: [
             {
-              organization_id: organizations.map(elem => elem.organization_id),
+              organization_id: organizations.map((elem) => elem.organization_id)
             },
-            { user_id: req.token_owner.id },
-          ],
+            { user_id: req.token_owner.id }
+          ]
         },
         include: [
           {
@@ -95,44 +95,41 @@ exports.index = function(req, res) {
               'response_type',
               'token_types',
               'jwt_secret',
-              'client_type',
-            ],
-          },
-        ],
+              'client_type'
+            ]
+          }
+        ]
       });
     })
-    .then(function(applications) {
+    .then(function (applications) {
       let applications_filtered = _.uniqBy(
-        applications.map(elem => elem.OauthClient.dataValues),
+        applications.map((elem) => elem.OauthClient.dataValues),
         'id'
       );
 
-      applications_filtered = _.map(applications_filtered, application => {
+      applications_filtered = _.map(applications_filtered, (application) => {
         application.urls = {
-          permissions_url:
-            '/v1/applications/' + application.id + '/permissions',
+          permissions_url: '/v1/applications/' + application.id + '/permissions',
           roles_url: '/v1/applications/' + application.id + '/roles',
           users_url: '/v1/applications/' + application.id + '/users',
-          pep_proxies_url:
-            '/v1/applications/' + application.id + '/pep_proxies',
+          pep_proxies_url: '/v1/applications/' + application.id + '/pep_proxies',
           iot_agents_url: '/v1/applications/' + application.id + '/iot_agents',
-          trusted_applications_url:
-            '/v1/applications/' + application.id + '/trusted_applications',
+          trusted_applications_url: '/v1/applications/' + application.id + '/trusted_applications'
         };
         return application;
       });
 
       res.status(200).json({ applications: applications_filtered });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -140,12 +137,12 @@ exports.index = function(req, res) {
 };
 
 // POST /v1/applications -- Create application
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   debug('--> create');
 
   // Build a row and validate if input values are correct (not empty) before saving values in oauth_client
   check_create_body_request(req.body)
-    .then(function(oauth_type) {
+    .then(function (oauth_type) {
       const application = models.oauth_client.build(req.body.application);
 
       application.image = 'default';
@@ -161,26 +158,16 @@ exports.create = function(req, res) {
           'implicit',
           'authorization_code',
           'hybrid',
-          'refresh_token',
+          'refresh_token'
         ];
         application.response_type = ['code', 'token', 'none'];
       }
 
-      application.scope = req.body.application.scope
-        ? req.body.application.scope
-        : null;
+      application.scope = req.body.application.scope ? req.body.application.scope : null;
 
-      if (
-        req.body.application.token_types ||
-        (application.scope && application.scope.includes('openid'))
-      ) {
-        application.jwt_secret = req.body.application.token_types.includes(
-          'jwt'
-        )
-          ? crypto
-              .randomBytes(16)
-              .toString('hex')
-              .slice(0, 16)
+      if (req.body.application.token_types || (application.scope && application.scope.includes('openid'))) {
+        application.jwt_secret = req.body.application.token_types.includes('jwt')
+          ? crypto.randomBytes(16).toString('hex').slice(0, 16)
           : null;
       }
 
@@ -198,35 +185,35 @@ exports.create = function(req, res) {
           'token_types',
           'jwt_secret',
           'response_type',
-          'scope',
-        ],
+          'scope'
+        ]
       });
 
-      const create_assignment = create_application.then(function(application) {
+      const create_assignment = create_application.then(function (application) {
         return models.role_assignment.create({
           oauth_client_id: application.id,
           role_id: 'provider',
-          user_id: req.token_owner.id,
+          user_id: req.token_owner.id
         });
       });
 
       return Promise.all([create_application, create_assignment])
-        .then(function(values) {
+        .then(function (values) {
           res.status(201).json({ application: values[0].dataValues });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           return Promise.reject(error);
         });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -234,7 +221,7 @@ exports.create = function(req, res) {
 };
 
 // GET /v1/applications/:application_id -- Get info about application
-exports.info = function(req, res) {
+exports.info = function (req, res) {
   debug('--> info');
 
   const application = req.application.dataValues;
@@ -244,46 +231,36 @@ exports.info = function(req, res) {
     users_url: '/v1/applications/' + application.id + '/users',
     pep_proxies_url: '/v1/applications/' + application.id + '/pep_proxies',
     iot_agents_url: '/v1/applications/' + application.id + '/iot_agents',
-    trusted_applications_url:
-      '/v1/applications/' + application.id + '/trusted_applications',
+    trusted_applications_url: '/v1/applications/' + application.id + '/trusted_applications'
   };
   res.status(200).json({ application });
 };
 
 // PATCH /v1/applications/:application_id -- Edit application
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   debug('--> update');
 
   let application_previous_values = null;
 
   check_update_body_request(req.body)
-    .then(function(oauth_type) {
-      application_previous_values = JSON.parse(
-        JSON.stringify(req.application.dataValues)
-      );
+    .then(function (oauth_type) {
+      application_previous_values = JSON.parse(JSON.stringify(req.application.dataValues));
 
-      req.application.name = req.body.application.name
-        ? req.body.application.name
-        : req.application.name;
+      req.application.name = req.body.application.name ? req.body.application.name : req.application.name;
       req.application.description = req.body.application.description
         ? req.body.application.description
         : req.application.description;
-      req.application.url = req.body.application.url
-        ? req.body.application.url
-        : req.application.url;
+      req.application.url = req.body.application.url ? req.body.application.url : req.application.url;
       req.application.redirect_uri = req.body.application.redirect_uri
         ? req.body.application.redirect_uri
         : req.application.redirect_uri;
-      req.application.redirect_sign_out_uri = req.body.application
-        .redirect_sign_out_uri
+      req.application.redirect_sign_out_uri = req.body.application.redirect_sign_out_uri
         ? req.body.application.redirect_sign_out_uri
         : req.application.redirect_sign_out_uri;
       req.application.client_type = req.body.application.client_type
         ? req.body.application.client_type
         : req.application.client_type;
-      req.application.scope = req.body.application.scope
-        ? req.body.application.scope
-        : req.application.scope;
+      req.application.scope = req.body.application.scope ? req.body.application.scope : req.application.scope;
       req.application.image = 'default';
 
       req.application.token_types = req.body.application.token_types
@@ -291,13 +268,8 @@ exports.update = function(req, res) {
         : req.application.token_types;
 
       if (req.body.application.token_types) {
-        req.application.jwt_secret = req.body.application.token_types.includes(
-          'jwt'
-        )
-          ? crypto
-              .randomBytes(16)
-              .toString('hex')
-              .slice(0, 16)
+        req.application.jwt_secret = req.body.application.token_types.includes('jwt')
+          ? crypto.randomBytes(16).toString('hex').slice(0, 16)
           : null;
       }
 
@@ -308,30 +280,27 @@ exports.update = function(req, res) {
 
       return req.application.save();
     })
-    .then(function(application) {
-      const difference = diff_object(
-        application_previous_values,
-        application.dataValues
-      );
+    .then(function (application) {
+      const difference = diff_object(application_previous_values, application.dataValues);
       const response =
         Object.keys(difference).length > 0
           ? { values_updated: difference }
           : {
               message: "Request don't change the application parameters",
               code: 200,
-              title: 'OK',
+              title: 'OK'
             };
       res.status(200).json(response);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -339,25 +308,23 @@ exports.update = function(req, res) {
 };
 
 // DELETE /v1/applications/:application_id -- Delete application
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   debug('--> delete');
 
   req.application
     .destroy()
-    .then(function() {
-      res
-        .status(204)
-        .json('Appication ' + req.params.application_id + ' destroyed');
+    .then(function () {
+      res.status(204).json('Appication ' + req.params.application_id + ' destroyed');
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       if (!error.error) {
         error = {
           error: {
             message: 'Internal error',
             code: 500,
-            title: 'Internal error',
-          },
+            title: 'Internal error'
+          }
         };
       }
       res.status(error.error.code).json(error);
@@ -367,14 +334,14 @@ exports.delete = function(req, res) {
 // Check body in create request
 function check_create_body_request(body) {
   debug('--> check_create_body_request');
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!body.application) {
       reject({
         error: {
           message: 'Missing parameter application in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -383,8 +350,8 @@ function check_create_body_request(body) {
         error: {
           message: 'Missing parameter name in body request or empty name',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -393,24 +360,22 @@ function check_create_body_request(body) {
         error: {
           message: 'Missing parameter redirect_uri in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
     if (body.application.token_types) {
       if (
         !Array.isArray(body.application.token_types) ||
-        !body.application.token_types.every(r =>
-          ['jwt', 'permanent'].includes(r)
-        )
+        !body.application.token_types.every((r) => ['jwt', 'permanent'].includes(r))
       ) {
         reject({
           error: {
             message: 'Invalid token type in body request',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
       }
     }
@@ -423,8 +388,8 @@ function check_create_body_request(body) {
           error: {
             message: 'Invalid Grant Type',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
       }
       if (body.application.grant_type.includes('client_credentials')) {
@@ -468,8 +433,8 @@ function check_create_body_request(body) {
         error: {
           message: 'Invalid Grant Type',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     } else {
       resolve(oauth_types);
@@ -481,14 +446,14 @@ function check_create_body_request(body) {
 function check_update_body_request(body) {
   debug('--> check_update_body_request');
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!body.application) {
       reject({
         error: {
           message: 'Missing parameter application in body request',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
@@ -497,51 +462,42 @@ function check_update_body_request(body) {
         error: {
           message: 'Cannot set empty name',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
-    if (
-      body.application.redirect_uri &&
-      body.application.redirect_uri.length === 0
-    ) {
+    if (body.application.redirect_uri && body.application.redirect_uri.length === 0) {
       reject({
         error: {
           message: 'Cannot set empty redirect_uri',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
-    if (
-      body.application.id ||
-      body.application.secret ||
-      body.application.response_type
-    ) {
+    if (body.application.id || body.application.secret || body.application.response_type) {
       reject({
         error: {
           message: 'Cannot set id, secret or response_type',
           code: 400,
-          title: 'Bad Request',
-        },
+          title: 'Bad Request'
+        }
       });
     }
 
     if (body.application.token_types) {
       if (
         !Array.isArray(body.application.token_types) ||
-        !body.application.token_types.every(r =>
-          ['jwt', 'permanent'].includes(r)
-        )
+        !body.application.token_types.every((r) => ['jwt', 'permanent'].includes(r))
       ) {
         reject({
           error: {
             message: 'Invalid token type in body request',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
       }
     }
@@ -554,8 +510,8 @@ function check_update_body_request(body) {
           error: {
             message: 'Invalid Grant Type',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
       }
 
@@ -599,8 +555,8 @@ function check_update_body_request(body) {
           error: {
             message: 'Invalid Grant Type',
             code: 400,
-            title: 'Bad Request',
-          },
+            title: 'Bad Request'
+          }
         });
       } else {
         resolve(oauth_types);

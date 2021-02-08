@@ -2,18 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 // Role Organization Assignment API Controller
-const api_role_org_assign_controller = require('../../controllers/api/index')
-  .role_organization_assignments;
+const api_role_org_assign_controller = require('../../controllers/api/index').role_organization_assignments;
 
 router.param('role_id', require('../../controllers/api/index').roles.load_role);
-router.param(
-  'organization_id',
-  require('../../controllers/api/index').organizations.load_organization
-);
-router.param(
-  'organization_role_id',
-  require('../../controllers/api/index').organizations.load_organization_role
-);
+router.param('organization_id', require('../../controllers/api/index').organizations.load_organization);
+router.param('organization_role_id', require('../../controllers/api/index').organizations.load_organization_role);
 
 // Routes for role_organization_assignments
 router.get('/', api_role_org_assign_controller.index);

@@ -14,7 +14,7 @@ const escape_paths = require('../../etc/escape_paths/paths.json').paths;
 const email = require('../../lib/email.js');
 
 // MW to authorized restricted http accesses
-exports.login_required = function(req, res, next) {
+exports.login_required = function (req, res, next) {
   debug('--> login_required');
 
   if (req.session.user || check_path(req.path)) {
@@ -26,7 +26,7 @@ exports.login_required = function(req, res, next) {
 };
 
 // MW to perform actions forgot password and re send confirmation of registration
-exports.login_not_required = function(req, res, next) {
+exports.login_not_required = function (req, res, next) {
   debug('--> login_not_required');
   if (req.session.user) {
     res.redirect('/');
@@ -36,7 +36,7 @@ exports.login_not_required = function(req, res, next) {
 };
 
 // MW to see if user needs to change password
-exports.password_check_date = function(req, res, next) {
+exports.password_check_date = function (req, res, next) {
   debug('--> password_check_date');
 
   if (check_path(req.path)) {
@@ -45,9 +45,7 @@ exports.password_check_date = function(req, res, next) {
     const today = new Date(new Date().getTime());
     const milli_seconds_per_day = 24 * 60 * 60 * 1000;
 
-    const days_since_change = Math.round(
-      (today - req.session.user.change_password) / milli_seconds_per_day
-    );
+    const days_since_change = Math.round((today - req.session.user.change_password) / milli_seconds_per_day);
 
     if (days_since_change > 365) {
       req.session.change_password = true;
@@ -72,7 +70,7 @@ function check_path(path) {
 }
 
 // GET /auth/login -- Form for login
-exports.new = function(req, res) {
+exports.new = function (req, res) {
   debug('--> new');
 
   const errors = req.session.errors || {};
@@ -85,7 +83,7 @@ exports.new = function(req, res) {
 };
 
 // POST /auth/login -- Create Session
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   debug('--> create');
 
   // If inputs email or password are empty create an array of errors
@@ -99,10 +97,7 @@ exports.create = function(req, res) {
 
   if (req.body.email && req.body.password) {
     // Authenticate user using user controller function
-    user_controller.authenticate(req.body.email, req.body.password, function(
-      error,
-      user
-    ) {
+    user_controller.authenticate(req.body.email, req.body.password, function (error, user) {
       if (error) {
         // If error exists send a message to /auth/login
         req.session.errors = [{ message: error.message }];
@@ -114,11 +109,7 @@ exports.create = function(req, res) {
       // The session is defined by the existence of: req.session.user
       let image = '/img/logos/small/user.png';
       if (user.gravatar) {
-        image = gravatar.url(
-          user.email,
-          { s: 25, r: 'g', d: 'mm' },
-          { protocol: 'https' }
-        );
+        image = gravatar.url(user.email, { s: 25, r: 'g', d: 'mm' }, { protocol: 'https' });
       } else if (user.image !== 'default') {
         image = '/img/users/' + user.image;
       }
@@ -128,10 +119,7 @@ exports.create = function(req, res) {
 
         const user_agent = req.headers['user-agent'];
 
-        if (
-          user.extra.tfa.user_agent != null &&
-          user.extra.tfa.user_agent.includes(user_agent)
-        ) {
+        if (user.extra.tfa.user_agent != null && user.extra.tfa.user_agent.includes(user_agent)) {
           debug('-->familiar device');
           req.session.user = {
             id: user.id,
@@ -140,7 +128,7 @@ exports.create = function(req, res) {
             image,
             change_password: user.date_password,
             starters_tour_ended: user.starters_tour_ended,
-            extra: user.extra,
+            extra: user.extra
           };
           // If user is admin add parameter to session
           if (user.admin) {
@@ -155,7 +143,7 @@ exports.create = function(req, res) {
           res.render('auth/tfa', {
             user,
             errors,
-            csrf_token: req.csrfToken(),
+            csrf_token: req.csrfToken()
           });
         }
       } else {
@@ -168,7 +156,7 @@ exports.create = function(req, res) {
           image,
           change_password: user.date_password,
           starters_tour_ended: user.starters_tour_ended,
-          extra: user.extra,
+          extra: user.extra
         };
 
         // If user is admin add parameter to session
@@ -220,65 +208,57 @@ exports.create = function(req, res) {
 // };
 
 // GET /auth/avoid_2fa -- Render auth/avoid_2fa view to complete tfa without introducing token
-exports.avoid_2fa = function(req, res) {
+exports.avoid_2fa = function (req, res) {
   debug('--> avoid_2fa');
   res.render('auth/2fa_avoid', {
     errors: [],
-    csrf_token: req.csrfToken(),
+    csrf_token: req.csrfToken()
   });
 };
 
 // POST /auth/avoid_2fa -- Disable 2fa
-exports.avoid_2fa_email = function(req, res) {
+exports.avoid_2fa_email = function (req, res) {
   debug('--> avoid_2fa_email');
 
   if (!req.body.email) {
     res.render('auth/2fa_avoid', {
       error: 'empty_field',
-      csrf_token: req.csrfToken(),
+      csrf_token: req.csrfToken()
     });
   } else {
     models.user
       .findOne({
-        where: { email: req.body.email },
+        where: { email: req.body.email }
       })
-      .then(function(user) {
+      .then(function (user) {
         if (user) {
-          const disable_2fa_key = Math.random()
-            .toString(36)
-            .substr(2);
-          const disable_2fa_expires = new Date(
-            new Date().getTime() + 1000 * 3600
-          );
+          const disable_2fa_key = Math.random().toString(36).substr(2);
+          const disable_2fa_expires = new Date(new Date().getTime() + 1000 * 3600);
 
           models.user_registration_profile
             .findOrCreate({
               defaults: {
                 user_email: user.email,
                 disable_2fa_key,
-                disable_2fa_expires,
+                disable_2fa_expires
               },
-              where: { user_email: user.email },
+              where: { user_email: user.email }
             })
-            .then(function(user_prof) {
+            .then(function (user_prof) {
               user_prof[0].disable_2fa_key = disable_2fa_key;
               user_prof[0].disable_2fa_expires = disable_2fa_expires;
               return user_prof[0].save({
-                fields: ['disable_2fa_key', 'disable_2fa_expires'],
+                fields: ['disable_2fa_key', 'disable_2fa_expires']
               });
             })
-            .then(function() {
+            .then(function () {
               // Send an email to the user
               const link =
-                config.host +
-                '/auth/disable_2fa?disable_2fa_key=' +
-                disable_2fa_key +
-                '&email=' +
-                user.email;
+                config.host + '/auth/disable_2fa?disable_2fa_key=' + disable_2fa_key + '&email=' + user.email;
 
               const mail_data = {
                 name: user.username,
-                link,
+                link
               };
 
               const translation = req.app.locals.translation;
@@ -288,11 +268,11 @@ exports.avoid_2fa_email = function(req, res) {
 
               req.session.message = {
                 text: 'Send instructions email to ' + user.email,
-                type: 'success',
+                type: 'success'
               };
               res.redirect('/auth/login');
             })
-            .catch(function(error) {
+            .catch(function (error) {
               debug('  -> error ' + error);
               throw new Error(error);
             });
@@ -300,15 +280,15 @@ exports.avoid_2fa_email = function(req, res) {
           res.locals.message = {
             text: `Sorry. You have specified an email address that is not registerd.
                                                If your problem persists, please contact: fiware-lab-help@lists.fiware.org`,
-            type: 'danger',
+            type: 'danger'
           };
           res.render('index', {
             errors: {},
-            csrf_token: req.csrfToken(),
+            csrf_token: req.csrfToken()
           });
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         debug('  -> error ' + error);
         res.redirect('/');
       });
@@ -316,7 +296,7 @@ exports.avoid_2fa_email = function(req, res) {
 };
 
 // GET /auth/disable_2fa -- Render auth/avoid_2fa view to complete tfa without introducing token
-exports.disable_2fa = function(req, res, next) {
+exports.disable_2fa = function (req, res, next) {
   debug('--> disable_2fa');
 
   debug(req.query);
@@ -326,21 +306,18 @@ exports.disable_2fa = function(req, res, next) {
     .find({
       where: {
         user_email: req.query.email,
-        disable_2fa_key: req.query.disable_2fa_key,
+        disable_2fa_key: req.query.disable_2fa_key
       },
-      include: [models.user],
+      include: [models.user]
     })
-    .then(function(user_registration_profile) {
+    .then(function (user_registration_profile) {
       if (user_registration_profile && user_registration_profile.User) {
         const user = user_registration_profile.User;
 
-        if (
-          new Date().getTime() >
-          user_registration_profile.disable_2fa_expires.getTime()
-        ) {
+        if (new Date().getTime() > user_registration_profile.disable_2fa_expires.getTime()) {
           res.locals.message = {
             text: 'Error disabling 2 factor authentication',
-            type: 'danger',
+            type: 'danger'
           };
           res.render('index', { errors: [], csrf_token: req.csrfToken() });
         } else {
@@ -351,11 +328,7 @@ exports.disable_2fa = function(req, res, next) {
 
           let image = '/img/logos/small/user.png';
           if (user.gravatar) {
-            image = gravatar.url(
-              user.email,
-              { s: 25, r: 'g', d: 'mm' },
-              { protocol: 'https' }
-            );
+            image = gravatar.url(user.email, { s: 25, r: 'g', d: 'mm' }, { protocol: 'https' });
           } else if (user.image !== 'default') {
             image = '/img/users/' + user.image;
           }
@@ -368,7 +341,7 @@ exports.disable_2fa = function(req, res, next) {
             image,
             change_password: user.date_password,
             starters_tour_ended: user.starters_tour_ended,
-            extra: user_extra,
+            extra: user_extra
           };
           // If user is admin add parameter to session
           if (user.admin) {
@@ -380,18 +353,18 @@ exports.disable_2fa = function(req, res, next) {
       } else {
         res.locals.message = {
           text: 'Error disabling two factor authentication',
-          type: 'danger',
+          type: 'danger'
         };
         res.render('index', { errors: [], csrf_token: req.csrfToken() });
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       next(error);
     });
 };
 
 // POST /auth/tfa -- Verify token
-exports.tfa_verify = function(req, res) {
+exports.tfa_verify = function (req, res) {
   debug('--> verify token');
   // const flag = req.body.login_security_question;
   const user_token = req.body.token;
@@ -419,19 +392,19 @@ exports.tfa_verify = function(req, res) {
         'admin',
         'date_password',
         'starters_tour_ended',
-        'extra',
+        'extra'
       ],
       where: {
-        id: req.body.user_id,
-      },
+        id: req.body.user_id
+      }
     })
-    .then(function(user) {
+    .then(function (user) {
       //Verify the token
       const verified_token = Speakeasy.totp.verify({
         secret: user.extra.tfa.secret,
         encoding: 'base32',
         token: user_token,
-        window: 0,
+        window: 0
       });
 
       //If user is trying to log in with security question
@@ -440,11 +413,7 @@ exports.tfa_verify = function(req, res) {
         // The session is defined by the existence of: req.session.user
         let image = '/img/logos/small/user.png';
         if (user.gravatar) {
-          image = gravatar.url(
-            user.email,
-            { s: 25, r: 'g', d: 'mm' },
-            { protocol: 'https' }
-          );
+          image = gravatar.url(user.email, { s: 25, r: 'g', d: 'mm' }, { protocol: 'https' });
         } else if (user.image !== 'default') {
           image = '/img/users/' + user.image;
         }
@@ -453,17 +422,15 @@ exports.tfa_verify = function(req, res) {
           debug('--> store familiar device');
           //Store device
           const user_agent = req.headers['user-agent'];
-          const user_agent_array = user_extra.tfa.user_agent
-            ? user_extra.tfa.user_agent
-            : [];
+          const user_agent_array = user_extra.tfa.user_agent ? user_extra.tfa.user_agent : [];
           user_agent_array.push(user_agent);
           user_extra.tfa.user_agent = user_agent_array;
           models.user.update(
             {
-              extra: user_extra,
+              extra: user_extra
             },
             {
-              where: { id: user.id },
+              where: { id: user.id }
             }
           );
         }
@@ -475,7 +442,7 @@ exports.tfa_verify = function(req, res) {
           image,
           change_password: user.date_password,
           starters_tour_ended: user.starters_tour_ended,
-          extra: user_extra,
+          extra: user_extra
         };
         // If user is admin add parameter to session
         if (user.admin) {
@@ -488,23 +455,23 @@ exports.tfa_verify = function(req, res) {
         res.render('auth/tfa', {
           errors,
           user,
-          csrf_token: req.csrfToken(),
+          csrf_token: req.csrfToken()
         });
       }
     });
 };
 
 // GET /update_password -- Render settings/password view with a warn to indicate user to change password
-exports.update_password = function(req, res) {
+exports.update_password = function (req, res) {
   res.render('settings/change_password', {
     errors: [],
     warn_change_password: true,
-    csrf_token: req.csrfToken(),
+    csrf_token: req.csrfToken()
   });
 };
 
 // DELETE /auth/logout -- Delete Session
-exports.destroy = function(req, res) {
+exports.destroy = function (req, res) {
   debug('--> destroy');
 
   delete req.session.user;
@@ -512,7 +479,7 @@ exports.destroy = function(req, res) {
 };
 
 // DELETE /auth/external_logout -- Delete Session from an external call
-exports.external_destroy = function(req, res) {
+exports.external_destroy = function (req, res) {
   debug('--> external_destroy');
 
   const oauth_client_id = req.query.client_id;
@@ -521,11 +488,11 @@ exports.external_destroy = function(req, res) {
   models.oauth_client
     .findOne({
       where: {
-        [Op.or]: [{ id: oauth_client_id }, { url }],
+        [Op.or]: [{ id: oauth_client_id }, { url }]
       },
-      attributes: ['url', 'redirect_sign_out_uri'],
+      attributes: ['url', 'redirect_sign_out_uri']
     })
-    .then(function(application) {
+    .then(function (application) {
       if (application) {
         // If users have signed in through an OAuth Application, delete session.
         // If they have signed in through IdM Keyrock endpoint, just redirect to sign out endpoint.
@@ -544,7 +511,7 @@ exports.external_destroy = function(req, res) {
         res.status(401).json('Not allowed to perform logout or bad configured');
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       res.status(500).json('Internal Server Error');
     });

@@ -5,7 +5,7 @@ const Op = Sequelize.Op;
 const debug = require('debug')('idm:web-check_permissions_controller');
 
 // Middleware to see user permissions in the application
-exports.owned_permissions = function(req, res, next) {
+exports.owned_permissions = function (req, res, next) {
   debug('--> owned_permissions');
 
   req.user_owned_permissions = [];
@@ -18,42 +18,39 @@ exports.owned_permissions = function(req, res, next) {
     include: [
       {
         model: models.organization,
-        attributes: ['id', 'name', 'description'],
-      },
-    ],
+        attributes: ['id', 'name', 'description']
+      }
+    ]
   });
   // Search roles for user or the organization to which the user belongs
-  const search_roles = search_organizations.then(function(organizations) {
+  const search_roles = search_organizations.then(function (organizations) {
     const search_role_organizations = [];
     if (organizations.length > 0) {
       req.user_organizations = organizations;
       for (let i = 0; i < organizations.length; i++) {
         search_role_organizations.push({
           organization_id: organizations[i].organization_id,
-          role_organization: organizations[i].role,
+          role_organization: organizations[i].role
         });
       }
     }
     return models.role_assignment.findAll({
       where: {
-        [Op.or]: [
-          { [Op.or]: search_role_organizations },
-          { user_id: req.session.user.id },
-        ],
-        oauth_client_id: req.application.id,
-      },
+        [Op.or]: [{ [Op.or]: search_role_organizations }, { user_id: req.session.user.id }],
+        oauth_client_id: req.application.id
+      }
     });
   });
   // Search permissions
-  const search_permissions = search_roles.then(function(roles) {
+  const search_permissions = search_roles.then(function (roles) {
     if (roles.length > 0) {
-      const roles_id = roles.map(elem => elem.role_id);
+      const roles_id = roles.map((elem) => elem.role_id);
 
       req.user_owned_roles = roles_id;
 
       return models.role_permission.findAll({
         where: { role_id: roles_id },
-        attributes: ['permission_id'],
+        attributes: ['permission_id']
       });
     }
 
@@ -61,30 +58,23 @@ exports.owned_permissions = function(req, res, next) {
   });
 
   Promise.all([search_organizations, search_roles, search_permissions])
-    .then(function(values) {
+    .then(function (values) {
       let user_permissions_id = [];
 
       if (values[2] && values[2].length > 0) {
         // Pre load permissions of user in request
-        user_permissions_id = values[2].map(elem => elem.permission_id);
+        user_permissions_id = values[2].map((elem) => elem.permission_id);
         req.user_owned_permissions = user_permissions_id;
       }
 
       // Check if the user can access to a specific route according to his permissions
-      if (
-        check_user_action(
-          req.application,
-          req.path,
-          req.method,
-          user_permissions_id
-        )
-      ) {
+      if (check_user_action(req.application, req.path, req.method, user_permissions_id)) {
         next();
       } else {
         Promise.reject('not_allow');
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ' + error);
       // Send an error if the the request is via AJAX or redirect if is via browser
       const response = { text: ' User is not authorized.', type: 'danger' };
@@ -120,14 +110,11 @@ function check_user_action(application, path, method, permissions) {
     case path.includes('edit/users') ||
       path.includes('edit/organizations') ||
       path.includes('edit/trusted_applications'):
-      if (permissions.some(r => ['1', '5', '6'].includes(r))) {
+      if (permissions.some((r) => ['1', '5', '6'].includes(r))) {
         return true;
       }
       break;
-    case path.includes('edit') ||
-      path.includes('iot') ||
-      path.includes('pep') ||
-      path.includes('token_types'):
+    case path.includes('edit') || path.includes('iot') || path.includes('pep') || path.includes('token_types'):
       if (permissions.includes('2')) {
         return true;
       }

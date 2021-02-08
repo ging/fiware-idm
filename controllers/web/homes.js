@@ -3,7 +3,7 @@ const models = require('../../models/models.js');
 const debug = require('debug')('idm:web-home_controller');
 
 // GET /idm -- List all applications
-exports.index = function(req, res) {
+exports.index = function (req, res) {
   debug('--> index');
 
   // See if there is a message store in session
@@ -14,21 +14,13 @@ exports.index = function(req, res) {
 
   // Search applications in which the user is authorized
   const get_app = models.helpers
-    .search_distinct(
-      'role_assignment',
-      'oauth_client',
-      req.session.user.id,
-      'user',
-      '%%',
-      0,
-      false
-    )
-    .then(function(user_applications) {
+    .search_distinct('role_assignment', 'oauth_client', req.session.user.id, 'user', '%%', 0, false)
+    .then(function (user_applications) {
       const applications = [];
 
       // If user has applications, set image from file system and obtain info from each application
       if (user_applications.length > 0) {
-        user_applications.forEach(function(app) {
+        user_applications.forEach(function (app) {
           if (app.image === 'default') {
             app.image = '/img/logos/medium/app.png';
           } else {
@@ -39,7 +31,7 @@ exports.index = function(req, res) {
       }
 
       // Order applications and render view
-      applications.sort(function(a, b) {
+      applications.sort(function (a, b) {
         return a.name > b.name ? 1 : b.name > a.name ? -1 : 0;
       });
 
@@ -53,27 +45,21 @@ exports.index = function(req, res) {
       include: [
         {
           model: models.organization,
-          attributes: ['id', 'name', 'description', 'image'],
-        },
+          attributes: ['id', 'name', 'description', 'image']
+        }
       ],
-      limit: 5,
+      limit: 5
     })
-    .then(function(user_organizations) {
+    .then(function (user_organizations) {
       const organizations = [];
 
       if (user_organizations.length > 0) {
-        user_organizations.forEach(function(organization) {
-          if (
-            organizations.length === 0 ||
-            !organizations.some(
-              elem => elem.id === organization.Organization.id
-            )
-          ) {
+        user_organizations.forEach(function (organization) {
+          if (organizations.length === 0 || !organizations.some((elem) => elem.id === organization.Organization.id)) {
             if (organization.Organization.image === 'default') {
               organization.Organization.image = '/img/logos/medium/group.png';
             } else {
-              organization.Organization.image =
-                '/img/organizations/' + organization.Organization.image;
+              organization.Organization.image = '/img/organizations/' + organization.Organization.image;
             }
             organizations.push(organization.Organization);
           }
@@ -81,7 +67,7 @@ exports.index = function(req, res) {
       }
 
       // Order applications and render view
-      organizations.sort(function(a, b) {
+      organizations.sort(function (a, b) {
         return a.name > b.name ? 1 : b.name > a.name ? -1 : 0;
       });
 
@@ -89,7 +75,7 @@ exports.index = function(req, res) {
     });
 
   Promise.all([get_app, get_org])
-    .then(function(values) {
+    .then(function (values) {
       //---------------
       res.render('home/index', {
         // res.render('home/home', {
@@ -97,10 +83,10 @@ exports.index = function(req, res) {
         organizations: values[1],
         change_password: req.session.user.change_password,
         errors: [],
-        csrf_token: req.csrfToken(),
+        csrf_token: req.csrfToken()
       });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       debug('Error: ', error);
       //-------
       res.render('home/index', {
@@ -109,13 +95,13 @@ exports.index = function(req, res) {
         organizations: [],
         change_password: req.session.user.change_password,
         errors: [],
-        csrf_token: req.csrfToken(),
+        csrf_token: req.csrfToken()
       });
     });
 };
 
 // Render help_about
-exports.help_about = function(req, res) {
+exports.help_about = function (req, res) {
   debug('--> help_about');
 
   res.render('help_about', { csrf_token: req.csrfToken() });

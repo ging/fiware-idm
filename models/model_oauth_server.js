@@ -830,7 +830,7 @@ function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
   if (scope && scope.length > 0) {
-    const requested_scopes = scope[0].split(',');
+    const requested_scopes = typeof scope === "string" ? scope.split(',') : scope[0].split(',');
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
       return false;
     }

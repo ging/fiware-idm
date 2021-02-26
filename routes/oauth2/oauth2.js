@@ -10,31 +10,35 @@ const csrf_protection = csrf({ cookie: true });
 const oauth_controller = require('../../controllers/oauth2/oauth2');
 // SAML2 Controller
 const saml2_controller = require('../../controllers/saml2/saml2');
+// i4Trust Controller
+const i4trust_controller = require('../../controllers/i4trust/i4trust');
 
 // Routes for Oauth2
 //router.get('/authenticate',    	oauth_controller.authenticate_token);
 router.post('/token', oauth_controller.token);
+let authorize_chain = [
+  csrf_protection,
+  oauth_controller.response_type_required,
+  oauth_controller.load_application
+];
 if (config.eidas.enabled) {
-  router.get(
-    '/authorize',
-    csrf_protection,
-    oauth_controller.load_application,
-    oauth_controller.response_type_required,
+  authorize_chain = authorize_chain.concat([
     saml2_controller.search_eidas_credentials,
-    saml2_controller.create_auth_request,
-    oauth_controller.check_user
-  );
-} else {
-  router.get(
-    '/authorize',
-    csrf_protection,
-    oauth_controller.load_application,
-    oauth_controller.response_type_required,
-    oauth_controller.check_user
-  );
+    saml2_controller.create_auth_request
+  ]);
+}
+authorize_chain.push(oauth_controller.check_user);
+router.get(
+  '/authorize',
+  ...authorize_chain
+);
+const post_authorize_chain = [];
+if (config.pr.url) {
+  post_authorize_chain.push(i4trust_controller.validate_participant);
 }
 router.post(
   '/authorize',
+  ...post_authorize_chain,
   csrf_protection,
   oauth_controller.load_application,
   oauth_controller.response_type_required,

@@ -441,7 +441,10 @@ function saveAuthorizationCode(code, client, user) {
       valid: true,
       user_id: user.id,
       scope: code.scope,
-      nonce: code.nonce ? code.nonce : null
+      nonce: code.nonce ? code.nonce : null,
+      extra: {
+        iat: new Date()
+      }
     })
     .then(function () {
       code.code = code.authorizationCode;

@@ -1,9 +1,10 @@
-const crypto = require('crypto');
+//const crypto = require('crypto');
 const debug = require('debug')('idm:i4trust_controller');
 const fetch = require('node-fetch');
 const forge = require('node-forge');
 const jose = require('node-jose');
 const moment = require('moment');
+const oauth2_server = require('oauth2-server');
 const uuid = require('uuid');
 
 const config_service = require('../../lib/configService.js');
@@ -24,6 +25,12 @@ function check(errors, condition, message) {
 function validate_client_certificate(cert) {
   const errors = [];
 
+  const id = cert.subject.attributes.map((a) => {
+    const name = a.shortName || a.name;
+    return `${name}=${a.value}`;
+  }).join('/');
+  debug(`Validating ${id}`);
+
   //check(errors, cert.validity.notBefore <= periodStart && periodEnd <= cert.validity.notAfter, "Certificate dates invalid.");
   //check(errors, await IsCertificatePartOfChain(cert), "Certificate is not part of the chain.");
   check(errors, cert.signatureOid === forge.pki.oids.sha256WithRSAEncryption, "Certificate signature invalid.");
@@ -33,11 +40,101 @@ function validate_client_certificate(cert) {
 
   const key_usage = cert.getExtension('keyUsage');
   const digital_only = key_usage.digitalSignature && !(key_usage.keyCertSign || key_usage.cRLSign);
-  check(errors, digital_only, "Key usage is for digital signature and not for CA.");
+  check(errors, digital_only, "Key usage is for CA and not for digital signature.");
 
   if (errors.length > 0) {
       throw new Error(errors);
   }
+}
+
+async function assert_client_using_jwt(credentials, client_id) {
+  try {
+    // parse the JWT and verify its signature
+    const jwt = await verifier.verify(credentials, { 'allowEmbeddedKey': true });
+    const payload = JSON.parse(jwt.payload.toString());
+
+    // check JWT parameters
+    if (payload.iss !== client_id) {
+      throw new Error(`JWT iss parameter doesn't match provided client_id parameter (${payload.iss} != ${client_id})`);
+    }
+
+    const aud = typeof payload.aud === "string" ? [payload.aud] : payload.aud;
+    if (aud == null || aud.indexOf(config.pr.client_id) === -1) {
+      throw new Error("Not listed on the aud parameter");
+    }
+    const now = moment().unix();
+    if (payload.exp < now) {
+      throw new Error("Expired token");
+    }
+
+    // Validate chain certificates
+    const fullchain = jwt.header.x5c.map((cert) => {
+      return forge.pki.certificateFromPem(
+        '-----BEGIN CERTIFICATE-----' + cert + '-----END CERTIFICATE-----'
+      );
+    });
+
+    const certSerialName = fullchain[0].subject.getField({name: "serialName"}).value;
+    if (payload.iss !== certSerialName) {
+      // JWT iss parameter does not match the serialName field of the signer certificate
+      throw new Error(`Issuer certificate serialName parameter does not match jwt iss parameter (${payload.iss} != ${certSerialName})`);
+    }
+    validate_client_certificate(fullchain[0]);
+
+    return [payload, fullchain[0]];
+  } catch (e) {
+    // Reponse with message
+    const err = new oauth2_server.InvalidRequestError('invalid_request: invalid client credentials');
+    err.details = e;
+    throw err;
+  }
+}
+
+async function create_jwt(payload) {
+  return await jose.JWS.createSign({
+    algorithm: 'RS256',
+    format: 'compact',
+    fields: {
+      typ: "JWT",
+      x5c: config.pr.client_crt
+    }
+  }, config.pr.client_key).update(JSON.stringify(payload)).final();
+}
+
+async function build_id_token(code) {
+  const now = moment();
+  return await create_jwt({
+    iss: config.pr.client_id,
+    sub: code.User.id, // TODO
+    aud: code.OauthClient.id,
+    exp: now.add(config.oauth2.access_token_lifetime, 'seconds').unix(),
+    iat: now.unix(),
+    auth_time: code.extra.iat,
+    // TODO nonce: code.extra.nonce,
+    acr: "urn:http://eidas.europa.eu/LoA/NotNotified/low",
+    azp: code.OauthClient.id
+  });
+}
+
+async function build_access_token(code) {
+  const now = moment();
+  /* eslint-disable snakecase/snakecase */
+  return await create_jwt({
+    iss: config.pr.client_id,
+    sub: code.User.id, // TODO
+    jti: uuid.v4(),
+    iat: now.unix(),
+    exp: now.add(config.oauth2.access_token_lifetime, 'seconds').unix(),
+    aud: code.OauthClient.id,
+    email: code.User.email,
+    authorisationRegistry: {
+      url: config.ar.url,
+      token_endpoint: config.ar.token_endpoint,
+      delegation_endpoint: config.ar.delegation_endpoint
+    },
+    delegationEvidence: {}
+  });
+  /* eslint-enable snakecase/snakecase */
 }
 
 async function retrieve_participant_registry_token() {
@@ -69,31 +166,13 @@ async function retrieve_participant_registry_token() {
 async function _validate_participant(req, res) {
   const scopes = new Set(req.body.scope != null ? req.body.scope.split(' ') : []);
   if (!scopes.has('i4trust') && !scopes.has('iSHARE')) {
-    return;
+    return false;
   }
 
   if (!req.body.response_type || req.body.response_type !== 'code') {
-    // Reponse with message
-    const err = new Error('invalid_request: response_type not valid or not exist');
-    err.status = 400;
-    debug('Error ', err.message);
-
-    res.locals.error = err;
-    throw res.render('errors/oauth', {
-      query: req.body,
-      application: req.application
-    });
+    throw new oauth2_server.InvalidRequestError('invalid_request: response_type not valid or not exist');
   } else if (!req.body.client_id) {
-    // Reponse with message
-    const err = new Error('invalid_request: include client_id in request');
-    err.status = 400;
-    debug('Error ', err.message);
-
-    res.locals.error = err;
-    throw res.render('errors/oauth', {
-      query: req.body,
-      application: req.application
-    });
+    throw new oauth2_server.InvalidRequestError('Missing parameter: `client_id`');
   }
 
   debug('using i4Trust flow');
@@ -111,7 +190,7 @@ async function _validate_participant(req, res) {
         if (m.index === crt_regex.lastIndex) {
           crt_regex.lastIndex++;
         }
-	config.pr.client_crt.push(m[1].replace(/\n/g, ""));
+        config.pr.client_crt.push(m[1].replace(/\n/g, ""));
       }
     } else {
       config.pr.client_crt = [config.pr.client_crt.replace(/\n/g, "")];
@@ -120,54 +199,12 @@ async function _validate_participant(req, res) {
 
   const credentials = req.body.request;
   if (!credentials) {
-      // Reponse with message
-      const err = new Error('invalid_request: request parameter missing or invalid');
-      err.status = 400;
-      debug('Error ', err.message);
-
-      res.locals.error = err;
-      throw res.render('errors/oauth', {
-        query: req.query,
-        application: req.application
-      });
+    throw new oauth2_server.InvalidRequestError('Missing parameter: `request`');
   }
 
   // Step 7: Validate the JWT and the certificate chain provided in
   // the header
-  let client_jwt;
-  let client_certificate;
-  let client_payload;
-  try {
-    debug('step 7.1');
-    client_jwt = await verifier.verify(credentials, { 'allowEmbeddedKey': true });
-    debug('step 7.2');
-    client_payload = JSON.parse(client_jwt.payload.toString());
-    const aud = typeof client_payload.aud === "string" ? [client_payload.aud] : client_payload.aud;
-    if (aud == null || aud.indexOf(config.pr.client_id) === -1) {
-      throw new Error("Not listened on the aud[ience] attribute");
-    }
-    const now = moment().unix();
-    if (client_payload.exp < now) {
-      throw new Error("Expired token");
-    }
-    debug('step 7.3');
-    client_certificate = forge.pki.certificateFromPem(
-      '-----BEGIN CERTIFICATE-----' + client_jwt.header.x5c[0] + '-----END CERTIFICATE-----'
-    );
-    validate_client_certificate(client_certificate);
-  } catch (e) {
-    // Reponse with message
-    const err = new Error('invalid_request: invalid client credentials');
-    err.status = 400;
-    debug('Error ', err.message);
-    debug('due: ', e.message);
-
-    res.locals.error = err;
-    throw res.render('errors/oauth', {
-      query: req.query,
-      application: req.application
-    });
-  }
+  const [client_payload, client_certificate] = await assert_client_using_jwt(credentials, req.body.client_id);
 
   // Step 8: Packet Delivery company Identity Provider generates an iSHARE JWT
   debug('step 8');
@@ -191,17 +228,7 @@ async function _validate_participant(req, res) {
     body: params
   });
   if (token_response.status !== 200) {
-    // Reponse with message
-    const err = new Error('internal error: unable to validate client as participant');
-    err.status = 500;
-    debug('Error ', err.message);
-    debug('due: ', await token_response.text());
-
-    res.locals.error = err;
-    throw res.render('errors/oauth', {
-      query: req.query,
-      application: req.application
-    });
+    throw new oauth2_server.ServerError('internal error: unable to validate client as participant');
   }
 
   const access_token = (await token_response.json()).access_token;
@@ -227,17 +254,7 @@ async function _validate_participant(req, res) {
     },
   });
   if (parties_response.status !== 200) {
-    // Reponse with message
-    const err = new Error('internal error: unable to validate client as participant');
-    err.status = 500;
-    debug('Error ', err.message);
-    debug('due: ', await parties_response.text());
-
-    res.locals.error = err;
-    throw res.render('errors/oauth', {
-      query: req.query,
-      application: req.application
-    });
+    throw new oauth2_server.ServerError('internal error: unable to validate client as participant');
   }
 
   const parties_token = (await parties_response.json()).parties_token;
@@ -246,30 +263,22 @@ async function _validate_participant(req, res) {
   debug("response: ", JSON.stringify(parties_info, null, 4));
   if (parties_info.count !== 1 || parties_info.data[0].adherence.status !== "Active") {
     // Reponse with message
-    const err = new Error('invalid_request: invalid client');
-    err.status = 400;
-    debug('Error ', err.message);
-
-    res.locals.error = err;
-    throw res.render('errors/oauth', {
-      query: req.query,
-      application: req.application
-    });
+    throw new oauth2_server.InvalidRequestError('internal error: client is not a trusted participant');
   }
 
-  const secret = uuid.v4();
-  const jwt_secret = crypto.randomBytes(16).toString('hex').slice(0, 16);
+  //const secret = uuid.v4();
+  //const jwt_secret = crypto.randomBytes(16).toString('hex').slice(0, 16);
   await models.oauth_client.upsert({
     id: client_payload.iss,
     name: client_payload.iss,
     image: 'default',
-    secret,
+    //secret,
     grant_type: [
       'client_credentials',
       'authorization_code',
       'refresh_token'
     ],
-    jwt_secret,
+    //jwt_secret,
     response_type: ['code'],
     redirect_uri: client_payload.redirect_uri
   });
@@ -282,19 +291,129 @@ async function _validate_participant(req, res) {
   auth_params.append('redirect_uri', client_payload.redirect_uri);
   auth_params.append('state', client_payload.state);
   auth_params.append('nonce', client_payload.nonce);
-  throw res.location('/oauth2/authorize?' + auth_params).status(200).json({
-    client_secret: secret,
-    jwt_secret
+
+  res.status(204).location('/oauth2/authorize?' + auth_params).end();
+  return true;
+}
+
+async function _token(req, res) {
+
+  if (!req.is('application/x-www-form-urlencoded')) {
+    throw new oauth2_server.InvalidRequestError(`Invalid request: content must be application/x-www-form-urlencoded [${req.headers}]`);
+  }
+
+  // Skip normal flows
+  if (req.body.grant_type !== "authorization_code" || req.body.client_assertion_type !== 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer') {
+    return false;
+  }
+
+  debug('using i4Trust flow');
+
+  if (!req.body.code) {
+    throw new oauth2_server.InvalidRequestError('Missing parameter: `code`');
+  }
+
+  if (typeof req.body.client_assertion !== "string") {
+    // Reponse with message
+    throw new oauth2_server.InvalidRequestError('invalid_request: include client_assertion in request');
+  }
+
+  // Validate client
+  await assert_client_using_jwt(req.body.client_assertion, req.body.client_id);
+
+  // Validate code
+  const code = await models.oauth_authorization_code
+    .findOne({
+      attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'extra'],
+      where: { authorization_code: req.body.code, oauth_client_id: req.body.client_id, valid: true },
+      include: [models.user, models.oauth_client]
+    });
+
+  if (!code) {
+    throw new oauth2_server.InvalidRequestError('Invalid grant: authorization code is invalid');
+  }
+
+  if (code.expires < new Date()) {
+    throw new oauth2_server.InvalidGrantError('Invalid grant: authorization code has expired');
+  }
+
+  if (req.body.redirect_uri !== code.redirect_uri) {
+    throw new oauth2_server.InvalidRequestError('Invalid request: `redirect_uri` is invalid');
+  }
+
+  // Invalidate the code
+  code.authorization_code = req.body.code;
+  code.valid = false;
+  code.save();
+
+  // Return an id_token and a access_token
+  const id_token = await build_id_token(code);
+  const access_token = await build_access_token(code);
+
+  res.status(200).json({
+    id_token,
+    access_token,
+    expires_in: config.oauth2.access_token_lifetime,
+    token_type: "Bearer"
   });
+  
+  return true;
 }
 
 exports.validate_participant = function validate_participant(req, res, next) {
   debug(' --> validate_participant');
 
   _validate_participant(req, res).then(
-    next,
-    (e) => {
-      console.debug("cancelled i4trust flow: " + e);
+    (skip) => {
+      if (!skip) {
+        next();
+      }
+    },
+    (err) => {
+      if (err instanceof oauth2_server.OAuthError) {
+        debug('Error ', err.message);
+        if (err.details) {
+          debug('Due: ', err.details);
+        }
+        res.status(err.status = err.code);
+
+        res.locals.error = err;
+        res.render('errors/oauth', {
+          query: req.body,
+          application: req.application
+        });
+      } else {
+        throw err;
+      }
+    }
+  );
+};
+
+exports.token = function token(req, res, next) {
+  debug(' --> token');
+
+  _token(req, res).then(
+    (skip) => {
+      if (!skip) {
+        next();
+      }
+    },
+    (err) => {
+      if (err instanceof oauth2_server.OAuthError) {
+        debug('Error ', err.message);
+        if (err.details) {
+          debug('Due: ', err.details);
+        }
+        res.status(err.status = err.code);
+
+        res.locals.error = err;
+        res.render('errors/oauth', {
+          query: req.body,
+          application: req.application
+        });
+      } else {
+        throw err;
+      }
     }
   );
 };

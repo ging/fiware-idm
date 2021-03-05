@@ -15,7 +15,11 @@ const i4trust_controller = require('../../controllers/i4trust/i4trust');
 
 // Routes for Oauth2
 //router.get('/authenticate',    	oauth_controller.authenticate_token);
-router.post('/token', oauth_controller.token);
+if (config.pr.url) {
+  router.post('/token', i4trust_controller.token, oauth_controller.token);
+} else {
+  router.post('/token', oauth_controller.token);
+}
 let authorize_chain = [
   csrf_protection,
   oauth_controller.response_type_required,

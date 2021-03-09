@@ -130,7 +130,8 @@ async function build_access_token(code) {
     authorisationRegistry: {
       url: config.ar.url,
       token_endpoint: config.ar.token_endpoint,
-      delegation_endpoint: config.ar.delegation_endpoint
+      delegation_endpoint: config.ar.delegation_endpoint,
+      identifier: config.ar.identifier
     },
     delegationEvidence: {}
   });

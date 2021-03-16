@@ -20,9 +20,11 @@ any time.
 The following list of features are planned to be addressed in the short term,
 and incorporated in the next release of the product planned for February 2019:
 
--   Extend Unit tests: to be run in CI
+-   Fix Security Report and Bad Practices Issues
 
 -   Enable users to manage access to their data by third party applications
+
+-   Change Documentation Initial Page
 
 ## Medium term
 
@@ -30,11 +32,8 @@ The following list of features are planned to be addressed in the medium term,
 typically within the subsequent release(s) generated in the next 9 months after
 next planned release:
 
--   Improvements in AZF integration: general improvements for better supporting
-    new Keyrock's features
-
--   COAP compatibility: supporting this protocol as an alternative of HTTP could
-    improve the performance of IoT devices authentication process.
+-   Integration with Alastria identity, Hyperledger Indy: for supporting
+    blockchain-based authentication mechanisms.
 
 -   Data Usage Control: extend existing functionalities.
 
@@ -45,5 +44,7 @@ of the product even though development of these features has not yet been
 scheduled for a release in the near future. Please feel free to contact us if
 you wish to get involved in the implementation or influence the roadmap
 
--   Integration with Alastria identity, Hyperledger Indy: for supporting
-    blockchain-based authentication mechanisms.
+-   COAP compatibility: supporting this protocol as an alternative of HTTP could
+    improve the performance of IoT devices authentication process.
+
+-   Analysis/Improvement Keyrock Production performance

@@ -14,19 +14,20 @@ before('Create and populate database', function () {
   // Mocha default timeout for tests is 2000 and to create database is needed more
   this.timeout(10000);
   return new Promise(function (resolve, reject) {
-    const create_database =
-      'mysql --user=' +
-      config.database.username +
-      ' --password=' +
-      config.database.password +
-      " -e 'CREATE DATABASE IF NOT EXISTS idm_test;'";
-    const load_data =
-      'mysql --user=' +
-      config.database.username +
-      ' --password=' +
-      config.database.password +
-      //' --default-character-set=utf8 idm_test < test/mysql-data/backup.sql';
-      ' --default-character-set=utf8 -e  "$(cat test/mysql-data/backup.sql)"';
+
+    const create_database = 
+      'docker exec -i mysql mysql -u ' +
+      config.database.username + 
+      ' -p' +
+      config.database.password + 
+      ' -e "CREATE DATABASE IF NOT EXISTS idm_test;"';
+    const load_data = 
+      'docker exec -i mysql mysql -u ' +
+      config.database.username + 
+      ' -p' +
+      config.database.password + 
+      ' idm_test < test/mysql-data/backup.sql';
+    
     exec(create_database, function (error) {
       if (error) {
         console.log(error);
@@ -35,6 +36,7 @@ before('Create and populate database', function () {
       } else {
         exec(load_data, function (error) {
           if (error) {
+            console.log(error);
             process.exit();
             reject('Unable to load database: ', error);
           } else {

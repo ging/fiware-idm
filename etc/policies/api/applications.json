@@ -6,6 +6,7 @@
         },
         "POST": "create",
         "PATCH": "update",
+        "PUT": "create",
         "DELETE": "delete"
     },
     "permissions": {

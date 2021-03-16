@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Authentication API controller
-const api_authenticate_controller = require('../../controllers/api/index')
-  .authenticate;
+const api_authenticate_controller = require('../../controllers/api/index').authenticate;
 
 // Routes for authentication
 router.post('/tokens', api_authenticate_controller.create_token);

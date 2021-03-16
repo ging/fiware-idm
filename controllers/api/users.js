@@ -20,15 +20,13 @@ const email_list = config.email_list_type
   : [];
 
 // MW to see if user is registered
-let authentication_driver; 
+let authentication_driver;
 
-if (external_auth.enabled)
+if (external_auth.enabled) {
   authentication_driver = require('../../external_auth/authentication_driver').authenticate;
-
-else if (external_auth_ldap.enabled)
+} else if (external_auth_ldap.enabled) {
   authentication_driver = require('../../external_auth/authentication_driver_ldap').authenticate;
-
-else
+} else {
   authentication_driver = function (username, password, callback) {
     debug('--> authenticate');
 
@@ -68,6 +66,7 @@ else
         callback(error);
       });
   };
+}
 
 exports.authenticate = authentication_driver;
 

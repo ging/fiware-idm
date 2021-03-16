@@ -1,6 +1,6 @@
 {
   "name": "fiware-idm",
-  "version": "7.9.0",
+  "version": "7.9.1",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -15,12 +15,12 @@
     "undo_all_migration": "./node_modules/.bin/sequelize --env database db:migrate:undo:all",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "lint": "eslint . --cache",
-    "lint:text": "textlint 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
+    "lint:text": "textlint '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md'",
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
-    "prettier": "prettier --config .prettierrc.json --write **/*.js *.js",
+    "prettier": "prettier --config .prettierrc.json --write routes/**/*.js models/**/*.js controllers/**/*.js **/*.js *.js",
     "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
-    "test": "nyc --reporter=text mocha -- --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
-    "test:coverage": "nyc --reporter=lcov mocha -- --recursive 'test/**/*.js' --timeout 3000 --ui bdd --exit",
+    "test": "nyc --reporter=text mocha -- 'test/integration/*.js' 'test/integration/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
+    "test:coverage": "nyc --reporter=lcov mocha -- 'test/integration/*.js' 'test/integration/**/*.js' --timeout 3000 --ui bdd --exit",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
     "test:single": "DEBUG=idm:*,oauth2-server:* mocha",
     "test:watch": "npm run test -- -w ./lib"

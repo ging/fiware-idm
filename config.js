@@ -20,6 +20,7 @@ config.email_list_type = null; // whitelist or blacklist
 // Enable 2fa authentication
 config.enable_2fa = process.env.IDM_ENABLE_2FA || false;
 
+
 // Secret for user sessions in web
 config.session = {
   secret: require('crypto').randomBytes(20).toString('hex'), // Must be changed
@@ -121,6 +122,7 @@ config.external_auth_ldap = {
   enabled: false,
   id_prefix: 'external_ldap_',
   database: {
+    /* eslint-disable snakecase/snakecase */
     host: 'ldap.forumsys.com',
     port: 389,
     reader_dn: 'cn=read-only-admin,dc=example,dc=com',
@@ -129,8 +131,9 @@ config.external_auth_ldap = {
     idAttribute: 'uid',
     usernameAttribute: 'uid',
     emailAttribute: 'mail'
+    /* eslint-enable snakecase/snakecase */
   }
-}
+};
 
 // Email configuration
 config.mail = {

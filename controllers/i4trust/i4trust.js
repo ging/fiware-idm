@@ -74,10 +74,10 @@ async function assert_client_using_jwt(credentials, client_id) {
       );
     });
 
-    const certSerialName = fullchain[0].subject.getField({name: "serialName"}).value;
-    if (payload.iss !== certSerialName) {
+    const cert_serial_name = fullchain[0].subject.getField({name: "serialName"}).value;
+    if (payload.iss !== cert_serial_name) {
       // JWT iss parameter does not match the serialName field of the signer certificate
-      throw new Error(`Issuer certificate serialName parameter does not match jwt iss parameter (${payload.iss} != ${certSerialName})`);
+      throw new Error(`Issuer certificate serialName parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_name})`);
     }
     validate_client_certificate(fullchain[0]);
 
@@ -107,7 +107,7 @@ async function build_id_token(code) {
     iss: config.pr.client_id,
     sub: code.User.id, // TODO
     aud: code.OauthClient.id,
-    exp: now.add(config.oauth2.access_token_lifetime, 'seconds').unix(),
+    exp: now.add(30, 'seconds').unix(),
     iat: now.unix(),
     auth_time: code.extra.iat,
     // TODO nonce: code.extra.nonce,
@@ -118,24 +118,29 @@ async function build_id_token(code) {
 
 async function build_access_token(code) {
   const now = moment();
-  /* eslint-disable snakecase/snakecase */
-  return await create_jwt({
-    iss: config.pr.client_id,
-    sub: code.User.id, // TODO
-    jti: uuid.v4(),
-    iat: now.unix(),
-    exp: now.add(config.oauth2.access_token_lifetime, 'seconds').unix(),
-    aud: code.OauthClient.id,
-    email: code.User.email,
-    authorisationRegistry: {
-      url: config.ar.url,
-      token_endpoint: config.ar.token_endpoint,
-      delegation_endpoint: config.ar.delegation_endpoint,
-      identifier: config.ar.identifier
-    },
-    delegationEvidence: {}
-  });
-  /* eslint-enable snakecase/snakecase */
+  const exp = now.add(config.oauth2.access_token_lifetime, 'seconds').unix();
+
+  return [
+    /* eslint-disable snakecase/snakecase */
+    await create_jwt({
+      iss: config.pr.client_id,
+      sub: code.User.id, // TODO
+      jti: uuid.v4(),
+      iat: now.unix(),
+      exp,
+      aud: code.OauthClient.id,
+      email: code.User.email,
+      authorisationRegistry: {
+        url: config.ar.url,
+        token_endpoint: config.ar.token_endpoint,
+        delegation_endpoint: config.ar.delegation_endpoint,
+        identifier: config.ar.identifier
+      },
+      delegationEvidence: {}
+    }),
+    /* eslint-enable snakecase/snakecase */
+    exp
+  ];
 }
 
 async function retrieve_participant_registry_token() {
@@ -349,7 +354,17 @@ async function _token(req, res) {
 
   // Return an id_token and a access_token
   const id_token = await build_id_token(code);
-  const access_token = await build_access_token(code);
+  const [access_token, access_token_exp] = await build_access_token(code);
+
+  /*await models.oauth_access_token.create({
+      access_token,
+      expires: access_token_exp,
+      valid: true,
+      oauth_client_id: code.OauthClient.id,
+      user_id: code.User.id,
+      authorization_code: req.body.code,
+      scope: req.body.scope
+  });*/
 
   res.status(200).json({
     id_token,

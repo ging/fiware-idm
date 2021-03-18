@@ -8,8 +8,8 @@ coverage/
 certs/
 helpers/custom_authentication_driver.js
 .eslintcache
+config.js
+.idea/
 .nyc_output/
 config.js
-
-# IDE
-.idea
+.DS_Store?

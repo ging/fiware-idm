@@ -1,7 +1,7 @@
 # システム・インストール
 
-このセクションでは、Identity Manager Keyrock をインストールする2つの方法に
-ついて説明します :
+このセクションでは、Identity Manager Keyrock をインストールする 2 つの方法につい
+て説明します :
 
 -   ホスト・インストール。これは目的の開発のために使われるべきです
 
@@ -11,13 +11,13 @@
 
 ### 要件
 
-Keyrock を実行するには、以下のソフトウェアを事前にインストールしておく
-必要があります :
+Keyrock を実行するには、以下のソフトウェアを事前にインストールしておく必要があり
+ます :
 
 -   [Node.js](http://nodejs.org/download).
 
--   [Node Packaged Modules](https://npmjs.org). 
-    これは、通常、Node.js に含まれています
+-   [Node Packaged Modules](https://npmjs.org). これは、通常、Node.js に含まれて
+    います
 
 -   [MySQL](https://www.mysql.com).
 
@@ -25,9 +25,8 @@ Keyrock を実行するには、以下のソフトウェアを事前にインス
 
 Keyrock を起動して実行するには、以下の手順を実行する必要があります :
 
-&nbsp;&nbsp;1\.
-[GitHub](http://github.com/ging/fiware-idm).
-を使用して、ソフトウェアをダウンロードしてください
+&nbsp;&nbsp;1\. [GitHub](http://github.com/ging/fiware-idm). を使用して、ソフト
+ウェアをダウンロードしてください
 
 ```bash
     git clone https://github.com/ging/fiware-idm
@@ -53,7 +52,7 @@ cp config.js.template config.js
 
 ```javascript
 config.host = 'http://localhost:3000';
-config.port = 3000 ;
+config.port = 3000;
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;3.2\. データベースを設定します :
@@ -98,22 +97,21 @@ npm run-script seed_db
 npm start
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;5.1\. 運用環境で実行するために forever.js を
-インストールすることもできます :
+&nbsp;&nbsp;&nbsp;&nbsp;5.1\. 運用環境で実行するために forever.js をインストール
+することもできます :
 
 ```bash
 sudo npm install forever -g
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;5.2\. そして、forever に使用してサーバを
-実行します :
+&nbsp;&nbsp;&nbsp;&nbsp;5.2\. そして、forever に使用してサーバを実行します :
 
 ```bash
 forever start bin/www
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;5.3\. プロセスのステータスを知るためには、
-次のコマンドを実行します :
+&nbsp;&nbsp;&nbsp;&nbsp;5.3\. プロセスのステータスを知るためには、次のコマンドを
+実行します :
 
 ```bash
 forever status
@@ -123,8 +121,8 @@ forever status
 
 ### 要件
 
-Keyrock を実行するには、事前に以下のソフトウェアをインストール
-しておく必要があります :
+Keyrock を実行するには、事前に以下のソフトウェアをインストールしておく必要があり
+ます :
 
 -   [Docker](https://www.docker.com/).
 
@@ -134,8 +132,8 @@ Keyrock を実行するには、事前に以下のソフトウェアをインス
 
 また、この GE の構築を容易にするための Docker イメージも提供しています。
 
--   [ここ](https://github.com/ging/fiware-idm/tree/master/extras/docker)
-    に、Dockerfile とその使い方を説明しているドキュメントがあります 
+-   [ここ](https://github.com/ging/fiware-idm/tree/master/extras/docker) に
+    、Dockerfile とその使い方を説明しているドキュメントがあります
 
--   [Docker Hub](https://hub.docker.com/r/fiware/idm/)
-    に、パブリック・イメージがあります
+-   [Docker Hub](https://hub.docker.com/r/fiware/idm/) に、パブリック・イメージ
+    があります

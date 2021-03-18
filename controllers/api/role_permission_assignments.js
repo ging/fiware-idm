@@ -16,7 +16,17 @@ exports.index = function (req, res) {
       include: [
         {
           model: models.permission,
-          attributes: ['id', 'is_internal', 'name', 'description', 'action', 'resource', 'xml']
+          attributes: [
+            'id',
+            'is_internal',
+            'name',
+            'description',
+            'action',
+            'resource',
+            'authorization_service_header',
+            'use_authorization_service_header',
+            'xml'
+          ]
         }
       ]
     })
@@ -182,7 +192,17 @@ function search_role_permission(application_id) {
           {
             model: models.permission,
             where: { oauth_client_id: application_id },
-            attributes: ['id', 'is_internal', 'name', 'description', 'action', 'resource', 'xml']
+            attributes: [
+              'id',
+              'is_internal',
+              'name',
+              'description',
+              'action',
+              'resource',
+              'authorization_service_header',
+              'use_authorization_service_header',
+              'xml'
+            ]
           }
         ]
       });

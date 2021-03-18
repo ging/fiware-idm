@@ -166,7 +166,10 @@ describe('API - 9 - Permissions: ', function () {
     let permission_description;
     let permission_resource;
     let permission_action;
-
+    // eslint-disable-next-line no-unused-vars
+    let permission_authorization_service_header;
+    // eslint-disable-next-line no-unused-vars
+    let permission_use_authorization_service_header;
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function (done) {
       const create_permission = {
@@ -186,6 +189,10 @@ describe('API - 9 - Permissions: ', function () {
         permission_description = json.permission.description;
         permission_action = json.permission.action;
         permission_resource = json.permission.resource;
+        // eslint-disable-next-line no-unused-vars
+        permission_authorization_service_header = json.authorization_service_header;
+        // eslint-disable-next-line no-unused-vars
+        permission_use_authorization_service_header = json.use_authorization_service_header;
         done();
       });
     });
@@ -209,10 +216,14 @@ describe('API - 9 - Permissions: ', function () {
         const response_description = json.values_updated.description;
         const response_action = json.values_updated.action;
         const response_resource = json.values_updated.resource;
+        const response_authorization_service_header = json.values_updated.authorization_service_header;
+        const response_use_authorization_service_header = json.values_updated.use_authorization_service_header;
         should.notEqual(permission_name, response_name);
         should.notEqual(permission_description, response_description);
         should.notEqual(permission_action, response_action);
         should.notEqual(permission_resource, response_resource);
+        should.equal(undefined, response_authorization_service_header);
+        should.equal(false, response_use_authorization_service_header);
         response.statusCode.should.equal(200);
         done();
       });
@@ -255,6 +266,107 @@ describe('API - 9 - Permissions: ', function () {
         response.statusCode.should.equal(204);
         done();
       });
+    });
+  });
+});
+describe('7) When creating a permission with resource+password+use_authorization_service_header and no authorization_service_header', function () {
+  it('should return a 400 Bad request', function (done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create.invalid_perm_body_no_authorization_service_header_but_use_authorization_service_header
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token
+      }
+    };
+
+    request(create_permission, function (error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('8) When creating a permission with resource+password+authorization_service_header and no use_authorization_service_header', function () {
+  it('should return a 400 Bad request', function (done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create.invalid_perm_body_no_use_authorization_service_header_but_authorization_service_header
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token
+      }
+    };
+
+    request(create_permission, function (error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('9) When creating a permission with authorization_service_header and xml in body', function () {
+  it('should return a 400 Bad request', function (done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(permissions.create.invalid_perm_body_authorization_service_header_and_xml),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token
+      }
+    };
+
+    request(create_permission, function (error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('10) When creating a permission with use_authorization_service_header and xml in body', function () {
+  it('should return a 400 Bad request', function (done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(permissions.create.invalid_perm_body_use_authorization_service_header_and_xml),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token
+      }
+    };
+
+    request(create_permission, function (error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(400);
+      done();
+    });
+  });
+});
+describe('11) When creating a permission with use_authorization_service_header equal false', function () {
+  it('should return a 201 OK', function (done) {
+    const create_permission = {
+      url: config.host + '/v1/applications/' + application_id + '/permissions',
+      method: 'POST',
+      body: JSON.stringify(
+        permissions.create.valid_perm_body_no_authorization_service_header_but_use_authorization_service_header_is_false
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-token': token
+      }
+    };
+
+    request(create_permission, function (error, response) {
+      should.not.exist(error);
+      response.statusCode.should.equal(201);
+      done();
     });
   });
 });

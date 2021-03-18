@@ -255,7 +255,7 @@ CREATE TABLE `oauth_authorization_code` (
 
 LOCK TABLES `oauth_authorization_code` WRITE;
 /*!40000 ALTER TABLE `oauth_authorization_code` DISABLE KEYS */;
-INSERT INTO `oauth_authorization_code` VALUES 
+INSERT INTO `oauth_authorization_code` VALUES
 ('15682667caa4bb5ac15056fee3836b2980288bf2','2016-07-30 12:14:21',NULL,NULL,1,NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000'),
 ('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2200-07-30 12:14:21',NULL,NULL,1,NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000');
 
@@ -341,7 +341,7 @@ CREATE TABLE `oauth_refresh_token` (
 
 LOCK TABLES `oauth_refresh_token` WRITE;
 /*!40000 ALTER TABLE `oauth_refresh_token` DISABLE KEYS */;
-INSERT INTO `oauth_refresh_token` VALUES 
+INSERT INTO `oauth_refresh_token` VALUES
 ('4eb1f99f80f37c81a8ef85d92eae836919887e1e','2018-08-13 11:14:21',NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,1,NULL),
 ('r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3','2218-08-13 11:14:21',NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,1,NULL),
 ('r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4','2218-08-13 11:14:21',NULL,'tutorial-dckr-site-0000-xpresswebapp','aaaaaaaa-good-0000-0000-000000000000',NULL,1,NULL);
@@ -446,6 +446,8 @@ CREATE TABLE `permission` (
   `xml` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `oauth_client_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `is_regex` tinyint(1) NOT NULL DEFAULT '0',
+  `authorization_service_header` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `use_authorization_service_header` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `oauth_client_id` (`oauth_client_id`),
   CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`oauth_client_id`) REFERENCES `oauth_client` (`id`) ON DELETE CASCADE
@@ -459,15 +461,15 @@ CREATE TABLE `permission` (
 LOCK TABLES `permission` WRITE;
 /*!40000 ALTER TABLE `permission` DISABLE KEYS */;
 INSERT INTO `permission` VALUES
-('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0),
-('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0),
-('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0),('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0),
-('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0),
-('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0),
-('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0),
-('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0),
-('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0),
-('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0);
+('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
+('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
+('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
+('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
+('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
+('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0),
+('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0),
+('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0),
+('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0);
 /*!40000 ALTER TABLE `permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -693,7 +695,7 @@ CREATE TABLE `user_authorized_application` (
 
 LOCK TABLES `user_authorized_application` WRITE;
 /*!40000 ALTER TABLE `user_authorized_application` DISABLE KEYS */;
-INSERT INTO `user_authorized_application` VALUES 
+INSERT INTO `user_authorized_application` VALUES
 (1,'admin','8ca60ce9-32f9-42d6-a013-a19b3af0c13d', NULL, NULL),
 (2,'aaaaaaaa-good-0000-0000-000000000000','tutorial-dckr-site-0000-xpresswebapp', 'username,email', NULL);
 /*!40000 ALTER TABLE `user_authorized_application` ENABLE KEYS */;

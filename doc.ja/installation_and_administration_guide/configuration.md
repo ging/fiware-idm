@@ -146,9 +146,9 @@ config.cors = {
 
 ## 二要素認証 (Two Factor Authentication)
 
-この構成を有効にすると、ユーザはユーザ名/パスワードを使用する以外に外部デバ
-イスを使用して認証できるようになります (詳細については、ユーザ・ガイドを確
-認してください)。
+この構成を有効にすると、ユーザはユーザ名/パスワードを使用する以外に外部デバイス
+を使用して認証できるようになります (詳細については、ユーザ・ガイドを確認してくだ
+さい)。
 
 ```javascript
 config.debug = true;
@@ -159,10 +159,10 @@ config.debug = true;
 Keyrock のいくつかの機能を設定できます。それらのほとんどはトークンの寿命に関連し
 ています。
 
--   空の状態 (Empty State) を許可します。この機能を有効にする場合、サービスがクエ
-    リ文字列として URL にパラメータの状態を含める必要はありません。state パラメー
-    タは XSRF から保護するために使用されるため、疑わしい場合はこの値をデフォルト
-    値 (false) に設定します
+-   空の状態 (Empty State) を許可します。この機能を有効にする場合、サービスがク
+    エリ文字列として URL にパラメータの状態を含める必要はありません。state パラ
+    メータは XSRF から保護するために使用されるため、疑わしい場合はこの値をデフォ
+    ルト値 (false) に設定します
 
 -   認証コード (Authorization code)。アクセス・トークン、およびリフレッシュ・ ト
     ークンの有効期間を簡単に変更できます。この値のいずれかを変更すると、 Keyrock
@@ -344,7 +344,7 @@ config.external_auth = {
     password_encryption_key: undefined,
     ecryption: 'bcyrpt',
     database: {
-        host: "localhost",
+        host: 'localhost',
         port: undefined,
         database: 'idm',
         username: 'root',
@@ -360,35 +360,34 @@ config.external_auth = {
 
 ## 外部認証 (External Authentication) (LDAP)
 
-Keyrock インスタンスを既存の LDAP ユーザ・ディレクトリに接続できます。 SQL
-ベースの外部データベースを使用する場合と同じように、これにより、外部 LDAP
-ディレクトリで使用可能なユーザを認証できます。 認証されると、ユーザーのローカル
-コピーが作成されます。 ただし、パスワードは常に外部ディレクトリでチェックされる
-ため、Keyrock のデータベースには保存されません。
+Keyrock インスタンスを既存の LDAP ユーザ・ディレクトリに接続できます。 SQL ベー
+スの外部データベースを使用する場合と同じように、これにより、外部 LDAP ディレクト
+リで使用可能なユーザを認証できます。 認証されると、ユーザーのローカルコピーが作
+成されます。 ただし、パスワードは常に外部ディレクトリでチェックされるため
+、Keyrock のデータベースには保存されません。
 
-この機能を有効にするには、config.js ファイルで次のパラメータを構成する必要が
-あります。 forumsys.com で入手可能なサンプル LDAP ディレクトリに登録されている
-ユーザを認証する方法の例を見ることができます。 ご覧のとおり、LDAP ディレクトリ
-で必要な属性は、id, ユーザー名 および 電子メールです (使用する属性名を構成でき
-ます)。
+この機能を有効にするには、config.js ファイルで次のパラメータを構成する必要があり
+ます。 forumsys.com で入手可能なサンプル LDAP ディレクトリに登録されているユーザ
+を認証する方法の例を見ることができます。 ご覧のとおり、LDAP ディレクトリで必要な
+属性は、id, ユーザー名 および 電子メールです (使用する属性名を構成できます)。
 
 ```javascript
 // External user authentication with LDAP
 // Testing credentials from https://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/
 config.external_auth_ldap = {
-  enabled: true,
-  id_prefix: 'external_ldap_',
-  database: {
-    host: 'ldap.forumsys.com',
-    port: 389,
-    reader_dn: 'cn=read-only-admin,dc=example,dc=com',
-    reader_password: 'password',
-    suffix: 'dc=example,dc=com',
-    idAttribute: 'uid',
-    usernameAttribute: 'uid',
-    emailAttribute: 'mail'
-  }
-}
+    enabled: true,
+    id_prefix: 'external_ldap_',
+    database: {
+        host: 'ldap.forumsys.com',
+        port: 389,
+        reader_dn: 'cn=read-only-admin,dc=example,dc=com',
+        reader_password: 'password',
+        suffix: 'dc=example,dc=com',
+        idAttribute: 'uid',
+        usernameAttribute: 'uid',
+        emailAttribute: 'mail'
+    }
+};
 ```
 
 ## 認可 (Authorization)

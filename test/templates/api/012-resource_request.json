@@ -1,0 +1,44 @@
+{
+  "before": {
+    "application": {
+      "name": "Test_application resource requests",
+        "description": "description for resource requests",
+        "redirect_uri": "http://localhost/login",
+        "url": "http://localhost",
+        "grant_type": [
+        "authorization_code",
+        "implicit",
+        "password"
+      ],
+        "token_types": [
+        "jwt",
+        "permanent"
+      ]
+    }
+  },
+  "create": {
+    "valid_perm_body1": {
+      "permission": {
+        "name": "permission 1",
+        "description": "permission 1 description",
+        "action": "POST",
+        "resource": "/login",
+        "authorization_service_header": "test",
+        "use_authorization_service_header": true
+      }
+    },
+    "valid_perm_body2": {
+      "permission": {
+        "name": "permission 2",
+        "description": "permission 2 description",
+        "action": "GET",
+        "resource": "/v2/entities"
+      }
+    },
+    "valid_role_body": {
+      "role": {
+        "name": "Test role 1"
+      }
+    }
+  }
+}

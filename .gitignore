@@ -11,4 +11,5 @@ helpers/custom_authentication_driver.js
 config.js
 .idea/
 .nyc_output/
+config.js
 .DS_Store?

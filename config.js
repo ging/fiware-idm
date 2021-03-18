@@ -37,7 +37,7 @@ config.cors = {
   enabled: false,
   options: {
     /* eslint-disable snakecase/snakecase */
-    origin: ['*'],
+    origin: '*',
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     allowedHeaders: '*',
     exposedHeaders: undefined,
@@ -55,9 +55,10 @@ config.oauth2 = {
   access_token_lifetime: 60 * 60, // One hour
   ask_authorization: true, // Prompt a message to users to allow the application to read their details
   refresh_token_lifetime: 60 * 60 * 24 * 14, // Two weeks
-  unique_url: false // This parameter allows to verify that an application with the same url
+  unique_url: false, // This parameter allows to verify that an application with the same url
   // does not exist when creating or editing it. If there are already applications
   // with the same URL, they should be changed manually
+  not_require_client_authentication_grant_type: []
 };
 
 // Config api parameters

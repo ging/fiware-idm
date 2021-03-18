@@ -48,7 +48,9 @@ exports.authenticate = function (username, password, callback) {
       search_result.on('end', (return_value) => {
         debug('--> Search results length: ' + search_list.length);
 
-        for (let i = 0; i < search_list.length; i++) {debug('--> User DN:' + search_list[i].objectName);}
+        for (let i = 0; i < search_list.length; i++) {
+          debug('--> User DN:' + search_list[i].objectName);
+        }
 
         //debug('--> Search retval:' + retVal);
 
@@ -153,7 +155,9 @@ function create_local_user(user, callback) {
 function get_user_attribute(user, attribute) {
   debug('--> Getting attribute', attribute);
   for (const a of user.attributes) {
-    if (a.type === attribute) {return a.vals[0];}
+    if (a.type === attribute) {
+      return a.vals[0];
+    }
   }
   return undefined;
 }

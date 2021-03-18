@@ -348,13 +348,15 @@ function oauth_authorize(req, res, next) {
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
-
   const action = req.query.action ? req.query.action : undefined;
   const resource = req.query.resource ? req.query.resource : undefined;
   const authzforce = req.query.authzforce ? req.query.authzforce : undefined;
   const req_app = req.query.app_id ? req.query.app_id : undefined;
+  const authorization_service_header = req.query.authorization_service_header
+    ? req.query.authorization_service_header
+    : undefined;
 
-  if ((action || resource) && authzforce) {
+  if ((action || resource || authorization_service_header) && authzforce) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
@@ -369,9 +371,18 @@ exports.authenticate_token = function (req, res) {
       .then(function (application) {
         if (application) {
           if (application.token_types.includes('jwt')) {
-            return authenticate_jwt(req, res, action, resource, authzforce, req_app, application.jwt_secret);
+            return authenticate_jwt(
+              req,
+              res,
+              action,
+              resource,
+              authorization_service_header,
+              authzforce,
+              req_app,
+              application.jwt_secret
+            );
           }
-          return authenticate_bearer(req, res, action, resource, authzforce, req_app);
+          return authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
         }
 
         const message = {
@@ -393,13 +404,13 @@ exports.authenticate_token = function (req, res) {
 };
 
 // Authenticate an incoming Json Web Token
-function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_secret) {
+function authenticate_jwt(req, res, action, resource, authorization_service_header, authzforce, req_app, jwt_secret) {
   debug(' --> authenticate_jwt');
 
   jsonwebtoken.verify(req.query.access_token, jwt_secret, function (err, decoded) {
     if (err) {
       debug('Error ' + err);
-      authenticate_bearer(req, res, action, resource, authzforce, req_app);
+      authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
     } else {
       const identity = {
         username: decoded.username,
@@ -411,7 +422,15 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_s
 
       const application_id = decoded.app_id;
 
-      create_oauth_response(identity, application_id, action, resource, authzforce, req_app)
+      create_oauth_response(
+        identity,
+        application_id,
+        action,
+        resource,
+        authorization_service_header,
+        authzforce,
+        req_app
+      )
         .then(function (response) {
           return res.status(200).json(response);
         })
@@ -425,9 +444,8 @@ function authenticate_jwt(req, res, action, resource, authzforce, req_app, jwt_s
 }
 
 // Authenticate an incoming Bearer Token
-function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
+function authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app) {
   debug(' --> authenticate_bearer');
-
   const options = {
     allowBearerTokensInQueryString: true // eslint-disable-line snakecase/snakecase
   };
@@ -446,8 +464,15 @@ function authenticate_bearer(req, res, action, resource, authzforce, req_app) {
     .then(function (token_info) {
       const identity = token_info.user;
       const application_id = token_info.oauth_client.id;
-
-      return create_oauth_response(identity, application_id, action, resource, authzforce, req_app);
+      return create_oauth_response(
+        identity,
+        application_id,
+        action,
+        resource,
+        authorization_service_header,
+        authzforce,
+        req_app
+      );
     })
     .then(function (response) {
       return res.status(200).json(response);

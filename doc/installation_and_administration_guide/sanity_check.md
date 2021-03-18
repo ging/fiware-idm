@@ -85,7 +85,7 @@ The databases and tables needed are:
 | oauth_scope                 | 0          |
 | organization                | 0          |
 | pep_proxy                   | 1          |
-| permission                  | 6          |
+| permission                  | 8          |
 | role                        | 2          |
 | role_assignment             | 6          |
 | role_permission             | 7          |

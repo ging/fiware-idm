@@ -33,7 +33,7 @@
 						<span id="error_empty_description" style="display: none;" class='help-block alert alert-danger'><%=translation.applications.create_permission.required_field%></span>
 						<div class="panel-group" id="accordion">
 							<div class="panel">
-								<div class="panel-headding">  
+								<div class="panel-headding">
 									<a data-toggle="collapse" data-parent="#accordion" href="#collapse-verb-resource" class="panel-heading collapsed">
 										<h4 class="panel-title panel-close">
 											<%=translation.applications.create_permission.subtitle01%>
@@ -59,6 +59,16 @@
 											<label class="control-label" for="id_is_regex"><%=translation.applications.create_permission.label_is_regex%></label>
 
 										</div>
+										<div class="form-group">
+											<label class="control-label" for="id_authorization_service_header"><%=translation.applications.create_permission.label06%></label>
+											<div class=" ">
+												<input class="form-control" id="id_authorization_service_header" maxlength="255" name="authorization_service_header" type="text">
+											</div>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" id="id_use_authorization_service_header"  name="use_authorization_service_header" type="checkbox">
+											<label class="control-label" for="id_use_authorization_service_header"><%=translation.applications.create_permission.label_use_authorization_service_header%></label>
+										</div>
 									</div>
 								</div>
 							<% if (authorization_level === 'advanced') { -%>
@@ -82,6 +92,7 @@
 									</div>
 								</div>
 							<% } -%>
+							</div>
 						</div>
 					</fieldset>
 				</div>

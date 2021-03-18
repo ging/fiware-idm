@@ -9,7 +9,6 @@ const exec = require('child_process').exec;
 const config_service = require('../../lib/configService.js');
 config_service.set_config(require('../config-test'));
 const config = config_service.get_config();
-
 // eslint-disable-next-line no-undef
 before('Create and populate database', function () {
   // Mocha default timeout for tests is 2000 and to create database is needed more
@@ -55,7 +54,11 @@ before('Create and populate database', function () {
 after('Delete database', function () {
   return new Promise(function (resolve, reject) {
     const load_data =
-      'mysql -u ' + config.database.username + ' -p' + config.database.password + " -e 'DROP DATABASE idm_test;'";
+      'mysql --user=' +
+      config.database.username +
+      ' --password=' +
+      config.database.password +
+      " -e 'DROP DATABASE idm_test;'";
     exec(load_data, function (error) {
       if (error) {
         process.exit();

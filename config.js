@@ -18,7 +18,8 @@ config.https = {
 config.email_list_type = null; // whitelist or blacklist
 
 // Enable 2fa authentication
-config.enable_2fa = false;
+config.enable_2fa = process.env.IDM_ENABLE_2FA || false;
+
 
 // Secret for user sessions in web
 config.session = {
@@ -91,7 +92,7 @@ config.usage_control = {
 // Database info
 config.database = {
   host: 'localhost',
-  password: 'idm',
+  password: 'test',
   username: 'root',
   database: 'idm',
   dialect: 'mysql',

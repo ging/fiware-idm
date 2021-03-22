@@ -101,11 +101,12 @@ async function create_jwt(payload) {
   }, config.pr.client_key).update(JSON.stringify(payload)).final();
 }
 
-async function build_id_token(code) {
+async function build_id_token(code, scopes) {
   const now = moment();
-  return await create_jwt({
+  const user = code.User;
+  const claims = {
     iss: config.pr.client_id,
-    sub: code.User.id, // TODO
+    sub: user.id, // TODO
     aud: code.OauthClient.id,
     exp: now.add(30, 'seconds').unix(),
     iat: now.unix(),
@@ -113,7 +114,20 @@ async function build_id_token(code) {
     // TODO nonce: code.extra.nonce,
     acr: "urn:http://eidas.europa.eu/LoA/NotNotified/low",
     azp: code.OauthClient.id
-  });
+  };
+
+  if (scopes.has("profile")) {
+    Object.assign(claims, {
+      preferred_username: user.username,
+      website: user.website
+    });
+  }
+
+  if (scopes.has("email")) {
+    claims["email"] = user.email;
+  }
+
+  return await create_jwt(claims);
 }
 
 async function build_access_token(code) {
@@ -353,7 +367,8 @@ async function _token(req, res) {
   code.save();
 
   // Return an id_token and a access_token
-  const id_token = await build_id_token(code);
+  const scopes = new Set(code.scope);
+  const id_token = await build_id_token(code, scopes);
   const [access_token, access_token_exp] = await build_access_token(code);
 
   /*await models.oauth_access_token.create({

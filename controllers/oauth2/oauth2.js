@@ -411,7 +411,7 @@ exports.authenticate_token = function (req, res) {
       });
   }
 
-  return authenticate_bearer(req, res, action, resource, authzforce, req_app);
+  return authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
 };
 
 // Authenticate an incoming Json Web Token

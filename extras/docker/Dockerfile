@@ -1,4 +1,4 @@
-ARG NODE_VERSION=10
+ARG NODE_VERSION=12
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
 ARG DOWNLOAD=latest
@@ -275,7 +275,7 @@ ENV NODE_ENV=production
 EXPOSE ${IDM_PORT:-3000}
 CMD ["npm", "start"]
 HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
-  CMD ["npm", "healthcheck"]
+  CMD ["npm", "run", "healthcheck"]
 
 # 
 # ALL ENVIRONMENT VARIABLES

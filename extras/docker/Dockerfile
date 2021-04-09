@@ -60,13 +60,15 @@ WORKDIR /opt/fiware-idm
 RUN npm cache clean -f  && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
-    mkdir -p certs/applications && \
+    mkdir certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \
     openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
     mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/ && \
     chmod -R 777 public
 
+# Applications folder for OIDC certs
+RUN cd certs && mkdir applications
 
 ########################################################################################
 #
@@ -135,12 +137,15 @@ WORKDIR /opt/fiware-idm
 RUN npm cache clean -f  && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
-    mkdir certs/applications && \
+    mkdir certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \
     openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
     mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/  && \
     chmod -R 777 public
+
+# Applications folder for OIDC certs
+RUN cd certs && mkdir applications
 
 ########################################################################################
 #

@@ -51,9 +51,15 @@ exports.configuration = function (req, res) {
   // oidc_discovery.op_tos_uri
 
   for (const c in oidc_discovery) {
-    if (typeof oidc_discovery[c] === 'string' && oidc_discovery[c] === '') {delete oidc_discovery[c];}
-    if (typeof oidc_discovery[c] === 'object' && oidc_discovery[c].length <= 0) {delete oidc_discovery[c];}
-    if (typeof oidc_discovery[c] === 'boolean') {delete oidc_discovery[c];}
+    if (typeof oidc_discovery[c] === 'string' && oidc_discovery[c] === '') {
+      delete oidc_discovery[c];
+    }
+    if (typeof oidc_discovery[c] === 'object' && oidc_discovery[c].length <= 0) {
+      delete oidc_discovery[c];
+    }
+    if (typeof oidc_discovery[c] === 'boolean') {
+      delete oidc_discovery[c];
+    }
   }
 
   res.type('application/json');
@@ -63,11 +69,21 @@ exports.configuration = function (req, res) {
 // GET /idm/applications/:application_id/certs -- Form get OIDC configuration application
 exports.certificates = function (req, res) {
   const certificates = {};
+  certificates.keys = [];
 
-  if (config.oidc.jwt_algorithm === 'RS256')
-    {certificates.rs_256_certificate = fs
+  const key = {};
+
+  if (config.oidc.jwt_algorithm === 'RS256') {
+    key.n = fs
       .readFileSync('./certs/applications/' + req.application.id + '-oidc-cert.pem', 'utf8')
-      .replace(/(\r\n|\n|\r)/gm, '');}
+      .replace(/(\r\n|\n|\r)/gm, '');
+
+    key.kty = 'RSA';
+    key.alg = 'RS256';
+    key.use = 'sig';
+  }
+
+  certificates.keys.push(key);
 
   res.type('application/json');
   res.json(certificates);

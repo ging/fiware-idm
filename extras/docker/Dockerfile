@@ -61,6 +61,7 @@ RUN npm cache clean -f  && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir -p certs/applications && \
+    chmod -R 777 certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \
     openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
@@ -136,6 +137,7 @@ RUN npm cache clean -f  && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir -p certs/applications && \
+    chmod -R 777 certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \
     openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
@@ -257,7 +259,7 @@ ENV IDM_HOST="http://localhost:3000" \
 
 
 # hadolint ignore=DL3018
-RUN apk add --no-cache ca-certificates bash
+RUN apk add --no-cache ca-certificates bash openssl
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
 LABEL "org.opencontainers.image.authors"=""

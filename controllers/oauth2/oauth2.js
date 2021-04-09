@@ -3,6 +3,7 @@ const create_oauth_response = require('../../models/model_oauth_server.js').crea
 const config_service = require('../../lib/configService.js');
 const config_eidas = config_service.get_config().eidas;
 const config_oauth2 = config_service.get_config().oauth2;
+const config_oidc = config_service.get_config().oidc;
 const user_controller = require('../../controllers/web/users');
 const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
 const gravatar = require('gravatar');
@@ -30,8 +31,10 @@ exports.token = function (req, res) {
 
   const options = {
     // eslint-disable-next-line snakecase/snakecase
-    requireClientAuthentication: {}
+    requireClientAuthentication: {},
+    jwt_algorithm: config_oidc.jwt_algorithm
   };
+
   grant_type.forEach((key) => {
     // eslint-disable-next-line snakecase/snakecase
     options.requireClientAuthentication[key] = false;
@@ -343,6 +346,7 @@ function oauth_authorize(req, res, next) {
   const response = new Response(res);
 
   const options = {
+    jwt_algorithm: config_oidc.jwt_algorithm,
     allowEmptyState: config_oauth2.allow_empty_state // eslint-disable-line snakecase/snakecase
       ? config_oauth2.allow_empty_state
       : false

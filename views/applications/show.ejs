@@ -128,6 +128,14 @@
                                         <h6 class="panel-heading"><%=translation.applications.show.panel_subtitle05%></h6>
                                         <p><%= application.jwt_secret%></p>
                                     </div>
+                                    <div>
+                                        <h6 class="panel-heading"><%=translation.applications.show.panel_subtitle06%></h6>
+                                        <a href="<%= host%>/idm/applications/<%=application.id%>/.well-known/openid-configuration"><%= host%>/idm/applications/<%=application.id%>/.well-known/openid-configuration</a>
+                                    </div>
+                                    <div>
+                                        <h6 class="panel-heading"><%=translation.applications.show.panel_subtitle07%></h6>
+                                        <a href="<%= host%>/idm/applications/<%=application.id%>/certs"><%= host%>/idm/applications/<%=application.id%>/certs</a>
+                                    </div>
                                 </div>
                             </div>
                         <% } -%>

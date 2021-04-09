@@ -768,6 +768,8 @@
       "panel_subtitle03": "Token タイプ",
       "panel_subtitle04": "JWT Secret",
       "panel_subtitle05": "OIC Secret",
+      "panel_subtitle06": "OpenID Connect Discovery Url",
+      "panel_subtitle07": "OpenID Connect Certificates",
       "permanent_option": "永久",
       "popover01_body": "アプリケーションに使用する OAuth2 ライブラリでこれらのクレデンシャルを要求されます。",
       "popover01_title": "OAuth2 クレデンシャル",

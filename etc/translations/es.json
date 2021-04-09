@@ -770,6 +770,8 @@
       "panel_subtitle03": "Tipos de Token",
       "panel_subtitle04": "Secreto JWT",
       "panel_subtitle05": "OIC Secret",
+      "panel_subtitle06": "OpenID Connect Discovery Url",
+      "panel_subtitle07": "OpenID Connect Certificates",
       "permanent_option": "Permanente",
       "popover01_body": "Estos credenciales serán necesarios en la librería de OAuth2 que uses en tu aplicación",
       "popover01_title": "Credenciales OAuth2",

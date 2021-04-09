@@ -20,7 +20,6 @@ config.email_list_type = null; // whitelist or blacklist
 // Enable 2fa authentication
 config.enable_2fa = process.env.IDM_ENABLE_2FA || false;
 
-
 // Secret for user sessions in web
 config.session = {
   secret: require('crypto').randomBytes(20).toString('hex'), // Must be changed
@@ -59,6 +58,11 @@ config.oauth2 = {
   // does not exist when creating or editing it. If there are already applications
   // with the same URL, they should be changed manually
   not_require_client_authentication_grant_type: []
+};
+
+// Config oidc parameters
+config.oidc = {
+  jwt_algorithm: 'HS256' // HS256,HS384,HS512,RS256
 };
 
 // Config api parameters

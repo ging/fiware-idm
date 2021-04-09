@@ -1,6 +1,7 @@
 const models = require('../../models/models.js');
 const fs = require('fs');
 const _ = require('lodash');
+const exec = require('child_process').exec;
 
 const config_service = require('../../lib/configService.js');
 const config = config_service.get_config();
@@ -182,6 +183,7 @@ exports.show = function (req, res) {
 
       res.render('applications/show', {
         application: req.application,
+        host: config.host,
         user_logged_permissions: req.user_owned_permissions,
         pep_proxy,
         iot_sensors,
@@ -383,7 +385,8 @@ exports.create = function (req, res, next) {
         'image',
         'grant_type',
         'scope',
-        'response_type'
+        'response_type',
+        'jwt_secret'
       ]
     });
   });
@@ -434,7 +437,13 @@ exports.create = function (req, res, next) {
     });
   }
 
-  return Promise.all([save, assign])
+  const promises = [save, assign];
+
+  if (req.body.openID) {
+    promises.push(generate_app_certificates(application));
+  }
+
+  return Promise.all(promises)
     .then(function () {
       if (config.eidas && req.body.eidas === 'eidas') {
         res.redirect('/idm/applications/' + application.id + '/step/eidas');
@@ -595,7 +604,9 @@ exports.update_info = function (req, res) {
       response_type.push('id_token');
       application.token_types = ['jwt'];
       application.scope = ['openid'];
-      application.jwt_secret = crypto.randomBytes(16).toString('hex').slice(0, 16);
+      if (!req.application.jwt_secret) {
+        application.jwt_secret = crypto.randomBytes(16).toString('hex').slice(0, 16);
+      }
       if (!req.body.application.grant_type.includes('hybrid')) {
         req.body.application.grant_type.push('hybrid');
       }
@@ -613,7 +624,9 @@ exports.update_info = function (req, res) {
             redirect_sign_out_uri: req.body.application.redirect_sign_out_uri,
             grant_type: req.body.application.grant_type,
             response_type,
-            scope: req.body.openID ? ['openid'] : null
+            scope: req.body.openID ? ['openid'] : null,
+            jwt_secret:
+              req.body.openID && !req.application.jwt_secret ? application.jwt_secret : req.application.jwt_secret
           },
           {
             fields: [
@@ -630,6 +643,12 @@ exports.update_info = function (req, res) {
             where: { id: req.application.id }
           }
         );
+      })
+      .then(function () {
+        if (req.body.openID) {
+          return generate_app_certificates(application);
+        }
+        return Promise.resolve();
       })
       .then(function () {
         // Send message of success of updating the application
@@ -704,10 +723,13 @@ exports.destroy = function (req, res) {
       where: { id: req.application.id }
     })
     .then(function () {
+      // Delete certificates if exists
+      delete_app_certificates(req.application);
+
       // If the image is not the default one, delete image from filesystem
       if (req.application.image.includes('/img/applications')) {
         const image_name = req.application.image.split('/')[3];
-        fs.unlink('./public/img/applications/' + image_name);
+        fs.unlinkSync('./public/img/applications/' + image_name);
       }
       // Send message of success in deleting application
       req.session.message = { text: ' Application deleted.', type: 'success' };
@@ -883,5 +905,71 @@ function send_response(req, res, response, url) {
       req.session.message = response;
     }
     res.redirect(url);
+  }
+}
+
+// Function to generate Application certificates
+function generate_app_certificates(application) {
+  debug('--> generate_app_certificates');
+
+  if (!fs.existsSync('./certs/applications')) {
+    fs.mkdirSync('./certs/applications');
+  }
+
+  if (fs.existsSync('./certs/applications/' + application.id + '-oidc-key.pem')) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    const key_name = 'certs/applications/' + application.id + '-oidc-key.pem';
+    const csr_name = 'certs/applications/' + application.id + '-oidc-csr.pem';
+    const cert_name = 'certs/applications/' + application.id + '-oidc-cert.pem';
+
+    const key = 'openssl genrsa -out ' + key_name + ' 2048';
+    const csr =
+      'openssl req -new -sha256 -key ' +
+      key_name +
+      ' -out ' +
+      csr_name +
+      ' -subj "/C=IK/ST=World/L=World/' +
+      'O=' +
+      application.name +
+      '/OU=' +
+      application.name +
+      '/CN=' +
+      config.host.split(':')[0] +
+      '"';
+
+    const cert = 'openssl x509 -days 365 -req -in ' + csr_name + ' -signkey ' + key_name + ' -out ' + cert_name;
+
+    const create_certificates = key + ' && ' + csr + ' && ' + cert;
+    exec(create_certificates, function (error) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+// Delete certificates
+function delete_app_certificates(application) {
+  try {
+    if (fs.existsSync('./certs/applications')) {
+      if (fs.existsSync('./certs/applications/' + application.id + '-oidc-key.pem')) {
+        fs.unlinkSync('./certs/applications/' + application.id + '-oidc-key.pem');
+        fs.unlinkSync('./certs/applications/' + application.id + '-oidc-cert.pem');
+        fs.unlinkSync('./certs/applications/' + application.id + '-oidc-csr.pem');
+      }
+      if (fs.existsSync('./certs/applications/' + application.id + '-key.pem')) {
+        fs.unlinkSync('./certs/applications/' + application.id + '-key.pem');
+        fs.unlinkSync('./certs/applications/' + application.id + '-cert.pem');
+        fs.unlinkSync('./certs/applications/' + application.id + '-csr.pem');
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    
   }
 }

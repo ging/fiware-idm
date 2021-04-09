@@ -8,9 +8,12 @@ const config_service = require('../lib/configService.js');
 const config = config_service.get_config();
 const config_authzforce = config.authorization.authzforce;
 const config_oauth2 = config.oauth2;
+const config_oidc = config.oidc;
 const config_cors = config.cors;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+
+const fs = require('fs');
 
 const user = models.user;
 const iot = models.iot;
@@ -579,7 +582,6 @@ function create_oauth_response(
         }
 
         return search_user_info(user_info, action, resource, authorization_service_header, authzforce, req_app);
-
       });
   } else if (type === 'iot') {
     const iot_info = JSON.parse(JSON.stringify(require('../templates/oauth_response/oauth_iot_response.json')));
@@ -843,7 +845,7 @@ function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
   if (scope && scope.length > 0) {
-    const requested_scopes = typeof scope === "string" ? scope.split(',') : scope[0].split(',');
+    const requested_scopes = typeof scope === 'string' ? scope.split(',') : scope[0].split(',');
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
       return false;
     }
@@ -897,6 +899,12 @@ function generateIdToken(client, user) {
     });
 }
 
+function readKeyIdToken(client) {
+  debug('-------readKeyIdToken-------');
+
+  return fs.readFileSync('./certs/applications/' + client.id + '-oidc-key.pem', 'utf8');
+}
+
 module.exports = {
   getAccessToken,
   getAuthorizationCode,
@@ -916,5 +924,6 @@ module.exports = {
   user_roles,
   user_permissions,
   trusted_applications,
-  generateIdToken
+  generateIdToken,
+  readKeyIdToken
 };

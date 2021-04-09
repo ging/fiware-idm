@@ -61,6 +61,11 @@ config.oauth2 = {
 
 };
 
+// Config oidc parameters
+config.oidc = {
+  jwt_algorithm: 'RS256', // HS256,HS384,HS512,RS256
+};
+
 // Config api parameters
 config.api = {
   token_lifetime: 60 * 60 // One hour

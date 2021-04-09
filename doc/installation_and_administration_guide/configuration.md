@@ -15,6 +15,8 @@ specific needs of each use case. These are the main configurations:
 
 -   OAuth2.
 
+-   OIDC
+
 -   eIDAS.
 
 -   API.
@@ -192,6 +194,24 @@ config.oauth2 = {
 
 Check [Connecting to IdM with OAuth2.0](../oauth/introduction.md) to obtain a
 whole description of this feature.
+
+## OIDC
+
+The algorithm to firm ID Tokens (Json Web Tokens) can be configured through the
+jwt_algorithm variable.
+
+If 'HS256', 'HS384' or 'HS512' is selected, you can find the symetric key in the
+application show interface.
+
+If 'RS256' is selected, you can find the public certificate to verify tokens in:
+
+`http://[domain]/idm/applications/[aplication_id]/certs`
+
+```javascript
+config.oidc = {
+    jwt_algorithm: 'RS256'
+};
+```
 
 ## eIDAS
 

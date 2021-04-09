@@ -25,6 +25,7 @@ const web_ptp_controller = index_controller.ptps;
 const web_peppx_controller = index_controller.pep_proxies;
 const web_iota_controller = index_controller.iot_agents;
 const saml2_controller = require('../../controllers/saml2/saml2');
+const oidc_controller = require('../../controllers/oidc/oidc');
 
 // Autoloads
 router.param('application_id', web_app_controller.load_application);
@@ -306,6 +307,11 @@ router.get(
   csrf_protection,
   web_app_controller.reset_jwt_secret
 );
+
+// Routes to handle OIDC Discovery
+router.get('/:application_id/.well-known/openid-configuration', oidc_controller.configuration);
+
+router.get('/:application_id/certs', oidc_controller.certificates);
 
 // Routes to handle SAML with eidas
 if (config.eidas) {

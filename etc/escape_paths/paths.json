@@ -2,6 +2,8 @@
 	"paths": [
 		"/saml2/metadata",
 		"/saml2/login",
+		"/.well-known/openid-configuration",
+		"/certs",
 		"/job_id"
 	]
 }

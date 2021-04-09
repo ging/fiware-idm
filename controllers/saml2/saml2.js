@@ -556,7 +556,7 @@ exports.create_auth_request = function (req, res, next) {
   }
 };
 
-// Function to generate SAML certifiactes
+// Function to generate Application certificates
 function generate_app_certificates(app_id, eidas_credentials) {
   debug('--> generate_app_certificates');
 

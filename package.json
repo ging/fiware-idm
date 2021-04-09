@@ -68,7 +68,7 @@
     "nodemailer-mailgun-transport": "^1.4.0",
     "nodemailer-smtp-transport": "~2.7.4",
     "nodemon": "^2.0.6",
-    "oauth2-server": "git+https://github.com/ging/node-oauth2-server#4.2",
+    "oauth2-server": "git+https://github.com/ging/node-oauth2-server#master",
     "otplib": "^11.0.1",
     "pg": "^7.5.0",
     "qrcode": "^1.4.4",

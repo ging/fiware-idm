@@ -30,6 +30,7 @@ ease Keyrock configuration.
 | IDM_OAUTH_ASK_AUTH                  | Boolean | If is set to true, it will prompt authorization message when log in a service usign OAuth2                      | true,false                  |
 | IDM_OAUTH_REFR_LIFETIME             | Integer | Lifetime of OAuth2 Refresh Token                                                                                | -                           |
 | IDM_OAUTH_UNIQUE_URL                | Boolean | Set URL as unique parameter (this parameter will be used to redirect after a sign out if redirect_sign_out_uri) | true,false                  |
+| IDM_OIDC_JWT_ALGORITHM              | String  | Set the algorithm that wil firm ID Tokens generated with OIDC                                                   | HS256,HS384,HS512,RS256     |
 | IDM_API_LIFETIME                    | Integer | Lifetime of API Token to be used to create resources on Keyrock                                                 | -                           |
 | IDM_PDP_LEVEL                       | String  | Allow basic (HTTP verb + path) or advanced (XML rule. Need an AuthZforce instance) authorization rules          | basic,advanced              |
 | IDM_AUTHZFORCE_ENABLED              | Boolean | Enable use of authZforce to store basic and advanced rules                                                      | true,false                  |

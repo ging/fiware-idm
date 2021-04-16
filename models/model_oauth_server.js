@@ -191,7 +191,6 @@ function revokeAuthorizationCode(code) {
         rCode.valid = false;
         rCode.save();
       }
-
       code.valid = false;
       return code;
     })
@@ -845,7 +844,21 @@ function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
   if (scope && scope.length > 0) {
-    const requested_scopes = typeof scope === 'string' ? scope.split(',') : scope[0].split(',');
+    let requested_scopes;
+    if (typeof scope === 'string' && scope.includes(',')) {
+      requested_scopes = scope.split(',');
+    } else if (typeof scope === 'object') {
+      requested_scopes = scope[0].split(',');
+    } else if (typeof scope === 'string' && scope.includes(' ')) {
+      requested_scopes = scope;
+    } else if (typeof scope === 'object') {
+      requested_scopes = scope[0];
+    } else {
+      requested_scopes = scope;
+    }
+
+    //let requested_scopes = typeof scope === 'string' ? scope.split(',') : scope[0].split(',');
+
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
       return false;
     }

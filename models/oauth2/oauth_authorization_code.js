@@ -15,7 +15,7 @@ module.exports = function (sequelize, DataTypes) {
       scope: {
         type: DataTypes.STRING(2000),
         get() {
-          return this.getDataValue('scope') ? this.getDataValue('scope').split(',') : [];
+          return this.getDataValue('scope');
         },
         set(val) {
           this.setDataValue('scope', val ? val.toString() : null);

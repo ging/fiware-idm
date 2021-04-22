@@ -263,6 +263,7 @@ exports.edit = function (req, res) {
   } else {
     req.user.image_gravatar = gravatar.url(req.session.user.email, { s: 100, r: 'g', d: 404 }, { protocol: 'https' });
     res.render('users/edit', {
+      identity_attributes,
       user: req.user,
       error: [],
       csrf_token: req.csrfToken()

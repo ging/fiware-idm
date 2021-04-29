@@ -290,8 +290,8 @@ async function _validate_participant(req, res) {
   //const jwt_secret = crypto.randomBytes(16).toString('hex').slice(0, 16);
   await models.oauth_client.upsert({
     id: client_payload.iss,
-    name: client_payload.iss,
-    image: 'default',
+    name: parties_info.data[0].party_name,
+    image: 'i4trust_party.png',
     //secret,
     grant_type: [
       'client_credentials',
@@ -299,6 +299,7 @@ async function _validate_participant(req, res) {
       'refresh_token'
     ],
     //jwt_secret,
+    description: `You are accessing from ${parties_info.data[0].party_name}. This is a trusted iSHARE participant registered with id "${client_payload.iss}".`,
     response_type: ['code'],
     redirect_uri: client_payload.redirect_uri
   });

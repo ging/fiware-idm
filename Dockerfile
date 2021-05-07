@@ -1,16 +1,54 @@
-ARG NODE_VERSION=10
-ARG GITHUB_ACCOUNT=ging
-ARG GITHUB_REPOSITORY=fiware-idm
+ARG NODE_VERSION=12
 
 ########################################################################################
 #
-# This build stage retrieves the source code and sets up node-SAAS
+# This build stage retrieves the source code from GitHub. The default download is the 
+# latest tip of the master of the named repository on GitHub.
+#
+# To obtain the latest stable release run this Docker file with the parameters:
+# --no-cache --build-arg DOWNLOAD=stable
+#
+# To obtain any specific version of a release run this Docker file with the parameters:
+# --no-cache --build-arg DOWNLOAD=1.7.0
 #
 ######################################################################################## 
 
-FROM node:${NODE_VERSION}-alpine as builder
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
+FROM node:${NODE_VERSION} as builder
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ENV PYTHONUNBUFFERED=1
+
+COPY . /opt/fiware-idm
+WORKDIR /opt/fiware-idm
+
+RUN npm cache clean -f  && \
+    npm install --only=prod --no-package-lock --no-optional  && \
+    rm -rf /root/.npm/cache/* && \
+    mkdir -p certs/applications && \
+    chmod -R 777 certs && \
+    openssl genrsa -out idm-2018-key.pem 2048 && \
+    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
+    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
+    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/ && \
+    chmod 755 certs/idm-2018-key.pem && \
+    chmod -R 777 public
+
+
+########################################################################################
+#
+# This build stage retrieves the source code from GitHub. The default download is the 
+# latest tip of the master of the named repository on GitHub.
+#
+# To obtain the latest stable release run this Docker file with the parameters:
+# --no-cache --build-arg DOWNLOAD=stable
+#
+# To obtain any specific version of a release run this Docker file with the parameters:
+# --no-cache --build-arg DOWNLOAD=1.7.0
+#
+######################################################################################## 
+
+FROM node:${NODE_VERSION}-alpine as builder-alpine
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
@@ -22,23 +60,84 @@ ENV PYTHONUNBUFFERED=1
 #    pip3 install --no-cache --upgrade pip setuptools
 
 # hadolint ignore=DL3018,DL3013
-RUN apk --no-cache add git python2 make gcc g++ ca-certificates openssl && \
+RUN apk --no-cache add curl git python2 make gcc g++ ca-certificates openssl && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
-    pip install --upgrade pip setuptools
+    pip install --no-cache-dir --upgrade pip setuptools
 
-WORKDIR /opt/fiware-idm
 COPY . /opt/fiware-idm
+WORKDIR /opt/fiware-idm
 
-RUN rm -rf doc extras doc.ja test node_modules && \
-    npm cache clean -f  && \
+RUN npm cache clean -f  && \
     npm install --only=prod --no-package-lock --no-optional  && \
     rm -rf /root/.npm/cache/* && \
     mkdir -p certs/applications && \
+    chmod -R 777 certs && \
     openssl genrsa -out idm-2018-key.pem 2048 && \
     openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
-    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/
+    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/  && \
+    chmod 755 certs/idm-2018-key.pem && \
+    chmod -R 777 public
+
+########################################################################################
+#
+# This build stage creates an anonymous user to be used with the distroless build
+# as defined below.
+#
+########################################################################################
+FROM node:${NODE_VERSION} AS anon-user
+RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
+    && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
+
+
+########################################################################################
+#
+# This build stage creates a distroless build for production.
+#
+# IMPORTANT: For production environments use Docker Secrets to protect values of the 
+# sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
+# variable.
+#
+#  - IDM_SESSION_SECRET
+#  - IDM_ENCRYPTION_KEY
+#  - IDM_DB_PASS
+#  - IDM_DB_USER
+#  - IDM_ADMIN_ID
+#  - IDM_ADMIN_USER
+#  - IDM_ADMIN_EMAIL
+#  - IDM_ADMIN_PASS
+#  - IDM_EX_AUTH_DB_USER
+#  - IDM_EX_AUTH_DB_PASS
+#  - IDM_DB_HOST
+#
+########################################################################################
+
+FROM gcr.io/distroless/nodejs:${NODE_VERSION} AS distroless
+
+WORKDIR /opt/fiware-idm
+COPY --from=builder /opt/fiware-idm .
+COPY --from=anon-user /etc/passwd /etc/shadow /etc/group /etc/
+
+ENV IDM_HOST="http://localhost:3000" \
+    IDM_PORT="3000" \
+    IDM_PDP_LEVEL="basic" \
+    IDM_DB_HOST="localhost" \
+    IDM_DB_NAME="idm" \
+    IDM_DB_DIALECT="mysql" \
+    IDM_DB_SEED="false" \
+    IDM_EMAIL_HOST="localhost" \
+    IDM_EMAIL_PORT="25" \
+    IDM_EMAIL_ADDRESS="noreply@localhost"
+
+USER nobody
+ENV NODE_ENV=production
+# Ports used by application
+EXPOSE ${IDM_PORT:-3000}
+CMD ["./bin/www"]
+HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
+  CMD ["/nodejs/bin/node", "./bin/healthcheck"]
+
 
 ########################################################################################
 #
@@ -68,8 +167,7 @@ ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
 
 WORKDIR /opt/fiware-idm
-COPY --from=builder /opt/fiware-idm .
-
+COPY --from=builder-alpine /opt/fiware-idm .
 
 ENV IDM_HOST="http://localhost:3000" \
     IDM_PORT="3000" \
@@ -77,23 +175,14 @@ ENV IDM_HOST="http://localhost:3000" \
     IDM_DB_HOST="localhost" \
     IDM_DB_NAME="idm" \
     IDM_DB_DIALECT="mysql" \
+    IDM_DB_SEED="true" \
     IDM_EMAIL_HOST="localhost" \
     IDM_EMAIL_PORT="25" \
     IDM_EMAIL_ADDRESS="noreply@localhost"
 
 
 # hadolint ignore=DL3018
-RUN apk add --no-cache ca-certificates bash
-
-LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
-LABEL "org.opencontainers.image.authors"=""
-LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
-LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
-LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
-LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
-LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
-LABEL "org.nodejs.version"=${NODE_VERSION}
+RUN apk add --no-cache ca-certificates bash openssl
 
 USER node
 ENV NODE_ENV=production
@@ -101,7 +190,7 @@ ENV NODE_ENV=production
 EXPOSE ${IDM_PORT:-3000}
 CMD ["npm", "start"]
 HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
-  CMD ["npm", "healthcheck"]
+  CMD ["npm", "run", "healthcheck"]
 
 # 
 # ALL ENVIRONMENT VARIABLES
@@ -123,8 +212,7 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 # ENV IDM_OAUTH_ASK_AUTH true
 # ENV IDM_OAUTH_REFR_LIFETIME "1209600"
 # ENV IDM_OAUTH_UNIQUE_URL false
-# ENV IDM_OAUTH_NOT_REQUIRE_CLIENT_AUTH_GRANT_TYPE undefined
-
+# IDM_OAUTH_NOT_REQUIRE_CLIENT_AUTH_GRANT_TYPE undefined
 # ENV IDM_API_LIFETIME "3600"
 
 # ENV IDM_ENCRYPTION_KEY "nodejs_idm"
@@ -138,6 +226,8 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 # ENV IDM_CORS_MAS_AGE undefined
 # ENV IDM_CORS_PREFLIGHT false
 # ENV IDM_CORS_OPTIONS_STATUS 204
+
+# ENV IDM_ENABLE_2FA false
 
 # ENV IDM_PDP_LEVEL "basic"
 # ENV IDM_AUTHZFORCE_ENABLED false

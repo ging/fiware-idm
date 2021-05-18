@@ -200,8 +200,8 @@ whole description of this feature.
 The algorithm to firm ID Tokens (Json Web Tokens) can be configured through the
 jwt_algorithm variable.
 
-If 'HS256', 'HS384' or 'HS512' is selected, you can find the symetric key in the
-application show interface.
+If 'HS256', 'HS384' or 'HS512' is selected, you can find the symmetric key in
+the application show interface.
 
 If 'RS256' is selected, you can find the public certificate to verify tokens in:
 

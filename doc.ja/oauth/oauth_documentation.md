@@ -1,6 +1,6 @@
 # イントロダクション
 
-`Authorization Basic` ヘッダは、[標準](http://tools.ietf.org/html/rfc2617)
+`Authorization Basic` ヘッダは、[標準](https://datatracker.ietf.org/doc/html/rfc2617)
 に従ったFIWARE IdM によって提供される `Client ID` と `Client Secret`
 クレデンシャル情報で構成されています。文字列は次のようになります :
 
@@ -17,9 +17,9 @@ base64(client_id:client_secret)
 認可コードは、クライアント (登録アプリケーション) とリソース所有者 （ユーザ）
 との間の仲介として認可サーバ (IdM） を使用して取得されます。リソース所有者から
 直接、認可をリクエストするのではなく、クライアントはリソース・オーナを
-[RFC2616](http://tools.ietf.org/html/rfc2616>) で定義されたユーザ・エージェントを
-介して、認可サーバに指示し、リソースオーナーは認証コードを使用してクライアントに
-返送します。
+[RFC2616](https://datatracker.ietf.org/doc/html/rfc2616) で定義されたユーザ・
+エージェントを介して、認可サーバに指示し、リソースオーナーは認証コードを使用
+してクライアントに返送します。
 
 ### 認可リクエスト (Authorization Request)
 

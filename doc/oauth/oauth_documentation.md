@@ -2,8 +2,7 @@
 
 The `Authorization Basic` header is built with the `Client ID` and
 `Client Secret` credentials provided by the FIWARE IdM following the
-[standard](https://datatracker.ietf.org/doc/html/rfc2617). So the
-string will be
+[standard](http://tools.ietf.org/html/rfc2617). So the string will be
 
 ```bash
 base64(client_id:client_secret)
@@ -18,8 +17,8 @@ The authorization code is obtained by using an authorization server (the IdM) as
 an intermediary between the client (the registrered application) and resource
 owner (the user). Instead of requesting authorization directly from the resource
 owner, the client directs the resource owner to an authorization server (via its
-user-agent as defined in [RFC2616](https://datatracker.ietf.org/doc/html/rfc2616),
-which in turn directs the resource owner back to the client with the authorization
+user-agent as defined in [RFC2616](http://tools.ietf.org/html/rfc2616>), which
+in turn directs the resource owner back to the client with the authorization
 code.
 
 ### Authorization Request

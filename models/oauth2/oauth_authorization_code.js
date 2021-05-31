@@ -22,7 +22,8 @@ module.exports = function (sequelize, DataTypes) {
         }
       },
       valid: DataTypes.BOOLEAN,
-      extra: DataTypes.JSON
+      extra: DataTypes.JSON,
+      nonce: DataTypes.STRING
     },
     {
       tableName: 'oauth_authorization_code',

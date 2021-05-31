@@ -401,7 +401,7 @@ function getAuthorizationCode(code) {
 
   return oauth_authorization_code
     .findOne({
-      attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'valid'],
+      attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'valid', 'scope', 'nonce'],
       where: { authorization_code: code },
       include: [user, oauth_client]
     })
@@ -419,7 +419,8 @@ function getAuthorizationCode(code) {
         redirectUri: authCodeModel.redirect_uri,
         valid: authCodeModel.valid,
         user,
-        scope: authCodeModel.scope
+        scope: authCodeModel.scope,
+        nonce: authCodeModel.nonce
       };
 
       return reCode;
@@ -431,7 +432,6 @@ function getAuthorizationCode(code) {
 
 function saveAuthorizationCode(code, client, user) {
   debug('-------saveAuthorizationCode-------');
-  debug(code);
   return oauth_authorization_code
     .create({
       expires: code.expiresAt,
@@ -440,7 +440,8 @@ function saveAuthorizationCode(code, client, user) {
       authorization_code: code.authorizationCode,
       valid: true,
       user_id: user.id,
-      scope: code.scope
+      scope: code.scope,
+      nonce: code.nonce ? code.nonce : null
     })
     .then(function () {
       code.code = code.authorizationCode;

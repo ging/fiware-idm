@@ -24,6 +24,8 @@ const oauth_server = new OauthServer({
 exports.token = function (req, res) {
   debug(' --> token');
 
+  debug(req.body);
+
   const request = new Request(req);
   const response = new Response(res);
 
@@ -47,6 +49,8 @@ exports.token = function (req, res) {
         response.body.token_type = 'jwt';
         delete response.body.expires_in;
       }
+
+      debug(response.body);
       res.status(200).json(response.body);
     })
     .catch(function (error) {
@@ -355,6 +359,7 @@ function oauth_authorize(req, res, next) {
   return oauth_server
     .authorize(request, response, options)
     .then(function (success) {
+      debug(success);
       res.redirect(success);
     })
     .catch(next);

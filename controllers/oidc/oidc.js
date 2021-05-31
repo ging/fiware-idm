@@ -20,8 +20,8 @@ exports.configuration = function (req, res) {
   oidc_discovery.response_types_supported = req.application.response_type;
   oidc_discovery.grant_types_supported = req.application.grant_type;
   oidc_discovery.service_documentation = 'https://fiware-idm.readthedocs.io/';
-  oidc_discovery.subject_types_supported = 'public';
-  oidc_discovery.id_token_signing_alg_values_supported = ['HS256', 'HS384', 'HS512', 'RS256'];
+  oidc_discovery.subject_types_supported = ['public'];
+  oidc_discovery.id_token_signing_alg_values_supported = ['RS256', 'HS256', 'HS384', 'HS512'];
   oidc_discovery.jwks_uri = config.host + '/idm/applications/' + req.application.id + '/certs';
 
   // OPTIONAL
@@ -68,6 +68,8 @@ exports.configuration = function (req, res) {
 
 // GET /idm/applications/:application_id/certs -- Form get OIDC configuration application
 exports.certificates = function (req, res) {
+  debug('--> certificates');
+
   const certificates = {};
   certificates.keys = [];
 
@@ -78,9 +80,15 @@ exports.certificates = function (req, res) {
       .readFileSync('./certs/applications/' + req.application.id + '-oidc-cert.pem', 'utf8')
       .replace(/(\r\n|\n|\r)/gm, '');
 
+    // key.n = key.n.split('-----')[2]
+
+    key.n = Buffer.from(key.n).toString('base64');
+
     key.kty = 'RSA';
     key.alg = 'RS256';
     key.use = 'sig';
+    // key.e = 'AQAB';
+    key.kid = '2021-09-29';
   }
 
   certificates.keys.push(key);

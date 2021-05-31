@@ -15,6 +15,8 @@ Keyrock は、各ユースケースの特定のニーズに合わせて簡単に
 
 -   OAuth2.0
 
+-   OIDC
+
 -   eIDAS
 
 -   使用制御 (Usage Control)
@@ -195,6 +197,25 @@ config.oauth2 = {
 
 [OAuth2.0 による IdM への接続](../oauth/introduction.md) をチェックして、この機
 能の詳細な説明を入手してください。
+
+## OIDC
+
+ID トークン (Json Web Token) を確定するためのアルゴリズムは、jwt_algorithm 変数
+を介して構成できます。
+
+'HS256', 'HS384' または 'HS512' が選択されている場合、アプリケーションの表示
+インターフェースで対称鍵を見つけることができます。
+
+'RS256' が選択されている場合、トークンを検証するための公開証明書を見つけること
+ができます:
+
+`http://[domain]/idm/applications/[aplication_id]/certs`
+
+```javascript
+config.oidc = {
+    jwt_algorithm: 'RS256'
+};
+```
 
 ## eIDAS
 

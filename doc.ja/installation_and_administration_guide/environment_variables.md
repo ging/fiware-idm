@@ -29,6 +29,7 @@
 | IDM_OAUTH_ASK_AUTH                  | Boolean | true に設定すると、OAuth2 を使用してサービスにログインしたときに認証メッセージをリスエストします i                              | true,false                  |
 | IDM_OAUTH_REFR_LIFETIME             | Integer | OAuth2 リフレッシュ・トークンの有効期間                                                                                         | -                           |
 | IDM_OAUTH_UNIQUE_URL                | Boolean | URL を一意のパラメータとして設定する (このパラメータは、redirect_sign_out_uri の場合、サインアウト後のリダイレクトに使用される) | true,false                  |
+| IDM_OIDC_JWT_ALGORITHM              | String  | OIDC で生成された ID トークンを確定するアルゴリズムを設定します                                                                 | HS256,HS384,HS512,RS256     |
 | IDM_API_LIFETIME                    | Integer | Keyrock でリソースを作成するために使用される API トークンの有効期間                                                             | -                           |
 | IDM_PDP_LEVEL                       | String  | 基本 (HTTP 動詞+パス) または詳細 (XML ルール。Authforce インスタンスが必要) の承認ルールを許可する                              | basic,advanced              |
 | IDM_AUTHZFORCE_ENABLED              | Boolean | AuthZforce を使用して基本および高度なルールを保存する                                                                           | true,false                  |

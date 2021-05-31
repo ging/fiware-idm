@@ -1,8 +1,8 @@
 # イントロダクション
 
-FIWARE IdM は、[RFC 6749](http://tools.ietf.org/html/rfc6749) に記述されている
-OAuth2 標準に準拠しており、そこに定義されている4つのグラント・タイプ
-(Grant Types) すべてをサポートしています。
+FIWARE IdM は、[RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749) に
+記述されている OAuth2 標準に準拠しており、そこに定義されている4つのグラント
+・タイプ (Grant Types) すべてをサポートしています。
 
 このセクションでは、OAuth2.0 プロトコルと、さまざまな グラント・タイプを
 使用してアクセス・トークンを生成する方法について説明します。また、トークンの

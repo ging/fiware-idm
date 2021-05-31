@@ -1,6 +1,6 @@
 # イントロダクション
 
-`Authorization Basic` ヘッダは、[標準](http://tools.ietf.org/html/rfc2617)
+`Authorization Basic` ヘッダは、[標準](https://datatracker.ietf.org/doc/html/rfc2617)
 に従って FIWARE IdM によって提供される `Client ID` および `Client Secret`
 のクレデンシャルを使用して構築されます。したがって、文字列は
 

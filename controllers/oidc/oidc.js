@@ -1,5 +1,6 @@
 const debug = require('debug')('idm:oidc_controller');
 const fs = require('fs');
+const rsa_pem_to_jwk = require('rsa-pem-to-jwk');
 
 const config_service = require('../../lib/configService.js');
 const config = config_service.get_config();
@@ -20,8 +21,8 @@ exports.configuration = function (req, res) {
   oidc_discovery.response_types_supported = req.application.response_type;
   oidc_discovery.grant_types_supported = req.application.grant_type;
   oidc_discovery.service_documentation = 'https://fiware-idm.readthedocs.io/';
-  oidc_discovery.subject_types_supported = 'public';
-  oidc_discovery.id_token_signing_alg_values_supported = ['HS256', 'HS384', 'HS512', 'RS256'];
+  oidc_discovery.subject_types_supported = ['public'];
+  oidc_discovery.id_token_signing_alg_values_supported = ['RS256', 'HS256', 'HS384', 'HS512'];
   oidc_discovery.jwks_uri = config.host + '/idm/applications/' + req.application.id + '/certs';
 
   // OPTIONAL
@@ -68,19 +69,22 @@ exports.configuration = function (req, res) {
 
 // GET /idm/applications/:application_id/certs -- Form get OIDC configuration application
 exports.certificates = function (req, res) {
+  debug('--> certificates');
+
   const certificates = {};
   certificates.keys = [];
 
-  const key = {};
+  let key = {};
 
   if (config.oidc.jwt_algorithm === 'RS256') {
-    key.n = fs
-      .readFileSync('./certs/applications/' + req.application.id + '-oidc-cert.pem', 'utf8')
-      .replace(/(\r\n|\n|\r)/gm, '');
+    key = rsa_pem_to_jwk(
+      fs.readFileSync('./certs/applications/' + req.application.id + '-oidc-key.pem'),
+      { use: 'sig' },
+      'public'
+    );
 
-    key.kty = 'RSA';
     key.alg = 'RS256';
-    key.use = 'sig';
+    key.kid = req.application.id;
   }
 
   certificates.keys.push(key);

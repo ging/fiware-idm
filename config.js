@@ -1,7 +1,7 @@
 const config = {};
 
 config.port = 3000;
-config.host = 'http://localhost:3000';
+config.host = 'http://172.17.0.1:3000';
 
 config.debug = false;
 
@@ -62,7 +62,7 @@ config.oauth2 = {
 
 // Config oidc parameters
 config.oidc = {
-  jwt_algorithm: 'HS256' // HS256,HS384,HS512,RS256
+  jwt_algorithm: 'RS256' // HS256,HS384,HS512,RS256
 };
 
 // Config api parameters
@@ -97,8 +97,8 @@ config.usage_control = {
 // Database info
 config.database = {
   host: 'localhost',
-  password: 'test',
-  username: 'root',
+  password: 'keyrock2020',
+  username: 'idm',
   database: 'idm',
   dialect: 'mysql',
   port: undefined

@@ -2,7 +2,8 @@
 
 The `Authorization Basic` header is built with the `Client ID` and
 `Client Secret` credentials provided by the FIWARE IdM following the
-[standard](http://tools.ietf.org/html/rfc2617). So the string will be
+[standard](https://datatracker.ietf.org/doc/html/rfc2617). So the string will
+be
 
 ```bash
 base64(client_id:client_secret)

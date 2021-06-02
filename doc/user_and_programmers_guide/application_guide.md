@@ -102,7 +102,7 @@ HTTP verb (GET, PUT, POST, DELETE, or PATCH), and the Resource, the path from
 which you are requesting permission to your service. This path could also be a 
 regular expression, to that permission. Click "Create Permission" and "Finish" to
 finalize with creating the application. Regular expressions are pattern used to 
-match character combinations in strings. Yoy can get details about regular 
+match character combinations in strings. You can get details about regular
 expression syntax in the following [cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet).
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_permissions_create.png)

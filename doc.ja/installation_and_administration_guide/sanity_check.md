@@ -99,7 +99,7 @@ GE のインストール時にデータベースを正しく取り込んだ場�
 | oauth_scope                 | 0          |
 | organization                | 0          |
 | pep_proxy                   | 1          |
-| permission                  | 6          |
+| permission                  | 8          |
 | role                        | 2          |
 | role_assignment             | 6          |
 | role_permission             | 7          |

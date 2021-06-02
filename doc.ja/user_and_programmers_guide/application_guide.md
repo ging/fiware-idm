@@ -6,11 +6,11 @@
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_index_apps1.png)
 
-<p align="center">図4: ユーザ・アプリケーションの一覧表示</p>
+<p style="text-align: center;">図4: ユーザ・アプリケーションの一覧表示</p>
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_index_apps2.png)
 
-<p align="center">図5: 組織のアプリケーションのリスト</p>
+<p style="text-align: center;">図5: 組織のアプリケーションのリスト</p>
 
 ## アプリケーションの登録
 
@@ -20,7 +20,7 @@
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_homepage2.png)
 
-<p align="center">図6: アプリケーション登録の ホーム</p>
+<p style="text-align: center;">図6: アプリケーション登録の ホーム</p>
 
 必須の属性がいくつかあります :
 
@@ -51,12 +51,12 @@
 
 -   eIDAS 認証 (eIDAS Authentication). この属性はあなたのサービスが eID
     によってユーザを認証することを可能にします。
-    [IdM を eIDAS ノードに接続するセクション](../eidas/introduction.md)
+    [IdM を eIDAS ノードに接続するセクション](../eidas/introduction.md#introduction)
     で詳細を参照してください
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_register_app.png)
 
-<p align="center">図7: KeyRock による Application の登録</p>
+<p style="text-align: center;">図7: KeyRock による Application の登録</p>
 
 "Next" をクリックします。
 
@@ -67,11 +67,11 @@
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_upload_logo.png)
 
-<p align="center">図8: アプリケーションのロゴのアップロード</p>
+<p style="text-align: center;">図8: アプリケーションのロゴのアップロード</p>
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_reframe_logo.png)
 
-<p align="center">図9: 画像のトリミング</p>
+<p style="text-align: center;">図9: 画像のトリミング</p>
 
 3番目のステップでは、アプリケーションのロールとパーミッションを設定します。
 次のセクションで説明します。
@@ -79,35 +79,38 @@
 ## ロールの管理
 
 このページには、プロバイダ(Provider) と購入者(Purchaser) の2つの
-デフォルト・ロールがあります。このロールの1つをクリックすると、
+デフォルト・ロールがあります。これらのロールの1つをクリックすると、
 そのロールに割り当てられたパーミッションが表示されます。
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_roles.png)
 
-<p align="center">図10: ロールとパーミッションの一覧</p>
+<p style="text-align: center;">図10: ロールとパーミッションの一覧</p>
 
 また、新しいロールとパーミッションを作成することもできます。
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_roles_permissions.png)
 
-<p align="center">図11: ロールとパーミッションの作成</p>
+<p style="text-align: center;">図11: ロールとパーミッションの作成</p>
 
 新しいロールを作成するには、"New role" をクリックし、ロールの名前を
 書き込んでから、"Save"をクリックします。 
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_roles_create.png)
 
-<p align="center">図12: Create a role</p>
+<p style="text-align: center;">図12: Create a role</p>
 
 "New Permission" をクリックして新しいパーミッションを追加することもできます。
-ここでは、パーミッション、説明、HTTP verb (GET, PUT, POST, DELETE) の名前と
-そのパーミッションへのパス (正規表現も使用できます) を入力する必要があります。
-"Create Permission" と "Finish" をクリックして、アプリケーションの作成を
-完了します。 
+ここでは、パーミッションの名前、説明、HTTP verb (GET, PUT, POST DELETE または PATCH)、
+およびリソース、サービスへの権限を要求するパスを入力する必要があります。このパスは、
+そのパーミッションに対する正規表現にすることもできます。"Create Permission" と "Finish"
+をクリックして、アプリケーションの作成を完了します。正規表現は、文字列内の文字の組み
+合わせを照合するために使用されるパターンです。正規表現の構文の詳細については、次の
+[チートシート](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet)
+を参照してください。
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_permissions_create.png)
 
-<p align="center">図13: パーミッションの作成</p>
+<p style="text-align: center;">図13: パーミッションの作成</p>
 
 必要に応じて、特定の XACML ルールを設定することもできます。
 
@@ -119,7 +122,7 @@
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_role_permission_assignment.png)
 
-<p align="center">図14: KeyRock の新しい割り当て</p>
+<p style="text-align: center;">図14: KeyRock の新しい割り当て</p>
 
 ## アプリケーションの表示
 
@@ -130,7 +133,7 @@ Oauth2 資格情報が表示されます。
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_application_show.png)
 
-<p align="center">図15: アプリケーションのビュー</p>
+<p style="text-align: center;">図15: アプリケーションのビュー</p>
 
 いくつかのアクションを実行することもできます :
 
@@ -155,9 +158,9 @@ PEP Proxy を登録することができます。また、IoT Agent をアプリ
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_register_pep_iot.png)
 
-<p align="center">図16: PEP Proxy と IoT Agent の登録</p>
+<p style="text-align: center;">図16: PEP Proxy と IoT Agent の登録</p>
 
-このコンポーネントのパスワードをリセットしたり、削除したりすることもできます。
+これらコンポーネントのパスワードをリセットしたり、削除したりすることもできます。
 
 ## ユーザと組織の認可
 
@@ -166,7 +169,7 @@ PEP Proxy を登録することができます。また、IoT Agent をアプリ
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_authorize.png)
 
-<p align="center">図17: KeyRock による認可</p>
+<p style="text-align: center;">図17: KeyRock による認可</p>
 
 ユーザとグループを管理できるモーダルを示します。ユーザまたは組織、および最初に
 割り当てられたロールが表示されます。右の列にあるユーザまたは組織を検索できます。
@@ -176,11 +179,11 @@ PEP Proxy を登録することができます。また、IoT Agent をアプリ
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_authorize_users.png)
 
-<p align="center">図18: KeyRock によるユーザの認可</p>
+<p style="text-align: center;">図18: KeyRock によるユーザの認可</p>
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_authorize_organizations.png)
 
-<p align="center">図19: KeyRockによる組織の認可</p>
+<p style="text-align: center;">図19: KeyRockによる組織の認可</p>
 
 ロールを組織に割り当てる場合、ロールをアプリケーションの所有者またはメンバー
 であるユーザに割り当てます。次のセクションでは、組織の管理方法について
@@ -202,4 +205,4 @@ API または Web インターフェースを使用できます :
 
 ![](https://raw.githubusercontent.com/ging/fiware-idm/master/doc/resources/UserGuide_trusted_applications.png)
 
-<p align="center">図20: KeyRock による信頼できるアプリケーション</p>
+<p style="text-align: center;">図20: KeyRock による信頼できるアプリケーション</p>

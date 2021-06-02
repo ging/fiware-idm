@@ -546,6 +546,9 @@ function create_oauth_response(
 
     user_info.id = identity.id;
     user_info.app_id = application_id;
+    user_info.sub = identity.id;
+    user_info.given_name = identity.username;
+    user_info.family_name = identity.username;
 
     return models.user_authorized_application
       .findOne({
@@ -882,7 +885,7 @@ function verifyScope(token, scope) {
 
 /// OPEN ID CONNECT FUNCTIONS
 
-function generateIdToken(client, user) {
+function generateIdToken(client, user, nonce) {
   debug('-------generateIdToken-------');
 
   let user_autho_app_promise = config_oauth2.ask_authorization
@@ -901,11 +904,12 @@ function generateIdToken(client, user) {
       return create_oauth_response(user, client.id, null, null, config_authzforce.enabled, null);
     })
     .then(function (idToken) {
-      idToken['iss'] = config.host;
+      idToken['iss'] = config.host + '/idm/applications/' + client.id;
       idToken['sub'] = user.id;
       idToken['aud'] = client.id;
       idToken['exp'] = Math.round(Date.now() / 1000) + config_oauth2.access_token_lifetime;
       idToken['iat'] = Math.round(Date.now() / 1000);
+      idToken['nonce'] = nonce;
       return idToken;
     })
     .catch(function (error) {

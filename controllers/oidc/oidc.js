@@ -1,5 +1,6 @@
 const debug = require('debug')('idm:oidc_controller');
 const fs = require('fs');
+const rsa_pem_to_jwk = require('rsa-pem-to-jwk');
 
 const config_service = require('../../lib/configService.js');
 const config = config_service.get_config();
@@ -73,22 +74,17 @@ exports.certificates = function (req, res) {
   const certificates = {};
   certificates.keys = [];
 
-  const key = {};
+  let key = {};
 
   if (config.oidc.jwt_algorithm === 'RS256') {
-    key.n = fs
-      .readFileSync('./certs/applications/' + req.application.id + '-oidc-cert.pem', 'utf8')
-      .replace(/(\r\n|\n|\r)/gm, '');
+    key = rsa_pem_to_jwk(
+      fs.readFileSync('./certs/applications/' + req.application.id + '-oidc-key.pem'),
+      { use: 'sig' },
+      'public'
+    );
 
-    // key.n = key.n.split('-----')[2]
-
-    key.n = Buffer.from(key.n).toString('base64');
-
-    key.kty = 'RSA';
     key.alg = 'RS256';
-    key.use = 'sig';
-    // key.e = 'AQAB';
-    key.kid = '2021-09-29';
+    key.kid = req.application.id;
   }
 
   certificates.keys.push(key);

@@ -368,6 +368,7 @@ function oauth_authorize(req, res, next) {
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
+
   const action = req.query.action ? req.query.action : undefined;
   const resource = req.query.resource ? req.query.resource : undefined;
   const authzforce = req.query.authzforce ? req.query.authzforce : undefined;

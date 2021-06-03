@@ -124,7 +124,7 @@ async function build_id_token(code, scopes) {
   }
 
   if (scopes.has("email")) {
-    claims["email"] = user.email;
+    claims.email = user.email;
   }
 
   return await create_jwt(claims);
@@ -185,7 +185,7 @@ async function retrieve_participant_registry_token() {
 
 async function _validate_participant(req, res) {
   const scopes = new Set(req.body.scope != null ? req.body.scope.split(' ') : []);
-  if (!scopes.has('i4trust') && !scopes.has('iSHARE')) {
+  if (!scopes.has('iSHARE')) {
     return false;
   }
 
@@ -195,7 +195,7 @@ async function _validate_participant(req, res) {
     throw new oauth2_server.InvalidRequestError('Missing parameter: `client_id`');
   }
 
-  debug('using i4Trust flow');
+  debug('using external participant registry flow');
 
   // Prepare our private key to be able to create JWSs
   if (typeof config.pr.client_key === "string") {
@@ -222,18 +222,18 @@ async function _validate_participant(req, res) {
     throw new oauth2_server.InvalidRequestError('Missing parameter: `request`');
   }
 
-  // Step 7: Validate the JWT and the certificate chain provided in
-  // the header
+  // Validate the JWT and client certificates
   const [client_payload, client_certificate] = await assert_client_using_jwt(credentials, req.body.client_id);
 
-  // Step 8: Packet Delivery company Identity Provider generates an iSHARE JWT
-  debug('step 8');
+  /*******/
+  debug('Generating a JWT token for accessing the participant registry');
+  /*******/
   const token = await retrieve_participant_registry_token();
 
-  // Step 9: Identity Provider sends a request to the participan registry
-  // `/token` endpoint. The signed JWT created in step 8 is provided with the
-  // `client_assertion` parameter of the request.
-  debug('step 9');
+  /*******/
+  debug('Requesting an access token to the participant registry');
+  /*******/
+
   const params = new URLSearchParams();
   params.append('grant_type', 'client_credentials');
   params.append('scope', 'iSHARE');
@@ -253,13 +253,10 @@ async function _validate_participant(req, res) {
 
   const access_token = (await token_response.json()).access_token;
 
-  // Step 12: Identity Provider sends a request to the `/parties` endpoint of
-  // the participant registry, in order to retrieve information about the client
-  // for verification of its status as iSHARE participant. The access token from
-  // the previous step 11 is provided as Bearer authorization token. The request
-  // contains the client EORI id as query parameter, as well as the subject name
-  // as encoded in the certificate of the client.
-  debug('step 12');
+  /*******/
+  debug('Querying participant registry if the client is a valid participant');
+  /*******/
+
   const parties_params = new URLSearchParams();
   const subject = [];
   client_certificate.subject.attributes.forEach((a) => subject.push((a.shortName ? a.shortName : "SERIALNUMBER") + "=" + a.value));
@@ -304,7 +301,9 @@ async function _validate_participant(req, res) {
     redirect_uri: client_payload.redirect_uri
   });
 
-  debug('i4Trust success');
+  /*******/
+  debug('Participant successfully validated');
+  /*******/
   const auth_params = new URLSearchParams();
   auth_params.append('response_type', 'code');
   auth_params.append('client_id', client_payload.client_id || client_payload.iss);
@@ -328,7 +327,7 @@ async function _token(req, res) {
     return false;
   }
 
-  debug('using i4Trust flow');
+  debug('using external participant registry flow');
 
   if (!req.body.code) {
     throw new oauth2_server.InvalidRequestError('Missing parameter: `code`');
@@ -370,6 +369,7 @@ async function _token(req, res) {
   // Return an id_token and a access_token
   const scopes = new Set(code.scope);
   const id_token = await build_id_token(code, scopes);
+  // eslint-disable-next-line no-unused-vars
   const [access_token, access_token_exp] = await build_access_token(code);
 
   /*await models.oauth_access_token.create({

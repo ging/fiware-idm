@@ -10,13 +10,13 @@ const csrf_protection = csrf({ cookie: true });
 const oauth_controller = require('../../controllers/oauth2/oauth2');
 // SAML2 Controller
 const saml2_controller = require('../../controllers/saml2/saml2');
-// i4Trust Controller
-const i4trust_controller = require('../../controllers/i4trust/i4trust');
+// External Participant Controller
+const extparticipant_controller = require('../../controllers/extparticipant/extparticipant');
 
 // Routes for Oauth2
 //router.get('/authenticate',    	oauth_controller.authenticate_token);
 if (config.pr.url) {
-  router.post('/token', i4trust_controller.token, oauth_controller.token);
+  router.post('/token', extparticipant_controller.token, oauth_controller.token);
 } else {
   router.post('/token', oauth_controller.token);
 }
@@ -38,7 +38,7 @@ router.get(
 );
 const post_authorize_chain = [];
 if (config.pr.url) {
-  post_authorize_chain.push(i4trust_controller.validate_participant);
+  post_authorize_chain.push(extparticipant_controller.validate_participant);
 }
 router.post(
   '/authorize',

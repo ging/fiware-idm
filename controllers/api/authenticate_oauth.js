@@ -4,6 +4,8 @@ const config_service = require('../../lib/configService.js');
 const config_authzforce = config_service.get_config().authzforce;
 const debug = require('debug')('idm:api-authenticate_oauth');
 
+const crypto = require('crypto');
+
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -137,7 +139,9 @@ exports.info_token = function (req, res) {
 function search_auth_token(token_id) {
   return models.auth_token
     .findOne({
-      where: { access_token: token_id },
+      where: {
+        hash: crypto.createHash("sha3-256").update(token_id).digest('hex')
+      },
       include: [
         {
           model: models.pep_proxy,

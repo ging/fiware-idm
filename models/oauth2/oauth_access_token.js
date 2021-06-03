@@ -4,9 +4,14 @@ module.exports = function (sequelize, DataTypes) {
   const OAuthAccessToken = sequelize.define(
     'OauthAccessToken',
     {
-      access_token: {
-        type: DataTypes.STRING,
+      hash: {
+        type: DataTypes.CHAR(64),
         primaryKey: true,
+        allowNull: false,
+        unique: true
+      },
+      access_token: {
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: true
       },

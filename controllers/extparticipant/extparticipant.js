@@ -1,4 +1,4 @@
-//const crypto = require('crypto');
+const crypto = require('crypto');
 const debug = require('debug')('idm:i4trust_controller');
 const fetch = require('node-fetch');
 const forge = require('node-forge');
@@ -132,7 +132,7 @@ async function build_id_token(code, scopes) {
 
 async function build_access_token(code) {
   const now = moment();
-  const exp = now.add(config.oauth2.access_token_lifetime, 'seconds').unix();
+  const exp = now.add(config.oauth2.access_token_lifetime, 'seconds');
 
   return [
     /* eslint-disable snakecase/snakecase */
@@ -141,7 +141,7 @@ async function build_access_token(code) {
       sub: code.User.id, // TODO
       jti: uuid.v4(),
       iat: now.unix(),
-      exp,
+      exp: exp.unix(),
       aud: code.OauthClient.id,
       email: code.User.email,
       authorisationRegistry: {
@@ -153,7 +153,7 @@ async function build_access_token(code) {
       delegationEvidence: {}
     }),
     /* eslint-enable snakecase/snakecase */
-    exp
+    exp.toDate()
   ];
 }
 
@@ -372,7 +372,8 @@ async function _token(req, res) {
   // eslint-disable-next-line no-unused-vars
   const [access_token, access_token_exp] = await build_access_token(code);
 
-  /*await models.oauth_access_token.create({
+  await models.oauth_access_token.create({
+      hash: crypto.createHash("sha3-256").update(access_token).digest('hex'),
       access_token,
       expires: access_token_exp,
       valid: true,
@@ -380,7 +381,7 @@ async function _token(req, res) {
       user_id: code.User.id,
       authorization_code: req.body.code,
       scope: req.body.scope
-  });*/
+  });
 
   res.status(200).json({
     id_token,

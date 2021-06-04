@@ -33,7 +33,7 @@ function getAccessToken(bearerToken) {
   return oauth_access_token
     .findOne({
       where: {
-          hash: crypto.createHash("sha3-256").update(bearerToken).digest('hex')
+        hash: crypto.createHash('sha3-256').update(bearerToken).digest('hex')
       },
       attributes: [['access_token', 'accessToken'], ['expires', 'accessTokenExpiresAt'], 'scope', 'valid'],
       include: [
@@ -246,7 +246,7 @@ function revokeAccessToken(accessToken, code, client_id, refresh_token) {
   if (code) {
     where_clause.authorization_code = code;
   } else if (accessToken) {
-    where_clause.hash = crypto.createHash("sha3-256").update(bearerToken).digest('hex');
+    where_clause.hash = crypto.createHash('sha3-256').update(accessToken).digest('hex');
   } else if (refresh_token) {
     where_clause.refresh_token = refresh_token;
   }
@@ -345,7 +345,7 @@ function storeToken(token, client, identity, jwt) {
   let access_token_promise = !jwt
     ? refresh_token_promise.then(function () {
         return oauth_access_token.create({
-          hash: crypto.createHash("sha3-256").update(token.accessToken).digest('hex'),
+          hash: crypto.createHash('sha3-256').update(token.accessToken).digest('hex'),
           access_token: token.accessToken,
           expires: token.accessTokenExpiresAt,
           valid: true,
@@ -869,15 +869,17 @@ function validateScope(user, client, scope) {
     }
 
     //let requested_scopes = typeof scope === 'string' ? scope.split(',') : scope[0].split(',');
-
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
       return false;
     }
-    if (requested_scopes.includes('permanent') || requested_scopes.includes('jwt')) {
-      return requested_scopes.every((r) => client.token_types.includes(r)) ? requested_scopes : false;
+    if (requested_scopes.includes('permanent') && !client.token_types.includes('permanent')) {
+      return false;
     }
-    if (requested_scopes.includes('openid')) {
-      return client.scope.includes('openid') ? requested_scopes : false;
+    if (requested_scopes.includes('jwt') && !client.token_types.includes('jwt')) {
+      return false;
+    }
+    if (requested_scopes.includes('openid') && !client.scope.includes('openid')) {
+      return false;
     }
     return requested_scopes;
   }
@@ -918,11 +920,11 @@ function generateIdToken(client, user, nonce) {
       idToken['iat'] = Math.round(Date.now() / 1000);
       idToken['nonce'] = nonce;
       if (config.ar != null && config.ar.url != null) {
-          idToken['authorisationRegistry'] = {
-            'url': config.ar.url,
-            'token_endpoint': config.ar.token_endpoint,
-            'delegation_endpoint': config.ar.delegation_endpoint
-          };
+        idToken['authorisationRegistry'] = {
+          url: config.ar.url,
+          token_endpoint: config.ar.token_endpoint,
+          delegation_endpoint: config.ar.delegation_endpoint
+        };
       }
       return idToken;
     })

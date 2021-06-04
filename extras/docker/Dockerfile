@@ -66,6 +66,7 @@ RUN npm cache clean -f  && \
     openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
     mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/ && \
+    chmod 755 certs/idm-2018-key.pem && \
     chmod -R 777 public
 
 
@@ -142,6 +143,7 @@ RUN npm cache clean -f  && \
     openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
     openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
     mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/  && \
+    chmod 755 certs/idm-2018-key.pem && \
     chmod -R 777 public
 
 ########################################################################################

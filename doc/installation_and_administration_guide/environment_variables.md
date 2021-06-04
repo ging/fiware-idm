@@ -73,3 +73,14 @@ ease Keyrock configuration.
 | IDM_USAGE_CONTROL_ENABLED           | String  | Enable Usage control feature Keyrock                                                                            | -                           |
 | IDM_PTP_HOST                        | String  | Name of the host where is running the PTP                                                                       | -                           |
 | IDM_PTP_PORT                        | Integer | Port where is listenning the PTP                                                                                | 0 to 65536                  |
+| IDM_PR_URL                          | String  | URL of the participant registry service to use                                                                  | -                           |
+| IDM_PR_PARTIES_ENDPOINT             | String  | URL or the parties endpoint of the participant registry                                                         | -                           |
+| IDM_PR_TOKEN_ENDPOINT               | String  | URL of the token endpoint of the participant registry                                                           | -                           |
+| IDM_PR_ID                           | String  | ID of the participant registry                                                                                  | -                           |
+| IDM_PR_CLIENT_ID                    | String  | ID of this Keyrock instance inside the participant registry                                                     | -                           |
+| IDM_PR_CLIENT_KEY                   | String  | Private key to use for signing JWT and using the participant registry specification                             | -                           |
+| IDM_PR_CLIENT_CRT                   | String  | Certificate associated with this instance of Keyrock and to be used when using the participant registry         | -                           |
+| IDM_AR_URL                          | String  | URL of the authorization registry linked with this instance of Keyrock                                          | -                           |
+| IDM_AR_DELEGATION_ENDPOINT          | String  | URL or the delegation endpoint of the authorization registry                                                    | -                           |
+| IDM_AR_TOKEN_ENDPOINT               | String  | URL of the token endpoint of the authorization registry                                                         | -                           |
+| IDM_AR_ID                           | String  | ID of the authorization registry within the participant registry                                                | -                           |

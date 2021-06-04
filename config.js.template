@@ -141,6 +141,25 @@ config.external_auth_ldap = {
   }
 };
 
+// External Participant Registry
+config.pr = {
+    url: undefined,
+    id: "EU.EORI.NL000000000",
+    parties_endpoint: undefined,
+    token_endpoint: undefined,
+    client_id: undefined,
+    client_key: undefined,
+    client_crt: undefined
+}
+
+// External Authorization Registry (requires enabling the external participant registry)
+config.ar = {
+    url: undefined,
+    id: "EU.EORI.NL000000004",
+    delegation_endpoint: undefined,
+    token_endpoint: undefined
+}
+
 // Email configuration
 config.mail = {
   host: 'localhost',

@@ -441,7 +441,10 @@ function saveAuthorizationCode(code, client, user) {
       valid: true,
       user_id: user.id,
       scope: code.scope,
-      nonce: code.nonce ? code.nonce : null
+      nonce: code.nonce ? code.nonce : null,
+      extra: {
+        iat: new Date()
+      }
     })
     .then(function () {
       code.code = code.authorizationCode;
@@ -910,6 +913,13 @@ function generateIdToken(client, user, nonce) {
       idToken['exp'] = Math.round(Date.now() / 1000) + config_oauth2.access_token_lifetime;
       idToken['iat'] = Math.round(Date.now() / 1000);
       idToken['nonce'] = nonce;
+      if (config.ar != null && config.ar.url != null) {
+          idToken['authorisationRegistry'] = {
+            'url': config.ar.url,
+            'token_endpoint': config.ar.token_endpoint,
+            'delegation_endpoint': config.ar.delegation_endpoint
+          };
+      }
       return idToken;
     })
     .catch(function (error) {

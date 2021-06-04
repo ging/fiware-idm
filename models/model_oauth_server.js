@@ -13,6 +13,7 @@ const config_cors = config.cors;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+const crypto = require('crypto');
 const fs = require('fs');
 
 const user = models.user;
@@ -31,7 +32,9 @@ function getAccessToken(bearerToken) {
 
   return oauth_access_token
     .findOne({
-      where: { access_token: bearerToken },
+      where: {
+          hash: crypto.createHash("sha3-256").update(bearerToken).digest('hex')
+      },
       attributes: [['access_token', 'accessToken'], ['expires', 'accessTokenExpiresAt'], 'scope', 'valid'],
       include: [
         {
@@ -243,7 +246,7 @@ function revokeAccessToken(accessToken, code, client_id, refresh_token) {
   if (code) {
     where_clause.authorization_code = code;
   } else if (accessToken) {
-    where_clause.access_token = accessToken;
+    where_clause.hash = crypto.createHash("sha3-256").update(bearerToken).digest('hex');
   } else if (refresh_token) {
     where_clause.refresh_token = refresh_token;
   }
@@ -342,6 +345,7 @@ function storeToken(token, client, identity, jwt) {
   let access_token_promise = !jwt
     ? refresh_token_promise.then(function () {
         return oauth_access_token.create({
+          hash: crypto.createHash("sha3-256").update(token.accessToken).digest('hex'),
           access_token: token.accessToken,
           expires: token.accessTokenExpiresAt,
           valid: true,

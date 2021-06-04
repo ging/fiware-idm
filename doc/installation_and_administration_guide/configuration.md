@@ -31,7 +31,7 @@ specific needs of each use case. These are the main configurations:
 
 -   Email filtering.
 
--   External participant and authirzation registries
+-   External participant and authorization registries
 
 -   Site (themes).
 

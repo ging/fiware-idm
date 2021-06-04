@@ -68,3 +68,14 @@
 | IDM_USAGE_CONTROL_ENABLED           | String  | 使用制御機能を有効にする                                                                                                        | -                           |
 | IDM_PTP_HOST                        | String  | PTP を実行しているホストの名前                                                                                                  | -                           |
 | IDM_PTP_PORT                        | Integer | PTP をリッスンしているポート                                                                                                    | 0 to 65536                  |
+| IDM_PR_URL                          | String  | 利用する参加者登録サービスの URL                                                                                                | -                           |
+| IDM_PR_PARTIES_ENDPOINT             | String  | 参加者レジストリの URL またはパーティ・エンドポイント                                                                           | -                           |
+| IDM_PR_TOKEN_ENDPOINT               | String  | 参加者レジストリのトークン・エンドポイントの URL                                                                                | -                           |
+| IDM_PR_ID                           | String  | 参加者名簿の ID                                                                                                                 | -                           |
+| IDM_PR_CLIENT_ID                    | String  | 参加者レジストリ内の Keyrock インスタンスの ID                                                                                  | -                           |
+| IDM_PR_CLIENT_KEY                   | String  | JWT の署名と参加者レジストリ仕様の使用に使用する秘密鍵                                                                          | -                           |
+| IDM_PR_CLIENT_CRT                   | String  | Keyrock のインスタンスに関連付けられ、参加者レジストリを使用するときに使用される証明書                                          | -                           |
+| IDM_AR_URL                          | String  | Keyrock のインスタンスにリンクされている認証レジストリの URL                                                                    | -                           |
+| IDM_AR_DELEGATION_ENDPOINT          | String  | 認可レジストリの URL または委任エンドポイント                                                                                   | -                           |
+| IDM_AR_TOKEN_ENDPOINT               | String  | 認可レジストリのトークン・エンドポイントの URL                                                                                  | -                           |
+| IDM_AR_ID                           | String  | 参加者レジストリ内の認可レジストリの ID                                                                                         | -                           |

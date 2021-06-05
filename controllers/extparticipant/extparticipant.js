@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const debug = require('debug')('idm:i4trust_controller');
+const debug = require('debug')('idm:extparticipant_controller');
 const fetch = require('node-fetch');
 const forge = require('node-forge');
 const jose = require('node-jose');

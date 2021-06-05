@@ -9,6 +9,7 @@ const uuid = require('uuid');
 
 const config_service = require('../../lib/configService.js');
 const models = require('../../models/models.js');
+const authregistry = require('../../controllers/authregistry/authregistry');
 
 const config = config_service.get_config();
 const verifier = jose.JWS.createVerify();
@@ -134,25 +135,29 @@ async function build_access_token(code) {
   const now = moment();
   const exp = now.add(config.oauth2.access_token_lifetime, 'seconds');
 
+  /* eslint-disable snakecase/snakecase */
+  const claims = {
+    iss: config.pr.client_id,
+    sub: code.User.id, // TODO
+    jti: uuid.v4(),
+    iat: now.unix(),
+    exp: exp.unix(),
+    aud: code.OauthClient.id,
+    email: code.User.email,
+    delegationEvidence: authregistry.get_delegation_evidence(code.User)
+  };
+  if (config.ar.url !== "internal") {
+    claims.authorisationRegistry = {
+      url: config.ar.url,
+      token_endpoint: config.ar.token_endpoint,
+      delegation_endpoint: config.ar.delegation_endpoint,
+      identifier: config.ar.identifier
+    };
+  }
+  /* eslint-enable snakecase/snakecase */
+
   return [
-    /* eslint-disable snakecase/snakecase */
-    await create_jwt({
-      iss: config.pr.client_id,
-      sub: code.User.id, // TODO
-      jti: uuid.v4(),
-      iat: now.unix(),
-      exp: exp.unix(),
-      aud: code.OauthClient.id,
-      email: code.User.email,
-      authorisationRegistry: {
-        url: config.ar.url,
-        token_endpoint: config.ar.token_endpoint,
-        delegation_endpoint: config.ar.delegation_endpoint,
-        identifier: config.ar.identifier
-      },
-      delegationEvidence: {}
-    }),
-    /* eslint-enable snakecase/snakecase */
+    await create_jwt(claims),
     exp.toDate()
   ];
 }

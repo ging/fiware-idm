@@ -92,6 +92,9 @@ async function assert_client_using_jwt(credentials, client_id) {
 }
 
 async function create_jwt(payload) {
+  // Prepare our private key to be able to create JWSs
+  await ensure_client_key_is_ready();
+
   return await jose.JWS.createSign({
     algorithm: 'RS256',
     format: 'compact',
@@ -102,20 +105,26 @@ async function create_jwt(payload) {
   }, config.pr.client_key).update(JSON.stringify(payload)).final();
 }
 
-async function build_id_token(code, scopes) {
+async function build_id_token(client, user, scopes, nonce, iat) {
   const now = moment();
-  const user = code.User;
+  if (iat == null) {
+    iat = now.unix();
+  }
+
   const claims = {
     iss: config.pr.client_id,
     sub: user.id, // TODO
-    aud: code.OauthClient.id,
+    aud: client.id,
     exp: now.add(30, 'seconds').unix(),
     iat: now.unix(),
-    auth_time: code.extra.iat,
-    // TODO nonce: code.extra.nonce,
+    auth_time: iat,
     acr: "urn:http://eidas.europa.eu/LoA/NotNotified/low",
-    azp: code.OauthClient.id
+    azp: client.id
   };
+
+  if (nonce != null) {
+    claims.nonce = nonce;
+  }
 
   if (scopes.has("profile")) {
     Object.assign(claims, {
@@ -131,28 +140,29 @@ async function build_id_token(code, scopes) {
   return await create_jwt(claims);
 }
 
-async function build_access_token(code) {
+async function build_access_token(client, user) {
   const now = moment();
   const exp = now.add(config.oauth2.access_token_lifetime, 'seconds');
 
   /* eslint-disable snakecase/snakecase */
   const claims = {
     iss: config.pr.client_id,
-    sub: code.User.id, // TODO
+    sub: user.id, // TODO
     jti: uuid.v4(),
     iat: now.unix(),
     exp: exp.unix(),
-    aud: code.OauthClient.id,
-    email: code.User.email,
-    delegationEvidence: authregistry.get_delegation_evidence(code.User)
+    aud: client.id,
+    email: user.email
   };
-  if (config.ar.url !== "internal") {
+  if (config.ar.url != null && config.ar.url !== "internal") {
     claims.authorisationRegistry = {
       url: config.ar.url,
       token_endpoint: config.ar.token_endpoint,
       delegation_endpoint: config.ar.delegation_endpoint,
       identifier: config.ar.identifier
     };
+  } else if (config.ar.url === "internal") {
+    claims.delegationEvidence = authregistry.get_delegation_evidence(user);
   }
   /* eslint-enable snakecase/snakecase */
 
@@ -178,58 +188,29 @@ async function retrieve_participant_registry_token() {
     exp
   };
 
-  return await jose.JWS.createSign({
-    algorithm: 'RS256',
-    format: 'compact',
-    fields: {
-      typ: "JWT",
-      x5c: config.pr.client_crt
-    }
-  }, config.pr.client_key).update(JSON.stringify(payload)).final();
+  return await create_jwt(payload);
 }
 
-async function _validate_participant(req, res) {
-  const scopes = new Set(req.body.scope != null ? req.body.scope.split(' ') : []);
-  if (!scopes.has('iSHARE')) {
-    return false;
+const ensure_client_application = async function ensure_client_application(participant_id, participant_name, redirect_uri) {
+  const data = {
+    id: participant_id,
+    name: participant_name,
+    image: 'i4trust_party.png',
+    grant_type: [
+      'client_credentials',
+      'authorization_code',
+      'refresh_token'
+    ],
+    description: `You are accessing from ${participant_name}. This is a trusted iSHARE participant registered with id "${participant_id}".`,
+    response_type: ['code'],
+  };
+  if (redirect_uri) {
+      data.redirect_uri = redirect_uri;
   }
+  return await models.oauth_client.upsert(data)[0];
+};
 
-  if (!req.body.response_type || req.body.response_type !== 'code') {
-    throw new oauth2_server.InvalidRequestError('invalid_request: response_type not valid or not exist');
-  } else if (!req.body.client_id) {
-    throw new oauth2_server.InvalidRequestError('Missing parameter: `client_id`');
-  }
-
-  debug('using external participant registry flow');
-
-  // Prepare our private key to be able to create JWSs
-  if (typeof config.pr.client_key === "string") {
-    debug('preparing Participant Key & client certificate');
-    config.pr.client_key = await jose.JWK.asKey(config.pr.client_key, "pem");
-    if (config.pr.client_crt.indexOf("-----BEGIN CERTIFICATE-----") !== -1) {
-      const str = config.pr.client_crt;
-      config.pr.client_crt = [];
-      let m;
-      while ((m = crt_regex.exec(str)) !== null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (m.index === crt_regex.lastIndex) {
-          crt_regex.lastIndex++;
-        }
-        config.pr.client_crt.push(m[1].replace(/\n/g, ""));
-      }
-    } else {
-      config.pr.client_crt = [config.pr.client_crt.replace(/\n/g, "")];
-    }
-  }
-
-  const credentials = req.body.request;
-  if (!credentials) {
-    throw new oauth2_server.InvalidRequestError('Missing parameter: `request`');
-  }
-
-  // Validate the JWT and client certificates
-  const [client_payload, client_certificate] = await assert_client_using_jwt(credentials, req.body.client_id);
-
+const validate_participant_from_jwt = async function validate_participant_from_jwt(client_payload, client_certificate) {
   /*******/
   debug('Generating a JWT token for accessing the participant registry');
   /*******/
@@ -288,27 +269,64 @@ async function _validate_participant(req, res) {
     throw new oauth2_server.InvalidRequestError('internal error: client is not a trusted participant');
   }
 
-  //const secret = uuid.v4();
-  //const jwt_secret = crypto.randomBytes(16).toString('hex').slice(0, 16);
-  await models.oauth_client.upsert({
-    id: client_payload.iss,
-    name: parties_info.data[0].party_name,
-    image: 'i4trust_party.png',
-    //secret,
-    grant_type: [
-      'client_credentials',
-      'authorization_code',
-      'refresh_token'
-    ],
-    //jwt_secret,
-    description: `You are accessing from ${parties_info.data[0].party_name}. This is a trusted iSHARE participant registered with id "${client_payload.iss}".`,
-    response_type: ['code'],
-    redirect_uri: client_payload.redirect_uri
-  });
+  return parties_info.data[0].party_name;
+};
+
+const ensure_client_key_is_ready = async function ensure_client_key_is_ready() {
+  if (typeof config.pr.client_key === "string") {
+    debug('preparing Participant Key & client certificate');
+    config.pr.client_key = await jose.JWK.asKey(config.pr.client_key, "pem");
+    if (config.pr.client_crt.indexOf("-----BEGIN CERTIFICATE-----") !== -1) {
+      const str = config.pr.client_crt;
+      config.pr.client_crt = [];
+      let m;
+      while ((m = crt_regex.exec(str)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === crt_regex.lastIndex) {
+          crt_regex.lastIndex++;
+        }
+        config.pr.client_crt.push(m[1].replace(/\n/g, ""));
+      }
+    } else {
+      config.pr.client_crt = [config.pr.client_crt.replace(/\n/g, "")];
+    }
+  }
+};
+
+async function _validate_participant(req, res) {
+  const scopes = new Set(req.body.scope != null ? req.body.scope.split(' ') : []);
+  if (!scopes.has('iSHARE')) {
+    return false;
+  }
+
+  if (!req.body.response_type || req.body.response_type !== 'code') {
+    throw new oauth2_server.InvalidRequestError('invalid_request: response_type not valid or not exist');
+  } else if (!req.body.client_id) {
+    throw new oauth2_server.InvalidRequestError('Missing parameter: `client_id`');
+  }
+
+  debug('using external participant registry flow');
+
+  const credentials = req.body.request;
+  if (!credentials) {
+    throw new oauth2_server.InvalidRequestError('Missing parameter: `request`');
+  }
+
+  /*******/
+  debug('Validating JWT token of the client (including the certificates)');
+  /*******/
+
+  // Validate the JWT and client certificates
+  const [client_payload, client_certificate] = await assert_client_using_jwt(credentials, req.body.client_id);
+
+  const participant_name = await validate_participant_from_jwt(client_payload, client_certificate);
 
   /*******/
   debug('Participant successfully validated');
   /*******/
+
+  await ensure_client_application(client_payload.iss, participant_name, client_payload.redirect_uri);
+
   const auth_params = new URLSearchParams();
   auth_params.append('response_type', 'code');
   auth_params.append('client_id', client_payload.client_id || client_payload.iss);
@@ -327,14 +345,18 @@ async function _token(req, res) {
     throw new oauth2_server.InvalidRequestError(`Invalid request: content must be application/x-www-form-urlencoded [${req.headers}]`);
   }
 
+  const grant_type = req.body.grant_type;
+  const client_id = req.body.client_id;
+
   // Skip normal flows
-  if (req.body.grant_type !== "authorization_code" || req.body.client_assertion_type !== 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer') {
+  // https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
+  if (grant_type !== "authorization_code" && grant_type !== "client_credentials" || req.body.client_assertion_type !== 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer') {
     return false;
   }
 
   debug('using external participant registry flow');
 
-  if (!req.body.code) {
+  if (grant_type === "authorization_code" && !req.body.code) {
     throw new oauth2_server.InvalidRequestError('Missing parameter: `code`');
   }
 
@@ -344,50 +366,82 @@ async function _token(req, res) {
   }
 
   // Validate client
-  await assert_client_using_jwt(req.body.client_assertion, req.body.client_id);
+  const [client_payload, client_certificate] = await assert_client_using_jwt(req.body.client_assertion, client_id);
 
-  // Validate code
-  const code = await models.oauth_authorization_code
-    .findOne({
-      attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'extra'],
-      where: { authorization_code: req.body.code, oauth_client_id: req.body.client_id, valid: true },
-      include: [models.user, models.oauth_client]
-    });
+  let id_token;
+  let client;
+  let user;
+  let scopes;
+  if (grant_type === "authorization_code") {
 
-  if (!code) {
-    throw new oauth2_server.InvalidRequestError('Invalid grant: authorization code is invalid');
+    debug('Validating authorization code');
+
+    const code = await models.oauth_authorization_code
+      .findOne({
+        attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'extra'],
+        where: { authorization_code: req.body.code, oauth_client_id: client_id, valid: true },
+        include: [models.user, models.oauth_client]
+      });
+
+    if (!code) {
+      throw new oauth2_server.InvalidRequestError('Invalid grant: authorization code is invalid');
+    }
+
+    if (code.expires < new Date()) {
+      throw new oauth2_server.InvalidGrantError('Invalid grant: authorization code has expired');
+    }
+
+    if (req.body.redirect_uri !== code.redirect_uri) {
+      throw new oauth2_server.InvalidRequestError('Invalid request: `redirect_uri` is invalid');
+    }
+
+    debug('Authorization code validated, marking it as invalid so it cannot be used anymore');
+
+    // Invalidate the code
+    code.authorization_code = req.body.code;
+    code.valid = false;
+    code.save();
+
+    // Build id and access tokens
+    scopes = new Set(code.scope);
+    client = code.OauthClient;
+    user = code.User;
+    id_token = await build_id_token(client, user, scopes, code.nonce, code.extra.iat);
+  } else {
+    const participant_name = await validate_participant_from_jwt(client_payload, client_certificate);
+
+    /*******/
+    debug('Participant successfully validated');
+    /*******/
+
+    client = await ensure_client_application(client_payload.iss, participant_name, client_payload.redirect_uri);
+    user = await models.user.upsert({
+      username: client_payload.iss,
+      description: `External participant with id: ${client_payload.iss}`,
+      email: `${client_id}@${client_payload.iss}`,
+    }, {
+      returning: true,
+      validate: false // Currently, we are inserting an invalid email address for the participant
+    })[0];
+    // Build id and access tokens
+    scopes = new Set(req.body.scope != null ? req.body.scope.split(' ') : []);
+    id_token = await build_id_token(client, user, scopes);
   }
 
-  if (code.expires < new Date()) {
-    throw new oauth2_server.InvalidGrantError('Invalid grant: authorization code has expired');
-  }
-
-  if (req.body.redirect_uri !== code.redirect_uri) {
-    throw new oauth2_server.InvalidRequestError('Invalid request: `redirect_uri` is invalid');
-  }
-
-  // Invalidate the code
-  code.authorization_code = req.body.code;
-  code.valid = false;
-  code.save();
-
-  // Return an id_token and a access_token
-  const scopes = new Set(code.scope);
-  const id_token = await build_id_token(code, scopes);
-  // eslint-disable-next-line no-unused-vars
-  const [access_token, access_token_exp] = await build_access_token(code);
-
+  // Create and save access_token
+  const [access_token, access_token_exp] = await build_access_token(client, user);
   await models.oauth_access_token.create({
       hash: crypto.createHash("sha3-256").update(access_token).digest('hex'),
       access_token,
       expires: access_token_exp,
       valid: true,
-      oauth_client_id: code.OauthClient.id,
-      user_id: code.User.id,
+      oauth_client_id: client.id,
+      user_id: user.id,
       authorization_code: req.body.code,
-      scope: req.body.scope
+      scope: scopes
   });
 
+  // Return id and access tokens
   res.status(200).json({
     id_token,
     access_token,
@@ -397,6 +451,8 @@ async function _token(req, res) {
   
   return true;
 }
+
+exports.create_jwt = create_jwt;
 
 exports.validate_participant = function validate_participant(req, res, next) {
   debug(' --> validate_participant');

@@ -204,6 +204,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "image": "default",
               "url": "http://localhost",
               "redirect_uri": "http://localhost/login",
+              "redirect_sign_out_uri": "http://localhost/logout",
               "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
               "response_type": "code,token",
               "token_types": "bearer,jwt,permanent",
@@ -216,6 +217,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
               "image": "default",
               "url": "http://localhost",
               "redirect_uri": "http://localhost/login",
+              "redirect_sign_out_uri": "http://localhost/logout",
               "grant_type": "password,authorization_code,implicit",
               "response_type": "code,token",
               "token_types": "bearer",
@@ -238,6 +240,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             "name": "Test_application 1",
             "description": "description",
             "redirect_uri": "http://localhost/login",
+            "redirect_sign_out_uri": "http://localhost/logout",
             "url": "http://localhost",
             "grant_type": [
               "authorization_code",
@@ -273,6 +276,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             "name": "Test_application 1",
             "description": "description",
             "redirect_uri": "http://localhost/login",
+            "redirect_sign_out_uri": "http://localhost/logout",
             "url": "http://localhost",
             "grant_type": "password,authorization_code,implicit",
             "token_types": "jwt,permanent",
@@ -313,6 +317,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                     "secret": "61f5def7-bcf9-45b1-9c69-d0887e403737",
                     "url": "http://localhost",
                     "redirect_uri": "http://localhost/login",
+                    "redirect_sign_out_uri": "http://localhost/logout"
                     "image": "default",
                     "grant_type": "client_credentials,password,implicit,authorization_code,refresh_token",
                     "response_type": "code,token",
@@ -338,6 +343,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
                 "name": "new name",
                 "description": "new description",
                 "redirect_uri": "new redirect uri",
+                "redirect_sign_out_uri": "new redirect sign out uri",
                 "token_types": ["permanent"]
                 "grant_type": [
                     "authorization_code",
@@ -366,6 +372,7 @@ Applications are registered in Keyrock and consume OAuth2 resources.
             "name": "new name",
             "description": "new description",
             "redirect_uri": "new redirect uri",
+            "redirect_sign_out_uri": "new redirect sign out uri",
             "grant_type": "password,authorization_code",
             "token_types": "bearer,permanent",
             "jwt_secret": null,

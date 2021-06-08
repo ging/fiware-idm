@@ -386,7 +386,7 @@ async function _token(req, res) {
     await models.user.upsert({
       username: client_payload.iss,
       description: `External participant with id: ${client_payload.iss}`,
-      email: `${client_id}@${client_payload.iss}`,
+      email: `${client_id}@${config.pr.url}`,
     }, {
       validate: false // Currently, we are inserting an invalid email address for the participant
     });

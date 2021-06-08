@@ -51,6 +51,15 @@ const get_delegation_evidence = async function get_delegation_evidence(subject) 
 const _upsert_policy = async function _upsert_policy(req, res) {
   const token_info = await authenticate_bearer(req);
 
+  const authorized_email = `${config.pr.client_id}@${config.pr.url}`;
+  if (!token_info.user.admin && token_info.user.email !== authorized_email) {
+    res.status(403).json({
+      error: "You are not authorized to update policies",
+      details: validate_delegation_evicence.errors
+    });
+    return true;
+  }
+
   debug(`User ${token_info.user.username}`);
   if (!validate_delegation_evicence(req.body)) {
     debug(validate_delegation_evicence.errors);

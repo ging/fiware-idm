@@ -10,11 +10,10 @@ const uuid = require('uuid');
 const config_service = require('../../lib/configService.js');
 const models = require('../../models/models.js');
 const authregistry = require('../../controllers/authregistry/authregistry');
+const utils = require('./utils');
 
 const config = config_service.get_config();
 const verifier = jose.JWS.createVerify();
-const crt_regex = /^-----BEGIN CERTIFICATE-----\n([\s\S]+?)\n-----END CERTIFICATE-----$/gm;
-
 
 
 function check(errors, condition, message) {
@@ -91,20 +90,6 @@ async function assert_client_using_jwt(credentials, client_id) {
   }
 }
 
-async function create_jwt(payload) {
-  // Prepare our private key to be able to create JWSs
-  await ensure_client_key_is_ready();
-
-  return await jose.JWS.createSign({
-    algorithm: 'RS256',
-    format: 'compact',
-    fields: {
-      typ: "JWT",
-      x5c: config.pr.client_crt
-    }
-  }, config.pr.client_key).update(JSON.stringify(payload)).final();
-}
-
 async function build_id_token(client, user, scopes, nonce, iat) {
   const now = moment();
   if (iat == null) {
@@ -137,7 +122,7 @@ async function build_id_token(client, user, scopes, nonce, iat) {
     claims.email = user.email;
   }
 
-  return await create_jwt(claims);
+  return await utils.create_jwt(claims);
 }
 
 async function build_access_token(client, user) {
@@ -162,12 +147,12 @@ async function build_access_token(client, user) {
       identifier: config.ar.identifier
     };
   } else if (config.ar.url === "internal") {
-    claims.delegationEvidence = authregistry.get_delegation_evidence(user);
+    claims.delegationEvidence = await authregistry.get_delegation_evidence(user.id);
   }
   /* eslint-enable snakecase/snakecase */
 
   return [
-    await create_jwt(claims),
+    await utils.create_jwt(claims),
     exp.toDate()
   ];
 }
@@ -188,7 +173,7 @@ async function retrieve_participant_registry_token() {
     exp
   };
 
-  return await create_jwt(payload);
+  return await utils.create_jwt(payload);
 }
 
 const ensure_client_application = async function ensure_client_application(participant_id, participant_name, redirect_uri) {
@@ -207,7 +192,10 @@ const ensure_client_application = async function ensure_client_application(parti
   if (redirect_uri) {
       data.redirect_uri = redirect_uri;
   }
-  return await models.oauth_client.upsert(data)[0];
+
+  // We cannot use upsert for retrieving the updated client due very old version of sequelize
+  await models.oauth_client.upsert(data);
+  return await models.oauth_client.findOne({where: {id: participant_id}});
 };
 
 const validate_participant_from_jwt = async function validate_participant_from_jwt(client_payload, client_certificate) {
@@ -270,27 +258,6 @@ const validate_participant_from_jwt = async function validate_participant_from_j
   }
 
   return parties_info.data[0].party_name;
-};
-
-const ensure_client_key_is_ready = async function ensure_client_key_is_ready() {
-  if (typeof config.pr.client_key === "string") {
-    debug('preparing Participant Key & client certificate');
-    config.pr.client_key = await jose.JWK.asKey(config.pr.client_key, "pem");
-    if (config.pr.client_crt.indexOf("-----BEGIN CERTIFICATE-----") !== -1) {
-      const str = config.pr.client_crt;
-      config.pr.client_crt = [];
-      let m;
-      while ((m = crt_regex.exec(str)) !== null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (m.index === crt_regex.lastIndex) {
-          crt_regex.lastIndex++;
-        }
-        config.pr.client_crt.push(m[1].replace(/\n/g, ""));
-      }
-    } else {
-      config.pr.client_crt = [config.pr.client_crt.replace(/\n/g, "")];
-    }
-  }
 };
 
 async function _validate_participant(req, res) {
@@ -415,14 +382,15 @@ async function _token(req, res) {
     /*******/
 
     client = await ensure_client_application(client_payload.iss, participant_name, client_payload.redirect_uri);
-    user = await models.user.upsert({
+    // We cannot use upsert for retrieving the updated client due very old version of sequelize
+    await models.user.upsert({
       username: client_payload.iss,
       description: `External participant with id: ${client_payload.iss}`,
       email: `${client_id}@${client_payload.iss}`,
     }, {
-      returning: true,
       validate: false // Currently, we are inserting an invalid email address for the participant
-    })[0];
+    });
+    user = await models.user.findOne({where: {username: client_payload.iss}});
     // Build id and access tokens
     scopes = new Set(req.body.scope != null ? req.body.scope.split(' ') : []);
     id_token = await build_id_token(client, user, scopes);
@@ -451,8 +419,6 @@ async function _token(req, res) {
   
   return true;
 }
-
-exports.create_jwt = create_jwt;
 
 exports.validate_participant = function validate_participant(req, res, next) {
   debug(' --> validate_participant');

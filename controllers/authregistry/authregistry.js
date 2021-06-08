@@ -6,7 +6,8 @@ const path = require('path');
 const oauth2_server = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
 
 const config_service = require('../../lib/configService.js');
-const models = require('../../models/models.js');
+const models = require('../../models/models');
+const utils = require('../../controllers/extparticipant/utils');
 const Request = oauth2_server.Request;
 const Response = oauth2_server.Response;
 
@@ -37,13 +38,14 @@ const authenticate_bearer = async function authenticate_bearer(req) {
   return await oauth2.authenticate(request, response, options);
 }
 
-const get_delegation_evidence = async function get_delegation_evidence(user) {
-  return await models.delegation_evidence.findOne({
+const get_delegation_evidence = async function get_delegation_evidence(subject) {
+  const evidence = await models.delegation_evidence.findOne({
     where: {
       policy_issuer: config.pr.client_id,
-      access_subject: user.id
+      access_subject: subject
     }
   });
+  return evidence == null ? null : evidence.policy;
 };
 
 const _upsert_policy = async function _upsert_policy(req, res) {
@@ -52,33 +54,21 @@ const _upsert_policy = async function _upsert_policy(req, res) {
   debug(`User ${token_info.user.username}`);
   if (!validate_delegation_evicence(req.body)) {
     debug(validate_delegation_evicence.errors);
-    return res.status(400).json({
+    res.status(400).json({
       error: "Invalid policy document",
       details: validate_delegation_evicence.errors
     });
+    return true;
   }
 
   const evidence = req.body.delegationEvidence;
 
   // Check policyIssuer
   if (evidence.policyIssuer !== config.pr.client_id) {
-    return res.status(422).json({
+    res.status(422).json({
       error: `Invalid value for policyIssuer: ${evidence.policyIssuer}`
     });
-  }
-
-  // Check target.accessSubject
-  // At this moment, we are only allowing policies targeting internal users
-  const target = await models.user.findOne({
-    where: {
-      id: evidence.target.accessSubject
-    }
-  });
-
-  if (target == null) {
-    return res.status(422).json({
-      error: `Invalid value for target.accessSubject: ${evidence.target.accessSubject}`
-    });
+    return true;
   }
 
   // Create/update sent policy
@@ -165,15 +155,15 @@ const _query_evidences = async function _query_evidences(req, res) {
 
   debug('Requesting available delegation evidences');
 
-  const evidence = await get_delegation_evidence(token_info.user);
+  const evidence = await get_delegation_evidence(mask.target.accessSubject);
   if (evidence == null) {
-    res.status(404);
+    res.status(404).end();
     return true;
   }
 
   debug('Filtering delegation evidence using the provided mask');
 
-  evidence.policySets = mask.policySets.flatMap((policy_set_mask, i) => {
+  const newPolicySets = mask.policySets.flatMap((policy_set_mask, i) => {
 
     debug(`Processing policy set ${i} from the providen mask`);
 
@@ -185,7 +175,8 @@ const _query_evidences = async function _query_evidences(req, res) {
         target: policy_set.target
       };
 
-      response_policy_set.policies = policy_set_mask.policies.forEach((policy_mask) => {
+      response_policy_set.policies = policy_set_mask.policies.map((policy_mask, z) => {
+        debug(`    Processing policy ${z} from the current policy set`);
         const matching_policies = policy_set.policies.filter((policy) => is_matching_policy(policy_mask, policy));
         return {
           target: policy_mask.target,
@@ -198,8 +189,11 @@ const _query_evidences = async function _query_evidences(req, res) {
       return response_policy_set;
     });
   });
+  evidence.policySets = newPolicySets;
 
-  res.status(200).json({delegation_token: /*extparticipant.create_jwt(*/evidence/*)*/});
+  debug("Delegation evidence processed");
+  res.status(200).json({delegation_token: await utils.create_jwt(evidence)});
+
   return false;
 };
 
@@ -208,7 +202,11 @@ exports.get_delegation_evidence = get_delegation_evidence;
 exports.upsert_policy = function upsert_policy(req, res, next) {
   debug(' --> policy');
   _upsert_policy(req, res).then(
-    next,
+    (skip) => {
+      if (!skip) {
+        next();
+      }
+    },
     (err) => {
       if (err instanceof oauth2_server.OAuthError) {
         debug('Error ', err.message);
@@ -223,7 +221,7 @@ exports.upsert_policy = function upsert_policy(req, res, next) {
           application: req.application
         });
       } else {
-        res.status(500);
+        throw err;
       }
     }
   );
@@ -251,7 +249,7 @@ exports.query_evidences = function query_evidences(req, res, next) {
           application: req.application
         });
       } else {
-        res.status(500);
+        throw err;
       }
     }
   );

@@ -6,17 +6,17 @@ module.exports = {
       'delegation_evidence',
       {
         policy_issuer: {
-          type: DataTypes.STRING,
+          type: Sequelize.STRING,
           allowNull: false,
           primaryKey: true
         },
         access_subject: {
-          type: DataTypes.STRING,
+          type: Sequelize.STRING,
           allowNull: false,
           primaryKey: true
         },
         policy: {
-          type: DataTypes.JSON,
+          type: Sequelize.JSON,
           allowNull: false
         }
       },
@@ -33,6 +33,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('delegation_evidence');
   }
 };

@@ -52,7 +52,7 @@ const _upsert_policy = async function _upsert_policy(req, res) {
   const token_info = await authenticate_bearer(req);
 
   const authorized_email = `${config.pr.client_id}@${config.pr.url}`;
-  if (!token_info.user.admin && token_info.user.email !== authorized_email) {
+  if (!token_info.user.admin && token_info.user.email !== authorized_email) {
     res.status(403).json({
       error: "You are not authorized to update policies",
       details: validate_delegation_evicence.errors
@@ -172,7 +172,7 @@ const _query_evidences = async function _query_evidences(req, res) {
 
   debug('Filtering delegation evidence using the provided mask');
 
-  const newPolicySets = mask.policySets.flatMap((policy_set_mask, i) => {
+  const new_policy_sets = mask.policySets.flatMap((policy_set_mask, i) => {
 
     debug(`Processing policy set ${i} from the providen mask`);
 
@@ -198,7 +198,7 @@ const _query_evidences = async function _query_evidences(req, res) {
       return response_policy_set;
     });
   });
-  evidence.policySets = newPolicySets;
+  evidence.policySets = new_policy_sets;
 
   debug("Delegation evidence processed");
   res.status(200).json({delegation_token: await utils.create_jwt(evidence)});

@@ -255,6 +255,7 @@ exports.edit = function (req, res) {
       .on('error', function (e) {
         debug('Failed connecting to gravatar: ' + e);
         res.render('users/edit', {
+          identity_attributes,
           user: req.user,
           error: [],
           csrf_token: req.csrfToken()
@@ -433,6 +434,7 @@ exports.set_avatar = function (req, res) {
       // Send message of fail when updating image
       res.locals.message = { text: ' set avatar failed.', type: 'warning' };
       res.render('users/edit', {
+        identity_attributes,
         user: req.user,
         error,
         csrf_token: req.csrfToken()
@@ -463,6 +465,7 @@ exports.set_gravatar = function (req, res) {
       // Send message of fail when updating image
       res.locals.message = { text: ' set gravatar failed.', type: 'warning' };
       res.render('users/edit', {
+        identity_attributes,
         user: req.user,
         error,
         csrf_token: req.csrfToken()

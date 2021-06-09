@@ -24,6 +24,7 @@ const index = require('./routes/web/index');
 const api = require('./routes/api/index');
 const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
+const authregistry = require('./routes/authregistry/authregistry');
 
 const app = express();
 const helmet = require('helmet');
@@ -183,6 +184,11 @@ if (config.https.enabled) {
   // Set routes for saml2
   app.use('/saml2', force_ssl, saml2);
 
+  // Set routes for the authorization registry if enabled
+  if (config.ar.url === "internal") {
+    app.use('/ar', authregistry);
+  }
+
   // Set routes for GUI
   app.use('/', force_ssl, index);
 } else {
@@ -196,6 +202,11 @@ if (config.https.enabled) {
 
   // Set routes for saml2
   app.use('/saml2', saml2);
+
+  // Set routes for the authorization registry if enabled
+  if (config.ar.url === "internal") {
+    app.use('/ar', authregistry);
+  }
 
   // Set routes for GUI
   app.use('/', index);

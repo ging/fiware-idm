@@ -1,0 +1,214 @@
+{
+  "definitions": {
+    "accessSubject": {
+      "type": "string",
+      "pattern": "^\\S+$"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[^\\s\\*]+$"
+    },
+    "identifiers": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^\\S+$"
+      }
+    },
+    "attributes": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^\\S+$"
+      }
+    },
+    "actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^\\S+$"
+      }
+    },
+    "effect": {
+      "type": "string",
+      "enum": [
+        "Permit",
+        "Deny"
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [ "effect" ],
+        "properties": {
+          "effect": {
+            "$ref": "#/definitions/effect"
+          }
+        },
+        "additionalProperties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "resource" ],
+            "properties": {
+              "resource": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "$ref": "#/definitions/type"
+                  },
+                  "identifiers": {
+                    "$ref": "#/definitions/identifiers"
+                  },
+                  "attributes": {
+                    "$ref": "#/definitions/attributes"
+                  }
+                }
+              },
+              "actions": {
+                "$ref": "#/definitions/actions"
+              }
+            }
+          }
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [ "resource", "actions" ],
+      "properties": {
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [ "type", "identifiers" ],
+          "properties": {
+            "type": {
+              "$ref": "#/definitions/type"
+            },
+            "identifiers": {
+              "$ref": "#/definitions/identifiers"
+            },
+            "attributes": {
+              "$ref": "#/definitions/attributes"
+            }
+          }
+        },
+        "actions": {
+          "$ref": "#/definitions/actions"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [ "serviceProviders" ],
+          "properties": {
+            "serviceProviders": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "policies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [ "target", "rules" ],
+        "properties": {
+          "target": {
+            "$ref": "#/definitions/target"
+          },
+          "rules": {
+            "$ref": "#/definitions/rules"
+          }
+        }
+      }
+    }
+  },
+
+  "type": "object",
+  "required": ["delegationEvidence"],
+  "additionalProperties": false,
+  "properties": {
+    "delegationEvidence": {
+      "type": "object",
+      "required": [ "notOnOrAfter", "notBefore", "policyIssuer", "target", "policySets" ],
+      "additionalProperties": false,
+      "properties": {
+        "notBefore": {
+          "type": "integer"
+        },
+        "notOnOrAfter": {
+          "type": "integer"
+        },
+        "policyIssuer": {
+          "type": "string",
+          "pattern": "^\\S+$"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [ "accessSubject" ],
+          "properties": {
+            "accessSubject": {
+              "$ref": "#/definitions/accessSubject"
+            }
+          }
+        },
+        "policySets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "policies", "target" ],
+            "properties": {
+              "maxDelegationDepth": {
+                "type": "integer"
+              },
+              "target": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "environment" ],
+                "properties": {
+                  "environment": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [ "licenses" ],
+                    "properties": {
+                      "licenses": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "policies": {
+                "$ref": "#/definitions/policies"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

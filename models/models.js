@@ -120,6 +120,9 @@ const role_usage_policy = sequelize.import(path.join(__dirname, 'role_usage_poli
 // Import ptp table
 const ptp = sequelize.import(path.join(__dirname, 'ptp'));
 
+// Import delegation evidence table
+const delegation_evidence = sequelize.import(path.join(__dirname, 'delegation_evidence'));
+
 // Relation between oauth_client and trusted applications
 trusted_application.belongsTo(oauth_client, { onDelete: 'cascade' });
 trusted_application.belongsTo(oauth_client, {
@@ -304,6 +307,7 @@ exports.trusted_application = trusted_application;
 exports.usage_policy = usage_policy;
 exports.role_usage_policy = role_usage_policy;
 exports.ptp = ptp;
+exports.delegation_evidence = delegation_evidence;
 
 // Export helpers
 const search_identity = require('./helpers/search_identity');

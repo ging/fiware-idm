@@ -230,7 +230,11 @@ exports.upsert_policy = function upsert_policy(req, res, next) {
           application: req.application
         });
       } else {
-        throw err;
+        res.status(500).json({
+          message: err,
+          code: 500,
+          title: 'Internal Server Error'
+        });
       }
     }
   );
@@ -258,7 +262,11 @@ exports.query_evidences = function query_evidences(req, res, next) {
           application: req.application
         });
       } else {
-        throw err;
+        res.status(500).json({
+          message: err,
+          code: 500,
+          title: 'Internal Server Error'
+        });
       }
     }
   );

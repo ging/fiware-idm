@@ -174,6 +174,15 @@ $(document).ready(function () {
             $('#create_permission_form')
               .find('#id_authorization_service_header')
               .val(result.authorization_service_header);
+            $('#create_permission_form')
+              .find('#id_authorization_id_header')
+              .val(result.authorization_id_header);
+            $('#create_permission_form')
+              .find('#id_authorization_attributes_header')
+              .val(result.authorization_attributes_header);
+            $('#create_permission_form')
+              .find('#id_authorization_types_header')
+              .val(result.authorization_types_header);
             $('#create_permission_form').find('#id_xml').val(result.xml);
           }
         }

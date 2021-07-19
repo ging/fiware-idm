@@ -44,9 +44,11 @@ app.disable('x-powered-by');
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'", 'img-src', "'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      fontSrc: ["'self'",  'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
+      imgSrc: ["'self'", "data"], // eslint-disable-line snakecase/snakecase
       scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"] // eslint-disable-line snakecase/snakecase
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
     },
     reportOnly: false // eslint-disable-line snakecase/snakecase
   })

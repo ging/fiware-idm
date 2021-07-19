@@ -57,6 +57,10 @@ $(document).ready(function () {
       is_regex: $(this).find('#id_is_regex')[0].checked ? 1 : 0,
       use_authorization_service_header: $(this).find('#id_use_authorization_service_header')[0].checked ? 1 : 0,
       authorization_service_header: $(this).find('#id_authorization_service_header').val(),
+      use_authorization_payload_headers: $(this).find('#id_use_authorization_payload_headers')[0].checked ? 1 : 0,
+      authorization_id_header: $(this).find('#id_authorization_id_header').val(),
+      authorization_types_header: $(this).find('#id_authorization_types_header').val(),
+      authorization_attributes_header: $(this).find('#id_authorization_attributes_header').val(),
       action: $(this).find('#id_action').val(),
       xml: $(this).find('#id_xml').val()
     };
@@ -163,6 +167,9 @@ $(document).ready(function () {
             }
             if (result.use_authorization_service_header > 0) {
               $('#create_permission_form').find('#id_use_authorization_service_header')[0].checked = true;
+            }
+            if (result.use_authorization_payload_headers > 0) {
+              $('#create_permission_form').find('#id_use_authorization_payload_headers')[0].checked = true;
             }
             $('#create_permission_form')
               .find('#id_authorization_service_header')

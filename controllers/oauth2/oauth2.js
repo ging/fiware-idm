@@ -369,15 +369,16 @@ function oauth_authorize(req, res, next) {
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
 
-  const action = req.query.action ? req.query.action : undefined;
-  const resource = req.query.resource ? req.query.resource : undefined;
-  const authzforce = req.query.authzforce ? req.query.authzforce : undefined;
-  const req_app = req.query.app_id ? req.query.app_id : undefined;
-  const authorization_service_header = req.query.authorization_service_header
-    ? req.query.authorization_service_header
-    : undefined;
+  const options = {
+      action :req.query.action,
+      resource:req.query.resource,
+      authzforce:req.query.authzforce,
+      application: req.query.app_id,
+      service_header:req.query.authorization_service_header,
+      payload_headers:req.query.authorization_payload_headers
+  };
 
-  if ((action || resource || authorization_service_header) && authzforce) {
+  if ((options.action || options.resource || options.service_header  || options.payload_headers) && options.authzforce) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
@@ -386,26 +387,16 @@ exports.authenticate_token = function (req, res) {
     return res.status(400).json(error);
   }
 
-  if (req_app) {
+  if (options.application) {
     return models.oauth_client
-      .findById(req_app)
+      .findById(options.application)
       .then(function (application) {
         if (application) {
           if (application.token_types.includes('jwt')) {
-            return authenticate_jwt(
-              req,
-              res,
-              action,
-              resource,
-              authorization_service_header,
-              authzforce,
-              req_app,
-              application.jwt_secret
-            );
+            return authenticate_jwt(req, res, options, application.jwt_secret);
           }
-          return authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
+          return authenticate_bearer(req, res, options);
         }
-
         const message = {
           message: 'Unauthorized',
           code: 401,
@@ -421,17 +412,17 @@ exports.authenticate_token = function (req, res) {
       });
   }
 
-  return authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
+  return authenticate_bearer(req, res, options);
 };
 
 // Authenticate an incoming Json Web Token
-function authenticate_jwt(req, res, action, resource, authorization_service_header, authzforce, req_app, jwt_secret) {
+function authenticate_jwt(req, res, options, jwt_secret) {
   debug(' --> authenticate_jwt');
 
   jsonwebtoken.verify(req.query.access_token, jwt_secret, function (err, decoded) {
     if (err) {
       debug('Error ' + err);
-      authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
+      authenticate_bearer(req, res, options);
     } else {
       const identity = {
         username: decoded.username,
@@ -446,11 +437,7 @@ function authenticate_jwt(req, res, action, resource, authorization_service_head
       create_oauth_response(
         identity,
         application_id,
-        action,
-        resource,
-        authorization_service_header,
-        authzforce,
-        req_app
+        options
       )
         .then(function (response) {
           return res.status(200).json(response);
@@ -465,9 +452,9 @@ function authenticate_jwt(req, res, action, resource, authorization_service_head
 }
 
 // Authenticate an incoming Bearer Token
-function authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app) {
+function authenticate_bearer(req, res, options) {
   debug(' --> authenticate_bearer');
-  const options = {
+  const auth_options = {
     allowBearerTokensInQueryString: true // eslint-disable-line snakecase/snakecase
   };
 
@@ -481,18 +468,14 @@ function authenticate_bearer(req, res, action, resource, authorization_service_h
   const response = new Response(res);
 
   oauth_server
-    .authenticate(request, response, options)
+    .authenticate(request, response, auth_options)
     .then(function (token_info) {
       const identity = token_info.user;
       const application_id = token_info.oauth_client.id;
       return create_oauth_response(
         identity,
         application_id,
-        action,
-        resource,
-        authorization_service_header,
-        authzforce,
-        req_app
+        options
       );
     })
     .then(function (response) {

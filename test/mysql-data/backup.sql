@@ -448,6 +448,10 @@ CREATE TABLE `permission` (
   `is_regex` tinyint(1) NOT NULL DEFAULT '0',
   `authorization_service_header` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `use_authorization_service_header` tinyint(1) NOT NULL DEFAULT '0',
+  `authorization_id_header` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `authorization_attributes_header` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `authorization_types_header` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `use_authorization_payload_headers` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `oauth_client_id` (`oauth_client_id`),
   CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`oauth_client_id`) REFERENCES `oauth_client` (`id`) ON DELETE CASCADE
@@ -461,15 +465,17 @@ CREATE TABLE `permission` (
 LOCK TABLES `permission` WRITE;
 /*!40000 ALTER TABLE `permission` DISABLE KEYS */;
 INSERT INTO `permission` VALUES
-('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
-('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
-('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
-('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
-('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0),
-('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0),
-('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0),
-('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0),
-('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0);
+('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
+('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
+('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
+('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
+('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
+('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
+('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
+('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
+('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
+('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
+('attribute-lvl-0000-0000-000000000000','Attribute Level',NULL,0,'GET,POST,PATCH,DELETE','/ngsi-ld/v1/entities',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, 'urn:ngsi-ld:.*', '[speed|location|name]', '[Car|Bus]', 1);
 /*!40000 ALTER TABLE `permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -567,7 +573,7 @@ CREATE TABLE `role_permission` (
   KEY `permission_id` (`permission_id`),
   CONSTRAINT `role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE,
   CONSTRAINT `role_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -577,13 +583,19 @@ CREATE TABLE `role_permission` (
 LOCK TABLES `role_permission` WRITE;
 /*!40000 ALTER TABLE `role_permission` DISABLE KEYS */;
 INSERT INTO `role_permission` VALUES
-(1,'provider','1'),(2,'provider','2'),(3,'provider','3'),(4,'provider','4'),(5,'provider','5'),(6,'provider','6'),
+(1,'provider','1'),
+(2,'provider','2'),
+(3,'provider','3'),
+(4,'provider','4'),
+(5,'provider','5'),
+(6,'provider','6'),
 (7,'purchaser','5'),
 (8,'security-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
 (9,'security-role-0000-0000-000000000000','entrance-open-0000-0000-000000000000'),
 (10,'managers-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
 (11,'managers-role-0000-0000-000000000000','increase-stck-0000-0000-000000000000'),
-(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000');
+(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000'),
+(13,'managers-role-0000-0000-000000000000', 'attribute-lvl-0000-0000-000000000000');
 
 
 

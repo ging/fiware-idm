@@ -535,11 +535,7 @@ function getRefreshToken(refreshToken) {
 function create_oauth_response(
   identity,
   application_id,
-  action,
-  resource,
-  authorization_service_header,
-  authzforce,
-  req_app
+  options
 ) {
   debug('-------create_oauth_response-------');
 
@@ -591,7 +587,7 @@ function create_oauth_response(
           }
         }
 
-        return search_user_info(user_info, action, resource, authorization_service_header, authzforce, req_app);
+        return search_user_info(user_info, options);
       });
   } else if (type === 'iot') {
     const iot_info = JSON.parse(JSON.stringify(require('../templates/oauth_response/oauth_iot_response.json')));
@@ -619,8 +615,17 @@ function search_iot_info(iot_info) {
 }
 
 // Check if user has enabled the application to read their details
-function search_user_info(user_info, action, resource, authorization_service_header, authzforce, req_app) {
+function search_user_info(user_info, options) {
   debug('-------search_user_info-------');
+
+  const action = options.action;
+  const resource = options.resource;
+  const authorization_service_header = options.service_header;
+  const authorization_payload_headers = options.payload_headers;
+  const authzforce = options.authzforce;
+  const req_app = options.application;
+
+
   return new Promise(function (resolve, reject) {
     const promise_array = [];
 
@@ -635,7 +640,7 @@ function search_user_info(user_info, action, resource, authorization_service_hea
     // Insert search permissions promise to generate decison
     if (action && resource) {
       const search_permissions = search_roles.then(function (roles) {
-        return user_permissions(roles.all, user_info.app_id, action, resource, authorization_service_header);
+        return user_permissions(roles.all, user_info.app_id, action, resource, authorization_service_header, authorization_payload_headers );
       });
       promise_array.push(search_permissions);
     } else if (config_authzforce.enabled && authzforce) {
@@ -790,7 +795,7 @@ function user_roles(user_id, app_id) {
 }
 
 // Search user permissions in application whose action and resource are recieved from Pep Proxy
-function user_permissions(roles_id, app_id, action, resource, authorization_service_header) {
+function user_permissions(roles_id, app_id, action, resource, authorization_service_header, authorization_service_header) {
   debug('-------user_permissions-------');
   return models.role_permission
     .findAll({
@@ -809,13 +814,19 @@ function user_permissions(roles_id, app_id, action, resource, authorization_serv
           })
           .then((permissions) =>
             permissions.filter((permission) => {
+              let payload_checks = true;
+              if (permission.use_authorization_payload_headers === 1){
+                debug('Checking Headers');
+                payload_checks = false;
+              }
+              
               return (
                 (permission.is_regex === 1
                   ? new RegExp(permission.resource).exec(resource)
                   : permission.resource === resource) &&
                 (permission.use_authorization_service_header === 1
                   ? permission.authorization_service_header === authorization_service_header
-                  : true)
+                  : true)  && payload_checks
               );
             })
           );

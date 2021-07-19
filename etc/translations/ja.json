@@ -604,6 +604,12 @@
       "label02": "説明",
       "label03": "HTTP アクション",
       "label04": "リソース",
+      "label06": "Authorization Service Header",
+      "label_use_authorization_service_header": "Use Authorization Service Header",
+      "label07": "Authorization ID Header",
+      "label08": "Authorization Attributes Header",
+      "label09": "Authorization Types Header",
+      "label_use_authorization_payload_headers": "Use Authorization Payload Headers",
       "label_is_regex": "正規表現ですか？",
       "label05": "より複雑な認可ポリシーを定義するために XACML を使用してください。",
       "required_field": "これは必須フィールドです。"

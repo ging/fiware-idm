@@ -78,7 +78,25 @@
 				"resource": "login",
 				"use_authorization_service_header": false
 			}
-		}
+		},
+		"invalid_perm_body_no_authorization_id_header_but_use_authorization_payload_headers": {
+			"permission": {
+				"name": "permission 3",
+				"description": "permission 3 description",
+				"action": "GET",
+				"resource": "login",
+                "use_authorization_payload_headers": true
+			}
+		},
+		"invalid_perm_body_no_use_authorization_payload_headers_but_authorization_id_header": {
+			"permission": {
+				"name": "permission 4",
+				"description": "permission 4 description",
+				"action": "GET",
+				"resource": "login",
+                "authorization_payload_header": "test"
+			}
+		},
 	},
 	"read": {
 		"create": {

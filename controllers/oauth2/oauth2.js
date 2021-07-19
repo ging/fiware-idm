@@ -375,7 +375,11 @@ exports.authenticate_token = function (req, res) {
       authzforce:req.query.authzforce,
       application: req.query.app_id,
       service_header:req.query.authorization_service_header,
-      payload_headers:req.query.authorization_payload_headers
+      payload: {
+         id: req.header('X-Auth-Id-List') || '',
+         attributes: req.header('X-Auth-Attributes-List') || '',
+         types: req.header('X-Auth-Types-List')|| ''
+      }
   };
 
   if ((options.action || options.resource || options.service_header  || options.payload_headers) && options.authzforce) {

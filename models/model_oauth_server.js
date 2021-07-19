@@ -28,7 +28,7 @@ const user_authorized_application = models.user_authorized_application;
 const identity_attributes = config.identity_attributes || { enabled: false };
 
 function getAccessToken(bearerToken) {
-  debug('-------getAccesToken-------');
+  debug('-------getAccessToken-------');
 
   return oauth_access_token
     .findOne({
@@ -620,8 +620,8 @@ function search_user_info(user_info, options) {
 
   const action = options.action;
   const resource = options.resource;
-  const authorization_service_header = options.service_header;
-  const authorization_payload_headers = options.payload_headers;
+  const authorization_service_header = options.check_service;
+  const authorization_payload_headers = options.check_payload;
   const authzforce = options.authzforce;
   const req_app = options.application;
 
@@ -640,7 +640,7 @@ function search_user_info(user_info, options) {
     // Insert search permissions promise to generate decison
     if (action && resource) {
       const search_permissions = search_roles.then(function (roles) {
-        return user_permissions(roles.all, user_info.app_id, action, resource, authorization_service_header, authorization_payload_headers );
+        return user_permissions(roles.all, user_info.app_id, action, resource, options );
       });
       promise_array.push(search_permissions);
     } else if (config_authzforce.enabled && authzforce) {
@@ -794,9 +794,26 @@ function user_roles(user_id, app_id) {
     });
 }
 
+function check_payload_permitted(payload, permissionRegex){
+  let permitted = true;
+  if(permissionRegex) {
+    const regex = new RegExp(permissionRegex, "i");
+    permited = payload.every((str) => { return regex.test(str)});
+  }
+  return permitted;
+}
+
 // Search user permissions in application whose action and resource are recieved from Pep Proxy
-function user_permissions(roles_id, app_id, action, resource, authorization_service_header, authorization_service_header) {
+function user_permissions(roles_id, app_id, action, resource, options) {
   debug('-------user_permissions-------');
+  
+  const authorization_service_header = options.service_header;
+  const ids = options.payload.split();
+  const attributes = options.payload.split();
+  const types = options.payload.split();
+
+
+
   return models.role_permission
     .findAll({
       where: { role_id: roles_id },
@@ -817,7 +834,10 @@ function user_permissions(roles_id, app_id, action, resource, authorization_serv
               let payload_checks = true;
               if (permission.use_authorization_payload_headers === 1){
                 debug('Checking Headers');
-                payload_checks = false;
+                payload_checks = 
+                  check_payload_permitted(ids, permission.authorization_id_header) &&
+                  check_payload_permitted(attributes, permission.authorization_attributes_header) &&
+                  check_payload_permitted(types, permission.authorization_types_header);
               }
               
               return (

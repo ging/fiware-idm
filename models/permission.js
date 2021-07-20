@@ -50,22 +50,22 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         default: false
       },
-      authorization_id_header: {
+      regex_entity_ids: {
         type:
           DataTypes.STRING(255) +
           (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
       },
-      authorization_attributes_header: {
+      regex_attributes: {
         type:
           DataTypes.STRING(255) +
           (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
       },
-      authorization_types_header: {
+      regex_types: {
         type:
           DataTypes.STRING(255) +
           (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
       },
-      use_authorization_payload_headers: {
+      use_authorization_payload: {
         type:
           DataTypes.BOOLEAN() +
           (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : ''),

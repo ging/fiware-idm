@@ -532,11 +532,7 @@ function getRefreshToken(refreshToken) {
     });
 }
 
-function create_oauth_response(
-  identity,
-  application_id,
-  options
-) {
+function create_oauth_response(identity, application_id, options) {
   debug('-------create_oauth_response-------');
 
   let type;
@@ -625,7 +621,6 @@ function search_user_info(user_info, options) {
   const authzforce = options.authzforce;
   const req_app = options.application;
 
-
   return new Promise(function (resolve, reject) {
     const promise_array = [];
 
@@ -640,7 +635,7 @@ function search_user_info(user_info, options) {
     // Insert search permissions promise to generate decison
     if (action && resource) {
       const search_permissions = search_roles.then(function (roles) {
-        return user_permissions(roles.all, user_info.app_id, action, resource, options );
+        return user_permissions(roles.all, user_info.app_id, action, resource, options);
       });
       promise_array.push(search_permissions);
     } else if (config_authzforce.enabled && authzforce) {
@@ -794,25 +789,27 @@ function user_roles(user_id, app_id) {
     });
 }
 
-function check_payload_permitted(payload, permissionRegex){
+function check_payload_permitted(payload, permissionRegex) {
   let permitted = true;
-  if(permissionRegex) {
-    const regex = new RegExp(permissionRegex, "i");
-    permited = payload.every((str) => { return regex.test(str)});
+  if (permissionRegex && payload){
+    const regex = new RegExp(permissionRegex, 'i');
+    permitted = payload.every((str) => {
+      return regex.test(str);
+    });
   }
+
+  debug(permissionRegex, permitted);
   return permitted;
 }
 
 // Search user permissions in application whose action and resource are recieved from Pep Proxy
 function user_permissions(roles_id, app_id, action, resource, options) {
   debug('-------user_permissions-------');
-  
+
   const authorization_service_header = options.service_header;
-  const ids = options.payload.split();
-  const attributes = options.payload.split();
-  const types = options.payload.split();
-
-
+  const ids = options.payload.entity_ids ? options.payload.entity_ids.split(',') : null;
+  const attributes = options.payload.attributes ? options.payload.attributes.split(',') : null;
+  const types = options.payload.types ? options.payload.types.split(',') : null;
 
   return models.role_permission
     .findAll({
@@ -832,21 +829,21 @@ function user_permissions(roles_id, app_id, action, resource, options) {
           .then((permissions) =>
             permissions.filter((permission) => {
               let payload_checks = true;
-              if (permission.use_authorization_payload_headers === 1){
-                debug('Checking Headers');
-                payload_checks = 
-                  check_payload_permitted(ids, permission.authorization_id_header) &&
-                  check_payload_permitted(attributes, permission.authorization_attributes_header) &&
-                  check_payload_permitted(types, permission.authorization_types_header);
+              if (permission.use_authorization_payload === 1) {
+                payload_checks =
+                  check_payload_permitted(ids, permission.regex_entity_ids) &&
+                  check_payload_permitted(attributes, permission.regex_attributes) &&
+                  check_payload_permitted(types, permission.regex_types);
               }
-              
+
               return (
                 (permission.is_regex === 1
                   ? new RegExp(permission.resource).exec(resource)
                   : permission.resource === resource) &&
                 (permission.use_authorization_service_header === 1
                   ? permission.authorization_service_header === authorization_service_header
-                  : true)  && payload_checks
+                  : true) &&
+                payload_checks
               );
             })
           );

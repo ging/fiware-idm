@@ -170,10 +170,10 @@ describe('API - 9 - Permissions: ', function () {
     let permission_authorization_service_header;
     let permission_use_authorization_service_header;
 
-    let permission_authorization_id_header;
-    let permission_authorization_attributes_header;
-    let permission_authorization_types_header;
-    let permission_use_authorization_payload_headers;
+    let permission_regex_entity_ids;
+    let permission_regex_attributes;
+    let permission_regex_types;
+    let permission_use_authorization_payload;
     // eslint-enable no-unused-vars
 
 
@@ -196,15 +196,15 @@ describe('API - 9 - Permissions: ', function () {
         permission_description = json.permission.description;
         permission_action = json.permission.action;
         permission_resource = json.permission.resource;
-        // eslint-disable no-unused-vars
+        /* eslint-disable no-unused-vars */
         permission_authorization_service_header = json.authorization_service_header;
         permission_use_authorization_service_header = json.use_authorization_service_header;
 
-        permission_authorization_id_header = json.authorization_id_header;
-        permission_authorization_attributes_header = json.authorization_attributes_header;
-        permission_authorization_types_header = json.authorization_types_header;
-        permission_use_authorization_payload_headers = json.use_authorization_payload_headers;
-        // eslint-enable no-unused-vars
+        permission_regex_entity_ids = json.regex_entity_ids;
+        permission_regex_attributes = json.regex_attributes;
+        permission_regex_types = json.regex_types;
+        permission_use_authorization_payload = json.use_authorization_payload;
+        /* eslint-enable no-unused-vars */
         done();
       });
     });
@@ -230,10 +230,10 @@ describe('API - 9 - Permissions: ', function () {
         const response_resource = json.values_updated.resource;
         const response_authorization_service_header = json.values_updated.authorization_service_header;
         const response_use_authorization_service_header = json.values_updated.use_authorization_service_header;
-        const response_authorization_id_header = json.values_updated.authorization_id_header;
-        const response_authorization_attributes_header = json.values_updated.authorization_attributes_header;
-        const response_authorization_types_header = json.values_updated.authorization_types_header;
-        const response_use_authorization_payload_headers = json.values_updated.use_authorization_payload_headers;
+        const response_regex_entity_ids = json.values_updated.regex_entity_ids;
+        const response_regex_attributes = json.values_updated.regex_attributes;
+        const response_regex_types = json.values_updated.regex_types;
+        const response_use_authorization_payload = json.values_updated.use_authorization_payload;
         
 
         should.notEqual(permission_name, response_name);
@@ -243,10 +243,10 @@ describe('API - 9 - Permissions: ', function () {
         should.equal(undefined, response_authorization_service_header);
         should.equal(false, response_use_authorization_service_header);
 
-        should.equal(undefined, response_authorization_id_header);
-        should.equal(undefined, response_authorization_attributes_header);
-        should.equal(undefined, response_authorization_types_header);
-        should.equal(false, response_use_authorization_payload_headers);
+        should.equal(undefined, response_regex_entity_ids);
+        should.equal(undefined, response_regex_attributes);
+        should.equal(undefined, response_regex_types);
+        should.equal(false, response_use_authorization_payload);
 
         response.statusCode.should.equal(200);
         done();
@@ -399,7 +399,7 @@ describe('12) When creating a permission with no authorization id header but use
     const create_permission = {
       url: config.host + '/v1/applications/' + application_id + '/permissions',
       method: 'POST',
-      body: JSON.stringify(permissions.create.invalid_perm_body_no_authorization_id_header_but_use_authorization_payload_headers),
+      body: JSON.stringify(permissions.create.invalid_perm_body_no_regex_entity_ids_but_use_authorization_payload),
       headers: {
         'Content-Type': 'application/json',
         'X-Auth-token': token
@@ -418,7 +418,7 @@ describe('13) When creating a permission with no use authorization payload heade
     const create_permission = {
       url: config.host + '/v1/applications/' + application_id + '/permissions',
       method: 'POST',
-      body: JSON.stringify(permissions.create.invalid_perm_body_no_use_authorization_payload_headers_but_authorization_id_header),
+      body: JSON.stringify(permissions.create.invalid_perm_body_no_use_authorization_payload_but_regex_entity_ids),
       headers: {
         'Content-Type': 'application/json',
         'X-Auth-token': token

@@ -72,10 +72,10 @@ exports.index = function (req, res) {
         'resource',
         'authorization_service_header',
         'use_authorization_service_header',
-        'authorization_id_header',
-        'authorization_attributes_header',
-        'authorization_types_header',
-        'use_authorization_payload_headers',
+        'regex_entity_ids',
+        'regex_attributes',
+        'regex_types',
+        'use_authorization_payload',
         'xml'
       ],
       order: [['id', 'DESC']]
@@ -117,7 +117,7 @@ exports.create = function (req, res) {
       // Build a row and validate if input values are correct (not empty) before saving values in permission table
       req.body.permission.is_regex = !!req.body.permission.is_regex;
       req.body.permission.use_authorization_service_header = !!req.body.permission.use_authorization_service_header;
-      req.body.permission.use_authorization_payload_headers = !!req.body.permission.use_authorization_payload_headers;
+      req.body.permission.use_authorization_payload = !!req.body.permission.use_authorization_payload;
 
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
@@ -134,10 +134,10 @@ exports.create = function (req, res) {
           'resource',
           'authorization_service_header',
           'use_authorization_service_header',
-          'authorization_id_header',
-          'authorization_attributes_header',
-          'authorization_types_header',
-          'use_authorization_payload_headers',
+          'regex_entity_ids',
+          'regex_attributes',
+          'regex_types',
+          'use_authorization_payload',
           'xml',
           'is_regex',
           'oauth_client_id'
@@ -217,32 +217,32 @@ exports.update = function (req, res) {
           ? req.body.permission.authorization_service_header
           : req.permission.authorization_service_header;
 
-        req.permission.use_authorization_payload_headers = Object.prototype.hasOwnProperty.call(
+        req.permission.use_authorization_payload = Object.prototype.hasOwnProperty.call(
           req.body.permission,
-          'use_authorization_payload_headers'
+          'use_authorization_payload'
         )
-          ? req.body.permission.use_authorization_payload_headers
-          : req.permission.use_authorization_payload_headers;
+          ? req.body.permission.use_authorization_payload
+          : req.permission.use_authorization_payload;
 
-        req.permission.authorization_id_header = Object.prototype.hasOwnProperty.call(
+        req.permission.regex_entity_ids = Object.prototype.hasOwnProperty.call(
           req.body.permission,
-          'authorization_id_header'
+          'regex_entity_ids'
         )
-          ? req.body.permission.authorization_id_header
-          : req.permission.authorization_id_header;
+          ? req.body.permission.regex_entity_ids
+          : req.permission.regex_entity_ids;
 
-        req.permission.authorization_attributes_header = Object.prototype.hasOwnProperty.call(
+        req.permission.regex_attributes = Object.prototype.hasOwnProperty.call(
           req.body.permission,
-          'authorization_attributes_header'
+          'regex_attributes'
         )
-          ? req.body.permission.authorization_attributes_header
-          : req.permission.authorization_attributes_header;
-        req.permission.authorization_types_header = Object.prototype.hasOwnProperty.call(
+          ? req.body.permission.regex_attributes
+          : req.permission.regex_attributes;
+        req.permission.regex_types = Object.prototype.hasOwnProperty.call(
           req.body.permission,
-          'authorization_types_header'
+          'regex_types'
         )
-          ? req.body.permission.authorization_types_header
-          : req.permission.authorization_types_header;
+          ? req.body.permission.regex_types
+          : req.permission.regex_types;
 
         return req.permission.save();
       })
@@ -334,9 +334,9 @@ function check_create_body_request(body) {
       if ((permission.resource || 
         permission.action || 
         permission.use_authorization_service_header || 
-        permission.use_authorization_id_header || 
-        permission.use_authorization_attributes_header || 
-        permission.use_authorization_types_header) && permission.xml) {
+        permission.use_regex_entity_ids || 
+        permission.use_regex_attributes || 
+        permission.use_regex_types) && permission.xml) {
         reject(
           bad_request(
             'Cannot set action, resource or use_authorization_headers at the same time as xacml rule'
@@ -374,42 +374,42 @@ function check_create_body_request(body) {
       );
     }
 
-    if (permission.use_authorization_payload_headers) {
-      if (typeof permission.use_authorization_payload_headers !== 'boolean') {
-        reject(bad_request('use_authorization_payload_headers attribute must be a boolean'));
+    if (permission.use_authorization_payload) {
+      if (typeof permission.use_authorization_payload !== 'boolean') {
+        reject(bad_request('use_authorization_payload attribute must be a boolean'));
       }
-      if (!permission.authorization_id_header) {
+      if (!permission.regex_entity_ids) {
         reject(
           bad_request(
-            'if use_authorization_id_header is set, authorization_id_header needs to be set'
+            'if use_regex_entity_ids is set, regex_entity_ids needs to be set'
           )
         );
       }
-      if (!permission.authorization_attributes_header) {
+      if (!permission.regex_attributes) {
         reject(
           bad_request(
-            'if use_authorization_attributes_header is set, authorization_attributes_header needs to be set'
+            'if use_regex_attributes is set, regex_attributes needs to be set'
           )
         );
       }
-      if (!permission.authorization_types_header) {
+      if (!permission.regex_types) {
         reject(
           bad_request(
-            'if use_authorization_types_header is set, authorization_types_header needs to be set'
+            'if use_regex_types is set, regex_types needs to be set'
           )
         );
       }
-    } else if (permission.authorization_id_header) {
+    } else if (permission.regex_entity_ids) {
       reject(
-        bad_request('if authorization_id_header is set, use_authorization_id_header needs to be set')
+        bad_request('if regex_entity_ids is set, use_regex_entity_ids needs to be set')
       );
-    } else if (permission.authorization_attributes_header) {
+    } else if (permission.regex_attributes) {
       reject(
-        bad_request('if authorization_attributes_header is set, use_authorization_attributes_header needs to be set')
+        bad_request('if regex_attributes is set, use_regex_attributes needs to be set')
       );
-    } else if (permission.authorization_types_header) {
+    } else if (permission.regex_types) {
       reject(
-        bad_request('if authorization_types_header is set, use_authorization_types_header needs to be set')
+        bad_request('if regex_types is set, use_regex_types needs to be set')
       );
     }
     resolve();
@@ -463,21 +463,21 @@ function check_update_body_request(body) {
     }
 
 
-    if (permission.use_authorization_payload_headers) {
-      if (typeof permission.use_authorization_payload_headers !== 'boolean') {
-        reject(bad_request('use_authorization_payload_headers attribute must be a boolean'));
+    if (permission.use_authorization_payload) {
+      if (typeof permission.use_authorization_payload !== 'boolean') {
+        reject(bad_request('use_authorization_payload attribute must be a boolean'));
       }
-    } else if (permission.authorization_id_header) {
+    } else if (permission.regex_entity_ids) {
       reject(
-        bad_request('if authorization_id_header is set, use_authorization_id_header needs to be set')
+        bad_request('if regex_entity_ids is set, use_regex_entity_ids needs to be set')
       );
-    } else if (permission.authorization_attributes_header) {
+    } else if (permission.regex_attributes) {
       reject(
-        bad_request('if authorization_attributes_header is set, use_authorization_attributes_header needs to be set')
+        bad_request('if regex_attributes is set, use_regex_attributes needs to be set')
       );
-    } else if (permission.authorization_types_header) {
+    } else if (permission.regex_types) {
       reject(
-        bad_request('if authorization_types_header is set, use_authorization_types_header needs to be set')
+        bad_request('if regex_types is set, use_regex_types needs to be set')
       );
     }
 

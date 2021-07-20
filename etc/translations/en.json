@@ -609,7 +609,7 @@
       "label07": "Authorization ID Header",
       "label08": "Authorization Attributes Header",
       "label09": "Authorization Types Header",
-      "label_use_authorization_payload_headers": "Use Authorization Payload Headers",
+      "label_use_authorization_payload": "Use Authorization Payload Headers",
       "label_is_regex": "Is regular expression?",
       "label05": "Use XACML to define a more complex authorization policy.",
       "required_field": "This is a required field."

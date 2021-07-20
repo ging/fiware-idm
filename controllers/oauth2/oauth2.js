@@ -376,13 +376,13 @@ exports.authenticate_token = function (req, res) {
       application: req.query.app_id,
       service_header:req.query.authorization_service_header,
       payload: {
-         id: req.header('X-Auth-Id-List') || '',
-         attributes: req.header('X-Auth-Attributes-List') || '',
-         types: req.header('X-Auth-Types-List')|| ''
+         entity_ids: req.header('NGSI-Entity-Id-List'),
+         attributes: req.header('NGSI-Attribute-List'),
+         types: req.header('NGSI-Type-List')
       }
   };
 
-  if ((options.action || options.resource || options.service_header  || options.payload_headers) && options.authzforce) {
+  if (options.authzforce && (options.action || options.resource || options.service_header) ) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,

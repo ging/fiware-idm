@@ -25,10 +25,10 @@ exports.index = function (req, res) {
             'resource',
             'authorization_service_header',
             'use_authorization_service_header',
-            'authorization_id_header',
-            'authorization_attributes_header',
-            'authorization_types_header',
-            'use_authorization_payload_headers',
+            'regex_entity_ids',
+            'regex_attributes',
+            'regex_types',
+            'use_authorization_payload',
             'xml'
           ]
         }
@@ -205,10 +205,10 @@ function search_role_permission(application_id) {
               'resource',
               'authorization_service_header',
               'use_authorization_service_header',
-              'authorization_id_header',
-              'authorization_attributes_header',
-              'authorization_types_header',
-              'use_authorization_payload_headers',
+              'regex_entity_ids',
+              'regex_attributes',
+              'regex_types',
+              'use_authorization_payload',
               'xml'
             ]
           }

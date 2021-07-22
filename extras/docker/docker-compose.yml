@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   keyrock:
-    image: fiware/idm:7.9.2
+    image: fiware/idm:7.8.1
     container_name: fiware-keyrock
     hostname: keyrock
     networks:

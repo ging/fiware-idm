@@ -365,24 +365,72 @@ function oauth_authorize(req, res, next) {
     .catch(next);
 }
 
+exports.action_and_verb = function (req, res, next) {
+  debug(' --> action_and_verb');
+  req.locals = {
+    action: req.query.action,
+    resource: req.query.resource,
+    authzforce: req.query.authzforce,
+    application: req.query.app_id,
+    service_header: req.query.authorization_service_header
+  };
+
+  console.error(req.locals); 
+  next();
+};
+
+exports.ishare_payload = function (req, res, next) {
+  debug(' --> ishare_payload');
+
+  console.error(req.body);
+
+  req.locals = {
+    action: req.query.action,
+    resource: req.query.resource,
+    application: req.query.app_id,
+    service_header: req.query.authorization_service_header,
+    payload_entity_ids: req.header('NGSI-Entity-Id-List'),
+    payload_attributes: req.header('NGSI-Attribute-List'),
+    payload_types: req.header('NGSI-Type-List')
+  };
+  next();
+};
+
+exports.xacml_payload = function (req, res, next) {
+  debug(' --> xacml_payload');
+
+  console.error(req.body);
+
+  req.locals = {
+    action: req.query.action,
+    resource: req.query.resource,
+    application: req.query.app_id,
+    service_header: req.query.authorization_service_header,
+    payload_entity_ids: req.header('NGSI-Entity-Id-List'),
+    payload_attributes: req.header('NGSI-Attribute-List'),
+    payload_types: req.header('NGSI-Type-List')
+  };
+  next();
+};
+
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
 
   const options = {
-      action :req.query.action,
-      resource:req.query.resource,
-      authzforce:req.query.authzforce,
-      application: req.query.app_id,
-      service_header:req.query.authorization_service_header,
-      payload: {
-         entity_ids: req.header('NGSI-Entity-Id-List'),
-         attributes: req.header('NGSI-Attribute-List'),
-         types: req.header('NGSI-Type-List')
-      }
+    action: req.locals.action,
+    resource: req.locals.resource,
+    authzforce: req.locals.authzforce,
+    application: req.locals.app_id,
+    service_header: req.locals.authorization_service_header,
+    payload_entity_ids: req.locals.payload_entity_ids,
+    payload_attributes: req.locals.payload_attributes,
+    payload_types: req.locals.payload_types
   };
 
-  if (options.authzforce && (options.action || options.resource || options.service_header) ) {
+  console.error(options); 
+
+  if (options.authzforce && (options.action || options.resource || options.service_header)) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
@@ -438,11 +486,7 @@ function authenticate_jwt(req, res, options, jwt_secret) {
 
       const application_id = decoded.app_id;
 
-      create_oauth_response(
-        identity,
-        application_id,
-        options
-      )
+      create_oauth_response(identity, application_id, options)
         .then(function (response) {
           return res.status(200).json(response);
         })
@@ -476,11 +520,7 @@ function authenticate_bearer(req, res, options) {
     .then(function (token_info) {
       const identity = token_info.user;
       const application_id = token_info.oauth_client.id;
-      return create_oauth_response(
-        identity,
-        application_id,
-        options
-      );
+      return create_oauth_response(identity, application_id, options);
     })
     .then(function (response) {
       return res.status(200).json(response);

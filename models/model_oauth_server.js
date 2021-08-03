@@ -662,7 +662,7 @@ function search_user_info(user_info, options) {
         }
 
         if (action && resource) {
-          if (values[2] && values[2].length > 0) {
+          if (values[2] === true) {
             user_info.authorization_decision = 'Permit';
           } else {
             user_info.authorization_decision = 'Deny';
@@ -789,16 +789,14 @@ function user_roles(user_id, app_id) {
     });
 }
 
-function check_payload_permitted(payload, permissionRegex) {
+function payload_permission(payload, permissionRegex) {
   let permitted = true;
-  if (permissionRegex && payload){
+  if (permissionRegex && payload) {
     const regex = new RegExp(permissionRegex, 'i');
     permitted = payload.every((str) => {
       return regex.test(str);
     });
   }
-
-  debug(permissionRegex, permitted);
   return permitted;
 }
 
@@ -807,9 +805,33 @@ function user_permissions(roles_id, app_id, action, resource, options) {
   debug('-------user_permissions-------');
 
   const authorization_service_header = options.service_header;
-  const ids = options.payload.entity_ids ? options.payload.entity_ids.split(',') : null;
-  const attributes = options.payload.attributes ? options.payload.attributes.split(',') : null;
-  const types = options.payload.types ? options.payload.types.split(',') : null;
+  const ids = options.payload_entity_ids ? options.payload_entity_ids.split(',') : null;
+  const attributes = options.payload_attributes ? options.payload_attributes.split(',') : null;
+  const types = options.payload_types ? options.payload_types.split(',') : null;
+
+  const isPermitted = (permission) =>{
+    const check = {
+      resource:  (permission.is_regex === 1
+        ? new RegExp(permission.resource, 'i').test(resource)
+        : permission.resource === resource),
+      service_header:  true,
+      payload: true
+    };
+
+    if (permission.use_authorization_service_header === 1){
+        check.service_header = (permission.authorization_service_header === authorization_service_header);
+    }
+    if (config.authorization.level === 'payload') {
+      check.payload =
+        payload_permission(ids, permission.regex_entity_ids) &&
+        payload_permission(attributes, permission.regex_attributes) &&
+        payload_permission(types, permission.regex_types);
+    }
+ 
+    //debug(JSON.stringify(permission));
+    //debug(JSON.stringify(check));
+    return ( check.resource  && check.service_header && check.payload);
+  }
 
   return models.role_permission
     .findAll({
@@ -817,8 +839,8 @@ function user_permissions(roles_id, app_id, action, resource, options) {
       attributes: ['permission_id']
     })
     .then(function (permissions) {
-      if (permissions.length > 0) {
-        return models.permission
+      return (permissions.length === 0) ? false :
+        models.permission
           .findAll({
             where: {
               id: permissions.map((elem) => elem.permission_id),
@@ -826,30 +848,10 @@ function user_permissions(roles_id, app_id, action, resource, options) {
               action
             }
           })
-          .then((permissions) =>
-            permissions.filter((permission) => {
-              let payload_checks = true;
-              if (config.authorization.level === 'payload') {
-                payload_checks =
-                  check_payload_permitted(ids, permission.regex_entity_ids) &&
-                  check_payload_permitted(attributes, permission.regex_attributes) &&
-                  check_payload_permitted(types, permission.regex_types);
-              }
-
-              return (
-                (permission.is_regex === 1
-                  ? new RegExp(permission.resource).exec(resource)
-                  : permission.resource === resource) &&
-                (permission.use_authorization_service_header === 1
-                  ? permission.authorization_service_header === authorization_service_header
-                  : true) &&
-                payload_checks
-              );
-            })
-          );
-      }
-      return [];
-    });
+          .then((permissions) => {
+            return (_.some(permissions, isPermitted));
+          });
+      });
 }
 
 // Search Trusted applications

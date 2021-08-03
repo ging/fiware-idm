@@ -4,7 +4,7 @@ const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 
 const config_service = require('../../lib/configService.js');
-const config_authzforce = config_service.get_config().authorization;
+const config_authorization = config_service.get_config().authorization;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -116,7 +116,7 @@ exports.create = function (req, res) {
       // Build a row and validate if input values are correct (not empty) before saving values in permission table
       req.body.permission.is_regex = !!req.body.permission.is_regex;
       req.body.permission.use_authorization_service_header = !!req.body.permission.use_authorization_service_header;
-     
+
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
       permission.is_internal = false;
@@ -214,23 +214,14 @@ exports.update = function (req, res) {
           ? req.body.permission.authorization_service_header
           : req.permission.authorization_service_header;
 
-        req.permission.regex_entity_ids = Object.prototype.hasOwnProperty.call(
-          req.body.permission,
-          'regex_entity_ids'
-        )
+        req.permission.regex_entity_ids = Object.prototype.hasOwnProperty.call(req.body.permission, 'regex_entity_ids')
           ? req.body.permission.regex_entity_ids
           : req.permission.regex_entity_ids;
 
-        req.permission.regex_attributes = Object.prototype.hasOwnProperty.call(
-          req.body.permission,
-          'regex_attributes'
-        )
+        req.permission.regex_attributes = Object.prototype.hasOwnProperty.call(req.body.permission, 'regex_attributes')
           ? req.body.permission.regex_attributes
           : req.permission.regex_attributes;
-        req.permission.regex_types = Object.prototype.hasOwnProperty.call(
-          req.body.permission,
-          'regex_types'
-        )
+        req.permission.regex_types = Object.prototype.hasOwnProperty.call(req.body.permission, 'regex_types')
           ? req.body.permission.regex_types
           : req.permission.regex_types;
 
@@ -316,27 +307,26 @@ function check_create_body_request(body) {
       reject(bad_request('Missing parameter name in body request or empty name'));
     }
 
-    if (config_authzforce.level !== 'advanced' && permission.xml) {
+    if (config_authorization.level !== 'advanced' && permission.xml) {
       reject(bad_request('Idm is not configured to create XACML advanced rules'));
     }
 
-    if (config_authzforce.level === 'advanced') {
-      if ((permission.resource || 
-        permission.action || 
-        permission.use_authorization_service_header || 
-        permission.use_regex_entity_ids || 
-        permission.use_regex_attributes || 
-        permission.use_regex_types) && permission.xml) {
-        reject(
-          bad_request(
-            'Cannot set action, resource or use_authorization_headers at the same time as xacml rule'
-          )
-        );
+    if (config_authorization.level === 'advanced') {
+      if (
+        (permission.resource ||
+          permission.action ||
+          permission.use_authorization_service_header ||
+          permission.use_regex_entity_ids ||
+          permission.use_regex_attributes ||
+          permission.use_regex_types) &&
+        permission.xml
+      ) {
+        reject(bad_request('Cannot set action, resource or use_authorization_headers at the same time as xacml rule'));
       }
     }
 
     if (!(permission.action && permission.resource) && !permission.xml) {
-      if (config_authzforce.level === 'advanced') {
+      if (config_authorization.level === 'advanced') {
         reject(bad_request('Set action and resource or an advanced xacml rule'));
       } else {
         reject(bad_request('Set action and resource'));
@@ -352,31 +342,19 @@ function check_create_body_request(body) {
         reject(bad_request('use_authorization_service_header attribute must be a boolean'));
       }
       if (!permission.authorization_service_header) {
-        reject(
-          bad_request(
-            'if use_authorization_service_header is set, authorization_service_header needs to be set'
-          )
-        );
+        reject(bad_request('if use_authorization_service_header is set, authorization_service_header needs to be set'));
       }
     } else if (permission.authorization_service_header) {
-      reject(
-        bad_request('if authorization_service_header is set, use_authorization_service_header needs to be set')
-      );
+      reject(bad_request('if authorization_service_header is set, use_authorization_service_header needs to be set'));
     }
 
     if (config_authorization.level !== 'payload') {
       if (permission.regex_entity_ids) {
-      reject(
-        bad_request('Cannot set regex_entity_ids unless running in payload mode')
-      );
+        reject(bad_request('Cannot set regex_entity_ids unless running in payload mode'));
       } else if (permission.regex_attributes) {
-        reject(
-          bad_request('Cannot set regex_attributes unless running in payload mode')
-        );
+        reject(bad_request('Cannot set regex_attributes unless running in payload mode'));
       } else if (permission.regex_types) {
-        reject(
-          bad_request('Cannot set regex_types unless running in payload mode')
-        );
+        reject(bad_request('Cannot set regex_types unless running in payload mode'));
       }
     }
     resolve();
@@ -395,7 +373,7 @@ function check_update_body_request(body) {
       reject(bad_request('Cannot set empty name'));
     }
 
-    if (config_authzforce.level !== 'advanced' && permission.xml) {
+    if (config_authorization.level !== 'advanced' && permission.xml) {
       reject(bad_request('Idm is not configured to create XACML advanced rules'));
     }
 
@@ -403,7 +381,7 @@ function check_update_body_request(body) {
       reject(bad_request('Cannot set id or is_internal'));
     }
 
-    if (config_authzforce.level === 'advanced') {
+    if (config_authorization.level === 'advanced') {
       if ((permission.resource || permission.action || permission.use_authorization_service_header) && permission.xml) {
         reject(
           bad_request(
@@ -424,28 +402,18 @@ function check_update_body_request(body) {
         reject(bad_request('use_authorization_service_header attribute must be a boolean'));
       }
     } else if (!permission.authorization_service_header) {
-      reject(
-        bad_request('if use_authorization_service_header is set, authorization_service_header needs to be set')
-      );
+      reject(bad_request('if use_authorization_service_header is set, authorization_service_header needs to be set'));
     }
-
 
     if (config_authorization.level !== 'payload') {
       if (permission.regex_entity_ids) {
-        reject(
-          bad_request('Cannot set regex_entity_ids unless running in payload mode.')
-        );
+        reject(bad_request('Cannot set regex_entity_ids unless running in payload mode.'));
       } else if (permission.regex_attributes) {
-        reject(
-          bad_request('Cannot set regex_attributes unless running in payload mode')
-        );
+        reject(bad_request('Cannot set regex_attributes unless running in payload mode'));
       } else if (permission.regex_types) {
-        reject(
-          bad_request('Cannot set regex_types unless running in payload mode')
-        );
+        reject(bad_request('Cannot set regex_types unless running in payload mode'));
       }
     }
-
 
     resolve();
   });

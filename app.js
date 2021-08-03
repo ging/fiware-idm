@@ -25,6 +25,7 @@ const api = require('./routes/api/index');
 const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
 const authregistry = require('./routes/authregistry/authregistry');
+const oauth2_controller = require('./controllers/oauth2/oauth2');
 
 const app = express();
 const helmet = require('helmet');
@@ -45,8 +46,8 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
-      fontSrc: ["'self'",  'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
-      imgSrc: ["'self'", "data"], // eslint-disable-line snakecase/snakecase
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
+      imgSrc: ["'self'", 'data'], // eslint-disable-line snakecase/snakecase
       scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
       styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
     },
@@ -181,13 +182,13 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', force_ssl, oauth2);
-  app.get('/user', force_ssl, require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', force_ssl, oauth2_controller.action_and_verb, oauth2_controller.authenticate_token);
 
   // Set routes for saml2
   app.use('/saml2', force_ssl, saml2);
 
   // Set routes for the authorization registry if enabled
-  if (config.ar.url === "internal") {
+  if (config.ar.url === 'internal') {
     app.use('/ar', authregistry);
   }
 
@@ -200,13 +201,13 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
-  app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', oauth2_controller.action_and_verb, oauth2_controller.authenticate_token);
 
   // Set routes for saml2
   app.use('/saml2', saml2);
 
   // Set routes for the authorization registry if enabled
-  if (config.ar.url === "internal") {
+  if (config.ar.url === 'internal') {
     app.use('/ar', authregistry);
   }
 
@@ -224,6 +225,11 @@ if (config.authorization.authzforce.enabled) {
     .catch(function (error) {
       debug(clc.red(error));
     });
+}
+
+if (config.authorization.level === 'payload') {
+  app.post('/delegation', oauth2_controller.ishare_payload, oauth2_controller.authenticate_token);
+  app.post('/xacml', oauth2_controller.xacml_payload, oauth2_controller.authenticate_token);
 }
 
 module.exports = app;

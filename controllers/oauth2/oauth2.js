@@ -371,7 +371,7 @@ exports.action_and_verb = function (req, res, next) {
     action: req.query.action,
     resource: req.query.resource,
     authzforce: req.query.authzforce,
-    application: req.query.app_id,
+    app_id: req.query.app_id,
     service_header: req.query.authorization_service_header
   };
 
@@ -387,7 +387,7 @@ exports.ishare_payload = function (req, res, next) {
   req.locals = {
     action: req.query.action,
     resource: req.query.resource,
-    application: req.query.app_id,
+    app_id: req.query.app_id,
     service_header: req.query.authorization_service_header,
     payload_entity_ids: req.header('NGSI-Entity-Id-List'),
     payload_attributes: req.header('NGSI-Attribute-List'),
@@ -404,7 +404,7 @@ exports.xacml_payload = function (req, res, next) {
   req.locals = {
     action: req.query.action,
     resource: req.query.resource,
-    application: req.query.app_id,
+    app_id: req.query.app_id,
     service_header: req.query.authorization_service_header,
     payload_entity_ids: req.header('NGSI-Entity-Id-List'),
     payload_attributes: req.header('NGSI-Attribute-List'),

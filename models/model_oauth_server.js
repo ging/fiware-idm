@@ -662,11 +662,7 @@ function search_user_info(user_info, options) {
         }
 
         if (action && resource) {
-          if (values[2] === true) {
-            user_info.authorization_decision = 'Permit';
-          } else {
-            user_info.authorization_decision = 'Deny';
-          }
+          user_info.authorization_decision =  values[2] ? 'Permit' :'Deny';
         } else if (config_authzforce.enabled && authzforce) {
           const authzforce_domain = values[2];
           if (authzforce_domain) {

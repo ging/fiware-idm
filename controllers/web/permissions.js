@@ -33,7 +33,6 @@ exports.create_permission = function (req, res) {
       regex_entity_ids: body.regex_entity_ids,
       regex_attributes: body.regex_attributes,
       regex_types: body.regex_types,
-      use_authorization_payload: body.use_authorization_payload,
       is_regex: body.is_regex,
       xml: config_authzforce.level === 'advanced' ? body.xml : undefined,
       oauth_client_id: req.application.id
@@ -155,7 +154,6 @@ exports.edit_permission = function (req, res) {
       regex_entity_ids: body.regex_entity_ids,
       regex_attributes: body.regex_attributes,
       regex_types: body.regex_types,
-      use_authorization_payload: body.use_authorization_payload,
       is_regex: body.is_regex,
       action: body.action,
       xml: config_authzforce.level === 'advanced' ? body.xml : undefined,
@@ -197,7 +195,6 @@ exports.edit_permission = function (req, res) {
                 regex_entity_ids: body.regex_entity_ids,
                 regex_attributes: body.regex_attributes,
                 regex_types: body.regex_types,
-                use_authorization_payload: body.use_authorization_payload,
                 is_regex: body.is_regex,
                 action: body.action,
                 xml: config_authzforce.level === 'advanced' ? body.xml : undefined
@@ -213,7 +210,6 @@ exports.edit_permission = function (req, res) {
                   'regex_entity_ids',
                   'regex_attributes',
                   'regex_types',
-                  'use_authorization_payload',
                   'is_regex',
                   'xml'
                 ],

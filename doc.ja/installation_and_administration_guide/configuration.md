@@ -430,7 +430,7 @@ Authzforce のインスタンスをデプロイする必要があります。許
 
 ```javascript
 config.authorization = {
-    level: 'basic', // basic|advanced
+    level: 'basic', // basic|payload|advanced
     authzforce: {
         enabled: false,
         host: 'localhost',

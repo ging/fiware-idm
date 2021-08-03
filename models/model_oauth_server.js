@@ -829,7 +829,7 @@ function user_permissions(roles_id, app_id, action, resource, options) {
           .then((permissions) =>
             permissions.filter((permission) => {
               let payload_checks = true;
-              if (permission.use_authorization_payload === 1) {
+              if (config.authorization.level === 'payload') {
                 payload_checks =
                   check_payload_permitted(ids, permission.regex_entity_ids) &&
                   check_payload_permitted(attributes, permission.regex_attributes) &&

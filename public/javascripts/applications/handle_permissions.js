@@ -57,7 +57,6 @@ $(document).ready(function () {
       is_regex: $(this).find('#id_is_regex')[0].checked ? 1 : 0,
       use_authorization_service_header: $(this).find('#id_use_authorization_service_header')[0].checked ? 1 : 0,
       authorization_service_header: $(this).find('#id_authorization_service_header').val(),
-      use_authorization_payload: $(this).find('#id_use_authorization_payload')[0].checked ? 1 : 0,
       regex_entity_ids: $(this).find('#id_regex_entity_ids').val(),
       regex_types: $(this).find('#id_regex_types').val(),
       regex_attributes: $(this).find('#id_regex_attributes').val(),

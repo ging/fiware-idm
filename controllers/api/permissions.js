@@ -75,7 +75,6 @@ exports.index = function (req, res) {
         'regex_entity_ids',
         'regex_attributes',
         'regex_types',
-        'use_authorization_payload',
         'xml'
       ],
       order: [['id', 'DESC']]
@@ -117,8 +116,7 @@ exports.create = function (req, res) {
       // Build a row and validate if input values are correct (not empty) before saving values in permission table
       req.body.permission.is_regex = !!req.body.permission.is_regex;
       req.body.permission.use_authorization_service_header = !!req.body.permission.use_authorization_service_header;
-      req.body.permission.use_authorization_payload = !!req.body.permission.use_authorization_payload;
-
+     
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
       permission.is_internal = false;
@@ -137,7 +135,6 @@ exports.create = function (req, res) {
           'regex_entity_ids',
           'regex_attributes',
           'regex_types',
-          'use_authorization_payload',
           'xml',
           'is_regex',
           'oauth_client_id'
@@ -216,13 +213,6 @@ exports.update = function (req, res) {
         )
           ? req.body.permission.authorization_service_header
           : req.permission.authorization_service_header;
-
-        req.permission.use_authorization_payload = Object.prototype.hasOwnProperty.call(
-          req.body.permission,
-          'use_authorization_payload'
-        )
-          ? req.body.permission.use_authorization_payload
-          : req.permission.use_authorization_payload;
 
         req.permission.regex_entity_ids = Object.prototype.hasOwnProperty.call(
           req.body.permission,

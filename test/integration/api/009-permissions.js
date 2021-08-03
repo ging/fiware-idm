@@ -203,7 +203,6 @@ describe('API - 9 - Permissions: ', function () {
         permission_regex_entity_ids = json.regex_entity_ids;
         permission_regex_attributes = json.regex_attributes;
         permission_regex_types = json.regex_types;
-        permission_use_authorization_payload = json.use_authorization_payload;
         /* eslint-enable no-unused-vars */
         done();
       });
@@ -233,7 +232,6 @@ describe('API - 9 - Permissions: ', function () {
         const response_regex_entity_ids = json.values_updated.regex_entity_ids;
         const response_regex_attributes = json.values_updated.regex_attributes;
         const response_regex_types = json.values_updated.regex_types;
-        const response_use_authorization_payload = json.values_updated.use_authorization_payload;
         
 
         should.notEqual(permission_name, response_name);
@@ -246,7 +244,6 @@ describe('API - 9 - Permissions: ', function () {
         should.equal(undefined, response_regex_entity_ids);
         should.equal(undefined, response_regex_attributes);
         should.equal(undefined, response_regex_types);
-        should.equal(false, response_use_authorization_payload);
 
         response.statusCode.should.equal(200);
         done();
@@ -394,41 +391,4 @@ describe('11) When creating a permission with use_authorization_service_header e
     });
   });
 });
-describe('12) When creating a permission with no authorization id header but use authorization payload headers', function () {
-  it('should return a 400 Bad request', function (done) {
-    const create_permission = {
-      url: config.host + '/v1/applications/' + application_id + '/permissions',
-      method: 'POST',
-      body: JSON.stringify(permissions.create.invalid_perm_body_no_regex_entity_ids_but_use_authorization_payload),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-token': token
-      }
-    };
 
-    request(create_permission, function (error, response) {
-      should.not.exist(error);
-      response.statusCode.should.equal(400);
-      done();
-    });
-  });
-});
-describe('13) When creating a permission with no use authorization payload headers but authorization id header', function () {
-  it('should return a 400 Bad request', function (done) {
-    const create_permission = {
-      url: config.host + '/v1/applications/' + application_id + '/permissions',
-      method: 'POST',
-      body: JSON.stringify(permissions.create.invalid_perm_body_no_use_authorization_payload_but_regex_entity_ids),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-token': token
-      }
-    };
-
-    request(create_permission, function (error, response) {
-      should.not.exist(error);
-      response.statusCode.should.equal(400);
-      done();
-    });
-  });
-});

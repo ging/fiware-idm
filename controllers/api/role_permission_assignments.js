@@ -28,7 +28,6 @@ exports.index = function (req, res) {
             'regex_entity_ids',
             'regex_attributes',
             'regex_types',
-            'use_authorization_payload',
             'xml'
           ]
         }

@@ -451,7 +451,6 @@ CREATE TABLE `permission` (
   `regex_entity_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `regex_attributes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `regex_types` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `use_authorization_payload` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `oauth_client_id` (`oauth_client_id`),
   CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`oauth_client_id`) REFERENCES `oauth_client` (`id`) ON DELETE CASCADE
@@ -465,17 +464,17 @@ CREATE TABLE `permission` (
 LOCK TABLES `permission` WRITE;
 /*!40000 ALTER TABLE `permission` DISABLE KEYS */;
 INSERT INTO `permission` VALUES
-('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
-('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
-('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
-('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
-('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
-('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL, 0),
-('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
-('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
-('alrmbell-ring-0000-0000-000000000000','Ring Alarm','Ring Alarm Bell',0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
-('pricechg-stck-0000-0000-000000000000','Price Change','Access Price Changes',0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL, 0),
-('attribute-lvl-0000-0000-000000000000','Attribute Level','Read Attributes',0,'GET,POST,PATCH,DELETE','/ngsi-ld/v1/entities',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, 'urn:ngsi-ld:.*', '[speed|location|name]', '[Car|Bus]', 1);
+('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL),
+('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL),
+('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL),
+('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL),
+('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL),
+('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app', 0, NULL, 0, NULL, NULL, NULL),
+('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL),
+('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL),
+('alrmbell-ring-0000-0000-000000000000','Ring Alarm','Ring Alarm Bell',0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL),
+('pricechg-stck-0000-0000-000000000000','Price Change','Access Price Changes',0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, NULL, NULL, NULL),
+('attribute-lvl-0000-0000-000000000000','Attribute Level','Read Attributes',0,'GET,POST,PATCH,DELETE','/ngsi-ld/v1/entities',NULL,'tutorial-dckr-site-0000-xpresswebapp', 0, NULL, 0, 'urn:ngsi-ld:.*', '[speed|location|name]', '[Car|Bus]');
 /*!40000 ALTER TABLE `permission` ENABLE KEYS */;
 UNLOCK TABLES;
 

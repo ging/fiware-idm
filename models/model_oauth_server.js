@@ -814,6 +814,10 @@ function user_permissions(roles_id, app_id, action, resource, options) {
       payload: true
     };
 
+    if (check.resource === false){
+      return false;
+    }
+
     if (permission.use_authorization_service_header === 1){
         check.service_header = (permission.authorization_service_header === authorization_service_header);
     }
@@ -826,7 +830,7 @@ function user_permissions(roles_id, app_id, action, resource, options) {
  
     //debug(JSON.stringify(permission));
     //debug(JSON.stringify(check));
-    return ( check.resource  && check.service_header && check.payload);
+    return ( check.service_header && check.payload);
   }
 
   return models.role_permission

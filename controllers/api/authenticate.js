@@ -101,7 +101,7 @@ const delete_token = function (req, res) {
       return token.destroy();
     })
     .then(function () {
-      res.status(204).json('Appication ' + req.params.application_id + ' destroyed');
+      res.status(204).json('Application ' + req.params.application_id + ' destroyed');
     })
     .catch(function (error) {
       debug('Error: ' + error);
@@ -362,7 +362,7 @@ const create_token = function (req, res) {
     })
     .catch(function (error) {
       // Log the actual error to the debug log
-      debug('Error: ' + error);
+      debug('Error: ', error);
       // If an actual 401 has been raised, use the existing message.
       // But always return a 401 - Unauthorized error to the user.
       // This avoid information leakage.
@@ -382,10 +382,17 @@ const create_token = function (req, res) {
 // Function to check if parameters exist in request
 function check_create_token_request(req) {
   return new Promise(function (resolve, reject) {
-    if (!req.headers['content-type'] || !req.headers['content-type'].startsWith('application/json')) {
+    if (
+      !req.headers['content-type'] ||
+      !(
+        req.headers['content-type'].startsWith('application/json') ||
+        req.headers['content-type'].startsWith('application/x-www-form-urlencoded')
+      )
+    ) {
       reject({
         error: {
-          message: 'Missing parameter: header Content-Type: application/json',
+          message:
+            'Missing parameter: header Content-Type: application/json or header Content-Type: application/x-www-form-urlencoded',
           code: 400,
           title: 'Bad Request'
         }

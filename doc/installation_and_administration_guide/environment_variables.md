@@ -32,7 +32,7 @@ ease Keyrock configuration.
 | IDM_OAUTH_UNIQUE_URL                | Boolean | Set URL as unique parameter (this parameter will be used to redirect after a sign out if redirect_sign_out_uri) | true,false                  |
 | IDM_OIDC_JWT_ALGORITHM              | String  | Set the algorithm that will firm ID Tokens generated with OIDC                                                  | HS256,HS384,HS512,RS256     |
 | IDM_API_LIFETIME                    | Integer | Lifetime of API Token to be used to create resources on Keyrock                                                 | -                           |
-| IDM_PDP_LEVEL                       | String  | Allow basic (HTTP verb + path) or advanced (XML rule. Need an AuthZforce instance) authorization rules          | basic,advanced              |
+| IDM_PDP_LEVEL                       | String  | Allow basic (HTTP verb + path) payload or advanced (XML rule. Need an AuthZforce instance) authorization rules          | basic,payload,advanced              |
 | IDM_AUTHZFORCE_ENABLED              | Boolean | Enable use of authZforce to store basic and advanced rules                                                      | true,false                  |
 | IDM_AUTHZFORCE_HOST                 | String  | Name of the host where AuthZforce is running                                                                    | -                           |
 | IDM_AUTHZFORCE_PORT                 | Integer | Port where AuthZforce is running                                                                                | 0 to 65536                  |

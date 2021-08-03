@@ -207,7 +207,6 @@ function search_role_permission(application_id) {
               'regex_entity_ids',
               'regex_attributes',
               'regex_types',
-              'use_authorization_payload',
               'xml'
             ]
           }

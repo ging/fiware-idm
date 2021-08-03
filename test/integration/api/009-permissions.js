@@ -173,7 +173,6 @@ describe('API - 9 - Permissions: ', function () {
     let permission_regex_entity_ids;
     let permission_regex_attributes;
     let permission_regex_types;
-    let permission_use_authorization_payload;
     // eslint-enable no-unused-vars
 
 

@@ -364,43 +364,20 @@ function check_create_body_request(body) {
       );
     }
 
-    if (permission.use_authorization_payload) {
-      if (typeof permission.use_authorization_payload !== 'boolean') {
-        reject(bad_request('use_authorization_payload attribute must be a boolean'));
-      }
-      if (!permission.regex_entity_ids) {
+    if (config_authorization.level !== 'payload') {
+      if (permission.regex_entity_ids) {
+      reject(
+        bad_request('Cannot set regex_entity_ids unless running in payload mode')
+      );
+      } else if (permission.regex_attributes) {
         reject(
-          bad_request(
-            'if use_regex_entity_ids is set, regex_entity_ids needs to be set'
-          )
+          bad_request('Cannot set regex_attributes unless running in payload mode')
+        );
+      } else if (permission.regex_types) {
+        reject(
+          bad_request('Cannot set regex_types unless running in payload mode')
         );
       }
-      if (!permission.regex_attributes) {
-        reject(
-          bad_request(
-            'if use_regex_attributes is set, regex_attributes needs to be set'
-          )
-        );
-      }
-      if (!permission.regex_types) {
-        reject(
-          bad_request(
-            'if use_regex_types is set, regex_types needs to be set'
-          )
-        );
-      }
-    } else if (permission.regex_entity_ids) {
-      reject(
-        bad_request('if regex_entity_ids is set, use_regex_entity_ids needs to be set')
-      );
-    } else if (permission.regex_attributes) {
-      reject(
-        bad_request('if regex_attributes is set, use_regex_attributes needs to be set')
-      );
-    } else if (permission.regex_types) {
-      reject(
-        bad_request('if regex_types is set, use_regex_types needs to be set')
-      );
     }
     resolve();
   });
@@ -453,22 +430,20 @@ function check_update_body_request(body) {
     }
 
 
-    if (permission.use_authorization_payload) {
-      if (typeof permission.use_authorization_payload !== 'boolean') {
-        reject(bad_request('use_authorization_payload attribute must be a boolean'));
+    if (config_authorization.level !== 'payload') {
+      if (permission.regex_entity_ids) {
+        reject(
+          bad_request('Cannot set regex_entity_ids unless running in payload mode.')
+        );
+      } else if (permission.regex_attributes) {
+        reject(
+          bad_request('Cannot set regex_attributes unless running in payload mode')
+        );
+      } else if (permission.regex_types) {
+        reject(
+          bad_request('Cannot set regex_types unless running in payload mode')
+        );
       }
-    } else if (permission.regex_entity_ids) {
-      reject(
-        bad_request('if regex_entity_ids is set, use_regex_entity_ids needs to be set')
-      );
-    } else if (permission.regex_attributes) {
-      reject(
-        bad_request('if regex_attributes is set, use_regex_attributes needs to be set')
-      );
-    } else if (permission.regex_types) {
-      reject(
-        bad_request('if regex_types is set, use_regex_types needs to be set')
-      );
     }
 
 

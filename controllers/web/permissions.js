@@ -77,7 +77,6 @@ exports.create_permission = function (req, res) {
                 'regex_entity_ids',
                 'regex_attributes',
                 'regex_types',
-                'use_authorization_payload',
                 'is_regex',
                 'xml',
                 'oauth_client_id'

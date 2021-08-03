@@ -167,9 +167,6 @@ $(document).ready(function () {
             if (result.use_authorization_service_header > 0) {
               $('#create_permission_form').find('#id_use_authorization_service_header')[0].checked = true;
             }
-            if (result.use_authorization_payload > 0) {
-              $('#create_permission_form').find('#id_use_authorization_payload')[0].checked = true;
-            }
             $('#create_permission_form')
               .find('#id_authorization_service_header')
               .val(result.authorization_service_header);

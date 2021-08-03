@@ -79,24 +79,6 @@
 				"use_authorization_service_header": false
 			}
 		},
-		"invalid_perm_body_no_regex_entity_ids_but_use_authorization_payload": {
-			"permission": {
-				"name": "permission 3",
-				"description": "permission 3 description",
-				"action": "GET",
-				"resource": "login",
-                "use_authorization_payload": true
-			}
-		},
-		"invalid_perm_body_no_use_authorization_payload_but_regex_entity_ids": {
-			"permission": {
-				"name": "permission 4",
-				"description": "permission 4 description",
-				"action": "GET",
-				"resource": "login",
-                "regex_entity_ids": "test"
-			}
-		},
 	},
 	"read": {
 		"create": {

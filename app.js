@@ -182,7 +182,12 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', force_ssl, oauth2);
-  app.get('/user', force_ssl, oauth2_controller.action_and_verb, oauth2_controller.authenticate_token);
+  app.get('/user', force_ssl, oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/delegation', force_ssl, oauth2_controller.ishare_payload);
+    app.post('/xacml', force_ssl, oauth2_controller.xacml_payload);
+  }
 
   // Set routes for saml2
   app.use('/saml2', force_ssl, saml2);
@@ -201,7 +206,12 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
-  app.get('/user', oauth2_controller.action_and_verb, oauth2_controller.authenticate_token);
+  app.get('/user', oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/delegation', oauth2_controller.ishare_payload);
+    app.post('/xacml', oauth2_controller.xacml_payload);
+  }
 
   // Set routes for saml2
   app.use('/saml2', saml2);
@@ -225,11 +235,6 @@ if (config.authorization.authzforce.enabled) {
     .catch(function (error) {
       debug(clc.red(error));
     });
-}
-
-if (config.authorization.level === 'payload') {
-  app.post('/delegation', oauth2_controller.ishare_payload, oauth2_controller.authenticate_token);
-  app.post('/xacml', oauth2_controller.xacml_payload, oauth2_controller.authenticate_token);
 }
 
 module.exports = app;

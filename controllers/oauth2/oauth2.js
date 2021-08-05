@@ -365,35 +365,23 @@ function oauth_authorize(req, res, next) {
     .catch(next);
 }
 
-exports.action_and_verb = function (req, res, next) {
-  debug(' --> action_and_verb');
-  req.locals = {
-    action: req.query.action,
-    resource: req.query.resource,
-    authzforce: req.query.authzforce,
-    app_id: req.query.app_id,
-    service_header: req.query.authorization_service_header
-  };
 
-  console.error(req.locals); 
-  next();
-};
 
 exports.ishare_payload = function (req, res, next) {
   debug(' --> ishare_payload');
 
   console.error(req.body);
 
-  req.locals = {
+  const data = {
     action: req.query.action,
     resource: req.query.resource,
-    app_id: req.query.app_id,
+    application: req.query.app_id,
     service_header: req.query.authorization_service_header,
     payload_entity_ids: req.header('NGSI-Entity-Id-List'),
     payload_attributes: req.header('NGSI-Attribute-List'),
     payload_types: req.header('NGSI-Type-List')
-  };
-  next();
+  }
+  return res.status(401).json({});
 };
 
 exports.xacml_payload = function (req, res, next) {
@@ -401,16 +389,18 @@ exports.xacml_payload = function (req, res, next) {
 
   console.error(req.body);
 
-  req.locals = {
+  const data = {
     action: req.query.action,
     resource: req.query.resource,
-    app_id: req.query.app_id,
+    application: req.query.app_id,
     service_header: req.query.authorization_service_header,
     payload_entity_ids: req.header('NGSI-Entity-Id-List'),
     payload_attributes: req.header('NGSI-Attribute-List'),
     payload_types: req.header('NGSI-Type-List')
-  };
-  next();
+  }
+  //next();
+
+  return res.status(401).json({});
 };
 
 // GET /user -- Function to handle token authentication
@@ -418,17 +408,12 @@ exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
 
   const options = {
-    action: req.locals.action,
-    resource: req.locals.resource,
-    authzforce: req.locals.authzforce,
-    application: req.locals.app_id,
-    service_header: req.locals.authorization_service_header,
-    payload_entity_ids: req.locals.payload_entity_ids,
-    payload_attributes: req.locals.payload_attributes,
-    payload_types: req.locals.payload_types
+      action: req.query.action,
+      resource: req.query.resource,
+      authzforce: req.query.authzforce,
+      application: req.query.app_id,
+      service_header: req.query.authorization_service_header
   };
-
-  console.error(options); 
 
   if (options.authzforce && (options.action || options.resource || options.service_header)) {
     const error = {

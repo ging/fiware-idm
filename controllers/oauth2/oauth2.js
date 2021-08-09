@@ -1,5 +1,6 @@
 const models = require('../../models/models.js');
 const create_oauth_response = require('../../models/model_oauth_server.js').create_oauth_response;
+const user_permissions = require('../../models/model_oauth_server.js').user_permissions;
 const config_service = require('../../lib/configService.js');
 const config_eidas = config_service.get_config().eidas;
 const config_oauth2 = config_service.get_config().oauth2;
@@ -387,21 +388,54 @@ exports.ishare_payload = function (req, res, next) {
 exports.xacml_payload = function (req, res, next) {
   debug(' --> xacml_payload');
 
-  console.error(req.body);
+  const options = {};
+  const obj = req.body;
+  const access = obj.Request.AccessSubject.Attribute;
+  const action = obj.Request.Action.Attribute;
+  const resource = obj.Request.Resource.Attribute;
 
-  const data = {
-    action: req.query.action,
-    resource: req.query.resource,
-    application: req.query.app_id,
-    service_header: req.query.authorization_service_header,
-    payload_entity_ids: req.header('NGSI-Entity-Id-List'),
-    payload_attributes: req.header('NGSI-Attribute-List'),
-    payload_types: req.header('NGSI-Type-List')
-  }
-  //next();
+  const mapping = {
+    "urn:oasis:names:tc:xacml:2.0:subject:role" : "roles",
+    "urn:oasis:names:tc:xacml:1.0:resource:resource-id": "application",
+    "urn:thales:xacml:2.0:resource:sub-resource-id": "resource",
+    "urn:ngsi-ld:resource:tenant": "service_header",
+    "urn:ngsi-ld:resource:types": "payload_types",
+    "urn:ngsi-ld:resource:attrs": "payload_attributes",
+    "urn:ngsi-ld:resource:ids": "payload_entity_ids",
+    "urn:oasis:names:tc:xacml:1.0:action:action-id": "action"
+  };
 
-  return res.status(401).json({});
-};
+  access.forEach((elem) =>{
+    options[mapping[elem.AttributeId]] = elem.Value;
+  });
+  action.forEach((elem) =>{
+    options[mapping[elem.AttributeId]] = elem.Value;
+  });
+  resource.forEach((elem) =>{
+    options[mapping[elem.AttributeId]] = elem.Value;
+  });
+
+  return user_permissions(options.roles, options.application, options.action, options.resource, options)
+    .then(function (permit) {
+       const result = {
+          Response: [{
+            Decision:  (permit ? "Permit": "Deny"),
+            Status: {
+              StatusCode:{
+                Value: "urn:oasis:names:tc:xacml:1.0:status:ok",
+                StatusCode: {"Value": "urn:oasis:names:tc:xacml:1.0:status:ok"}
+              }
+            }
+         }]};
+      return res.status(200).json(result);
+    })
+    .catch(function (error) {
+      debug('Error ', error);
+      // Request is not authorized.
+      return res.status(error.code || 500).json(error.message || error);
+    });
+  
+}
 
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {

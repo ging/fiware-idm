@@ -801,9 +801,9 @@ function user_permissions(roles_id, app_id, action, resource, options) {
   debug('-------user_permissions-------');
 
   const authorization_service_header = options.service_header;
-  const ids = options.payload_entity_ids ? options.payload_entity_ids.split(',') : null;
-  const attributes = options.payload_attributes ? options.payload_attributes.split(',') : null;
-  const types = options.payload_types ? options.payload_types.split(',') : null;
+  const ids = options.payload_entity_ids;
+  const attributes = options.payload_attributes;
+  const types = options.payload_types;
 
   const isPermitted = (permission) =>{
     const check = {

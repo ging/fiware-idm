@@ -367,26 +367,38 @@ function oauth_authorize(req, res, next) {
 }
 
 
-
-exports.ishare_payload = function (req, res, next) {
-  debug(' --> ishare_payload');
-
-  console.error(req.body);
-
-  const data = {
-    action: req.query.action,
-    resource: req.query.resource,
-    application: req.query.app_id,
-    service_header: req.query.authorization_service_header,
-    payload_entity_ids: req.header('NGSI-Entity-Id-List'),
-    payload_attributes: req.header('NGSI-Attribute-List'),
-    payload_types: req.header('NGSI-Type-List')
+// Read in parameters in Open Policy Agent JSON format and make
+// a Permit/Deny adjudication
+exports.auth_opa_policy = function (req, res, next) {
+  debug(' --> auth_opa_policy');
+  const options = {
+    action: req.body.action,
+    roles: req.body.roles,
+    resource: req.body.resource,
+    application: req.body.appId,
+    service_header: req.body.tenant,
+    payload_entity_ids: req.body.ids,
+    payload_attributes: req.body.attrs,
+    payload_types: req.body.types,
   }
-  return res.status(401).json({});
+  return user_permissions(options.roles, options.application, options.action, options.resource, options)
+    .then(function (permit) {
+      const result = {
+        allow:  permit,
+      };
+      return res.status(200).json(result);
+    })
+    .catch(function (error) {
+      debug('Error ', error);
+      // Request is not authorized.
+      return res.status(error.code || 500).json(error.message || error);
+    });
 };
 
-exports.xacml_payload = function (req, res, next) {
-  debug(' --> xacml_payload');
+// Read in parameters in XACML JSON format and make
+// a Permit/Deny adjudication
+exports.auth_xacml_policy = function (req, res, next) {
+  debug(' --> auth_xacml_policy');
 
   const options = {};
   const obj = req.body;

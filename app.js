@@ -185,8 +185,8 @@ if (config.https.enabled) {
   app.get('/user', force_ssl, oauth2_controller.authenticate_token);
 
   if (config.authorization.level === 'payload') {
-    app.post('/delegation', force_ssl, oauth2_controller.ishare_payload);
-    app.post('/xacml', force_ssl, oauth2_controller.xacml_payload);
+    app.post('/pdp/open_policy_agent', force_ssl, oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', force_ssl, oauth2_controller.auth_xacml_policy);
   }
 
   // Set routes for saml2
@@ -209,8 +209,8 @@ if (config.https.enabled) {
   app.get('/user', oauth2_controller.authenticate_token);
 
   if (config.authorization.level === 'payload') {
-    app.post('/delegation', oauth2_controller.ishare_payload);
-    app.post('/xacml', oauth2_controller.xacml_payload);
+    app.post('/pdp/open_policy_agent', oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', oauth2_controller.auth_xacml_policy);
   }
 
   // Set routes for saml2

@@ -14,6 +14,17 @@ const partials = require('express-partials');
 const path = require('path');
 const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
+const packageInformation = require('./package.json');
+const fs = require('fs')
+
+const version = require('./version.json');
+version.keyrock.version = packageInformation.version;
+version.keyrock.doc =  packageInformation.homepage;
+
+fs.stat("./package.json", function(err, stats){
+   version.keyrock.release_date = stats.mtime;
+
+});
 
 // Obtain secret from config file
 const config_service = require('./lib/configService.js');
@@ -97,7 +108,6 @@ if (config.cors.enabled) {
 // Set routes for version
 const up_date = new Date();
 app.use('/version', function (req, res) {
-  const version = require('./version.json');
   version.keyrock.uptime = require('./lib/time').ms_to_time(new Date() - up_date);
   version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
   res.status(200).send(version);

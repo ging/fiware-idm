@@ -14,12 +14,12 @@ const partials = require('express-partials');
 const path = require('path');
 const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
-const packageInformation = require('./package.json');
+const package_info = require('./package.json');
 const fs = require('fs')
 
 const version = require('./version.json');
-version.keyrock.version = packageInformation.version;
-version.keyrock.doc =  packageInformation.homepage;
+version.keyrock.version = package_info.version;
+version.keyrock.doc =  package_info.homepage;
 
 fs.stat("./package.json", function(err, stats){
    version.keyrock.release_date = stats.mtime;

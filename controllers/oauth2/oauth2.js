@@ -369,7 +369,7 @@ function oauth_authorize(req, res, next) {
 
 // Read in parameters in Open Policy Agent JSON format and make
 // a Permit/Deny adjudication
-exports.auth_opa_policy = function (req, res, next) {
+exports.auth_opa_policy = function (req, res) {
   debug(' --> auth_opa_policy');
   const options = {
     action: req.body.action,
@@ -397,7 +397,7 @@ exports.auth_opa_policy = function (req, res, next) {
 
 // Read in parameters in XACML JSON format and make
 // a Permit/Deny adjudication
-exports.auth_xacml_policy = function (req, res, next) {
+exports.auth_xacml_policy = function (req, res) {
   debug(' --> auth_xacml_policy');
 
   const options = {};
@@ -429,6 +429,7 @@ exports.auth_xacml_policy = function (req, res, next) {
 
   return user_permissions(options.roles, options.application, options.action, options.resource, options)
     .then(function (permit) {
+        /* eslint-disable snakecase/snakecase */
        const result = {
           Response: [{
             Decision:  (permit ? "Permit": "Deny"),
@@ -439,6 +440,7 @@ exports.auth_xacml_policy = function (req, res, next) {
               }
             }
          }]};
+        /* eslint-enable snakecase/snakecase */
       return res.status(200).json(result);
     })
     .catch(function (error) {

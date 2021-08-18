@@ -662,7 +662,7 @@ function search_user_info(user_info, options) {
         }
 
         if (action && resource) {
-          user_info.authorization_decision =  values[2] ? 'Permit' :'Deny';
+          user_info.authorization_decision = values[2] ? 'Permit' : 'Deny';
         } else if (config_authzforce.enabled && authzforce) {
           const authzforce_domain = values[2];
           if (authzforce_domain) {
@@ -785,12 +785,27 @@ function user_roles(user_id, app_id) {
     });
 }
 
+// A payload ids are allowed if all values pass the permission id regex
+// A payload types are allowed if all values pass the permission type regex
+// A payload attributes are allowed if all values pass the permission attrs regex
 function payload_permission(payload, permissionRegex) {
   let permitted = true;
   if (permissionRegex && payload) {
     const regex = new RegExp(permissionRegex, 'i');
     permitted = payload.every((str) => {
       return regex.test(str);
+    });
+  }
+  return permitted;
+}
+
+// A payload idPattern is allowed only if all idPatterns are equal to the permission id regex.
+// This is a weird edge case since idPatterns are only applicable to NGSI subscriptions.
+function id_pattern_permission(payload, permissionRegex) {
+  let permitted = true;
+  if (permissionRegex && payload) {
+    permitted = payload.every((str) => {
+      return permissionRegex === str;
     });
   }
   return permitted;
@@ -804,34 +819,36 @@ function user_permissions(roles_id, app_id, action, resource, options) {
   const ids = options.payload_entity_ids;
   const attributes = options.payload_attributes;
   const types = options.payload_types;
+  const id_patterns = options.payload_id_patterns;
 
-  const isPermitted = (permission) =>{
+  const isPermitted = (permission) => {
     const check = {
-      resource:  (permission.is_regex === 1
-        ? new RegExp(permission.resource, 'i').test(resource)
-        : permission.resource === resource),
-      service_header:  true,
+      resource:
+        permission.is_regex === 1
+          ? new RegExp(permission.resource, 'i').test(resource)
+          : permission.resource === resource,
+      service_header: true,
       payload: true
     };
 
-    if (check.resource === false){
+    if (check.resource === false) {
       return false;
     }
 
-    if (permission.use_authorization_service_header === 1){
-        check.service_header = (permission.authorization_service_header === authorization_service_header);
+    if (permission.use_authorization_service_header === 1) {
+      check.service_header = permission.authorization_service_header === authorization_service_header;
     }
     if (config.authorization.level === 'payload') {
       check.payload =
         payload_permission(ids, permission.regex_entity_ids) &&
         payload_permission(attributes, permission.regex_attributes) &&
-        payload_permission(types, permission.regex_types);
+        payload_permission(types, permission.regex_types) &&
+        id_pattern_permission(id_patterns, permission.regex_entity_ids);
     }
- 
     //debug(JSON.stringify(permission));
     //debug(JSON.stringify(check));
-    return ( check.service_header && check.payload);
-  }
+    return check.service_header && check.payload;
+  };
 
   return models.role_permission
     .findAll({
@@ -839,19 +856,20 @@ function user_permissions(roles_id, app_id, action, resource, options) {
       attributes: ['permission_id']
     })
     .then(function (permissions) {
-      return (permissions.length === 0) ? false :
-        models.permission
-          .findAll({
-            where: {
-              id: permissions.map((elem) => elem.permission_id),
-              oauth_client_id: app_id,
-              action
-            }
-          })
-          .then((permissions) => {
-            return (_.some(permissions, isPermitted));
-          });
-      });
+      return permissions.length === 0
+        ? false
+        : models.permission
+            .findAll({
+              where: {
+                id: permissions.map((elem) => elem.permission_id),
+                oauth_client_id: app_id,
+                action
+              }
+            })
+            .then((permissions) => {
+              return _.some(permissions, isPermitted);
+            });
+    });
 }
 
 // Search Trusted applications

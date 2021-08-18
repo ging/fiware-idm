@@ -366,7 +366,6 @@ function oauth_authorize(req, res, next) {
     .catch(next);
 }
 
-
 // Read in parameters in Open Policy Agent JSON format and make
 // a Permit/Deny adjudication
 exports.auth_opa_policy = function (req, res) {
@@ -380,11 +379,12 @@ exports.auth_opa_policy = function (req, res) {
     payload_entity_ids: req.body.ids,
     payload_attributes: req.body.attrs,
     payload_types: req.body.types,
-  }
+    payload_id_patterns: req.body.idPatterns
+  };
   return user_permissions(options.roles, options.application, options.action, options.resource, options)
     .then(function (permit) {
       const result = {
-        allow:  permit,
+        allow: permit
       };
       return res.status(200).json(result);
     })
@@ -407,40 +407,44 @@ exports.auth_xacml_policy = function (req, res) {
   const resource = obj.Request.Resource.Attribute;
 
   const mapping = {
-    "urn:oasis:names:tc:xacml:2.0:subject:role" : "roles",
-    "urn:oasis:names:tc:xacml:1.0:resource:resource-id": "application",
-    "urn:thales:xacml:2.0:resource:sub-resource-id": "resource",
-    "urn:ngsi-ld:resource:tenant": "service_header",
-    "urn:ngsi-ld:resource:types": "payload_types",
-    "urn:ngsi-ld:resource:attrs": "payload_attributes",
-    "urn:ngsi-ld:resource:ids": "payload_entity_ids",
-    "urn:oasis:names:tc:xacml:1.0:action:action-id": "action"
+    'urn:oasis:names:tc:xacml:2.0:subject:role': 'roles',
+    'urn:oasis:names:tc:xacml:1.0:resource:resource-id': 'application',
+    'urn:thales:xacml:2.0:resource:sub-resource-id': 'resource',
+    'urn:ngsi-ld:resource:tenant': 'service_header',
+    'urn:ngsi-ld:resource:types': 'payload_types',
+    'urn:ngsi-ld:resource:attrs': 'payload_attributes',
+    'urn:ngsi-ld:resource:ids': 'payload_entity_ids',
+    'urn:ngsi-ld:resource:id-patterns': 'payload_id_patterns',
+    'urn:oasis:names:tc:xacml:1.0:action:action-id': 'action'
   };
 
-  access.forEach((elem) =>{
+  access.forEach((elem) => {
     options[mapping[elem.AttributeId]] = elem.Value;
   });
-  action.forEach((elem) =>{
+  action.forEach((elem) => {
     options[mapping[elem.AttributeId]] = elem.Value;
   });
-  resource.forEach((elem) =>{
+  resource.forEach((elem) => {
     options[mapping[elem.AttributeId]] = elem.Value;
   });
 
   return user_permissions(options.roles, options.application, options.action, options.resource, options)
     .then(function (permit) {
-        /* eslint-disable snakecase/snakecase */
-       const result = {
-          Response: [{
-            Decision:  (permit ? "Permit": "Deny"),
+      /* eslint-disable snakecase/snakecase */
+      const result = {
+        Response: [
+          {
+            Decision: permit ? 'Permit' : 'Deny',
             Status: {
-              StatusCode:{
-                Value: "urn:oasis:names:tc:xacml:1.0:status:ok",
-                StatusCode: {"Value": "urn:oasis:names:tc:xacml:1.0:status:ok"}
+              StatusCode: {
+                Value: 'urn:oasis:names:tc:xacml:1.0:status:ok',
+                StatusCode: { Value: 'urn:oasis:names:tc:xacml:1.0:status:ok' }
               }
             }
-         }]};
-        /* eslint-enable snakecase/snakecase */
+          }
+        ]
+      };
+      /* eslint-enable snakecase/snakecase */
       return res.status(200).json(result);
     })
     .catch(function (error) {
@@ -448,19 +452,18 @@ exports.auth_xacml_policy = function (req, res) {
       // Request is not authorized.
       return res.status(error.code || 500).json(error.message || error);
     });
-  
-}
+};
 
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
 
   const options = {
-      action: req.query.action,
-      resource: req.query.resource,
-      authzforce: req.query.authzforce,
-      application: req.query.app_id,
-      service_header: req.query.authorization_service_header
+    action: req.query.action,
+    resource: req.query.resource,
+    authzforce: req.query.authzforce,
+    application: req.query.app_id,
+    service_header: req.query.authorization_service_header
   };
 
   if (options.authzforce && (options.action || options.resource || options.service_header)) {

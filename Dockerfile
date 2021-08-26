@@ -1,10 +1,4 @@
 ARG NODE_VERSION=12
-ARG GITHUB_ACCOUNT=ging
-ARG GITHUB_REPOSITORY=fiware-idm
-ARG DOWNLOAD=latest
-ARG SOURCE_BRANCH=master
-ARG HEADLESS=false
-
 
 ########################################################################################
 #
@@ -20,42 +14,12 @@ ARG HEADLESS=false
 ######################################################################################## 
 
 FROM node:${NODE_VERSION} as builder
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
-ARG DOWNLOAD
-ARG SOURCE_BRANCH
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENV PYTHONUNBUFFERED=1
 
-# As an Alternative for local development, just copy this Dockerfile into file the root of 
-# the repository and replace the whole RUN statement below by the following COPY statement 
-# in your local source using :
-#
-# COPY . /opt/fiware-idm
-#
-
-# hadolint ignore=DL3008
-RUN \
-    if [ "${DOWNLOAD}" = "latest" ] ; \
-    then \
-        RELEASE="${SOURCE_BRANCH}"; \
-        echo "INFO: Building Latest Development from ${SOURCE_BRANCH} branch."; \
-    elif [ "${DOWNLOAD}" = "stable" ]; \
-    then \
-        RELEASE=$(curl -s https://api.github.com/repos/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4); \
-        echo "INFO: Building Latest Stable Release: ${RELEASE}"; \
-    else \
-        RELEASE="${DOWNLOAD}"; \
-        echo "INFO: Building Release: ${RELEASE}"; \
-    fi && \
-    RELEASE_CONCAT=$(echo "${RELEASE}" | tr / -); \
-    curl -s -L https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/archive/"${RELEASE}".zip > source.zip && \
-    unzip source.zip -x "*/test/**" "*/doc/**" "*/doc.ja/**" "*/extras/**" && \
-    rm source.zip && \
-    mv "${GITHUB_REPOSITORY}-${RELEASE_CONCAT}" /opt/fiware-idm
-
+COPY . /opt/fiware-idm
 WORKDIR /opt/fiware-idm
 
 RUN npm cache clean -f  && \
@@ -85,10 +49,6 @@ RUN npm cache clean -f  && \
 ######################################################################################## 
 
 FROM node:${NODE_VERSION}-alpine as builder-alpine
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
-ARG DOWNLOAD
-ARG SOURCE_BRANCH
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
@@ -100,39 +60,12 @@ ENV PYTHONUNBUFFERED=1
 #    pip3 install --no-cache --upgrade pip setuptools
 
 # hadolint ignore=DL3018,DL3013
-RUN apk --no-cache add curl git python2 make gcc g++ ca-certificates openssl unzip && \
+RUN apk --no-cache add curl git python2 make gcc g++ ca-certificates openssl && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip install --no-cache-dir --upgrade pip setuptools
 
-
-# As an Alternative for local development, just copy this Dockerfile into file the root of 
-# the repository and replace the whole RUN statement below by the following COPY statement 
-# in your local source using :
-#
-# COPY . /opt/fiware-idm
-#
-
-# hadolint ignore=DL3008
-RUN \
-    if [ "${DOWNLOAD}" = "latest" ] ; \
-    then \
-        RELEASE="${SOURCE_BRANCH}"; \
-        echo "INFO: Building Latest Development from ${SOURCE_BRANCH} branch."; \
-    elif [ "${DOWNLOAD}" = "stable" ]; \
-    then \
-        RELEASE=$(curl -s https://api.github.com/repos/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4); \
-        echo "INFO: Building Latest Stable Release: ${RELEASE}"; \
-    else \
-        RELEASE="${DOWNLOAD}"; \
-        echo "INFO: Building Release: ${RELEASE}"; \
-    fi && \
-    RELEASE_CONCAT=$(echo "${RELEASE}" | tr / -); \
-    curl -s -L https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/archive/"${RELEASE}".zip > source.zip && \
-    unzip source.zip -x "*/test/**" "*/doc/**" "*/doc.ja/**" "*/extras/**" && \
-    rm source.zip && \
-    mv "${GITHUB_REPOSITORY}-${RELEASE_CONCAT}" /opt/fiware-idm
-
+COPY . /opt/fiware-idm
 WORKDIR /opt/fiware-idm
 
 RUN npm cache clean -f  && \
@@ -181,20 +114,6 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 ########################################################################################
 
 FROM gcr.io/distroless/nodejs:${NODE_VERSION} AS distroless
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
-ARG NODE_VERSION
-ARG HEADLESS
-
-LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
-LABEL "org.opencontainers.image.authors"=""
-LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
-LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
-LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock- Distroless"
-LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
-LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
-LABEL "org.nodejs.version"=${NODE_VERSION}
 
 WORKDIR /opt/fiware-idm
 COPY --from=builder /opt/fiware-idm .
@@ -211,7 +130,6 @@ ENV IDM_HOST="http://localhost:3000" \
     IDM_EMAIL_HOST="localhost" \
     IDM_EMAIL_PORT="25" \
     IDM_EMAIL_ADDRESS="noreply@localhost"
-ENV IDM_HEADLESS=$HEADLESS
 
 USER nobody
 ENV NODE_ENV=production
@@ -248,7 +166,6 @@ FROM node:${NODE_VERSION}-alpine
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
-ARG HEADLESS
 
 WORKDIR /opt/fiware-idm
 COPY --from=builder-alpine /opt/fiware-idm .
@@ -259,25 +176,15 @@ ENV IDM_HOST="http://localhost:3000" \
     IDM_DB_HOST="localhost" \
     IDM_DB_NAME="idm" \
     IDM_DB_DIALECT="mysql" \
-    IDM_DB_MIGRATE="false" \
     IDM_DB_SEED="true" \
+    IDM_DB_MIGRATE="true" \
     IDM_EMAIL_HOST="localhost" \
     IDM_EMAIL_PORT="25" \
     IDM_EMAIL_ADDRESS="noreply@localhost"
-ENV IDM_HEADLESS=$HEADLESS
+
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache ca-certificates bash openssl
-
-LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
-LABEL "org.opencontainers.image.authors"=""
-LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
-LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
-LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
-LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
-LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
-LABEL "org.nodejs.version"=${NODE_VERSION}
 
 USER node
 ENV NODE_ENV=production

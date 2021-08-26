@@ -2,7 +2,7 @@ const config = {};
 
 config.port = 3000;
 config.host = 'http://172.17.0.1:3000';
-
+config.headless = false;
 config.debug = false;
 
 // HTTPS enable

@@ -115,4 +115,27 @@ describe('API - 0 - Authenticate: ', function () {
       });
     });
   });
+
+  describe('5) When Logging in with a valid username and password', function () {
+    const good_login = {
+      url: config.host + '/v1/auth/tokens',
+      method: 'POST',
+      form: {
+        grant_type: 'password',
+        name: login.good_login.name,
+        password: login.good_login.password
+      },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+
+    it('should return a 201 OK', function (done) {
+      request(good_login, function (error, response) {
+        should.not.exist(error);
+        response.statusCode.should.equal(201);
+        done();
+      });
+    });
+  });
 });

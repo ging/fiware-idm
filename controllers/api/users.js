@@ -44,7 +44,8 @@ if (external_auth.enabled) {
           'image',
           'admin',
           'date_password',
-          'starters_tour_ended'
+          'starters_tour_ended',
+          'extra'
         ],
         where: {
           email: username
@@ -87,7 +88,8 @@ exports.load_user = function (req, res, next, user_id) {
         'gravatar',
         'date_password',
         'description',
-        'website'
+        'website',
+        'extra'
       ]
     })
     .then(function (user) {

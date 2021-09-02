@@ -557,6 +557,8 @@ function create_oauth_response(
     user_info.given_name = identity.username;
     user_info.family_name = identity.username;
 
+    user_info.extra = identity.extra;
+
     return models.user_authorized_application
       .findOne({
         where: { user_id: identity.id, oauth_client_id: application_id }

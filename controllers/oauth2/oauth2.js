@@ -267,7 +267,7 @@ function search_user_authorized_application(user_id, app_id) {
       include: [
         {
           model: models.user,
-          attributes: ['id', 'username', 'gravatar', 'image', 'email']
+          attributes: ['id', 'username', 'gravatar', 'image', 'email', 'extra']
         }
       ]
     })

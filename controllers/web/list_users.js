@@ -29,7 +29,7 @@ exports.index = function (req, res) {
 
   models.user
     .findAndCountAll({
-      attributes: ['id', 'username', 'email', 'description', 'website', 'image', 'gravatar', 'enabled']
+      attributes: ['id', 'username', 'email', 'description', 'website', 'image', 'gravatar', 'enabled', 'extra']
     })
     .then(function (data) {
       const users = data.rows;
@@ -160,7 +160,8 @@ exports.edit_info = function (req, res) {
   const new_data = {
     username: req.body.username,
     description: req.body.description,
-    website: req.body.website
+    website: req.body.website,
+    extra: req.body.extra
   };
 
   if (req.body.email !== req.user.email) {
@@ -175,7 +176,7 @@ exports.edit_info = function (req, res) {
     .validate()
     .then(function () {
       return models.user.update(new_data, {
-        fields: ['username', 'email', 'description', 'website'],
+        fields: ['username', 'email', 'description', 'website', 'extra'],
         where: { id: req.user.id }
       });
     })
@@ -186,7 +187,8 @@ exports.edit_info = function (req, res) {
           username: user.username,
           email: user.email ? user.email : req.user.email,
           description: user.description,
-          website: user.website
+          website: user.website,
+          extra: user.extra
         }
       });
 

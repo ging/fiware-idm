@@ -536,6 +536,7 @@
       "label02": "Eメール",
       "label03": "説明",
       "label04": "Webサイト",
+      "label05": "Extra",
       "required_field": "これは必須フィールドです。",
       "save_btn": "保存"
     },

@@ -35,6 +35,8 @@ specific needs of each use case. These are the main configurations:
 
 -   Site (themes).
 
+-   Language.
+
 All this configurations could be done using environment variables. To check the
 list of environment vairables go to the next section.
 
@@ -625,6 +627,18 @@ portal. To do that create a folder, generate files and then customize them.
 ```bash
 mkdir themes/example/templates
 cd themes/example/templates && touch _footer.ejs _header.ejs _presentation.ejs _help_about_items.ejs
+```
+
+## Language
+
+Keyrock has several built in languages.
+
+You can change the default language in config.js
+
+```javascript
+config.lang = {
+    defaultLang: 'en'
+};
 ```
 
 ## Admin Panel

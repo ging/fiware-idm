@@ -1,18 +1,17 @@
 /* eslint-env mocha */
 
-const should = require('should');
+require('should');
 const sinon = require("sinon");
 
 // Load test configuration
 const config_service = require('../../lib/configService.js');
 config_service.set_config(require('../config-test'));
-const config = config_service.get_config();
 
 const model_oauth_server = require('../../models/model_oauth_server.js');
 
 describe('OAuth Server: ', () => {
 
-  afterEach(() => {
+  afterEach(() => {  // eslint-disable-line snakecase/snakecase
     sinon.restore();
   });
 

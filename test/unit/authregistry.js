@@ -1,12 +1,14 @@
 /* eslint-env mocha */
 /* eslint-disable snakecase/snakecase */
 
+const moment = require('moment');
 const sinon = require("sinon");
 
 // Load test configuration
 const config_service = require('../../lib/configService.js');
 config_service.set_config(require('../config-test'));
 const config = config_service.get_config();
+const uuid = require('uuid');
 
 const models = require('../../models/models.js');
 const authregistry = require("../../controllers/authregistry/authregistry");
@@ -296,6 +298,10 @@ describe('Authorization Registry: ', () => {
       });
       sinon.stub(authregistry.oauth2, "authenticate").returns(Promise.resolve(USER1));
       sinon.stub(utils, "create_jwt").returns(Promise.resolve("generated_jwt"));
+      sinon.stub(uuid, "v4").returns("73a791c0-e9cc-4e13-bd5e-2fe03cde2a8a");
+      const moment_mock = sinon.stub(moment.prototype, "unix");
+      moment_mock.onCall(0).returns(1633947564);
+      moment_mock.onCall(1).returns(1633947594);
 
       authregistry.query_evidences(req, res, next);
 
@@ -305,27 +311,35 @@ describe('Authorization Registry: ', () => {
         sinon.assert.calledWith(res.status, 200);
         sinon.assert.calledOnce(next);
         sinon.assert.calledWith(utils.create_jwt, {
-          notBefore: 1541058939,
-          notOnOrAfter: 2147483647,
-          policyIssuer: "EU.EORI.NLHAPPYPETS",
-          policySets: [{
-            maxDelegationDepth: 1,
-            policies: [{
-              // effect is Deny due no policy match
-              rules: [{ effect: "Deny" }],
-              target: {
-                actions: ["ISHARE.READ"],
-                environment: { serviceProviders: ["EU.EORI.NL000000003"] },
-                resource: {
-                  attributes: ["GS1.CONTAINER.ATTRIBUTE.ETA"],
-                  identifiers: ["180621.ABC1234"],
-                  type: "GS1.CONTAINER"
+          exp: 1633947594,
+          iat: 1633947564,
+          iss: "EU.EORI.NLHAPPYPETS",
+          jti: "73a791c0-e9cc-4e13-bd5e-2fe03cde2a8a",
+          sub: "1b49be31-ecd4-4a52-8a99-502ba8f24ecc",
+          aud: "930439c2-4259-4da3-be65-ea12b75aa425",
+          delegationEvidence: {
+            notBefore: 1541058939,
+            notOnOrAfter: 2147483647,
+            policyIssuer: "EU.EORI.NLHAPPYPETS",
+            policySets: [{
+              maxDelegationDepth: 1,
+              policies: [{
+                // effect is Deny due no policy match
+                rules: [{ effect: "Deny" }],
+                target: {
+                  actions: ["ISHARE.READ"],
+                  environment: { serviceProviders: ["EU.EORI.NL000000003"] },
+                  resource: {
+                    attributes: ["GS1.CONTAINER.ATTRIBUTE.ETA"],
+                    identifiers: ["180621.ABC1234"],
+                    type: "GS1.CONTAINER"
+                  }
                 }
-              }
+              }],
+              target: { environment: { licenses: ["ISHARE.0001"] } }
             }],
-            target: { environment: { licenses: ["ISHARE.0001"] } }
-          }],
-          target: { accessSubject: "1b49be31-ecd4-4a52-8a99-502ba8f24ecc" }
+            target: { accessSubject: "1b49be31-ecd4-4a52-8a99-502ba8f24ecc" }
+          }
         });
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, {
@@ -343,6 +357,10 @@ describe('Authorization Registry: ', () => {
       });
       sinon.stub(authregistry.oauth2, "authenticate").returns(Promise.resolve(USER1));
       sinon.stub(utils, "create_jwt").returns(Promise.resolve("generated_jwt"));
+      sinon.stub(uuid, "v4").returns("73a791c0-e9cc-4e13-bd5e-2fe03cde2a8a");
+      const moment_mock = sinon.stub(moment.prototype, "unix");
+      moment_mock.onCall(0).returns(1633947564);
+      moment_mock.onCall(1).returns(1633947594);
 
       authregistry.query_evidences(req, res, next);
 
@@ -352,25 +370,33 @@ describe('Authorization Registry: ', () => {
         sinon.assert.calledWith(res.status, 200);
         sinon.assert.calledOnce(next);
         sinon.assert.calledWith(utils.create_jwt, {
-          notBefore: 1541058939,
-          notOnOrAfter: 2147483647,
-          policyIssuer: "EU.EORI.NLHAPPYPETS",
-          policySets: [{
-            maxDelegationDepth: 1,
-            policies: [{
-              rules: [{ effect: "Permit" }],
-              target: {
-                actions: ["GET"],
-                resource: {
-                  attributes: ["ETA"],
-                  identifiers: ["180621.ABC1234"],
-                  type: "DELIVERYORDER"
+          exp: 1633947594,
+          iat: 1633947564,
+          iss: "EU.EORI.NLHAPPYPETS",
+          jti: "73a791c0-e9cc-4e13-bd5e-2fe03cde2a8a",
+          sub: "1b49be31-ecd4-4a52-8a99-502ba8f24ecc",
+          aud: "930439c2-4259-4da3-be65-ea12b75aa425",
+          delegationEvidence: {
+            notBefore: 1541058939,
+            notOnOrAfter: 2147483647,
+            policyIssuer: "EU.EORI.NLHAPPYPETS",
+            policySets: [{
+              maxDelegationDepth: 1,
+              policies: [{
+                rules: [{ effect: "Permit" }],
+                target: {
+                  actions: ["GET"],
+                  resource: {
+                    attributes: ["ETA"],
+                    identifiers: ["180621.ABC1234"],
+                    type: "DELIVERYORDER"
+                  }
                 }
-              }
+              }],
+              target: { environment: { licenses: ["ISHARE.0001"] } }
             }],
-            target: { environment: { licenses: ["ISHARE.0001"] } }
-          }],
-          target: { accessSubject: "1b49be31-ecd4-4a52-8a99-502ba8f24ecc" }
+            target: { accessSubject: "1b49be31-ecd4-4a52-8a99-502ba8f24ecc" }
+          }
         });
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, {

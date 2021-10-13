@@ -134,7 +134,7 @@ app.use(method_override('_method'));
 app.use(
   i18n({
     translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
-    siteLangs: ['en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
+    siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
     textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
     browserEnable: true, // eslint-disable-line snakecase/snakecase
     defaultLang: 'en' // eslint-disable-line snakecase/snakecase

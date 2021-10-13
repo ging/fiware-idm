@@ -655,9 +655,11 @@ exports.create = function (req, res) {
               }
 
               // Send an email to the user
-              const link =
-                config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email); // eslint-disable-line snakecase/snakecase
-
+              var redirect_url = (config.redirect) ? '&redirect=' + config.redirect : ''
+              const link = 
+                config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email) + redirect_url; // eslint-disable-line snakecase/snakecase
+                console.log("Activation Link");
+                console.log(link);
               const mail_data = {
                 name: user.username,
                 link
@@ -728,7 +730,11 @@ exports.activate = function (req, res, next) {
                 text: 'User activated. login using your credentials.',
                 type: 'success'
               };
-              res.render('index', { errors: [], csrf_token: req.csrfToken() });
+              if (config.redirect) {
+                res.redirect(config.redirect);
+              } else {
+                res.render('index', { errors: [], csrf_token: req.csrfToken() });
+              }
             });
           }
         } else {

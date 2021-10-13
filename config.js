@@ -4,7 +4,7 @@ config.port = 3000;
 config.host = 'http://172.17.0.1:3000';
 
 config.debug = false;
-
+config.redirect = 'https://plattform.ki-marktplatz.com/';
 // HTTPS enable
 config.https = {
   enabled: false,

@@ -731,7 +731,7 @@ exports.activate = function (req, res, next) {
                 type: 'success'
               };
               if (config.redirect) {
-                res.redirect(config.redirect);
+                res.redirect(config.redirect + config.extension);
               } else {
                 res.render('index', { errors: [], csrf_token: req.csrfToken() });
               }

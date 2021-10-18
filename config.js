@@ -4,7 +4,8 @@ config.port = 3000;
 config.host = 'http://172.17.0.1:3000';
 
 config.debug = false;
-config.redirect = 'https://plattform.ki-marktplatz.com/';
+config.redirect = 'https://plattform.ki-marktplatz.com/Group/Welcome/Willkommen';
+config.extension = '/?new_user=1'
 // HTTPS enable
 config.https = {
   enabled: false,

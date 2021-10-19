@@ -163,7 +163,8 @@ config.ar = {
 config.mail = {
   host: 'localhost',
   port: 25,
-  from: 'noreply@localhost'
+  from: 'noreply@localhost',
+  secure: false    
 };
 
 // Config themes

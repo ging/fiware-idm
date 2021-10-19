@@ -659,8 +659,6 @@ exports.create = function (req, res) {
                 (config.registration.redirect) ? '&redirect=' + config.registration.redirect : ''
               const link = 
                 config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email) + redirect_url; // eslint-disable-line snakecase/snakecase
-                console.log("Activation Link");
-                console.log(link);
               const mail_data = {
                 name: user.username,
                 link

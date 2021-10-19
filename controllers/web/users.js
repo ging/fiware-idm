@@ -655,7 +655,8 @@ exports.create = function (req, res) {
               }
 
               // Send an email to the user
-              var redirect_url = (config.redirect) ? '&redirect=' + config.redirect : ''
+              var redirect_url = 
+                (config.registration.redirect) ? '&redirect=' + config.registration.redirect : ''
               const link = 
                 config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email) + redirect_url; // eslint-disable-line snakecase/snakecase
                 console.log("Activation Link");
@@ -730,8 +731,9 @@ exports.activate = function (req, res, next) {
                 text: 'User activated. login using your credentials.',
                 type: 'success'
               };
-              if (config.redirect) {
-                res.redirect(config.redirect + config.extension);
+              if (config.registration.redirect) {
+                var link = config.registration.redirect + config.registration.extension;
+                res.redirect(link);
               } else {
                 res.render('index', { errors: [], csrf_token: req.csrfToken() });
               }

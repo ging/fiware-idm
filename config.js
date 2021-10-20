@@ -5,7 +5,7 @@ config.host = 'http://172.17.0.1:3000';
 
 config.debug = false;
 config.registration = {
-  redirect: 'https://plattform.ki-marktplatz.com/Group/Welcome/Willkommen',
+  redirect: '',
   extension: '/?new_user=1'
 }
 // HTTPS enable

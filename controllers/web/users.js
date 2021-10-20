@@ -655,10 +655,8 @@ exports.create = function (req, res) {
               }
 
               // Send an email to the user
-              var redirect_url = 
-                (config.registration.redirect) ? '&redirect=' + config.registration.redirect : '';
               const link = 
-                config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email) + redirect_url; // eslint-disable-line snakecase/snakecase
+                config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email); // eslint-disable-line snakecase/snakecase
               const mail_data = {
                 name: user.username,
                 link

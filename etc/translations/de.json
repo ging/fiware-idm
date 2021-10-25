@@ -182,6 +182,7 @@
       "presentation": {
         "title": "Identity Manager",
         "subtitle01": "Willkommen bei einer von DIT-UPM entwickelten Implementierung von FIWARE Identity Manager.",
+        "subtitle01aimarketplace": "Willkommen bei einer von DIT-UPM entwickelten Anwendung des KI-Marktplatz Identity Managers.",
         "subtitle02": "Sie können diese Anmeldeseite sowie jeden anderen Stil/Layout in diesem Webservice anpassen. Sehen Sie sich die Dokumentation zur Anpassung an, um zu erfahren, wie das geht!",
         "signup_btn": "Registrieren",
         "docs_btn": "Dokumentation"
@@ -440,6 +441,11 @@
         "label03": "Passwort",
         "label04": "Passwort (wiederholen)",
         "label05": "Captcha",
+        "label06aimarketplace": "Ich akzeptiere die KI-Marktplatz",
+        "label07aimarketplace": "Nutzungsbedingungen und AGBs",
+        "label08aimarketplace": "Ich akzeptiere die KI-Marktplatz",
+        "label09aimarketplace": "Datenschutzerklärung",
+        "label10aimarketplace": "Diese Beta-Version befindet sich in der Testphase und eignet sich nicht <br> zum Austausch vertraulicher Informationen.",
         "signup_btn": "Registrieren",
         "link01": "Passwort vergessen",
         "link02": "Keine Bestätigung erhalten?"

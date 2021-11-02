@@ -370,7 +370,7 @@ async function _token(req, res) {
     code.save();
 
     // Build id and access tokens
-    scopes = new Set(code.scope);
+    scopes = new Set(code.scope.split(/[,\s]+/));
     client = code.OauthClient;
     user = code.User;
     id_token = await build_id_token(client, user, scopes, code.nonce, code.extra.iat);
@@ -392,7 +392,7 @@ async function _token(req, res) {
     });
     user = await models.user.findOne({where: {username: client_payload.iss}});
     // Build id and access tokens
-    scopes = new Set(req.body.scope != null ? req.body.scope.split(' ') : []);
+    scopes = new Set(req.body.scope != null ? req.body.scope.split(/[,\s]+/) : []);
     id_token = await build_id_token(client, user, scopes);
   }
 

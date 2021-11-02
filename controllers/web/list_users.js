@@ -9,7 +9,7 @@ const debug = require('debug')('idm:web-list_users_controller');
 
 const email_list = config.email_list_type
   ? fs
-      .readFileSync(path.join(__dirname, '../../email_list/' + config.email_list_type + '.txt'))
+      .readFileSync(path.join(__dirname, '../../etc/email_list/' + config.email_list_type + '.txt'))
       .toString('utf-8')
       .split('\n')
   : [];

@@ -240,8 +240,8 @@ async function _token(req, res) {
     scopes = new Set(req.body.scope != null ? req.body.scope.split(/[,\s]+/) : []);
     user = await models.user.findOne({where: {username: client_payload.iss}});
     if (grant_type === "client_credentials") {
-        // Build id and access tokens
-        id_token = await build_id_token(client, user, scopes);
+      // Build id and access tokens
+      id_token = await build_id_token(client, user, scopes);
     }
   }
 

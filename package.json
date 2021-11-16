@@ -40,6 +40,7 @@
     "cors": "^2.8.5",
     "csurf": "^1.9.0",
     "debug": "~2.6.3",
+    "deepmerge": "^4.2.2",
     "device-detector-js": "^2.0.5",
     "ejs": "~2.5.7",
     "express": "^4.16.4",

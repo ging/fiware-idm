@@ -486,7 +486,7 @@ if (external_auth.enabled) {
 
     // Search the user
     models.user
-      .find({
+      .findOne({
         attributes: [
           'id',
           'username',
@@ -697,7 +697,7 @@ exports.activate = function (req, res, next) {
 
   // Search the user through the id
   models.user_registration_profile
-    .find({
+    .findOne({
       where: {
         user_email: req.query.email
       },
@@ -881,7 +881,7 @@ exports.change_password = function (req, res) {
 
   // Search the user through the email
   models.user_registration_profile
-    .find({
+    .findOne({
       where: {
         user_email: req.query.email
       },

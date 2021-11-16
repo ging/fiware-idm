@@ -8,7 +8,7 @@ exports.authenticate = function (id, password, callback) {
 
   // Search the user through the email
   models.pep_proxy
-    .find({
+    .findOne({
       where: {
         id
       }

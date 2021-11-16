@@ -58,7 +58,7 @@
     "jsdom": "^16.4.0",
     "jsonwebtoken": "^8.3.0",
     "ldapjs": "^2.2.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "method-override": "^2.3.9",
     "mime-types": "^2.1.21",
     "morgan": "^1.9.1",

@@ -10,7 +10,7 @@ exports.authenticate = function (username, password, callback) {
   debug('--> authenticating external user');
   // Search the user
   models.user_ext
-    .find({
+    .findOne({
       attributes: ['id', 'username', 'email', 'password', 'password_salt'],
       where: {
         email: username

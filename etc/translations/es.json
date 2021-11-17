@@ -432,7 +432,7 @@
       "alert01": "Los campos de contraseña no coinciden",
       "alert02": "El email ya está en uso",
       "alert03": "El email no es válido",
-      "label01": "Nombre de usuaruio",
+      "label01": "Nombre de usuario",
       "required_field": "Este campo es obligatorio",
       "label02": "Email",
       "content01": "Tengo Gravatar y quiero usarlo para mi imagen de perfil.",

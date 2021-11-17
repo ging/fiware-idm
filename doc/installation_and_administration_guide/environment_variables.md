@@ -43,7 +43,7 @@ ease Keyrock configuration.
 | IDM_DB_DIALECT                      | String  | SQL Dialect of the database                                                                                     | mysql,sqlite,postgres,mssql |
 | IDM_DB_PORT                         | Integer | Port where Database is running                                                                                  | 0 to 65536                  |
 | IDM_DB_SEED                         | Boolean | Whether to seed the database with data                                                                          | true,false                  |
-| IDM_DB_MIGRATE                      | Boolean | Whether to migrate the database to a later version data                                                                          | true,false                  |
+| IDM_DB_MIGRATE                      | Boolean | Whether to migrate the database to a later version data                                                         | true,false                  |
 | IDM_EX_AUTH_ENABLED                 | Boolean | Enable use of an external user table to authenticate users                                                      | true,false                  |
 | IDM_EX_AUTH_ID_PREFIX               | String  | Prefix to be add to ID in Keyrock user table when a external user logs in                                       | -                           |
 | IDM_EX_AUTH_PASSWORD_ENCRYPTION     | String  | Algorithm used to encrypt passwords in external user table                                                      | -                           |
@@ -85,4 +85,4 @@ ease Keyrock configuration.
 | IDM_AR_DELEGATION_ENDPOINT          | String  | URL or the delegation endpoint of the authorization registry                                                    | -                           |
 | IDM_AR_TOKEN_ENDPOINT               | String  | URL of the token endpoint of the authorization registry                                                         | -                           |
 | IDM_AR_ID                           | String  | ID of the authorization registry within the participant registry                                                | -                           |
-| IDM_LANG_DEFAULT                    | String  | Default language                                                                                                | en,es,ja,ko                 |
+| IDM_LANG_DEFAULT                    | String  | Default language                                                                                                | en,es,ja,ko,de              |

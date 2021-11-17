@@ -85,4 +85,6 @@ ease Keyrock configuration.
 | IDM_AR_DELEGATION_ENDPOINT          | String  | URL or the delegation endpoint of the authorization registry                                                    | -                           |
 | IDM_AR_TOKEN_ENDPOINT               | String  | URL of the token endpoint of the authorization registry                                                         | -                           |
 | IDM_AR_ID                           | String  | ID of the authorization registry within the participant registry                                                | -                           |
+| IDM_REGISTRATION_REDIRECT           | String  | Redirect URL where the user will be redirected after successful registration                                    | -                           |
+| IDM_REGISTRATION_EXTENSION          | String  | Extra Query Parameter added to the Redirect URL for checking at the landing page                                | -                           |
 | IDM_LANG_DEFAULT                    | String  | Default language                                                                                                | en,es,ja,ko,de              |

@@ -60,6 +60,10 @@ ease Keyrock configuration.
 | IDM_EMAIL_HOST                      | String  | Name of the host where is running the mail server                                                               | -                           |
 | IDM_EMAIL_PORT                      | Integer | Port where is running the mail server                                                                           | 0 to 65536                  |
 | IDM_EMAIL_ADDRESS                   | String  | Email Address used by Keyrock to send emails to the users                                                       | -                           |
+| IDM_EMAIL_SECURE                    | Boolean | If true the connection will use TLS when connecting to server. If false (the default) then TLS is used if server supports the STARTTLS extension.  | true,false                    |
+| IDM_EMAIL_AUTH_TYPE                 | String  | Indicates the SMTP authentication type                                                                          | login,oauth2                |
+| IDM_EMAIL_AUTH_USER                 | String  | Username for SMTP authentication                                                                                | -                           |
+| IDM_EMAIL_AUTH_PASS                 | String  | Password for SMTP authentication of login type                                                                  | -                           |
 | IDM_MAILGUN_API_KEY                 | String  | API key used by mailgun to send emails (only relevant if transport is 'mailgun')                                | -                           |
 | IDM_TITLE                           | String  | Name of Keyrock when using a new theme                                                                          | -                           |
 | IDM_THEME                           | String  | Name of the folder in which is store all new styles                                                             | -                           |

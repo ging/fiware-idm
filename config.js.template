@@ -5,6 +5,11 @@ config.host = 'http://localhost:3000';
 
 config.debug = false;
 
+config.registration = {
+  redirect: '',
+  extension: '/?new_user=1'
+}
+
 // HTTPS enable
 config.https = {
   enabled: false,
@@ -175,7 +180,7 @@ config.site = {
 
 // Config language
 config.lang = {
-    defaultLang: 'en'  
+    default_lang: 'en'  
 };
 
 // Config eIDAS Authentication

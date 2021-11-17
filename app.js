@@ -137,7 +137,7 @@ app.use(
     siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
     textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
     browserEnable: true, // eslint-disable-line snakecase/snakecase
-    defaultLang: config.lang.defaultLang || 'en' // eslint-disable-line snakecase/snakecase
+    defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
   })
 );
 
@@ -185,7 +185,7 @@ if (config.https.enabled) {
   app.use('/saml2', force_ssl, saml2);
 
   // Set routes for the authorization registry if enabled
-  if (config.ar.url === "internal") {
+  if (config.ar.url === 'internal') {
     app.use('/ar', authregistry);
   }
 
@@ -204,7 +204,7 @@ if (config.https.enabled) {
   app.use('/saml2', saml2);
 
   // Set routes for the authorization registry if enabled
-  if (config.ar.url === "internal") {
+  if (config.ar.url === 'internal') {
     app.use('/ar', authregistry);
   }
 

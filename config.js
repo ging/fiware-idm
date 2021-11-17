@@ -1,13 +1,15 @@
 const config = {};
 
 config.port = 3000;
-config.host = 'http://172.17.0.1:3000';
+config.host = 'http://localhost:3000';
 
 config.debug = false;
+
 config.registration = {
   redirect: '',
   extension: '/?new_user=1'
-}
+};
+
 // HTTPS enable
 config.https = {
   enabled: false,
@@ -145,22 +147,22 @@ config.external_auth_ldap = {
 
 // External Participant Registry
 config.pr = {
-    url: undefined,
-    id: "EU.EORI.NL000000000",
-    parties_endpoint: undefined,
-    token_endpoint: undefined,
-    client_id: undefined,
-    client_key: undefined,
-    client_crt: undefined
-}
+  url: undefined,
+  id: 'EU.EORI.NL000000000',
+  parties_endpoint: undefined,
+  token_endpoint: undefined,
+  client_id: undefined,
+  client_key: undefined,
+  client_crt: undefined
+};
 
 // External Authorization Registry
 config.ar = {
-    url: undefined,
-    id: "EU.EORI.NL000000004",
-    delegation_endpoint: undefined,
-    token_endpoint: undefined
-}
+  url: undefined,
+  id: 'EU.EORI.NL000000004',
+  delegation_endpoint: undefined,
+  token_endpoint: undefined
+};
 
 // Email configuration
 config.mail = {
@@ -177,7 +179,7 @@ config.site = {
 
 // Config language
 config.lang = {
-    defaultLang: 'en'  
+  default_lang: 'en'
 };
 
 // Config eIDAS Authentication

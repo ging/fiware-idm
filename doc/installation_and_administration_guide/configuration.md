@@ -446,18 +446,26 @@ config.authorization = {
 };
 ```
 
-## Email
+## Mail Server
 
 You can configure the IdM to send emails to users. Follow this
 [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04)
-to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04. Then edit
-config file:
+to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04.
+
+You can also enable some security and authentication options.
 
 ```javascript
 config.mail = {
     host: 'idm_host',
     port: 25,
-    from: 'noreply@host'
+    from: 'noreply@host',
+    secure: false,
+    enable_authentication: false,
+    auth: {
+        type: 'type',
+        user: 'username',
+        pass: 'pass'
+    }
 };
 ```
 

@@ -169,7 +169,13 @@ config.mail = {
   host: 'localhost',
   port: 25,
   from: 'noreply@localhost',
-  secure: false    
+  secure: false,
+  enable_authentication: false,
+  auth: {
+    type: 'type',
+    user: 'username',
+    pass: 'pass'
+  }
 };
 
 // Config themes

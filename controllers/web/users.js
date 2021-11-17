@@ -660,7 +660,6 @@ exports.create = function (req, res) {
               // Send an email to the user
               const link =
                 config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email); // eslint-disable-line snakecase/snakecase
-
               const mail_data = {
                 name: user.username,
                 link
@@ -731,7 +730,12 @@ exports.activate = function (req, res, next) {
                 text: 'User activated. login using your credentials.',
                 type: 'success'
               };
-              res.render('index', { errors: [], csrf_token: req.csrfToken() });
+              if (config.registration.redirect) {
+                const link = config.registration.redirect + config.registration.extension;
+                res.redirect(link);
+              } else {
+                res.render('index', { errors: [], csrf_token: req.csrfToken() });
+              }
             });
           }
         } else {

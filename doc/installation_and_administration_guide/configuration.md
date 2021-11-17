@@ -37,6 +37,8 @@ specific needs of each use case. These are the main configurations:
 
 -   Language.
 
+-   Registration.
+
 All this configurations could be done using environment variables. To check the
 list of environment vairables go to the next section.
 
@@ -638,6 +640,20 @@ You can change the default language in config.js
 ```javascript
 config.lang = {
     defaultLang: 'en'
+};
+```
+
+## Registration
+
+Keyrock can redirect to a different URL from the keyrock domain once the users
+are registered and activated.
+
+You can change the default redirect URL and path in config.js
+
+```javascript
+config.registration = {
+    redirect: 'https://example.com',
+    extension: '/?new_user=1'
 };
 ```
 

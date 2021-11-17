@@ -658,7 +658,7 @@ exports.create = function (req, res) {
               }
 
               // Send an email to the user
-              const link = 
+              const link =
                 config.host + '/activate?activation_key=' + activation_key + '&email=' + encodeURIComponent(user.email); // eslint-disable-line snakecase/snakecase
               const mail_data = {
                 name: user.username,
@@ -731,7 +731,7 @@ exports.activate = function (req, res, next) {
                 type: 'success'
               };
               if (config.registration.redirect) {
-                var link = config.registration.redirect + config.registration.extension;
+                const link = config.registration.redirect + config.registration.extension;
                 res.redirect(link);
               } else {
                 res.render('index', { errors: [], csrf_token: req.csrfToken() });

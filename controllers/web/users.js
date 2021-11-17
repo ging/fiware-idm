@@ -70,6 +70,7 @@ exports.load_user = function (req, res, next, user_id) {
 // GET /idm/users/:user_id -- Show info about a user
 exports.show = function (req, res, next) {
   debug('--> show');
+  const user = req.user;
 
   // Find user applications
   models.role_assignment
@@ -84,19 +85,19 @@ exports.show = function (req, res, next) {
     })
     .then(function (user_applications) {
       // See if user to show is equal to user logged
-      if (req.session.user.id === req.user.id) {
-        req.user.auth = true;
+      if (req.session.user.id === user.id) {
+        user.auth = true;
       }
       if (req.session.message) {
         res.locals.message = req.session.message;
         delete req.session.message;
       }
-      if (req.user.gravatar) {
-        req.user.image = gravatar.url(req.user.email, { s: 100, r: 'g', d: 'mm' }, { protocol: 'https' });
-      } else if (req.user.image === 'default') {
-        req.user.image = '/img/logos/original/user.png';
+      if (user.gravatar) {
+        user.image = gravatar.url(user.email, { s: 100, r: 'g', d: 'mm' }, { protocol: 'https' });
+      } else if (user.image === 'default') {
+        user.image = '/img/logos/original/user.png';
       } else {
-        req.user.image = '/img/users/' + req.user.image;
+        user.image = '/img/users/' + user.image;
       }
 
       const applications = [];
@@ -120,8 +121,10 @@ exports.show = function (req, res, next) {
         });
       }
 
+      user.extra = user.extra || {};
+      user.extra.visible_attributes = user.extra.visible_attributes || [];
       res.render('users/show', {
-        user: req.user,
+        user,
         applications,
         identity_attributes,
         csrf_token: req.csrfToken()
@@ -486,7 +489,7 @@ if (external_auth.enabled) {
 
     // Search the user
     models.user
-      .find({
+      .findOne({
         attributes: [
           'id',
           'username',
@@ -696,7 +699,7 @@ exports.activate = function (req, res, next) {
 
   // Search the user through the id
   models.user_registration_profile
-    .find({
+    .findOne({
       where: {
         user_email: req.query.email
       },
@@ -885,7 +888,7 @@ exports.change_password = function (req, res) {
 
   // Search the user through the email
   models.user_registration_profile
-    .find({
+    .findOne({
       where: {
         user_email: req.query.email
       },

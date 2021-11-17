@@ -83,7 +83,7 @@ function find_local_user(user, callback) {
 
   debug('--> searching local user with id: ', external_auth.id_prefix + user_id);
   models.user
-    .find({
+    .findOne({
       attributes: [
         'id',
         'username',

@@ -175,6 +175,11 @@ config.site = {
   theme: 'default'
 };
 
+// Config language
+config.lang = {
+    defaultLang: 'en'  
+};
+
 // Config eIDAS Authentication
 config.eidas = {
   enabled: false,

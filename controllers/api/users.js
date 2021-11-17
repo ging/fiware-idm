@@ -32,7 +32,7 @@ if (external_auth.enabled) {
 
     // Search the user
     models.user
-      .find({
+      .findOne({
         attributes: [
           'id',
           'username',

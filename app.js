@@ -137,7 +137,7 @@ app.use(
     siteLangs: ['en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
     textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
     browserEnable: true, // eslint-disable-line snakecase/snakecase
-    defaultLang: 'en' // eslint-disable-line snakecase/snakecase
+    defaultLang: config.lang.defaultLang || 'en' // eslint-disable-line snakecase/snakecase
   })
 );
 

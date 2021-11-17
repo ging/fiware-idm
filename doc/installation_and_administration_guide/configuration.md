@@ -500,23 +500,23 @@ the registry and the credentials, e.g.:
 
 ```javascript
 config.pr = {
-    url: "https://scheme.isharetest.net",
-    client_id: "EU.EORI.NLEXAMPLECOM",
-    client_key: "...",
-    client_crt: "..."
-}
+    url: 'https://scheme.isharetest.net',
+    client_id: 'EU.EORI.NLEXAMPLECOM',
+    client_key: '...',
+    client_crt: '...'
+};
 ```
 
 This external participant registry also supports delegating the authorization
-policies. To do so, Keyrock can be linked with an external authorization registry
-where to store and provide the authorization policies to the external
+policies. To do so, Keyrock can be linked with an external authorization
+registry where to store and provide the authorization policies to the external
 participants. To link this Keyrock instance to an external authorization
 registry, just provide the URL, e.g.:
 
 ```javascript
 config.ar = {
-    url: "https://ar.example.com"
-}
+    url: 'https://ar.example.com'
+};
 ```
 
 ## Configure themes
@@ -631,7 +631,7 @@ cd themes/example/templates && touch _footer.ejs _header.ejs _presentation.ejs _
 
 ## Language
 
-Keyrock has several built in languages.
+Keyrock has several built-in languages.
 
 You can change the default language in config.js
 

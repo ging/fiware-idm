@@ -15,19 +15,19 @@ const m2m_grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer";
 const managed_token_grant_types = new Set(["authorization_code", "client_credentials", m2m_grant_type]);
 
 
-async function build_id_token(client, user, scopes, nonce, iat) {
+async function build_id_token(client, user, scopes, nonce, auth_time) {
   const now = moment();
-  if (iat == null) {
-    iat = now.unix();
+  if (auth_time == null) {
+    auth_time = now.unix();
   }
 
   const claims = {
     iss: config.pr.client_id,
     sub: user.id, // TODO
     aud: client.id,
-    exp: now.add(30, 'seconds').unix(),
+    exp: now.clone().add(config.oauth2.access_token_lifetime, 'seconds').unix(),
     iat: now.unix(),
-    auth_time: iat,
+    auth_time: auth_time,
     acr: "urn:http://eidas.europa.eu/LoA/NotNotified/low",
     azp: client.id
   };
@@ -52,7 +52,7 @@ async function build_id_token(client, user, scopes, nonce, iat) {
 
 async function build_access_token(client, user, grant_type) {
   const now = moment();
-  const exp = now.add(config.oauth2.access_token_lifetime, 'seconds');
+  const exp = now.clone().add(config.oauth2.access_token_lifetime, 'seconds');
 
   /* eslint-disable snakecase/snakecase */
   const claims = {

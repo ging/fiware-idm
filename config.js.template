@@ -6,6 +6,11 @@ config.host = 'http://localhost:3000';
 
 config.debug = false;
 
+config.registration = {
+  redirect: '',
+  extension: '/?new_user=1'
+}
+
 // HTTPS enable
 config.https = {
   enabled: false,
@@ -165,13 +170,25 @@ config.ar = {
 config.mail = {
   host: 'localhost',
   port: 25,
-  from: 'noreply@localhost'
+  from: 'noreply@localhost',
+  secure: false,
+  enable_authentication: false,
+  auth: {
+    type: "type",
+    user: "username",
+    pass: "pass",
+  }
 };
 
 // Config themes
 config.site = {
   title: 'Identity Manager',
   theme: 'default'
+};
+
+// Config language
+config.lang = {
+    default_lang: 'en'  
 };
 
 // Config eIDAS Authentication

@@ -35,6 +35,10 @@ specific needs of each use case. These are the main configurations:
 
 -   Site (themes).
 
+-   Language.
+
+-   Registration.
+
 All this configurations could be done using environment variables. To check the
 list of environment vairables go to the next section.
 
@@ -443,18 +447,26 @@ config.authorization = {
 };
 ```
 
-## Email
+## Mail Server
 
 You can configure the IdM to send emails to users. Follow this
 [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04)
-to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04. Then edit
-config file:
+to configure Postfix as a Send-Only SMTP Server on Ubuntu 14.04.
+
+You can also enable some security and authentication options.
 
 ```javascript
 config.mail = {
     host: 'idm_host',
     port: 25,
-    from: 'noreply@host'
+    from: 'noreply@host',
+    secure: false,
+    enable_authentication: false,
+    auth: {
+        type: 'type',
+        user: 'username',
+        pass: 'pass'
+    }
 };
 ```
 
@@ -499,23 +511,23 @@ the registry and the credentials, e.g.:
 
 ```javascript
 config.pr = {
-    url: "https://scheme.isharetest.net",
-    client_id: "EU.EORI.NLEXAMPLECOM",
-    client_key: "...",
-    client_crt: "..."
-}
+    url: 'https://scheme.isharetest.net',
+    client_id: 'EU.EORI.NLEXAMPLECOM',
+    client_key: '...',
+    client_crt: '...'
+};
 ```
 
 This external participant registry also supports delegating the authorization
-policies. To do so, Keyrock can be linked with an external authorization registry
-where to store and provide the authorization policies to the external
+policies. To do so, Keyrock can be linked with an external authorization
+registry where to store and provide the authorization policies to the external
 participants. To link this Keyrock instance to an external authorization
 registry, just provide the URL, e.g.:
 
 ```javascript
 config.ar = {
-    url: "https://ar.example.com"
-}
+    url: 'https://ar.example.com'
+};
 ```
 
 ## Configure themes
@@ -626,6 +638,32 @@ portal. To do that create a folder, generate files and then customize them.
 ```bash
 mkdir themes/example/templates
 cd themes/example/templates && touch _footer.ejs _header.ejs _presentation.ejs _help_about_items.ejs
+```
+
+## Language
+
+Keyrock has several built-in languages.
+
+You can change the default language in config.js
+
+```javascript
+config.lang = {
+    defaultLang: 'en'
+};
+```
+
+## Registration
+
+Keyrock can redirect to a different URL from the keyrock domain once the users
+are registered and activated.
+
+You can change the default redirect URL and path in config.js
+
+```javascript
+config.registration = {
+    redirect: 'https://example.com',
+    extension: '/?new_user=1'
+};
 ```
 
 ## Admin Panel

@@ -549,6 +549,8 @@ function create_oauth_response(identity, application_id, options) {
     user_info.given_name = identity.username;
     user_info.family_name = identity.username;
 
+    user_info.extra = identity.extra;
+
     return models.user_authorized_application
       .findOne({
         where: { user_id: identity.id, oauth_client_id: application_id }
@@ -902,21 +904,9 @@ function app_authzforce_domain(app_id) {
 function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
-  if (scope && scope.length > 0) {
-    let requested_scopes;
-    if (typeof scope === 'string' && scope.includes(',')) {
-      requested_scopes = scope.split(',');
-    } else if (typeof scope === 'object') {
-      requested_scopes = scope[0].split(',');
-    } else if (typeof scope === 'string' && scope.includes(' ')) {
-      requested_scopes = scope;
-    } else if (typeof scope === 'object') {
-      requested_scopes = scope[0];
-    } else {
-      requested_scopes = scope;
-    }
+  if (typeof scope === "string" && scope.length > 0) {
+    const requested_scopes = scope.split(/[,\s]+/);
 
-    //let requested_scopes = typeof scope === 'string' ? scope.split(',') : scope[0].split(',');
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
       return false;
     }

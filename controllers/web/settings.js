@@ -63,7 +63,7 @@ exports.password = function (req, res) {
   } else {
     // Search the user through the email
     models.user
-      .find({
+      .findOne({
         where: {
           id: req.session.user.id
         }
@@ -270,7 +270,7 @@ exports.email_verify = function (req, res) {
   if (req.session.user) {
     // Search the user through the id
     models.user_registration_profile
-      .find({
+      .findOne({
         where: {
           verification_key: req.query.verification_key,
           user_email: req.session.user.email

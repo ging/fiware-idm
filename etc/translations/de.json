@@ -1,0 +1,1035 @@
+{
+    "generic": {
+      "navigation": {
+        "first": "First",
+        "last": "Last"
+      },
+      "tours": {
+        "init_tour": {
+          "title01": "Los geht's!",
+          "title02": "Ihr Profil",
+          "title03": "Navigation",
+          "title04": "Anwendungen",
+          "title05": "Organisationen",
+          "title06": "Sie sind bereit!",
+          "content01": "Herzlich Wilkommen. Dies ist die Einstiegstour, die Sie durch die Grundlagen führt.",
+          "content02": "In diesem Bereich haben Sie Zugriff auf Ihr Profil, die Einstellungen und können sich abmelden.",
+          "content03": "Sie finden die verschiedenen Bereiche von KeyRock in dieser Seitenleiste.",
+          "content04": "Anwendungen sind die Experimente mit der FIWARE-Technologie, an denen Sie teilnehmen (z. B. als Eigentümer oder Käufer). Diese Tabelle gibt einen kurzen Überblick über sie.",
+          "content05": "Organisationen sind Gruppen von Benutzern. Sie sind sehr praktisch, wenn Sie mehrere Benutzer gleichzeitig in Ihrer Anwendung autorisieren wollen. Eine kurze Übersicht dieser Gruppen finden Sie in dieser Tabelle.",
+          "content06": "<p>Sie haben die Einstiegstour abgeschlossen! Sie können nun mit der nächsten Tour fortfahren und mehr über die wichtigsten Einstellungen Ihres Profils erfahren oder dieses Tutorial verlassen und selbst experimentieren.</p><p>Vielen Dank, dass Sie IdM Keyrock nutzen!</p><a href='#' class='next-tour' data-current-tour='initTour' data-next-tour='profileTour'> > Starte die Profil Tour</a>"
+        },
+        "profile_tour": {
+          "title01": "Los geht's!",
+          "title02": "Ihr Profil",
+          "title03": "Ihr Profil",
+          "title04": "Ihre Organisationen",
+          "title05": "Ihre Anwendungen",
+          "title06": "Ihr Profil",
+          "title07": "Ihr Profil bearbeiten",
+          "title08": "Ihr Profil bearbeiten",
+          "title09": "Sie sind bereit!",
+          "content01": "Willkommen bei der Profil-Tour! Sie erfahren nun, wie Sie die wichtigsten Einstellungen Ihres Profils vornehmen können.",
+          "content02": "Über dieses Menü gelangen Sie zu Ihrer Profilseite.",
+          "content03": "Dies ist Ihre Profilseite. Sie enthält einige nützliche Informationen, wie Ihren Avatar und einige persönliche Daten über Sie.",
+          "content04": "Diese Tabelle zeigt die Organisationen, denen Sie angehören.",
+          "content05": "In dieser Tabelle sind die Anwendungen aufgeführt, für die Sie berechtigt sind (d. h., Ihnen wurde mindestens eine Rolle zugewiesen).",
+          "content06": "Fügen wir einige persönliche Informationen hinzu! Klicken Sie auf diese Schaltfläche, um Ihr Profil zu bearbeiten.",
+          "content07": "Geben Sie einige nützliche Informationen über sich selbst an. Diese werden auf Ihrer Profilseite erscheinen.",
+          "content08": "Wählen Sie jetzt Ihren Avatar. Sie können aus einem zuvor hochgeladenen Bild wählen, ein neues hochladen oder sogar Ihren Gravatar verwenden!",
+          "content09": "<p>Sie haben die Profil-Tour beendet! Sie können nun mit der nächsten Tour fortfahren und mehr über Anwendungen und deren Registrierung erfahren oder dieses Tutorial verlassen und selbst experimentieren.</p><p>Vielen Dank, dass Sie IdM Keyrock nutzen!</p><a href='#' class='next-tour' data-current-tour='profileTour' data-next-tour='appsTour'> > Starte die Anwendungs-Tour</a>"
+        },
+        "apps_tour": {
+          "title01": "Los geht's!",
+          "title02": "Registrierung einer neuen Anwendung",
+          "title03": "SCHRITT 1: Registrierung einer neuen Anwendung",
+          "title04": "SCHRITT 1: Registrierung einer neuen Anwendung",
+          "title05": "SCHRITT 1: Registrierung einer neuen Anwendung",
+          "title06": "SCHRITT 1: Registrierung einer neuen Anwendung",
+          "title07": "SCHRITT 1: Registrierung einer neuen Anwendung",
+          "title08": "SCHRITT 1: Registrierung einer neuen Anwendung",
+          "title09": "SCHRITT 2: Registrierung einer neuen Anwendung",
+          "title10": "SCHRITT 2: Registrierung einer neuen Anwendung",
+          "title11": "SCHRITT 3: Registrierung einer neuen Anwendung",
+          "title12": "SCHRITT 3: Registrierung einer neuen Anwendung",
+          "title13": "Sehen Sie sich Ihre neue Anwendung an",
+          "title14": "Sie sind bereit!",
+          "content01": "Willkommen bei der Anwendungs-Tour! Sie werden nun erfahren, wie Sie eine Anwendung in KeyRock registrieren können.",
+          "content02": "Der schnellste Weg, eine neue Anwendung zu registrieren, ist die Schaltfläche \"Registrieren\". Klicken Sie darauf, um Ihre erste Anwendung zu registrieren!",
+          "content03": "<p>Dieses Formular enthält die grundlegenden Informationen, die zur Erstellung einer neuen Anwendung erforderlich sind.</p>Geben Sie zunächst einen Namen und eine längere Beschreibung an.",
+          "content04": "Dies ist die URL Ihrer App. Dieses Feld ist erforderlich, um zu überprüfen, dass Anfragen an KeyRock bezüglich Ihrer App (z. B. bei der Verwendung von OAuth zur Autorisierung von Benutzern) tatsächlich von Ihrer App kommen.",
+          "content05": "Dies ist die Callback-URL Ihrer Anwendung. KeyRock leitet den User Agent nach einem OAuth-Autorisierungsvorgang dorthin zurück.",
+          "content06": "Dies sind die OAuth2-Berechtigungstypen, die Ihre Anwendung zulassen wird.",
+          "content07": "Hier wählen Sie aus, wer der Anbieter der Anwendung sein wird: Sie selbst oder eine der Organisationen, deren Eigentümer Sie sind.",
+          "content08": "Klicken Sie auf diese Schaltfläche, um mit dem nächsten Schritt fortzufahren.",
+          "content09": "In diesem Schritt können Sie ein Bild für Ihre App auswählen. Wir werden das Standardbild beibehalten.",
+          "content10": "Klicken Sie auf diese Schaltfläche, um mit dem nächsten Schritt fortzufahren.",
+          "content11": "In diesem letzten Schritt können Sie die Rollen und Berechtigungen Ihrer App verwalten. Wir werden jetzt nichts ändern, aber Sie können in der nächsten Tour mehr darüber erfahren.",
+          "content12": "Klicken Sie auf diese Schaltfläche, wenn Sie mit der Bearbeitung Ihrer neuen App fertig sind.",
+          "content13": "Dies ist die Detailseite Ihrer neuen App, mit einigen nützlichen Informationen.",
+          "content14": "<p>Sie haben die Anwendungs-Tour beendet! Sie können nun mit der nächsten Tour fortfahren und mehr über Rollen und Berechtigungen innerhalb von Anwendungen und deren Verwaltung erfahren oder dieses Tutorial verlassen und selbst experimentieren.</p><p>Vielen Dank, dass Sie IdM Keyrock nutzen!</p><a href='#' class='next-tour' data-current-tour='appsTour' data-next-tour='rolesTour'> > Starte die Rollen & Berechtigungen Tour</a>"
+        },
+        "roles_tour": {
+          "title01": "Los geht's!",
+          "title02": "Wählen Sie eine Anwendung",
+          "title03": "Anwendungsdetailseite",
+          "title04": "Anwendungsdetailseite",
+          "title05": "Verwaltung von Rollen und Berechtigungen",
+          "title06": "Rollen",
+          "title07": "Rollen",
+          "title08": "Berechtigungen",
+          "title09": "Neue Berechtigung",
+          "title10": "Neue Rolle",
+          "title11": "Änderungen speichern",
+          "title12": "Benutzer autorisieren",
+          "title13": "Organisationen autorisieren",
+          "title14": "Sie sind bereit!",
+          "content01": "Willkommen bei der Tour zu Rollen und Berechtigungen! Sie werden jetzt lernen, wie Rollen und Berechtigungen innerhalb von Anwendungen funktionieren.",
+          "content02": "<p>Um mit der Tour fortzufahren, klicken Sie auf eine Ihrer Anwendungen. Wenn Sie noch keine haben, sollten Sie zuerst eine erstellen oder die Anwendungen-Tour machen.</p><a href='#' class='next-tour' data-current-tour='rolesTour' data-next-tour='appsTour'> > Starte die Anwendungs-Tour</a>",
+          "content03": "Denken Sie daran, dass dies die Detailseite Ihrer App ist. Sie enthält einige wichtige Dinge, wie die OAuth-Anmeldeinformationen, die Registrierung eines PEP-Proxys oder einiger IoT-Sensoren und die Verwaltung der Rollen in der App.",
+          "content04": "Über diesen Link gelangen Sie zur Seite Rollenverwaltung oder zu dieser Anwendung. Klicken Sie auf ihn, um fortzufahren.",
+          "content05": "In dieser Ansicht können Sie die Rollen und Berechtigungen für Ihre Anwendung verwalten.",
+          "content06": "<p>Dies ist die Liste der Rollen, die in Ihrer Anwendung existieren (Anbieter und Käufer sind Standardrollen).</p><p>Eine Rolle ist im Grunde ein Satz von einer oder mehreren Berechtigungen. Wenn Sie einen Benutzer in Ihrer Anwendung autorisieren, müssen ihm eine oder mehrere Rollen zugewiesen werden.",
+          "content07": "Klicken Sie auf eine Rolle und die damit verbundenen Berechtigungen werden auf der rechten Seite angezeigt.",
+          "content08": "<p>Dies ist die Liste der Berechtigungen, die in Ihrer Anwendung verfügbar sind. Die markierten Berechtigungen sind mit der von Ihnen gewählten Rolle verbunden.",
+          "content09": "Verwenden Sie diese Schaltfläche, um eine neue Berechtigung für Ihre Anwendung zu erstellen.",
+          "content10": "Verwenden Sie diese Schaltfläche, um eine neue Rolle für Ihre Anwendung zu erstellen.",
+          "content11": "Klicken Sie auf diese Schaltfläche, um die von Ihnen vorgenommenen Änderungen zu speichern.",
+          "content12": "In diesem Abschnitt werden die Benutzer angezeigt, denen eine bestimmte Rolle in Ihrer Anwendung zugewiesen wurde. Verwenden Sie die Schaltfläche \"Autorisieren\", um einem bestimmten Benutzer eine neue Rolle zuzuweisen.",
+          "content13": "In diesem Abschnitt werden die Organisationen angezeigt, denen eine bestimmte Rolle in Ihrer Anwendung zugewiesen wurde. Verwenden Sie die Schaltfläche \"Autorisieren\", um einer bestimmten Organisation eine neue Rolle zuzuweisen.",
+          "content14": "<p>Sie haben die Tour zu Rollen und Berechtigungen abgeschlossen! Sie können nun mit der nächsten Tour fortfahren und mehr über Organisationen erfahren oder dieses Tutorial verlassen und selbst experimentieren.</p><p>Vielen Dank, dass Sie IdM Keyrock nutzen!</p><a href='#' class='next-tour' data-current-tour='rolesTour' data-next-tour='orgsTour'> > Starte die Organisationen-Tour</a>"
+        },
+        "orgs_tour": {
+          "title01": "Los geht's!",
+          "title02": "Erstellen einer neuen Organisation",
+          "title03": "<p>Erstellen einer neuen Organisation",
+          "title04": "Erstellen einer neuen Organisation",
+          "title05": "Organisation angelegt!",
+          "title06": "Mitglieder",
+          "title07": "Anwendungen",
+          "title08": "Sie sind bereit!",
+          "content01": "Willkommen zur Organisationstour! Sie werden nun lernen, wie Sie eine Organisation in KeyRock erstellen können.",
+          "content02": "Der schnellste Weg, eine neue Organisation zu erstellen, ist die Schaltfläche \"Erstellen\". Klicken Sie darauf, um Ihre erste Organisation zu erstellen!",
+          "content03": "<p>Dieses Formular enthält die grundlegenden Informationen, die zur Erstellung einer neuen Organisation erforderlich sind.</p>Geben Sie einen Namen und eine längere Beschreibung dafür an.",
+          "content04": "Klicken Sie auf diese Schaltfläche, wenn Sie fertig sind, um Ihre neue Organisation zu erstellen.",
+          "content05": "Ihre neue Organisation wurde erfolgreich erstellt. Dies ist ihre Homepage.",
+          "content06": "Dies sind die Mitglieder der Organisation.",
+          "content07": "Dies sind die Anwendungen, zu denen die Organisation berechtigt ist.",
+          "content08": "<p>Sie haben die Organisationstour beendet! Sie können jetzt zu Hilfe&Über gehen, um mehr über KeyRock zu erfahren oder selbst zu experimentieren.</p><p>Vielen Dank, dass Sie IdM Keyrock nutzen!</p><a href='/idm/help_about' class='next-tour' data-current-tour='orgsTour' id='end-tours'> > Gehen Sie zu Hilfe&Über</a>"
+        }
+      }
+    },
+    "header": {
+      "menu_item01": " Profil",
+      "menu_item02": " Einstellungen",
+      "menu_item03": " Hilfe & Über",
+      "menu_item04": " Abmelden"
+    },
+    "footer": {
+      "cred_date": "2018 ©",
+      "author": "GING DIT",
+      "university": " - Technische Universität Madrid (UPM)",
+      "vish": "Die Nutzung der VISH-Dienste unterliegt der Annahme der",
+      "fiware": "Die Nutzung der FIWARE LAB Dienste unterliegt der Annahme der",
+      "aimarketplace": "Die Nutzung der KI-Marktplatz-Dienste unterliegt der Annahme der",
+      "condit02": "Nutzungsbedingungen und AGBs",
+      "condit03": "Datenschutzbestimmung und",
+      "condit04": "Cookie-Richtlienie"
+    },
+    "help_about_items": {
+      "title01": " Dokumentation",
+      "content01": "Wenn Sie mehr über diesen Identity Manager und seine Verwendung erfahren möchten, klicken Sie auf die nachstehenden Links:",
+      "item01": " FIWARE Katalog",
+      "item02": " Vollständige Dokumentation zur Installation, Verwaltung und Verwendung des Identity Managers in ReadTheDocs",
+      "item03": " Quellcode des Projekts auf GitHub",
+      "item04": " FIWARE Academy",
+      "title02": " Lerntouren",
+      "content02": "Sie haben eine der Touren verpasst? Möchten Sie sie wiederholen? Hier finden Sie die vollständige Liste der Touren, die Sie von den Grundlagen dieses Identity Managers bis zu einigen der fortgeschrittensten Funktionen führen.",
+      "tour01": " Einstiegstour: Lernen Sie die Willkommensseite kennen.",
+      "tour02": "Profil-Tour: Bearbeiten Sie Ihre persönlichen Daten und richten Sie einen Avatar ein.",
+      "tour03": "Anwendungstour: Erstellen Sie Ihre erste Anwendung.",
+      "tour04": "Rollen & Berechtigungen Tour: Erfahren Sie mehr über Rollen und Berechtigungen innerhalb von Anwendungen und wie Sie andere Benutzer und Organisationen in diesen Anwendungen autorisieren können.",
+      "tour05": "Organisationen Tour: Erstellen Sie Ihre erste Organisation und schauen Sie sich deren Homepage an."
+    },
+    "navigation": {
+      "menu_title01": "Hauptmenü",
+      "menu_title02": "IdM",
+      "menu_item01": "Startseite",
+      "menu_item02": "Organisationen",
+      "menu_item03": "Anwendungen",
+      "menu_item04": "Benachrichtigung",
+      "menu_item05": "Administratoren",
+      "menu_item06": "Benutzer"
+    },
+    "help_about": {
+      "title": "Hilfe & Über"
+    },
+    "auth": {
+      "login": {
+        "title": "Anmelden",
+        "alert01": "Sitzung abgelaufen",
+        "alert02": "Passwort wurde geändert. Bitte melden Sie sich erneut an.",
+        "alert03": "Falscher Benutzername oder Passwort.",
+        "label01": "E-Mail",
+        "label02": "Passwort",
+        "required_field": "Dies ist ein Pflichtfeld.",
+        "checkbox": "angemeldet bleiben",
+        "loginin_btn": "Anmelden",
+        "link01": "Registrieren",
+        "link02": "Passwort vergessen",
+        "link03": "Keine Bestätigung erhalten?"
+      },
+      "presentation": {
+        "title": "Identity Manager",
+        "subtitle01": "Willkommen bei einer von DIT-UPM entwickelten Implementierung von FIWARE Identity Manager.",
+        "subtitle01aimarketplace": "Willkommen bei einer von DIT-UPM entwickelten Anwendung des KI-Marktplatz Identity Managers.",
+        "subtitle02": "Sie können diese Anmeldeseite sowie jeden anderen Stil/Layout in diesem Webservice anpassen. Sehen Sie sich die Dokumentation zur Anpassung an, um zu erfahren, wie das geht!",
+        "signup_btn": "Registrieren",
+        "docs_btn": "Dokumentation"
+      },
+      "confirmation": {
+        "title": "Anweisungen zur Bestätigung erneut senden",
+        "label01": "E-Mail",
+        "required_field": "Dieses Feld ist erforderlich.",
+        "resend_btn": "Anweisungen zur Bestätigung erneut senden",
+        "link01": "Registrieren",
+        "link02": "Passwort vergessen"
+      },
+      "avoid_2fa": {
+        "title": "2-Faktor-Gerät deaktivieren",
+        "label01": "E-Mail",
+        "required_field": "Dieses Feld ist erforderlich.",
+        "resend_btn": "E-Mail senden"
+      },
+      "pass_request": {
+        "title": "Passwort vergessen?",
+        "content": "Geben Sie sich die E-Mail-Adresse an, die Sie mit Ihrem Konto verknüpft haben. Sie erhalten dann in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
+        "label": "E-Mail",
+        "required_field": "Dieses Feld ist erforderlich.",
+        "send_btn": "Senden",
+        "link01": "Registrieren",
+        "link02": "Sie haben keine Bestätigungsanweisungen erhalten?"
+      },
+      "pass_reset": {
+        "title": "Ändern Sie Ihr Passwort",
+        "alert": "Neues Passwort und Bestätigungspasswort stimmen nicht überein.",
+        "required_field": "Dieses Feld ist erforderlich.",
+        "label01": "Passwort",
+        "label02": "Passwort (wiederholen)",
+        "change_btn": "Mein Passwort ändern",
+        "link01": "Registrieren",
+        "link02": "Sie haben keine Bestätigungsanweisungen erhalten?"
+      },
+      "tfa": {
+        "title01": "Zwei-Faktor-Authentifizierung",
+        "title02": "Um den Authentifizierungsprozess abzuschließen: ",
+        "content01": "1. Öffnen Sie die Google Authenticator-App auf Ihrem Smartphone. ",
+        "content02": "2. Geben Sie unten das von der Anwendung generierte Token ein. ",
+        "content03": "3. Wenn es sich um ein vertrauenswürdiges Gerät handelt, aktivieren Sie diese Option, damit Keyrock sich bei Ihrem nächsten Zugriff daran erinnern kann. ",
+        "content04": "Geben Sie das Token ein:",
+        "content05": "Die Verifizierung ist fehlgeschlagen, weil der eingegebene Token nicht gültig ist. Bitte überprüfen Sie das Datum und die Uhrzeit auf Ihrem Gerät und versuchen Sie es erneut.",
+        "content06": "Dieses Gerät merken",
+        "button01": "Anmelden",
+        "title03": "Wenn Sie die App nicht nutzen können:",
+        "content07": "Klicken Sie auf die folgende Schaltfläche und geben Sie dann Ihre E-Mail ein.",
+        "content08": "Wir werden Ihnen eine Anleitung zusenden, wie Sie auf Ihr Profil zugreifen können, um diese zweite Authentifizierung zu vermeiden. ",
+        "content09": "Zwei-Faktor-Authentifizierung deaktivieren"
+      }
+    },
+    "home": {
+      "change_pass": {
+        "title": "Passwort ändern",
+        "content01": "Es ist ein Jahr her, dass Sie das Passwort geändert haben.",
+        "content02": "Um dieses Portal weiterhin zu nutzen, ändern Sie es bitte.",
+        "continue_btn": "Weiter"
+      },
+      "index": {
+        "page_header": "Hauptmenü",
+        "title": "Anwendungen",
+        "link01": "Registrierung",
+        "alert01": "Sie sind in keiner Anwendung zugelassen.",
+        "link02": "Alle anzeigen",
+        "panel_heading": "Organisationen",
+        "link03": "Erstellen",
+        "alert02": "Sie haben keine Organisationen.",
+        "link04": "Alle anzeigen"
+      }
+    },
+    "organizations": {
+      "delete_avatar": {
+        "title": "Hochgeladenes Bild löschen",
+        "content01": "Sind Sie sicher, dass Sie dieses Bild löschen möchten?",
+        "content02": "Sie können es jederzeit wieder hochladen.",
+        "confirm_btn": "Bestätigen",
+        "cancel_btn": "Abbrechen"
+      },
+      "exit_org": {
+        "title": "Organisation verlassen",
+        "content": "Sind Sie sicher, dass Sie diese Organisation verlassen wollen?",
+        "exit_btn": "Verlassen"
+      },
+      "manage_members": {
+        "title": "Verwalten Sie die Mitglieder Ihrer Organisation",
+        "header_title": "Alle Mitglieder",
+        "no_users": "Keine Mitglieder gefunden.",
+        "filter_use": "Verwenden Sie den Filter (geben Sie mindestens zwei Zeichen ein).",
+        "alert01": "Ungültige Zeichen",
+        "member_list_title": "Mitglieder der Organisation",
+        "alert02": "Einige Benutzer haben keine Rolle zugewiesen bekommen. Wenn Sie jetzt speichern, werden sie in der Organisation nicht autorisiert sein.",
+        "alert03": "Mitglied hinzugefügt",
+        "save_btn": "Speichern",
+        "cancel_btn": "Abbrechen"
+      },
+      "edit": {
+        "title01": "Informationen zur Organisation",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "label01": "Name",
+        "label02": "Beschreibung",
+        "label03": "Website",
+        "update_btn": "Organisation aktualisieren ",
+        "title02": "Organisations Avatar",
+        "delete_btn": "Dieses Bild löschen",
+        "label04": "Ein Bild hochladen",
+        "content01": "Wählen Sie den Teil des Bildes aus, den Sie als Avatar verwenden möchten.",
+        "crop_btn": "Beschneiden und verwenden",
+        "cancel_btn": "Abbrechen",
+        "title03": "Abbrechen",
+        "content02": "Organisation löschen",
+        "content03": "Dadurch werden die Organisation und alle ihre Daten gelöscht.",
+        "delete_org_btn": "Organisation löschen "
+      },
+      "index": {
+        "title": "Organisationen",
+        "create_btn": "Erstellen",
+        "tab01": "Eigentümer",
+        "tab02": "Mitglied",
+        "alert01": "Sie sind nicht Eigentümer einer Organisation.",
+        "alert02": "Sie sind nicht Mitglied einer Organisation."
+      },
+      "create": {
+        "title": "Organisation erstellen",
+        "label01": "Name",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "label02": "Beschreibung",
+        "create_btn": "Organisation erstellen"
+      },
+      "show": {
+        "edit_btn": "bearbeiten",
+        "exit_btn": "verlassen",
+        "label01": "Beschreibung",
+        "label02": "Website",
+        "panel_title01": "Mitglieder",
+        "manage_btn": "Verwalten",
+        "no_members": "Keine Mitglieder gefunden.",
+        "panel_title02": "Autorisierte Anwendungen",
+        "no_apps": "Keine Anwendungen gefunden."
+      }
+    },
+    "settings": {
+      "settings": {
+        "title": "Einstellungen",
+        "panel_title01": "Ändern Sie Ihr Passwort",
+        "label01": "Aktuelles Passwort",
+        "label02": "Neues Passwort",
+        "label03": "Passwort bestätigen",
+        "panel_title02": "Ändern Sie ihre E-Mail",
+        "label04": "Neue E-Mail",
+        "label05": "Aktuelles Passwort",
+        "panel_title03": "Verwalten der Zwei-Faktor-Authentifizierung",
+        "content01": "Sie haben diese Möglichkeit ",
+        "content01_1": "deaktiviert.",
+        "content01_2": "aktiviert.",
+        "content02": "Wir empfehlen Ihnen dringend, diese Funktion zu aktivieren, da sie ein höheres Maß an Sicherheit für den Zugriff auf Ihr Konto bietet.",
+        "content03": "Wenn Sie die Zwei-Faktor-Authentifizierung ausprobieren möchten, müssen Sie eine Sicherheitsfrage angeben, nur für den Fall, dass Sie den Zugriff auf Ihre Authentifizierungs-App verlieren.",
+        "label06": "Sicherheitsfrage",
+        "label07": "Antwort",
+        "panel_title04": "Konto schließen",
+        "content04": "Unglücklich? ",
+        "content04_link": "Lösche meinen Account",
+        "panel_title05": "2-Faktor-Authentifizierung",
+        "content05": "Aktivieren",
+        "content06": "Deaktivieren"
+      },
+      "delete_user": {
+        "title": "Konto schließen",
+        "content": "Sind Sie sicher? Die Löschung Ihres Kontos bedeutet die Löschung aller Ihrer Ressourcen. Dieser Vorgang ist dauerhaft.",
+        "confirm_btn": "Bestätigen",
+        "cancel_btn": "Abbrechen"
+      },
+      "change_email": {
+        "title": "E-Mail ändern",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "label01": "E-Mail",
+        "label02": "Aktuelle E-Mail",
+        "change_btn": "Ändern"
+      },
+      "change_pass": {
+        "title": "Passwort ändern",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "pass_alert": "Neues Passwort und Bestätigungspasswort stimmen nicht überein.",
+        "label01": "Aktuelles Passwort",
+        "label02": "Neues Passwort",
+        "label03": "Passwort bestätigen"
+      },
+      "warn_change_pass": {
+        "title": "Passwort ändern",
+        "content": "Es ist ein Jahr her, dass Sie Ihr Passwort geändert haben. Aus Sicherheitsgründen und um dieses Portal weiterhin nutzen zu können, ändern Sie es bitte.",
+        "continue_btn": "Weiter"
+      },
+      "enable_tfa" : {
+        "title": "Zwei-Faktor-Authentifizierung",
+        "content01": "Die Verifizierung ist fehlgeschlagen, weil der eingegebene Token nicht gültig ist. Bitte überprüfen Sie das Datum und die Uhrzeit auf Ihrem Gerät und versuchen Sie es erneut.",
+        "content02": "Wenn Sie die Zwei-Faktor-Authentifizierung aktivieren möchten, führen Sie die folgenden Schritte aus:",
+        "content03": "1. Öffnen Sie die Google Authenticator-App auf Ihrem Smartphone.",
+        "content04": "2. Scannen Sie den QR-Code oder geben Sie das Schlüsselgeheimnis manuell ein.",
+        "content05": "3. Geben Sie hier das von der Anwendung generierte Token ein.",
+        "content06": "Schlüsselgeheimnis",
+        "label01": "Token",
+        "button01": "Aktivieren"
+      },
+      "disable_tfa": {
+        "title": "Zwei-Faktor-Authentifizierung deaktivieren",
+        "content": "Sind Sie sicher? Wenn Sie diese Option deaktivieren, wird der gespeicherte geheime Schlüssel gelöscht, und wenn Sie ihn wieder aktivieren möchten, wird ein neues Geheimnis generiert.",
+        "confirm_btn": "Bestätigen"
+      }
+    },
+    "users": {
+      "delete_avatar": {
+        "title": "Hochgeladenes Bild löschen",
+        "content01": "Sind Sie sicher, dass Sie dieses Bild löschen möchten?",
+        "content02": "Sie können es jederzeit wieder hochladen.",
+        "confirm_btn": "Bestätigen",
+        "cancel_btn": "Abbrechen"
+      },
+      "edit_user": {
+        "title01": "Persönliche Informationen",
+        "label01": "Benutzername",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "label02": "Über mich",
+        "label03": "Website",
+        "update_btn": "Benutzer aktualisieren ",
+        "title03": "Sichtbare Attribute auf Ihrer Profilseite",
+        "option01": "Benutzername",
+        "option02": "Beschreibung",
+        "option03": "Website",
+        "option04": "Eigenschaften der Identität",
+        "option05": "Bild",
+        "option06": "Gravatar",
+        "title02": "Persönlicher Avatar",
+        "use_image_btn": "Verwenden Sie dieses Bild ",
+        "delete_image_btn": "Dieses Bild löschen ",
+        "use_gravatar_btn": "Gravatar verwenden ",
+        "edit_gravatar_btn": "Bei Gravatar bearbeiten",
+        "link01": "Wir sind mit Gravatar kompatibel. Erstellen Sie Ihr Profil ",
+        "link02": "hier!",
+        "label04": "Ein Bild hochladen",
+        "label05": "Wählen Sie den Teil des Bildes aus, den Sie als Avatar verwenden möchten.",
+        "crop_btn": "Beschneiden und verwenden",
+        "cancel_btn": "Abbrechen",
+        "label06": "Eigenschaften der Identität",
+        "warning": "Hinweis: Diese Attribute werden in Ihre öffentlichen Informationen aufgenommen, die Sie Anwendungen zur Verfügung stellen, wenn Sie deren Verwendung zustimmen."
+      },
+      "new_user": {
+        "title": "Registrierung",
+        "alert01": "Die beiden Passwortfelder stimmten nicht überein",
+        "alert02": "E-Mail wird bereits verwendet",
+        "alert03": "E-Mail ist ungültig",
+        "label01": "Benutzername",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "label02": "E-Mail",
+        "content01": "Ich habe Gravatar und möchte es für meinen Avatar verwenden.",
+        "label03": "Passwort",
+        "label04": "Passwort (wiederholen)",
+        "label05": "Captcha",
+        "label06aimarketplace": "Ich akzeptiere die KI-Marktplatz",
+        "label07aimarketplace": "Nutzungsbedingungen und AGBs",
+        "label08aimarketplace": "Ich akzeptiere die KI-Marktplatz",
+        "label09aimarketplace": "Datenschutzerklärung",
+        "label10aimarketplace": "Diese Beta-Version befindet sich in der Testphase und eignet sich nicht <br> zum Austausch vertraulicher Informationen.",
+        "signup_btn": "Registrieren",
+        "link01": "Passwort vergessen",
+        "link02": "Keine Bestätigung erhalten?"
+      },
+      "show_user": {
+        "placeholder_input": "Filter",
+        "edit_btn": "bearbeiten",
+        "title01": "Beschreibung",
+        "no_description": "Keine Beschreibung verfügbar",
+        "title02": "Website",
+        "title03": "Organisationen",
+        "alert01": "Sie sind weder Mitglied noch Eigentümer einer Organisation.",
+        "title04": "Anwendungen",
+        "alert02": "Sie sind in keiner Anwendung zugelassen."
+      }
+    },
+    "admin": {
+      "notify": {
+        "title": "Benachrichtigen",
+        "label01": "Benachrichtigen",
+        "label02": "Organisation ID",
+        "label03": "Benutzer IDs im CSV Format",
+        "label04": "Titel",
+        "label05": "Body",
+        "option01": "Alle Benutzer benachrichtigen",
+        "option02": "Eine Organisation benachrichtigen",
+        "option03": "Benutzer nach Benutzer-ID benachrichtigen",
+        "alert01": "Die Organisation hat keine Benutzer",
+        "alert02": "Organisation nicht gefunden",
+        "alert03": "Nennen Sie ein paar Benutzer IDs",
+        "alert04": "Benutzer nicht gefunden",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "send_btn": "Senden"
+      },
+      "administrators": {
+        "title": "Administratoren",
+        "panel_title": "Autorisierte Administratoren",
+        "authorize_btn": "Autorisieren",
+        "alert01": "Es gibt keine Administratoren"
+      },
+      "authorize_administrators": {
+        "title": "Verwalten Administratoren",
+        "subtitle01": "Alle Benutzer",
+        "subtitle02": "Autorisierte Administratorem",
+        "placeholder_input": "Filter",
+        "cancel_btn": "Abbrechen",
+        "save_btn": "Speichern",
+        "alert01": "Es gibt keine Administratoren",
+        "alert02": "Kein Benutzer gefunden.",
+        "alert03": "Verwenden Sie den Filter (geben Sie mindestens zwei Zeichen ein).",
+        "alert04": "Ungültige Zeichen",
+        "alert05": "Als Admin autorisierter Benutzer"
+      },
+      "users": {
+        "title": "Benutzer",
+        "content01": "Zeige",
+        "content02": "Einträge",
+        "create_user_btn": "Benutzer anlegen",
+        "delete_user_btn": "Benutzer löschen",
+        "username_col_table": "Benutzername",
+        "enable_col_table": "Aktivieren",
+        "actions_col_table": "Aktionen",
+        "alert01": "Kein Benutzer gefunden."
+      },
+      "create_user": {
+        "title": "Benutzer anlegen",
+        "alert01": "Die beiden Passwortfelder stimmten nicht überein.",
+        "alert02": "E-Mail wird bereits verwendet.",
+        "alert03": "E-Mail ist ungültig.",
+        "label01": "Benutzername",
+        "label02": "E-Mail",
+        "label03": "Passwort",
+        "label04": "Passwort (wiederholen)",
+        "label05": "Beschreibung",
+        "label06": "Website",
+        "label07": "Senden einer E-Mail an den Benutzer",
+        "label08": "Aktivieren",
+        "popover_title": "Sende E-Mail",
+        "popover_body": "Daraufhin wird eine E-Mail mit dem zugewiesenen Passwort an den Benutzer gesendet.",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "create_btn": "Erstellen"
+      },
+      "delete_user": {
+        "title": "Benutzer löschen",
+        "content01": "Sie werden diese Benutzer löschen: ",
+        "content02": "Sind Sie sicher? Das Löschen von Benutzern bedeutet das Löschen aller ihrer Ressourcen. Diese Aktion ist dauerhaft.",
+        "confirm_input": "Bestätigen",
+        "cancel_btn": "Abbrechen"
+      },
+      "edit_user": {
+        "title": "Edit user",
+        "alert01": "E-Mail wird bereits verwendet.",
+        "alert02": "E-Mail ist ungültig.",
+        "label01": "Benutzername",
+        "label02": "E-Mail",
+        "label03": "Beschreibung",
+        "label04": "Website",
+        "label05": "Extra",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "save_btn": "Speichern"
+      },
+      "reset_password": {
+        "title": "Passwort ändern",
+        "alert01": "Die beiden Passwortfelder stimmten nicht überein.",
+        "label01": "Passwort",
+        "label02": "Passwort (wiederholen)",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "save_btn": "Speichern"
+      }
+    },
+    "applications": {
+      "add_trusted_application": {
+        "title": "Verwalten vertrauenswürdiger Anwendungen",
+        "subtitle01": "Anwendungen",
+        "subtitle02": "Vertrauenswürdige Anwendungen",
+        "placeholder_input": "filtern",
+        "cancel_btn": "Abbrechen",
+        "save_btn": "Speichern",
+        "alert01": "Keine Anwendungen gefunden.",
+        "alert02": "Keine vertrauenswürdigen Anwendungen.",
+        "alert03": "Verwenden Sie den Filter (geben Sie mindestens zwei Zeichen ein).",
+        "alert04": "Ungültige Zeichen",
+        "alert05": "Vertrauenswürdige Anwendung hinzugefügt"
+      },
+      "authorize_organization": {
+        "title": "Organisationen in Ihrer Anwendung autorisieren",
+        "subtitle01": "Alle Organisationen",
+        "subtitle02": "Autorisierte Organisationen",
+        "placeholder_input": "filtern",
+        "cancel_btn": "Abbrechen",
+        "save_btn": "Speichern",
+        "alert01": "Keine Organisationen gefunden.",
+        "alert02": "Es gibt keine Organisationen.",
+        "alert03": "Verwenden Sie den Filter (geben Sie mindestens zwei Zeichen ein).",
+        "alert04": "Einige Organisationen haben keine Rolle zugewiesen bekommen. Wenn Sie jetzt speichern, werden sie in der Anwendung nicht autorisiert sein.",
+        "alert05": "Ungültige Zeichen",
+        "alert06": "Organisation hinzugefügt",
+        "popover_title": "Rollenzuweisung",
+        "popover_body": "Sie können den Mitgliedern oder Eigentümern einer Organisation verschiedene Rollen zuweisen"
+      },
+      "authorize_user": {
+        "title": "Benutzer in Ihrer Anwendung autorisieren",
+        "subtitle01": "Alle Benutzer",
+        "subtitle02": "Autorisierte Benutzer",
+        "placeholder_input": "filtern",
+        "cancel_btn": "Abbrechen",
+        "save_btn": "Speichern",
+        "alert01": "Kein Benutzer gefunden.",
+        "alert02": "Es gibt keine Benutzer.",
+        "alert03": "Verwenden Sie den Filter (geben Sie mindestens zwei Zeichen ein).",
+        "alert04": "Einige Benutzer haben keine Rolle zugewiesen bekommen. Wenn Sie jetzt speichern, werden sie in der Anwendung nicht autorisiert sein.",
+        "alert05": "Ungültige Zeichen",
+        "alert06": "Benutzer hinzugefügt"
+      },
+      "create_permission": {
+        "title": "Berechtigung erstellen",
+        "subtitle01": "HTTP Verb, Resource Rule und Authorization Service Header",
+        "subtitle02": "Erweiterte XACML-Regel",
+        "save_btn": "Speichern",
+        "alert01": "Wenn Sie die erweiterte Regel verwenden, können Sie nicht auch Aktion und Ressource festlegen.",
+        "alert02": "Sie müssen sowohl Aktion als auch Ressource oder eine erweiterte XACML-Regel definieren.",
+        "alert03": "Sie müssen sowohl Aktion als auch Ressource definieren",
+        "label01": "Berechtigungsname",
+        "label02": "Beschreibung",
+        "label03": "HTTP action",
+        "label04": "Ressource",
+        "label06": "Authorization Service Header",
+        "label_use_authorization_service_header": "Benutze Authorization Service Header",
+        "label_is_regex": "Ist ein regulärer Ausdruck?",
+        "label05": "Verwenden Sie XACML, um eine komplexere Autorisierungsrichtlinie zu definieren.",
+        "required_field": "Diese Eingabe ist erforderlich."
+      },
+      "create_usage_policy": {
+        "title": "Datenverwendungsrichtlinie erstellen",
+        "subtitle01": "ODRL Policy",
+        "save_btn": "Speichern",
+        "label01": "Name der Richtlinie",
+        "label02": "Beschreibung",
+        "label03": "Typ",
+        "label04": "Parameter",
+        "label05": "Maximale Anzahl von Ereignissen",
+        "label06": "Ereignisfenster",
+        "label07": "Aggregationszeit",
+        "label08": "Bestrafung",
+        "label09": "Zeitspanne",
+        "label10": "Hier können Sie die Datennutzungsrichtlinie festlegen",
+        "select_place_holder": "Nichts ausgewählt",
+        "select_time_option01": "Sekunden",
+        "select_time_option02": "Minuten",
+        "select_time_option03": "Stunden",
+        "select_time_option04": "Tage",
+        "select_policy_option01": "Anzahl",
+        "select_policy_option02": "Aggregation",
+        "select_policy_option03": "Benutzerdefiniert",
+        "select_punishment_option01": "Auftrag abbrechen",
+        "select_punishment_option02": "Abbestellen",
+        "select_punishment_option03": "Monetarisieren",
+        "required_field": "Diese Eingabe ist erforderlich."
+      },
+      "create_role": {
+        "title": "Rolle erstellen",
+        "label01": "Rollen Name",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "save_input": "Speichern"
+      },
+      "delete_avatar": {
+        "title": "Hochgeladenes Bild löschen",
+        "content01": "Sind Sie sicher, dass Sie dieses Bild löschen möchten?",
+        "content02": "Sie können es jederzeit wieder hochladen.",
+        "confirm_btn": "Bestätigen",
+        "cancel_btn": "Abbrechen"
+      },
+      "delete_permission": {
+        "title": "Berechtigung löschen",
+        "content01": "Dadurch wird die Berechtigung dauerhaft aus der Anwendung gelöscht und kann nicht mehr rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?",
+        "confirm_btn": "Bestätigen",
+        "cancel_btn": "Abbrechen"
+      },
+      "delete_role": {
+        "title": "Rolle löschen",
+        "content01": "Dadurch wird die Rolle dauerhaft aus der Anwendung gelöscht und kann nicht mehr rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?",
+        "confirm_btn": "Bestätigen",
+        "cancel_btn": "Abbrechen"
+      },
+      "edit": {
+        "panel_title01": "Anwendungsinformationen",
+        "panel_title02": "Anwendungsavatar",
+        "panel_title03": "Anwendung löschen",
+        "content01": "Ein Bild hochladen",
+        "content02": "Wählen Sie den Teil des Bildes aus, den Sie als Avatar verwenden möchten.",
+        "content03": "Dadurch werden die Anwendung und alle ihre Daten entfernt",
+        "label01": "Name",
+        "label02": "Beschreibung",
+        "label03": "Url",
+        "label04": "Callback Url",
+        "label05": "Anmelde-Callback Url",
+        "label06": "Berechtigungstyp",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "alert01": "Url wird bereits verwendet",
+        "save_btn": "Speichern",
+        "crop_btn": "Beschneiden und verwenden",
+        "cancel_btn": "Abbrechen",
+        "delete_image_btn": "Dieses Bild löschen",
+        "delete_app_btn": "Anwendung löschen",
+        "popover01_body": "Aus Sicherheitsgründen werden nur OAuth-Anfragen, die von dieser URL kommen, von KeyRock akzeptiert.",
+        "popover01_title": "Anwendungs-URL",
+        "popover02_body": "Der Benutzer-Agent wird zu dieser URL umgeleitet, wenn der OAuth-Flow abgeschlossen ist.",
+        "popover02_title": "Anwendungs-Callback URL",
+        "popover03_body": "IdM Keyrock leitet zu diesem Endpunkt weiter, wenn sich der Benutzer-Agent über OAuth angemeldet hat und es erforderlich ist, auch die Benutzersitzung in Keyrock zu löschen. Wenn Sie diesen Parameter nicht konfigurieren, wird der Benutzer-Agent zu dem Endpunkt umgeleitet, der zuvor im Feld url angegeben wurde.",
+        "popover03_title": "Anwendungs-Abmelde-Callback",
+        "popover04_body": "Wählen Sie aus, welche Grant-Typen die Anwendung akzeptieren würden, um Benutzer mit dem Oauth 2.0-Protokoll zu autorisieren. Besuchen Sie <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> für mehr Informationen",
+        "popover04_title": "OAuth Grant Typen",
+        "popover05_body": "Wählen Sie, ob Sie auch die Authentifizierung mit Open ID Connect zulassen möchten. ",
+        "popover05_title": "Open ID Connect"
+      },
+      "index": {
+        "title": "Anwendungen",
+        "register_btn": "Registrieren",
+        "providing_li": "Bereitstellen",
+        "purchasing_li": "Einkaufen",
+        "authorized_li": "Autorisiert",
+        "no_organizations_option": "Keine Organisationen",
+        "content01": "Sie sind nicht Anbieter einer Anwendung.",
+        "content02": "Sie sind nicht Käufer einer Anwendung.",
+        "content03": "Sie sind in keiner Anwendung zugelassen."
+      },
+      "manage_roles": {
+        "title": "Rollen verwalten",
+        "subtitle01": "Rollen",
+        "subtitle02": "Berechtigungen",
+        "subtitle03": "Verwendungsrichtlinien",
+        "content01": "Wählen Sie eine Rolle aus, um ihre Berechtigungen zu sehen und zu verwalten",
+        "content02": "Wählen Sie eine Rolle aus, um ihre Richtlinien zu sehen und zu verwalten, oder erstellen Sie eine neue Rolle.",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "save_btn": "Speichern"
+      },
+      "new": {
+        "title": "Anwendungsinformationen",
+        "label01": "Name",
+        "label02": "Beschreibung",
+        "label03": "Url",
+        "label04": "Callback Url",
+        "label05": "Abmelde Callback Url",
+        "label06": "Grant Type",
+        "label07": "Anbieter",
+        "label08": "eIDAS Authentifizierung",
+        "label09": "Open ID Connect Authentifizierung",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "alert01": "Url wird bereits verwendet",
+        "popover01_body": "Aus Sicherheitsgründen werden nur OAuth-Anfragen, die von dieser URL kommen, von KeyRock akzeptiert.",
+        "popover01_title": "Anwendungs URL",
+        "popover02_body": "Der Benutzer-Agent wird zu dieser URL umgeleitet, wenn der OAuth-Flow abgeschlossen ist.",
+        "popover02_title": "Anwendungs-Callback URL",
+        "popover03_body": "IdM Keyrock leitet zu diesem Endpunkt weiter, wenn sich der Benutzer-Agent über OAuth angemeldet hat und es erforderlich ist, auch die Benutzersitzung in Keyrock zu löschen. Wenn Sie diesen Parameter nicht konfigurieren, wird der Benutzer-Agent zu dem Endpunkt umgeleitet, der zuvor im Feld url angegeben wurde.",
+        "popover03_title": "Anwendungs-Abmelde-Callback",
+        "popover04_body": "Wählen Sie aus, welche Grant-Typen die Anwendung akzeptieren würden, um Benutzer über das Oauth 2.0-Protokoll zu autorisieren. Besuchen Sie <a href='http://fiware-idm.readthedocs.io/en/latest/api/#def-oauth2Auth' title='Oauth info'>Keyrock Docs</a> für mehr Informationen.",
+        "popover04_title": "OAuth Grant Types",
+        "popover05_body": "Wählen Sie aus, wer der Anbieter der Anwendung sein wird: Sie selbst oder eine der Organisationen, deren Eigentümer Sie sind.",
+        "popover05_title": "Besitzende Anwendung",
+        "popover06_body": "Wählen Sie, ob Sie auch eIDAS als Authentifizierungsendpunkt verwenden möchten.",
+        "popover06_title": "Authentifizierungs-Endpoint",
+        "popover07_body": "Wählen Sie, ob Sie auch die Authentifizierung mit Open ID Connect zulassen möchten. ",
+        "popover07_title": "Open ID Connect",
+        "next_btn": "Weiter"
+      },
+      "show": {
+        "span01": "bearbeiten",
+        "span02": "Rollen verwalten",
+        "span03": "Zugang und Nutzung",
+        "label01": "Beschreibung",
+        "label02": "Url",
+        "label03": "Callback Url",
+        "label04": "Anwendungs-Id",
+        "label05": "Pep Proxy Benutzername",
+        "label06": "Id des Sensors",
+        "label07": "Organisationsname",
+        "label08": "Organisations-NIF",
+        "label09": "Service Provider Typ",
+        "label10": "Metadata URL",
+        "panel_title01": "OAuth2 Credentials",
+        "panel_title02": "PEP Proxy",
+        "panel_title03": "IoT Sensoren",
+        "panel_title04": "Vertrauenswürdige Anwendungen",
+        "panel_title05": "Autorisierte Benutzer",
+        "panel_title06": "Autorisierte Organisationen",
+        "panel_title07": "eIDAS Authentication",
+        "panel_title08": "Open ID Connect Credentials",
+        "panel_subtitle01": "Client ID",
+        "panel_subtitle02": "Client Secret",
+        "panel_subtitle03": "Token types",
+        "panel_subtitle04": "JWT Secret",
+        "panel_subtitle05": "OIDC Secret",
+        "panel_subtitle06": "OpenID Connect Discovery Url",
+        "panel_subtitle07": "OpenID Connect Certificates",
+        "permanent_option": "Permanent",
+        "popover01_body": "In der OAuth2-Bibliothek, die Sie für Ihre Anwendung verwenden, werden Sie nach diesen Anmeldeinformationen gefragt",
+        "popover01_title": "OAuth2 Credentials",
+        "popover02_body": "Sie können sowohl jwt- als auch permanente Token über den Scope-Parameter von OAuth2 erstellen.",
+        "popover02_title": "Token Types",
+        "popover03_body": "Mit einem PEP-Proxy in Verbindung mit einem Autorisierungs-PDP können Sie Ihrer Anwendung Authentifizierungs- und Autorisierungssicherheit hinzufügen. Auf diese Weise sind Sie auch in der Lage, spezifische Berechtigungen und Richtlinien für Ihre Ressourcen zu verwalten und Ihren Benutzern unterschiedliche Zugriffsebenen zu gewähren.",
+        "popover03_title": "PEP Proxy",
+        "popover04_body": "Wenn Ihre Anwendung mit dem Internet der Dinge zusammenhängt, müssen die Sensoren hier registriert werden, damit sie authentifiziert werden können.",
+        "popover04_title": "IoT Sensors",
+        "popover05_body": "Sie können diesen OIC-Berechtigungsnachweis in Ihre Anwendung kopieren, um ein mit einem OIC-Flow generiertes JWT zu validieren.",
+        "popover05_title": "Open ID Connect Credentials",
+        "reset_secret_btn": "Geheimnis zurücksetzen",
+        "register_pep_btn": "Einen neuen PEP-Proxy registrieren",
+        "reset_pep_btn": "Passwort zurücksetzen",
+        "delete_pep_btn": "Löschen",
+        "register_iot_btn": "Einen neuen IoT-Sensor registrieren",
+        "reset_iot_btn": "Passwort zurücksetzen",
+        "delete_iot_btn": "Löschen",
+        "placeholder_input": "filtern",
+        "add_trusted_btn": "Hinzufügen",
+        "authorize_btn": "Autorisieren",
+        "edit_btn": "Bearbeiten",
+        "content01": "Für diese Anwendung gibt es keine vertrauenswürdige Anwendung.",
+        "content02": "Kein Benutzer gefunden.",
+        "content03": "Für diese Anwendung gibt es keine autorisierte Organisation."
+      },
+      "step_create_avatar": {
+        "title": "Anwendungs-Avatar",
+        "content01": "Wählen Sie den Teil des Bildes aus, den Sie als Avatar verwenden möchten.",
+        "next_btn": "Weiter"
+      },
+      "step_create_roles": {
+        "title": "Rollen verwalten",
+        "subtitle01": "Rollen",
+        "subtitle02": "Berechtigungen",
+        "content01": "Wählen Sie eine Rolle aus, um ihre Berechtigungen zu sehen und zu verwalten",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "finish_btn": "fertigstellen"
+      }
+    },
+    "templates": {
+      "admin": {
+        "user_row": {
+          "edit_option": "Bearbeiten",
+          "reset_option": "Passwort ändern"
+        }
+      },
+      "applications": {
+        "iot_row": {
+          "label01": "Id des Sensors",
+          "label02": "Passwort des Sensors",
+          "reset_iot_btn": "Passwort zurücksetzen",
+          "delete_iot_btn": "Löschen"
+        },
+        "pep_proxy_row": {
+          "label01": "Pep Proxy Benutzername",
+          "label02": "Pep Proxy Passwort",
+          "reset_pep_btn": "Passwort zurücksetzen",
+          "delete_pep_btn": "Löschen"
+        }
+      },
+      "email": {
+        "base_email": {
+          "content01": "Technische Universität Madrid (UPM)"
+        },
+        "activate": {
+          "subject": "Willkommen bei Keyrock",
+          "content01": "Hallo",
+          "content02": "Willkommen bei Keyrock! Indem Sie auf den Link \"Ich akzeptiere\" unten klicken, erklären Sie, dass Sie unsere Allgemeinen Geschäftsbedingungen gelesen und akzeptiert haben, und die Einrichtung Ihres Kontos wird bestätigt:",
+          "content03": "Ich akzeptiere"
+        },
+        "change_email": {
+          "subject": "E-Mail-Kontoänderung beantragt",
+          "content01": "Hallo",
+          "content02": "Sie haben beantragt, Ihr E-Mail-Konto auf dieses Konto zu ändern. Folgen Sie dem Link, um den Vorgang abzuschließen.",
+          "content03": "Konto verifizieren"
+        },
+        "forgot_password": {
+          "subject": "Anweisungen zum Zurücksetzen des Passworts",
+          "content01": "Hallo",
+          "content02": "Jemand hat einen Link angefordert, um Ihr Passwort zu ändern. Sie können dies über den unten stehenden Link tun.",
+          "content03": "Mein Passwort ändern",
+          "content04": "Wenn Sie dies nicht angefordert haben, ignorieren Sie bitte diese E-Mail.",
+          "content05": "Ihr Passwort wird sich erst ändern, wenn Sie über den obigen Link ein neues Passwort erstellen."
+        },
+        "user_info": {
+          "subject": "Willkommen bei Keyrock",
+          "content01": "Willkommen bei Keyrock! Es wurde ein Konto auf Keyrock mit den folgenden Anmeldedaten erstellt: ",
+          "content02": "E-Mail:",
+          "content03": "Passwort:",
+          "content04": "Benutzername:",
+          "content05": "Sie können sich hier anmelden: "
+        },
+        "disable_2fa": {
+          "subject": "Zwei-Faktor-Authentifizierung - Keyrock",
+          "content01": "Hallo",
+          "content02": "Wenn Sie auf den unten stehenden Link klicken, deaktivieren Sie die Zwei-Faktor-Authentifizierung und können auf Ihr Keyrock-Profil zugreifen",
+          "content03": "Zwei-Faktor-Authentifizierung deaktivieren"
+        }
+      },
+      "organizations": {
+        "assign_role_organization_row" :{
+          "li01": "Eigentümer",
+          "li02": "Mitglied"
+        }
+      },
+      "users": {
+        "org_role_user_row" :{
+          "li01": "Eigentümer",
+          "li02": "Mitglied"
+        }
+      }
+    },
+    "oauth": {
+      "login": {
+        "title": "Anmelden",
+        "alert01": "Sitzung abgelaufen",
+        "alert02": "Ungültiger Benutzername oder Passwort.",
+        "label01": "E-Mail",
+        "label02": "Passwort",
+        "required_field": "Diese Eingabe ist erforderlich.",
+        "checkbox": "angemeldet bleiben",
+        "loginin_btn": "Anmelden",
+        "eidas_loginin_btn": "Sign eID",
+        "link01": "Registrieren",
+        "link02": "Passwort vergessen",
+        "link03": "Keine Bestätigung erhalten?"
+      },
+      "authorize": {
+        "title": "Autorisieren",
+        "content01": "Die Anwendung",
+        "content02": "wird in der Lage sein:",
+        "content03": "Lesen Sie Ihre öffentlichen Informationen.",
+        "deny_btn": "Ablehnen",
+        "authorize_btn": "Autorisieren"
+      }
+    },
+    "modal": {
+      "select": "Wählen Sie Ihr Land",
+      "next": "Nächster Schritt",
+      "close": "Schließen"
+    },
+    "countries": {
+      "spain": "Spanien",
+      "slovenia": "Slovenien",
+      "italy": "Italien",
+      "austria": "Österreich",
+      "portugal": "Portugal"
+    },
+    "saml2": {
+      "label01": "Ansprechpartner im Support",
+      "label02": "Name",
+      "label03": "Nachname",
+      "label04": "E-Mail",
+      "label05": "Telefonnummer",
+      "label06": "Company",
+      "label07": "Technische Kontaktperson",
+      "label08": "Name",
+      "label09": "Nachname",
+      "label10": "E-Mail",
+      "label11": "Telefonnummer",
+      "label12": "Unternehmen",
+      "label13": "Organisation",
+      "label14": "Name",
+      "label15": "Url",
+      "label16": "NIF",
+      "label17": "Service Provider Typ",
+      "private_option": "privat",
+      "public_option": "öffentlich",
+      "required_field": "Diese Eingabe ist erforderlich.",
+      "alert01": "Ungültiger SP-Typ",
+      "edit_eidas": {
+        "title01": "Details zur eIDAS-Authentifizierung",
+        "title02": "eIDAS Angeforderte Attribute",
+        "subtitle01": "Natürliche Person",
+        "subtitle02": "Juristische Person",
+        "subtitle03": "Repräsentative juristische Person",
+        "natural_label01": "Personenkennzeichen",
+        "natural_label02": "Familienname",
+        "natural_label03": "Vorname",
+        "natural_label04": "Geburtsdatum",
+        "natural_label05": "Geburtsname",
+        "natural_label06": "Geburtsort",
+        "natural_label07": "Aktuelle Adresse",
+        "natural_label08": "Geschlecht",
+        "legal_label01": "Kennung der juristischen Person",
+        "legal_label02": "Juristischer Name",
+        "legal_label03": "Juristische Person Adresse",
+        "legal_label04": "Umsatzsteuer-Identifikationsnummer",
+        "legal_label05": "Steuerlicher Hinweis",
+        "legal_label06": "D-2012-17-EUIdentifier",
+        "legal_label07": "LEI",
+        "legal_label08": "EORI",
+        "legal_label09": "SEED",
+        "legal_label10": "SIC",
+        "representative_label01": "Personenkennzeichen",
+        "representative_label02": "Familienname",
+        "representative_label03": "Vorname",
+        "representative_label04": "Geburtsdatum",
+        "representative_label05": "Geburtsname",
+        "representative_label06": "Geburtsort",
+        "representative_label07": "Aktuelle Adresse",
+        "representative_label08": "Geschlecht",
+        "representative_label09": "Kennung der juristischen Person",
+        "representative_label10": "Juristischer Name",
+        "representative_label11": "Juristische Person Adresse",
+        "representative_label12": "Umsatzsteuer-Identifikationsnummer",
+        "representative_label13": "Steuerlicher Hinweis",
+        "representative_label14": "D-2012-17-EUIdentifier",
+        "representative_label15": "LEI",
+        "representative_label16": "EORI",
+        "representative_label17": "SEED",
+        "representative_label18": "SIC",
+        "update_btn": "Aktualisieren"
+      },
+      "step_create_eidas_credentials": {
+        "title": "Details zur eIDAS-Authentifizierung",
+        "next_btn": "Weiter"
+      }
+    },
+    "errors": {
+      "saml": {
+        "title01": "Ups, da ist etwas schief gelaufen!",
+        "content01": "Kontakt mit den Administrator von",
+        "content02": "Ihr Webdienstleister",
+        "content03": "und senden Sie Ihre",
+        "content04": "error details",
+        "title02": "Die Saml2-Anfrage ist fehlgeschlagen!",
+        "content05": "Fehler",
+        "content06": "interner Fehler"
+      },
+      "oauth": {
+        "title01": "Ups, da ist etwas schief gelaufen!",
+        "content01": "Kontakt mit den Administrator von",
+        "content02": "Ihr Webdienstleister",
+        "content03": "und senden Sie Ihre",
+        "content04": "Fehlerdetails",
+        "title02": "OAuth2-Anfrage ist fehlgeschlagen!",
+        "content05": "Fehler",
+        "content06": "interner Fehler",
+        "content07": "(erforderlich)"
+      },
+      "not_found": {
+        "title01": "die von Ihnen angeforderte Seite existiert nicht",
+        "content01": "Gehen Sie zurück zur",
+        "content02": "Hauptseite"
+      },
+      "generic": {
+        "content01": "Code"
+      }
+    }
+  }
+  

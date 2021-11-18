@@ -303,7 +303,7 @@ exports.disable_2fa = function (req, res, next) {
 
   // Search the user through the id
   models.user_registration_profile
-    .find({
+    .findOne({
       where: {
         user_email: req.query.email,
         disable_2fa_key: req.query.disable_2fa_key
@@ -379,7 +379,7 @@ exports.tfa_verify = function (req, res) {
 
   //Check if the token is valid
   models.user
-    .find({
+    .findOne({
       attributes: [
         'id',
         'username',

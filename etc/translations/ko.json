@@ -536,6 +536,7 @@
       "label02": "이메일",
       "label03": "상세 정보",
       "label04": "웹사이트",
+      "label05": "Extra",
       "required_field": "필수입력사항입니다.",
       "save_btn": "저장"
     },

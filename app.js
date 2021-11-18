@@ -216,7 +216,7 @@ if (config.https.enabled) {
   } else {
     app.get('/', function (req, res) {
       res.status(501).json({
-        error: 'Keyrock instance is running in HEADLESS mode'
+        "error": "Keyrock instance is running in HEADLESS mode"
       });
     });
   }
@@ -248,15 +248,15 @@ if (config.https.enabled) {
   } else {
     app.get('/', function (req, res) {
       res.status(501).json({
-        error: 'Keyrock instance is running in HEADLESS mode'
+        "error": "Keyrock instance is running in HEADLESS mode"
       });
     });
   }
 }
 
-debug(
-  clc.green(config.headless ? 'Keyrock instance is clustered and running in HEADLESS mode' : 'Keyrock GUI is available')
-);
+
+debug(clc.green(config.headless ? 'Keyrock instance is clustered and running in HEADLESS mode' : 'Keyrock GUI is available'));
+
 
 // Check connection with Authzforce
 if (config.authorization.authzforce.enabled) {

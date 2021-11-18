@@ -15,15 +15,14 @@ const path = require('path');
 const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
 const package_info = require('./package.json');
-const fs = require('fs')
+const fs = require('fs');
 
 const version = require('./version.json');
 version.keyrock.version = package_info.version;
-version.keyrock.doc =  package_info.homepage;
+version.keyrock.doc = package_info.homepage;
 
-fs.stat("./package.json", function(err, stats){
-   version.keyrock.release_date = stats.mtime;
-
+fs.stat('./package.json', function (err, stats) {
+  version.keyrock.release_date = stats.mtime;
 });
 
 // Obtain secret from config file
@@ -116,66 +115,70 @@ app.use('/version', function (req, res) {
   res.status(200).send(version);
 });
 
-// uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(partials());
+// The following middlewares are used by the GUI only. Not required in headless mode.
+if (!config.headless) {
+  // uncomment after placing your favicon in /public
+  app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+  app.use(partials());
 
-app.use(cookie_parser(config.session.secret));
-app.use(
-  session({
-    secret: config.session.secret,
-    name: 'session',
-    secure: config.https.enabled,
-    maxAge: config.session.expires // eslint-disable-line snakecase/snakecase
-  })
-);
+  app.use(cookie_parser(config.session.secret));
 
-const styles = config.site.theme || 'default';
-// Middleware to convert sass files to css
-app.use(
-  sass_middleware({
-    src: path.join(__dirname, 'themes/' + styles),
-    dest: path.join(__dirname, 'public/stylesheets'),
-    debug: config.debug,
-    outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
-    prefix: '/stylesheets' // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
-  })
-);
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(method_override('_method'));
+  app.use(
+    session({
+      secret: config.session.secret,
+      name: 'session',
+      secure: config.https.enabled,
+      maxAge: config.session.expires // eslint-disable-line snakecase/snakecase
+    })
+  );
 
-app.use(
-  i18n({
-    translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
-    siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
-    textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
-    browserEnable: true, // eslint-disable-line snakecase/snakecase
-    defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
-  })
-);
+  const styles = config.site.theme || 'default';
+  // Middleware to convert sass files to css
+  app.use(
+    sass_middleware({
+      src: path.join(__dirname, 'themes/' + styles),
+      dest: path.join(__dirname, 'public/stylesheets'),
+      debug: config.debug,
+      outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
+      prefix: '/stylesheets' // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
+    })
+  );
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(method_override('_method'));
 
-// Helpers dinamicos:
-app.use(function (req, res, next) {
-  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+  app.use(
+    i18n({
+      translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
+      siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
+      textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
+      browserEnable: true, // eslint-disable-line snakecase/snakecase
+      defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
+    })
+  );
 
-  // init req.session.redir
-  if (!req.session.redir) {
-    req.session.redir = '/';
-  }
+  // Helpers dinamicos:
+  app.use(function (req, res, next) {
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
-  // To make visible req.session in the view
-  res.locals.session = req.session;
+    // init req.session.redir
+    if (!req.session.redir) {
+      req.session.redir = '/';
+    }
 
-  // {text: 'message text', type: 'info | success | warning | danger'}
-  res.locals.message = {};
-  // {text: 'message text', status: ''}
-  res.locals.error = {};
+    // To make visible req.session in the view
+    res.locals.session = req.session;
 
-  res.locals.site = config.site;
-  res.locals.fs = require('fs');
+    // {text: 'message text', type: 'info | success | warning | danger'}
+    res.locals.message = {};
+    // {text: 'message text', status: ''}
+    res.locals.error = {};
 
-  next();
-});
+    res.locals.site = config.site;
+    res.locals.fs = require('fs');
+
+    next();
+  });
+}
 
 // Force HTTPS connection to web server
 if (config.https.enabled) {
@@ -207,8 +210,16 @@ if (config.https.enabled) {
     app.use('/ar', authregistry);
   }
 
-  // Set routes for GUI
-  app.use('/', force_ssl, index);
+  if (!config.headless) {
+    // The following routes are used by the GUI only. Not required in headless mode.
+    app.use('/', force_ssl, index);
+  } else {
+    app.get('/', function (req, res) {
+      res.status(501).json({
+        error: 'Keyrock instance is running in HEADLESS mode'
+      });
+    });
+  }
 } else {
   // Set routes for api
   app.use('/v1', api);
@@ -231,9 +242,21 @@ if (config.https.enabled) {
     app.use('/ar', authregistry);
   }
 
-  // Set routes for GUI
-  app.use('/', index);
+  if (!config.headless) {
+    // The following routes are used by the GUI only. Not required in headless mode.
+    app.use('/', index);
+  } else {
+    app.get('/', function (req, res) {
+      res.status(501).json({
+        error: 'Keyrock instance is running in HEADLESS mode'
+      });
+    });
+  }
 }
+
+debug(
+  clc.green(config.headless ? 'Keyrock instance is clustered and running in HEADLESS mode' : 'Keyrock GUI is available')
+);
 
 // Check connection with Authzforce
 if (config.authorization.authzforce.enabled) {

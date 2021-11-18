@@ -3,6 +3,7 @@ ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
 ARG DOWNLOAD=latest
 ARG SOURCE_BRANCH=master
+ARG HEADLESS=false
 
 
 ########################################################################################
@@ -183,6 +184,7 @@ FROM gcr.io/distroless/nodejs:${NODE_VERSION} AS distroless
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
+ARG HEADLESS
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
 LABEL "org.opencontainers.image.authors"=""
@@ -209,6 +211,7 @@ ENV IDM_HOST="http://localhost:3000" \
     IDM_EMAIL_HOST="localhost" \
     IDM_EMAIL_PORT="25" \
     IDM_EMAIL_ADDRESS="noreply@localhost"
+ENV IDM_HEADLESS=$HEADLESS
 
 USER nobody
 ENV NODE_ENV=production
@@ -245,6 +248,7 @@ FROM node:${NODE_VERSION}-alpine
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
+ARG HEADLESS
 
 WORKDIR /opt/fiware-idm
 COPY --from=builder-alpine /opt/fiware-idm .
@@ -260,7 +264,7 @@ ENV IDM_HOST="http://localhost:3000" \
     IDM_EMAIL_HOST="localhost" \
     IDM_EMAIL_PORT="25" \
     IDM_EMAIL_ADDRESS="noreply@localhost"
-
+ENV IDM_HEADLESS=$HEADLESS
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache ca-certificates bash openssl
@@ -288,7 +292,7 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 #
 # ENV IDM_HOST "http://localhost"
 # ENV IDM_PORT "3000"
-
+# ENV IDM_HEADLESS "false"
 # ENV IDM_DEBUG "true"
 
 # ENV IDM_HTTPS_ENABLED true

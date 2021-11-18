@@ -25,6 +25,7 @@ const api = require('./routes/api/index');
 const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
 const authregistry = require('./routes/authregistry/authregistry');
+const oauth2_controller = require('./controllers/oauth2/oauth2');
 
 const app = express();
 const helmet = require('helmet');
@@ -44,9 +45,11 @@ app.disable('x-powered-by');
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'", 'img-src', "'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
+      imgSrc: ["'self'", 'data'], // eslint-disable-line snakecase/snakecase
       scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"] // eslint-disable-line snakecase/snakecase
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
     },
     reportOnly: false // eslint-disable-line snakecase/snakecase
   })
@@ -179,7 +182,12 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', force_ssl, oauth2);
-  app.get('/user', force_ssl, require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', force_ssl, oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/pdp/open_policy_agent', force_ssl, oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', force_ssl, oauth2_controller.auth_xacml_policy);
+  }
 
   // Set routes for saml2
   app.use('/saml2', force_ssl, saml2);
@@ -198,7 +206,12 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
-  app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/pdp/open_policy_agent', oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', oauth2_controller.auth_xacml_policy);
+  }
 
   // Set routes for saml2
   app.use('/saml2', saml2);

@@ -51,7 +51,7 @@ config.api = {
 // you need to have an instance of authzforce deployed to perform advanced authorization request from a Pep Proxy.
 // If authorization level is basic, only HTTP verb+resource rules can be created
 config.authorization = {
-  level: 'basic', // basic|advanced
+  level: 'basic', // basic|payload|advanced
   authzforce: {
     enabled: false,
     host: 'localhost',

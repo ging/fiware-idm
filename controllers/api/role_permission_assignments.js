@@ -25,6 +25,9 @@ exports.index = function (req, res) {
             'resource',
             'authorization_service_header',
             'use_authorization_service_header',
+            'regex_entity_ids',
+            'regex_attributes',
+            'regex_types',
             'xml'
           ]
         }
@@ -201,6 +204,9 @@ function search_role_permission(application_id) {
               'resource',
               'authorization_service_header',
               'use_authorization_service_header',
+              'regex_entity_ids',
+              'regex_attributes',
+              'regex_types',
               'xml'
             ]
           }

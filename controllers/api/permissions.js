@@ -4,7 +4,7 @@ const diff_object = require('../../lib/object_functions.js').diff_object;
 const uuid = require('uuid');
 
 const config_service = require('../../lib/configService.js');
-const config_authzforce = config_service.get_config().authorization;
+const config_authorization = config_service.get_config().authorization;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -72,6 +72,9 @@ exports.index = function (req, res) {
         'resource',
         'authorization_service_header',
         'use_authorization_service_header',
+        'regex_entity_ids',
+        'regex_attributes',
+        'regex_types',
         'xml'
       ],
       order: [['id', 'DESC']]
@@ -113,6 +116,7 @@ exports.create = function (req, res) {
       // Build a row and validate if input values are correct (not empty) before saving values in permission table
       req.body.permission.is_regex = !!req.body.permission.is_regex;
       req.body.permission.use_authorization_service_header = !!req.body.permission.use_authorization_service_header;
+
       const permission = models.permission.build(req.body.permission);
       permission.id = uuid.v4();
       permission.is_internal = false;
@@ -128,6 +132,9 @@ exports.create = function (req, res) {
           'resource',
           'authorization_service_header',
           'use_authorization_service_header',
+          'regex_entity_ids',
+          'regex_attributes',
+          'regex_types',
           'xml',
           'is_regex',
           'oauth_client_id'
@@ -207,6 +214,17 @@ exports.update = function (req, res) {
           ? req.body.permission.authorization_service_header
           : req.permission.authorization_service_header;
 
+        req.permission.regex_entity_ids = Object.prototype.hasOwnProperty.call(req.body.permission, 'regex_entity_ids')
+          ? req.body.permission.regex_entity_ids
+          : req.permission.regex_entity_ids;
+
+        req.permission.regex_attributes = Object.prototype.hasOwnProperty.call(req.body.permission, 'regex_attributes')
+          ? req.body.permission.regex_attributes
+          : req.permission.regex_attributes;
+        req.permission.regex_types = Object.prototype.hasOwnProperty.call(req.body.permission, 'regex_types')
+          ? req.body.permission.regex_types
+          : req.permission.regex_types;
+
         return req.permission.save();
       })
       .then(function (permission) {
@@ -267,115 +285,77 @@ exports.delete = function (req, res) {
   }
 };
 
+function bad_request(message) {
+  return {
+    error: {
+      message,
+      code: 400,
+      title: 'Bad Request'
+    }
+  };
+}
+
 // Check body in create request
 function check_create_body_request(body) {
   return new Promise(function (resolve, reject) {
-    if (!body.permission) {
-      reject({
-        error: {
-          message: 'Missing parameter permission in body request',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+    const permission = body.permission;
+    if (!permission) {
+      reject(bad_request('Missing parameter permission in body request'));
     }
 
-    if (!body.permission.name) {
-      reject({
-        error: {
-          message: 'Missing parameter name in body request or empty name',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+    if (!permission.name) {
+      reject(bad_request('Missing parameter name in body request or empty name'));
     }
 
-    if (config_authzforce.level !== 'advanced' && body.permission.xml) {
-      reject({
-        error: {
-          message: 'Idm is not configured to create XACML advanced rules',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+    if (config_authorization.level !== 'advanced' && permission.xml) {
+      reject(bad_request('Idm is not configured to create XACML advanced rules'));
     }
 
-    if (config_authzforce.level === 'advanced') {
+    if (config_authorization.level === 'advanced') {
       if (
-        (body.permission.resource || body.permission.action || body.permission.use_authorization_service_header) &&
-        body.permission.xml
+        (permission.resource ||
+          permission.action ||
+          permission.use_authorization_service_header ||
+          permission.use_regex_entity_ids ||
+          permission.use_regex_attributes ||
+          permission.use_regex_types) &&
+        permission.xml
       ) {
-        reject({
-          error: {
-            message:
-              'Cannot set action, resource, authorization_service_header and use_authorization_service_header at the same time as xacml rule',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
+        reject(bad_request('Cannot set action, resource or use_authorization_headers at the same time as xacml rule'));
       }
     }
 
-    if (!(body.permission.action && body.permission.resource) && !body.permission.xml) {
-      if (config_authzforce.level === 'advanced') {
-        reject({
-          error: {
-            message: 'Set action and resource or an advanced xacml rule',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
+    if (!(permission.action && permission.resource) && !permission.xml) {
+      if (config_authorization.level === 'advanced') {
+        reject(bad_request('Set action and resource or an advanced xacml rule'));
       } else {
-        reject({
-          error: {
-            message: 'Set action and resource',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
+        reject(bad_request('Set action and resource'));
       }
     }
 
-    if (body.permission.is_regex) {
-      if (typeof body.permission.is_regex !== 'boolean') {
-        reject({
-          error: {
-            message: 'is_regex attribute must be a boolean',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
-      }
+    if (permission.is_regex && typeof permission.is_regex !== 'boolean') {
+      reject(bad_request('is_regex attribute must be a boolean'));
     }
 
-    if (body.permission.use_authorization_service_header) {
-      if (typeof body.permission.use_authorization_service_header !== 'boolean') {
-        reject({
-          error: {
-            message: 'use_authorization_service_header attribute must be a boolean',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
+    if (permission.use_authorization_service_header) {
+      if (typeof permission.use_authorization_service_header !== 'boolean') {
+        reject(bad_request('use_authorization_service_header attribute must be a boolean'));
       }
+      if (!permission.authorization_service_header) {
+        reject(bad_request('if use_authorization_service_header is set, authorization_service_header needs to be set'));
+      }
+    } else if (permission.authorization_service_header) {
+      reject(bad_request('if authorization_service_header is set, use_authorization_service_header needs to be set'));
     }
-    if (body.permission.use_authorization_service_header && !body.permission.authorization_service_header) {
-      reject({
-        error: {
-          message: 'if use_authorization_service_header is set, authorization_service_header needs to be set',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
-    }
-    if (!body.permission.use_authorization_service_header && body.permission.authorization_service_header) {
-      reject({
-        error: {
-          message: 'if authorization_service_header is set, use_authorization_service_header needs to be set',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+
+    if (config_authorization.level !== 'payload') {
+      if (permission.regex_entity_ids) {
+        reject(bad_request('Cannot set regex_entity_ids unless running in payload mode'));
+      } else if (permission.regex_attributes) {
+        reject(bad_request('Cannot set regex_attributes unless running in payload mode'));
+      } else if (permission.regex_types) {
+        reject(bad_request('Cannot set regex_types unless running in payload mode'));
+      }
     }
     resolve();
   });
@@ -384,103 +364,57 @@ function check_create_body_request(body) {
 // Check body in update request
 function check_update_body_request(body) {
   return new Promise(function (resolve, reject) {
-    if (!body.permission) {
-      reject({
-        error: {
-          message: 'Missing parameter permission in body request',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+    const permission = body.permission;
+    if (!permission) {
+      reject(bad_request('Missing parameter permission in body request'));
     }
 
-    if (body.permission.name && body.permission.name.length === 0) {
-      reject({
-        error: {
-          message: 'Cannot set empty name',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+    if (permission.name && permission.name.length === 0) {
+      reject(bad_request('Cannot set empty name'));
     }
 
-    if (config_authzforce.level !== 'advanced' && body.permission.xml) {
-      reject({
-        error: {
-          message: 'Idm is not configured to create XACML advanced rules',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+    if (config_authorization.level !== 'advanced' && permission.xml) {
+      reject(bad_request('Idm is not configured to create XACML advanced rules'));
     }
 
-    if (body.permission.id || body.permission.is_internal) {
-      reject({
-        error: {
-          message: 'Cannot set id or is_internal',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
+    if (permission.id || permission.is_internal) {
+      reject(bad_request('Cannot set id or is_internal'));
     }
 
-    if (config_authzforce.level === 'advanced') {
-      if (
-        (body.permission.resource || body.permission.action || body.permission.use_authorization_service_header) &&
-        body.permission.xml
-      ) {
-        reject({
-          error: {
-            message:
-              'Cannot set action, resource, authorization_service_header and use_authorization_service_header at the same time as xacml rule',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
+    if (config_authorization.level === 'advanced') {
+      if ((permission.resource || permission.action || permission.use_authorization_service_header) && permission.xml) {
+        reject(
+          bad_request(
+            'Cannot set action, resource, authorization_service_header and use_authorization_service_header at the same time as xacml rule'
+          )
+        );
       }
     }
 
-    if (body.permission.is_regex) {
-      if (typeof body.permission.is_regex !== 'boolean') {
-        reject({
-          error: {
-            message: 'is_regex attribute must be a boolean',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
+    if (permission.is_regex) {
+      if (typeof permission.is_regex !== 'boolean') {
+        reject(bad_request('is_regex attribute must be a boolean'));
       }
     }
 
-    if (body.permission.use_authorization_service_header) {
-      if (typeof body.permission.use_authorization_service_header !== 'boolean') {
-        reject({
-          error: {
-            message: 'use_authorization_service_header attribute must be a boolean',
-            code: 400,
-            title: 'Bad Request'
-          }
-        });
+    if (permission.use_authorization_service_header) {
+      if (typeof permission.use_authorization_service_header !== 'boolean') {
+        reject(bad_request('use_authorization_service_header attribute must be a boolean'));
+      }
+    } else if (!permission.authorization_service_header) {
+      reject(bad_request('if use_authorization_service_header is set, authorization_service_header needs to be set'));
+    }
+
+    if (config_authorization.level !== 'payload') {
+      if (permission.regex_entity_ids) {
+        reject(bad_request('Cannot set regex_entity_ids unless running in payload mode.'));
+      } else if (permission.regex_attributes) {
+        reject(bad_request('Cannot set regex_attributes unless running in payload mode'));
+      } else if (permission.regex_types) {
+        reject(bad_request('Cannot set regex_types unless running in payload mode'));
       }
     }
-    if (body.permission.use_authorization_service_header && !body.permission.authorization_service_header) {
-      reject({
-        error: {
-          message: 'if use_authorization_service_header is set, authorization_service_header needs to be set',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
-    }
-    if (!body.permission.use_authorization_service_header && body.permission.authorization_service_header) {
-      reject({
-        error: {
-          message: 'if authorization_service_header is set, use_authorization_service_header needs to be set',
-          code: 400,
-          title: 'Bad Request'
-        }
-      });
-    }
+
     resolve();
   });
 }

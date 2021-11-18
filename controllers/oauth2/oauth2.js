@@ -1,5 +1,6 @@
 const models = require('../../models/models.js');
 const create_oauth_response = require('../../models/model_oauth_server.js').create_oauth_response;
+const user_permissions = require('../../models/model_oauth_server.js').user_permissions;
 const config_service = require('../../lib/configService.js');
 const config_eidas = config_service.get_config().eidas;
 const config_oauth2 = config_service.get_config().oauth2;
@@ -365,19 +366,107 @@ function oauth_authorize(req, res, next) {
     .catch(next);
 }
 
+// Read in parameters in Open Policy Agent JSON format and make
+// a Permit/Deny adjudication
+exports.auth_opa_policy = function (req, res) {
+  debug(' --> auth_opa_policy');
+  const options = {
+    action: req.body.action,
+    roles: req.body.roles,
+    resource: req.body.resource,
+    application: req.body.appId,
+    service_header: req.body.tenant,
+    payload_entity_ids: req.body.ids,
+    payload_attributes: req.body.attrs,
+    payload_types: req.body.types,
+    payload_id_patterns: req.body.idPatterns
+  };
+  return user_permissions(options.roles, options.application, options.action, options.resource, options)
+    .then(function (permit) {
+      const result = {
+        allow: permit
+      };
+      return res.status(200).json(result);
+    })
+    .catch(function (error) {
+      debug('Error ', error);
+      // Request is not authorized.
+      return res.status(error.code || 500).json(error.message || error);
+    });
+};
+
+// Read in parameters in XACML JSON format and make
+// a Permit/Deny adjudication
+exports.auth_xacml_policy = function (req, res) {
+  debug(' --> auth_xacml_policy');
+
+  const options = {};
+  const obj = req.body;
+  const access = obj.Request.AccessSubject.Attribute;
+  const action = obj.Request.Action.Attribute;
+  const resource = obj.Request.Resource.Attribute;
+
+  const mapping = {
+    'urn:oasis:names:tc:xacml:2.0:subject:role': 'roles',
+    'urn:oasis:names:tc:xacml:1.0:resource:resource-id': 'application',
+    'urn:thales:xacml:2.0:resource:sub-resource-id': 'resource',
+    'urn:ngsi-ld:resource:tenant': 'service_header',
+    'urn:ngsi-ld:resource:types': 'payload_types',
+    'urn:ngsi-ld:resource:attrs': 'payload_attributes',
+    'urn:ngsi-ld:resource:ids': 'payload_entity_ids',
+    'urn:ngsi-ld:resource:id-patterns': 'payload_id_patterns',
+    'urn:oasis:names:tc:xacml:1.0:action:action-id': 'action'
+  };
+
+  access.forEach((elem) => {
+    options[mapping[elem.AttributeId]] = elem.Value;
+  });
+  action.forEach((elem) => {
+    options[mapping[elem.AttributeId]] = elem.Value;
+  });
+  resource.forEach((elem) => {
+    options[mapping[elem.AttributeId]] = elem.Value;
+  });
+
+  return user_permissions(options.roles, options.application, options.action, options.resource, options)
+    .then(function (permit) {
+      /* eslint-disable snakecase/snakecase */
+      const result = {
+        Response: [
+          {
+            Decision: permit ? 'Permit' : 'Deny',
+            Status: {
+              StatusCode: {
+                Value: 'urn:oasis:names:tc:xacml:1.0:status:ok',
+                StatusCode: { Value: 'urn:oasis:names:tc:xacml:1.0:status:ok' }
+              }
+            }
+          }
+        ]
+      };
+      /* eslint-enable snakecase/snakecase */
+      return res.status(200).json(result);
+    })
+    .catch(function (error) {
+      debug('Error ', error);
+      // Request is not authorized.
+      return res.status(error.code || 500).json(error.message || error);
+    });
+};
+
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
 
-  const action = req.query.action ? req.query.action : undefined;
-  const resource = req.query.resource ? req.query.resource : undefined;
-  const authzforce = req.query.authzforce ? req.query.authzforce : undefined;
-  const req_app = req.query.app_id ? req.query.app_id : undefined;
-  const authorization_service_header = req.query.authorization_service_header
-    ? req.query.authorization_service_header
-    : undefined;
+  const options = {
+    action: req.query.action,
+    resource: req.query.resource,
+    authzforce: req.query.authzforce,
+    application: req.query.app_id,
+    service_header: req.query.authorization_service_header
+  };
 
-  if ((action || resource || authorization_service_header) && authzforce) {
+  if (options.authzforce && (options.action || options.resource || options.service_header)) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
@@ -386,26 +475,16 @@ exports.authenticate_token = function (req, res) {
     return res.status(400).json(error);
   }
 
-  if (req_app) {
+  if (options.application) {
     return models.oauth_client
-      .findById(req_app)
+      .findById(options.application)
       .then(function (application) {
         if (application) {
           if (application.token_types.includes('jwt')) {
-            return authenticate_jwt(
-              req,
-              res,
-              action,
-              resource,
-              authorization_service_header,
-              authzforce,
-              req_app,
-              application.jwt_secret
-            );
+            return authenticate_jwt(req, res, options, application.jwt_secret);
           }
-          return authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
+          return authenticate_bearer(req, res, options);
         }
-
         const message = {
           message: 'Unauthorized',
           code: 401,
@@ -421,17 +500,17 @@ exports.authenticate_token = function (req, res) {
       });
   }
 
-  return authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
+  return authenticate_bearer(req, res, options);
 };
 
 // Authenticate an incoming Json Web Token
-function authenticate_jwt(req, res, action, resource, authorization_service_header, authzforce, req_app, jwt_secret) {
+function authenticate_jwt(req, res, options, jwt_secret) {
   debug(' --> authenticate_jwt');
 
   jsonwebtoken.verify(req.query.access_token, jwt_secret, function (err, decoded) {
     if (err) {
       debug('Error ' + err);
-      authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app);
+      authenticate_bearer(req, res, options);
     } else {
       const identity = {
         username: decoded.username,
@@ -443,15 +522,7 @@ function authenticate_jwt(req, res, action, resource, authorization_service_head
 
       const application_id = decoded.app_id;
 
-      create_oauth_response(
-        identity,
-        application_id,
-        action,
-        resource,
-        authorization_service_header,
-        authzforce,
-        req_app
-      )
+      create_oauth_response(identity, application_id, options)
         .then(function (response) {
           return res.status(200).json(response);
         })
@@ -465,9 +536,9 @@ function authenticate_jwt(req, res, action, resource, authorization_service_head
 }
 
 // Authenticate an incoming Bearer Token
-function authenticate_bearer(req, res, action, resource, authorization_service_header, authzforce, req_app) {
+function authenticate_bearer(req, res, options) {
   debug(' --> authenticate_bearer');
-  const options = {
+  const auth_options = {
     allowBearerTokensInQueryString: true // eslint-disable-line snakecase/snakecase
   };
 
@@ -481,19 +552,11 @@ function authenticate_bearer(req, res, action, resource, authorization_service_h
   const response = new Response(res);
 
   oauth_server
-    .authenticate(request, response, options)
+    .authenticate(request, response, auth_options)
     .then(function (token_info) {
       const identity = token_info.user;
       const application_id = token_info.oauth_client.id;
-      return create_oauth_response(
-        identity,
-        application_id,
-        action,
-        resource,
-        authorization_service_header,
-        authzforce,
-        req_app
-      );
+      return create_oauth_response(identity, application_id, options);
     })
     .then(function (response) {
       return res.status(200).json(response);

@@ -50,6 +50,21 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         default: false
       },
+      regex_entity_ids: {
+        type:
+          DataTypes.STRING(255) +
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
+      },
+      regex_attributes: {
+        type:
+          DataTypes.STRING(255) +
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
+      },
+      regex_types: {
+        type:
+          DataTypes.STRING(255) +
+          (sequelize.getDialect() === 'mysql' ? ' CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci' : '')
+      },
       is_regex: {
         type:
           DataTypes.BOOLEAN() +

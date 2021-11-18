@@ -431,13 +431,14 @@ Configure Policy Decision Point (PDP)
 If authorization level is advanced you can create rules, HTTP verb+resource and
 XACML advanced. In addition you need to have an instance of authzforce deployed
 to perform advanced authorization request from a Pep Proxy. If authorization
-level is basic, only HTTP verb+resource rules can be created
+level is basic, only HTTP verb+resource rules can be created.  If authorization
+level is payload, rules can be based on the attributes of the request body.
 
 In order to allow this characteristic you need to edit the config file:
 
 ```javascript
 config.authorization = {
-    level: 'basic', // basic|advanced
+    level: 'basic', // basic|payload|advanced
     authzforce: {
         enabled: false,
         host: 'localhost',

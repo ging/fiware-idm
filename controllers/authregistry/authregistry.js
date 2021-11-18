@@ -3,7 +3,9 @@ const Ajv = require('ajv');
 const ajv = new Ajv();
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment');
 const oauth2_server = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
+const uuid = require('uuid');
 
 const config_service = require('../../lib/configService.js');
 const models = require('../../models/models');
@@ -200,8 +202,21 @@ const _query_evidences = async function _query_evidences(req, res) {
   });
   evidence.policySets = new_policy_sets;
 
+  const now = moment();
+  const iat = now.unix();
+  const exp = now.add(30, 'seconds').unix();
+  const delegation_token = await utils.create_jwt({
+    iss: config.pr.client_id,
+    sub: mask.target.accessSubject,
+    jti: uuid.v4(),
+    iat,
+    exp,
+    aud: token_info.user.id,
+    delegationEvidence: evidence  // eslint-disable-line snakecase/snakecase
+  });
+
   debug("Delegation evidence processed");
-  res.status(200).json({delegation_token: await utils.create_jwt(evidence)});
+  res.status(200).json({delegation_token});
 
   return false;
 };

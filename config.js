@@ -5,6 +5,11 @@ config.host = 'http://172.17.0.1:3000';
 config.headless = false;
 config.debug = false;
 
+config.registration = {
+  redirect: '',
+  extension: '/?new_user=1'
+};
+
 // HTTPS enable
 config.https = {
   enabled: false,
@@ -77,7 +82,7 @@ config.api = {
 // you need to have an instance of authzforce deployed to perform advanced authorization request from a Pep Proxy.
 // If authorization level is basic, only HTTP verb+resource rules can be created
 config.authorization = {
-  level: 'basic', // basic|advanced
+  level: 'basic', // basic|payload|advanced
   authzforce: {
     enabled: false,
     host: 'localhost',
@@ -142,34 +147,46 @@ config.external_auth_ldap = {
 
 // External Participant Registry
 config.pr = {
-    url: undefined,
-    id: "EU.EORI.NL000000000",
-    parties_endpoint: undefined,
-    token_endpoint: undefined,
-    client_id: undefined,
-    client_key: undefined,
-    client_crt: undefined
-}
+  url: undefined,
+  id: 'EU.EORI.NL000000000',
+  parties_endpoint: undefined,
+  token_endpoint: undefined,
+  client_id: undefined,
+  client_key: undefined,
+  client_crt: undefined
+};
 
 // External Authorization Registry
 config.ar = {
-    url: undefined,
-    id: "EU.EORI.NL000000004",
-    delegation_endpoint: undefined,
-    token_endpoint: undefined
-}
+  url: undefined,
+  id: 'EU.EORI.NL000000004',
+  delegation_endpoint: undefined,
+  token_endpoint: undefined
+};
 
 // Email configuration
 config.mail = {
   host: 'localhost',
   port: 25,
-  from: 'noreply@localhost'
+  from: 'noreply@localhost',
+  secure: false,
+  enable_authentication: false,
+  auth: {
+    type: 'type',
+    user: 'username',
+    pass: 'pass'
+  }
 };
 
 // Config themes
 config.site = {
   title: 'Identity Manager',
   theme: 'default'
+};
+
+// Config language
+config.lang = {
+  default_lang: 'en'
 };
 
 // Config eIDAS Authentication

@@ -432,7 +432,7 @@
       "alert01": "Los campos de contraseña no coinciden",
       "alert02": "El email ya está en uso",
       "alert03": "El email no es válido",
-      "label01": "Nombre de usuaruio",
+      "label01": "Nombre de usuario",
       "required_field": "Este campo es obligatorio",
       "label02": "Email",
       "content01": "Tengo Gravatar y quiero usarlo para mi imagen de perfil.",
@@ -536,6 +536,7 @@
       "label02": "Email",
       "label03": "Descripción",
       "label04": "Página web",
+      "label05": "Extra",
       "required_field": "Este campo es obligatorio.",
       "save_btn": "Guardar"
     },
@@ -606,6 +607,9 @@
       "label04": "Recurso",
       "label06": "Authorization Service Header",
       "label_use_authorization_service_header": "Use Authorization Service Header",
+      "label07": "Authorization ID Header",
+      "label08": "Authorization Attributes Header",
+      "label09": "Authorization Types Header",
       "label_is_regex": "¿Es una expresion regular?",
       "label05": "Use XACML para definir una regla de autorización mas compleja.",
       "required_field": "Este campo es obligatorio."

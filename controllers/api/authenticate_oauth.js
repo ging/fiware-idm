@@ -140,7 +140,7 @@ function search_auth_token(token_id) {
   return models.auth_token
     .findOne({
       where: {
-        hash: crypto.createHash("sha3-256").update(token_id).digest('hex')
+        hash: crypto.createHash('sha3-256').update(token_id).digest('hex')
       },
       include: [
         {

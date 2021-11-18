@@ -69,7 +69,23 @@
 											<input class="form-check-input" id="id_use_authorization_service_header"  name="use_authorization_service_header" type="checkbox">
 											<label class="control-label" for="id_use_authorization_service_header"><%=translation.applications.create_permission.label_use_authorization_service_header%></label>
 										</div>
+									<% if (authorization_level === 'payload') { -%>
+										<div class="form-group">
+											<label class="control-label" for="id_regex_entity_ids"><%=translation.applications.create_permission.label07%></label>
+											<div class=" ">
+												<input class="form-control" id="id_regex_entity_ids" maxlength="255" name="regex_entity_ids" type="text">
+											</div>
+											<label class="control-label" for="id_regex_attributes"><%=translation.applications.create_permission.label08%></label>
+											<div class=" ">
+												<input class="form-control" id="id_regex_attributes" maxlength="255" name="regex_attributes" type="text">
+											</div>
+											<label class="control-label" for="id_regex_types"><%=translation.applications.create_permission.label09%></label>
+											<div class=" ">
+												<input class="form-control" id="id_regex_types" maxlength="255" name="regex_types" type="text">
+											</div>
+										</div>
 									</div>
+									<% } -%>
 								</div>
 							<% if (authorization_level === 'advanced') { -%>
 								<div class="panel">

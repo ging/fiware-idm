@@ -21,16 +21,20 @@ exports.create_permission = function (req, res) {
   if (req.body.id || req.body.is_internal) {
     res.send({ text: ' Failed creating permission', type: 'danger' });
   } else {
+    const body = req.body;
     // Build a row and validate if input values are correct (not empty) before saving values in permission table
     const permission = models.permission.build({
-      name: req.body.name,
-      description: req.body.description,
-      action: req.body.action,
-      resource: req.body.resource,
-      authorization_service_header: req.body.authorization_service_header,
-      use_authorization_service_header: req.body.use_authorization_service_header,
-      is_regex: req.body.is_regex,
-      xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined,
+      name: body.name,
+      description: body.description,
+      action: body.action,
+      resource: body.resource,
+      authorization_service_header: body.authorization_service_header,
+      use_authorization_service_header: body.use_authorization_service_header,
+      regex_entity_ids: body.regex_entity_ids,
+      regex_attributes: body.regex_attributes,
+      regex_types: body.regex_types,
+      is_regex: body.is_regex,
+      xml: config_authzforce.level === 'advanced' ? body.xml : undefined,
       oauth_client_id: req.application.id
     });
 
@@ -39,7 +43,7 @@ exports.create_permission = function (req, res) {
 
     if (config_authzforce.level === 'advanced') {
       // See if fields action, resource and xml are in the same request
-      if ((req.body.action || req.body.resource) && req.body.xml) {
+      if ((body.action || body.resource) && body.xml) {
         errors_inputs.push({
           message: 'xml_with_action_and_resource_not_allow'
         });
@@ -47,7 +51,7 @@ exports.create_permission = function (req, res) {
     }
 
     // See if action and resource are defined when xml is not
-    if (!(req.body.action && req.body.resource) && !req.body.xml) {
+    if (!(body.action && body.resource) && !body.xml) {
       errors_inputs.push({ message: 'define_rule' });
     }
 
@@ -70,6 +74,9 @@ exports.create_permission = function (req, res) {
                 'resource',
                 'authorization_service_header',
                 'use_authorization_service_header',
+                'regex_entity_ids',
+                'regex_attributes',
+                'regex_types',
                 'is_regex',
                 'xml',
                 'oauth_client_id'
@@ -134,15 +141,21 @@ exports.edit_permission = function (req, res) {
   if (['1', '2', '3', '4', '5', '6'].includes(req.permission.id) || req.body.is_internal) {
     res.send({ text: ' Failed updating permission', type: 'danger' });
   } else {
+    const body = req.body;
+
+
     const permission = models.permission.build({
-      name: req.body.name,
-      description: req.body.description,
-      resource: req.body.resource,
-      authorization_service_header: req.body.authorization_service_header,
-      use_authorization_service_header: req.body.use_authorization_service_header,
-      is_regex: req.body.is_regex,
-      action: req.body.action,
-      xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined,
+      name: body.name,
+      description: body.description,
+      resource: body.resource,
+      authorization_service_header: body.authorization_service_header,
+      use_authorization_service_header: body.use_authorization_service_header,
+      regex_entity_ids: body.regex_entity_ids,
+      regex_attributes: body.regex_attributes,
+      regex_types: body.regex_types,
+      is_regex: body.is_regex,
+      action: body.action,
+      xml: config_authzforce.level === 'advanced' ? body.xml : undefined,
       oauth_client_id: req.application.id
     });
 
@@ -173,14 +186,17 @@ exports.edit_permission = function (req, res) {
           models.permission
             .update(
               {
-                name: req.body.name,
-                description: req.body.description,
-                resource: req.body.resource,
-                authorization_service_header: req.body.authorization_service_header,
-                use_authorization_service_header: req.body.use_authorization_service_header,
-                is_regex: req.body.is_regex,
-                action: req.body.action,
-                xml: config_authzforce.level === 'advanced' ? req.body.xml : undefined
+                name: body.name,
+                description: body.description,
+                resource: body.resource,
+                authorization_service_header: body.authorization_service_header,
+                use_authorization_service_header: body.use_authorization_service_header,
+                regex_entity_ids: body.regex_entity_ids,
+                regex_attributes: body.regex_attributes,
+                regex_types: body.regex_types,
+                is_regex: body.is_regex,
+                action: body.action,
+                xml: config_authzforce.level === 'advanced' ? body.xml : undefined
               },
               {
                 fields: [
@@ -190,6 +206,9 @@ exports.edit_permission = function (req, res) {
                   'resource',
                   'authorization_service_header',
                   'use_authorization_service_header',
+                  'regex_entity_ids',
+                  'regex_attributes',
+                  'regex_types',
                   'is_regex',
                   'xml'
                 ],

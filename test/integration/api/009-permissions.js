@@ -166,10 +166,16 @@ describe('API - 9 - Permissions: ', function () {
     let permission_description;
     let permission_resource;
     let permission_action;
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable no-unused-vars
     let permission_authorization_service_header;
-    // eslint-disable-next-line no-unused-vars
     let permission_use_authorization_service_header;
+
+    let permission_regex_entity_ids;
+    let permission_regex_attributes;
+    let permission_regex_types;
+    // eslint-enable no-unused-vars
+
+
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function (done) {
       const create_permission = {
@@ -189,10 +195,14 @@ describe('API - 9 - Permissions: ', function () {
         permission_description = json.permission.description;
         permission_action = json.permission.action;
         permission_resource = json.permission.resource;
-        // eslint-disable-next-line no-unused-vars
+        /* eslint-disable no-unused-vars */
         permission_authorization_service_header = json.authorization_service_header;
-        // eslint-disable-next-line no-unused-vars
         permission_use_authorization_service_header = json.use_authorization_service_header;
+
+        permission_regex_entity_ids = json.regex_entity_ids;
+        permission_regex_attributes = json.regex_attributes;
+        permission_regex_types = json.regex_types;
+        /* eslint-enable no-unused-vars */
         done();
       });
     });
@@ -218,12 +228,22 @@ describe('API - 9 - Permissions: ', function () {
         const response_resource = json.values_updated.resource;
         const response_authorization_service_header = json.values_updated.authorization_service_header;
         const response_use_authorization_service_header = json.values_updated.use_authorization_service_header;
+        const response_regex_entity_ids = json.values_updated.regex_entity_ids;
+        const response_regex_attributes = json.values_updated.regex_attributes;
+        const response_regex_types = json.values_updated.regex_types;
+        
+
         should.notEqual(permission_name, response_name);
         should.notEqual(permission_description, response_description);
         should.notEqual(permission_action, response_action);
         should.notEqual(permission_resource, response_resource);
         should.equal(undefined, response_authorization_service_header);
         should.equal(false, response_use_authorization_service_header);
+
+        should.equal(undefined, response_regex_entity_ids);
+        should.equal(undefined, response_regex_attributes);
+        should.equal(undefined, response_regex_types);
+
         response.statusCode.should.equal(200);
         done();
       });
@@ -370,3 +390,4 @@ describe('11) When creating a permission with use_authorization_service_header e
     });
   });
 });
+

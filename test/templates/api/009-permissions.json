@@ -1,19 +1,19 @@
 {
 	"before": {
 		"application": {
-	    	"name": "Test_application permissions",
-	    	"description": "description for permissions",
-	    	"redirect_uri": "http://localhost/login",
-	    	"url": "http://localhost",
-	    	"grant_type": [
-		      	"authorization_code",
-		      	"implicit",
-		      	"password"
-	    	],
-	    	"token_types": [
-		      	"jwt",
-		      	"permanent"
-	    	]
+			"name": "Test_application permissions",
+			"description": "description for permissions",
+			"redirect_uri": "http://localhost/login",
+			"url": "http://localhost",
+			"grant_type": [
+			  	"authorization_code",
+			  	"implicit",
+			  	"password"
+			],
+			"token_types": [
+			  	"jwt",
+			  	"permanent"
+			]
 		}
 	},
 	"create": {
@@ -23,7 +23,7 @@
 				"description": "permission 1 description",
 				"action": "GET",
 				"resource": "login",
-                "authorization_service_header": "test",
+				"authorization_service_header": "test",
 				"use_authorization_service_header": true
 			}
 		},
@@ -42,7 +42,7 @@
 				"description": "permission 3 description",
 				"action": "GET",
 				"resource": "login",
-                "use_authorization_service_header": true
+				"use_authorization_service_header": true
 			}
 		},
 		"invalid_perm_body_no_use_authorization_service_header_but_authorization_service_header": {
@@ -51,7 +51,7 @@
 				"description": "permission 4 description",
 				"action": "GET",
 				"resource": "login",
-                "authorization_service_header": "test"
+				"authorization_service_header": "test"
 			}
 		},
 		"invalid_perm_body_authorization_service_header_and_xml": {
@@ -59,7 +59,7 @@
 				"name": "permission 5",
 				"description": "permission 5 description",
 				"xml": "<xml test 5>",
-                "authorization_service_header": "test"
+				"authorization_service_header": "test"
 			}
 		},
 		"invalid_perm_body_use_authorization_service_header_and_xml": {
@@ -85,7 +85,7 @@
 			"permission": {
 				"name": "Test permission 2",
 				"description": "Test permission 2 description",
-		    	"action": "GET",
+				"action": "GET",
 				"resource": "login"
 			}
 		}
@@ -95,7 +95,7 @@
 			"permission": {
 				"name": "Test permission 3",
 				"description": "Test permission 3 description",
-		    	"action": "GET",
+				"action": "GET",
 				"resource": "login",
 				"authorization_service_header": "test",
 				"use_authorization_service_header": true
@@ -105,7 +105,7 @@
 			"permission": {
 				"name": "new name of permission 3",
 				"description": "new description of permission 3",
-		    	"action": "POST",
+				"action": "POST",
 				"resource": "resource",
 				"use_authorization_service_header": false
 			}
@@ -116,7 +116,7 @@
 			"permission": {
 				"name": "Test permission 4",
 				"description": "Test permission 4 description",
-		    	"action": "GET",
+				"action": "GET",
 				"resource": "login"
 			}
 		}

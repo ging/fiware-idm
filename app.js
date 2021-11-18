@@ -14,6 +14,16 @@ const partials = require('express-partials');
 const path = require('path');
 const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
+const package_info = require('./package.json');
+const fs = require('fs');
+
+const version = require('./version.json');
+version.keyrock.version = package_info.version;
+version.keyrock.doc = package_info.homepage;
+
+fs.stat('./package.json', function (err, stats) {
+  version.keyrock.release_date = stats.mtime;
+});
 
 // Obtain secret from config file
 const config_service = require('./lib/configService.js');
@@ -25,6 +35,7 @@ const api = require('./routes/api/index');
 const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
 const authregistry = require('./routes/authregistry/authregistry');
+const oauth2_controller = require('./controllers/oauth2/oauth2');
 
 const app = express();
 const helmet = require('helmet');
@@ -44,9 +55,11 @@ app.disable('x-powered-by');
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'", 'img-src', "'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
+      imgSrc: ["'self'", 'data'], // eslint-disable-line snakecase/snakecase
       scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"] // eslint-disable-line snakecase/snakecase
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
     },
     reportOnly: false // eslint-disable-line snakecase/snakecase
   })
@@ -97,7 +110,6 @@ if (config.cors.enabled) {
 // Set routes for version
 const up_date = new Date();
 app.use('/version', function (req, res) {
-  const version = require('./version.json');
   version.keyrock.uptime = require('./lib/time').ms_to_time(new Date() - up_date);
   version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
   res.status(200).send(version);
@@ -137,10 +149,10 @@ if (!config.headless) {
   app.use(
     i18n({
       translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
-      siteLangs: ['en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
+      siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
       textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
       browserEnable: true, // eslint-disable-line snakecase/snakecase
-      defaultLang: 'en' // eslint-disable-line snakecase/snakecase
+      defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
     })
   );
 
@@ -183,13 +195,18 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', force_ssl, oauth2);
-  app.get('/user', force_ssl, require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', force_ssl, oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/pdp/open_policy_agent', force_ssl, oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', force_ssl, oauth2_controller.auth_xacml_policy);
+  }
 
   // Set routes for saml2
   app.use('/saml2', force_ssl, saml2);
 
   // Set routes for the authorization registry if enabled
-  if (config.ar.url === "internal") {
+  if (config.ar.url === 'internal') {
     app.use('/ar', authregistry);
   }
 
@@ -210,13 +227,18 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
-  app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/pdp/open_policy_agent', oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', oauth2_controller.auth_xacml_policy);
+  }
 
   // Set routes for saml2
   app.use('/saml2', saml2);
 
   // Set routes for the authorization registry if enabled
-  if (config.ar.url === "internal") {
+  if (config.ar.url === 'internal') {
     app.use('/ar', authregistry);
   }
 
@@ -232,7 +254,9 @@ if (config.https.enabled) {
   }
 }
 
+
 debug(clc.green(config.headless ? 'Keyrock instance is clustered and running in HEADLESS mode' : 'Keyrock GUI is available'));
+
 
 // Check connection with Authzforce
 if (config.authorization.authzforce.enabled) {

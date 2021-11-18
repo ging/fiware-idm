@@ -1,120 +1,20 @@
+<% 
+  var presentation = '../auth/_presentation';
+  var registration = '_registration';
+
+  if (site.theme !== 'default') {
+    if(fs.existsSync('themes/' + site.theme + '/templates/_registration.ejs')) {
+      registration = '../../themes/' + site.theme + '/templates/_registration';
+    }
+    if(fs.existsSync('themes/' + site.theme + '/templates/_presentation.ejs')) {
+      presentation = '../../themes/' + site.theme + '/templates/_presentation';
+    }
+  }
+%>
+
 <div class="row">
-	<%- include ../auth/_presentation %>
-	<div id="" class="registration ">
-		<div class="modal-header">
-			<h3><%=translation.users.new_user.title%></h3>
-		</div>
-		<form id="register_user_form" ng-controller="DummyCtrl" name="" autocomplete="" class="" action="/sign_up/" method="POST" enctype="">
-		<input type='hidden' name='_csrf' value='<%= csrf_token%>' />
-			<div class="modal-body clearfix">
-				<% var nameErrors = [] %>
-			    <% if (errors.length) { %>
-			        <% for (var i in errors) { %>
-			        	<% nameErrors.push(errors[i].message)%>
-			        <% } %>
-			    <% } %>
-			    <% if (nameErrors.indexOf("passwordDifferent") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.alert01%></span>
-			    <% } %>
-			    <% if (nameErrors.indexOf("emailUsed") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.alert02%></span>
-			    <% } %>
-			    <% if (nameErrors.indexOf("emailInvalid") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.alert03%></span>
-			    <% } %>
-				<div class="form-group ">
-					<label class="control-label" for="id_username"><%=translation.users.new_user.label01%></label>
-					<div class=" ">
-						<input class="form-control" id="id_username" maxlength="30" name="username" type="text" value="<%= user_info.username %>"/>
-					</div>
-				</div>
-				<% if (nameErrors.indexOf("username") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.required_field%></span>
-			    <% } %>
-				<div class="form-group ">
-					<label class="control-label" for="id_email"><%=translation.users.new_user.label02%></label>
-					<div class=" ">
-						<input class="form-control" id="id_email" name="email" type="email" value="<%= user_info.email %>"/>
-					</div>
-				</div>
-				<% if (nameErrors.indexOf("email") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.required_field%></span>
-			    <% } %>
-				<div class="form-group ">
-					<div id="gravatar-checkbox">
-						<div class="checkbox">
-							<label>
-								<input id="id_use_gravatar" name="use_gravatar" type="checkbox" />
-								<span><%=translation.users.new_user.content01%></span>
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group has-feedback">
-					<label class="control-label" for="id_password1">
-						<%=translation.users.new_user.label03%>
-						<!-- <a href="" class="hard_pwd" data-toggle="tooltip" data-placement="top" title="">hard</a> -->
-					</label>
-					<div class=" ">
-						<input class="form-control" id="id_password1" name="password1" type="password" />
-						<span class="form-control-feedback fa fa-eye"></span>
-					</div>
-				</div>
-				<% if (nameErrors.indexOf("password1") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.required_field%></span>
-			    <% } %>
-				<div class="form-group has-feedback">
-					<label class="control-label" for="id_password2"><%=translation.users.new_user.label04%></label>
-					<div class=" ">
-						<input class="form-control" id="id_password2" name="password2" type="password" />
-						<span class="form-control-feedback fa fa-eye"></span>
-					</div>
-				</div>
-				<% if (nameErrors.indexOf("password2") != -1) { %>
-			        <span class="help-block alert alert-danger "><%=translation.users.new_user.required_field%></span>
-			    <% } %>
-				<div class="form-group ">
-					<label class="control-label" for="id_captcha"><%=translation.users.new_user.label05%></label>
-					<!-- <div class="g-recaptcha" data-size="normal" data-sitekey="6LcgXvwSAAAAAES48096Gr2KKc6cjWlVWtIcDZvz"></div>
-					<noscript>
-						<div style="width: 302px; height: 352px;">
-							<div style="width: 302px; height: 352px; position: relative;">
-								<div style="width: 302px; height: 352px; position: absolute;">
-									<iframe src="https://www.google.com/recaptcha/api/fallback?k=6LcgXvwSAAAAAES48096Gr2KKc6cjWlVWtIcDZvz"
-										frameborder="0" scrolling="no"
-										style="width: 302px; height:352px; border-style: none;">
-									</iframe>
-								</div>
-								<div style="width: 250px; height: 80px; position: absolute; border-style: none;
-									bottom: 21px; left: 25px; margin: 0px; padding: 0px; right: 25px;">
-									<textarea id="g-recaptcha-response" name="g-recaptcha-response"
-										class="g-recaptcha-response"
-										style="width: 250px; height: 80px; border: 1px solid #c1c1c1;
-										margin: 0px; padding: 0px; resize: none;" value="">
-									</textarea>
-								</div>
-							</div>
-						</div>
-					</noscript> -->
-				</div>
-				<script src="https://www.google.com/recaptcha/api.js?hl=en-GB" async defer></script>
-			</div>
-			<div class="modal-footer">
-				<label class="conditions checkbox-inline">
-					<input type="checkbox" id="inlineCheckbox1" required="required" title="You need to accept the Terms and Conditions to create your account" value="option1"> I accept FIWARE Lab <a href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE_LAB_Terms_and_Conditions" target="a_blank">Terms and Conditions</a>
-				</label>
-				<button type="submit" class="btn btn-primary pull-right"><%=translation.users.new_user.signup_btn%></button>
-				<div class="actions">
-					<a href="/password/request/">
-						<%=translation.users.new_user.link01%>
-					</a>
-					<a href="/confirmation/">
-						<%=translation.users.new_user.link02%>
-					</a>
-			</div>
-			</div>
-		</form>
-	</div>
+	<%- include(presentation) %>
+	<%- include(registration) %>
 </div>
 
 <script src="/javascripts/users/handle_password_strength.js" type="text/javascript"></script>

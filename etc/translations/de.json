@@ -602,7 +602,7 @@
       },
       "create_permission": {
         "title": "Berechtigung erstellen",
-        "subtitle01": "HTTP Verb, Resource Rule und Authorization Service Header",
+        "subtitle01": "HTTP Verb, Resource Rule und Authorization Header",
         "subtitle02": "Erweiterte XACML-Regel",
         "save_btn": "Speichern",
         "alert01": "Wenn Sie die erweiterte Regel verwenden, können Sie nicht auch Aktion und Ressource festlegen.",
@@ -613,6 +613,9 @@
         "label03": "HTTP action",
         "label04": "Ressource",
         "label06": "Authorization Service Header",
+        "label07": "Authorization ID Header",
+        "label08": "Authorization Attributes Header",
+        "label09": "Authorization Types Header",
         "label_use_authorization_service_header": "Benutze Authorization Service Header",
         "label_is_regex": "Ist ein regulärer Ausdruck?",
         "label05": "Verwenden Sie XACML, um eine komplexere Autorisierungsrichtlinie zu definieren.",

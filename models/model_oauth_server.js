@@ -28,7 +28,7 @@ const user_authorized_application = models.user_authorized_application;
 const identity_attributes = config.identity_attributes || { enabled: false };
 
 function getAccessToken(bearerToken) {
-  debug('-------getAccesToken-------');
+  debug('-------getAccessToken-------');
 
   return oauth_access_token
     .findOne({
@@ -532,15 +532,7 @@ function getRefreshToken(refreshToken) {
     });
 }
 
-function create_oauth_response(
-  identity,
-  application_id,
-  action,
-  resource,
-  authorization_service_header,
-  authzforce,
-  req_app
-) {
+function create_oauth_response(identity, application_id, options) {
   debug('-------create_oauth_response-------');
 
   let type;
@@ -593,7 +585,7 @@ function create_oauth_response(
           }
         }
 
-        return search_user_info(user_info, action, resource, authorization_service_header, authzforce, req_app);
+        return search_user_info(user_info, options);
       });
   } else if (type === 'iot') {
     const iot_info = JSON.parse(JSON.stringify(require('../templates/oauth_response/oauth_iot_response.json')));
@@ -621,8 +613,16 @@ function search_iot_info(iot_info) {
 }
 
 // Check if user has enabled the application to read their details
-function search_user_info(user_info, action, resource, authorization_service_header, authzforce, req_app) {
+function search_user_info(user_info, options) {
   debug('-------search_user_info-------');
+
+  const action = options.action;
+  const resource = options.resource;
+  const authorization_service_header = options.check_service;
+  const authorization_payload_headers = options.check_payload;
+  const authzforce = options.authzforce;
+  const req_app = options.application;
+
   return new Promise(function (resolve, reject) {
     const promise_array = [];
 
@@ -637,7 +637,7 @@ function search_user_info(user_info, action, resource, authorization_service_hea
     // Insert search permissions promise to generate decison
     if (action && resource) {
       const search_permissions = search_roles.then(function (roles) {
-        return user_permissions(roles.all, user_info.app_id, action, resource, authorization_service_header);
+        return user_permissions(roles.all, user_info.app_id, action, resource, options);
       });
       promise_array.push(search_permissions);
     } else if (config_authzforce.enabled && authzforce) {
@@ -664,11 +664,7 @@ function search_user_info(user_info, action, resource, authorization_service_hea
         }
 
         if (action && resource) {
-          if (values[2] && values[2].length > 0) {
-            user_info.authorization_decision = 'Permit';
-          } else {
-            user_info.authorization_decision = 'Deny';
-          }
+          user_info.authorization_decision = values[2] ? 'Permit' : 'Deny';
         } else if (config_authzforce.enabled && authzforce) {
           const authzforce_domain = values[2];
           if (authzforce_domain) {
@@ -791,38 +787,90 @@ function user_roles(user_id, app_id) {
     });
 }
 
+// A payload ids are allowed if all values pass the permission id regex
+// A payload types are allowed if all values pass the permission type regex
+// A payload attributes are allowed if all values pass the permission attrs regex
+function payload_permission(payload, permissionRegex) {
+  let permitted = true;
+  if (permissionRegex && payload) {
+    const regex = new RegExp(permissionRegex, 'i');
+    permitted = payload.every((str) => {
+      return regex.test(str);
+    });
+  }
+  return permitted;
+}
+
+// A payload idPattern is allowed only if all idPatterns are equal to the permission id regex.
+// This is a weird edge case since idPatterns are only applicable to NGSI subscriptions.
+function id_pattern_permission(payload, permissionRegex) {
+  let permitted = true;
+  if (permissionRegex && payload) {
+    permitted = payload.every((str) => {
+      return permissionRegex === str;
+    });
+  }
+  return permitted;
+}
+
 // Search user permissions in application whose action and resource are recieved from Pep Proxy
-function user_permissions(roles_id, app_id, action, resource, authorization_service_header) {
+function user_permissions(roles_id, app_id, action, resource, options) {
   debug('-------user_permissions-------');
+
+  const authorization_service_header = options.service_header;
+  const ids = options.payload_entity_ids;
+  const attributes = options.payload_attributes;
+  const types = options.payload_types;
+  const id_patterns = options.payload_id_patterns;
+
+  const isPermitted = (permission) => {
+    const check = {
+      resource:
+        permission.is_regex === 1
+          ? new RegExp(permission.resource, 'i').test(resource)
+          : permission.resource === resource,
+      service_header: true,
+      payload: true
+    };
+
+    if (check.resource === false) {
+      return false;
+    }
+
+    if (permission.use_authorization_service_header === 1) {
+      check.service_header = permission.authorization_service_header === authorization_service_header;
+    }
+    if (config.authorization.level === 'payload') {
+      check.payload =
+        payload_permission(ids, permission.regex_entity_ids) &&
+        payload_permission(attributes, permission.regex_attributes) &&
+        payload_permission(types, permission.regex_types) &&
+        id_pattern_permission(id_patterns, permission.regex_entity_ids);
+    }
+    //debug(JSON.stringify(permission));
+    //debug(JSON.stringify(check));
+    return check.service_header && check.payload;
+  };
+
   return models.role_permission
     .findAll({
       where: { role_id: roles_id },
       attributes: ['permission_id']
     })
     .then(function (permissions) {
-      if (permissions.length > 0) {
-        return models.permission
-          .findAll({
-            where: {
-              id: permissions.map((elem) => elem.permission_id),
-              oauth_client_id: app_id,
-              action
-            }
-          })
-          .then((permissions) =>
-            permissions.filter((permission) => {
-              return (
-                (permission.is_regex === 1
-                  ? new RegExp(permission.resource).exec(resource)
-                  : permission.resource === resource) &&
-                (permission.use_authorization_service_header === 1
-                  ? permission.authorization_service_header === authorization_service_header
-                  : true)
-              );
+      return permissions.length === 0
+        ? false
+        : models.permission
+            .findAll({
+              where: {
+                id: permissions.map((elem) => elem.permission_id),
+                oauth_client_id: app_id,
+                action
+              }
             })
-          );
-      }
-      return [];
+            .then((permissions) => {
+              return _.some(permissions, isPermitted);
+            });
     });
 }
 

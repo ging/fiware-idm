@@ -605,6 +605,10 @@
       "label02": "상세 설명",
       "label03": "HTTP 메소드",
       "label04": "자원(resource)",
+      "label06": "Authorization Service Header",
+      "label07": "Authorization ID Header",
+      "label08": "Authorization Attributes Header",
+      "label09": "Authorization Types Header",
       "label_is_regex": "자원(resource)이 정규식을 포함하고 있나요?",
       "label05": "XACML을 이용하여 복잡한 권한 정책을 설정할 수 있습니다.",
       "required_field": "필수입력사항입니다."

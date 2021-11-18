@@ -14,6 +14,16 @@ const partials = require('express-partials');
 const path = require('path');
 const sass_middleware = require('node-sass-middleware');
 const session = require('cookie-session');
+const package_info = require('./package.json');
+const fs = require('fs');
+
+const version = require('./version.json');
+version.keyrock.version = package_info.version;
+version.keyrock.doc = package_info.homepage;
+
+fs.stat('./package.json', function (err, stats) {
+  version.keyrock.release_date = stats.mtime;
+});
 
 // Obtain secret from config file
 const config_service = require('./lib/configService.js');
@@ -25,6 +35,7 @@ const api = require('./routes/api/index');
 const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
 const authregistry = require('./routes/authregistry/authregistry');
+const oauth2_controller = require('./controllers/oauth2/oauth2');
 
 const translation_merger = require('./lib/json_directory_merger');
 
@@ -46,9 +57,11 @@ app.disable('x-powered-by');
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'", 'img-src', "'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
+      imgSrc: ["'self'", 'data'], // eslint-disable-line snakecase/snakecase
       scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"] // eslint-disable-line snakecase/snakecase
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
     },
     reportOnly: false // eslint-disable-line snakecase/snakecase
   })
@@ -99,78 +112,91 @@ if (config.cors.enabled) {
 // Set routes for version
 const up_date = new Date();
 app.use('/version', function (req, res) {
-  const version = require('./version.json');
   version.keyrock.uptime = require('./lib/time').ms_to_time(new Date() - up_date);
   version.keyrock.api.link = config.host + '/' + version.keyrock.api.version;
   res.status(200).send(version);
 });
 
-// uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(partials());
+// The following middlewares are used by the GUI only. Not required in headless mode.
+if (!config.headless) {
+  // uncomment after placing your favicon in /public
+  app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+  app.use(partials());
 
-app.use(cookie_parser(config.session.secret));
-app.use(
-  session({
-    secret: config.session.secret,
-    name: 'session',
-    secure: config.https.enabled,
-    maxAge: config.session.expires // eslint-disable-line snakecase/snakecase
-  })
-);
+  app.use(cookie_parser(config.session.secret));
 
-const styles = config.site.theme || 'default';
-// Middleware to convert sass files to css
-app.use(
-  sass_middleware({
-    src: path.join(__dirname, 'themes/' + styles),
-    dest: path.join(__dirname, 'public/stylesheets'),
-    debug: config.debug,
-    outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
-    prefix: '/stylesheets' // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
-  })
-);
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(method_override('_method'));
+  app.use(
+    session({
+      secret: config.session.secret,
+      name: 'session',
+      secure: config.https.enabled,
+      maxAge: config.session.expires // eslint-disable-line snakecase/snakecase
+    })
+  );
 
-const translation_path = path.join(__dirname, 'etc/translations/');
-app.use(
-  translation_merger.init({
-    directory_1: translation_path,
-    directory_2: path.join(__dirname, 'themes/' + config.site.theme + '/translations/'),
-    merged_path: path.join(translation_path, 'merged')
-  }), 
-  i18n({
-    translationsPath: translation_merger.get_merge_path(), // eslint-disable-line snakecase/snakecase
-    siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
-    textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
-    browserEnable: true, // eslint-disable-line snakecase/snakecase
-    defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
-  })
-);
+  const styles = config.site.theme || 'default';
+  // Middleware to convert sass files to css
+  app.use(
+    sass_middleware({
+      src: path.join(__dirname, 'themes/' + styles),
+      dest: path.join(__dirname, 'public/stylesheets'),
+      debug: config.debug,
+      outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
+      prefix: '/stylesheets' // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
+    })
+  );
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(method_override('_method'));
 
-// Helpers dinamicos:
-app.use(function (req, res, next) {
-  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+  app.use(
+    i18n({
+      translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
+      siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
+      textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
+      browserEnable: true, // eslint-disable-line snakecase/snakecase
+      defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
+    })
+  );
 
-  // init req.session.redir
-  if (!req.session.redir) {
-    req.session.redir = '/';
-  }
+  const translation_path = path.join(__dirname, 'etc/translations/');
+  app.use(
+    translation_merger.init({
+      directory_1: translation_path,
+      directory_2: path.join(__dirname, 'themes/' + config.site.theme + '/translations/'),
+      merged_path: path.join(translation_path, 'merged')
+    }),
+    i18n({
+      translationsPath: translation_merger.get_merge_path(), // eslint-disable-line snakecase/snakecase
+      siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
+      textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
+      browserEnable: true, // eslint-disable-line snakecase/snakecase
+      defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
+    })
+  );
 
-  // To make visible req.session in the view
-  res.locals.session = req.session;
+  // Helpers dinamicos:
+  app.use(function (req, res, next) {
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
-  // {text: 'message text', type: 'info | success | warning | danger'}
-  res.locals.message = {};
-  // {text: 'message text', status: ''}
-  res.locals.error = {};
+    // init req.session.redir
+    if (!req.session.redir) {
+      req.session.redir = '/';
+    }
 
-  res.locals.site = config.site;
-  res.locals.fs = require('fs');
+    // To make visible req.session in the view
+    res.locals.session = req.session;
 
-  next();
-});
+    // {text: 'message text', type: 'info | success | warning | danger'}
+    res.locals.message = {};
+    // {text: 'message text', status: ''}
+    res.locals.error = {};
+
+    res.locals.site = config.site;
+    res.locals.fs = require('fs');
+
+    next();
+  });
+}
 
 // Force HTTPS connection to web server
 if (config.https.enabled) {
@@ -187,7 +213,12 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', force_ssl, oauth2);
-  app.get('/user', force_ssl, require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', force_ssl, oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/pdp/open_policy_agent', force_ssl, oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', force_ssl, oauth2_controller.auth_xacml_policy);
+  }
 
   // Set routes for saml2
   app.use('/saml2', force_ssl, saml2);
@@ -197,8 +228,16 @@ if (config.https.enabled) {
     app.use('/ar', authregistry);
   }
 
-  // Set routes for GUI
-  app.use('/', force_ssl, index);
+  if (!config.headless) {
+    // The following routes are used by the GUI only. Not required in headless mode.
+    app.use('/', force_ssl, index);
+  } else {
+    app.get('/', function (req, res) {
+      res.status(501).json({
+        "error": "Keyrock instance is running in HEADLESS mode"
+      });
+    });
+  }
 } else {
   // Set routes for api
   app.use('/v1', api);
@@ -206,7 +245,12 @@ if (config.https.enabled) {
 
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
-  app.get('/user', require('./controllers/oauth2/oauth2').authenticate_token);
+  app.get('/user', oauth2_controller.authenticate_token);
+
+  if (config.authorization.level === 'payload') {
+    app.post('/pdp/open_policy_agent', oauth2_controller.auth_opa_policy);
+    app.post('/pdp/xacml', oauth2_controller.auth_xacml_policy);
+  }
 
   // Set routes for saml2
   app.use('/saml2', saml2);
@@ -216,9 +260,21 @@ if (config.https.enabled) {
     app.use('/ar', authregistry);
   }
 
-  // Set routes for GUI
-  app.use('/', index);
+  if (!config.headless) {
+    // The following routes are used by the GUI only. Not required in headless mode.
+    app.use('/', index);
+  } else {
+    app.get('/', function (req, res) {
+      res.status(501).json({
+        "error": "Keyrock instance is running in HEADLESS mode"
+      });
+    });
+  }
 }
+
+
+debug(clc.green(config.headless ? 'Keyrock instance is clustered and running in HEADLESS mode' : 'Keyrock GUI is available'));
+
 
 // Check connection with Authzforce
 if (config.authorization.authzforce.enabled) {

@@ -15,22 +15,16 @@ feature or task may be revised. All information is provided as a general
 guidelines only, and this section may be revised to provide newer information at
 any time.
 
-## Short term
+## Short and medium term
 
-The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for February 2019:
+The following list of features are planned to be addressed in the short/medium term,
+and incorporated in the next releases of the GE:
 
--   Fix Security Report and Bad Practices Issues
+-   Support to multiple PDPs
 
--   Enable users to manage access to their data by third party applications
+-   Global roles support
 
--   Change Documentation Initial Page
-
-## Medium term
-
-The following list of features are planned to be addressed in the medium term,
-typically within the subsequent release(s) generated in the next 9 months after
-next planned release:
+-   Simple interface for applications’ consumers
 
 -   Integration with Alastria identity, Hyperledger Indy: for supporting
     blockchain-based authentication mechanisms.
@@ -44,7 +38,8 @@ of the product even though development of these features has not yet been
 scheduled for a release in the near future. Please feel free to contact us if
 you wish to get involved in the implementation or influence the roadmap
 
--   COAP compatibility: supporting this protocol as an alternative of HTTP could
-    improve the performance of IoT devices authentication process.
+-   European Blockchain Service Infrastructure (EBSI)
+
+-   Integration with CEF eSignature Building Block
 
 -   Analysis/Improvement Keyrock Production performance

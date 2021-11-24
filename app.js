@@ -148,16 +148,6 @@ if (!config.headless) {
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(method_override('_method'));
 
-  app.use(
-    i18n({
-      translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
-      siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
-      textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
-      browserEnable: true, // eslint-disable-line snakecase/snakecase
-      defaultLang: config.lang.default_lang || 'en' // eslint-disable-line snakecase/snakecase
-    })
-  );
-
   const translation_path = path.join(__dirname, 'etc/translations/');
   app.use(
     translation_merger.init({

@@ -153,7 +153,7 @@ if (!config.headless) {
     translation_merger.init({
       directory_1: translation_path,
       directory_2: path.join(__dirname, 'themes/' + config.site.theme + '/translations/'),
-      merged_path: path.join(translation_path, 'merged')
+      merged_path: path.join(__dirname, 'public/', 'translations_merged')
     }),
     i18n({
       translationsPath: translation_merger.get_merge_path(), // eslint-disable-line snakecase/snakecase

@@ -291,7 +291,7 @@ exports.update = function (req, res) {
       }
 
       const diff_application = function (application) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
           const difference = diff_object(application_previous_values, application.dataValues);
           resolve(
             Object.keys(difference).length > 0

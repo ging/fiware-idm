@@ -205,6 +205,7 @@ ARG HEADLESS
 
 WORKDIR /opt/fiware-idm
 COPY --from=builder /opt/fiware-idm .
+COPY --from=builder /opt/fiware-idm/LICENSE /licenses/LICENSE
 
 ENV IDM_HOST="http://localhost:3000" \
     IDM_PORT="3000" \

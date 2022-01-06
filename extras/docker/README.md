@@ -217,3 +217,47 @@ fiware-idm:
     volumes:
         - path_to_file:/opt/fiware-idm/config.js
 ```
+
+## Building using an alternative sources and Linux Distros
+
+The `Dockerfile` is flexible enough to be able to use
+[alternative base images](https://kuberty.io/blog/best-os-for-docker/) should
+you wish. The base image defaults to using the `node:slim` distro, but other
+base images can be injected using `--build-arg` parameters on the commmand line.
+For example, to create a container based on
+[Red Hat UBI (Universal Base Image) 8](https://developers.redhat.com/articles/2021/11/08/optimize-nodejs-images-ubi-8-nodejs-minimal-image)
+add `BUILDER`, `DISTRO`, `PACKAGE_MANAGER` and `USER` parameters as shown:
+
+```console
+sudo docker build -t keyrock \
+  --build-arg BUILDER=registry.access.redhat.com/ubi8/nodejs-14 \
+  --build-arg DISTRO=registry.access.redhat.com/ubi8/nodejs-14-minimal \
+  --build-arg PACKAGE_MANAGER=yum \
+  --build-arg USER=1001 . --no-cache
+```
+
+To create a container based on [Alpine Linux](https://alpinelinux.org/about/)
+add `BUILDER`, `DISTRO`, `PACKAGE_MANAGER` and `USER` parameters as shown:
+
+```console
+docker build -t keyrock \
+  --build-arg BUILDER=node:16-alpine \
+  --build-arg DISTRO=node:16-alpine \
+  --build-arg PACKAGE_MANAGER=apk . \
+  --build-arg USER=406 . --no-cache
+```
+
+Currently, the following `--build-arg` parameters are supported:
+
+| Parameter           | Description                                                                                                                                                                                                                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BUILDER`           | Preferred [linux distro](https://kuberty.io/blog/best-os-for-docker/) to use whilst building the image, defaults to `node:${NODE_VERSION}`                                                                                                                                              |
+| `DISTRO`            | Preferred [linux distro](https://kuberty.io/blog/best-os-for-docker/) to use for the final container image, defaults to `node:${NODE_VERSION}-slim`                                                                                                                                     |
+| `DISTROLESS`        | Preferred [Distroless Image](https://betterprogramming.pub/how-to-harden-your-containers-with-distroless-docker-images-c2abd7c71fdb) to use for the final container. Distroless images can be built using `-target=distroless` , defaults to `gcr.io/distroless/nodejs:${NODE_VERSION}` |
+| `DOWNLOAD`          | The GitHub SHA or tag to download - defaults to `latest`                                                                                                                                                                                                                                |
+| `GITHUB_ACCOUNT`    | The GitHub Action to download the source files from, defaults to `ging`                                                                                                                                                                                                                 |
+| `GITHUB_REPOSITORY` | The name of the GitHub repository to download the source files from, defaults to `fiware-idm`                                                                                                                                                                                           |
+| `NODE_VERSION`      | the version of Node.js to use                                                                                                                                                                                                                                                           |
+| `PACKAGE_MANAGER`   | Package manager to use whilst creating the build, defaults to `apt`                                                                                                                                                                                                                     |
+| `SOURCE_BRANCH`     | The GitHub repository branch to download the source files from, defaults to `master`                                                                                                                                                                                                    |
+| `USER`              | User in the final container image, defaults to `node`                                                                                                                                                                                                                                   |

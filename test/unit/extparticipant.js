@@ -3,6 +3,9 @@
 
 const sinon = require("sinon");
 
+const oauth2_server = require('oauth2-server');
+
+
 // Load test configuration
 const config_service = require('../../lib/configService.js');
 config_service.set_config(require('../config-test'));
@@ -39,6 +42,35 @@ const build_mocks = function build_mocks() {
 };
 
 
+const build_validate_mocks = function build_validate_mocks() {
+  const req = {
+    headers: {
+      authorization: "Bearer invalid"
+    },
+    method: "POST",
+    is: sinon.stub().returns("application/x-www-form-urlencoded"),
+    query: "",
+    body: {
+      "scope": "iSHARE",
+      "response_type": "code",
+      "client_id": "EU.EORI.NLHAPPYPETS",
+      "request": "afs"
+    }
+  };
+  const res = {
+    locals: {},
+    render: sinon.spy(),
+    json: sinon.spy(),
+    end: sinon.spy()
+  };
+  res.status = sinon.stub().returns(res);
+  res.location = sinon.stub().returns(res);
+  const next = sinon.spy();
+
+  return [req, res, next];
+};
+
+
 describe('External Participant Controller: ', () => {
 
   before(() => {
@@ -52,6 +84,125 @@ describe('External Participant Controller: ', () => {
 
   afterEach(() => {
     sinon.restore();
+  });
+
+  describe('authorize endpoint', () => {
+
+    it('should ignore requests not using the iSHARE scope', (done) => {
+      const [req, res, next] = build_validate_mocks();
+      req.body.scope = "";
+
+      extparticipant.validate_participant(req, res, next);
+
+      // validate_participant is asynchronous so wait request is processed
+      setTimeout(() => {
+        sinon.assert.calledOnce(next);
+        sinon.assert.calledWith(next);
+        done();
+      });
+    });
+
+    it('should report error for requests with response_type != code', (done) => {
+      const [req, res, next] = build_validate_mocks();
+      req.body.response_type = "token";
+
+      extparticipant.validate_participant(req, res, next);
+
+      // validate_participant is asynchronous so wait request is processed
+      setTimeout(() => {
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 400);
+        sinon.assert.notCalled(next);
+        done();
+      });
+    });
+
+    it('should report error for requests missing client_id', (done) => {
+      const [req, res, next] = build_validate_mocks();
+      delete req.body.client_id;
+
+      extparticipant.validate_participant(req, res, next);
+
+      // validate_participant is asynchronous so wait request is processed
+      setTimeout(() => {
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 400);
+        sinon.assert.notCalled(next);
+        done();
+      });
+    });
+
+    it('should report error for requests missing request', (done) => {
+      const [req, res, next] = build_validate_mocks();
+      delete req.body.request;
+
+      extparticipant.validate_participant(req, res, next);
+
+      // validate_participant is asynchronous so wait request is processed
+      setTimeout(() => {
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 400);
+        sinon.assert.notCalled(next);
+        done();
+      });
+    });
+
+    it('should report error for requests with invalid client credentials', (done) => {
+      const [req, res, next] = build_validate_mocks();
+      sinon.stub(utils, 'assert_client_using_jwt').throws(new oauth2_server.InvalidRequestError(""));
+
+      extparticipant.validate_participant(req, res, next);
+
+      // validate_participant is asynchronous so wait request is processed
+      setTimeout(() => {
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 400);
+        sinon.assert.notCalled(next);
+        done();
+      });
+    });
+
+    it('should report error for requests with valid client credentials but not trusted', (done) => {
+      const [req, res, next] = build_validate_mocks();
+      sinon.stub(utils, 'assert_client_using_jwt').returns(Promise.resolve([{}, {}]));
+      sinon.stub(utils, 'validate_participant_from_jwt').throws(new oauth2_server.InvalidRequestError(""));
+
+      extparticipant.validate_participant(req, res, next);
+
+      // validate_participant is asynchronous so wait request is processed
+      setTimeout(() => {
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 400);
+        sinon.assert.notCalled(next);
+        done();
+      });
+    });
+
+    it('should success for trusted participants', (done) => {
+      const [req, res, next] = build_validate_mocks();
+      sinon.stub(utils, 'assert_client_using_jwt').returns(Promise.resolve([
+        {
+          "iss": "",
+          "scope": "",
+          "redirect_uri": "",
+        },
+        {}
+      ]));
+      sinon.stub(utils, 'validate_participant_from_jwt').returns(Promise.resolve("Participant"));
+      sinon.stub(models.oauth_client, "upsert");
+      sinon.stub(models.oauth_client, "findOne").returns({id: "EU.EORI.NLHAPPYPETS"});
+
+      extparticipant.validate_participant(req, res, next);
+
+      // validate_participant is asynchronous so wait request is processed
+      setTimeout(() => {
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 204);
+        sinon.assert.notCalled(next);
+        done();
+      });
+    });
+
   });
 
   describe('token endpoint', () => {

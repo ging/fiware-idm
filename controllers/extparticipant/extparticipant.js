@@ -27,7 +27,7 @@ async function build_id_token(client, user, scopes, nonce, auth_time) {
     aud: client.id,
     exp: now.clone().add(config.oauth2.access_token_lifetime, 'seconds').unix(),
     iat: now.unix(),
-    auth_time: auth_time,
+    auth_time,
     acr: "urn:http://eidas.europa.eu/LoA/NotNotified/low",
     azp: client.id
   };

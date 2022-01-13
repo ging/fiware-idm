@@ -58,9 +58,10 @@ describe('External Participant Controller: ', () => {
 
     it('should manage authorization_code grant_type', (done) => {
       const [req, res, next] = build_mocks();
+      const redirect_uri = "redirect_uri";
       req.body.code = "authorization_code";
       req.body.grant_type = "authorization_code";
-      req.body.redirect_uri = redirect_uri = "redirect_uri";
+      req.body.redirect_uri = redirect_uri;
       sinon.stub(utils, "assert_client_using_jwt").returns(Promise.resolve([
           {iss: "EU.EORI.NLHAPPYPETS"},
           "client_certificate",
@@ -71,7 +72,7 @@ describe('External Participant Controller: ', () => {
         extra: {
           iat: null
         },
-        redirect_uri: redirect_uri,
+        redirect_uri,
         scope: "openid iShare",
         save: sinon.spy(),
         User: {

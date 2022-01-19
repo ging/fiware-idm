@@ -140,6 +140,10 @@ ARG NODE_VERSION
 ARG HEADLESS
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+LABEL "name"="keyrock"
+LABEL "summary"="Keyrock Identity Manager - Distroless"
+
 LABEL "org.opencontainers.image.authors"=""
 LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
 LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
@@ -177,7 +181,7 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
 
 ########################################################################################
 #
-# This build stage creates an alpine build for production.
+# This build stage creates a build for production.
 #
 # IMPORTANT: For production environments use Docker Secrets to protect values of the 
 # sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
@@ -227,11 +231,15 @@ RUN \
     fi
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+LABEL "name"="keyrock"
+LABEL "summary"="Keyrock Identity Manager"
+
 LABEL "org.opencontainers.image.authors"=""
 LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
 LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
 LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
+LABEL "org.opencontainers.image.title"="Keyrock Identity Manager"
 LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
 LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
 LABEL "org.nodejs.version"=${NODE_VERSION}

@@ -3,19 +3,19 @@
 }
 .tour-step-background{
   border-radius: 0;
-  border: 3px solid $brand-secundary;
+  border: 3px solid $brand-secondary;
 }
 .tour-step-backdrop{
   z-index: 2000;
 }
 .tour-profile-step{
   border-radius: 0;
-  border-bottom: 3px solid $brand-secundary;
+  border-bottom: 3px solid $brand-secondary;
 }
 .tour{
   .tour-title{
     padding: 15px 15px 0px;
-    color: $brand-secundary;
+    color: $brand-secondary;
   }
   .tour-subtitle{
     background-color: $gray-lighter;

@@ -197,7 +197,7 @@ div#update_owners_members{
     padding: 0;
     margin: 20px 0 7px 0;
     border-bottom: 1px solid #D5D5D5;
-    color: $brand-secundary;
+    color: $brand-secondary;
   }
 }
 
@@ -305,7 +305,7 @@ div#update_owners_members{
     line-height: 1;
     width: 100%;
     float: left;
-    border-bottom: 1px solid $brand-secundary;
+    border-bottom: 1px solid $brand-secondary;
     font-family: $corporate-font-family-sans-serif-Regular;
     @include text-overflow;
   }

@@ -17,7 +17,7 @@
     }
     h3{
       font-size: 17px !important;
-      color: $brand-secundary;
+      color: $brand-secondary;
 
       .steps-group {
         position: relative;
@@ -65,7 +65,7 @@
         border: 2px solid darken($gray-light, 20%) !important;
       }
       div.active {
-        border: 2px solid $brand-secundary !important;
+        border: 2px solid $brand-secondary !important;
         color: $brand-primary !important;
       }
     }
@@ -154,11 +154,11 @@
       padding: 0;
       min-height: 1px;
       background-color: transparent;
-      color: $brand-secundary;
+      color: $brand-secondary;
       &:hover{
         cursor: pointer;
-        border-color: $brand-secundary !important;
-        color: $brand-secundary !important;
+        border-color: $brand-secondary !important;
+        color: $brand-secondary !important;
       }
     }
   }

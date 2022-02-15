@@ -907,7 +907,7 @@
       "authorize": {
         "title": "Autorisieren",
         "content01": "Die Anwendung",
-        "content02": "wird in der Lage sein:",
+        "content02": "wird autorisiert sein:",
         "content03": "Lesen Sie Ihre öffentlichen Informationen.",
         "deny_btn": "Ablehnen",
         "authorize_btn": "Autorisieren"

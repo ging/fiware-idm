@@ -1,0 +1,49 @@
+<div id="authorize_application_modal" class="static_page">
+  <div class="">
+    <div class="">
+      <div class="modal-header">
+        <h3>
+          <%=translation.oauth.authorize.title%>
+            <%= application.name %>?
+        </h3>
+      </div>
+      <form id="" ng-controller="DummyCtrl" name="" autocomplete="" class="ng-scope ng-pristine ng-valid"
+        action="<%= application.url %>" method="POST" enctype="">
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+        <div class="modal-body clearfix">
+          <div>
+            <p>
+              <%=translation.oauth.authorize.content01%> <a href="/idm/applications/<%= application.id %>/">
+                  <%= application.name %>
+                </a> <%=translation.oauth.authorize.content02%>
+            </p>
+            <div class="select-multiple">
+              <select name="user_authorized_application[shared_attributes]" class="selectpicker"
+                data-dropup-auto="false" multiple>
+                <option value="username" selected>Username</option>
+                <option value="email" selected>Email</option>
+                <option value="identity_attributes" selected>Identity Attributes</option>
+                <option value="image" selected>Image</option>
+                <option value="gravatar" selected>Gravatar</option>
+                <option value="eidas_profile" selected>eIDAS Profile</option>
+              </select>
+            </div>
+            <!-- <div class="alert alert-info">
+                    <%=translation.oauth.authorize.content03%>
+              </div> -->
+          </div>
+          <fieldset>
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <a href="/" class="secondary cancel btn btn-default">
+            <%=translation.oauth.authorize.deny_btn%>
+          </a>
+          <button type="submit" class="btn btn-primary">
+            <%=translation.oauth.authorize.authorize_btn%>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

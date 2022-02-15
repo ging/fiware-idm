@@ -10,6 +10,9 @@ const Op = Sequelize.Op;
 
 const api_check_perm_controller = require('./check_permissions');
 
+const generate_app_certificates = require('../../lib/app_certificates.js').generate_app_certificates;
+const delete_app_certificates = require('../../lib/app_certificates.js').delete_app_certificates;
+
 // MW to Autoload info if path include application_id
 exports.load_application = function (req, res, next, application_id) {
   debug('--> load_application');
@@ -165,6 +168,8 @@ exports.create = function (req, res) {
 
       application.scope = req.body.application.scope ? req.body.application.scope : null;
 
+      const promises = [];
+
       if (req.body.application.token_types || (application.scope && application.scope.includes('openid'))) {
         application.jwt_secret = req.body.application.token_types.includes('jwt')
           ? crypto.randomBytes(16).toString('hex').slice(0, 16)
@@ -197,7 +202,14 @@ exports.create = function (req, res) {
         });
       });
 
-      return Promise.all([create_application, create_assignment])
+      promises.push(create_application);
+      promises.push(create_assignment);
+
+      if (application.scope && application.scope.includes('openid')) {
+        promises.push(generate_app_certificates(application));
+      }
+
+      return Promise.all(promises)
         .then(function (values) {
           res.status(201).json({ application: values[0].dataValues });
         })
@@ -278,19 +290,40 @@ exports.update = function (req, res) {
         req.application.response_type = oauth_type.response_type;
       }
 
-      return req.application.save();
-    })
-    .then(function (application) {
-      const difference = diff_object(application_previous_values, application.dataValues);
-      const response =
-        Object.keys(difference).length > 0
-          ? { values_updated: difference }
-          : {
-              message: "Request don't change the application parameters",
-              code: 200,
-              title: 'OK'
-            };
-      res.status(200).json(response);
+      const diff_application = function (application) {
+        return new Promise(resolve => {
+          const difference = diff_object(application_previous_values, application.dataValues);
+          resolve(
+            Object.keys(difference).length > 0
+              ? { values_updated: difference }
+              : {
+                message: "Request don't change the application parameters",
+                code: 200,
+                title: 'OK'
+              }
+          );
+        });
+      }
+
+      req.application.save();
+
+      const promises = [];
+
+      promises.push(diff_application(req.application))
+
+      if (req.application.scope.includes("openid")) {
+        promises.push(generate_app_certificates(req.application));
+      } else {
+        promises.push(delete_app_certificates(req.application));
+      }
+
+      return Promise.all(promises)
+        .then(function (values) {
+          res.status(200).json(values[0]);
+        })
+        .catch(function (error) {
+          return Promise.reject(error);
+        });
     })
     .catch(function (error) {
       debug('Error: ' + error);
@@ -310,6 +343,9 @@ exports.update = function (req, res) {
 // DELETE /v1/applications/:application_id -- Delete application
 exports.delete = function (req, res) {
   debug('--> delete');
+
+  // Delete certificates if exists
+  delete_app_certificates(req.application);
 
   req.application
     .destroy()

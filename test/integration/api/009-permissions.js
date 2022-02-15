@@ -166,15 +166,14 @@ describe('API - 9 - Permissions: ', function () {
     let permission_description;
     let permission_resource;
     let permission_action;
-    // eslint-disable no-unused-vars
+    /* eslint-disable no-unused-vars */
     let permission_authorization_service_header;
     let permission_use_authorization_service_header;
 
     let permission_regex_entity_ids;
     let permission_regex_attributes;
     let permission_regex_types;
-    // eslint-enable no-unused-vars
-
+    /* eslint-enable no-unused-vars */
 
     // eslint-disable-next-line snakecase/snakecase
     beforeEach(function (done) {
@@ -231,7 +230,6 @@ describe('API - 9 - Permissions: ', function () {
         const response_regex_entity_ids = json.values_updated.regex_entity_ids;
         const response_regex_attributes = json.values_updated.regex_attributes;
         const response_regex_types = json.values_updated.regex_types;
-        
 
         should.notEqual(permission_name, response_name);
         should.notEqual(permission_description, response_description);
@@ -390,4 +388,3 @@ describe('11) When creating a permission with use_authorization_service_header e
     });
   });
 });
-

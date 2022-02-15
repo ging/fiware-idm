@@ -201,7 +201,7 @@
       },
       "pass_request": {
         "title": "Passwort vergessen?",
-        "content": "Geben Sie sich die E-Mail-Adresse an, die Sie mit Ihrem Konto verknüpft haben. Sie erhalten dann in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
+        "content": "Geben Sie die E-Mail-Adresse an, die Sie mit Ihrem Konto verknüpft haben. Sie erhalten dann in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
         "label": "E-Mail",
         "required_field": "Dieses Feld ist erforderlich.",
         "send_btn": "Senden",

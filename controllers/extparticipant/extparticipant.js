@@ -1,8 +1,5 @@
 const crypto = require('crypto');
 const debug = require('debug')('idm:extparticipant_controller');
-const fetch = require('node-fetch');
-const forge = require('node-forge');
-const jose = require('node-jose');
 const moment = require('moment');
 const oauth2_server = require('oauth2-server');
 const uuid = require('uuid');
@@ -13,96 +10,24 @@ const authregistry = require('../../controllers/authregistry/authregistry');
 const utils = require('./utils');
 
 const config = config_service.get_config();
-const verifier = jose.JWS.createVerify();
+
+const m2m_grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+const managed_token_grant_types = new Set(["authorization_code", "client_credentials", m2m_grant_type]);
 
 
-function check(errors, condition, message) {
-  if (!condition) {
-    errors.push(message);
-  }
-}
-
-function validate_client_certificate(cert) {
-  const errors = [];
-
-  const id = cert.subject.attributes.map((a) => {
-    const name = a.shortName || a.name;
-    return `${name}=${a.value}`;
-  }).join('/');
-  debug(`Validating ${id}`);
-
-  //check(errors, cert.validity.notBefore <= periodStart && periodEnd <= cert.validity.notAfter, "Certificate dates invalid.");
-  //check(errors, await IsCertificatePartOfChain(cert), "Certificate is not part of the chain.");
-  check(errors, cert.signatureOid === forge.pki.oids.sha256WithRSAEncryption, "Certificate signature invalid.");
-  //check(errors, cert.publicKey.Key.SignatureAlgorithm == "RSA", "RSA algorithm");
-  check(errors, cert.publicKey.n.bitLength() >= 2048, "Certificate public key size is smaller than 2048.");
-  check(errors, cert.serialNumber != null && cert.serialNumber.trim() !== "", "Certificate has no serial number");
-
-  const key_usage = cert.getExtension('keyUsage');
-  const digital_only = key_usage.digitalSignature && !(key_usage.keyCertSign || key_usage.cRLSign);
-  check(errors, digital_only, "Key usage is for CA and not for digital signature.");
-
-  if (errors.length > 0) {
-      throw new Error(errors);
-  }
-}
-
-async function assert_client_using_jwt(credentials, client_id) {
-  try {
-    // parse the JWT and verify its signature
-    const jwt = await verifier.verify(credentials, { 'allowEmbeddedKey': true });
-    const payload = JSON.parse(jwt.payload.toString());
-
-    // check JWT parameters
-    if (payload.iss !== client_id) {
-      throw new Error(`JWT iss parameter doesn't match provided client_id parameter (${payload.iss} != ${client_id})`);
-    }
-
-    const aud = typeof payload.aud === "string" ? [payload.aud] : payload.aud;
-    if (aud == null || aud.indexOf(config.pr.client_id) === -1) {
-      throw new Error("Not listed on the aud parameter");
-    }
-    const now = moment().unix();
-    if (payload.exp < now) {
-      throw new Error("Expired token");
-    }
-
-    // Validate chain certificates
-    const fullchain = jwt.header.x5c.map((cert) => {
-      return forge.pki.certificateFromPem(
-        '-----BEGIN CERTIFICATE-----' + cert + '-----END CERTIFICATE-----'
-      );
-    });
-
-    const cert_serial_name = fullchain[0].subject.getField({name: "serialName"}).value;
-    if (payload.iss !== cert_serial_name) {
-      // JWT iss parameter does not match the serialName field of the signer certificate
-      throw new Error(`Issuer certificate serialName parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_name})`);
-    }
-    validate_client_certificate(fullchain[0]);
-
-    return [payload, fullchain[0]];
-  } catch (e) {
-    // Reponse with message
-    const err = new oauth2_server.InvalidRequestError('invalid_request: invalid client credentials');
-    err.details = e;
-    throw err;
-  }
-}
-
-async function build_id_token(client, user, scopes, nonce, iat) {
+async function build_id_token(client, user, scopes, nonce, auth_time) {
   const now = moment();
-  if (iat == null) {
-    iat = now.unix();
+  if (auth_time == null) {
+    auth_time = now.unix();
   }
 
   const claims = {
     iss: config.pr.client_id,
     sub: user.id, // TODO
     aud: client.id,
-    exp: now.add(30, 'seconds').unix(),
+    exp: now.clone().add(config.oauth2.access_token_lifetime, 'seconds').unix(),
     iat: now.unix(),
-    auth_time: iat,
+    auth_time,
     acr: "urn:http://eidas.europa.eu/LoA/NotNotified/low",
     azp: client.id
   };
@@ -125,29 +50,31 @@ async function build_id_token(client, user, scopes, nonce, iat) {
   return await utils.create_jwt(claims);
 }
 
-async function build_access_token(client, user) {
+async function build_access_token(client, user, grant_type) {
   const now = moment();
-  const exp = now.add(config.oauth2.access_token_lifetime, 'seconds');
+  const exp = now.clone().add(config.oauth2.access_token_lifetime, 'seconds');
 
   /* eslint-disable snakecase/snakecase */
   const claims = {
     iss: config.pr.client_id,
-    sub: user.id, // TODO
+    sub: grant_type === m2m_grant_type ? user.username : user.id, // TODO
     jti: uuid.v4(),
     iat: now.unix(),
     exp: exp.unix(),
-    aud: client.id,
-    email: user.email
+    aud: grant_type === m2m_grant_type ? config.pr.client_id : client.id
   };
-  if (config.ar.url != null && config.ar.url !== "internal") {
-    claims.authorisationRegistry = {
-      url: config.ar.url,
-      token_endpoint: config.ar.token_endpoint,
-      delegation_endpoint: config.ar.delegation_endpoint,
-      identifier: config.ar.identifier
-    };
-  } else if (config.ar.url === "internal") {
-    claims.delegationEvidence = await authregistry.get_delegation_evidence(user.id);
+  if (grant_type !== m2m_grant_type) {
+    claims.email = user.email;
+    if (config.ar.url != null && config.ar.url !== "internal") {
+      claims.authorisationRegistry = {
+        url: config.ar.url,
+        token_endpoint: config.ar.token_endpoint,
+        delegation_endpoint: config.ar.delegation_endpoint,
+        identifier: config.ar.identifier
+      };
+    } else if (config.ar.url === "internal") {
+      claims.delegationEvidence = await authregistry.get_delegation_evidence(user.id);
+    }
   }
   /* eslint-enable snakecase/snakecase */
 
@@ -155,25 +82,6 @@ async function build_access_token(client, user) {
     await utils.create_jwt(claims),
     exp.toDate()
   ];
-}
-
-async function retrieve_participant_registry_token() {
-  const now = moment();
-  const iat = now.unix();
-  const exp = now.add(30, 'seconds').unix();
-  const payload = {
-    jti: uuid.v4(),
-    iss: config.pr.client_id,
-    sub: config.pr.client_id,
-    aud: [
-        "EU.EORI.NL000000000",
-        config.pr.token_endpoint
-    ],
-    iat,
-    exp
-  };
-
-  return await utils.create_jwt(payload);
 }
 
 const ensure_client_application = async function ensure_client_application(participant_id, participant_name, redirect_uri) {
@@ -196,68 +104,6 @@ const ensure_client_application = async function ensure_client_application(parti
   // We cannot use upsert for retrieving the updated client due very old version of sequelize
   await models.oauth_client.upsert(data);
   return await models.oauth_client.findOne({where: {id: participant_id}});
-};
-
-const validate_participant_from_jwt = async function validate_participant_from_jwt(client_payload, client_certificate) {
-  /*******/
-  debug('Generating a JWT token for accessing the participant registry');
-  /*******/
-  const token = await retrieve_participant_registry_token();
-
-  /*******/
-  debug('Requesting an access token to the participant registry');
-  /*******/
-
-  const params = new URLSearchParams();
-  params.append('grant_type', 'client_credentials');
-  params.append('scope', 'iSHARE');
-  params.append('client_id', config.pr.client_id);
-  params.append('client_assertion_type', 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer');
-  params.append('client_assertion', token);
-
-  debug('url: ' + config.pr.token_endpoint);
-  debug('body: ' + params);
-  const token_response = await fetch(config.pr.token_endpoint, {
-    method: 'post',
-    body: params
-  });
-  if (token_response.status !== 200) {
-    throw new oauth2_server.ServerError('internal error: unable to validate client as participant');
-  }
-
-  const access_token = (await token_response.json()).access_token;
-
-  /*******/
-  debug('Querying participant registry if the client is a valid participant');
-  /*******/
-
-  const parties_params = new URLSearchParams();
-  const subject = [];
-  client_certificate.subject.attributes.forEach((a) => subject.push((a.shortName ? a.shortName : "SERIALNUMBER") + "=" + a.value));
-  parties_params.append("eori", client_payload.iss);
-  parties_params.append("certificate_subject_name", subject.join(", "));
-  parties_params.append("active_only", "true");
-
-  debug('url: ' + config.pr.parties_endpoint + '?' + parties_params);
-  const parties_response = await fetch(config.pr.parties_endpoint + '?' + parties_params, {
-    headers: {
-      "Authorization": "Bearer " + access_token
-    },
-  });
-  if (parties_response.status !== 200) {
-    throw new oauth2_server.ServerError('internal error: unable to validate client as participant');
-  }
-
-  const parties_token = (await parties_response.json()).parties_token;
-  const parties_jwt = (await verifier.verify(parties_token, { 'allowEmbeddedKey': true}));
-  const parties_info = JSON.parse(parties_jwt.payload.toString()).parties_info;
-  debug("response: ", JSON.stringify(parties_info, null, 4));
-  if (parties_info.count !== 1 || parties_info.data[0].adherence.status !== "Active") {
-    // Reponse with message
-    throw new oauth2_server.InvalidRequestError('internal error: client is not a trusted participant');
-  }
-
-  return parties_info.data[0].party_name;
 };
 
 async function _validate_participant(req, res) {
@@ -284,9 +130,9 @@ async function _validate_participant(req, res) {
   /*******/
 
   // Validate the JWT and client certificates
-  const [client_payload, client_certificate] = await assert_client_using_jwt(credentials, req.body.client_id);
+  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(credentials, req.body.client_id);
 
-  const participant_name = await validate_participant_from_jwt(client_payload, client_certificate);
+  const participant_name = await utils.validate_participant_from_jwt(client_payload, client_certificate);
 
   /*******/
   debug('Participant successfully validated');
@@ -317,7 +163,7 @@ async function _token(req, res) {
 
   // Skip normal flows
   // https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
-  if (grant_type !== "authorization_code" && grant_type !== "client_credentials" || req.body.client_assertion_type !== 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer') {
+  if (!managed_token_grant_types.has(grant_type) || req.body.client_assertion_type !== 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer') {
     return false;
   }
 
@@ -333,9 +179,9 @@ async function _token(req, res) {
   }
 
   // Validate client
-  const [client_payload, client_certificate] = await assert_client_using_jwt(req.body.client_assertion, client_id);
+  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(req.body.client_assertion, client_id);
 
-  let id_token;
+  let id_token = null;
   let client;
   let user;
   let scopes;
@@ -375,7 +221,7 @@ async function _token(req, res) {
     user = code.User;
     id_token = await build_id_token(client, user, scopes, code.nonce, code.extra.iat);
   } else {
-    const participant_name = await validate_participant_from_jwt(client_payload, client_certificate);
+    const participant_name = await utils.validate_participant_from_jwt(client_payload, client_certificate);
 
     /*******/
     debug('Participant successfully validated');
@@ -390,14 +236,17 @@ async function _token(req, res) {
     }, {
       validate: false // Currently, we are inserting an invalid email address for the participant
     });
-    user = await models.user.findOne({where: {username: client_payload.iss}});
-    // Build id and access tokens
+
     scopes = new Set(req.body.scope != null ? req.body.scope.split(/[,\s]+/) : []);
-    id_token = await build_id_token(client, user, scopes);
+    user = await models.user.findOne({where: {username: client_payload.iss}});
+    if (grant_type === "client_credentials") {
+      // Build id and access tokens
+      id_token = await build_id_token(client, user, scopes);
+    }
   }
 
   // Create and save access_token
-  const [access_token, access_token_exp] = await build_access_token(client, user);
+  const [access_token, access_token_exp] = await build_access_token(client, user, grant_type);
   await models.oauth_access_token.create({
       hash: crypto.createHash("sha3-256").update(access_token).digest('hex'),
       access_token,
@@ -409,13 +258,18 @@ async function _token(req, res) {
       scope: scopes
   });
 
-  // Return id and access tokens
-  res.status(200).json({
-    id_token,
+  const response = {
     access_token,
     expires_in: config.oauth2.access_token_lifetime,
     token_type: "Bearer"
-  });
+  };
+
+  if (id_token != null) {
+    response.id_token = id_token;
+  }
+
+  // Return id and access tokens
+  res.status(200).json(response);
   
   return true;
 }

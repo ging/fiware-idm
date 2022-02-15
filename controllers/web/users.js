@@ -666,9 +666,10 @@ exports.create = function (req, res) {
               };
 
               const translation = req.app.locals.translation;
+              const lang = req.app.locals.lang;
 
               // Send an email message to the user
-              email.send('activate', '', user.email, mail_data, translation);
+              email.send('activate', '', user.email, mail_data, translation, lang);
 
               res.locals.message = {
                 text: 'Account created succesfully, check your email for the confirmation link.',
@@ -831,8 +832,9 @@ exports.password_send_email = function (req, res) {
               };
 
               const translation = req.app.locals.translation;
+              const lang = req.app.locals.lang;
               // Send an email message to the user
-              email.send('forgot_password', '', user.email, mail_data, translation);
+              email.send('forgot_password', '', user.email, mail_data, translation, lang);
 
               req.session.message = {
                 text: 'Reset password instructions send to ' + user.email,
@@ -1006,9 +1008,10 @@ exports.resend_confirmation = function (req, res) {
                 };
 
                 const translation = req.app.locals.translation;
+                const lang = req.app.locals.lang;
 
                 // Send an email message to the user
-                email.send('activate', '', user.email, mail_data, translation);
+                email.send('activate', '', user.email, mail_data, translation, lang);
 
                 req.session.message = {
                   text: 'Resend confirmation instructions email to ' + user.email,

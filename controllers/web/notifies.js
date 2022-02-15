@@ -72,9 +72,10 @@ function send_message_all_users(req, res, errors) {
         const emails = users.map((elem) => elem.email).join();
 
         const translation = req.app.locals.translation;
+        const lang = req.app.locals.lang;
 
         // Send an email message to the user
-        email.send('', req.body.subject, emails, req.body.body, translation);
+        email.send('', req.body.subject, emails, req.body.body, translation, lang);
 
         req.session.message = {
           text: ' Success sending email.',
@@ -117,9 +118,10 @@ function send_message_organization(req, res, errors) {
           const emails = users.map((elem) => elem.email).join();
 
           const translation = req.app.locals.translation;
+          const lang = req.app.locals.lang;
 
           // Send an email message to the user
-          email.send('', req.body.subject, emails, req.body.body, translation);
+          email.send('', req.body.subject, emails, req.body.body, translation, lang);
 
           req.session.message = {
             text: ' Success sending email.',
@@ -183,9 +185,10 @@ function send_message_users_by_id(req, res, errors) {
           const emails = result.users.map((elem) => elem.email).join();
 
           const translation = req.app.locals.translation;
+          const lang = req.app.locals.lang;
 
           // Send an email message to the user
-          email.send('', req.body.subject, emails, req.body.body, translation);
+          email.send('', req.body.subject, emails, req.body.body, translation, lang);
 
           req.session.message = {
             text: ' Success sending email.',

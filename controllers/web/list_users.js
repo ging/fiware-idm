@@ -118,9 +118,10 @@ exports.create = function (req, res) {
         };
 
         const translation = req.app.locals.translation;
+        const lang = req.app.locals.lang;
 
         // Send an email message to the user
-        email.send('user_info', '', user.email, mail_data, translation);
+        email.send('user_info', '', user.email, mail_data, translation, lang);
       }
 
       res.send({

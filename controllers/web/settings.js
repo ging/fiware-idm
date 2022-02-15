@@ -220,9 +220,10 @@ exports.email = function (req, res) {
                     };
 
                     const translation = req.app.locals.translation;
+                    const lang = req.app.locals.lang;
 
                     // Send an email message to the user
-                    email.send('change_email', '', req.body.email, mail_data, translation);
+                    email.send('change_email', '', req.body.email, mail_data, translation, lang);
 
                     res.locals.message = {
                       text: `An emails has been sent to verify your account.

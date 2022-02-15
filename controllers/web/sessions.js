@@ -262,9 +262,10 @@ exports.avoid_2fa_email = function (req, res) {
               };
 
               const translation = req.app.locals.translation;
+              const lang = req.app.locals.lang;
 
               // Send an email message to the user
-              email.send('disable_2fa', '', user.email, mail_data, translation);
+              email.send('disable_2fa', '', user.email, mail_data, translation, lang);
 
               req.session.message = {
                 text: 'Send instructions email to ' + user.email,

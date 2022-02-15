@@ -12,11 +12,11 @@
     padding: 0;
     min-height: 1px;
     background-color: transparent;
-    color: $brand-secundary;
+    color: $brand-secondary;
     &:hover{
       cursor: pointer;
-      border-color: $brand-secundary !important;
-      color: $brand-secundary !important;
+      border-color: $brand-secondary !important;
+      color: $brand-secondary !important;
     }
     h4.panel-title {
       margin-top: 3px !important;
@@ -99,7 +99,7 @@
       .codes{
         padding-right: 50px;
         .manual_code{
-          color: $brand-secundary;
+          color: $brand-secondary;
         }
       }
       .steps{
@@ -107,7 +107,7 @@
         .step{
           display: inline-block;
           background-color: $white;
-          border: 2px solid $brand-secundary;
+          border: 2px solid $brand-secondary;
           color: $brand-primary;
           padding: 1px 0 0;
           height: 28px;

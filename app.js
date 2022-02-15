@@ -12,7 +12,7 @@ const logger = require('morgan');
 const method_override = require('method-override');
 const partials = require('express-partials');
 const path = require('path');
-const sass_middleware = require('node-sass-middleware');
+const sass_middleware = require('./lib/node-sass-middleware');
 const session = require('cookie-session');
 const package_info = require('./package.json');
 const fs = require('fs');
@@ -141,7 +141,7 @@ if (!config.headless) {
       src: path.join(__dirname, 'themes/' + styles),
       dest: path.join(__dirname, 'public/stylesheets'),
       debug: config.debug,
-      outputStyle: 'extended', // eslint-disable-line snakecase/snakecase
+      outputStyle: 'compressed', // eslint-disable-line snakecase/snakecase
       prefix: '/stylesheets' // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
     })
   );
@@ -224,7 +224,7 @@ if (config.https.enabled) {
   } else {
     app.get('/', function (req, res) {
       res.status(501).json({
-        "error": "Keyrock instance is running in HEADLESS mode"
+        error: 'Keyrock instance is running in HEADLESS mode'
       });
     });
   }
@@ -256,15 +256,15 @@ if (config.https.enabled) {
   } else {
     app.get('/', function (req, res) {
       res.status(501).json({
-        "error": "Keyrock instance is running in HEADLESS mode"
+        error: 'Keyrock instance is running in HEADLESS mode'
       });
     });
   }
 }
 
-
-debug(clc.green(config.headless ? 'Keyrock instance is clustered and running in HEADLESS mode' : 'Keyrock GUI is available'));
-
+debug(
+  clc.green(config.headless ? 'Keyrock instance is clustered and running in HEADLESS mode' : 'Keyrock GUI is available')
+);
 
 // Check connection with Authzforce
 if (config.authorization.authzforce.enabled) {

@@ -6,6 +6,7 @@ name: CI
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 jobs:
   lint-dockerfile:
     name: Lint Dockerfile
@@ -14,10 +15,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v2
       - name: Run Hadolint Dockerfile Linter
-        uses: burdzwastaken/hadolint-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HADOLINT_ACTION_DOCKERFILE_FOLDER: extras/docker
+        uses: hadolint/hadolint-action@master
+        with:
+          dockerfile: extras/docker/Dockerfile
+          ignore: DL3006 DL3008 DL3018 DL3033 DL4006
 
   lint-markdown:
     name: Lint Markdown
@@ -31,6 +32,7 @@ jobs:
           node-version: 12.x
       - name: Run Remark Markdown Linter
         run: |
+          CXXFLAGS="--std=c++14"
           npm install
           npm run lint:md
       - name: Run Textlint Markdown Linter
@@ -48,6 +50,7 @@ jobs:
           node-version: 12.x
       - name: Run EsLint Node.js Linter
         run: |
+          CXXFLAGS="--std=c++14"
           npm install
           npm run lint
 
@@ -57,9 +60,9 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 10.x
           - 12.x
           - 14.x
+          - 16.x
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
@@ -70,6 +73,7 @@ jobs:
       - name: 'Unit Tests with Node.js ${{ matrix.node-version }}'
         run: |
           docker run -d -h mysql -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
+          CXXFLAGS="--std=c++14"
           npm install
           node ./test/database
           IDM_DB_PASS=test 
@@ -89,6 +93,7 @@ jobs:
           node-version: 12.x
       - run: |
           docker run -d -h mysql -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
+          CXXFLAGS="--std=c++14"
           npm install
           node ./test/database
           IDM_DB_PASS=test 

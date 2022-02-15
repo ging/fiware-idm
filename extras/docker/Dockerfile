@@ -1,10 +1,16 @@
-ARG NODE_VERSION=12
+ARG NODE_VERSION=14
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-idm
 ARG DOWNLOAD=latest
 ARG SOURCE_BRANCH=master
 ARG HEADLESS=false
 
+# Default Builder, distro and distroless build version
+ARG BUILDER=node:${NODE_VERSION}
+ARG DISTRO=node:${NODE_VERSION}-slim
+ARG DISTROLESS=gcr.io/distroless/nodejs:${NODE_VERSION}
+ARG PACKAGE_MANAGER=apt
+ARG USER=node
 
 ########################################################################################
 #
@@ -19,15 +25,38 @@ ARG HEADLESS=false
 #
 ######################################################################################## 
 
-FROM node:${NODE_VERSION} as builder
+FROM ${BUILDER} as builder
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG DOWNLOAD
 ARG SOURCE_BRANCH
+ARG PACKAGE_MANAGER
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# hadolint ignore=DL3002
+USER root
 
 ENV PYTHONUNBUFFERED=1
+
+# Ensure that the chosen package manger is supported by this Dockerfile
+# also ensure that unzip is installed prior to downloading sources
+
+# hadolint ignore=SC2039
+RUN \
+    if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
+        echo -e "\033[0;34mINFO: Using default \"${PACKAGE_MANAGER}\".\033[0m"; \
+        apt-get update; \
+        apt-get install -y --no-install-recommends unzip git; \
+    elif [ "${PACKAGE_MANAGER}" = "yum"  ]; then \
+        echo -e "\033[0;33mWARNING: Overriding default package manager. Using \"${PACKAGE_MANAGER}\" .\033[0m"; \
+        yum install -y unzip git; \
+        yum clean all; \
+    elif [ "${PACKAGE_MANAGER}" = "apk"  ]; then \
+        echo -e "\033[0;33mWARNING: Overriding default package manager. Using \"${PACKAGE_MANAGER}\" .\033[0m"; \
+        apk --update --no-cache add curl git make gcc g++ ca-certificates openssl unzip; \
+    else \
+        echo -e "\033[0;31mERROR: Package Manager \"${PACKAGE_MANAGER}\" not supported.\033[0m"; \
+        exit 1; \
+    fi
 
 # As an Alternative for local development, just copy this Dockerfile into file the root of 
 # the repository and replace the whole RUN statement below by the following COPY statement 
@@ -58,8 +87,9 @@ RUN \
 
 WORKDIR /opt/fiware-idm
 
-RUN npm cache clean -f  && \
-    npm install --only=prod --no-package-lock --no-optional  && \
+RUN \
+    CXXFLAGS="--std=c++14" \
+    npm install --only=prod --no-package-lock --no-optional  --unsafe-perm && \
     rm -rf /root/.npm/cache/* && \
     mkdir -p certs/applications && \
     chmod -R 777 certs && \
@@ -70,90 +100,13 @@ RUN npm cache clean -f  && \
     chmod 755 certs/idm-2018-key.pem && \
     chmod -R 777 public
 
-
-########################################################################################
-#
-# This build stage retrieves the source code from GitHub. The default download is the 
-# latest tip of the master of the named repository on GitHub.
-#
-# To obtain the latest stable release run this Docker file with the parameters:
-# --no-cache --build-arg DOWNLOAD=stable
-#
-# To obtain any specific version of a release run this Docker file with the parameters:
-# --no-cache --build-arg DOWNLOAD=1.7.0
-#
-######################################################################################## 
-
-FROM node:${NODE_VERSION}-alpine as builder-alpine
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
-ARG DOWNLOAD
-ARG SOURCE_BRANCH
-
-SHELL ["/bin/ash", "-o", "pipefail", "-c"]
-
-ENV PYTHONUNBUFFERED=1
-
-#RUN apk add --no-cache python3 && \
-#    ln -sf python3 /usr/bin/python && \
-#    python3 -m ensurepip && \
-#    pip3 install --no-cache --upgrade pip setuptools
-
-# hadolint ignore=DL3018,DL3013
-RUN apk --no-cache add curl git python2 make gcc g++ ca-certificates openssl unzip && \
-    python -m ensurepip && \
-    rm -r /usr/lib/python*/ensurepip && \
-    pip install --no-cache-dir --upgrade pip setuptools
-
-
-# As an Alternative for local development, just copy this Dockerfile into file the root of 
-# the repository and replace the whole RUN statement below by the following COPY statement 
-# in your local source using :
-#
-# COPY . /opt/fiware-idm
-#
-
-# hadolint ignore=DL3008
-RUN \
-    if [ "${DOWNLOAD}" = "latest" ] ; \
-    then \
-        RELEASE="${SOURCE_BRANCH}"; \
-        echo "INFO: Building Latest Development from ${SOURCE_BRANCH} branch."; \
-    elif [ "${DOWNLOAD}" = "stable" ]; \
-    then \
-        RELEASE=$(curl -s https://api.github.com/repos/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4); \
-        echo "INFO: Building Latest Stable Release: ${RELEASE}"; \
-    else \
-        RELEASE="${DOWNLOAD}"; \
-        echo "INFO: Building Release: ${RELEASE}"; \
-    fi && \
-    RELEASE_CONCAT=$(echo "${RELEASE}" | tr / -); \
-    curl -s -L https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/archive/"${RELEASE}".zip > source.zip && \
-    unzip source.zip -x "*/test/**" "*/doc/**" "*/doc.ja/**" "*/extras/**" && \
-    rm source.zip && \
-    mv "${GITHUB_REPOSITORY}-${RELEASE_CONCAT}" /opt/fiware-idm
-
-WORKDIR /opt/fiware-idm
-
-RUN npm cache clean -f  && \
-    npm install --only=prod --no-package-lock --no-optional  && \
-    rm -rf /root/.npm/cache/* && \
-    mkdir -p certs/applications && \
-    chmod -R 777 certs && \
-    openssl genrsa -out idm-2018-key.pem 2048 && \
-    openssl req -new -sha256 -key idm-2018-key.pem -out idm-2018-csr.pem -batch && \
-    openssl x509 -req -in idm-2018-csr.pem -signkey idm-2018-key.pem -out idm-2018-cert.pem && \
-    mv idm-2018-key.pem idm-2018-cert.pem idm-2018-csr.pem certs/  && \
-    chmod 755 certs/idm-2018-key.pem && \
-    chmod -R 777 public
-
 ########################################################################################
 #
 # This build stage creates an anonymous user to be used with the distroless build
 # as defined below.
 #
 ########################################################################################
-FROM node:${NODE_VERSION} AS anon-user
+FROM ${BUILDER} AS anon-user
 RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
     && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 
@@ -180,13 +133,17 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 #
 ########################################################################################
 
-FROM gcr.io/distroless/nodejs:${NODE_VERSION} AS distroless
+FROM ${DISTROLESS} AS distroless
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
 ARG HEADLESS
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+LABEL "name"="keyrock"
+LABEL "summary"="Keyrock Identity Manager - Distroless"
+
 LABEL "org.opencontainers.image.authors"=""
 LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
 LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
@@ -224,7 +181,7 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
 
 ########################################################################################
 #
-# This build stage creates an alpine build for production.
+# This build stage creates a build for production.
 #
 # IMPORTANT: For production environments use Docker Secrets to protect values of the 
 # sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
@@ -244,14 +201,15 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
 #
 ########################################################################################
 
-FROM node:${NODE_VERSION}-alpine
+FROM ${DISTRO} AS distro
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
 ARG HEADLESS
 
 WORKDIR /opt/fiware-idm
-COPY --from=builder-alpine /opt/fiware-idm .
+COPY --from=builder /opt/fiware-idm .
+COPY --from=builder /opt/fiware-idm/LICENSE /licenses/LICENSE
 
 ENV IDM_HOST="http://localhost:3000" \
     IDM_PORT="3000" \
@@ -267,19 +225,27 @@ ENV IDM_HOST="http://localhost:3000" \
 ENV IDM_HEADLESS=$HEADLESS
 
 # hadolint ignore=DL3018
-RUN apk add --no-cache ca-certificates bash openssl
+RUN \
+    if [ "${PACKAGE_MANAGER}" = "apk"  ]; then \
+        apk add --no-cache ca-certificates bash openssl; \
+    fi
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+LABEL "name"="keyrock"
+LABEL "summary"="Keyrock Identity Manager"
+
 LABEL "org.opencontainers.image.authors"=""
 LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
 LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
 LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock"
+LABEL "org.opencontainers.image.title"="Keyrock Identity Manager"
 LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
 LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
 LABEL "org.nodejs.version"=${NODE_VERSION}
 
-USER node
+# Node by default, use 406 for Alpine, 1001 for UBI
+USER ${USER}
 ENV NODE_ENV=production
 # Ports used by application
 EXPOSE ${IDM_PORT:-3000}

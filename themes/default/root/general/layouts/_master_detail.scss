@@ -103,7 +103,7 @@
       padding: 0 1px 0 0;
       margin-top: -2px;
       &:hover{
-        color: $brand-secundary;
+        color: $brand-secondary;
       }
     }
   }
@@ -266,7 +266,7 @@ ul.disabled-list{
       margin-right: -20px;
       transform: scale(0.8, 0.8);
       input:checked + span:before{
-        background: $brand-secundary !important;
+        background: $brand-secondary !important;
       }
       input + span:before{
         background: #d0edf1 !important;

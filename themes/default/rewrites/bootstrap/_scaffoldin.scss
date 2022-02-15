@@ -6,7 +6,7 @@ a{
   color: $brand-primary;
   text-decoration: none;
   &:hover{
-   color: $brand-secundary;
+   color: $brand-secondary;
  }
  &:focus,
  &:active,
@@ -51,7 +51,7 @@ hr{
   min-height: 40px;
   h2 {
     font-family: $corporate-font-family-sans-serif-Regular;
-    color: $brand-secundary;
+    color: $brand-secondary;
     margin: 0;
     //text-align: right;
     //padding-top: 2px;

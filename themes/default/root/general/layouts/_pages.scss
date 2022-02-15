@@ -40,7 +40,7 @@
     h3{
       margin: 14px 0 0;
       font-size: 17px !important;
-      color: $brand-secundary;
+      color: $brand-secondary;
     }
   }
 }
@@ -114,7 +114,7 @@ textarea {
 
   .btn.btn-link {
     @include opacity(0);
-    color: $brand-secundary;
+    color: $brand-secondary;
     font-family: $corporate-font-family-sans-serif-Regular;
   }
 
@@ -350,7 +350,7 @@ ul#perform_filter_available_update_owners_organizations{
     h3{
       margin: 14px 0 0;
       font-size: 17px !important;
-      color: $brand-secundary;
+      color: $brand-secondary;
     }
   }
 }
@@ -424,7 +424,7 @@ textarea {
 
   .btn.btn-link {
     @include opacity(0);
-    color: $brand-secundary;
+    color: $brand-secondary;
     font-family: $corporate-font-family-sans-serif-Regular;
   }
 
@@ -503,7 +503,7 @@ textarea {
 }
 .cancel_account,
 .destroy_organization{
-  border-color: $brand-danger
+  border-color: $brand-danger;
   &:hover{
     h3{
       color: $brand-danger !important;
@@ -534,7 +534,7 @@ textarea {
     h3{
       margin: 0 !important;
       font-size: 17px !important;
-      color: $brand-secundary;
+      color: $brand-secondary;
       display: block !important;
       text-decoration: none;
     }
@@ -599,7 +599,7 @@ textarea {
       }
     }
     .used-avatar{
-      border: 3px solid $brand-secundary;
+      border: 3px solid $brand-secondary;
       background-color: #eaf4f6;
     }
     //update container img

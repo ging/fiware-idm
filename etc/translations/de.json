@@ -131,7 +131,6 @@
       "university": " - Technische Universität Madrid (UPM)",
       "vish": "Die Nutzung der VISH-Dienste unterliegt der Annahme der",
       "fiware": "Die Nutzung der FIWARE LAB Dienste unterliegt der Annahme der",
-      "aimarketplace": "Die Nutzung der KI-Marktplatz-Dienste unterliegt der Annahme der",
       "condit02": "Nutzungsbedingungen und AGBs",
       "condit03": "Datenschutzbestimmung und",
       "condit04": "Cookie-Richtlienie"
@@ -182,7 +181,6 @@
       "presentation": {
         "title": "Identity Manager",
         "subtitle01": "Willkommen bei einer von DIT-UPM entwickelten Implementierung von FIWARE Identity Manager.",
-        "subtitle01aimarketplace": "Willkommen bei einer von DIT-UPM entwickelten Anwendung des KI-Marktplatz Identity Managers.",
         "subtitle02": "Sie können diese Anmeldeseite sowie jeden anderen Stil/Layout in diesem Webservice anpassen. Sehen Sie sich die Dokumentation zur Anpassung an, um zu erfahren, wie das geht!",
         "signup_btn": "Registrieren",
         "docs_btn": "Dokumentation"
@@ -203,7 +201,7 @@
       },
       "pass_request": {
         "title": "Passwort vergessen?",
-        "content": "Geben Sie sich die E-Mail-Adresse an, die Sie mit Ihrem Konto verknüpft haben. Sie erhalten dann in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
+        "content": "Geben Sie die E-Mail-Adresse an, die Sie mit Ihrem Konto verknüpft haben. Sie erhalten dann in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
         "label": "E-Mail",
         "required_field": "Dieses Feld ist erforderlich.",
         "send_btn": "Senden",
@@ -441,11 +439,6 @@
         "label03": "Passwort",
         "label04": "Passwort (wiederholen)",
         "label05": "Captcha",
-        "label06aimarketplace": "Ich akzeptiere die KI-Marktplatz",
-        "label07aimarketplace": "Nutzungsbedingungen und AGBs",
-        "label08aimarketplace": "Ich akzeptiere die KI-Marktplatz",
-        "label09aimarketplace": "Datenschutzerklärung",
-        "label10aimarketplace": "Diese Beta-Version befindet sich in der Testphase und eignet sich nicht <br> zum Austausch vertraulicher Informationen.",
         "signup_btn": "Registrieren",
         "link01": "Passwort vergessen",
         "link02": "Keine Bestätigung erhalten?"
@@ -914,7 +907,7 @@
       "authorize": {
         "title": "Autorisieren",
         "content01": "Die Anwendung",
-        "content02": "wird in der Lage sein:",
+        "content02": "wird autorisiert sein:",
         "content03": "Lesen Sie Ihre öffentlichen Informationen.",
         "deny_btn": "Ablehnen",
         "authorize_btn": "Autorisieren"

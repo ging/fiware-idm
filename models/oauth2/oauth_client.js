@@ -98,7 +98,9 @@ module.exports = function (sequelize, DataTypes) {
         },
         set(val) {
           if (val && val.length > 0) {
-            val.push('bearer');
+            if (val.indexOf('bearer') == -1) {
+              val.push('bearer');
+            }
           } else {
             val = ['bearer'];
           }

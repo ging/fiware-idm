@@ -293,7 +293,15 @@ function saveToken(token, client, identity) {
 function generateJwtToken(token, client, identity) {
   debug('-------generateJwtToken-------');
 
-  return create_oauth_response(identity, client.id, null, null, config_authzforce.enabled, null)
+  const options = {
+    action: null,
+    resource: null,
+    authzforce: config_authzforce.enabled,
+    application: null,
+    service_header: null
+  };
+
+  return create_oauth_response(identity, client.id, options)
     .then(function (response) {
       if (identity) {
         response.type = identity.type || identity.dataValues.type;
@@ -904,7 +912,7 @@ function app_authzforce_domain(app_id) {
 function validateScope(user, client, scope) {
   debug('-------validateScope-------');
 
-  if (typeof scope === "string" && scope.length > 0) {
+  if (typeof scope === 'string' && scope.length > 0) {
     const requested_scopes = scope.split(/[,\s]+/);
 
     if (requested_scopes.includes('bearer') && requested_scopes.includes('jwt')) {
@@ -948,7 +956,15 @@ function generateIdToken(client, user, nonce) {
 
   return user_autho_app_promise
     .then(function () {
-      return create_oauth_response(user, client.id, null, null, config_authzforce.enabled, null);
+      const options = {
+        action: null,
+        resource: null,
+        authzforce: config_authzforce.enabled,
+        application: null,
+        service_header: null
+      };
+
+      return create_oauth_response(user, client.id, options);
     })
     .then(function (idToken) {
       idToken['iss'] = config.host + '/idm/applications/' + client.id;

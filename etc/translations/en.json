@@ -131,7 +131,6 @@
     "university": " - Technical University of Madrid (UPM)",
     "vish": "The use of VISH services is subject to the acceptance of the",
     "fiware": "The use of FIWARE Lab services is subject to acceptance of the",
-    "aimarketplace": "The use of AI Marketplace services is subject to acceptance of the",
     "condit02": "Terms and Conditions",
     "condit03": "Privacy Policy and",
     "condit04": "Cookies Policy"
@@ -182,7 +181,6 @@
     "presentation": {
       "title": "Identity Manager",
       "subtitle01": "Welcome to an implementation of FIWARE Identity Manager developed by DIT-UPM.",
-      "subtitle01aimarketplace": "Welcome to an AI Marketplace Identity Manager application developed by DIT-UPM.",
       "subtitle02": "You can customize this sign in page as well as any other style/layout in this web service. Check customization documentation to learn how to do it!",
       "signup_btn": "Sign up",
       "docs_btn": "Check documentation"
@@ -441,11 +439,6 @@
       "label03": "Password",
       "label04": "Password (again)",
       "label05": "Captcha",
-      "label06aimarketplace": "I accept AI-Marketplace",
-      "label07aimarketplace": "Terms and Conditions",
-      "label08aimarketplace": "I accept AI-Marketplace",
-      "label09aimarketplace": "Privacy Policy",
-      "label10aimarketplace": "This beta version is in the testing phase and is not suitable <br> for exchanging confidential information.",
       "signup_btn": "Sign Up",
       "link01": "Forgot password",
       "link02": "Confirmation not recieved?"

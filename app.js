@@ -37,6 +37,8 @@ const saml2 = require('./routes/saml2/saml2');
 const authregistry = require('./routes/authregistry/authregistry');
 const oauth2_controller = require('./controllers/oauth2/oauth2');
 
+const translation_merger = require('./lib/json_directory_merger');
+
 const app = express();
 const helmet = require('helmet');
 
@@ -146,9 +148,15 @@ if (!config.headless) {
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(method_override('_method'));
 
+  const translation_path = path.join(__dirname, 'etc/translations/');
   app.use(
+    translation_merger.init({
+      directory_1: translation_path,
+      directory_2: path.join(__dirname, 'themes/' + config.site.theme + '/translations/'),
+      merged_path: path.join(__dirname, 'public/', 'translations_merged')
+    }),
     i18n({
-      translationsPath: path.join(__dirname, 'etc/translations'), // eslint-disable-line snakecase/snakecase
+      translationsPath: translation_merger.get_merge_path(), // eslint-disable-line snakecase/snakecase
       siteLangs: ['de', 'en', 'es', 'ja', 'ko'], // eslint-disable-line snakecase/snakecase
       textsVarName: 'translation', // eslint-disable-line snakecase/snakecase
       browserEnable: true, // eslint-disable-line snakecase/snakecase

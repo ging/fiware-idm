@@ -651,6 +651,31 @@ mkdir themes/example/templates
 cd themes/example/templates && touch _footer.ejs _header.ejs _presentation.ejs _help_about_items.ejs
 ```
 
+You can also customize the translations by creating a folder in your theme
+
+```bash
+mkdir themes/example/translations
+```
+
+These files need to have the same names as the original translation files
+(etc/translations). They should follow the same structure as the translation
+files in etc/translations, but does not have to be complete. For example a
+custom translation file could look like this:
+themes/example/translations/en.json
+
+```javascript
+{
+  "auth": {
+    "presentation": { "title": "My Identity Manager" }
+  }
+}
+```
+
+This custom title would be merged with the original translation and saved in the
+directory etc/translations/merged and the i18n-express module will automatically
+use the merged folder to generate the translations. It is also possible to add
+new tags, that could be used other custom pages.
+
 ## Language
 
 Keyrock has several built-in languages.

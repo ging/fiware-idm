@@ -30,6 +30,8 @@
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "prettier": "prettier --config .prettierrc.json --write routes/**/*.js models/**/*.js controllers/**/*.js **/*.js *.js",
     "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
+    "prepare": "husky install",
+    "pre-commit": "lint-staged",
     "test": "nyc --reporter=text mocha -- 'test/unit/*.js' 'test/integration/*.js' 'test/integration/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
     "test:coverage": "nyc --reporter=lcov mocha -- 'test/unit/*.js' 'test/integration/*.js' 'test/integration/**/*.js' --timeout 3000 --ui bdd --exit",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
@@ -113,7 +115,7 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.0.0",
     "eslint-plugin-snakecase": "0.0.1",
-    "husky": "^4.2.5",
+    "husky": "^7.0.4",
     "jshint": "~2.11.1",
     "lint-staged": "^10.2.11",
     "mocha": "^8.0.1",
@@ -132,11 +134,6 @@
     "textlint-rule-terminology": "^2.1.5",
     "textlint-rule-write-good": "^2.0.0",
     "timekeeper": "2.2.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.js": [

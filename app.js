@@ -67,7 +67,6 @@ const cspOptions = {
 if (config.csp.formAction) {
     cspOptions.directives.formAction = config.csp.formAction;
 };
-console.log(cspOptions);
 app.use(
   helmet.contentSecurityPolicy(cspOptions)
 );

@@ -168,7 +168,7 @@ parameter (note that this must be supplied as an array of the allowed sources):
 
 ```javascript
 config.csp = {
-    formAction: undefined
+    form_action: undefined
 };
 ```
 

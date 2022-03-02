@@ -54,7 +54,7 @@ if (config.debug) {
 // Disabled header
 app.disable('x-powered-by');
 // Set security headers
-const cspOptions = {
+const csp_options = {
     directives: {
       defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
       fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
@@ -64,11 +64,11 @@ const cspOptions = {
     },
     reportOnly: false // eslint-disable-line snakecase/snakecase
 };
-if (config.csp.formAction) {
-    cspOptions.directives.formAction = config.csp.formAction;
-};
+if (config.csp.form_action) {
+    csp_options.directives.formAction = config.csp.form_action;
+}
 app.use(
-  helmet.contentSecurityPolicy(cspOptions)
+  helmet.contentSecurityPolicy(csp_options)
 );
 app.use(
   helmet.dnsPrefetchControl({

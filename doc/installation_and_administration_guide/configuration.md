@@ -160,6 +160,18 @@ config.cors = {
 };
 ```
 
+## Content Security Policy
+
+Keyrock uses a default set of directives for the Content Security Policy header. 
+The `form-action` directive can be overwritten with the following configuration 
+parameter (note that this must be supplied as an array of the allowed sources):
+
+```javascript
+config.csp = {
+    formAction: undefined
+};
+```
+
 ## Two Factor Authentication
 
 Enable this configuration to enable users to authenticate using an external

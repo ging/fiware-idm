@@ -7,14 +7,14 @@ const oauth2_server = require('oauth2-server');
 
 
 // Load test configuration
-const config_service = require('../../lib/configService.js');
-config_service.set_config(require('../config-test'));
+const config_service = require('../../../lib/configService.js');
+config_service.set_config(require('../../config-test'));
 const config = config_service.get_config();
 
-const authregistry = require('../../controllers/authregistry/authregistry');
-const extparticipant = require('../../controllers/extparticipant/extparticipant');
-const models = require('../../models/models.js');
-const utils = require('../../controllers/extparticipant/utils');
+const authregistry = require('../../../controllers/authregistry/authregistry');
+const extparticipant = require('../../../controllers/extparticipant/extparticipant');
+const models = require('../../../models/models.js');
+const utils = require('../../../controllers/extparticipant/utils');
 
 const build_mocks = function build_mocks() {
   const req = {

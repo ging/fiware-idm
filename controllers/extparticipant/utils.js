@@ -11,6 +11,8 @@ const config = config_service.get_config();
 
 const crt_regex = /^-----BEGIN CERTIFICATE-----\n([\s\S]+?)\n-----END CERTIFICATE-----$/gm;
 const verifier = jose.JWS.createVerify();
+const root_ca_store = forge.pki.createCaStore();
+
 
 const ensure_client_key_is_ready = async function ensure_client_key_is_ready() {
   if (typeof config.pr.client_key === "string") {
@@ -39,8 +41,13 @@ const check = function check(errors, condition, message) {
   }
 }
 
-const validate_client_certificate = function validate_client_certificate(cert) {
+exports.verify_certificate_chain = function verify_certificate_chain(chain) {
+  return forge.pki.verifyCertificateChain(root_ca_store, chain);
+};
+
+exports.validate_client_certificate = async function validate_client_certificate(chain, period_start, period_end) {
   const errors = [];
+  const cert = chain[0];
 
   const id = cert.subject.attributes.map((a) => {
     const name = a.shortName || a.name;
@@ -48,11 +55,12 @@ const validate_client_certificate = function validate_client_certificate(cert) {
   }).join('/');
   debug(`Validating ${id}`);
 
-  //check(errors, cert.validity.notBefore <= periodStart && periodEnd <= cert.validity.notAfter, "Certificate dates invalid.");
-  //check(errors, await IsCertificatePartOfChain(cert), "Certificate is not part of the chain.");
-  check(errors, cert.signatureOid === forge.pki.oids.sha256WithRSAEncryption, "Certificate signature invalid.");
-  //check(errors, cert.publicKey.Key.SignatureAlgorithm == "RSA", "RSA algorithm");
-  check(errors, cert.publicKey.n.bitLength() >= 2048, "Certificate public key size is smaller than 2048.");
+  // if (period_start != null) {
+  //   check(errors, cert.validity.notBefore <= period_start && period_end <= cert.validity.notAfter, "Certificate dates invalid.");
+  // }
+  check(errors, exports.verify_certificate_chain(chain), "Certificate is not part of the chain");
+  check(errors, cert.signatureOid === forge.pki.oids.sha256WithRSAEncryption, "Certificate signature invalid");
+  check(errors, cert.publicKey.n.bitLength() >= 2048, "Certificate public key size is smaller than 2048");
   check(errors, cert.serialNumber != null && cert.serialNumber.trim() !== "", "Certificate has no serial number");
 
   const key_usage = cert.getExtension('keyUsage');
@@ -85,7 +93,7 @@ const retrieve_participant_registry_token = async function retrieve_participant_
 
 exports.assert_client_using_jwt = async function assert_client_using_jwt(credentials, client_id) {
   try {
-    // parse the JWT and verify its signature
+    // parse the JWT and verify it's signature
     const jwt = await verifier.verify(credentials, { 'allowEmbeddedKey': true });
     const payload = JSON.parse(jwt.payload.toString());
 
@@ -115,7 +123,7 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
       // JWT iss parameter does not match the serialName field of the signer certificate
       throw new Error(`Issuer certificate serialName parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_name})`);
     }
-    validate_client_certificate(fullchain[0]);
+    await exports.validate_client_certificate(fullchain);
 
     return [payload, fullchain[0]];
   } catch (e) {

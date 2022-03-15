@@ -10,7 +10,7 @@ const uuid = require('uuid');
 const config = config_service.get_config();
 
 const crt_regex = /^-----BEGIN CERTIFICATE-----\n([\s\S]+?)\n-----END CERTIFICATE-----$/gm;
-const verifier = jose.JWS.createVerify();
+exports.verifier = jose.JWS.createVerify();
 const root_ca_store = forge.pki.createCaStore();
 
 
@@ -94,7 +94,7 @@ const retrieve_participant_registry_token = async function retrieve_participant_
 exports.assert_client_using_jwt = async function assert_client_using_jwt(credentials, client_id) {
   try {
     // parse the JWT and verify it's signature
-    const jwt = await verifier.verify(credentials, { 'allowEmbeddedKey': true });
+    const jwt = await exports.verifier.verify(credentials, { 'allowEmbeddedKey': true });
     const payload = JSON.parse(jwt.payload.toString());
 
     // check JWT parameters
@@ -185,7 +185,7 @@ exports.validate_participant_from_jwt = async function validate_participant_from
   }
 
   const parties_token = (await parties_response.json()).parties_token;
-  const parties_jwt = (await verifier.verify(parties_token, { 'allowEmbeddedKey': true}));
+  const parties_jwt = (await exports.verifier.verify(parties_token, { 'allowEmbeddedKey': true}));
   const parties_info = JSON.parse(parties_jwt.payload.toString()).parties_info;
   debug("response: ", JSON.stringify(parties_info, null, 4));
   if (parties_info.count !== 1 || parties_info.data[0].adherence.status !== "Active") {

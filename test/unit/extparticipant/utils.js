@@ -145,4 +145,187 @@ describe('External Participant Controller Utils: ', () => {
 
   });
 
+  describe('assert_client_using_jwt', () => {
+
+    it('should throw an error if the client jwt is not correctly signed', async () => {
+      const credentials = {};
+      const client_id = "";
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.reject())
+      };
+      try {
+        await utils.assert_client_using_jwt(credentials, client_id);
+      } catch (error) {
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should throw an error if the client jwt payload is not a valid json structure', async () => {
+      const credentials = {};
+      const client_id = "";
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          payload: "{"
+        }))
+      };
+      try {
+        await utils.assert_client_using_jwt(credentials, client_id);
+      } catch (error) {
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should throw an error if the client jwt issuer does not match the provided client_id', async () => {
+      const credentials = {};
+      const client_id = "EU.EORI.NL000000001";
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          payload: '{"iss": "EU.EORI.NL000000004"}'
+        }))
+      };
+      try {
+        await utils.assert_client_using_jwt(credentials, client_id);
+      } catch (error) {
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should throw an error if the client jwt audience does not match keyrock id', async () => {
+      const credentials = {};
+      const client_id = "EU.EORI.NL000000004";
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          payload: '{"iss": "EU.EORI.NL000000004", "aud": "EU.EORI.NL000000001"}'
+        }))
+      };
+      try {
+        await utils.assert_client_using_jwt(credentials, client_id);
+      } catch (error) {
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should throw an error if the client jwt has expired', async () => {
+      const credentials = {};
+      const client_id = "EU.EORI.NL000000004";
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          // We use a exp value with a lot of margin (5000-01-10)
+          payload: '{"iss": "EU.EORI.NL000000004", "aud": "EU.EORI.NLHAPPYPETS", "exp": 0}'
+        }))
+      };
+      try {
+        await utils.assert_client_using_jwt(credentials, client_id);
+      } catch (error) {
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should throw an error if the serial number of the certificate used for signing the jwt does not match client_id/issuer', async () => {
+      const credentials = {};
+      const client_id = "EU.EORI.NL000000004";
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          header: {
+            x5c: [1] // We mock parsing of certificates
+          },
+          // We use a exp value with a lot of margin (5000-01-10)
+          payload: '{"iss": "EU.EORI.NL000000004", "aud": "EU.EORI.NLHAPPYPETS", "exp": 95618358000}'
+        }))
+      };
+
+      sinon.stub(forge.pki, "certificateFromPem").returns({
+        subject: {
+          getField: sinon.mock().returns({
+            value: "EU.EORI.NL000000001"
+          })
+        }
+      });
+
+      try {
+        await utils.assert_client_using_jwt(credentials, client_id);
+      } catch (error) {
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should throw an error if the certificate used for signing the jwt is invalid', async () => {
+      const credentials = {};
+      const client_id = "EU.EORI.NL000000004";
+
+      sinon.stub(utils, "verifier");
+      sinon.stub(utils, "validate_client_certificate").throws();
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          header: {
+            x5c: [1] // We mock parsing of certificates
+          },
+          // We use a exp value with a lot of margin (5000-01-10)
+          payload: '{"iss": "EU.EORI.NL000000004", "aud": "EU.EORI.NLHAPPYPETS", "exp": 95618358000}'
+        }))
+      };
+
+      sinon.stub(forge.pki, "certificateFromPem").returns({
+        subject: {
+          getField: sinon.mock().returns({
+            value: "EU.EORI.NL000000004"
+          })
+        }
+      });
+
+      try {
+        await utils.assert_client_using_jwt(credentials, client_id);
+      } catch (error) {
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should return jwt payload and the certificates if everything is ok', async () => {
+      const credentials = {};
+      const client_id = "EU.EORI.NL000000004";
+
+      sinon.stub(utils, "verifier");
+      sinon.stub(utils, "validate_client_certificate").returns();
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          header: {
+            x5c: [1] // We mock parsing of certificates
+          },
+          // We use a exp value with a lot of margin (5000-01-10)
+          payload: '{"iss": "EU.EORI.NL000000004", "aud": "EU.EORI.NLHAPPYPETS", "exp": 95618358000}'
+        }))
+      };
+
+      sinon.stub(forge.pki, "certificateFromPem").returns({
+        subject: {
+          getField: sinon.mock().returns({
+            value: "EU.EORI.NL000000004"
+          })
+        }
+      });
+
+      await utils.assert_client_using_jwt(credentials, client_id);
+    });
+
+  });
+
 });

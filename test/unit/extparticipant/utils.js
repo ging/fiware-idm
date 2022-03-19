@@ -3,6 +3,7 @@
 
 require('should');
 const forge = require('node-forge');
+const oauth2_server = require('oauth2-server');
 const sinon = require("sinon");
 
 // Load test configuration
@@ -324,6 +325,190 @@ describe('External Participant Controller Utils: ', () => {
       });
 
       await utils.assert_client_using_jwt(credentials, client_id);
+    });
+
+  });
+
+  describe('validate_participant_from_jwt', () => {
+
+    it('should throw an error if the client is not a valid participant', async () => {
+      fetch_stub = sinon.stub();
+      fetch_stub.onCall(0).returns({
+        json: () => {
+          return {
+            access_token: "access_token"
+          }
+        },
+        status: 200
+      });
+      fetch_stub.onCall(1).returns({
+        json: () => {
+          return {
+            parties_token: "parties_token"
+          }
+        },
+        status: 200
+      });
+
+      // First we need to remove the doStuff module
+      delete require.cache[require.resolve('../../../controllers/extparticipant/utils')];
+      // Second we need rewrite the cached sum module to be as follows:
+      require.cache[require.resolve('node-fetch')] = {
+        exports: fetch_stub,
+      };
+      // Third we need to require the doStuff module again
+      const utils = require('../../../controllers/extparticipant/utils');
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          payload: '{"parties_info": {"count": 0, "data": []}}'
+        }))
+      };
+
+      const client_payload = {};
+      sinon.stub(utils, "create_jwt").returns(Promise.resolve("idm_party_token"));
+      try {
+        await utils.validate_participant_from_jwt(client_payload, CERTIFICATE_WITH_SPECIAL_CHARACTERS);
+      } catch (error) {
+        if (!(error instanceof oauth2_server.InvalidRequestError)) {
+          throw new Error("Expecting a InvalidRequestError expection");
+        }
+        return;
+      }
+      throw Error("Exception not thrown");
+    });
+
+    it('should manage errors querying satellite server for an access token', async () => {
+      fetch_stub = sinon.stub();
+      fetch_stub.onCall(0).returns({
+        status: 404
+      });
+
+      // First we need to remove the doStuff module
+      delete require.cache[require.resolve('../../../controllers/extparticipant/utils')];
+      // Second we need rewrite the cached sum module to be as follows:
+      require.cache[require.resolve('node-fetch')] = {
+        exports: fetch_stub,
+      };
+      // Third we need to require the doStuff module again
+      const utils = require('../../../controllers/extparticipant/utils');
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          payload: '{"parties_info": {"count": 1, "data": [{"adherence": {"status": "Active"}, "party_name": "Party Name"}]}}'
+        }))
+      };
+
+      const client_payload = {};
+      sinon.stub(utils, "create_jwt").returns(Promise.resolve("idm_party_token"));
+
+      try {
+        await utils.validate_participant_from_jwt(
+          client_payload,
+          CERTIFICATE_WITH_SPECIAL_CHARACTERS
+        );
+      } catch (error) {
+        if (!(error instanceof oauth2_server.ServerError)) {
+          throw new Error("Expecting a ServerError expection");
+        }
+        return;
+      }
+      throw new Error("Exception not thrown");
+    });
+
+    it('should manage errors querying satellite server for party details', async () => {
+      fetch_stub = sinon.stub();
+      fetch_stub.onCall(0).returns({
+        json: () => {
+          return {
+            access_token: "access_token"
+          }
+        },
+        status: 200
+      });
+      fetch_stub.onCall(1).returns({
+        status: 404
+      });
+
+      // First we need to remove the doStuff module
+      delete require.cache[require.resolve('../../../controllers/extparticipant/utils')];
+      // Second we need rewrite the cached sum module to be as follows:
+      require.cache[require.resolve('node-fetch')] = {
+        exports: fetch_stub,
+      };
+      // Third we need to require the doStuff module again
+      const utils = require('../../../controllers/extparticipant/utils');
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          payload: '{"parties_info": {"count": 1, "data": [{"adherence": {"status": "Active"}, "party_name": "Party Name"}]}}'
+        }))
+      };
+
+      const client_payload = {};
+      sinon.stub(utils, "create_jwt").returns(Promise.resolve("idm_party_token"));
+
+      try {
+        await utils.validate_participant_from_jwt(
+          client_payload,
+          CERTIFICATE_WITH_SPECIAL_CHARACTERS
+        );
+      } catch (error) {
+        if (!(error instanceof oauth2_server.ServerError)) {
+          throw new Error("Expecting a ServerError expection");
+        }
+        return;
+      }
+      throw new Error("Exception not thrown");
+    });
+
+    it('should return party name if the client is a valid participant', async () => {
+      fetch_stub = sinon.stub();
+      fetch_stub.onCall(0).returns({
+        json: () => {
+          return {
+            access_token: "access_token"
+          }
+        },
+        status: 200
+      });
+      fetch_stub.onCall(1).returns({
+        json: () => {
+          return {
+            parties_token: "parties_token"
+          }
+        },
+        status: 200
+      });
+
+      // First we need to remove the doStuff module
+      delete require.cache[require.resolve('../../../controllers/extparticipant/utils')];
+      // Second we need rewrite the cached sum module to be as follows:
+      require.cache[require.resolve('node-fetch')] = {
+        exports: fetch_stub,
+      };
+      // Third we need to require the doStuff module again
+      const utils = require('../../../controllers/extparticipant/utils');
+
+      sinon.stub(utils, "verifier");
+      utils.verifier = {
+        verify: sinon.mock().returns(Promise.resolve({
+          payload: '{"parties_info": {"count": 1, "data": [{"adherence": {"status": "Active"}, "party_name": "Party Name"}]}}'
+        }))
+      };
+
+      const client_payload = {};
+      sinon.stub(utils, "create_jwt").returns(Promise.resolve("idm_party_token"));
+
+      const party_name = await utils.validate_participant_from_jwt(
+        client_payload,
+        CERTIFICATE_WITH_SPECIAL_CHARACTERS
+      );
+
+      party_name.should.be.eql("Party Name");
     });
 
   });

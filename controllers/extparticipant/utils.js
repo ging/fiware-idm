@@ -39,7 +39,13 @@ const check = function check(errors, condition, message) {
   if (!condition) {
     errors.push(message);
   }
-}
+};
+
+const serialize_attributes = function serialize_attributes(a) {
+  const oid = (a.shortName ? a.shortName : a.name);
+  const value = encode(forge.util.decodeUtf8(a.value));
+  return `${oid}=${value}`;
+};
 
 exports.verify_certificate_chain = function verify_certificate_chain(chain) {
   return forge.pki.verifyCertificateChain(root_ca_store, chain);
@@ -49,10 +55,7 @@ exports.validate_client_certificate = async function validate_client_certificate
   const errors = [];
   const cert = chain[0];
 
-  const id = cert.subject.attributes.map((a) => {
-    const name = a.shortName || a.name;
-    return `${name}=${a.value}`;
-  }).join('/');
+  const id = cert.subject.attributes.map(serialize_attributes).join('/');
   debug(`Validating ${id}`);
 
   // if (period_start != null) {
@@ -134,6 +137,17 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
   }
 }
 
+
+const encode = function encode(value) {
+  if (value.indexOf(",") !== -1) {
+    const escaped_value = value.replace(/\\/g, "\\").replace(/"/g, '\"');
+    return `"${escaped_value}"`;
+  } else {
+    return value;
+  }
+};
+
+
 exports.validate_participant_from_jwt = async function validate_participant_from_jwt(client_payload, client_certificate) {
   /*******/
   debug('Generating a JWT token for accessing the participant registry');
@@ -168,10 +182,9 @@ exports.validate_participant_from_jwt = async function validate_participant_from
   /*******/
 
   const parties_params = new URLSearchParams();
-  const subject = [];
-  client_certificate.subject.attributes.forEach((a) => subject.push((a.shortName ? a.shortName : "SERIALNUMBER") + "=" + a.value));
+  const subject = client_certificate.subject.attributes.map(serialize_attributes).join(", ");
   parties_params.append("eori", client_payload.iss);
-  parties_params.append("certificate_subject_name", subject.join(", "));
+  parties_params.append("certificate_subject_name", subject);
   parties_params.append("active_only", "true");
 
   debug('url: ' + config.pr.parties_endpoint + '?' + parties_params);
@@ -185,12 +198,12 @@ exports.validate_participant_from_jwt = async function validate_participant_from
   }
 
   const parties_token = (await parties_response.json()).parties_token;
-  const parties_jwt = (await exports.verifier.verify(parties_token, { 'allowEmbeddedKey': true}));
+  const parties_jwt = (await exports.verifier.verify(parties_token, {'allowEmbeddedKey': true}));
   const parties_info = JSON.parse(parties_jwt.payload.toString()).parties_info;
   debug("response: ", JSON.stringify(parties_info, null, 4));
   if (parties_info.count !== 1 || parties_info.data[0].adherence.status !== "Active") {
     // Reponse with message
-    throw new oauth2_server.InvalidRequestError('internal error: client is not a trusted participant');
+    throw new oauth2_server.InvalidRequestError('client is not a trusted participant');
   }
 
   return parties_info.data[0].party_name;

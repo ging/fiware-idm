@@ -51,7 +51,7 @@ exports.verify_certificate_chain = function verify_certificate_chain(chain) {
   return forge.pki.verifyCertificateChain(root_ca_store, chain);
 };
 
-exports.validate_client_certificate = async function validate_client_certificate(chain, period_start, period_end) {
+exports.validate_client_certificate = function validate_client_certificate(chain) {
   const errors = [];
   const cert = chain[0];
 
@@ -140,7 +140,7 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
 
 const encode = function encode(value) {
   if (value.indexOf(",") !== -1) {
-    const escaped_value = value.replace(/\\/g, "\\").replace(/"/g, '\"');
+    const escaped_value = value.replace(/\\/g, "\\").replace(/"/g, '"');
     return `"${escaped_value}"`;
   } else {
     return value;

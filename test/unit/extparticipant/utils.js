@@ -332,7 +332,7 @@ describe('External Participant Controller Utils: ', () => {
   describe('validate_participant_from_jwt', () => {
 
     it('should throw an error if the client is not a valid participant', async () => {
-      fetch_stub = sinon.stub();
+      const fetch_stub = sinon.stub();
       fetch_stub.onCall(0).returns({
         json: () => {
           return {
@@ -380,7 +380,7 @@ describe('External Participant Controller Utils: ', () => {
     });
 
     it('should manage errors querying satellite server for an access token', async () => {
-      fetch_stub = sinon.stub();
+      const fetch_stub = sinon.stub();
       fetch_stub.onCall(0).returns({
         status: 404
       });
@@ -419,7 +419,7 @@ describe('External Participant Controller Utils: ', () => {
     });
 
     it('should manage errors querying satellite server for party details', async () => {
-      fetch_stub = sinon.stub();
+      const fetch_stub = sinon.stub();
       fetch_stub.onCall(0).returns({
         json: () => {
           return {
@@ -466,7 +466,7 @@ describe('External Participant Controller Utils: ', () => {
     });
 
     it('should return party name if the client is a valid participant', async () => {
-      fetch_stub = sinon.stub();
+      const fetch_stub = sinon.stub();
       fetch_stub.onCall(0).returns({
         json: () => {
           return {

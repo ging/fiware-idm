@@ -61,7 +61,7 @@ exports.validate_client_certificate = function validate_client_certificate(chain
   // if (period_start != null) {
   //   check(errors, cert.validity.notBefore <= period_start && period_end <= cert.validity.notAfter, "Certificate dates invalid.");
   // }
-  check(errors, exports.verify_certificate_chain(chain), "Certificate is not part of the chain");
+  //check(errors, exports.verify_certificate_chain(chain), "Certificate is not part of the chain");
   check(errors, cert.signatureOid === forge.pki.oids.sha256WithRSAEncryption, "Certificate signature invalid");
   check(errors, cert.publicKey.n.bitLength() >= 2048, "Certificate public key size is smaller than 2048");
   check(errors, cert.serialNumber != null && cert.serialNumber.trim() !== "", "Certificate has no serial number");

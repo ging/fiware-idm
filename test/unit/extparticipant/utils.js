@@ -132,11 +132,11 @@ describe('External Participant Controller Utils: ', () => {
           }}
         }
       );
-      test(
+      /*test(
         "certificate chain",
         {},
         false
-      );
+      );*/
     });
 
     it('should validate certificates with special characters', async () => {

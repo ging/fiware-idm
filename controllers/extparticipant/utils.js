@@ -121,10 +121,16 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
       );
     });
 
-    const cert_serial_name = fullchain[0].subject.getField({name: "serialName"}).value;
-    if (payload.iss !== cert_serial_name) {
-      // JWT iss parameter does not match the serialName field of the signer certificate
-      throw new Error(`Issuer certificate serialName parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_name})`);
+    const serial_number_field = fullchain[0].subject.getField({name: "serialNumber"});
+    if (serial_number_field == null) {
+      // JWT iss parameter does not match the serialNumber field of the signer certificate
+      throw new Error("Issuer certificate serialNumber parameter is missing");
+    }
+
+    const cert_serial_number = serial_number_field.value;
+    if (payload.iss !== cert_serial_number) {
+      // JWT iss parameter does not match the serialNumber field of the signer certificate
+      throw new Error(`Issuer certificate serialNumber parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_number})`);
     }
     await exports.validate_client_certificate(fullchain);
 

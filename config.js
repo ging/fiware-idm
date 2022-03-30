@@ -1,18 +1,19 @@
+#!/usr/bin/env node
 const config = {};
 
 config.port = 3000;
-config.host = 'http://172.17.0.1:3000';
+config.host = 'http://localhost:3000';
 config.headless = false;
 config.debug = false;
 
 config.registration = {
   redirect: '',
   extension: '/?new_user=1'
-};
+}
 
 // HTTPS enable
 config.https = {
-  enabled: false,
+  enabled: true,
   cert_file: 'certs/idm-2018-cert.pem',
   key_file: 'certs/idm-2018-key.pem',
   ca_certs: [],
@@ -23,7 +24,7 @@ config.https = {
 config.email_list_type = null; // whitelist or blacklist
 
 // Enable 2fa authentication
-config.enable_2fa = process.env.IDM_ENABLE_2FA || false;
+config.enable_2fa = false;
 
 // Secret for user sessions in web
 config.session = {
@@ -62,12 +63,13 @@ config.oauth2 = {
   unique_url: false, // This parameter allows to verify that an application with the same url
   // does not exist when creating or editing it. If there are already applications
   // with the same URL, they should be changed manually
-  not_require_client_authentication_grant_type: []
+  not_require_client_authentication_grant_type: [] // Define grant types that do not require a client authentication
+
 };
 
 // Config oidc parameters
 config.oidc = {
-  jwt_algorithm: 'HS256' // HS256,HS384,HS512,RS256
+  jwt_algorithm: 'HS256', // HS256,HS384,HS512,RS256
 };
 
 // Config api parameters
@@ -102,8 +104,8 @@ config.usage_control = {
 // Database info
 config.database = {
   host: 'localhost',
-  password: 'keyrock2020',
-  username: 'idm',
+  password: 'idm',
+  username: 'root',
   database: 'idm',
   dialect: 'mysql',
   port: undefined
@@ -147,22 +149,22 @@ config.external_auth_ldap = {
 
 // External Participant Registry
 config.pr = {
-  url: undefined,
-  id: 'EU.EORI.NL000000000',
-  parties_endpoint: undefined,
-  token_endpoint: undefined,
-  client_id: undefined,
-  client_key: undefined,
-  client_crt: undefined
-};
+    url: undefined,
+    id: "EU.EORI.NL000000000",
+    parties_endpoint: undefined,
+    token_endpoint: undefined,
+    client_id: undefined,
+    client_key: undefined,
+    client_crt: undefined
+}
 
-// External Authorization Registry
+// External Authorization Registry (requires enabling the external participant registry)
 config.ar = {
-  url: undefined,
-  id: 'EU.EORI.NL000000004',
-  delegation_endpoint: undefined,
-  token_endpoint: undefined
-};
+    url: undefined,
+    id: "EU.EORI.NL000000004",
+    delegation_endpoint: undefined,
+    token_endpoint: undefined
+}
 
 // Email configuration
 config.mail = {
@@ -172,9 +174,9 @@ config.mail = {
   secure: false,
   enable_authentication: false,
   auth: {
-    type: 'type',
-    user: 'username',
-    pass: 'pass'
+    type: "type",
+    user: "username",
+    pass: "pass",
   }
 };
 
@@ -186,7 +188,7 @@ config.site = {
 
 // Config language
 config.lang = {
-  default_lang: 'en'
+    default_lang: 'en'  
 };
 
 // Config eIDAS Authentication

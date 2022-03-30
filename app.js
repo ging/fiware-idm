@@ -278,4 +278,6 @@ if (config.authorization.authzforce.enabled) {
     });
 }
 
+if(true){console.log("InicioTFG")};
+
 module.exports = app;

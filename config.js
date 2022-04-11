@@ -9,7 +9,7 @@ config.debug = false;
 config.registration = {
   redirect: '',
   extension: '/?new_user=1'
-}
+};
 
 // HTTPS enable
 config.https = {
@@ -64,12 +64,11 @@ config.oauth2 = {
   // does not exist when creating or editing it. If there are already applications
   // with the same URL, they should be changed manually
   not_require_client_authentication_grant_type: [] // Define grant types that do not require a client authentication
-
 };
 
 // Config oidc parameters
 config.oidc = {
-  jwt_algorithm: 'HS256', // HS256,HS384,HS512,RS256
+  jwt_algorithm: 'HS256' // HS256,HS384,HS512,RS256
 };
 
 // Config api parameters
@@ -90,6 +89,10 @@ config.authorization = {
     host: 'localhost',
     port: 8080
   }
+};
+
+config.hyperledger = {
+  enabled: true
 };
 
 // Enable usage control and configure where is the Policy Translation Point
@@ -149,22 +152,22 @@ config.external_auth_ldap = {
 
 // External Participant Registry
 config.pr = {
-    url: undefined,
-    id: "EU.EORI.NL000000000",
-    parties_endpoint: undefined,
-    token_endpoint: undefined,
-    client_id: undefined,
-    client_key: undefined,
-    client_crt: undefined
-}
+  url: undefined,
+  id: 'EU.EORI.NL000000000',
+  parties_endpoint: undefined,
+  token_endpoint: undefined,
+  client_id: undefined,
+  client_key: undefined,
+  client_crt: undefined
+};
 
 // External Authorization Registry (requires enabling the external participant registry)
 config.ar = {
-    url: undefined,
-    id: "EU.EORI.NL000000004",
-    delegation_endpoint: undefined,
-    token_endpoint: undefined
-}
+  url: undefined,
+  id: 'EU.EORI.NL000000004',
+  delegation_endpoint: undefined,
+  token_endpoint: undefined
+};
 
 // Email configuration
 config.mail = {
@@ -174,9 +177,9 @@ config.mail = {
   secure: false,
   enable_authentication: false,
   auth: {
-    type: "type",
-    user: "username",
-    pass: "pass",
+    type: 'type',
+    user: 'username',
+    pass: 'pass'
   }
 };
 
@@ -188,7 +191,7 @@ config.site = {
 
 // Config language
 config.lang = {
-    default_lang: 'en'  
+  default_lang: 'en'
 };
 
 // Config eIDAS Authentication

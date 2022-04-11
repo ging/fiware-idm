@@ -278,6 +278,8 @@ if (config.authorization.authzforce.enabled) {
     });
 }
 
-if(true){console.log("InicioTFG")};
+if (config.hyperledger.enabled) {
+  debug('InicioTFG');
+}
 
 module.exports = app;

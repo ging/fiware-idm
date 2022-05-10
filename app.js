@@ -280,6 +280,29 @@ if (config.authorization.authzforce.enabled) {
 
 if (config.hyperledger.enabled) {
   debug('InicioTFG');
+  //llamar a funciones e el then
+  /* require('./lib/hyperledger.js')
+    .init()
+    .then(function (status) {
+      debug(clc.green('Connection with Hyperledger: ' + status));
+    })
+    .catch(function (error) {
+      debug(clc.red(error));
+    });
+    app.get('/hyperledger', function (req, res) {
+      /* res.status(501).json({
+        error: 'Keyrock instance is running in HEADLESS mode'
+      }); 
+    require('./lib/hyperledger.js')
+    .create_invitation()
+    .then(function (status) {
+      //hacer un res.send de la ino de la invitacion
+      debug(clc.green('Connection with Hyperledger: ' + status));
+    })
+    .catch(function (error) {
+      debug(clc.red(error));
+    });
+    }); */
 }
 
 module.exports = app;

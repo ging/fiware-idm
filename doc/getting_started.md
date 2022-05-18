@@ -9,43 +9,52 @@ Keyrock is using Docker and Docker Compose. Create docker-compose.yml file and
 copy the following content to it:
 
 ```yaml
-version: '2'
-
-networks:
-    idm_network:
-        driver: bridge
-        ipam:
-            config:
-                - subnet: 172.18.1.0/24
-                  gateway: 172.18.1.1
-
-volumes:
-    vol-mysql:
-
+version: '3.5'
 services:
-    mysql:
-        image: mysql/mysql-server:5.7.21
-        ports:
-            - '3306:3306'
+    keyrock:
+        image: fiware/idm:7.8.1
+        container_name: fiware-keyrock
+        hostname: keyrock
         networks:
-            idm_network:
+            default:
                 ipv4_address: 172.18.1.5
-        volumes:
-            - vol-mysql:/var/lib/mysql
-        environment:
-            - MYSQL_ROOT_PASSWORD=idm
-            - MYSQL_ROOT_HOST=172.18.1.6
-
-    fiware-idm:
-        image: fiware/idm
+        depends_on:
+            - mysql-db
         ports:
             - '3000:3000'
             - '443:443'
+        environment:
+            - DEBUG=idm:*
+            - IDM_DB_HOST=mysql-db
+            - IDM_HOST=http://localhost:3000
+            - IDM_PORT=3000
+            - IDM_DB_PASS=secret
+            - IDM_DB_USER=root
+            - IDM_ADMIN_USER=admin
+            - IDM_ADMIN_EMAIL=admin@test.com
+            - IDM_ADMIN_PASS=1234
+
+    mysql-db:
+        restart: always
+        image: mysql:5.7
+        hostname: mysql-db
+        container_name: db-mysql
         networks:
-            idm_network:
+            default:
                 ipv4_address: 172.18.1.6
         environment:
-            - IDM_DB_HOST=mysql
+            - 'MYSQL_ROOT_PASSWORD=secret'
+            - 'MYSQL_ROOT_HOST=172.18.1.5'
+        volumes:
+            - mysql-db:/var/lib/mysql
+
+networks:
+    default:
+        ipam:
+            config:
+                - subnet: 172.18.1.0/24
+volumes:
+    mysql-db: ~
 ```
 
 Afterwards, navigate to the directory in which you have created the

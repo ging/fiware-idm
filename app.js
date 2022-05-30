@@ -35,6 +35,7 @@ const api = require('./routes/api/index');
 const oauth2 = require('./routes/oauth2/oauth2');
 const saml2 = require('./routes/saml2/saml2');
 const authregistry = require('./routes/authregistry/authregistry');
+const hyperledger = require('./routes/hyperledger/index');
 const oauth2_controller = require('./controllers/oauth2/oauth2');
 
 const translation_merger = require('./lib/json_directory_merger');
@@ -205,6 +206,10 @@ if (config.https.enabled) {
   app.use('/oauth2', force_ssl, oauth2);
   app.get('/user', force_ssl, oauth2_controller.authenticate_token);
 
+  if (config.hyperledger.enabled) {
+    app.use('/hyperledger', force_ssl, hyperledger);
+  }
+
   if (config.authorization.level === 'payload') {
     app.post('/pdp/open_policy_agent', force_ssl, oauth2_controller.auth_opa_policy);
     app.post('/pdp/xacml', force_ssl, oauth2_controller.auth_xacml_policy);
@@ -236,6 +241,10 @@ if (config.https.enabled) {
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
   app.get('/user', oauth2_controller.authenticate_token);
+
+  if (config.hyperledger.enabled) {
+    app.use('/hyperledger', hyperledger);
+  }
 
   if (config.authorization.level === 'payload') {
     app.post('/pdp/open_policy_agent', oauth2_controller.auth_opa_policy);
@@ -279,9 +288,9 @@ if (config.authorization.authzforce.enabled) {
 }
 
 if (config.hyperledger.enabled) {
-  debug('InicioTFG');
+  //debug(  require('./lib/hyperledger.js'));
   //llamar a funciones e el then
-  /* require('./lib/hyperledger.js')
+  require('./lib/hyperledger.js')
     .init()
     .then(function (status) {
       debug(clc.green('Connection with Hyperledger: ' + status));
@@ -289,20 +298,6 @@ if (config.hyperledger.enabled) {
     .catch(function (error) {
       debug(clc.red(error));
     });
-    app.get('/hyperledger', function (req, res) {
-      /* res.status(501).json({
-        error: 'Keyrock instance is running in HEADLESS mode'
-      }); 
-    require('./lib/hyperledger.js')
-    .create_invitation()
-    .then(function (status) {
-      //hacer un res.send de la ino de la invitacion
-      debug(clc.green('Connection with Hyperledger: ' + status));
-    })
-    .catch(function (error) {
-      debug(clc.red(error));
-    });
-    }); */
 }
 
 module.exports = app;

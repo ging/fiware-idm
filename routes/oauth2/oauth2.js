@@ -20,11 +20,7 @@ if (config.pr.url) {
 } else {
   router.post('/token', oauth_controller.token);
 }
-let authorize_chain = [
-  csrf_protection,
-  oauth_controller.response_type_required,
-  oauth_controller.load_application
-];
+let authorize_chain = [csrf_protection, oauth_controller.response_type_required, oauth_controller.load_application];
 if (config.eidas.enabled) {
   authorize_chain = authorize_chain.concat([
     saml2_controller.search_eidas_credentials,
@@ -32,10 +28,8 @@ if (config.eidas.enabled) {
   ]);
 }
 authorize_chain.push(oauth_controller.check_user);
-router.get(
-  '/authorize',
-  ...authorize_chain
-);
+router.get('/authorize', ...authorize_chain);
+
 const post_authorize_chain = [];
 if (config.pr.url) {
   post_authorize_chain.push(extparticipant_controller.validate_participant);

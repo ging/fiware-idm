@@ -92,7 +92,9 @@ config.authorization = {
 };
 
 config.hyperledger = {
-  enabled: true
+  enabled: true,
+  schema_name: 'schema24',
+  schema_version: '3.0'
 };
 
 // Enable usage control and configure where is the Policy Translation Point

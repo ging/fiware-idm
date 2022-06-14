@@ -1,0 +1,27 @@
+<script type='text/javascript'>
+    let invitation = <%- JSON.stringify(invitation) %>
+</script>
+<div>
+    <%= JSON.stringify(invitation.invitation) %>
+</div>
+<script>
+    var url = '/hyperledger/polling-invitation?invitation_id=' + invitation.invi_msg_id;
+    var cond_ini = true;
+
+    timeout = function (ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    polling = async function () {
+        while (cond_ini) {
+            $.get(url, function (result) {
+                if (result=='Recibido') {
+                    cond_ini = false;
+                }
+                console.log(result);
+            });
+            await timeout(2000);
+        }
+        window.location.href= ""+//invitation id esto redirige a issuecredentiañl
+    }
+    polling();
+</script>

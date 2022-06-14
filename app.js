@@ -293,7 +293,7 @@ if (config.hyperledger.enabled) {
   require('./lib/hyperledger.js')
     .init()
     .then(function (status) {
-      debug(clc.green('Connection with Hyperledger: ' + status));
+      debug(clc.green('Hyperledger: ' + status));
     })
     .catch(function (error) {
       debug(clc.red(error));

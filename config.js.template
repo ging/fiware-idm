@@ -56,7 +56,8 @@ config.cors = {
 
 // Content Security Policy configuration
 config.csp = {
-    form_action: undefined
+    form_action: undefined,
+    script_src: undefined
 };
 
 // Config oauth2 parameters

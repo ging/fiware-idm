@@ -163,12 +163,13 @@ config.cors = {
 ## Content Security Policy
 
 Keyrock uses a default set of directives for the Content Security Policy header. 
-The `form-action` directive can be overwritten with the following configuration 
-parameter (note that this must be supplied as an array of the allowed sources):
+The `form-action` and `script-src` directives can be overwritten with the following configuration 
+parameters (note that these must be supplied as an array of the allowed sources):
 
 ```javascript
 config.csp = {
-    form_action: undefined
+    form_action: undefined,
+	script_src: undefined
 };
 ```
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 const config = {};
 
-config.port = 3000;
-config.host = 'http://localhost:3000';
+config.port = 5000;
+config.host = 'http://localhost:5000';
 config.headless = false;
 config.debug = false;
 
@@ -13,7 +13,7 @@ config.registration = {
 
 // HTTPS enable
 config.https = {
-  enabled: true,
+  enabled: false,
   cert_file: 'certs/idm-2018-cert.pem',
   key_file: 'certs/idm-2018-key.pem',
   ca_certs: [],
@@ -93,7 +93,7 @@ config.authorization = {
 
 config.hyperledger = {
   enabled: true,
-  schema_name: 'schema26',
+  schema_name: 'schema30',
   schema_version: '3.0'
 };
 
@@ -109,9 +109,9 @@ config.usage_control = {
 // Database info
 config.database = {
   host: 'localhost',
-  password: 'idm',
-  username: 'root',
-  database: 'idm',
+  database: 'cira',
+  username: 'idm',
+  password: 'keyrock2020',
   dialect: 'mysql',
   port: undefined
 };
@@ -125,9 +125,9 @@ config.external_auth = {
   database: {
     host: 'localhost',
     port: undefined,
-    database: 'db_name',
-    username: 'db_user',
-    password: 'db_pass',
+    database: 'cira',
+    username: 'idm',
+    password: 'keyrock2020',
     user_table: 'user_view',
     dialect: 'mysql'
   }

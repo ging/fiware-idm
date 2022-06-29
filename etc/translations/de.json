@@ -232,6 +232,9 @@
         "content07": "Klicken Sie auf die folgende Schaltfläche und geben Sie dann Ihre E-Mail ein.",
         "content08": "Wir werden Ihnen eine Anleitung zusenden, wie Sie auf Ihr Profil zugreifen können, um diese zweite Authentifizierung zu vermeiden. ",
         "content09": "Zwei-Faktor-Authentifizierung deaktivieren"
+      },
+      "hyperledger": {
+        "loginin_btn": "Generate credential"
       }
     },
     "home": {

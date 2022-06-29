@@ -17,7 +17,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "healthcheck": "node ./bin/healthcheck.js",
-    "debug": "sudo DEBUG=idm:*,oauth2-server:*  nodemon --ignore 'public/' --ignore 'views/' start",
+    "debug": "sudo DEBUG=idm:*,oauth2-server:*  nodemon --ignore 'public/' --ignore 'views/' --ignore 'etc/hyperledger/' start",
     "create_db": "./node_modules/.bin/sequelize --env database db:create",
     "migrate_db": "./node_modules/.bin/sequelize --env database db:migrate",
     "seed_db": "./node_modules/.bin/sequelize --env database db:seed:all",
@@ -59,6 +59,7 @@
     "express-partials": "^0.3.0",
     "express-session": "^1.17.2",
     "express-useragent": "^1.0.13",
+    "fs": "0.0.1-security",
     "get-user-agent": "^4.0.0",
     "gravatar": "^1.8.2",
     "helmet": "^5.0.1",
@@ -139,11 +140,6 @@
     }
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --config .prettierrc.json --write",
-      "eslint --fix",
-      "git add"
-    ],
     "*.md": [
       "prettier --parser markdown --tab-width 4 --print-width 80 --write --prose-wrap always",
       "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",

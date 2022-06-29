@@ -493,6 +493,7 @@ if (external_auth.enabled) {
         attributes: [
           'id',
           'username',
+          'description',
           'salt',
           'password',
           'enabled',

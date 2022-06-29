@@ -232,6 +232,9 @@
       "content07": "Click in the following button and, then, introduce your email.",
       "content08": "We will send you instructions of how to access your profile avoiding this second authentication. ",
       "content09": "Disable two factor authentication"
+    },
+    "hyperledger": {
+      "loginin_btn": "Generate credential"
     }
   },
   "home": {

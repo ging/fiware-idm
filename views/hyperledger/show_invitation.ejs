@@ -2,6 +2,7 @@
     let invitation = <%- JSON.stringify(invitation) %>
 </script>
 <div>
+    <h1>Copy your invitation into your application</h1>
     <%= JSON.stringify(invitation.invitation) %>
 </div>
 <script>
@@ -21,7 +22,7 @@
             });
             await timeout(2000);
         }
-        window.location.href= ""+//invitation id esto redirige a issuecredentiañl
+        window.location.href= "/hyperledger/issue-credential?invitation_id=" + invitation.invi_msg_id
     }
     polling();
 </script>

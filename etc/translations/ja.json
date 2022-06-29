@@ -232,6 +232,9 @@
       "content07": "次のボタンをクリックして、メールを導入してください。",
       "content08": "この2回目の認証を回避して、プロファイルにアクセスする方法の説明を送信します。",
       "content09": "二要素認証を無効化"
+    },
+    "hyperledger": {
+      "loginin_btn": "Generate credential"
     }
   },
   "home": {

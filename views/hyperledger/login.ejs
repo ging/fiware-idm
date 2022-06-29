@@ -1,0 +1,56 @@
+<div class="login">
+    <div class="modal-header">
+        <h3><%=translation.auth.login.title%></h3>
+    </div>
+    <form id="" ng-controller="DummyCtrl" name="" autocomplete="on" class="" action="/hyperledger/invitation" method="POST" enctype="">
+        <input type='hidden' name='_csrf' value='<%= csrf_token%>' />
+        <input type='hidden' name='ua' id="ua"/>
+        <div class="modal-body clearfix">
+            <% var nameErrors = [] %>
+            <% if (errors.length) { %>
+                <% for (var i in errors) { %>
+                    <% nameErrors.push(errors[i].message)%>
+                <% } %>
+            <% } %>
+            <% if (nameErrors.indexOf("sessionExpired") != -1) { %>
+                <span class="help-block alert alert-warning"><p><%=translation.auth.login.alert01%></p></span>
+            <% } %>
+            <% if (nameErrors.indexOf("password_change") != -1) { %>
+                <span class="help-block alert alert-success"><p><%=translation.auth.login.alert02%></p></span>
+            <% } %>
+            <% if (nameErrors.indexOf("user_not_found") != -1 || nameErrors.indexOf("invalid") != -1) { %>
+                <div class="alert alert-message alert-danger">
+                    <ul class="errorlist"><li><%=translation.auth.login.alert03%></li></ul>
+                </div>
+            <% } %>
+            <div class="form-group ">
+                <label class="control-label" for="id_username"><%=translation.auth.login.label01%></label>
+                <div class=" ">
+                    <input autofocus="autofocus" class="form-control" id="id_email" name="email" type="text" inputmode="email" />
+                </div>
+            </div>
+            <% if (nameErrors.indexOf("email") != -1) { %>
+                <span class="help-block alert alert-danger "><%=translation.auth.login.required_field%></span>
+            <% } %>
+            <div class="form-group has-feedback">
+                <label class="control-label" for="id_password"><%=translation.auth.login.label02%></label>
+                <div class=" ">
+                    <input class="form-control" id="id_password" name="password" type="password" />
+                    <span class="form-control-feedback fa fa-eye"></span>
+                </div>
+            </div>
+            <% if (nameErrors.indexOf("password") != -1) { %>
+                <span class="help-block alert alert-danger "><%=translation.auth.login.required_field%></span>
+            <% } %>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary pull-right"><%=translation.auth.hyperledger.loginin_btn%></button>
+        </div>
+    </form>
+</div>
+
+<script src="/javascripts/others/see_password.js" type="text/javascript"></script>
+<script>
+  document.getElementById("ua").innerHTML =
+  "User-agent header sent: " + navigator.userAgent;
+</script>

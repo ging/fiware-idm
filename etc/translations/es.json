@@ -232,6 +232,9 @@
       "content07": "Haga click en el siguiente boton e introduzca su correo electronico.",
       "content08": "Le enviaremos las instrucciones que debe seguir para poder acceder a su perfil.",
       "content09": "Desactivar Verificación en dos pasos"
+    },
+    "hyperledger": {
+      "loginin_btn": "Generar credencial"
     }
   },
   "home": {

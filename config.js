@@ -93,7 +93,7 @@ config.authorization = {
 
 config.hyperledger = {
   enabled: true,
-  schema_name: 'schema24',
+  schema_name: 'schema26',
   schema_version: '3.0'
 };
 

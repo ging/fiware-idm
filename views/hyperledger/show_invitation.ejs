@@ -1,9 +1,17 @@
 <script type='text/javascript'>
     let invitation = <%- JSON.stringify(invitation) %>
 </script>
-<div>
-    <h1>Copy your invitation into your application</h1>
-    <%= JSON.stringify(invitation.invitation) %>
+<div style="float:left;width:75%;">
+    <h2>Copy the invitation into your application</h2>
+    <div style="background-color: #e4e4e6;padding: 10px;margin-top: 15px;">
+        <%= JSON.stringify(invitation.invitation) %>
+    </div>
+    <img style="float:left;" src="../img/qr.png" alt="QR code" width="200" height="200"> 
+    <div style="float:left;text-align: center;margin-top: 21px;margin-left: 71px;">
+        <h4>Waiting for connection...</h4>
+        <img src="../img/loading.gif" alt="Loading..." width="90" height="90" style = "margin-top: 14px;"> 
+    </div>
+    
 </div>
 <script>
     var url = '/hyperledger/polling-invitation?invitation_id=' + invitation.invi_msg_id;

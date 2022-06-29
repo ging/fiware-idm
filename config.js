@@ -109,9 +109,9 @@ config.usage_control = {
 // Database info
 config.database = {
   host: 'localhost',
-  database: 'cira',
-  username: 'idm',
-  password: 'keyrock2020',
+  database: 'idm',
+  username: 'root',
+  password: 'idm',
   dialect: 'mysql',
   port: undefined
 };
@@ -125,9 +125,9 @@ config.external_auth = {
   database: {
     host: 'localhost',
     port: undefined,
-    database: 'cira',
-    username: 'idm',
-    password: 'keyrock2020',
+    database: 'db_name',
+    username: 'db_user',
+    password: 'db_pass',
     user_table: 'user_view',
     dialect: 'mysql'
   }

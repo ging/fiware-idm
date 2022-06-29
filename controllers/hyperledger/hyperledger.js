@@ -121,7 +121,7 @@ exports.handler_issue_credential = function (req, res) {
   hyperledger_funtion
     .issuing_credential(connection_id, req.session.user.username,req.session.user.email,req.session.user.description) //, cred_def_id, issuer_did, schema_id, schema_name, schema_version)
     .then(function () {
-      // res.render
+      res.render('hyperledger/issue_credential');
       debug(clc.green('Issue credential complete'));
     })
     .catch(function (error) {

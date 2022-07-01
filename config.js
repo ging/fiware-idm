@@ -53,6 +53,12 @@ config.cors = {
   }
 };
 
+// Content Security Policy configuration
+config.csp = {
+    form_action: undefined,
+    script_src: undefined
+};
+
 // Config oauth2 parameters
 config.oauth2 = {
   authorization_code_lifetime: 5 * 60, // Five minutes

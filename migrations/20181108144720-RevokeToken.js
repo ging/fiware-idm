@@ -1,7 +1,8 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface
-      .addConstraint('oauth_access_token', ['refresh_token'], {
+      .addConstraint('oauth_access_token',  {
+        fields: ['refresh_token'],
         type: 'foreign key',
         name: 'refresh_token',
         onDelete: 'CASCADE',
@@ -29,9 +30,9 @@ module.exports = {
       .then(() =>
         queryInterface.addConstraint(
           'oauth_access_token',
-          ['authorization_code'],
           {
             type: 'foreign key',
+            fields:  ['authorization_code'],
             name: 'authorization_code_at',
             onDelete: 'CASCADE',
             references: {
@@ -44,8 +45,8 @@ module.exports = {
       .then(() =>
         queryInterface.addConstraint(
           'oauth_refresh_token',
-          ['authorization_code'],
           {
+            fields:  ['authorization_code'],
             type: 'foreign key',
             name: 'authorization_code_rt',
             onDelete: 'CASCADE',

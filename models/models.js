@@ -55,73 +55,74 @@ if (external_auth.enabled) {
 }
 
 // Import Oauth2 tables
-const oauth_client = sequelize.import(path.join(__dirname, 'oauth2/oauth_client'));
-const oauth_authorization_code = sequelize.import(path.join(__dirname, 'oauth2/oauth_authorization_code'));
-const oauth_access_token = sequelize.import(path.join(__dirname, 'oauth2/oauth_access_token'));
-const oauth_refresh_token = sequelize.import(path.join(__dirname, 'oauth2/oauth_refresh_token'));
-const scope = sequelize.import(path.join(__dirname, 'oauth2/oauth_scope'));
+const oauth_client = require(path.join(__dirname, 'oauth2/oauth_client'))(sequelize, Sequelize.DataTypes)
+
+const oauth_authorization_code = require(path.join(__dirname, 'oauth2/oauth_authorization_code'))(sequelize, Sequelize.DataTypes);
+const oauth_access_token = require(path.join(__dirname, 'oauth2/oauth_access_token'))(sequelize, Sequelize.DataTypes);
+const oauth_refresh_token = require(path.join(__dirname, 'oauth2/oauth_refresh_token'))(sequelize, Sequelize.DataTypes);
+const scope = require(path.join(__dirname, 'oauth2/oauth_scope'))(sequelize, Sequelize.DataTypes);
 
 // Import Eidas Credentials
-const eidas_credentials = sequelize.import(path.join(__dirname, 'eidas_credentials'));
+const eidas_credentials = require(path.join(__dirname, 'eidas_credentials'))(sequelize, Sequelize.DataTypes);
 
 // Import Trusted Applications table
-const trusted_application = sequelize.import(path.join(__dirname, 'trusted_application'));
+const trusted_application = require(path.join(__dirname, 'trusted_application'))(sequelize, Sequelize.DataTypes);
 
 // Import user table
-const user = sequelize.import(path.join(__dirname, 'user'));
+const user = require(path.join(__dirname, 'user'))(sequelize, Sequelize.DataTypes);
 
 // Import user table for external auth database if enabled
 if (external_auth.enabled) {
-  user_ext = ext_sequelize.import(path.join(__dirname, '../external_auth/external_user_model'));
+  user_ext = ext_require(path.join(__dirname, '../external_auth/external_user_model'))(sequelize, Sequelize.DataTypes);
 }
 
 // Import user registration profile table
-const user_registration_profile = sequelize.import(path.join(__dirname, 'user_registration_profile'));
+const user_registration_profile = require(path.join(__dirname, 'user_registration_profile'))(sequelize, Sequelize.DataTypes);
 
 // Import user authorized application table
-const user_authorized_application = sequelize.import(path.join(__dirname, 'user_authorized_application'));
+const user_authorized_application = require(path.join(__dirname, 'user_authorized_application'))(sequelize, Sequelize.DataTypes);
 
 // Import organization table
-const organization = sequelize.import(path.join(__dirname, 'organization'));
+const organization = require(path.join(__dirname, 'organization'))(sequelize, Sequelize.DataTypes);
 
 // Import role table
-const role = sequelize.import(path.join(__dirname, 'role'));
+const role = require(path.join(__dirname, 'role'))(sequelize, Sequelize.DataTypes);
 
 // Import permission table
-const permission = sequelize.import(path.join(__dirname, 'permission'));
+const permission = require(path.join(__dirname, 'permission'))(sequelize, Sequelize.DataTypes);
 
 // Import a table which will contains the ids of users, roles and oauth clients
-const role_assignment = sequelize.import(path.join(__dirname, 'role_assignment'));
+const role_assignment = require(path.join(__dirname, 'role_assignment'))(sequelize, Sequelize.DataTypes);
 
 // Import a table which will contains the ids of roles and permissions
-const role_permission = sequelize.import(path.join(__dirname, 'role_permission'));
+const role_permission = require(path.join(__dirname, 'role_permission'))(sequelize, Sequelize.DataTypes);
 
 // Import a table which will contains the ids of users and organizations and the role of the user in the organization
-const user_organization = sequelize.import(path.join(__dirname, 'user_organization'));
+const user_organization = require(path.join(__dirname, 'user_organization'))(sequelize, Sequelize.DataTypes);
 
 // Import sensor table
-const iot = sequelize.import(path.join(__dirname, 'iot'));
+const iot = require(path.join(__dirname, 'iot'))(sequelize, Sequelize.DataTypes);
 
 // Import pep proxy table
-const pep_proxy = sequelize.import(path.join(__dirname, 'pep_proxy'));
+const pep_proxy = require(path.join(__dirname, 'pep_proxy'))(sequelize, Sequelize.DataTypes);
 
 // Import authzforce table
-const authzforce = sequelize.import(path.join(__dirname, 'authzforce'));
+const authzforce = require(path.join(__dirname, 'authzforce'))(sequelize, Sequelize.DataTypes);
 
 // Import auth token table
-const auth_token = sequelize.import(path.join(__dirname, 'auth_token'));
+const auth_token = require(path.join(__dirname, 'auth_token'))(sequelize, Sequelize.DataTypes);
 
 // Import usage policies table
-const usage_policy = sequelize.import(path.join(__dirname, 'usage_policy'));
+const usage_policy = require(path.join(__dirname, 'usage_policy'))(sequelize, Sequelize.DataTypes);
 
 // Import role usage policies relationshìp table
-const role_usage_policy = sequelize.import(path.join(__dirname, 'role_usage_policy'));
+const role_usage_policy = require(path.join(__dirname, 'role_usage_policy'))(sequelize, Sequelize.DataTypes);
 
 // Import ptp table
-const ptp = sequelize.import(path.join(__dirname, 'ptp'));
+const ptp = require(path.join(__dirname, 'ptp'))(sequelize, Sequelize.DataTypes);
 
 // Import delegation evidence table
-const delegation_evidence = sequelize.import(path.join(__dirname, 'delegation_evidence'));
+const delegation_evidence = require(path.join(__dirname, 'delegation_evidence'))(sequelize, Sequelize.DataTypes);
 
 // Relation between oauth_client and trusted applications
 trusted_application.belongsTo(oauth_client, { onDelete: 'cascade' });

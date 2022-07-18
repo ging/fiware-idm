@@ -14,7 +14,7 @@ exports.load_organization = function (req, res, next, organization_id) {
   } else {
     // Search application whose id is application_id
     models.organization
-      .findById(organization_id)
+      .findByPk(organization_id)
       .then(function (organization) {
         // If application exists, set image from file system
         if (organization) {

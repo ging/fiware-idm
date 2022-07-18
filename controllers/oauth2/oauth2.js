@@ -477,7 +477,7 @@ exports.authenticate_token = function (req, res) {
 
   if (options.application) {
     return models.oauth_client
-      .findById(options.application)
+      .findByPk(options.application)
       .then(function (application) {
         if (application) {
           if (application.token_types.includes('jwt')) {

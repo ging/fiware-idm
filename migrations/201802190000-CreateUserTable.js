@@ -41,7 +41,7 @@ module.exports = {
             isEmail: { msg: 'emailInvalid' },
             isUnique(value, next) {
               const self = this;
-              User.find({ where: { email: value } })
+              User.findOne({ where: { email: value } })
                 .then(function (user) {
                   if (user && self.id !== user.id) {
                     return next('emailUsed');

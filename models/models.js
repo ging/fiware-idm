@@ -55,9 +55,12 @@ if (external_auth.enabled) {
 }
 
 // Import Oauth2 tables
-const oauth_client = require(path.join(__dirname, 'oauth2/oauth_client'))(sequelize, Sequelize.DataTypes)
+const oauth_client = require(path.join(__dirname, 'oauth2/oauth_client'))(sequelize, Sequelize.DataTypes);
 
-const oauth_authorization_code = require(path.join(__dirname, 'oauth2/oauth_authorization_code'))(sequelize, Sequelize.DataTypes);
+const oauth_authorization_code = require(path.join(__dirname, 'oauth2/oauth_authorization_code'))(
+  sequelize,
+  Sequelize.DataTypes
+);
 const oauth_access_token = require(path.join(__dirname, 'oauth2/oauth_access_token'))(sequelize, Sequelize.DataTypes);
 const oauth_refresh_token = require(path.join(__dirname, 'oauth2/oauth_refresh_token'))(sequelize, Sequelize.DataTypes);
 const scope = require(path.join(__dirname, 'oauth2/oauth_scope'))(sequelize, Sequelize.DataTypes);
@@ -77,10 +80,16 @@ if (external_auth.enabled) {
 }
 
 // Import user registration profile table
-const user_registration_profile = require(path.join(__dirname, 'user_registration_profile'))(sequelize, Sequelize.DataTypes);
+const user_registration_profile = require(path.join(__dirname, 'user_registration_profile'))(
+  sequelize,
+  Sequelize.DataTypes
+);
 
 // Import user authorized application table
-const user_authorized_application = require(path.join(__dirname, 'user_authorized_application'))(sequelize, Sequelize.DataTypes);
+const user_authorized_application = require(path.join(__dirname, 'user_authorized_application'))(
+  sequelize,
+  Sequelize.DataTypes
+);
 
 // Import organization table
 const organization = require(path.join(__dirname, 'organization'))(sequelize, Sequelize.DataTypes);
@@ -125,7 +134,10 @@ const ptp = require(path.join(__dirname, 'ptp'))(sequelize, Sequelize.DataTypes)
 const delegation_evidence = require(path.join(__dirname, 'delegation_evidence'))(sequelize, Sequelize.DataTypes);
 
 // Relation between oauth_client and trusted applications
-trusted_application.belongsTo(oauth_client, { onDelete: 'cascade' });
+trusted_application.belongsTo(oauth_client, {
+  foreignKey: 'oauth_client_id',
+  onDelete: 'cascade'
+});
 trusted_application.belongsTo(oauth_client, {
   foreignKey: 'trusted_oauth_client_id',
   onDelete: 'cascade'
@@ -140,13 +152,28 @@ user_registration_profile.belongsTo(user, {
 });
 
 // Relation between users and auth tokens
-auth_token.belongsTo(user, { onDelete: 'cascade' });
-auth_token.belongsTo(pep_proxy, { onDelete: 'cascade' });
+auth_token.belongsTo(user, {
+  foreignKey: 'user_id',
+  onDelete: 'cascade'
+});
+auth_token.belongsTo(pep_proxy, {
+  foreignKey: 'pep_proxy_id',
+  onDelete: 'cascade'
+});
 
 // Relation between OAuthClient and access token
-oauth_access_token.belongsTo(oauth_client, { onDelete: 'cascade' });
-oauth_access_token.belongsTo(user, { onDelete: 'cascade' });
-oauth_access_token.belongsTo(iot, { onDelete: 'cascade' });
+oauth_access_token.belongsTo(oauth_client, {
+  foreignKey: 'oauth_client_id',
+  onDelete: 'cascade'
+});
+oauth_access_token.belongsTo(user, {
+  foreignKey: 'user_id',
+  onDelete: 'cascade'
+});
+oauth_access_token.belongsTo(iot, {
+  foreignKey: 'iot_id',
+  onDelete: 'cascade'
+});
 oauth_access_token.belongsTo(oauth_refresh_token, {
   foreignKey: 'refresh_token',
   targetKey: 'refresh_token',
@@ -159,13 +186,28 @@ oauth_access_token.belongsTo(oauth_authorization_code, {
 });
 
 // Relation between OAuthClient and authorization codes
-oauth_authorization_code.belongsTo(oauth_client, { onDelete: 'cascade' });
-oauth_authorization_code.belongsTo(user, { onDelete: 'cascade' });
+oauth_authorization_code.belongsTo(oauth_client, {
+  foreignKey: 'oauth_client_id',
+  onDelete: 'cascade'
+});
+oauth_authorization_code.belongsTo(user, {
+  foreignKey: 'user_id',
+  onDelete: 'cascade'
+});
 
 // Relation between OAuthClient and refresh_token
-oauth_refresh_token.belongsTo(oauth_client, { onDelete: 'cascade' });
-oauth_refresh_token.belongsTo(user, { onDelete: 'cascade' });
-oauth_refresh_token.belongsTo(iot, { onDelete: 'cascade' });
+oauth_refresh_token.belongsTo(oauth_client, {
+  foreignKey: 'oauth_client_id',
+  onDelete: 'cascade'
+});
+oauth_refresh_token.belongsTo(user, {
+  foreignKey: 'user_id',
+  onDelete: 'cascade'
+});
+oauth_refresh_token.belongsTo(iot, {
+  foreignKey: 'iot_id',
+  onDelete: 'cascade'
+});
 oauth_refresh_token.belongsTo(oauth_authorization_code, {
   foreignKey: 'authorization_code',
   targetKey: 'authorization_code',
@@ -174,110 +216,110 @@ oauth_refresh_token.belongsTo(oauth_authorization_code, {
 
 // Relation between roles and OAuthClients
 role.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'oauth_client_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between permissions and OAuthClients
 permission.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'oauth_client_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between sensors and OAuthClients
 iot.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'oauth_client_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between pep proxies and OAuthClients
 pep_proxy.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'oauth_client_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between pep proxies and OAuthClients
 authzforce.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'oauth_client_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between roles, users and OAuthClients
 role_assignment.belongsTo(role, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'role_id', allowNull: false },
   onDelete: 'cascade'
 });
 role_assignment.belongsTo(user, {
-  foreignKey: { allowNull: true },
+  foreignKey: { name: 'user_id', allowNull: true },
   onDelete: 'cascade'
 });
 role_assignment.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'oauth_client_id', allowNull: false },
   onDelete: 'cascade'
 });
 role_assignment.belongsTo(organization, {
-  foreignKey: { allowNull: true },
+  foreignKey: { name: 'organization_id', allowNull: true },
   onDelete: 'cascade'
 });
 
 // Relation between roles and permissions
 role_permission.belongsTo(role, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'role_id', allowNull: false },
   onDelete: 'cascade'
 });
 role_permission.belongsTo(permission, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'permission_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between users and organizations
 user_organization.belongsTo(user, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'user_id', allowNull: false },
   onDelete: 'cascade'
 });
 user_organization.belongsTo(organization, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'organization_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between user that has authorized an application and the application itself
 user_authorized_application.belongsTo(user, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'user_id', allowNull: false },
   onDelete: 'cascade'
 });
 user_authorized_application.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false },
+  foreignKey: { name: 'oauth_client_id', allowNull: false },
   onDelete: 'cascade'
 });
 
 // Relation between eidas credentials and oauth client
 eidas_credentials.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false, unique: true },
+  foreignKey: { name: 'oauth_client_id', allowNull: false, unique: true },
   onDelete: 'cascade'
 });
 
 // Relation between eidas credentials and oauth client
 usage_policy.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false, unique: true },
+  foreignKey: { name: 'oauth_client_id', allowNull: false, unique: true },
   onDelete: 'cascade'
 });
 
 // Relation between eidas credentials and oauth client
 role_usage_policy.belongsTo(role, {
-  foreignKey: { allowNull: false, unique: true },
+  foreignKey: { name: 'role_id', allowNull: false, unique: true },
   onDelete: 'cascade'
 });
 
 // Relation between eidas credentials and oauth client
 role_usage_policy.belongsTo(usage_policy, {
   as: 'usage_policy',
-  foreignKey: { allowNull: false, unique: true },
+  foreignKey: { name: 'usage_policy_id', allowNull: false, unique: true },
   onDelete: 'cascade'
 });
 
 // Relation between eidas credentials and oauth client
 ptp.belongsTo(oauth_client, {
-  foreignKey: { allowNull: false, unique: true },
+  foreignKey: { name: 'oauth_client_id', allowNull: false, unique: true },
   onDelete: 'cascade'
 });
 

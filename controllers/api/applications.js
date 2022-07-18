@@ -24,7 +24,7 @@ exports.load_application = function (req, res, next, application_id) {
   } else {
     // Search application whose id is application_id
     models.oauth_client
-      .findById(application_id)
+      .findByPk(application_id)
       .then(function (application) {
         // If application exists, set image from file system
         if (application) {
@@ -291,27 +291,27 @@ exports.update = function (req, res) {
       }
 
       const diff_application = function (application) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           const difference = diff_object(application_previous_values, application.dataValues);
           resolve(
             Object.keys(difference).length > 0
               ? { values_updated: difference }
               : {
-                message: "Request don't change the application parameters",
-                code: 200,
-                title: 'OK'
-              }
+                  message: "Request don't change the application parameters",
+                  code: 200,
+                  title: 'OK'
+                }
           );
         });
-      }
+      };
 
       req.application.save();
 
       const promises = [];
 
-      promises.push(diff_application(req.application))
+      promises.push(diff_application(req.application));
 
-      if (req.application.scope.includes("openid")) {
+      if (req.application.scope.includes('openid')) {
         promises.push(generate_app_certificates(req.application));
       } else {
         promises.push(delete_app_certificates(req.application));

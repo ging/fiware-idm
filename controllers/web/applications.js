@@ -28,7 +28,7 @@ exports.load_application = function (req, res, next, application_id) {
   } else {
     // Search application whose id is application_id
     models.oauth_client
-      .findById(application_id)
+      .findByPk(application_id)
       .then(function (application) {
         // If application exists, set image from file system
         if (application) {
@@ -374,7 +374,7 @@ exports.create = function (req, res, next) {
 
   const validate = application.validate();
   const save = validate.then(function () {
-    application.description.trim();
+    application.description = application.description.trim();
     return application.save({
       fields: [
         'id',

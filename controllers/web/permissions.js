@@ -116,7 +116,7 @@ exports.get_permission = function (req, res) {
   } else if (req.xhr) {
     // Search info about the users authorized in the application
     models.permission
-      .findById(req.permission.id)
+      .findByPk(req.permission.id)
       .then(function (permission) {
         if (permission) {
           res.send(permission);
@@ -142,7 +142,6 @@ exports.edit_permission = function (req, res) {
     res.send({ text: ' Failed updating permission', type: 'danger' });
   } else {
     const body = req.body;
-
 
     const permission = models.permission.build({
       name: body.name,

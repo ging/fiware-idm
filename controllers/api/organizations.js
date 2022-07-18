@@ -9,7 +9,7 @@ exports.load_organization = function (req, res, next, organization_id) {
 
   // Search organization whose id is organization_id
   models.organization
-    .findById(organization_id)
+    .findByPk(organization_id)
     .then(function (organization) {
       // If organization exists, set image from file system
       if (organization) {

@@ -177,7 +177,7 @@ exports.email = function (req, res) {
       } else {
         // Search the user through the email
         models.user
-          .find({
+          .findOne({
             where: {
               id: req.session.user.id
             }
@@ -336,7 +336,7 @@ exports.cancel_account = function (req, res) {
 
   let user_image;
   models.user
-    .findById(req.session.user.id)
+    .findByPk(req.session.user.id)
     .then(function (user) {
       if (user) {
         user_image = user.image;

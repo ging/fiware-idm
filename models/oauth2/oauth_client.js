@@ -35,7 +35,7 @@ module.exports = function (sequelize, DataTypes) {
           isUnique(value, next) {
             if (config_oauth2.unique_url) {
               const self = this;
-              OAuthClient.find({ where: { url: value } })
+              OAuthClient.findOne({ where: { url: value } })
                 .then(function (oauth_client) {
                   if (oauth_client && self.id !== oauth_client.id) {
                     return next('urlUsed');

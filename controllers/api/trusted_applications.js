@@ -12,7 +12,7 @@ exports.load_trusted_application = function (req, res, next, trusted_application
   } else {
     // Search application whose id is trusted_application_id
     models.oauth_client
-      .findById(trusted_application_id)
+      .findByPk(trusted_application_id)
       .then(function (trusted_application) {
         // If application exists, set image from file system
         if (trusted_application) {

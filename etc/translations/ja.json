@@ -532,6 +532,7 @@
       "title": "ユーザの編集",
       "alert01": "Eメールは既に使われています。",
       "alert02": "Eメールが無効です。",
+      "alert03": "Extra is invalid.",
       "label01": "ユーザ名",
       "label02": "Eメール",
       "label03": "説明",

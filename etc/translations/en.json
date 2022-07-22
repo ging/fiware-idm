@@ -532,6 +532,7 @@
       "title": "Edit user",
       "alert01": "Email is already used.",
       "alert02": "Email is invalid.",
+      "alert03": "Extra is invalid.",
       "label01": "Username",
       "label02": "Email",
       "label03": "Description",

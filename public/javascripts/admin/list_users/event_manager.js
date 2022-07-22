@@ -256,13 +256,22 @@ class EventManager {
     // Hide alerts
     $('span.alert', this.form_edit_user).hide();
 
+    var extra;
+    try {
+      extra = JSON.parse(this.edit_input_extra.val());
+    } catch (error) {
+      $('span.alert#extraInvalid', this.form_edit_user).show('open');
+    }
+
+    if (!extra) return;
+
     // Payload to be send to the server
     var data = {
       username: this.edit_input_username.val(),
       email: this.edit_input_email.val(),
       description: this.edit_input_description.val(),
       website: this.edit_input_website.val(),
-      extra: this.edit_input_extra.val()
+      extra: extra
     };
 
     // Check values of inputs before send to the server

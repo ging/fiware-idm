@@ -532,6 +532,7 @@
         "title": "Edit user",
         "alert01": "E-Mail wird bereits verwendet.",
         "alert02": "E-Mail ist ungültig.",
+        "alert03": "Extra ist ungültig.",
         "label01": "Benutzername",
         "label02": "E-Mail",
         "label03": "Beschreibung",

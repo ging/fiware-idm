@@ -532,6 +532,7 @@
       "title": "사용자 정보 변경",
       "alert01": "이미 등록된 이메일 입니다.",
       "alert02": "유효하지 않은 이메일 입니다.",
+      "alert03": "Extra is invalid.",
       "label01": "이름",
       "label02": "이메일",
       "label03": "상세 정보",

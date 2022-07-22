@@ -532,6 +532,7 @@
       "title": "Editar usuario",
       "alert01": "El email ya está en uso.",
       "alert02": "El email no es válido.",
+      "alert03": "El valor de extra no es válido.",
       "label01": "Nombre de usuario",
       "label02": "Email",
       "label03": "Descripción",

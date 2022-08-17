@@ -4,6 +4,7 @@ public/img/applications
 public/img/users
 public/img/organizations
 public/stylesheets/style.css
+extras/spgdocker/
 npm-debug.log
 coverage/
 certs/

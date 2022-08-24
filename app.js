@@ -54,7 +54,7 @@ if (config.debug) {
 // Disabled header
 app.disable('x-powered-by');
 // Set security headers
-const csp_options = {
+const csp_default =  {
     directives: {
       defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
       fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
@@ -63,7 +63,19 @@ const csp_options = {
       styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
     },
     reportOnly: false // eslint-disable-line snakecase/snakecase
-};
+  };
+const csp_disabled =  {
+    directives: {
+      defaultSrc: ['*'], // eslint-disable-line snakecase/snakecase
+      fontSrc: ['*'], // eslint-disable-line snakecase/snakecase
+      imgSrc: ['*'], // eslint-disable-line snakecase/snakecase
+      scriptSrc: ['*'], // eslint-disable-line snakecase/snakecase
+      styleSrc: ['*'] // eslint-disable-line snakecase/snakecase
+    },
+    reportOnly: true // eslint-disable-line snakecase/snakecase
+  };
+
+const csp_options =  config.https.enabled ? csp_default : csp_disabled;
 if (config.csp.form_action) {
     csp_options.directives.formAction = config.csp.form_action;
 }

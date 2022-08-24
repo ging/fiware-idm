@@ -15,7 +15,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node --max-http-header-size=${IDM_SERVER_MAX_HEADER_SIZE:-8192} ./bin/www",
     "healthcheck": "node ./bin/healthcheck.js",
     "debug": "sudo DEBUG=idm:*,oauth2-server:*  nodemon --ignore 'public/' --ignore 'views/' start",
     "create_db": "./node_modules/.bin/sequelize --env database db:create",

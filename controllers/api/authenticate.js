@@ -9,7 +9,7 @@ const pep_proxy_api_controller = require('../../controllers/api/pep_proxies.js')
 
 // Middleware to see if the token correspond to user
 const is_user = function (req, res, next) {
-  if (req.token_owner.constructor.options.tableName === 'user') {
+  if (req.token_owner.constructor.name === 'User') {
     next();
   } else {
     res.status(403).json({
@@ -327,7 +327,7 @@ const create_token = function (req, res) {
       const token_id = uuid.v4();
       const expires = new Date(new Date().getTime() + 1000 * config.api.token_lifetime);
       let row = { access_token: token_id, expires, valid: true };
-      if (authenticated[0].constructor.options.tableName === 'user') {
+      if (authenticated[0].constructor.name === 'User') {
         row = Object.assign({}, row, { user_id: authenticated[0].id });
       } else {
         row = Object.assign({}, row, { pep_proxy_id: authenticated[0].id });

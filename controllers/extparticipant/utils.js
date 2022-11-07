@@ -17,6 +17,7 @@ const root_ca_store = forge.pki.createCaStore();
 const ensure_client_key_is_ready = async function ensure_client_key_is_ready() {
   if (typeof config.pr.client_key === 'string') {
     debug('preparing Participant Key & client certificate');
+    debug(config.pr.client_key);
     config.pr.client_key = await jose.JWK.asKey(config.pr.client_key, 'pem');
     if (config.pr.client_crt.indexOf('-----BEGIN CERTIFICATE-----') !== -1) {
       const str = config.pr.client_crt;
@@ -91,7 +92,7 @@ const retrieve_participant_registry_token = async function retrieve_participant_
   return await exports.create_jwt(payload);
 };
 
-exports.assert_client_using_jwt = async function assert_client_using_jwt(credentials, client_id) {
+exports.assert_client_using_jwt = async function assert_client_using_jwt(credentials, client_id, isAuthReq) {
   try {
     // parse the JWT and verify it's signature
     const jwt = await exports.verifier.verify(credentials, { allowEmbeddedKey: true });
@@ -107,8 +108,36 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
       throw new Error('Not listed on the aud parameter');
     }
     const now = moment().unix();
+
+    if (payload.jti == null) {
+      throw new Error('JWT jti is missing');
+    }
+
+    if (payload.iat > now) {
+      throw new Error('JWT iat cannot be after now');
+    }
+
     if (payload.exp < now) {
       throw new Error('Expired token');
+    }
+
+    if (payload.exp !== payload.iat + 30) {
+      throw new Error('JWT exp must be 30 seconds from iat');
+    }
+
+    // Authorization endpoint requests require extra params in the JWT
+    if (isAuthReq) {
+      if (payload.response_type == null) {
+        throw new Error('Missing response_type param in JWT');
+      }
+
+      if (payload.response_type !== 'code') {
+        throw new Error('Only code response_type is supported in JWT');
+      }
+
+      if (payload.redirect_uri == null) {
+        throw new Error('Missing redirect_uri param in JWT');
+      }
     }
 
     // Validate chain certificates

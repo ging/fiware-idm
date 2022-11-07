@@ -129,7 +129,11 @@ async function _validate_participant(req, res) {
   /*******/
 
   // Validate the JWT and client certificates
-  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(credentials, req.body.client_id);
+  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(
+    credentials,
+    req.body.client_id,
+    true
+  );
 
   const participant_name = await utils.validate_participant_from_jwt(client_payload, client_certificate);
 
@@ -286,6 +290,11 @@ async function _token(req, res) {
 
 exports.validate_participant = function validate_participant(req, res, next) {
   debug(' --> validate_participant');
+
+  if (!req.is('application/x-www-form-urlencoded')) {
+    res.status(415).end();
+    return;
+  }
 
   _validate_participant(req, res).then(
     (skip) => {

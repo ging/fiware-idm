@@ -14,6 +14,9 @@ const config = config_service.get_config();
 const m2m_grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
 const managed_token_grant_types = new Set(['authorization_code', 'client_credentials', m2m_grant_type]);
 
+const Request = oauth2_server.Request;
+const Response = oauth2_server.Response;
+
 async function build_id_token(client, user, scopes, nonce, auth_time) {
   const now = moment();
   if (auth_time == null) {
@@ -145,7 +148,7 @@ async function _validate_participant(req, res) {
   auth_params.append('nonce', client_payload.nonce);
 
   res
-    .status(204)
+    .status(302)
     .location('/oauth2/authorize?' + auth_params)
     .end();
   return true;
@@ -293,14 +296,16 @@ exports.validate_participant = function validate_participant(req, res, next) {
     (err) => {
       if (err instanceof oauth2_server.OAuthError) {
         debug('Error ', err.message);
+        let message = err.message;
         if (err.details) {
           debug('Due: ', err.details);
+          message = err.details;
         }
         // ISHARE protocols requires errors to be managed as a redirection
         res.locals.error = err;
         res
           .status(302)
-          .location('/oauth2/error?message=' + err.message)
+          .location(config.host + '/oauth2/error?message=' + message)
           .end();
 
         /*res.render('errors/oauth', {
@@ -341,4 +346,100 @@ exports.token = function token(req, res, next) {
       }
     }
   );
+};
+
+/*eslint new-cap: ["error", { "newIsCap": false }]*/
+const oauth2 = new oauth2_server({
+  // eslint-disable-line new-cap
+  model: require('../../models/model_oauth_server.js'),
+  debug: true
+});
+
+const authenticate_bearer = async function authenticate_bearer(req) {
+  const options = {};
+
+  const request = new Request({
+    headers: { authorization: req.headers.authorization },
+    method: 'POST',
+    query: {}
+  });
+
+  const response = new Response();
+
+  return await oauth2.authenticate(request, response, options);
+};
+
+function _capabilities(req, res) {
+  const now = moment();
+
+  const capabilities_payload = {
+    iss: config.pr.client_id,
+    sub: config.pr.client_id,
+    jti: uuid.v4(),
+    iat: now.unix(),
+    exp: now.clone().add(config.oauth2.access_token_lifetime, 'seconds').unix(),
+    capabilities_info: {
+      party_id: config.pr.client_id,
+      ishare_roles: [
+        {
+          role: 'Service Provider'
+        }
+      ],
+      supported_versions: [
+        {
+          version: '1.7',
+          supported_features: [
+            {
+              public: [
+                {
+                  id: uuid.v4(),
+                  feature: 'capabilities',
+                  description: 'Retrieves iSHARE capabilities',
+                  url: config.host + '/capabilities',
+                  token_endpoint: config.host + '/oauth2/token'
+                },
+                {
+                  id: uuid.v4(),
+                  feature: 'access token',
+                  description: 'Obtains access token',
+                  url: config.host + '/oauth2/token'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  utils.create_jwt(capabilities_payload).then((token) => {
+    debug(token);
+
+    const resp = {
+      capabilities_token: token
+    };
+    res.status(200).json(resp);
+  });
+}
+
+exports.capabilities = function capabilities(req, res) {
+  debug('------> Capabilities');
+
+  if (req.headers.authorization != null) {
+    authenticate_bearer(req)
+      .then((token_info) => {
+        debug(token_info);
+
+        _capabilities(req, res);
+      })
+      .catch((err) => {
+        debug(err.message);
+
+        res.status(401).json({
+          message: err.message
+        });
+      });
+  } else {
+    _capabilities(req, res);
+  }
 };

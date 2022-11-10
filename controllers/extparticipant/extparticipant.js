@@ -434,6 +434,11 @@ function _capabilities(req, res) {
 exports.capabilities = function capabilities(req, res) {
   debug('------> Capabilities');
 
+  if (req.method !== 'GET') {
+    res.status(405).end();
+    return;
+  }
+
   if (req.headers.authorization != null) {
     authenticate_bearer(req)
       .then((token_info) => {
@@ -442,9 +447,12 @@ exports.capabilities = function capabilities(req, res) {
         _capabilities(req, res);
       })
       .catch((err) => {
-        debug(err.message);
+        let status = 401;
+        if (err.message === 'Invalid request: malformed authorization header') {
+          status = 400;
+        }
 
-        res.status(401).json({
+        res.status(status).json({
           message: err.message
         });
       });

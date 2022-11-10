@@ -224,7 +224,7 @@ if (config.https.enabled) {
   app.get('/user', force_ssl, oauth2_controller.authenticate_token);
 
   // Set route for capabilities endpoint
-  app.get('/capabilities', force_ssl, extparticipant.capabilities);
+  app.use('/capabilities', force_ssl, extparticipant.capabilities);
 
   if (config.authorization.level === 'payload') {
     app.post('/pdp/open_policy_agent', force_ssl, oauth2_controller.auth_opa_policy);
@@ -259,7 +259,7 @@ if (config.https.enabled) {
   app.get('/user', oauth2_controller.authenticate_token);
 
   // Set route for capabilities endpoint
-  app.get('/capabilities', extparticipant.capabilities);
+  app.use('/capabilities', extparticipant.capabilities);
 
   if (config.authorization.level === 'payload') {
     app.post('/pdp/open_policy_agent', oauth2_controller.auth_opa_policy);

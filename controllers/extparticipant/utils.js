@@ -125,6 +125,10 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
       throw new Error('JWT exp must be 30 seconds from iat');
     }
 
+    if (payload.sub == null) {
+      throw new Error('Missing sub param in JWT');
+    }
+
     // Authorization endpoint requests require extra params in the JWT
     if (isAuthReq) {
       if (payload.response_type == null) {
@@ -137,6 +141,27 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
 
       if (payload.redirect_uri == null) {
         throw new Error('Missing redirect_uri param in JWT');
+      }
+
+      if (payload.scope == null) {
+        throw new Error('Missing scope param in JWT');
+      }
+
+      if (payload.state == null) {
+        throw new Error('Missing state param in JWT');
+      }
+
+      if (payload.nonce == null) {
+        throw new Error('Missing nonce param in JWT');
+      }
+
+      if (payload.client_id == null) {
+        throw new Error('Missing client_id param in JWT');
+      }
+
+      // Since ID or pseudonym of the user is not known upfront, urn:TBD value should be used (TBD means To Be Determined)
+      if (payload.aud !== 'urn:TBD') {
+        throw new Error('Invalid aud field in JWT it must be urn:TBD');
       }
     }
 

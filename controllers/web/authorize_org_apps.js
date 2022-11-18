@@ -114,7 +114,7 @@ exports.available_organizations = function (req, res) {
         attributes: ['name', 'id', 'image'],
         where: {
           name: {
-            like: '%' + key + '%'
+            [Op.like]: '%' + key + '%'
           }
         }
       })

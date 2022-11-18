@@ -117,7 +117,7 @@ exports.available_users = function (req, res) {
         attributes: ['username', 'id', 'image'],
         where: {
           username: {
-            like: '%' + key + '%'
+            [Op.like]: '%' + key + '%'
           }
         }
       })

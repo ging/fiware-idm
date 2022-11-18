@@ -1,6 +1,8 @@
 const models = require('../../models/models.js');
 const debug = require('debug')('idm:web-admin_controller');
 const gravatar = require('gravatar');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 // See if user is administrator
 exports.is_admin = function (req, res, next) {
@@ -27,7 +29,7 @@ exports.admin_users = function (req, res) {
       where: {
         admin: true,
         username: {
-          like: '%' + key + '%'
+          [Op.like]: '%' + key + '%'
         }
       },
       attributes: ['id', 'email', 'username', 'image', 'gravatar'],

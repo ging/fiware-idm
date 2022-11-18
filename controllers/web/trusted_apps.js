@@ -1,4 +1,6 @@
 const models = require('../../models/models.js');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const debug = require('debug')('idm:web-trusted_apps_controller');
 
@@ -105,7 +107,7 @@ exports.available_applications = function (req, res) {
         attributes: ['name', 'id', 'image'],
         where: {
           name: {
-            like: '%' + key + '%'
+            [Op.like]: '%' + key + '%'
           }
         }
       })

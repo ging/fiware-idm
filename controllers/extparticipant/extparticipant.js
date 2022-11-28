@@ -460,3 +460,22 @@ exports.capabilities = function capabilities(req, res) {
     _capabilities(req, res);
   }
 };
+
+exports.validate_not_ishare_get = function validate_not_ishare_get(req, res, next) {
+  let scopes = new Set([]);
+  if (req.query.scope != null) {
+    const scope = req.query.scope;
+    if (scope.includes(',')) {
+      scopes = new Set(scope.split(/[,\s]+/));
+    } else {
+      scopes = new Set(req.query.scope.split(' '));
+    }
+  }
+
+  if (scopes.has('iSHARE')) {
+    res.status(405).end();
+    
+  } else {
+    next();
+  }
+};

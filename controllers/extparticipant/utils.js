@@ -7,6 +7,7 @@ const jose = require('node-jose');
 const moment = require('moment');
 const oauth2_server = require('oauth2-server');
 const uuid = require('uuid');
+const ISO6391 = require('iso-639-1');
 
 const config = config_service.get_config();
 
@@ -95,8 +96,21 @@ const retrieve_participant_registry_token = async function retrieve_participant_
 exports.assert_client_using_jwt = async function assert_client_using_jwt(credentials, client_id, isAuthReq) {
   try {
     // parse the JWT and verify it's signature
+    debug('-----> Assert client credentials');
+    debug(credentials);
+
     const jwt = await exports.verifier.verify(credentials, { allowEmbeddedKey: true });
+
     const payload = JSON.parse(jwt.payload.toString());
+
+    // Validate JWT header params
+    if (jwt.header.alg !== 'RS256') {
+      throw new Error('Header alg field different from RS256');
+    }
+
+    if (jwt.header.typ !== 'JWT') {
+      throw new Error('Header typ field different from JWT');
+    }
 
     // check JWT parameters
     if (payload.iss !== client_id) {
@@ -159,9 +173,13 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
         throw new Error('Missing client_id param in JWT');
       }
 
+      if (payload.language != null && !ISO6391.validate(payload.language)) {
+        throw new Error('Invalid language field in JWT');
+      }
+
       // Since ID or pseudonym of the user is not known upfront, urn:TBD value should be used (TBD means To Be Determined)
-      if (payload.aud !== 'urn:TBD') {
-        throw new Error('Invalid aud field in JWT it must be urn:TBD');
+      if (payload.sub !== 'urn:TBD') {
+        throw new Error('Invalid sub field in JWT it must be urn:TBD');
       }
     }
 

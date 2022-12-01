@@ -53,7 +53,7 @@ const cert_is_trusted = function cert_is_trusted(cert) {
   return trusted_list.includes(fingerprint);
 };
 
-exports.verify_certificate_chain = async function verify_certificate_chain(chain) {
+exports.verify_certificate_chain = function verify_certificate_chain(chain) {
   // Verify the certificate chain one by one
   let result = true;
   for (let i = 0; i < chain.length - 2 && result; i++) {
@@ -65,11 +65,11 @@ exports.verify_certificate_chain = async function verify_certificate_chain(chain
     const issuer = chain[i + 1];
     result = result && issuer.verify(subject);
   }
-  result = result && (await cert_is_trusted(chain[chain.length - 1]));
+  result = result && cert_is_trusted(chain[chain.length - 1]);
   return result;
 };
 
-exports.validate_client_certificate = async function validate_client_certificate(chain) {
+exports.validate_client_certificate = function validate_client_certificate(chain) {
   const errors = [];
   const cert = chain[0];
 
@@ -80,8 +80,7 @@ exports.validate_client_certificate = async function validate_client_certificate
   //   check(errors, cert.validity.notBefore <= period_start && period_end <= cert.validity.notAfter, "Certificate dates invalid.");
   // }
 
-  const chain_is_verified = await exports.verify_certificate_chain(chain);
-  check(errors, chain_is_verified, 'Certificate chain cannot be verified.');
+  check(errors, exports.verify_certificate_chain(chain), 'Certificate chain cannot be verified.');
   check(errors, cert.signatureOid === forge.pki.oids.sha256WithRSAEncryption, 'Certificate signature invalid');
   check(errors, cert.publicKey.n.bitLength() >= 2048, 'Certificate public key size is smaller than 2048');
   check(errors, cert.serialNumber != null && cert.serialNumber.trim() !== '', 'Certificate has no serial number');
@@ -149,7 +148,7 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
         `Issuer certificate serialNumber parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_number})`
       );
     }
-    await exports.validate_client_certificate(fullchain);
+    exports.validate_client_certificate(fullchain);
 
     return [payload, fullchain[0]];
   } catch (e) {

@@ -888,7 +888,7 @@ function trusted_applications(app_id) {
 
   return models.trusted_application
     .findAll({
-      where: { oauth_client_id: { [Op.is]: app_id } },
+      where: { oauth_client_id: {app_id} },
       attributes: ['trusted_oauth_client_id']
     })
     .then(function (trusted_apps) {

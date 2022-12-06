@@ -10,6 +10,8 @@ const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/sn
 const gravatar = require('gravatar');
 const jsonwebtoken = require('jsonwebtoken');
 const url = require('url');
+const fs = require('fs/promises');
+
 const Request = OauthServer.Request;
 const Response = OauthServer.Response;
 
@@ -463,16 +465,21 @@ exports.authenticate_token = function (req, res) {
     resource: req.query.resource,
     authzforce: req.query.authzforce,
     application: req.query.app_id,
-    service_header: req.query.authorization_service_header
+    service_header: req.query.authorization_service_header,
+    credential: req.query.credential
   };
 
-  if (options.authzforce && (options.action || options.resource || options.service_header)) {
+  if (options.authzforce && (options.action || options.resource || options.service_header || options.credential)) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
       title: 'Bad Request'
     };
     return res.status(400).json(error);
+  }
+
+  if (options.action && options.resource && options.credential) {
+    return exports.check_perm(req, res, options);
   }
 
   if (options.application) {
@@ -584,4 +591,90 @@ exports.revoke_token = function (req, res, next) {
       return res.status(200).json();
     })
     .catch(next);
+};
+
+// GET /user -- Check permissions
+//
+// Headers = {  Authorization: Bearer AccessToken }
+// Query = { resource: '/example',
+//           action: 'GET',
+//           credential: Verifiable Credential  }
+//
+exports.check_perm = async function (req, res, options) {
+  debug(' --> check_perm');
+
+  // ========= Check Access Token =========
+  const request = new Request(req);
+  const response = new Response(res);
+  try {
+    const token = await oauth_server.authenticate(request, response);
+    // The access token was successfully authenticated.
+
+    const user_id = token.user.id;
+    const username = token.user.username;
+    const app_id = token.oauth_client.id;
+
+    // ========= Verify Credential  =========
+    // Read public key to verify the JWT VC
+    const pubk = (await fs.readFile('./certs/iam/fd-public.key')).toString();
+
+    const verified_vc = jsonwebtoken.verify(options.credential, pubk);
+    debug('----> Verifiable Credencial: sign verified successfully.');
+
+    // ========= Get VC Roles =========
+    const roles = verified_vc.verifiableCredential.credentialSubject.roles.flatMap((role) => role.names);
+    debug('----> Verifiable Credential Roles =', roles);
+
+    // ========= Get registered permissions =========
+    const role_permission_assign = await models.role_permission.findAll({
+      include: [
+        {
+          model: models.role,
+          where: {
+            oauth_client_id: app_id,
+            name: roles
+          }
+        },
+        {
+          model: models.permission,
+          where: { oauth_client_id: app_id }
+        }
+      ]
+    });
+    const permission_ids = role_permission_assign.map((rp) => rp.permission_id);
+    const unique_permission_ids = [...new Set(permission_ids)];
+    const app_permissions = await models.permission.findAll({
+      where: { id: unique_permission_ids },
+      attributes: ['name', 'action', 'resource', 'is_regex']
+    });
+    debug(
+      '---->  Permissions =',
+      app_permissions.map((p) => ({ name: p.name, action: p.action, resource: p.resource, is_regex: p.is_regex }))
+    );
+
+    // ========= does action+resource match with amy premissions? =========
+    const { resource, action } = req.query;
+    const authorized = app_permissions.some(
+      (p) =>
+        (p.is_regex ? new RegExp(p.resource).test(resource) : p.resource === resource) &&
+        p.action.toLowerCase() === action.toLowerCase()
+    );
+
+    // ========= Send response =========
+    const check_response = {
+      user_id,
+      username,
+      application: app_id,
+      action: options.action,
+      resource: options.resource,
+      credential: options.credential,
+      roles: roles.join(','),
+      authorization_decision: authorized ? 'Permit' : 'Deny'
+    };
+    return res.status(200).json(check_response);
+  } catch (err) {
+    debug('Error ', err);
+    // Failed authentication.
+    return res.status(401).json({ message: 'Unauthorized', code: 401, title: 'Failed authentication' });
+  }
 };

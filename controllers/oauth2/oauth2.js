@@ -10,7 +10,6 @@ const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/sn
 const gravatar = require('gravatar');
 const jsonwebtoken = require('jsonwebtoken');
 const url = require('url');
-const fs = require('fs/promises');
 
 const Request = OauthServer.Request;
 const Response = OauthServer.Response;
@@ -466,10 +465,10 @@ exports.authenticate_token = function (req, res) {
     authzforce: req.query.authzforce,
     application: req.query.app_id,
     service_header: req.query.authorization_service_header,
-    credential: req.query.credential
+    access_token: req.query.access_token
   };
 
-  if (options.authzforce && (options.action || options.resource || options.service_header || options.credential)) {
+  if (options.authzforce && (options.action || options.resource || options.service_header || options.access_token)) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
@@ -478,7 +477,7 @@ exports.authenticate_token = function (req, res) {
     return res.status(400).json(error);
   }
 
-  if (options.action && options.resource && options.credential) {
+  if (options.action && options.resource && options.access_token) {
     return exports.check_perm(req, res, options);
   }
 
@@ -595,30 +594,54 @@ exports.revoke_token = function (req, res, next) {
 
 // GET /user -- Check permissions
 //
-// Headers = {  Authorization: Bearer AccessToken }
+// Headers = {  Authorization: Bearer <AccessToken> }
 // Query = { resource: '/example',
 //           action: 'GET',
-//           credential: Verifiable Credential  }
+//           app:id: <application id>
+//           access_token: <Verifiable Credential>  }
 //
 exports.check_perm = async function (req, res, options) {
   debug(' --> check_perm');
 
-  // ========= Check Access Token =========
-  const request = new Request(req);
-  const response = new Response(res);
   try {
-    const token = await oauth_server.authenticate(request, response);
-    // The access token was successfully authenticated.
+    // ========= Obtaining app_id ===========
+    // First, I try to obtain the app_id from req.query.app_id.
+    // If req.query.app_id does not exist, the I try ot obtain it from the authorization header.
+    // It this does not exist, then I respond with a 401 status code.
 
-    const user_id = token.user.id;
-    const username = token.user.username;
-    const app_id = token.oauth_client.id;
+    let app_id;
 
-    // ========= Verify Credential  =========
-    // Read public key to verify the JWT VC
-    const pubk = (await fs.readFile('./certs/iam/fd-public.key')).toString();
+    // ========= Try to obtain app_id from the query
 
-    const verified_vc = jsonwebtoken.verify(options.credential, pubk);
+    app_id = req.query.app_id;
+
+    if (!app_id) {
+      // ========= Try to obtain app_id from the header (bearer Authorization Access Token). =========
+      // ========= The header is authenticated.
+      const req2 = {
+        headers: { authorization: req.headers.authorization },
+        method: req.method,
+        query: { ...req.query, access_token: undefined } // Ignore req.query.access_token
+      };
+      const request = new Request(req2);
+      const response = new Response(res);
+      const token = await oauth_server.authenticate(request, response);
+      // The access token was successfully authenticated.
+      // If not, an error is thrown, which is catched by thje try-catch sentence.
+
+      // const user_id = token.user.id;
+      // const username = token.user.username;
+      app_id = token.oauth_client.id;
+    }
+
+    // ========= download JWKS to verify the VC
+
+    // TO BE PROVIDED
+
+    // ========= query: access_token contains the Verifiable Credential  =========
+
+    //const verified_vc = jsonwebtoken.verify(options.access_token, pubk);
+    const verified_vc = jsonwebtoken.decode(options.access_token);
     debug('----> Verifiable Credencial: sign verified successfully.');
 
     // ========= Get VC Roles =========
@@ -662,12 +685,10 @@ exports.check_perm = async function (req, res, options) {
 
     // ========= Send response =========
     const check_response = {
-      user_id,
-      username,
       application: app_id,
       action: options.action,
       resource: options.resource,
-      credential: options.credential,
+      access_token: options.access_token,
       roles: roles.join(','),
       authorization_decision: authorized ? 'Permit' : 'Deny'
     };

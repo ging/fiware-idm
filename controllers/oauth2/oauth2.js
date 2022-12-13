@@ -480,7 +480,7 @@ exports.authenticate_token = function (req, res) {
       .findByPk(options.application)
       .then(function (application) {
         if (application) {
-          if (application.token_types.includes('jwt')) {
+          if (application.token_types && application.token_types.includes('jwt')) {
             return authenticate_jwt(req, res, options, application.jwt_secret);
           }
           return authenticate_bearer(req, res, options);

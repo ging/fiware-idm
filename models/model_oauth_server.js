@@ -886,9 +886,9 @@ function user_permissions(roles_id, app_id, action, resource, options) {
 function trusted_applications(app_id) {
   debug('-------trusted_applications-------');
 
-  return models.trusted_application
+  return app_id ? models.trusted_application
     .findAll({
-      where: { oauth_client_id: { [Op.is]: app_id } },
+      where: { oauth_client_id: app_id },
       attributes: ['trusted_oauth_client_id']
     })
     .then(function (trusted_apps) {
@@ -896,7 +896,7 @@ function trusted_applications(app_id) {
         return trusted_apps.map((id) => id.trusted_oauth_client_id);
       }
       return [];
-    });
+    }) : [];
 }
 
 // Search authzforce domain for specific application

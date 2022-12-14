@@ -204,7 +204,7 @@ config.eidas = {
 };
 
 config.external_vc = {
-  enabled: true,
+  enabled: false,
   credential_location: 'local', // local, jwks
   jwks: {
     host: '',

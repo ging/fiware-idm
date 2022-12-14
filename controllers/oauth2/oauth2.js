@@ -5,10 +5,12 @@ const config_service = require('../../lib/configService.js');
 const config_eidas = config_service.get_config().eidas;
 const config_oauth2 = config_service.get_config().oauth2;
 const config_oidc = config_service.get_config().oidc;
+const config_external_vc = config_service.get_config().external_vc;
 const user_controller = require('../../controllers/web/users');
 const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
 const gravatar = require('gravatar');
 const jsonwebtoken = require('jsonwebtoken');
+const jwks_client = require('jwks-rsa');
 const url = require('url');
 
 const Request = OauthServer.Request;
@@ -458,14 +460,14 @@ exports.auth_xacml_policy = function (req, res) {
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
-
+  const header_access_token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
   const options = {
     action: req.query.action,
     resource: req.query.resource,
     authzforce: req.query.authzforce,
     application: req.query.app_id,
     service_header: req.query.authorization_service_header,
-    access_token: req.query.access_token
+    access_token: req.query.access_token || header_access_token
   };
 
   if (options.authzforce && (options.action || options.resource || options.service_header || options.access_token)) {
@@ -477,7 +479,7 @@ exports.authenticate_token = function (req, res) {
     return res.status(400).json(error);
   }
 
-  if (options.action && options.resource && options.access_token) {
+  if (config_external_vc.enabled && options.action && options.resource && options.access_token) {
     return exports.check_perm(req, res, options);
   }
 
@@ -604,45 +606,36 @@ exports.check_perm = async function (req, res, options) {
   debug(' --> check_perm');
 
   try {
-    // ========= Obtaining app_id ===========
-    // First, I try to obtain the app_id from req.query.app_id.
-    // If req.query.app_id does not exist, the I try ot obtain it from the authorization header.
-    // It this does not exist, then I respond with a 401 status code.
+    // ========= If external_vc is configured try to verify the jwt, if not, just decode it
 
-    let app_id;
+    let verified_vc;
 
-    // ========= Try to obtain app_id from the query
-
-    app_id = req.query.app_id;
-
-    if (!app_id) {
-      // ========= Try to obtain app_id from the header (bearer Authorization Access Token). =========
-      // ========= The header is authenticated.
-      const req2 = {
-        headers: { authorization: req.headers.authorization },
-        method: req.method,
-        query: { ...req.query, access_token: undefined } // Ignore req.query.access_token
-      };
-      const request = new Request(req2);
-      const response = new Response(res);
-      const token = await oauth_server.authenticate(request, response);
-      // The access token was successfully authenticated.
-      // If not, an error is thrown, which is catched by thje try-catch sentence.
-
-      // const user_id = token.user.id;
-      // const username = token.user.username;
-      app_id = token.oauth_client.id;
+    if (config_external_vc.enabled & (config_external_vc.credential_location === 'jwks')) {
+      // ========= download JWKS to verify the VC
+      /* eslint-disable snakecase/snakecase */
+      const client = jwks_client({
+        jwksUri: config_external_vc.jwks.host + config_external_vc.jwks.path,
+        requestHeaders: {}, // Optional
+        timeout: 5000 // Defaults to 30s
+      });
+      const key = await client.getSigningKey(config_external_vc.jwks.kid);
+      debug('----> Verifiable Credencial: obtained key from jwks uri.');
+      verified_vc = jsonwebtoken.verify(options.access_token, key.getPublicKey());
+      debug('----> Verifiable Credencial: sign verified successfully.');
+      /* eslint-enable snakecase/snakecase */
+    } else {
+      // ========= query: access_token contains the Verifiable Credential  =========
+      verified_vc = jsonwebtoken.decode(options.access_token);
+      debug('----> Verifiable Credencial: sign decoded successfully.');
     }
 
-    // ========= download JWKS to verify the VC
-
-    // TO BE PROVIDED
-
-    // ========= query: access_token contains the Verifiable Credential  =========
-
-    //const verified_vc = jsonwebtoken.verify(options.access_token, pubk);
-    const verified_vc = jsonwebtoken.decode(options.access_token);
-    debug('----> Verifiable Credencial: sign verified successfully.');
+    // ========= Obtaining app_id ===========
+    // First, I try to obtain the app_id from verified_vc.verifiableCredential.credentialSubject.roles.
+    // If req.query.app_id does not exist, the I try ot obtain it from req.query.app_id.
+    // It this does not exist, then I respond with a 401 status code.
+    const app_id =
+      verified_vc.verifiableCredential.credentialSubject.roles.flatMap((role) => role.target)[0] || req.query.app_id;
+    if (!app_id) {throw new Error('No application');}
 
     // ========= Get VC Roles =========
     const roles = verified_vc.verifiableCredential.credentialSubject.roles.flatMap((role) => role.names);

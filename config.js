@@ -109,7 +109,7 @@ config.usage_control = {
 config.database = {
   host: 'localhost',
   password: 'keyrock2020',
-  username: 'idm',
+  username: 'root',
   database: 'idm',
   dialect: 'mysql',
   port: undefined
@@ -201,6 +201,16 @@ config.eidas = {
   gateway_host: 'localhost',
   node_host: 'https://se-eidas.redsara.es/EidasNode/ServiceProvider',
   metadata_expiration: 60 * 60 * 24 * 365 // One year
+};
+
+config.external_vc = {
+  enabled: true,
+  credential_location: 'local', // local, jwks
+  jwks: {
+    host: '',
+    path: '/verifier/.well-known/jwks_uri',
+    kid: ''
+  }
 };
 
 // Enables the possibility of adding identity attributes in users' profile

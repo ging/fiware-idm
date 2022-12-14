@@ -205,6 +205,16 @@ config.eidas = {
   metadata_expiration: 60 * 60 * 24 * 365 // One year
 };
 
+config.external_vc = {
+  enabled: false,
+  credential_location: 'local', // local, jwks
+  jwks: {
+    host: '',
+    path: '/verifier/.well-known/jwks_uri',
+    kid: ''
+  }
+}
+
 // Enables the possibility of adding identity attributes in users' profile
 config.identity_attributes = {
   /* eslint-disable snakecase/snakecase */

@@ -106,4 +106,14 @@ config.eidas = {
   metadata_expiration: 60 * 60 * 24 * 365 // One year
 };
 
+config.external_vc = {
+  enabled: false,
+  credential_location: 'local', // local, jwks
+  jwks: {
+    host: '',
+    path: '/verifier/.well-known/jwks_uri',
+    kid: ''
+  }
+};
+
 module.exports = config;

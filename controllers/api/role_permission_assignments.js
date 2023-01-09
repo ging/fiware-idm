@@ -77,7 +77,7 @@ exports.create = function (req, res) {
         where: { role_id: req.role.id, permission_id: req.permission.id },
         defaults: { role_id: req.role.id, permission_id: req.permission.id }
       })
-      .spread(function (assignment, created) {
+      .then(function ([assignment, created]) {
         delete assignment.dataValues.id;
         if (created && config_authzforce.authzforce.enabled) {
           return search_role_permission(req.application.id)

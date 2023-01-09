@@ -103,7 +103,7 @@ exports.addTrusted = function (req, res) {
           trusted_oauth_client_id: req.trusted_application
         }
       })
-      .spread(function (assignment, created) {
+      .then(function ([, created]) {
         if (created) {
           res.status(201).json({
             oauth_client_id: req.application.id,

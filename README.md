@@ -23,7 +23,7 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
-| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :page_facing_up: [Site](https://keyrock-fiware.github.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/idm/) | :dart: [Roadmap](https://github.com/ging/fiware-idm/blob/master/roadmap.md) |
+| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :page_facing_up: [Site](https://keyrock-fiware.github.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock.html) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/idm/) | :dart: [Roadmap](https://github.com/ging/fiware-idm/blob/master/roadmap.md) |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 
 

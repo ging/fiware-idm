@@ -112,54 +112,83 @@ const retrieve_participant_registry_token = async function retrieve_participant_
   return await exports.create_jwt(payload);
 };
 
+exports.validate_jwt = async function validate_jwt(credentials, client_id) {
+  // parse the JWT and verify it's signature
+  debug('-----> Assert client credentials');
+
+  const jwt = await exports.verifier.verify(credentials, { allowEmbeddedKey: true });
+
+  const payload = JSON.parse(jwt.payload.toString());
+
+  // Validate JWT header params
+  if (jwt.header.alg !== 'RS256') {
+    throw new Error('Header alg field different from RS256');
+  }
+
+  if (jwt.header.typ !== 'JWT') {
+    throw new Error('Header typ field different from JWT');
+  }
+
+  // check JWT parameters
+  if (payload.iss !== client_id) {
+    throw new Error(`JWT iss parameter doesn't match provided client_id parameter (${payload.iss} != ${client_id})`);
+  }
+
+  const now = moment().unix();
+
+  if (payload.jti == null) {
+    throw new Error('JWT jti is missing');
+  }
+
+  if (payload.iat > now) {
+    throw new Error('JWT iat cannot be after now');
+  }
+
+  if (payload.exp < now) {
+    throw new Error('Expired token');
+  }
+
+  if (payload.exp !== payload.iat + 30) {
+    throw new Error('JWT exp must be 30 seconds from iat');
+  }
+
+  if (payload.sub == null) {
+    throw new Error('Missing sub param in JWT');
+  }
+
+  // Validate chain certificates
+  const fullchain = jwt.header.x5c.map((cert) => {
+    return forge.pki.certificateFromPem('-----BEGIN CERTIFICATE-----' + cert + '-----END CERTIFICATE-----');
+  });
+
+  const serial_number_field = fullchain[0].subject.getField({ name: 'serialNumber' });
+  if (serial_number_field == null) {
+    // JWT iss parameter does not match the serialNumber field of the signer certificate
+    throw new Error('Issuer certificate serialNumber parameter is missing');
+  }
+
+  const cert_serial_number = serial_number_field.value;
+  if (payload.iss !== cert_serial_number) {
+    // JWT iss parameter does not match the serialNumber field of the signer certificate
+    throw new Error(
+      `Issuer certificate serialNumber parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_number})`
+    );
+  }
+  await exports.validate_client_certificate(fullchain);
+
+  return { payload, fullchain };
+};
+
 exports.assert_client_using_jwt = async function assert_client_using_jwt(credentials, client_id, isAuthReq) {
   try {
-    // parse the JWT and verify it's signature
-    debug('-----> Assert client credentials');
-    debug(credentials);
+    const payload_data = await exports.validate_jwt(credentials, client_id);
 
-    const jwt = await exports.verifier.verify(credentials, { allowEmbeddedKey: true });
-
-    const payload = JSON.parse(jwt.payload.toString());
-
-    // Validate JWT header params
-    if (jwt.header.alg !== 'RS256') {
-      throw new Error('Header alg field different from RS256');
-    }
-
-    if (jwt.header.typ !== 'JWT') {
-      throw new Error('Header typ field different from JWT');
-    }
-
-    // check JWT parameters
-    if (payload.iss !== client_id) {
-      throw new Error(`JWT iss parameter doesn't match provided client_id parameter (${payload.iss} != ${client_id})`);
-    }
+    const payload = payload_data.payload;
+    const fullchain = payload_data.fullchain;
 
     const aud = typeof payload.aud === 'string' ? [payload.aud] : payload.aud;
     if (aud == null || aud.indexOf(config.pr.client_id) === -1) {
       throw new Error('Not listed on the aud parameter');
-    }
-    const now = moment().unix();
-
-    if (payload.jti == null) {
-      throw new Error('JWT jti is missing');
-    }
-
-    if (payload.iat > now) {
-      throw new Error('JWT iat cannot be after now');
-    }
-
-    if (payload.exp < now) {
-      throw new Error('Expired token');
-    }
-
-    if (payload.exp !== payload.iat + 30) {
-      throw new Error('JWT exp must be 30 seconds from iat');
-    }
-
-    if (payload.sub == null) {
-      throw new Error('Missing sub param in JWT');
     }
 
     // Authorization endpoint requests require extra params in the JWT
@@ -200,27 +229,10 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
       if (payload.sub !== 'urn:TBD') {
         throw new Error('Invalid sub field in JWT it must be urn:TBD');
       }
+    } else if (payload.sub !== payload.iss) {
+      // For token endpoint sub field must be equal to iss field
+      throw new Error('Invalid sub field in JWT it must be equal to iss');
     }
-
-    // Validate chain certificates
-    const fullchain = jwt.header.x5c.map((cert) => {
-      return forge.pki.certificateFromPem('-----BEGIN CERTIFICATE-----' + cert + '-----END CERTIFICATE-----');
-    });
-
-    const serial_number_field = fullchain[0].subject.getField({ name: 'serialNumber' });
-    if (serial_number_field == null) {
-      // JWT iss parameter does not match the serialNumber field of the signer certificate
-      throw new Error('Issuer certificate serialNumber parameter is missing');
-    }
-
-    const cert_serial_number = serial_number_field.value;
-    if (payload.iss !== cert_serial_number) {
-      // JWT iss parameter does not match the serialNumber field of the signer certificate
-      throw new Error(
-        `Issuer certificate serialNumber parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_number})`
-      );
-    }
-    exports.validate_client_certificate(fullchain);
 
     return [payload, fullchain[0]];
   } catch (e) {
@@ -365,9 +377,7 @@ const get_trusted_list = (function () {
       }
     });
     const trusted_jwt_cert_list = await exports.verifier.verify(
-      (
-        await trusted_list_response.json()
-      ).trusted_list_token,
+      (await trusted_list_response.json()).trusted_list_token,
       // eslint-disable-next-line snakecase/snakecase
       { allowEmbeddedKey: true }
     );

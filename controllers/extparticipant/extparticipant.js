@@ -135,6 +135,13 @@ async function _validate_participant(req, res) {
     true
   );
 
+  // Check that the scope param is the same as the provided in the body
+  if (req.body.scope !== client_payload.scope) {
+    throw new oauth2_server.InvalidRequestError(
+      'Invalid parameter scope: Scope param must be equal to request param scope'
+    );
+  }
+
   const participant_name = await utils.validate_participant_from_jwt(client_payload, client_certificate);
 
   /*******/
@@ -315,6 +322,7 @@ exports.validate_participant = function validate_participant(req, res, next) {
         res
           .status(302)
           .location(config.host + '/oauth2/error?message=' + message)
+          //.location('/oauth2/error?message=' + message)
           .end();
 
         /*res.render('errors/oauth', {
@@ -474,7 +482,6 @@ exports.validate_not_ishare_get = function validate_not_ishare_get(req, res, nex
 
   if (scopes.has('iSHARE')) {
     res.status(405).end();
-    
   } else {
     next();
   }

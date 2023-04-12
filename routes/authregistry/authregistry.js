@@ -5,14 +5,8 @@ const debug = require('debug')('idm:authregistry_model');
 const authregistry_controller = require('../../controllers/authregistry/authregistry');
 
 // Routes for the Authorization Registry module
-router.post(
-  '/policy',
-  authregistry_controller.upsert_policy
-)
-router.post(
-  '/delegation',
-  authregistry_controller.query_evidences
-);
+router.post('/policy', authregistry_controller.upsert_policy);
+router.post('/delegation', authregistry_controller.query_evidences);
 
 // catch 404 and forward to error handler
 router.use((req, res) => {
@@ -38,7 +32,7 @@ router.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
   res.status(err.status);
-  res.render('errors/authregistry');
+  res.render('errors/generic');
 });
 
 module.exports = router;

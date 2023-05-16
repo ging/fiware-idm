@@ -116,19 +116,6 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
       return forge.pki.certificateFromPem('-----BEGIN CERTIFICATE-----' + cert + '-----END CERTIFICATE-----');
     });
 
-    const serial_number_field = fullchain[0].subject.getField({ name: 'serialNumber' });
-    if (serial_number_field == null) {
-      // JWT iss parameter does not match the serialNumber field of the signer certificate
-      throw new Error('Issuer certificate serialNumber parameter is missing');
-    }
-
-    const cert_serial_number = serial_number_field.value;
-    if (payload.iss !== cert_serial_number) {
-      // JWT iss parameter does not match the serialNumber field of the signer certificate
-      throw new Error(
-        `Issuer certificate serialNumber parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_number})`
-      );
-    }
     await exports.validate_client_certificate(fullchain);
 
     return [payload, fullchain[0]];

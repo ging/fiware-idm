@@ -4,7 +4,7 @@ module.exports = {
       'oauth_client',
       {
         id: {
-          type: Sequelize.STRING(36), //Sequelize.UUID,
+          type: Sequelize.STRING(255), //Sequelize.UUID,
           unique: true,
           //defaultValue: Sequelize.UUIDV4,
           primaryKey: true,

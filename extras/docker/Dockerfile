@@ -206,6 +206,7 @@ ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
 ARG HEADLESS
+ARG PACKAGE_MANAGER
 
 WORKDIR /opt/fiware-idm
 COPY --from=builder /opt/fiware-idm .
@@ -226,7 +227,10 @@ ENV IDM_HEADLESS=$HEADLESS
 
 # hadolint ignore=DL3018
 RUN \
-    if [ "${PACKAGE_MANAGER}" = "apk"  ]; then \
+    if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
+        apt-get update; \
+        apt-get install -y --no-install-recommends openssl; \
+    elif [ "${PACKAGE_MANAGER}" = "apk"  ]; then \
         apk add --no-cache ca-certificates bash openssl; \
     fi
 

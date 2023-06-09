@@ -226,6 +226,7 @@ ENV IDM_HOST="http://localhost:3000" \
 ENV IDM_HEADLESS=$HEADLESS
 
 # hadolint ignore=DL3018
+# hadolint ignore=DL3009
 RUN \
     if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
         apt-get update; \

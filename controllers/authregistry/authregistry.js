@@ -106,7 +106,7 @@ const is_matching_policy = function is_matching_policy(policy_mask, policy) {
 
     const service_providers_mask = policy_mask.target.environment.serviceProviders;
     const service_providers = policy.target.environment.serviceProviders;
-    const all_mask_sp = service_providers_mask.every(sp => service_providers.has(sp));
+    const all_mask_sp = service_providers_mask.every(sp => service_providers.includes(sp));
     if (!all_mask_sp) {
       return false;
     }

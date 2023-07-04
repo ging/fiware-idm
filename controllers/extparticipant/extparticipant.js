@@ -191,7 +191,7 @@ async function _token(req, res) {
 
     const code = await models.oauth_authorization_code
       .findOne({
-        attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'extra'],
+        attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'extra', 'nonce'],
         where: { authorization_code: req.body.code, oauth_client_id: client_id, valid: true },
         include: [models.user, models.oauth_client]
       });

@@ -39,7 +39,18 @@ function getAccessToken(bearerToken) {
       include: [
         {
           model: user,
-          attributes: ['id', 'username', 'email', 'description', 'website', 'gravatar', 'image', 'extra', 'eidas_id']
+          attributes: [
+            'id',
+            'username',
+            'email',
+            'description',
+            'website',
+            'gravatar',
+            'image',
+            'extra',
+            'eidas_id',
+            'admin'
+          ]
         },
         {
           model: iot,
@@ -886,17 +897,19 @@ function user_permissions(roles_id, app_id, action, resource, options) {
 function trusted_applications(app_id) {
   debug('-------trusted_applications-------');
 
-  return app_id ? models.trusted_application
-    .findAll({
-      where: { oauth_client_id: app_id },
-      attributes: ['trusted_oauth_client_id']
-    })
-    .then(function (trusted_apps) {
-      if (trusted_apps.length > 0) {
-        return trusted_apps.map((id) => id.trusted_oauth_client_id);
-      }
-      return [];
-    }) : [];
+  return app_id
+    ? models.trusted_application
+        .findAll({
+          where: { oauth_client_id: app_id },
+          attributes: ['trusted_oauth_client_id']
+        })
+        .then(function (trusted_apps) {
+          if (trusted_apps.length > 0) {
+            return trusted_apps.map((id) => id.trusted_oauth_client_id);
+          }
+          return [];
+        })
+    : [];
 }
 
 // Search authzforce domain for specific application

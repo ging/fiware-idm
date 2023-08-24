@@ -131,7 +131,7 @@ exports.addRole = function (req, res) {
         oauth_client_id: req.application.id
       }
     })
-    .spread(function (assignment) {
+    .then(function ([assignment]) {
       delete assignment.dataValues.id;
       delete assignment.dataValues.organization_id;
       delete assignment.dataValues.role_organization;

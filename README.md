@@ -2,7 +2,7 @@
 
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
 [![License: MIT](https://img.shields.io/github/license/ging/fiware-idm.svg)](https://opensource.org/licenses/MIT)
-[![Docker badge](https://img.shields.io/docker/pulls/fiware/idm.svg)](https://hub.docker.com/r/fiware/idm/)
+[![Docker badge](https://img.shields.io/badge/quay.io-fiware%2Fidm-grey?logo=red%20hat&labelColor=EE0000)](https://quay.io/repository/fiware/idm)
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-keyrock)
 <br>
 [![Documentation](https://img.shields.io/readthedocs/fiware-idm.svg)](https://fiware-idm.readthedocs.io/en/latest/)
@@ -23,8 +23,8 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
-| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :page_facing_up: [Site](https://keyrock-fiware.github.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/idm/) | :dart: [Roadmap](https://github.com/ging/fiware-idm/blob/master/roadmap.md) |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| :books: [Documentation](https://fiware-idm.readthedocs.io/en/latest/) | :page_facing_up: [Site](https://keyrock-fiware.github.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/keyrock.html) | <img style="height:1em" src="https://quay.io/static/img/quay_favicon.png"/> [quay.io](https://quay.io/repository/fiware/idm) | :dart: [Roadmap](https://github.com/ging/fiware-idm/blob/master/roadmap.md) |
+| --------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 
 
 ## Content
@@ -239,4 +239,4 @@ follows:
 
 Keyrock is licensed under the [MIT](LICENSE) License.
 
-© 2018 Universidad Politécnica de Madrid.
+© 2018-2023 Universidad Politécnica de Madrid.

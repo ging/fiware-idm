@@ -2,6 +2,8 @@ const models = require('../../models/models.js');
 const debug = require('debug')('idm:web-organization_controller');
 const gravatar = require('gravatar');
 const fs = require('fs');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const image = require('../../lib/image.js');
 
@@ -289,7 +291,7 @@ exports.get_members = function (req, res) {
       include: [
         {
           model: models.user,
-          where: req.query.key ? { username: { like: '%' + req.query.key + '%' } } : {},
+          where: req.query.key ? { username: { [Op.like]: '%' + req.query.key + '%' } } : {},
           attributes: ['id', 'username', 'image', 'gravatar', 'email']
         }
       ],

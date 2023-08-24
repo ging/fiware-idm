@@ -401,8 +401,11 @@ function check_update_body_request(body) {
       if (typeof permission.use_authorization_service_header !== 'boolean') {
         reject(bad_request('use_authorization_service_header attribute must be a boolean'));
       }
-    } else if (!permission.authorization_service_header) {
-      reject(bad_request('if use_authorization_service_header is set, authorization_service_header needs to be set'));
+      if (!permission.authorization_service_header) {
+        reject(bad_request('if use_authorization_service_header is set, authorization_service_header needs to be set'));
+      }
+    } else if (permission.authorization_service_header) {
+      reject(bad_request('if authorization_service_header is set, use_authorization_service_header needs to be set'));
     }
 
     if (config_authorization.level !== 'payload') {

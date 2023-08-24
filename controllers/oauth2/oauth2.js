@@ -5,11 +5,14 @@ const config_service = require('../../lib/configService.js');
 const config_eidas = config_service.get_config().eidas;
 const config_oauth2 = config_service.get_config().oauth2;
 const config_oidc = config_service.get_config().oidc;
+const config_external_vc = config_service.get_config().external_vc;
 const user_controller = require('../../controllers/web/users');
 const OauthServer = require('oauth2-server'); //eslint-disable-line snakecase/snakecase
 const gravatar = require('gravatar');
 const jsonwebtoken = require('jsonwebtoken');
+const jwks_client = require('jwks-rsa');
 const url = require('url');
+
 const Request = OauthServer.Request;
 const Response = OauthServer.Response;
 
@@ -457,16 +460,17 @@ exports.auth_xacml_policy = function (req, res) {
 // GET /user -- Function to handle token authentication
 exports.authenticate_token = function (req, res) {
   debug(' --> authenticate_token');
-
+  const header_access_token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
   const options = {
     action: req.query.action,
     resource: req.query.resource,
     authzforce: req.query.authzforce,
     application: req.query.app_id,
-    service_header: req.query.authorization_service_header
+    service_header: req.query.authorization_service_header,
+    access_token: req.query.access_token || header_access_token
   };
 
-  if (options.authzforce && (options.action || options.resource || options.service_header)) {
+  if (options.authzforce && (options.action || options.resource || options.service_header || options.access_token)) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,
@@ -475,12 +479,16 @@ exports.authenticate_token = function (req, res) {
     return res.status(400).json(error);
   }
 
+  if (config_external_vc.enabled && options.action && options.resource && options.access_token) {
+    return exports.check_perm(req, res, options);
+  }
+
   if (options.application) {
     return models.oauth_client
       .findByPk(options.application)
       .then(function (application) {
         if (application) {
-          if (application.token_types.includes('jwt')) {
+          if (application.token_types && application.token_types.includes('jwt')) {
             return authenticate_jwt(req, res, options, application.jwt_secret);
           }
           return authenticate_bearer(req, res, options);
@@ -584,4 +592,105 @@ exports.revoke_token = function (req, res, next) {
       return res.status(200).json();
     })
     .catch(next);
+};
+
+// GET /user -- Check permissions
+//
+// Headers = {  Authorization: Bearer <AccessToken> }
+// Query = { resource: '/example',
+//           action: 'GET',
+//           app:id: <application id>
+//           access_token: <Verifiable Credential>  }
+//
+exports.check_perm = async function (req, res, options) {
+  debug(' --> check_perm');
+
+  try {
+    // ========= If external_vc is configured try to verify the jwt, if not, just decode it
+
+    let verified_vc;
+
+    if (config_external_vc.enabled & (config_external_vc.credential_location === 'jwks')) {
+      // ========= download JWKS to verify the VC
+      /* eslint-disable snakecase/snakecase */
+      const client = jwks_client({
+        jwksUri: config_external_vc.jwks.host + config_external_vc.jwks.path,
+        requestHeaders: {}, // Optional
+        timeout: 5000 // Defaults to 30s
+      });
+      const key = await client.getSigningKey(config_external_vc.jwks.kid);
+      debug('----> Verifiable Credencial: obtained key from jwks uri.');
+      verified_vc = jsonwebtoken.verify(options.access_token, key.getPublicKey());
+      debug('----> Verifiable Credencial: sign verified successfully.');
+      /* eslint-enable snakecase/snakecase */
+    } else {
+      // ========= query: access_token contains the Verifiable Credential  =========
+      verified_vc = jsonwebtoken.decode(options.access_token);
+      debug('----> Verifiable Credencial: sign decoded successfully.');
+    }
+
+    // ========= Obtaining app_id ===========
+    // First, I try to obtain the app_id from verified_vc.verifiableCredential.credentialSubject.roles.
+    // If req.query.app_id does not exist, the I try ot obtain it from req.query.app_id.
+    // It this does not exist, then I respond with a 401 status code.
+    const app_id =
+      verified_vc.verifiableCredential.credentialSubject.roles.flatMap((role) => role.target)[0] || req.query.app_id;
+    if (!app_id) {
+      throw new Error('No application');
+    }
+
+    // ========= Get VC Roles =========
+    const roles = verified_vc.verifiableCredential.credentialSubject.roles.flatMap((role) => role.names);
+    debug('----> Verifiable Credential Roles =', roles);
+
+    // ========= Get registered permissions =========
+    const role_permission_assign = await models.role_permission.findAll({
+      include: [
+        {
+          model: models.role,
+          where: {
+            oauth_client_id: app_id,
+            name: roles
+          }
+        },
+        {
+          model: models.permission,
+          where: { oauth_client_id: app_id }
+        }
+      ]
+    });
+    const permission_ids = role_permission_assign.map((rp) => rp.permission_id);
+    const unique_permission_ids = [...new Set(permission_ids)];
+    const app_permissions = await models.permission.findAll({
+      where: { id: unique_permission_ids },
+      attributes: ['name', 'action', 'resource', 'is_regex']
+    });
+    debug(
+      '---->  Permissions =',
+      app_permissions.map((p) => ({ name: p.name, action: p.action, resource: p.resource, is_regex: p.is_regex }))
+    );
+
+    // ========= does action+resource match with amy premissions? =========
+    const { resource, action } = req.query;
+    const authorized = app_permissions.some(
+      (p) =>
+        (p.is_regex ? new RegExp(p.resource).test(resource) : p.resource === resource) &&
+        p.action.toLowerCase() === action.toLowerCase()
+    );
+
+    // ========= Send response =========
+    const check_response = {
+      application: app_id,
+      action: options.action,
+      resource: options.resource,
+      access_token: options.access_token,
+      roles: roles.join(','),
+      authorization_decision: authorized ? 'Permit' : 'Deny'
+    };
+    return res.status(200).json(check_response);
+  } catch (err) {
+    debug('Error ', err);
+    // Failed authentication.
+    return res.status(401).json({ message: 'Unauthorized', code: 401, title: 'Failed authentication' });
+  }
 };

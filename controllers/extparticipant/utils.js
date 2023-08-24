@@ -104,7 +104,7 @@ const retrieve_participant_registry_token = async function retrieve_participant_
     jti: uuid.v4(),
     iss: config.pr.client_id,
     sub: config.pr.client_id,
-    aud: [config.pr.id, config.pr.token_endpoint],
+    aud: config.pr.id,
     iat,
     exp
   };

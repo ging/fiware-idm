@@ -126,7 +126,7 @@ exports.addRole = function (req, res) {
         role_organization: req.role_organization
       }
     })
-    .spread(function (assignment) {
+    .then(function ([assignment]) {
       delete assignment.dataValues.id;
       delete assignment.dataValues.user_id;
       return res.status(201).json({ role_organization_assignments: assignment });

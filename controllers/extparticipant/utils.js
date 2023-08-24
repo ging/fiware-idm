@@ -399,8 +399,10 @@ const get_trusted_list = (function () {
   }
 
   refresh_trusted_list();
+
+  //setInterval(refresh_trusted_list, config.pr.trusted_list_fetch_interval * 1000 * 60 * 60);
   // eslint-disable-next-line snakecase/snakecase
-  setInterval(refresh_trusted_list, config.pr.trusted_list_fetch_interval * 1000);
+  setInterval(refresh_trusted_list, 3600000);
 
   // Get the trusted list (fetching it if necessary).
   return function inner_get_trusted_list() {

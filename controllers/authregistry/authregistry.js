@@ -256,7 +256,11 @@ const _query_evidences = async function _query_evidences(req, res) {
 
   // Validate user permission for requesting current mask
   // User must be the policyIssuer the policy subjet or being the evironment service provider
-  const valid_prev = await is_valid_prev_steps(req.body, token_info.user.username);
+  let valid_prev = true;
+  if (req.body.previous_steps != null) {
+    valid_prev = await is_valid_prev_steps(req.body, token_info.user.username);
+  }
+
   if (
     !valid_prev &&
     token_info.user.username !== mask.policyIssuer &&

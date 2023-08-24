@@ -30,7 +30,7 @@
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "prettier": "prettier --config .prettierrc.json --write routes/**/*.js models/**/*.js controllers/**/*.js **/*.js *.js",
     "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 80 --write --prose-wrap always",
-    "prepare": "husky install",
+    "prepare": "test -d node_modules/husky && husky install || echo \"husky is not installed\"",
     "pre-commit": "lint-staged",
     "test": "nyc --reporter=text mocha -- 'test/unit/*.js' 'test/integration/*.js' 'test/integration/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
     "test:coverage": "nyc --reporter=lcov mocha -- 'test/unit/*.js' 'test/integration/*.js' 'test/integration/**/*.js' --timeout 3000 --ui bdd --exit",

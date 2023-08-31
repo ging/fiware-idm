@@ -26,7 +26,7 @@ In order to run the IdM Keyrock follow these steps:
 version: '3.5'
 services:
     keyrock:
-        image: fiware/idm:7.6.0
+        image: fiware/idm:8.3.3
         container_name: fiware-keyrock
         hostname: keyrock
         networks:

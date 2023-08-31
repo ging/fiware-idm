@@ -109,7 +109,7 @@ config.usage_control = {
 config.database = {
   host: 'localhost',
   password: 'keyrock2020',
-  username: 'root',
+  username: 'idm',
   database: 'idm',
   dialect: 'mysql',
   port: undefined

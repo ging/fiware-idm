@@ -639,13 +639,13 @@ function search_user_info(user_info, options) {
     promise_array.push(search_trusted_apps);
 
     // Insert search search roles promise
-    const search_roles = user_roles(user_info.id, user_info.app_id);
+    const search_roles = user_roles(user_info.id, req_app ? req_app : user_info.app_id);
     promise_array.push(search_roles);
 
     // Insert search permissions promise to generate decison
     if (action && resource) {
       const search_permissions = search_roles.then(function (roles) {
-        return user_permissions(roles.all, user_info.app_id, action, resource, options);
+        return user_permissions(roles.all, req_app ? req_app : user_info.app_id, action, resource, options);
       });
       promise_array.push(search_permissions);
     } else if (config_authzforce.enabled && authzforce) {

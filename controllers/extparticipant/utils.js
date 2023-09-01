@@ -104,7 +104,7 @@ const retrieve_participant_registry_token = async function retrieve_participant_
     jti: uuid.v4(),
     iss: config.pr.client_id,
     sub: config.pr.client_id,
-    aud: [config.pr.id, config.pr.token_endpoint],
+    aud: config.pr.id,
     iat,
     exp
   };
@@ -376,6 +376,7 @@ const get_trusted_list = (function () {
         Authorization: 'Bearer ' + access_token
       }
     });
+
     const trusted_jwt_cert_list = await exports.verifier.verify(
       (await trusted_list_response.json()).trusted_list_token,
       // eslint-disable-next-line snakecase/snakecase

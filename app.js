@@ -16,6 +16,7 @@ const sass_middleware = require('./lib/node-sass-middleware');
 const session = require('cookie-session');
 const package_info = require('./package.json');
 const fs = require('fs');
+const extparticipant = require('./controllers/extparticipant/extparticipant');
 
 const version = require('./version.json');
 version.keyrock.version = package_info.version;
@@ -54,37 +55,35 @@ if (config.debug) {
 // Disabled header
 app.disable('x-powered-by');
 // Set security headers
-const csp_default =  {
-    directives: {
-      defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
-      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
-      imgSrc: ["'self'", 'data'], // eslint-disable-line snakecase/snakecase
-      scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
-    },
-    reportOnly: false // eslint-disable-line snakecase/snakecase
-  };
-const csp_disabled =  {
-    directives: {
-      defaultSrc: ['*'], // eslint-disable-line snakecase/snakecase
-      fontSrc: ['*'], // eslint-disable-line snakecase/snakecase
-      imgSrc: ['*'], // eslint-disable-line snakecase/snakecase
-      scriptSrc: ['*'], // eslint-disable-line snakecase/snakecase
-      styleSrc: ['*'] // eslint-disable-line snakecase/snakecase
-    },
-    reportOnly: true // eslint-disable-line snakecase/snakecase
-  };
+const csp_default = {
+  directives: {
+    defaultSrc: ["'self'", 'data:'], // eslint-disable-line snakecase/snakecase
+    fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'], // eslint-disable-line snakecase/snakecase
+    imgSrc: ["'self'", 'data'], // eslint-disable-line snakecase/snakecase
+    scriptSrc: ["'self'", "'unsafe-inline'"], // eslint-disable-line snakecase/snakecase
+    styleSrc: ["'self'", 'https:', "'unsafe-inline'", 'https://fonts.googleapis.com'] // eslint-disable-line snakecase/snakecase
+  },
+  reportOnly: false // eslint-disable-line snakecase/snakecase
+};
+const csp_disabled = {
+  directives: {
+    defaultSrc: ['*'], // eslint-disable-line snakecase/snakecase
+    fontSrc: ['*'], // eslint-disable-line snakecase/snakecase
+    imgSrc: ['*'], // eslint-disable-line snakecase/snakecase
+    scriptSrc: ['*'], // eslint-disable-line snakecase/snakecase
+    styleSrc: ['*'] // eslint-disable-line snakecase/snakecase
+  },
+  reportOnly: true // eslint-disable-line snakecase/snakecase
+};
 
-const csp_options =  config.https.enabled ? csp_default : csp_disabled;
+const csp_options = config.https.enabled ? csp_default : csp_disabled;
 if (config.csp.form_action) {
-    csp_options.directives.formAction = config.csp.form_action;
+  csp_options.directives.formAction = config.csp.form_action;
 }
 if (config.csp.script_src) {
-    csp_options.directives.scriptSrc = config.csp.script_src;
+  csp_options.directives.scriptSrc = config.csp.script_src;
 }
-app.use(
-  helmet.contentSecurityPolicy(csp_options)
-);
+app.use(helmet.contentSecurityPolicy(csp_options));
 app.use(
   helmet.dnsPrefetchControl({
     allow: process.env.IDM_DNS_PREFETCH_ALLOW === 'true'
@@ -224,6 +223,9 @@ if (config.https.enabled) {
   app.use('/oauth2', force_ssl, oauth2);
   app.get('/user', force_ssl, oauth2_controller.authenticate_token);
 
+  // Set route for capabilities endpoint
+  app.use('/capabilities', force_ssl, extparticipant.capabilities);
+
   if (config.authorization.level === 'payload') {
     app.post('/pdp/open_policy_agent', force_ssl, oauth2_controller.auth_opa_policy);
     app.post('/pdp/xacml', force_ssl, oauth2_controller.auth_xacml_policy);
@@ -255,6 +257,9 @@ if (config.https.enabled) {
   // Set routes for oauth2
   app.use('/oauth2', oauth2);
   app.get('/user', oauth2_controller.authenticate_token);
+
+  // Set route for capabilities endpoint
+  app.use('/capabilities', extparticipant.capabilities);
 
   if (config.authorization.level === 'payload') {
     app.post('/pdp/open_policy_agent', oauth2_controller.auth_opa_policy);

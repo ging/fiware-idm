@@ -635,7 +635,9 @@ exports.check_perm = async function (req, res, options) {
     // It this does not exist, then I respond with a 401 status code.
     const app_id =
       verified_vc.verifiableCredential.credentialSubject.roles.flatMap((role) => role.target)[0] || req.query.app_id;
-    if (!app_id) {throw new Error('No application');}
+    if (!app_id) {
+      throw new Error('No application');
+    }
 
     // ========= Get VC Roles =========
     const roles = verified_vc.verifiableCredential.credentialSubject.roles.flatMap((role) => role.names);

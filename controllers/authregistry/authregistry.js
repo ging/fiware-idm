@@ -227,7 +227,6 @@ const _query_evidences = async function _query_evidences(req, res) {
   });
 
   res.status(200).json({delegation_token});
-  debug("Set")
   return false;
 };
 

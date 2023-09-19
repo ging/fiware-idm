@@ -114,28 +114,39 @@ const is_matching_policy = function is_matching_policy(policy_mask, policy) {
 
   const resource = policy.target.resource;
 
-  // Check identifiers
-  const id_match = policy_mask.target.resource.identifiers.every(
-    mid => {return resource.identifiers.length === 1 && resource.identifiers.includes("*") || resource.identifiers.includes(mid);}
-  );
-  if (!id_match) {
+  try {
+    // identifiers are optional
+    if(policy_mask.target.resource.identifiers != null) {
+      // Check identifiers
+      const id_match = policy_mask.target.resource.identifiers.every(
+        mid => {return resource.identifiers.length === 1 && resource.identifiers.includes("*") || resource.identifiers.includes(mid);}
+      );
+      if (!id_match) {
+        return false;
+      }
+    }
+    // attributes are optional
+    if(policy_mask.target.resource.attributes != null) {
+      // Check attributes
+      const attributes_match = policy_mask.target.resource.attributes.every(
+        aid => {return resource.attributes.length === 1 && resource.attributes.includes("*") || resource.attributes.includes(aid);}
+      );
+      if (!attributes_match) {
+        return false;
+      }
+    }
+  
+    // Check actions
+    return policy_mask.target.actions != null &&
+      policy_mask.target.actions.length > 0 &&
+      policy_mask.target.actions.every(
+        mact => {return policy.target.actions.length === 1 && policy.target.actions.includes("*") || policy.target.actions.includes(mact);}
+    );
+
+  } catch (error) {
+    debug(`unexpected error ` + error)
     return false;
   }
-
-  // Check attributes
-  const attributes_match = policy_mask.target.resource.attributes.every(
-    aid => {return resource.attributes.length === 1 && resource.attributes.includes("*") || resource.attributes.includes(aid);}
-  );
-  if (!attributes_match) {
-    return false;
-  }
-
-  // Check actions
-  return policy_mask.target.actions != null &&
-         policy_mask.target.actions.length > 0 &&
-         policy_mask.target.actions.every(
-           mact => {return policy.target.actions.length === 1 && policy.target.actions.includes("*") || policy.target.actions.includes(mact);}
-         );
 };
 
 const is_denying_permission = function is_denying_permission(policy_mask, policy) {
@@ -187,7 +198,7 @@ const _query_evidences = async function _query_evidences(req, res) {
       };
 
       response_policy_set.policies = policy_set_mask.policies.map((policy_mask, z) => {
-        debug(`    Processing policy ${z} from the current policy set`);
+        debug(`    Processing policy ${z} from the current policy set` + JSON.stringify(policy_set.policies));
         const matching_policies = policy_set.policies.filter((policy) => is_matching_policy(policy_mask, policy));
         return {
           target: policy_mask.target,
@@ -215,9 +226,8 @@ const _query_evidences = async function _query_evidences(req, res) {
     delegationEvidence: evidence  // eslint-disable-line snakecase/snakecase
   });
 
-  debug("Delegation evidence processed");
   res.status(200).json({delegation_token});
-
+  debug("Set")
   return false;
 };
 

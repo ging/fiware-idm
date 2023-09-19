@@ -20,11 +20,14 @@ if (config.pr.url) {
 } else {
   router.post('/token', oauth_controller.token);
 }
-let authorize_chain = [
-  csrf_protection,
-  oauth_controller.response_type_required,
-  oauth_controller.load_application
-];
+let authorize_chain = [csrf_protection, oauth_controller.response_type_required, oauth_controller.load_application];
+const post_authorize_chain = [];
+
+if (config.pr.url) {
+  post_authorize_chain.push(extparticipant_controller.validate_participant);
+  authorize_chain.unshift(extparticipant_controller.validate_not_ishare_get);
+}
+
 if (config.eidas.enabled) {
   authorize_chain = authorize_chain.concat([
     saml2_controller.search_eidas_credentials,
@@ -32,14 +35,8 @@ if (config.eidas.enabled) {
   ]);
 }
 authorize_chain.push(oauth_controller.check_user);
-router.get(
-  '/authorize',
-  ...authorize_chain
-);
-const post_authorize_chain = [];
-if (config.pr.url) {
-  post_authorize_chain.push(extparticipant_controller.validate_participant);
-}
+router.get('/authorize', ...authorize_chain);
+
 router.post(
   '/authorize',
   ...post_authorize_chain,
@@ -57,6 +54,17 @@ router.post(
   oauth_controller.enable_app
 );
 router.post('/revoke', oauth_controller.revoke_token);
+
+// IShare protocol needs a web page where we can redirect errors
+// using the 302 code
+router.get('/error', (req, res) => {
+  const err = new Error(req.query.message);
+  res.locals.error = err;
+  res.render('errors/oauth', {
+    query: req.body,
+    application: req.application
+  });
+});
 
 // catch 404 and forward to error handler
 router.use(function (req, res) {

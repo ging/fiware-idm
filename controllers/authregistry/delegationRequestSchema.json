@@ -177,21 +177,21 @@
               }
             }
           }
-        },
-        "delegation_path": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^\\S+$"
-          }
-        },
-        "previous_steps": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^\\S+$"
-          }
         }
+      }
+    },
+    "delegation_path": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^\\S+$"
+      }
+    },
+    "previous_steps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^\\S+$"
       }
     }
   }

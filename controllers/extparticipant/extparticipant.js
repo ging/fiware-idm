@@ -11,9 +11,11 @@ const utils = require('./utils');
 
 const config = config_service.get_config();
 
-const m2m_grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer";
-const managed_token_grant_types = new Set(["authorization_code", "client_credentials", m2m_grant_type]);
+const m2m_grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
+const managed_token_grant_types = new Set(['authorization_code', 'client_credentials', m2m_grant_type]);
 
+const Request = oauth2_server.Request;
+const Response = oauth2_server.Response;
 
 async function build_id_token(client, user, scopes, nonce, auth_time) {
   const now = moment();
@@ -28,7 +30,7 @@ async function build_id_token(client, user, scopes, nonce, auth_time) {
     exp: now.clone().add(config.oauth2.access_token_lifetime, 'seconds').unix(),
     iat: now.unix(),
     auth_time,
-    acr: "urn:http://eidas.europa.eu/LoA/NotNotified/low",
+    acr: 'urn:http://eidas.europa.eu/LoA/NotNotified/low',
     azp: client.id
   };
 
@@ -36,14 +38,14 @@ async function build_id_token(client, user, scopes, nonce, auth_time) {
     claims.nonce = nonce;
   }
 
-  if (scopes.has("profile")) {
+  if (scopes.has('profile')) {
     Object.assign(claims, {
       preferred_username: user.username,
       website: user.website
     });
   }
 
-  if (scopes.has("email")) {
+  if (scopes.has('email')) {
     claims.email = user.email;
   }
 
@@ -65,45 +67,42 @@ async function build_access_token(client, user, grant_type) {
   };
   if (grant_type !== m2m_grant_type) {
     claims.email = user.email;
-    if (config.ar.url != null && config.ar.url !== "internal") {
+    if (config.ar.url != null && config.ar.url !== 'internal') {
       claims.authorisationRegistry = {
         url: config.ar.url,
         token_endpoint: config.ar.token_endpoint,
         delegation_endpoint: config.ar.delegation_endpoint,
         identifier: config.ar.identifier
       };
-    } else if (config.ar.url === "internal") {
+    } else if (config.ar.url === 'internal') {
       claims.delegationEvidence = await authregistry.get_delegation_evidence(user.id);
     }
   }
   /* eslint-enable snakecase/snakecase */
 
-  return [
-    await utils.create_jwt(claims),
-    exp.toDate()
-  ];
+  return [await utils.create_jwt(claims), exp.toDate()];
 }
 
-const ensure_client_application = async function ensure_client_application(participant_id, participant_name, redirect_uri) {
+const ensure_client_application = async function ensure_client_application(
+  participant_id,
+  participant_name,
+  redirect_uri
+) {
   const data = {
     id: participant_id,
     name: participant_name,
     image: 'i4trust_party.png',
-    grant_type: [
-      'client_credentials',
-      'authorization_code',
-      'refresh_token'
-    ],
+    grant_type: ['client_credentials', 'authorization_code', 'refresh_token'],
     description: `You are accessing from ${participant_name}. This is a trusted iSHARE participant registered with id "${participant_id}".`,
-    response_type: ['code'],
+    response_type: ['code']
   };
   if (redirect_uri) {
-      data.redirect_uri = redirect_uri;
+    data.redirect_uri = redirect_uri;
   }
 
   // We cannot use upsert for retrieving the updated client due very old version of sequelize
   await models.oauth_client.upsert(data);
-  return await models.oauth_client.findOne({where: {id: participant_id}});
+  return await models.oauth_client.findOne({ where: { id: participant_id } });
 };
 
 async function _validate_participant(req, res) {
@@ -130,7 +129,18 @@ async function _validate_participant(req, res) {
   /*******/
 
   // Validate the JWT and client certificates
-  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(credentials, req.body.client_id);
+  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(
+    credentials,
+    req.body.client_id,
+    true
+  );
+
+  // Check that the scope param is the same as the provided in the body
+  if (req.body.scope !== client_payload.scope) {
+    throw new oauth2_server.InvalidRequestError(
+      'Invalid parameter scope: Scope param must be equal to request param scope'
+    );
+  }
 
   const participant_name = await utils.validate_participant_from_jwt(client_payload, client_certificate);
 
@@ -148,14 +158,18 @@ async function _validate_participant(req, res) {
   auth_params.append('state', client_payload.state);
   auth_params.append('nonce', client_payload.nonce);
 
-  res.status(204).location('/oauth2/authorize?' + auth_params).end();
+  res
+    .status(302)
+    .location('/oauth2/authorize?' + auth_params)
+    .end();
   return true;
 }
 
 async function _token(req, res) {
-
   if (!req.is('application/x-www-form-urlencoded')) {
-    throw new oauth2_server.InvalidRequestError(`Invalid request: content must be application/x-www-form-urlencoded [${req.headers}]`);
+    throw new oauth2_server.InvalidRequestError(
+      `Invalid request: content must be application/x-www-form-urlencoded [${req.headers}]`
+    );
   }
 
   const grant_type = req.body.grant_type;
@@ -163,38 +177,42 @@ async function _token(req, res) {
 
   // Skip normal flows
   // https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
-  if (!managed_token_grant_types.has(grant_type) || req.body.client_assertion_type !== 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer') {
+  if (
+    !managed_token_grant_types.has(grant_type) ||
+    req.body.client_assertion_type !== 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
+  ) {
     return false;
   }
 
   debug('using external participant registry flow');
 
-  if (grant_type === "authorization_code" && !req.body.code) {
+  if (grant_type === 'authorization_code' && !req.body.code) {
     throw new oauth2_server.InvalidRequestError('Missing parameter: `code`');
   }
 
-  if (typeof req.body.client_assertion !== "string") {
+  if (typeof req.body.client_assertion !== 'string') {
     // Reponse with message
     throw new oauth2_server.InvalidRequestError('invalid_request: include client_assertion in request');
   }
 
   // Validate client
-  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(req.body.client_assertion, client_id);
+  const [client_payload, client_certificate] = await utils.assert_client_using_jwt(
+    req.body.client_assertion,
+    client_id
+  );
 
   let id_token = null;
   let client;
   let user;
   let scopes;
-  if (grant_type === "authorization_code") {
-
+  if (grant_type === 'authorization_code') {
     debug('Validating authorization code');
 
-    const code = await models.oauth_authorization_code
-      .findOne({
-        attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'extra'],
-        where: { authorization_code: req.body.code, oauth_client_id: client_id, valid: true },
-        include: [models.user, models.oauth_client]
-      });
+    const code = await models.oauth_authorization_code.findOne({
+      attributes: ['oauth_client_id', 'redirect_uri', 'expires', 'user_id', 'scope', 'extra'],
+      where: { authorization_code: req.body.code, oauth_client_id: client_id, valid: true },
+      include: [models.user, models.oauth_client]
+    });
 
     if (!code) {
       throw new oauth2_server.InvalidRequestError('Invalid grant: authorization code is invalid');
@@ -229,17 +247,20 @@ async function _token(req, res) {
 
     client = await ensure_client_application(client_payload.iss, participant_name, client_payload.redirect_uri);
     // We cannot use upsert for retrieving the updated client due very old version of sequelize
-    await models.user.upsert({
-      username: client_payload.iss,
-      description: `External participant with id: ${client_payload.iss}`,
-      email: `${client_id}@${config.pr.url}`,
-    }, {
-      validate: false // Currently, we are inserting an invalid email address for the participant
-    });
+    await models.user.upsert(
+      {
+        username: client_payload.iss,
+        description: `External participant with id: ${client_payload.iss}`,
+        email: `${client_id}@${config.pr.url}`
+      },
+      {
+        validate: false // Currently, we are inserting an invalid email address for the participant
+      }
+    );
 
     scopes = new Set(req.body.scope != null ? req.body.scope.split(/[,\s]+/) : []);
-    user = await models.user.findOne({where: {username: client_payload.iss}});
-    if (grant_type === "client_credentials") {
+    user = await models.user.findOne({ where: { username: client_payload.iss } });
+    if (grant_type === 'client_credentials') {
       // Build id and access tokens
       id_token = await build_id_token(client, user, scopes);
     }
@@ -248,20 +269,20 @@ async function _token(req, res) {
   // Create and save access_token
   const [access_token, access_token_exp] = await build_access_token(client, user, grant_type);
   await models.oauth_access_token.create({
-      hash: crypto.createHash("sha3-256").update(access_token).digest('hex'),
-      access_token,
-      expires: access_token_exp,
-      valid: true,
-      oauth_client_id: client.id,
-      user_id: user.id,
-      authorization_code: req.body.code,
-      scope: scopes
+    hash: crypto.createHash('sha3-256').update(access_token).digest('hex'),
+    access_token,
+    expires: access_token_exp,
+    valid: true,
+    oauth_client_id: client.id,
+    user_id: user.id,
+    authorization_code: req.body.code,
+    scope: scopes
   });
 
   const response = {
     access_token,
     expires_in: config.oauth2.access_token_lifetime,
-    token_type: "Bearer"
+    token_type: 'Bearer'
   };
 
   if (id_token != null) {
@@ -270,12 +291,17 @@ async function _token(req, res) {
 
   // Return id and access tokens
   res.status(200).json(response);
-  
+
   return true;
 }
 
 exports.validate_participant = function validate_participant(req, res, next) {
   debug(' --> validate_participant');
+
+  if (!req.is('application/x-www-form-urlencoded')) {
+    res.status(415).end();
+    return;
+  }
 
   _validate_participant(req, res).then(
     (skip) => {
@@ -286,16 +312,23 @@ exports.validate_participant = function validate_participant(req, res, next) {
     (err) => {
       if (err instanceof oauth2_server.OAuthError) {
         debug('Error ', err.message);
+        let message = err.message;
         if (err.details) {
           debug('Due: ', err.details);
+          message = err.details;
         }
-        res.status(err.status = err.code);
-
+        // ISHARE protocols requires errors to be managed as a redirection
         res.locals.error = err;
-        res.render('errors/oauth', {
+        res
+          .status(302)
+          .location(config.host + '/oauth2/error?message=' + message)
+          //.location('/oauth2/error?message=' + message)
+          .end();
+
+        /*res.render('errors/oauth', {
           query: req.body,
           application: req.application
-        });
+        });*/
       } else {
         throw err;
       }
@@ -318,7 +351,7 @@ exports.token = function token(req, res, next) {
         if (err.details) {
           debug('Due: ', err.details);
         }
-        res.status(err.status = err.code);
+        res.status((err.status = err.code));
 
         res.locals.error = err;
         res.render('errors/oauth', {
@@ -330,4 +363,126 @@ exports.token = function token(req, res, next) {
       }
     }
   );
+};
+
+/*eslint new-cap: ["error", { "newIsCap": false }]*/
+const oauth2 = new oauth2_server({
+  // eslint-disable-line new-cap
+  model: require('../../models/model_oauth_server.js'),
+  debug: true
+});
+
+const authenticate_bearer = async function authenticate_bearer(req) {
+  const options = {};
+
+  const request = new Request({
+    headers: { authorization: req.headers.authorization },
+    method: 'POST',
+    query: {}
+  });
+
+  const response = new Response();
+
+  return await oauth2.authenticate(request, response, options);
+};
+
+function _capabilities(req, res) {
+  const now = moment();
+
+  const capabilities_payload = {
+    iss: config.pr.client_id,
+    sub: config.pr.client_id,
+    jti: uuid.v4(),
+    iat: now.unix(),
+    exp: now.clone().add(config.oauth2.access_token_lifetime, 'seconds').unix(),
+    capabilities_info: {
+      party_id: config.pr.client_id,
+      ishare_roles: [
+        {
+          role: 'Service Provider'
+        }
+      ],
+      supported_versions: [
+        {
+          version: '1.7',
+          supported_features: [
+            {
+              public: [
+                {
+                  id: uuid.v4(),
+                  feature: 'capabilities',
+                  description: 'Retrieves iSHARE capabilities',
+                  url: config.host + '/capabilities',
+                  token_endpoint: config.host + '/oauth2/token'
+                },
+                {
+                  id: uuid.v4(),
+                  feature: 'access token',
+                  description: 'Obtains access token',
+                  url: config.host + '/oauth2/token'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  utils.create_jwt(capabilities_payload).then((token) => {
+    debug(token);
+
+    const resp = {
+      capabilities_token: token
+    };
+    res.status(200).json(resp);
+  });
+}
+
+exports.capabilities = function capabilities(req, res) {
+  debug('------> Capabilities');
+
+  if (req.method !== 'GET') {
+    res.status(405).end();
+    return;
+  }
+
+  if (req.headers.authorization != null) {
+    authenticate_bearer(req)
+      .then((token_info) => {
+        debug(token_info);
+
+        _capabilities(req, res);
+      })
+      .catch((err) => {
+        let status = 401;
+        if (err.message === 'Invalid request: malformed authorization header') {
+          status = 400;
+        }
+
+        res.status(status).json({
+          message: err.message
+        });
+      });
+  } else {
+    _capabilities(req, res);
+  }
+};
+
+exports.validate_not_ishare_get = function validate_not_ishare_get(req, res, next) {
+  let scopes = new Set([]);
+  if (req.query.scope != null) {
+    const scope = req.query.scope;
+    if (scope.includes(',')) {
+      scopes = new Set(scope.split(/[,\s]+/));
+    } else {
+      scopes = new Set(req.query.scope.split(' '));
+    }
+  }
+
+  if (scopes.has('iSHARE')) {
+    res.status(405).end();
+  } else {
+    next();
+  }
 };

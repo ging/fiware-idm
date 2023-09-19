@@ -133,50 +133,50 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 #
 ########################################################################################
 
-FROM ${DISTROLESS} AS distroless
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
-ARG NODE_VERSION
-ARG HEADLESS
+# FROM ${DISTROLESS} AS distroless
+# ARG GITHUB_ACCOUNT
+# ARG GITHUB_REPOSITORY
+# ARG NODE_VERSION
+# ARG HEADLESS
 
-LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
-LABEL "description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
-LABEL "name"="keyrock"
-LABEL "summary"="Keyrock Identity Manager - Distroless"
+# LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+# LABEL "description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+# LABEL "name"="keyrock"
+# LABEL "summary"="Keyrock Identity Manager - Distroless"
 
-LABEL "org.opencontainers.image.authors"=""
-LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
-LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
-LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock- Distroless"
-LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
-LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
-LABEL "org.nodejs.version"=${NODE_VERSION}
+# LABEL "org.opencontainers.image.authors"=""
+# LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
+# LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
+# LABEL "org.opencontainers.image.licenses"="MIT"
+# LABEL "org.opencontainers.image.title"="Identity Manager - Keyrock- Distroless"
+# LABEL "org.opencontainers.image.description"="OAuth2-based authentication of users and devices, user profile management, Single Sign-On (SSO) and Identity Federation across multiple administration domains."
+# LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
+# LABEL "org.nodejs.version"=${NODE_VERSION}
 
-WORKDIR /opt/fiware-idm
-COPY --from=builder /opt/fiware-idm .
-COPY --from=anon-user /etc/passwd /etc/shadow /etc/group /etc/
+# WORKDIR /opt/fiware-idm
+# COPY --from=builder /opt/fiware-idm .
+# COPY --from=anon-user /etc/passwd /etc/shadow /etc/group /etc/
 
-ENV IDM_HOST="http://localhost:3000" \
-    IDM_PORT="3000" \
-    IDM_PDP_LEVEL="basic" \
-    IDM_DB_HOST="localhost" \
-    IDM_DB_NAME="idm" \
-    IDM_DB_DIALECT="mysql" \
-    IDM_DB_SEED="false" \
-    IDM_DB_MIGRATE="false" \
-    IDM_EMAIL_HOST="localhost" \
-    IDM_EMAIL_PORT="25" \
-    IDM_EMAIL_ADDRESS="noreply@localhost"
-ENV IDM_HEADLESS=$HEADLESS
+# ENV IDM_HOST="http://localhost:3000" \
+#     IDM_PORT="3000" \
+#     IDM_PDP_LEVEL="basic" \
+#     IDM_DB_HOST="localhost" \
+#     IDM_DB_NAME="idm" \
+#     IDM_DB_DIALECT="mysql" \
+#     IDM_DB_SEED="false" \
+#     IDM_DB_MIGRATE="false" \
+#     IDM_EMAIL_HOST="localhost" \
+#     IDM_EMAIL_PORT="25" \
+#     IDM_EMAIL_ADDRESS="noreply@localhost"
+# ENV IDM_HEADLESS=$HEADLESS
 
-USER nobody
-ENV NODE_ENV=production
-# Ports used by application
-EXPOSE ${IDM_PORT:-3000}
-CMD ["./bin/www"]
-HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
-  CMD ["/nodejs/bin/node", "./bin/healthcheck"]
+# USER nobody
+# ENV NODE_ENV=production
+# # Ports used by application
+# EXPOSE ${IDM_PORT:-3000}
+# CMD ["./bin/www"]
+# HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
+#   CMD ["/nodejs/bin/node", "./bin/healthcheck"]
 
 
 ########################################################################################
@@ -206,6 +206,7 @@ ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
 ARG HEADLESS
+ARG PACKAGE_MANAGER
 
 WORKDIR /opt/fiware-idm
 COPY --from=builder /opt/fiware-idm .
@@ -225,8 +226,12 @@ ENV IDM_HOST="http://localhost:3000" \
 ENV IDM_HEADLESS=$HEADLESS
 
 # hadolint ignore=DL3018
+# hadolint ignore=DL3009
 RUN \
-    if [ "${PACKAGE_MANAGER}" = "apk"  ]; then \
+    if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
+        apt-get update; \
+        apt-get install -y --no-install-recommends openssl; \
+    elif [ "${PACKAGE_MANAGER}" = "apk"  ]; then \
         apk add --no-cache ca-certificates bash openssl; \
     fi
 

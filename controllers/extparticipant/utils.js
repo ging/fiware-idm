@@ -85,7 +85,6 @@ exports.validate_client_certificate = function validate_client_certificate(chain
   check(errors, exports.verify_certificate_chain(chain), 'Certificate chain cannot be verified.');
   check(errors, cert.signatureOid === forge.pki.oids.sha256WithRSAEncryption, 'Certificate signature invalid');
   check(errors, cert.publicKey.n.bitLength() >= 2048, 'Certificate public key size is smaller than 2048');
-  check(errors, cert.serialNumber != null && cert.serialNumber.trim() !== '', 'Certificate has no serial number');
 
   const key_usage = cert.getExtension('keyUsage');
   const digital_only = key_usage.digitalSignature && !(key_usage.keyCertSign || key_usage.cRLSign);
@@ -161,19 +160,6 @@ exports.validate_jwt = async function validate_jwt(credentials, client_id) {
     return forge.pki.certificateFromPem('-----BEGIN CERTIFICATE-----' + cert + '-----END CERTIFICATE-----');
   });
 
-  const serial_number_field = fullchain[0].subject.getField({ name: 'serialNumber' });
-  if (serial_number_field == null) {
-    // JWT iss parameter does not match the serialNumber field of the signer certificate
-    throw new Error('Issuer certificate serialNumber parameter is missing');
-  }
-
-  const cert_serial_number = serial_number_field.value;
-  if (payload.iss !== cert_serial_number) {
-    // JWT iss parameter does not match the serialNumber field of the signer certificate
-    throw new Error(
-      `Issuer certificate serialNumber parameter does not match jwt iss parameter (${payload.iss} != ${cert_serial_number})`
-    );
-  }
   await exports.validate_client_certificate(fullchain);
 
   return { payload, fullchain };
@@ -196,8 +182,6 @@ exports.assert_client_using_jwt = async function assert_client_using_jwt(credent
       if (payload.response_type == null) {
         throw new Error('Missing response_type param in JWT');
       }
-
-    await exports.validate_client_certificate(fullchain);
 
       if (payload.response_type !== 'code') {
         throw new Error('Only code response_type is supported in JWT');

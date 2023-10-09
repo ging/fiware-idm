@@ -470,7 +470,7 @@ exports.authenticate_token = function (req, res) {
     access_token: req.query.access_token || header_access_token
   };
 
-  if (options.authzforce && (options.action || options.resource || options.service_header || options.access_token)) {
+  if (options.authzforce && (options.action || options.resource || options.service_header || header_access_token )) {
     const error = {
       message: 'Cannot handle 2 authentications levels at the same time',
       code: 400,

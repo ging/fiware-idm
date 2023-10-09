@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes) {
     'OauthClient',
     {
       id: {
-        type: DataTypes.UUID,
+        type: DataTypes.STRING(255),
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },

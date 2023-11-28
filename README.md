@@ -9,7 +9,7 @@
 [![CI](https://github.com/ging/fiware-idm/workflows/CI/badge.svg)](https://github.com/ging/fiware-idm/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/ging/fiware-idm/badge.svg?branch=master)](https://coveralls.io/github/ging/fiware-idm?branch=master)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/keyrock.svg)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c1f1239e878341b782be7ed9a67afdfd)](https://app.codacy.com/app/apozohue10/fiware-idm?utm_source=github.com&utm_medium=referral&utm_content=ging/fiware-idm&utm_campaign=Badge_Grade_Dashboard)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c1f1239e878341b782be7ed9a67afdfd)](https://app.codacy.com/gh/ging/fiware-idm?utm_source=github.com&utm_medium=referral&utm_content=ging/fiware-idm&utm_campaign=Badge_Grade_Dashboard)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4414/badge)](https://bestpractices.coreinfrastructure.org/projects/4414)
 
 Keyrock is the FIWARE component responsible for Identity Management. Using

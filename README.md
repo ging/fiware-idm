@@ -1,5 +1,6 @@
 # Identity Manager - Keyrock
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8deda6effa3045ca972ac9290a6b577c)](https://app.codacy.com/gh/ging/fiware-idm?utm_source=github.com&utm_medium=referral&utm_content=ging/fiware-idm&utm_campaign=Badge_Grade)
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
 [![License: MIT](https://img.shields.io/github/license/ging/fiware-idm.svg)](https://opensource.org/licenses/MIT)
 [![Docker badge](https://img.shields.io/badge/quay.io-fiware%2Fidm-grey?logo=red%20hat&labelColor=EE0000)](https://quay.io/repository/fiware/idm)

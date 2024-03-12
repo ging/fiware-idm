@@ -73,7 +73,7 @@ async function build_access_token(client, user, grant_type) {
         identifier: config.ar.identifier
       };
     } else if (config.ar.url === "internal") {
-      claims.delegationEvidence = await authregistry.get_delegation_evidence(user.id);
+      claims.delegationEvidence = await authregistry.get_delegation_evidence(user.username);
     }
   }
   /* eslint-enable snakecase/snakecase */
@@ -326,7 +326,12 @@ exports.token = function token(req, res, next) {
           application: req.application
         });
       } else {
-        throw err;
+        debug('err', err)
+        res.status(500).json({
+          message: err,
+          code: 500,
+          title: 'Internal Server Error'
+        });
       }
     }
   );

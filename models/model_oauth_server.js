@@ -670,6 +670,12 @@ function search_user_info(user_info, options) {
         const trusted_apps = values[0];
         const roles = values[1];
 
+        /*
+        // MARKUS
+        // req_app = Wilma forwards &app_id=<id of app>
+        // user_info.app_id = EU.EORI.NL30000001  (my id)
+        // how to fix that?
+        debug(req_app, user_info.app_id)
         if (req_app) {
           if (req_app !== user_info.app_id) {
             if (trusted_apps.includes(user_info.app_id) === false) {
@@ -681,6 +687,7 @@ function search_user_info(user_info, options) {
             }
           }
         }
+        */
 
         if (action && resource) {
           user_info.authorization_decision = values[2] ? 'Permit' : 'Deny';

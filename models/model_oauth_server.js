@@ -311,8 +311,21 @@ function generateJwtToken(token, client, identity) {
       if (token.accessTokenExpiresAt) {
         options.expiresIn = config_oauth2.access_token_lifetime;
       }
+	  
+	  // Add the iss claim
+	  response.iss = config.host + '/idm/applications/' + client.id;
 
-      token.accessToken = jsonwebtoken.sign(response, client.jwt_secret, options);
+      // If the default algorithm (HS256) is chosen, client secret is used to sign the JWT.
+      let secretOrPrivateKey = client.jwt_secret;
+      // Otherwise, if RS256 is chosen, retrieve the application private key and use it to sign the JWT.
+      if (config_oidc.jwt_algorithm === 'RS256') {
+        const privateKey = readKeyIdToken(client);
+        options.algorithm = config_oidc.jwt_algorithm;
+        options.keyid = client.id;
+        secretOrPrivateKey = privateKey;
+      }
+
+      token.accessToken = jsonwebtoken.sign(response, secretOrPrivateKey, options);
       return storeToken(token, client, identity, true);
     })
     .catch(function (error) {
